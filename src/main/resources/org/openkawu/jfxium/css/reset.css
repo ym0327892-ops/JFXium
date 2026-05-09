@@ -1,0 +1,36 @@
+/* ==================== Root ==================== */
+.root {
+  -fx-font-family: -jfx-font-family;
+  -fx-font-size: 14px;
+  -fx-text-fill: -jfx-text-primary;
+  -fx-background-color: -jfx-bg-container;
+}
+
+/* ==================== Base Controls ==================== */
+.button {
+  -fx-font-family: -jfx-font-family;
+  -fx-font-size: 14px;
+  -fx-cursor: hand;
+  -fx-focus-traversable: false;
+}
+
+.text-field {
+  -fx-font-family: -jfx-font-family;
+  -fx-font-size: 14px;
+  -fx-text-fill: -jfx-text-primary;
+  -fx-background-color: -jfx-bg-container;
+  -fx-border-color: -jfx-border;
+  -fx-border-width: 1px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+  -fx-padding: 8px 12px;
+}
+.text-field:focused {
+  -fx-border-color: -jfx-primary;
+  -fx-effect: dropshadow(gaussian, -jfx-primary, 4, 0, 0, 0);
+}
+
+.label {
+  -fx-font-family: -jfx-font-family;
+  -fx-text-fill: -jfx-text-primary;
+}

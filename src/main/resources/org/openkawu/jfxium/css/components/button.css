@@ -1,0 +1,89 @@
+.jfx-button {
+  -fx-font-family: -jfx-font-family;
+  -fx-font-size: 14px;
+  -fx-font-weight: 400;
+  -fx-text-fill: -jfx-text-primary;
+  -fx-background-color: -jfx-bg-container;
+  -fx-border-color: -jfx-border;
+  -fx-border-width: 1px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+  -fx-padding: 8px 16px;
+  -fx-cursor: hand;
+}
+.jfx-button:hover {
+  -fx-border-color: -jfx-primary;
+  -fx-text-fill: -jfx-primary;
+  -fx-background-color: -jfx-bg-secondary;
+}
+.jfx-button:pressed {
+  -fx-border-color: -jfx-primary-active;
+  -fx-text-fill: -jfx-primary-active;
+}
+.jfx-button:disabled {
+  -fx-opacity: 0.6;
+  -fx-cursor: default;
+}
+
+/* Button Types */
+.jfx-button-primary {
+  -fx-text-fill: white;
+  -fx-background-color: -jfx-primary;
+  -fx-border-color: -jfx-primary;
+}
+.jfx-button-primary:hover {
+  -fx-background-color: -jfx-primary-hover;
+  -fx-border-color: -jfx-primary-hover;
+  -fx-text-fill: white;
+}
+.jfx-button-primary:pressed {
+  -fx-background-color: -jfx-primary-active;
+  -fx-border-color: -jfx-primary-active;
+}
+.jfx-button-primary:disabled {
+  -fx-background-color: -jfx-primary-disabled;
+  -fx-border-color: -jfx-primary-disabled;
+  -fx-text-fill: rgba(255, 255, 255, 0.8);
+}
+
+.jfx-button-dashed {
+  -fx-border-style: dashed;
+}
+
+.jfx-button-text {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+.jfx-button-text:hover {
+  -fx-background-color: -jfx-bg-secondary;
+}
+
+.jfx-button-link {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-text-fill: -jfx-primary;
+  -fx-underline: true;
+}
+.jfx-button-link:hover {
+  -fx-text-fill: -jfx-primary-hover;
+}
+
+/* Button Sizes */
+.jfx-button-small {
+  -fx-font-size: 12px;
+  -fx-padding: 4px 8px;
+}
+.jfx-button-large {
+  -fx-font-size: 16px;
+  -fx-padding: 12px 20px;
+}
+
+/* Button Shapes */
+.jfx-button-rounded {
+  -fx-border-radius: 9999px;
+  -fx-background-radius: 9999px;
+}
+.jfx-button-square {
+  -fx-border-radius: 0;
+  -fx-background-radius: 0;
+}

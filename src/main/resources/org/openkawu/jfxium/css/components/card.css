@@ -1,0 +1,41 @@
+.jfx-card {
+  -fx-background-color: -jfx-bg-container;
+  -fx-border-color: -jfx-border-secondary;
+  -fx-border-width: 1px;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-padding: 16px;
+}
+.jfx-card-bordered {
+  -fx-border-color: -jfx-border;
+}
+.jfx-card-hoverable:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
+  -fx-translate-y: -2px;
+}
+.jfx-card-shadow-sm {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 1);
+}
+.jfx-card-shadow-md {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.07), 8, 0, 0, 2);
+}
+.jfx-card-shadow-lg {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 16, 0, 0, 4);
+}
+.jfx-card-title {
+  -fx-font-family: -jfx-font-family;
+  -fx-font-size: 16px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -jfx-text-primary;
+  -fx-padding: 0 0 8px 0;
+}
+.jfx-card-extra {
+  -fx-font-family: -jfx-font-family;
+  -fx-font-size: 14px;
+  -fx-text-fill: -jfx-text-secondary;
+}
+.jfx-card-content {
+  -fx-font-family: -jfx-font-family;
+  -fx-font-size: 14px;
+  -fx-text-fill: -jfx-text-secondary;
+}

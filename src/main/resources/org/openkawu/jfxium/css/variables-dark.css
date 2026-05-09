@@ -1,0 +1,59 @@
+.root {
+  /* Primary */
+  -jfx-primary: #4096ff;
+  -jfx-primary-hover: #69b1ff;
+  -jfx-primary-active: #1677ff;
+  -jfx-primary-disabled: #1f3a5f;
+
+  /* Functional */
+  -jfx-success: #49aa19;
+  -jfx-warning: #d89614;
+  -jfx-error: #d32029;
+  -jfx-info: #4096ff;
+
+  /* Text */
+  -jfx-text-primary: rgba(255, 255, 255, 0.85);
+  -jfx-text-secondary: rgba(255, 255, 255, 0.65);
+  -jfx-text-disabled: rgba(255, 255, 255, 0.3);
+
+  /* Background */
+  -jfx-bg-container: #141414;
+  -jfx-bg-secondary: #1f1f1f;
+  -jfx-bg-tertiary: #262626;
+
+  /* Border */
+  -jfx-border: #424242;
+  -jfx-border-secondary: #303030;
+
+  /* Spacing (for reference only, not used directly) */
+  -jfx-spacing-xs: 4px;
+  -jfx-spacing-sm: 8px;
+  -jfx-spacing-md: 16px;
+  -jfx-spacing-lg: 24px;
+  -jfx-spacing-xl: 32px;
+
+  /* Radius (for reference only) */
+  -jfx-radius-sm: 2px;
+  -jfx-radius-md: 4px;
+  -jfx-radius-lg: 8px;
+  -jfx-radius-xl: 16px;
+  -jfx-radius-full: 9999px;
+
+  /* Typography */
+  -jfx-font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  -jfx-font-size-xs: 12px;
+  -jfx-font-size-sm: 14px;
+  -jfx-font-size-md: 16px;
+  -jfx-font-size-lg: 18px;
+  -jfx-font-size-xl: 20px;
+  -jfx-font-size-xxl: 24px;
+  -jfx-font-weight-regular: 400;
+  -jfx-font-weight-medium: 500;
+  -jfx-font-weight-semibold: 600;
+  -jfx-font-weight-bold: 700;
+
+  /* Animation (for reference only) */
+  -jfx-duration-fast: 150ms;
+  -jfx-duration-normal: 250ms;
+  -jfx-duration-slow: 350ms;
+}

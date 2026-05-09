@@ -1,0 +1,36 @@
+.jfx-input {
+  -fx-font-family: -jfx-font-family;
+  -fx-font-size: 14px;
+  -fx-text-fill: -jfx-text-primary;
+  -fx-background-color: -jfx-bg-container;
+  -fx-border-color: -jfx-border;
+  -fx-border-width: 1px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+  -fx-padding: 8px 12px;
+}
+.jfx-input:focused {
+  -fx-border-color: -jfx-primary;
+  -fx-effect: dropshadow(gaussian, -jfx-primary, 4, 0, 0, 0);
+}
+.jfx-input:disabled {
+  -fx-background-color: -jfx-bg-secondary;
+  -fx-text-fill: -jfx-text-disabled;
+  -fx-opacity: 0.7;
+}
+.jfx-input-error {
+  -fx-border-color: -jfx-error;
+}
+.jfx-input-error:focused {
+  -fx-effect: dropshadow(gaussian, -jfx-error, 4, 0, 0, 0);
+}
+
+/* Input Sizes */
+.jfx-input-small {
+  -fx-font-size: 12px;
+  -fx-padding: 4px 8px;
+}
+.jfx-input-large {
+  -fx-font-size: 16px;
+  -fx-padding: 12px 16px;
+}

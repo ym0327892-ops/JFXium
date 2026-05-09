@@ -1,0 +1,169 @@
+// ============================================
+// JFXium Base Variables (Theme-agnostic)
+// Size, spacing, radius - shared across themes
+// ============================================
+
+// Spacing Scale (Base)
+// --------------------------------------------
+@spacing-xs: 4px;
+@spacing-sm: 8px;
+@spacing-md: 12px;
+@spacing-lg: 16px;
+@spacing-xl: 24px;
+
+// Border Radius Scale
+// --------------------------------------------
+@border-radius-sm: 4px;
+@border-radius-md: 6px;
+@border-radius-lg: 8px;
+@border-radius-xl: 12px;
+@border-radius-full: 9999px;
+
+// Font Size Scale
+// --------------------------------------------
+@font-size-xs: 10px;
+@font-size-sm: 12px;
+@font-size-md: 14px;
+@font-size-lg: 16px;
+@font-size-xl: 20px;
+
+// Component Padding Variables
+// All component paddings use these variables for consistent sizing
+// and future support for Small/Medium/Large theme variants
+// --------------------------------------------
+
+// Button Padding
+@btn-padding-y: @spacing-sm;
+@btn-padding-x: @spacing-lg;
+@btn-padding-y-sm: @spacing-xs;
+@btn-padding-x-sm: @spacing-sm;
+@btn-padding-y-lg: @spacing-md;
+@btn-padding-x-lg: @spacing-xl;
+
+// Input Padding
+@input-padding-y: @spacing-sm;
+@input-padding-x: @spacing-md;
+@input-padding-y-sm: @spacing-xs;
+@input-padding-x-sm: @spacing-sm;
+@input-padding-y-lg: @spacing-md;
+@input-padding-x-lg: @spacing-lg;
+
+// Card Padding
+@card-padding: @spacing-lg;
+
+// Table Cell Padding
+@table-cell-padding-y: @spacing-sm;
+@table-cell-padding-x: @spacing-md;
+@table-header-padding-y: @spacing-lg;
+@table-header-padding-x: @spacing-lg;
+
+// Menu / MenuItem Padding
+@menu-padding-y: @spacing-sm;
+@menu-padding-x: @spacing-md;
+@menu-item-padding-y: @spacing-sm;
+@menu-item-padding-x: @spacing-lg;
+
+// Tab Padding
+@tab-padding-y: @spacing-sm;
+@tab-padding-x: @spacing-md;
+
+// List Cell Padding
+@list-cell-padding-y: @spacing-sm;
+@list-cell-padding-x: @spacing-md;
+
+// Tree Cell Padding
+@tree-cell-padding-y: @spacing-sm;
+@tree-cell-padding-x: @spacing-md;
+
+// Dialog / Modal Padding
+@dialog-padding: @spacing-lg;
+@modal-header-padding-bottom: @spacing-md;
+@modal-footer-padding-top: @spacing-md;
+
+// Form Padding
+@form-item-padding-y: @spacing-sm;
+@form-item-padding-x: @spacing-md;
+
+// Tooltip Padding
+@tooltip-padding-y: @spacing-sm;
+@tooltip-padding-x: @spacing-md;
+
+// Alert Padding
+@alert-padding-y: @spacing-md;
+@alert-padding-x: @spacing-lg;
+
+// Pagination Button Padding
+@pagination-padding-y: @spacing-xs;
+@pagination-padding-x: @spacing-sm;
+
+// Accordion / TitledPane Padding
+@accordion-title-padding-y: @spacing-md;
+@accordion-title-padding-x: @spacing-lg;
+@accordion-content-padding-y: @spacing-md;
+@accordion-content-padding-x: @spacing-lg;
+@titled-pane-title-padding-y: @spacing-md;
+@titled-pane-title-padding-x: @spacing-lg;
+@titled-pane-content-padding: @spacing-lg;
+
+// ScrollBar Size
+@scrollbar-size: 8px;
+
+// SplitPane Divider Padding
+@split-divider-padding: 2px;
+
+// Switch Padding
+@switch-padding: 2px;
+
+// Close Button Padding
+@close-btn-padding: 2px;
+
+// ToolBar Padding
+@toolbar-padding-y: @spacing-sm;
+@toolbar-padding-x: @spacing-md;
+
+// ContextMenu Padding
+@context-menu-padding-y: @spacing-xs;
+@context-menu-padding-x: 0;
+
+// Spinner Arrow Button Padding
+@spinner-arrow-padding: 0;
+
+// Mixins
+// --------------------------------------------
+.button-base() {
+  -fx-background-radius: @border-radius-md;
+  -fx-text-fill: @color-fg-default;
+  -fx-padding: @btn-padding-y @btn-padding-x;
+  -fx-cursor: hand;
+  -fx-font-weight: 500;
+  -fx-alignment: center;
+}
+
+.input-base() {
+  -fx-background-color: @color-bg-default;
+  -fx-border-color: @color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: @input-padding-y @input-padding-x;
+  -fx-text-fill: @color-fg-default;
+}
+
+.card-base() {
+  -fx-background-color: @color-bg-default;
+  -fx-background-radius: @border-radius-lg;
+  -fx-border-radius: @border-radius-lg;
+  -fx-padding: @card-padding;
+}
+
+.shadow-sm() {
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 4, 0, 0, 1);
+}
+
+.shadow-md() {
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+}
+
+.shadow-lg() {
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 16, 0, 0, 4);
+}
