@@ -711,6 +711,8 @@
   -fx-padding: 8px 12px;
   -fx-text-fill: #e0e0ff;
   -fx-padding: 4px 12px;
+  -fx-min-width: 60px;
+  -fx-pref-width: 80px;
 }
 .color-picker:hover {
   -fx-border-color: -color-accent-emphasis;
@@ -723,6 +725,38 @@
 }
 .color-picker .arrow-button {
   -fx-background-color: transparent;
+}
+/* ColorPicker Popup - 防止内部组件超出容器 */
+.color-palette {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.3), 8, 0, 0, 2);
+  -fx-padding: 10px;
+  -fx-min-width: 200px;
+}
+.color-palette .color-picker-grid {
+  -fx-padding: 0;
+}
+.color-palette .color-picker-grid .color-square {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-padding: 0;
+}
+.color-palette .color-picker-grid .color-square:hover {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 2px;
+}
+/* ColorPicker 内部 Slider 防止超出 */
+.color-palette .slider {
+  -fx-pref-width: 180px;
+  -fx-max-width: 180px;
+}
+.color-palette .controls-pane {
+  -fx-padding: 5px 0;
 }
 /* ============================================
    Accordion Component
