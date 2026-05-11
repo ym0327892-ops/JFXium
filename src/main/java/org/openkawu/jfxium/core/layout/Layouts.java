@@ -20,8 +20,8 @@ import java.util.List;
  *     .padding(20)
  *     .align(Pos.CENTER)
  *     .children(
- *         JFXButton.create("A").build(),
- *         JFXButton.create("B").build()
+ *         ButtonAnt.create("A").build(),
+ *         ButtonAnt.create("B").build()
  *     )
  *     .build();
  *
@@ -30,9 +30,9 @@ import java.util.List;
  *     .spacing(12)
  *     .align(Pos.CENTER_LEFT)
  *     .children(
- *         JFXButton.create("Left").build(),
+ *         ButtonAnt.create("Left").build(),
  *         Layouts.grow(),  // 弹性占位
- *         JFXButton.create("Right").build()
+ *         ButtonAnt.create("Right").build()
  *     )
  *     .build();
  *
@@ -41,9 +41,9 @@ import java.util.List;
  *     .cols(3)
  *     .gap(8)
  *     .children(
- *         JFXButton.create("1").build(),
- *         JFXButton.create("2").build(),
- *         JFXButton.create("3").build()
+ *         ButtonAnt.create("1").build(),
+ *         ButtonAnt.create("2").build(),
+ *         ButtonAnt.create("3").build()
  *     )
  *     .build();
  * }</pre>

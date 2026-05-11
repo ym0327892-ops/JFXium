@@ -1,0 +1,543 @@
+// ============================================
+// JFXium MUI Dark Theme
+// Material Design inspired dark theme
+// ============================================
+
+// Step 1: Import base variables
+@import "variables-base.less";
+
+// ============================================
+// MUI Dark Color Palette
+// ============================================
+
+// Primary - Blue (dark uses lighter shades for visibility)
+@color-accent-0: #0d47a1;
+@color-accent-1: #1565c0;
+@color-accent-2: #1976d2;
+@color-accent-3: #1e88e5;
+@color-accent-4: #2196f3;
+@color-accent-5: #42a5f5;
+@color-accent-6: #64b5f6;
+@color-accent-7: #90caf9;
+@color-accent-8: #bbdefb;
+@color-accent-9: #e3f2fd;
+
+// Success - Green (dark)
+@color-success-0: #1b5e20;
+@color-success-1: #2e7d32;
+@color-success-2: #388e3c;
+@color-success-3: #43a047;
+@color-success-4: #4caf50;
+@color-success-5: #66bb6a;
+@color-success-6: #81c784;
+@color-success-7: #a5d6a7;
+@color-success-8: #c8e6c9;
+@color-success-9: #e8f5e9;
+
+// Warning - Orange (dark)
+@color-warning-0: #e65100;
+@color-warning-1: #ef6c00;
+@color-warning-2: #f57c00;
+@color-warning-3: #fb8c00;
+@color-warning-4: #ff9800;
+@color-warning-5: #ffa726;
+@color-warning-6: #ffb74d;
+@color-warning-7: #ffcc80;
+@color-warning-8: #ffe0b2;
+@color-warning-9: #fff3e0;
+
+// Danger - Red (dark)
+@color-danger-0: #b71c1c;
+@color-danger-1: #c62828;
+@color-danger-2: #d32f2f;
+@color-danger-3: #e53935;
+@color-danger-4: #f44336;
+@color-danger-5: #ef5350;
+@color-danger-6: #e57373;
+@color-danger-7: #ef9a9a;
+@color-danger-8: #ffcdd2;
+@color-danger-9: #ffebee;
+
+// Info - Light Blue (dark)
+@color-info-0: #01579b;
+@color-info-1: #0277bd;
+@color-info-2: #0288d1;
+@color-info-3: #039be5;
+@color-info-4: #03a9f4;
+@color-info-5: #29b6f6;
+@color-info-6: #4fc3f7;
+@color-info-7: #81d4fa;
+@color-info-8: #b3e5fc;
+@color-info-9: #e1f5fe;
+
+// MUI Dark Base Colors
+@color-base-0: #121212;
+@color-base-1: #1e1e1e;
+@color-base-2: #232323;
+@color-base-3: #252525;
+@color-base-4: #272727;
+@color-base-5: #2c2c2c;
+@color-base-6: #2f2f2f;
+@color-base-7: #333333;
+@color-base-8: #353535;
+@color-base-9: #383838;
+@color-base-10: #424242;
+
+// Semantic Variables (MUI Dark style)
+@color-fg-default: rgba(255, 255, 255, 0.87);
+@color-fg-muted: rgba(255, 255, 255, 0.60);
+@color-fg-subtle: rgba(255, 255, 255, 0.38);
+@color-fg-on-emphasis: #ffffff;
+
+@color-bg-default: #121212;
+@color-bg-overlay: #1e1e1e;
+@color-bg-subtle: #232323;
+@color-bg-inset: #121212;
+
+@color-border-default: #424242;
+@color-border-muted: #333333;
+@color-border-subtle: rgba(255, 255, 255, 0.12);
+
+@color-accent-emphasis: @color-accent-5;
+@color-accent-muted: @color-accent-2;
+@color-accent-subtle: @color-accent-0;
+
+@color-success-emphasis: @color-success-5;
+@color-success-muted: @color-success-2;
+@color-success-subtle: @color-success-0;
+
+@color-warning-emphasis: @color-warning-5;
+@color-warning-muted: @color-warning-2;
+@color-warning-subtle: @color-warning-0;
+
+@color-danger-emphasis: @color-danger-5;
+@color-danger-muted: @color-danger-2;
+@color-danger-subtle: @color-danger-0;
+
+@color-shadow-default: rgba(0, 0, 0, 0.5);
+
+// ============================================
+// MUI Box Shadow Tokens (Dark - stronger shadows)
+// ============================================
+
+// 全局默认阴影 (boxShadow)
+@shadow-mui-1: dropshadow(gaussian, rgba(0,0,0,0.40), 2, 0, 0, 1),
+                dropshadow(gaussian, rgba(0,0,0,0.28), 1, 0, 0, 1),
+                dropshadow(gaussian, rgba(0,0,0,0.24), 1, 0, 0, 3);
+
+// 全局次要阴影 (boxShadowSecondary)
+@shadow-mui-2: dropshadow(gaussian, rgba(0,0,0,0.40), 3, 0, 0, 2),
+                dropshadow(gaussian, rgba(0,0,0,0.28), 3, 0, 0, 3),
+                dropshadow(gaussian, rgba(0,0,0,0.24), 1, 0, 0, 8);
+
+// Button / Card 悬停阴影
+@shadow-mui-btn: dropshadow(gaussian, rgba(0,0,0,0.40), 3, 0, 0, 1),
+                  dropshadow(gaussian, rgba(0,0,0,0.28), 2, 0, 0, 2),
+                  dropshadow(gaussian, rgba(0,0,0,0.24), 1, 0, 0, 5);
+
+// Select Popup / Menu 阴影
+@shadow-mui-menu: dropshadow(gaussian, rgba(0,0,0,0.40), 5, 0, 0, 3),
+                   dropshadow(gaussian, rgba(0,0,0,0.28), 8, 0, 0, 4),
+                   dropshadow(gaussian, rgba(0,0,0,0.24), 3, 0, 0, 14);
+
+// Card 中等阴影
+@shadow-mui-3: dropshadow(gaussian, rgba(0,0,0,0.40), 8, 0, 0, 3),
+                dropshadow(gaussian, rgba(0,0,0,0.28), 8, 0, 0, 4),
+                dropshadow(gaussian, rgba(0,0,0,0.24), 3, 0, 0, 10);
+
+// Dialog / Modal 阴影
+@shadow-mui-4: dropshadow(gaussian, rgba(0,0,0,0.40), 10, 0, 0, 4),
+                dropshadow(gaussian, rgba(0,0,0,0.28), 10, 0, 0, 5),
+                dropshadow(gaussian, rgba(0,0,0,0.24), 4, 0, 0, 14);
+
+// Drawer 阴影
+@shadow-mui-6: dropshadow(gaussian, rgba(0,0,0,0.40), 14, 0, 0, 6),
+                dropshadow(gaussian, rgba(0,0,0,0.28), 14, 0, 0, 7),
+                dropshadow(gaussian, rgba(0,0,0,0.24), 5, 0, 0, 18);
+
+// Bottom Sheet 阴影
+@shadow-mui-8: dropshadow(gaussian, rgba(0,0,0,0.40), 18, 0, 0, 8),
+                dropshadow(gaussian, rgba(0,0,0,0.28), 18, 0, 0, 9),
+                dropshadow(gaussian, rgba(0,0,0,0.24), 6, 0, 0, 22);
+
+// FAB 阴影
+@shadow-mui-12: dropshadow(gaussian, rgba(0,0,0,0.40), 26, 0, 0, 12),
+                 dropshadow(gaussian, rgba(0,0,0,0.28), 26, 0, 0, 13),
+                 dropshadow(gaussian, rgba(0,0,0,0.24), 8, 0, 0, 30);
+
+// Full Screen Dialog 阴影
+@shadow-mui-16: dropshadow(gaussian, rgba(0,0,0,0.40), 32, 0, 0, 16),
+                 dropshadow(gaussian, rgba(0,0,0,0.28), 32, 0, 0, 17),
+                 dropshadow(gaussian, rgba(0,0,0,0.24), 10, 0, 0, 38);
+
+// Top Layer Dialog 阴影
+@shadow-mui-24: dropshadow(gaussian, rgba(0,0,0,0.40), 40, 0, 0, 24),
+                 dropshadow(gaussian, rgba(0,0,0,0.28), 40, 0, 0, 25),
+                 dropshadow(gaussian, rgba(0,0,0,0.24), 12, 0, 0, 46);
+
+// ============================================
+// MUI Overrides
+// ============================================
+
+// 圆角系统
+@border-radius-xs: 1px;
+@border-radius-sm: 2px;
+@border-radius-md: 4px;
+@border-radius-lg: 6px;
+@border-radius-xl: 8px;
+
+// 字体
+@font-family: 'Roboto', 'Helvetica', 'Arial', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+// Button Padding - 与 Ant Design MUI 精确对应
+@btn-padding-y: 6px;
+@btn-padding-x: 16px;
+@btn-padding-y-sm: 4px;
+@btn-padding-x-sm: 8px;
+@btn-padding-y-lg: 8px;
+@btn-padding-x-lg: 22px;
+
+// Input 边框颜色
+@input-border-color: rgba(255, 255, 255, 0.23);
+
+// Import base styles
+@import "theme-base.less";
+
+// ============================================
+// MUI Dark Specific Overrides
+// ============================================
+
+/* Button - MUI Dark Elevated Style */
+.button {
+  -fx-effect: @shadow-mui-btn;
+  -fx-text-transform: uppercase;
+  -fx-letter-spacing: 0.02857em;
+  -fx-font-weight: 500;
+  -fx-padding: @btn-padding-y @btn-padding-x;
+  -fx-background-radius: @border-radius-md;
+}
+
+.button:hover {
+  -fx-effect: @shadow-mui-2;
+}
+
+.button:pressed {
+  -fx-effect: @shadow-mui-btn;
+}
+
+/* Default Button - MUI Dark 风格 */
+.button.default {
+  -fx-background-color: #1e1e1e;
+  -fx-text-fill: rgba(255, 255, 255, 0.87);
+  -fx-border-color: rgba(255, 255, 255, 0.23);
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+}
+
+.button.default:hover {
+  -fx-background-color: rgba(66, 165, 245, 0.08);
+  -fx-border-color: rgba(255, 255, 255, 0.23);
+  -fx-text-fill: rgba(255, 255, 255, 0.87);
+}
+
+/* Primary Button - MUI Dark 风格 */
+.button.accent,
+.button.primary {
+  -fx-background-color: @color-accent-5;
+  -fx-text-fill: #000000;
+  -fx-border-color: transparent;
+  -fx-effect: @shadow-mui-btn;
+}
+
+.button.accent:hover,
+.button.primary:hover {
+  -fx-background-color: @color-accent-4;
+  -fx-effect: @shadow-mui-2;
+}
+
+/* Danger Button - MUI Dark 风格 */
+.button.danger {
+  -fx-background-color: @color-danger-5;
+  -fx-text-fill: #000000;
+  -fx-border-color: transparent;
+  -fx-effect: @shadow-mui-btn;
+}
+
+.button.danger:hover {
+  -fx-background-color: @color-danger-4;
+  -fx-effect: @shadow-mui-2;
+}
+
+/* Text Button (MUI Text variant) */
+.button.text {
+  -fx-effect: none;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.button.text:hover {
+  -fx-effect: none;
+  -fx-background-color: rgba(66, 165, 245, 0.08);
+}
+
+/* Link Button */
+.button.link {
+  -fx-effect: none;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+/* Input - MUI Dark Outlined Style */
+.text-field,
+.text-area,
+.password-field,
+.combo-box,
+.date-picker,
+.color-picker,
+.choice-box,
+.spinner {
+  -fx-border-color: @input-border-color;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.text-field:focused,
+.text-area:focused,
+.password-field:focused,
+.combo-box:focused,
+.date-picker:focused,
+.color-picker:focused,
+.choice-box:focused,
+.spinner:focused {
+  -fx-border-color: @color-accent-5;
+  -fx-border-width: 2px;
+  -fx-effect: none;
+}
+
+/* Input Error State */
+.text-field.error,
+.combo-box.error {
+  -fx-border-color: @color-danger-5;
+}
+
+/* Select / ComboBox - MUI Dark Style */
+.combo-box-popup .list-view {
+  -fx-effect: @shadow-mui-menu;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* Card - MUI Dark Elevation */
+.card {
+  -fx-effect: @shadow-mui-1;
+  -fx-background-radius: @border-radius-md;
+}
+
+.card:hover {
+  -fx-effect: @shadow-mui-2;
+}
+
+.card.shadow-sm {
+  -fx-effect: @shadow-mui-1;
+}
+
+.card.shadow-md {
+  -fx-effect: @shadow-mui-3;
+}
+
+.card.shadow-lg {
+  -fx-effect: @shadow-mui-6;
+}
+
+/* Dialog / Modal - MUI Dark Elevation */
+.dialog-pane {
+  -fx-effect: @shadow-mui-4;
+  -fx-background-radius: @border-radius-lg;
+}
+
+.modal-content {
+  -fx-effect: @shadow-mui-4;
+  -fx-background-radius: @border-radius-lg;
+}
+
+.modal-overlay {
+  -fx-background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Menu / ContextMenu - MUI Dark Menu */
+.context-menu {
+  -fx-effect: @shadow-mui-menu;
+  -fx-background-radius: @border-radius-md;
+}
+
+.menu-item {
+  -fx-background-radius: @border-radius-xs;
+}
+
+/* Date Picker Popup - MUI Dark Menu */
+.date-picker-popup {
+  -fx-effect: @shadow-mui-menu;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* Color Picker Popup */
+.color-palette {
+  -fx-effect: @shadow-mui-menu;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* Tooltip - MUI Dark Tooltip */
+.tooltip {
+  -fx-effect: @shadow-mui-2;
+  -fx-background-radius: @border-radius-sm;
+}
+
+/* Menu Bar - MUI Dark App Bar */
+.menu-bar {
+  -fx-effect: @shadow-mui-2;
+}
+
+/* Tool Bar - MUI Dark App Bar */
+.tool-bar {
+  -fx-effect: @shadow-mui-2;
+}
+
+/* Slider - MUI Dark Style */
+.slider .track {
+  -fx-background-color: rgba(66, 165, 245, 0.26);
+}
+
+.slider .track:hover {
+  -fx-background-color: rgba(66, 165, 245, 0.38);
+}
+
+.slider .thumb {
+  -fx-effect: @shadow-mui-btn;
+  -fx-pref-width: 20px;
+  -fx-pref-height: 20px;
+}
+
+.slider .thumb:hover {
+  -fx-effect: @shadow-mui-2;
+}
+
+/* Progress Bar - MUI Dark Style */
+.progress-bar .bar {
+  -fx-background-color: @color-accent-5;
+}
+
+.progress-bar .track {
+  -fx-background-color: rgba(66, 165, 245, 0.12);
+}
+
+/* Switch - MUI Dark Style */
+.toggle-button.switch {
+  -fx-effect: @shadow-mui-1;
+}
+
+.toggle-button.switch .thumb {
+  -fx-effect: @shadow-mui-btn;
+}
+
+/* Checkbox - MUI Dark Style */
+.check-box .box {
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+}
+
+/* Alert - MUI Dark Style */
+.alert-success,
+.alert-info,
+.alert-warning,
+.alert-error {
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* Badge - MUI Dark Style */
+.badge-count {
+  -fx-font-size: @font-size-xs;
+}
+
+/* Table - MUI Dark Data Grid Style */
+.table-view {
+  -fx-effect: @shadow-mui-1;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* Tabs - MUI Dark Style */
+.tab-pane .tab-header-area {
+  -fx-effect: @shadow-mui-1;
+}
+
+.tab-pane .tab {
+  -fx-background-radius: @border-radius-md @border-radius-md 0 0;
+}
+
+/* Drawer - MUI Dark Style */
+.drawer-panel {
+  -fx-effect: @shadow-mui-6;
+}
+
+/* Floating Action Button (FAB) - MUI Dark Style */
+.fab {
+  -fx-effect: @shadow-mui-6;
+  -fx-background-radius: @border-radius-full;
+}
+
+.fab:hover {
+  -fx-effect: @shadow-mui-12;
+}
+
+/* Snackbar - MUI Dark Style */
+.snackbar {
+  -fx-effect: @shadow-mui-6;
+  -fx-background-radius: @border-radius-sm;
+}
+
+/* Paper / Surface - MUI Dark Style */
+.paper {
+  -fx-background-color: -color-bg-default;
+  -fx-effect: @shadow-mui-1;
+  -fx-background-radius: @border-radius-md;
+}
+
+.paper.elevation-2 {
+  -fx-effect: @shadow-mui-2;
+}
+
+.paper.elevation-3 {
+  -fx-effect: @shadow-mui-3;
+}
+
+.paper.elevation-4 {
+  -fx-effect: @shadow-mui-4;
+}
+
+.paper.elevation-6 {
+  -fx-effect: @shadow-mui-6;
+}
+
+.paper.elevation-8 {
+  -fx-effect: @shadow-mui-8;
+}
+
+.paper.elevation-12 {
+  -fx-effect: @shadow-mui-12;
+}
+
+.paper.elevation-16 {
+  -fx-effect: @shadow-mui-16;
+}
+
+.paper.elevation-24 {
+  -fx-effect: @shadow-mui-24;
+}
+
+/* Steps - MUI Dark Style */
+.step-icon {
+  -fx-pref-width: 24px;
+  -fx-pref-height: 24px;
+  -fx-min-width: 24px;
+  -fx-min-height: 24px;
+}

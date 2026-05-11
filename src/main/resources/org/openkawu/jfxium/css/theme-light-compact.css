@@ -1,0 +1,311 @@
+/* ============================================
+   JFXium Light Compact Theme
+   ============================================
+   Based on Ant Design Compact Algorithm:
+   - sizeStep: 4 -> 2 (spacing scale reduced)
+   - controlHeight: 32 -> 28 (component height reduced)
+   - All paddings/margins reduced by ~25-30%
+   ============================================ */
+
+/* Import base light theme colors first */
+@import url("theme-light.css");
+
+/* ============================================
+   Compact Overrides - Global
+   ============================================ */
+.root {
+  -fx-font-size: 13px;
+}
+
+/* ============================================
+   Compact Button
+   ============================================ */
+.button {
+  -fx-padding: 4px 12px;
+  -fx-font-size: 13px;
+}
+.button.small {
+  -fx-padding: 2px 6px;
+  -fx-font-size: 11px;
+}
+.button.large {
+  -fx-padding: 8px 16px;
+  -fx-font-size: 14px;
+}
+
+/* ============================================
+   Compact Input
+   ============================================ */
+.text-field {
+  -fx-padding: 4px 10px;
+  -fx-font-size: 13px;
+}
+.text-field.small {
+  -fx-padding: 2px 6px;
+  -fx-font-size: 11px;
+}
+.text-field.large {
+  -fx-padding: 8px 12px;
+  -fx-font-size: 14px;
+}
+
+/* ============================================
+   Compact ComboBox / ChoiceBox / DatePicker / ColorPicker
+   ============================================ */
+.combo-box {
+  -fx-padding: 2px 10px;
+}
+.combo-box-popup .list-cell {
+  -fx-padding: 4px 10px;
+  -fx-font-size: 13px;
+}
+.choice-box {
+  -fx-padding: 2px 10px;
+}
+.date-picker {
+  -fx-padding: 2px 10px;
+}
+.color-picker {
+  -fx-padding: 2px 10px;
+}
+
+/* ============================================
+   Compact Card
+   ============================================ */
+.card {
+  -fx-padding: 12px;
+}
+
+/* ============================================
+   Compact Table
+   ============================================ */
+.table-view .column-header {
+  -fx-padding: 10px 12px;
+}
+.table-cell {
+  -fx-padding: 6px 10px;
+}
+
+/* ============================================
+   Compact Tree
+   ============================================ */
+.tree-cell {
+  -fx-padding: 4px 10px;
+  -fx-font-size: 13px;
+}
+
+/* ============================================
+   Compact ListView
+   ============================================ */
+.list-view .list-cell {
+  -fx-padding: 4px 10px;
+  -fx-font-size: 13px;
+}
+
+/* ============================================
+   Compact Tabs
+   ============================================ */
+.tab-pane .tab {
+  -fx-padding: 6px 10px;
+}
+.tab-pane .tab .tab-label {
+  -fx-font-size: 13px;
+}
+
+/* ============================================
+   Compact Menu / ContextMenu
+   ============================================ */
+.menu-bar > .container > .menu {
+  -fx-padding: 4px 10px;
+}
+.menu-bar > .container > .menu > .label {
+  -fx-font-size: 13px;
+}
+.menu-item {
+  -fx-padding: 4px 12px;
+}
+.menu-item .label {
+  -fx-font-size: 13px;
+}
+.context-menu {
+  -fx-padding: 2px 0;
+}
+.context-menu .menu-item {
+  -fx-padding: 4px 12px;
+}
+
+/* ============================================
+   Compact Accordion / TitledPane
+   ============================================ */
+.accordion .titled-pane > .title {
+  -fx-padding: 8px 12px;
+}
+.accordion .titled-pane > .content {
+  -fx-padding: 8px 12px;
+}
+.titled-pane > .title {
+  -fx-padding: 8px 12px;
+}
+.titled-pane > .content {
+  -fx-padding: 12px;
+}
+
+/* ============================================
+   Compact Tooltip
+   ============================================ */
+.tooltip {
+  -fx-padding: 4px 8px;
+  -fx-font-size: 11px;
+}
+
+/* ============================================
+   Compact Pagination
+   ============================================ */
+.pagination .pagination-control .button {
+  -fx-padding: 2px 6px;
+}
+.pagination .pagination-control .toggle-button {
+  -fx-padding: 2px 6px;
+}
+
+/* ============================================
+   Compact Dialog / Modal
+   ============================================ */
+.dialog-pane > .button-bar {
+  -fx-padding: 12px;
+}
+.modal-content {
+  -fx-padding: 12px;
+}
+.modal-header {
+  -fx-padding: 0 0 8px 0;
+}
+.modal-footer {
+  -fx-padding: 8px 0 0 0;
+}
+
+/* ============================================
+   Compact Alert
+   ============================================ */
+.alert-success,
+.alert-info,
+.alert-warning,
+.alert-error {
+  -fx-padding: 8px 12px;
+}
+
+/* ============================================
+   Compact Form
+   ============================================ */
+.form-label {
+  -fx-font-size: 13px;
+}
+.form-help-text {
+  -fx-font-size: 11px;
+}
+
+/* ============================================
+   Compact Switch
+   ============================================ */
+.toggle-button.switch {
+  -fx-min-width: 36px;
+  -fx-min-height: 18px;
+  -fx-max-width: 36px;
+  -fx-max-height: 18px;
+}
+
+/* ============================================
+   Compact Spinner
+   ============================================ */
+.spinner .text-field {
+  -fx-padding: 4px 10px;
+}
+
+/* ============================================
+   Compact PasswordField
+   ============================================ */
+.password-field {
+  -fx-padding: 4px 10px;
+}
+
+/* ============================================
+   Compact MenuButton / SplitMenuButton
+   ============================================ */
+.menu-button {
+  -fx-padding: 4px 12px;
+}
+.split-menu-button > .label {
+  -fx-padding: 4px 12px;
+}
+.split-menu-button > .arrow-button {
+  -fx-padding: 4px 6px;
+}
+
+/* ============================================
+   Compact TreeTableView
+   ============================================ */
+.tree-table-view .column-header {
+  -fx-padding: 10px 12px;
+}
+.tree-table-cell {
+  -fx-padding: 6px 10px;
+}
+
+/* ============================================
+   Compact Badge
+   ============================================ */
+.badge {
+  -fx-padding: 0 3px;
+  -fx-font-size: 9px;
+}
+.badge-count {
+  -fx-padding: 0 4px;
+  -fx-font-size: 9px;
+  -fx-min-width: 14px;
+  -fx-min-height: 14px;
+}
+.badge-text {
+  -fx-padding: 1px 6px;
+  -fx-font-size: 9px;
+}
+
+/* ============================================
+   Compact Label
+   ============================================ */
+.label {
+  -fx-font-size: 13px;
+}
+
+/* ============================================
+   Compact CheckBox / RadioButton
+   ============================================ */
+.check-box {
+  -fx-font-size: 13px;
+}
+.check-box .box {
+  -fx-padding: 2px;
+}
+.radio-button {
+  -fx-font-size: 13px;
+}
+.radio-button .radio {
+  -fx-padding: 2px;
+  -fx-min-width: 14px;
+  -fx-min-height: 14px;
+  -fx-pref-width: 14px;
+  -fx-pref-height: 14px;
+}
+
+/* ============================================
+   Compact TextArea
+   ============================================ */
+.text-area {
+  -fx-font-size: 13px;
+}
+
+/* ============================================
+   Compact ToolBar
+   ============================================ */
+.tool-bar {
+  -fx-padding: 4px 10px;
+}

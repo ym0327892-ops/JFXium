@@ -2,37 +2,81 @@
 // JFXium Base Variables (Theme-agnostic)
 // Size, spacing, radius - shared across themes
 // ============================================
+// 使用说明：
+//   1. 修改基础变量（如 @spacing-sm）可全局影响所有组件
+//   2. 紧凑模式只需覆盖基础变量，组件自动适配
+//   3. 组件级变量（如 @btn-padding-y）基于基础变量推导，一般不需要直接修改
+// ============================================
 
 // Spacing Scale (Base)
 // --------------------------------------------
+// 通用间距梯度，被所有组件 padding/margin/gap 引用
+// 紧凑模式修改此处即可全局缩小
+// 使用位置：几乎所有组件的内外边距
 @spacing-xs: 4px;
 @spacing-sm: 8px;
 @spacing-md: 12px;
 @spacing-lg: 16px;
 @spacing-xl: 24px;
 
-// Border Radius Scale
+// Border Radius Scale (Base)
 // --------------------------------------------
+// 通用圆角梯度
+// 使用位置：Button、Input、Card、Modal、Tooltip、Menu 等所有带圆角的组件
 @border-radius-sm: 4px;
 @border-radius-md: 6px;
 @border-radius-lg: 8px;
 @border-radius-xl: 12px;
 @border-radius-full: 9999px;
 
-// Font Size Scale
+// Font Size Scale (Base)
 // --------------------------------------------
+// 通用字号梯度
+// 使用位置：全局字体、组件内文字、标题、辅助文字
 @font-size-xs: 10px;
 @font-size-sm: 12px;
 @font-size-md: 14px;
 @font-size-lg: 16px;
 @font-size-xl: 20px;
 
+// Font Family
+// --------------------------------------------
+// 全局字体族
+// 使用位置：全局 .root、所有文本类组件
+@font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+@font-family-code: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+
+// Control Height (Base)
+// --------------------------------------------
+// 控件基准高度（Button、Input、ComboBox 等）
+// 使用位置：Button、Input、ComboBox、DatePicker、ColorPicker、ChoiceBox、Spinner
+@control-height: 32px;
+@control-height-sm: 24px;
+@control-height-lg: 40px;
+
+// Animation
+// --------------------------------------------
+// 动画开关与时长
+// 使用位置：全局动画效果、过渡动画
+@motion: true;
+@motion-unit: 0.1s;
+@motion-base: 0s;
+
+// Wireframe Mode (for debugging)
+// --------------------------------------------
+// 线框调式模式
+@wireframe: false;
+
+// ============================================
 // Component Padding Variables
-// All component paddings use these variables for consistent sizing
-// and future support for Small/Medium/Large theme variants
+// ============================================
+// 所有组件 padding 均使用以下变量，保持全局一致
+// 紧凑模式只需修改上方基础变量，此处自动生效
 // --------------------------------------------
 
 // Button Padding
+// 使用位置：.button（所有按钮）、.menu-button、.split-menu-button
+// 影响组件：ButtonAnt、MenuButton、SplitMenuButton
 @btn-padding-y: @spacing-sm;
 @btn-padding-x: @spacing-lg;
 @btn-padding-y-sm: @spacing-xs;
@@ -41,6 +85,8 @@
 @btn-padding-x-lg: @spacing-xl;
 
 // Input Padding
+// 使用位置：.text-field、.text-area、.password-field、.combo-box、.date-picker、.color-picker、.choice-box、.spinner
+// 影响组件：InputAnt、TextAreaAnt、ComboBoxAnt、DatePickerAnt、ColorPickerAnt、ChoiceBoxAnt、SpinnerAnt
 @input-padding-y: @spacing-sm;
 @input-padding-x: @spacing-md;
 @input-padding-y-sm: @spacing-xs;
@@ -49,54 +95,78 @@
 @input-padding-x-lg: @spacing-lg;
 
 // Card Padding
+// 使用位置：.card
+// 影响组件：CardAnt
 @card-padding: @spacing-lg;
 
 // Table Cell Padding
+// 使用位置：.table-view .column-header、.table-cell、.tree-table-view .column-header、.tree-table-cell
+// 影响组件：TableAnt、TreeTableAnt
 @table-cell-padding-y: @spacing-sm;
 @table-cell-padding-x: @spacing-md;
 @table-header-padding-y: @spacing-lg;
 @table-header-padding-x: @spacing-lg;
 
 // Menu / MenuItem Padding
+// 使用位置：.menu-bar > .container > .menu、.menu-item、.context-menu .menu-item
+// 影响组件：MenuAnt、MenuBar、ContextMenu
 @menu-padding-y: @spacing-sm;
 @menu-padding-x: @spacing-md;
 @menu-item-padding-y: @spacing-sm;
 @menu-item-padding-x: @spacing-lg;
 
 // Tab Padding
+// 使用位置：.tab-pane .tab
+// 影响组件：TabsAnt
 @tab-padding-y: @spacing-sm;
 @tab-padding-x: @spacing-md;
 
 // List Cell Padding
+// 使用位置：.list-view .list-cell、.combo-box-popup .list-cell
+// 影响组件：ListViewAnt、ComboBoxAnt 下拉列表
 @list-cell-padding-y: @spacing-sm;
 @list-cell-padding-x: @spacing-md;
 
 // Tree Cell Padding
+// 使用位置：.tree-cell、.tree-table-cell
+// 影响组件：TreeAnt、TreeTableAnt
 @tree-cell-padding-y: @spacing-sm;
 @tree-cell-padding-x: @spacing-md;
 
 // Dialog / Modal Padding
+// 使用位置：.dialog-pane、.modal-content、.modal-header、.modal-footer
+// 影响组件：ModalAnt、DialogAnt、DrawerAnt
 @dialog-padding: @spacing-lg;
 @modal-header-padding-bottom: @spacing-md;
 @modal-footer-padding-top: @spacing-md;
 
 // Form Padding
+// 使用位置：.form-label、表单布局内部间距
+// 影响组件：FormAnt
 @form-item-padding-y: @spacing-sm;
 @form-item-padding-x: @spacing-md;
 
 // Tooltip Padding
+// 使用位置：.tooltip
+// 影响组件：TooltipAnt
 @tooltip-padding-y: @spacing-sm;
 @tooltip-padding-x: @spacing-md;
 
 // Alert Padding
+// 使用位置：.alert-success、.alert-info、.alert-warning、.alert-error、.alert-with-icon
+// 影响组件：AlertAnt
 @alert-padding-y: @spacing-md;
 @alert-padding-x: @spacing-lg;
 
 // Pagination Button Padding
+// 使用位置：.pagination .pagination-control .button、.pagination .pagination-control .toggle-button
+// 影响组件：PaginationAnt
 @pagination-padding-y: @spacing-xs;
 @pagination-padding-x: @spacing-sm;
 
 // Accordion / TitledPane Padding
+// 使用位置：.accordion .titled-pane > .title、.accordion .titled-pane > .content、.titled-pane > .title、.titled-pane > .content
+// 影响组件：AccordionAnt、TitledPaneAnt
 @accordion-title-padding-y: @spacing-md;
 @accordion-title-padding-x: @spacing-lg;
 @accordion-content-padding-y: @spacing-md;
@@ -106,30 +176,50 @@
 @titled-pane-content-padding: @spacing-lg;
 
 // ScrollBar Size
+// 使用位置：.scroll-bar
+// 影响组件：ScrollBar（所有滚动条）
 @scrollbar-size: 8px;
 
 // SplitPane Divider Padding
+// 使用位置：.split-pane .split-pane-divider
+// 影响组件：SplitPaneAnt
 @split-divider-padding: 2px;
 
 // Switch Padding
+// 使用位置：.toggle-button.switch
+// 影响组件：SwitchAnt
 @switch-padding: 2px;
 
 // Close Button Padding
+// 使用位置：.tab-pane .tab .tab-close-button
+// 影响组件：TabsAnt 关闭按钮
 @close-btn-padding: 2px;
 
 // ToolBar Padding
+// 使用位置：.tool-bar
+// 影响组件：ToolBar
 @toolbar-padding-y: @spacing-sm;
 @toolbar-padding-x: @spacing-md;
 
 // ContextMenu Padding
+// 使用位置：.context-menu（菜单容器内边距）
+// 影响组件：ContextMenu
 @context-menu-padding-y: @spacing-xs;
 @context-menu-padding-x: 0;
 
 // Spinner Arrow Button Padding
+// 使用位置：.spinner .increment-arrow-button、.spinner .decrement-arrow-button
+// 影响组件：SpinnerAnt
 @spinner-arrow-padding: 0;
 
+// ============================================
 // Mixins
+// ============================================
+// 通用样式混入，被 theme-base.less 中多个组件引用
 // --------------------------------------------
+
+// Button 基础样式混入
+// 使用位置：.button（所有按钮变体）
 .button-base() {
   -fx-background-radius: @border-radius-md;
   -fx-text-fill: @color-fg-default;
@@ -139,6 +229,8 @@
   -fx-alignment: center;
 }
 
+// Input 基础样式混入
+// 使用位置：.text-field、.text-area、.password-field、.combo-box、.date-picker、.color-picker、.choice-box、.spinner
 .input-base() {
   -fx-background-color: @color-bg-default;
   -fx-border-color: @color-border-default;
@@ -149,6 +241,8 @@
   -fx-text-fill: @color-fg-default;
 }
 
+// Card 基础样式混入
+// 使用位置：.card
 .card-base() {
   -fx-background-color: @color-bg-default;
   -fx-background-radius: @border-radius-lg;
@@ -156,6 +250,8 @@
   -fx-padding: @card-padding;
 }
 
+// 阴影效果混入
+// 使用位置：.card.shadow-sm、.tooltip、.modal-content、.combo-box-popup 等
 .shadow-sm() {
   -fx-effect: dropshadow(gaussian, @color-shadow-default, 4, 0, 0, 1);
 }

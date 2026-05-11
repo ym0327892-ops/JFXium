@@ -91,7 +91,7 @@
    Global Styles
    ============================================ */
 .root {
-  -fx-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -fx-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -fx-font-size: 14px;
   -fx-background-color: -color-bg-default;
 }
@@ -226,6 +226,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 8px;
   -fx-background-radius: 8px;
+  -fx-background-insets: 0;
 }
 .table-view .column-header {
   -fx-background-color: -color-bg-subtle;
@@ -234,6 +235,7 @@
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
   -fx-alignment: center-left;
+  -fx-background-insets: 0;
 }
 .table-view .column-header .label {
   -fx-text-fill: -color-fg-default;
@@ -329,6 +331,10 @@
   -fx-border-radius: 9999px;
   -fx-background-radius: 9999px;
   -fx-padding: 4px;
+  -fx-min-width: 16px;
+  -fx-min-height: 16px;
+  -fx-pref-width: 16px;
+  -fx-pref-height: 16px;
 }
 .radio-button:hover .radio {
   -fx-border-color: -color-accent-emphasis;
@@ -339,12 +345,6 @@
 }
 .radio-button:selected .dot {
   -fx-background-color: -color-fg-on-emphasis;
-}
-.radio-button .radio {
-  -fx-min-width: 16px;
-  -fx-min-height: 16px;
-  -fx-pref-width: 16px;
-  -fx-pref-height: 16px;
 }
 .radio-button:disabled {
   -fx-opacity: 0.6;
@@ -921,42 +921,62 @@
    ScrollPane
    ============================================ */
 .scroll-pane {
-  -fx-background-color: -color-bg-default;
-  -fx-border-color: -color-border-muted;
-  -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-padding: 0;
 }
 .scroll-pane > .viewport {
-  -fx-background-color: -color-bg-default;
+  -fx-background-color: transparent;
+}
+.scroll-pane > .corner {
+  -fx-background-color: -color-bg-subtle;
+}
+.scroll-pane:disabled > .scroll-bar {
+  -fx-opacity: 0.3;
 }
 /* ============================================
    ToolBar
    ============================================ */
 .tool-bar {
-  -fx-background-color: -color-bg-subtle;
-  -fx-border-color: transparent transparent -color-border-muted transparent;
-  -fx-border-width: 0 0 1px 0;
+  -fx-background-color: -color-border-muted, -color-bg-subtle;
+  -fx-background-insets: 0, 0 0 1px 0;
+  -fx-border-color: transparent;
   -fx-padding: 8px 12px;
+  -fx-spacing: 4px;
+  -fx-alignment: CENTER_LEFT;
+}
+.tool-bar > .container > .button,
+.tool-bar > .container > .menu-button,
+.tool-bar > .container > .split-menu-button {
+  -fx-background-insets: 0;
+  -fx-effect: none;
+}
+.tool-bar > .container > .toggle-button {
+  -fx-background-insets: 0;
+  -fx-effect: none;
 }
 /* ============================================
    ChoiceBox
    ============================================ */
 .choice-box {
-  -fx-background-color: #ffffff;
-  -fx-border-color: #d9d9d9;
-  -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
-  -fx-padding: 8px 12px;
-  -fx-text-fill: rgba(0, 0, 0, 0.88);
+  -fx-background-color: -color-border-default, -color-bg-default;
+  -fx-background-insets: 0, 1px;
+  -fx-background-radius: 6px, 4px;
+  -fx-text-fill: -color-fg-default;
+  -fx-alignment: CENTER;
+  -fx-content-display: LEFT;
   -fx-padding: 4px 12px;
 }
 .choice-box:focused {
-  -fx-border-color: -color-accent-emphasis;
+  -fx-background-color: -color-accent-emphasis, -color-bg-default;
+}
+.choice-box:disabled {
+  -fx-opacity: 0.6;
 }
 .choice-box .open-button {
   -fx-background-color: transparent;
+  -fx-padding: 8px 12px;
 }
 .choice-box .open-button .arrow {
   -fx-background-color: -color-fg-muted;
@@ -1258,9 +1278,481 @@
   -fx-opacity: 0.6;
 }
 /* ============================================
+   MenuButton Component
+   ============================================ */
+.menu-button {
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
+  -fx-padding: 8px 16px;
+  -fx-cursor: hand;
+  -fx-font-weight: 500;
+  -fx-alignment: center;
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+}
+.menu-button:hover {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.menu-button > .label {
+  -fx-text-fill: -color-fg-default;
+}
+.menu-button:hover > .label {
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.menu-button > .arrow-button {
+  -fx-background-color: transparent;
+}
+.menu-button > .arrow-button > .arrow {
+  -fx-background-color: -color-fg-muted;
+}
+.menu-button:hover > .arrow-button > .arrow {
+  -fx-background-color: -color-fg-on-emphasis;
+}
+/* MenuButton Popup */
+.menu-button .menu-item {
+  -fx-padding: 8px 16px;
+}
+.menu-button .menu-item:hover,
+.menu-button .menu-item:focused {
+  -fx-background-color: -color-accent-subtle;
+}
+.menu-button .menu-item .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 14px;
+}
+/* ============================================
+   SplitMenuButton Component
+   ============================================ */
+.split-menu-button {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+}
+.split-menu-button > .label {
+  -fx-background-radius: 6px;
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
+  -fx-padding: 8px 16px;
+  -fx-cursor: hand;
+  -fx-font-weight: 500;
+  -fx-alignment: center;
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-fg-default;
+}
+.split-menu-button > .label:hover {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.split-menu-button > .arrow-button {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1px;
+  -fx-padding: 8px 8px;
+}
+.split-menu-button > .arrow-button:hover {
+  -fx-background-color: -color-accent-emphasis;
+}
+.split-menu-button > .arrow-button > .arrow {
+  -fx-background-color: -color-fg-muted;
+}
+.split-menu-button:hover > .arrow-button > .arrow {
+  -fx-background-color: -color-fg-on-emphasis;
+}
+/* ============================================
+   PasswordField Component
+   ============================================ */
+.password-field {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #d9d9d9;
+  -fx-border-width: 1px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+  -fx-padding: 8px 12px;
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
+}
+.password-field:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+}
+.password-field.small {
+  -fx-padding: 4px 8px;
+  -fx-font-size: 12px;
+}
+.password-field.large {
+  -fx-padding: 12px 16px;
+  -fx-font-size: 16px;
+}
+/* ============================================
+   TreeTableView Component
+   ============================================ */
+.tree-table-view {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+}
+.tree-table-view .column-header {
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: 16px 16px;
+  -fx-font-weight: 600;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+  -fx-alignment: center-left;
+}
+.tree-table-view .column-header .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: 600;
+}
+.tree-table-row-cell {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent -color-border-subtle transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+.tree-table-row-cell:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+.tree-table-row-cell:selected {
+  -fx-background-color: -color-accent-subtle;
+}
+.tree-table-row-cell:selected .tree-table-cell {
+  -fx-text-fill: -color-accent-emphasis;
+}
+.tree-table-cell {
+  -fx-padding: 8px 12px;
+  -fx-text-fill: -color-fg-default;
+}
+.tree-table-view .tree-disclosure-node .arrow {
+  -fx-background-color: -color-fg-muted;
+}
+.tree-table-view .tree-disclosure-node:hover .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+/* TreeTableView Striped */
+.tree-table-view.striped .tree-table-row-cell:odd {
+  -fx-background-color: -color-bg-subtle;
+}
+.tree-table-view.striped .tree-table-row-cell:even {
+  -fx-background-color: -color-bg-default;
+}
+/* TreeTableView Bordered */
+.tree-table-view.bordered .tree-table-cell {
+  -fx-border-color: transparent -color-border-muted -color-border-muted transparent;
+  -fx-border-width: 0 1px 1px 0;
+}
+/* ============================================
+   Button Color Variants (Success/Danger/Warning)
+   ============================================ */
+.button.success {
+  -fx-background-color: -color-success-emphasis;
+  -fx-border-color: -color-success-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.button.success:hover {
+  -fx-background-color: -color-success-4;
+  -fx-border-color: -color-success-4;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.button.danger {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-border-color: -color-danger-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.button.danger:hover {
+  -fx-background-color: -color-danger-4;
+  -fx-border-color: -color-danger-4;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.button.warning {
+  -fx-background-color: -color-warning-emphasis;
+  -fx-border-color: -color-warning-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.button.warning:hover {
+  -fx-background-color: -color-warning-4;
+  -fx-border-color: -color-warning-4;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+/* Outlined variants */
+.button.outlined.success {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-success-emphasis;
+  -fx-text-fill: -color-success-emphasis;
+}
+.button.outlined.success:hover {
+  -fx-background-color: -color-success-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.button.outlined.danger {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-emphasis;
+}
+.button.outlined.danger:hover {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.button.outlined.warning {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-emphasis;
+}
+.button.outlined.warning:hover {
+  -fx-background-color: -color-warning-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+/* Text variants */
+.button.text.success {
+  -fx-text-fill: -color-success-emphasis;
+}
+.button.text.success:hover {
+  -fx-background-color: -color-success-subtle;
+}
+.button.text.danger {
+  -fx-text-fill: -color-danger-emphasis;
+}
+.button.text.danger:hover {
+  -fx-background-color: -color-danger-subtle;
+}
+.button.text.warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+.button.text.warning:hover {
+  -fx-background-color: -color-warning-subtle;
+}
+/* ============================================
+   Badge Enhancements
+   ============================================ */
+.badge-count {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-background-radius: 9999px;
+  -fx-padding: 0 6px;
+  -fx-font-size: 10px;
+  -fx-font-weight: 600;
+  -fx-min-width: 18px;
+  -fx-min-height: 18px;
+  -fx-alignment: center;
+}
+.badge-count.success {
+  -fx-background-color: -color-success-emphasis;
+}
+.badge-count.warning {
+  -fx-background-color: -color-warning-emphasis;
+}
+.badge-count.error {
+  -fx-background-color: -color-danger-emphasis;
+}
+.badge-count.info {
+  -fx-background-color: -color-accent-emphasis;
+}
+/* Badge with text */
+.badge-text {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-fg-default;
+  -fx-background-radius: 4px;
+  -fx-padding: 2px 8px;
+  -fx-font-size: 10px;
+  -fx-font-weight: 500;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: 4px;
+}
+.badge-text.success {
+  -fx-background-color: -color-success-subtle;
+  -fx-text-fill: -color-success-emphasis;
+  -fx-border-color: -color-success-muted;
+}
+.badge-text.warning {
+  -fx-background-color: -color-warning-subtle;
+  -fx-text-fill: -color-warning-emphasis;
+  -fx-border-color: -color-warning-muted;
+}
+.badge-text.error {
+  -fx-background-color: -color-danger-subtle;
+  -fx-text-fill: -color-danger-emphasis;
+  -fx-border-color: -color-danger-muted;
+}
+.badge-text.info {
+  -fx-background-color: -color-accent-subtle;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: -color-accent-muted;
+}
+/* ============================================
+   Alert Enhancements with Icons
+   ============================================ */
+.alert-with-icon {
+  -fx-padding: 12px 16px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+  -fx-border-width: 1px;
+}
+.alert-with-icon.success {
+  -fx-background-color: -color-success-subtle;
+  -fx-border-color: -color-success-muted;
+}
+.alert-with-icon.info {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-muted;
+}
+.alert-with-icon.warning {
+  -fx-background-color: -color-warning-subtle;
+  -fx-border-color: -color-warning-muted;
+}
+.alert-with-icon.error {
+  -fx-background-color: -color-danger-subtle;
+  -fx-border-color: -color-danger-muted;
+}
+.alert-icon {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+}
+.alert-icon.success {
+  -fx-text-fill: -color-success-emphasis;
+}
+.alert-icon.info {
+  -fx-text-fill: -color-accent-emphasis;
+}
+.alert-icon.warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+.alert-icon.error {
+  -fx-text-fill: -color-danger-emphasis;
+}
+.alert-title {
+  -fx-font-size: 14px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+.alert-description {
+  -fx-font-size: 12px;
+  -fx-text-fill: -color-fg-muted;
+}
+/* ============================================
    Focus Traversal
    ============================================ */
 *:focused {
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
+}
+/* ============================================
+   Focus Visible (Accessibility)
+   ============================================ */
+.button:focused,
+.text-field:focused,
+.text-area:focused,
+.password-field:focused,
+.combo-box:focused,
+.choice-box:focused,
+.check-box:focused .box,
+.radio-button:focused .radio,
+.slider:focused .thumb,
+.toggle-button.switch:focused {
+  -fx-focus-color: -color-accent-emphasis;
+  -fx-faint-focus-color: -color-accent-subtle;
+  -fx-effect: dropshadow(gaussian, -color-accent-muted, 3, 0, 0, 0);
+}
+/* ============================================
+   Size Variants (Small / Large)
+   ============================================ */
+/* Button sizes */
+.button.small {
+  -fx-padding: 4px 8px;
+  -fx-font-size: 12px;
+}
+.button.large {
+  -fx-padding: 8px 16px;
+  -fx-font-size: 14px;
+}
+/* Input/TextField sizes */
+.text-field.small,
+.text-area.small,
+.password-field.small {
+  -fx-padding: 4px 12px;
+  -fx-font-size: 12px;
+}
+.text-field.large,
+.text-area.large,
+.password-field.large {
+  -fx-padding: 8px 12px;
+  -fx-font-size: 14px;
+}
+/* ComboBox sizes */
+.combo-box.small {
+  -fx-padding: 4px 12px;
+}
+.combo-box.large {
+  -fx-padding: 8px 12px;
+}
+/* ChoiceBox sizes */
+.choice-box.small {
+  -fx-padding: 4px 12px;
+}
+.choice-box.large {
+  -fx-padding: 8px 12px;
+}
+/* Tag sizes */
+.tag.small {
+  -fx-padding: 0 4px;
+  -fx-font-size: 10px;
+}
+.tag.large {
+  -fx-padding: 4px 8px;
+  -fx-font-size: 12px;
+}
+/* Badge sizes */
+.badge.small {
+  -fx-padding: 0 4px;
+  -fx-font-size: 10px;
+}
+.badge.large {
+  -fx-padding: 2px 10px;
+  -fx-font-size: 12px;
+}
+/* ============================================
+   Animation Utilities
+   ============================================ */
+/* Fade in animation */
+.fade-in {
+  -fx-opacity: 0;
+}
+.fade-in.visible {
+  -fx-opacity: 1;
+  -fx-transition: opacity 200ms ease-out;
+}
+/* Slide up animation */
+.slide-up {
+  -fx-translate-y: 20px;
+  -fx-opacity: 0;
+}
+.slide-up.visible {
+  -fx-translate-y: 0;
+  -fx-opacity: 1;
+  -fx-transition: all 200ms ease-out;
+}
+/* Scale animation */
+.scale-in {
+  -fx-scale-x: 0.9;
+  -fx-scale-y: 0.9;
+  -fx-opacity: 0;
+}
+.scale-in.visible {
+  -fx-scale-x: 1;
+  -fx-scale-y: 1;
+  -fx-opacity: 1;
+  -fx-transition: all 200ms ease-out;
+}
+/* Shake animation for error states */
+.shake {
+  -fx-translate-x: 0;
+}
+.shake.error {
+  -fx-translate-x: -5px;
+  -fx-transition: translate-x 100ms ease-in-out;
 }

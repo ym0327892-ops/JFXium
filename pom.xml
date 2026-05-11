@@ -26,6 +26,18 @@
             <version>21.0.6</version>
         </dependency>
 
+        <!-- Ikonli 图标库 -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-antdesignicons-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -83,6 +95,54 @@
                                 <argument>lessc</argument>
                                 <argument>src/main/resources/org/openkawu/jfxium/css/less/theme-dark.less</argument>
                                 <argument>src/main/resources/org/openkawu/jfxium/css/theme-dark.css</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <!-- MUI Theme -->
+                    <execution>
+                        <id>compile-less-themes-mui</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npx</executable>
+                            <arguments>
+                                <argument>lessc</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/less/theme-mui.less</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/theme-mui.css</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <!-- shadcn Theme -->
+                    <execution>
+                        <id>compile-less-themes-shadcn</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npx</executable>
+                            <arguments>
+                                <argument>lessc</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/less/theme-shadcn.less</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/theme-shadcn.css</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <!-- Cyberpunk Theme -->
+                    <execution>
+                        <id>compile-less-themes-cyberpunk</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npx</executable>
+                            <arguments>
+                                <argument>lessc</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/less/theme-cyberpunk.less</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/theme-cyberpunk.css</argument>
                             </arguments>
                         </configuration>
                     </execution>
