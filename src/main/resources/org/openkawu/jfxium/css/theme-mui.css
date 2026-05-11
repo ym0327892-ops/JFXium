@@ -197,6 +197,8 @@
 .text-field:focused {
   -fx-border-color: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 /* ============================================
    TextArea Component
@@ -216,6 +218,8 @@
 .text-area:focused {
   -fx-border-color: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 .text-area .content {
   -fx-background-color: -color-bg-default;
@@ -397,6 +401,8 @@
 .combo-box:focused {
   -fx-border-color: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 .combo-box .arrow-button {
   -fx-background-color: transparent;
@@ -633,6 +639,8 @@
 .date-picker:focused {
   -fx-border-color: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 .date-picker .arrow-button {
   -fx-background-color: transparent;
