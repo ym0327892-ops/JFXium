@@ -1041,9 +1041,13 @@
   -fx-padding: 8px 12px;
   -fx-text-fill: rgba(0, 0, 0, 0.88);
   -fx-padding: 0;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 .spinner:focused {
   -fx-border-color: -color-accent-emphasis;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 .spinner .text-field {
   -fx-background-color: transparent;
