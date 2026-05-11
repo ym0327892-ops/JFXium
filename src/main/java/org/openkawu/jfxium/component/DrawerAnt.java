@@ -195,21 +195,22 @@ public class DrawerAnt {
                 header.setAlignment(Pos.CENTER_LEFT);
                 header.setStyle("-fx-padding: 16px 24px; -fx-border-color: transparent transparent -color-border-muted transparent; -fx-border-width: 0 0 1px 0;");
 
-                // Close button - 左上角，对标 Ant Design
-                javafx.scene.control.Button closeBtn = new javafx.scene.control.Button("×");
-                closeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: -color-fg-muted; -fx-font-size: 20px; -fx-cursor: hand; -fx-padding: 0 4px;");
-                closeBtn.setOnAction(e -> close());
-                header.getChildren().add(closeBtn);
-
+                // Title - 左侧
                 javafx.scene.control.Label titleLabel = new javafx.scene.control.Label(config.title);
                 titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: -color-fg-default;");
                 HBox.setHgrow(titleLabel, Priority.ALWAYS);
                 header.getChildren().add(titleLabel);
 
-                // Extra 操作区 - 右上角，对标 Ant Design extra 属性
+                // Extra 操作区 - 右侧，对标 Ant Design extra 属性
                 if (config.extra != null) {
                     header.getChildren().add(config.extra);
                 }
+
+                // Close button - 右上角，对标 Ant Design
+                javafx.scene.control.Button closeBtn = new javafx.scene.control.Button("×");
+                closeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: -color-fg-muted; -fx-font-size: 20px; -fx-cursor: hand; -fx-padding: 0 4px;");
+                closeBtn.setOnAction(e -> close());
+                header.getChildren().add(closeBtn);
 
                 panel.getChildren().add(header);
             }
