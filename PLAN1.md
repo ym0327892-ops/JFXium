@@ -21,4 +21,23 @@
 11: DatePicker 很丑陋, 需要修复; 根本不是 ant 那种样式;
 ![alt text](image-5.png)
 12: TimePicker 默认太短,看不全两位数字;
+![alt text](image-6.png)
+13: ColorPicker ,看上方图片, 滑动组件 超出了容器框的边框 了?? 怎么回事? 代码问题就需要你修复
+
+14: Treeselect 无法选中节点,需要修复
+
+15: inputnumber 无法 点击按钮, 增加减少减少数字? 应该是你没有写事件处理??
+16: Calend 布局垃圾, 应该是没有自适应, 要么 没设置固定宽高;
+
+17: Popover 没有 点中消失的东西? 不知道是不是BUG; 参考ANt
+
+18: Drawer 至今 没有 与 ANt 设计 理念一致??  需要一致理念,功能
+
+19: Animation  没有变化? 擦好看是否有问题?
+
+20: Backtop  不知道 你要展示什么?
+
+
+ant 没给你标准答案如何设计么??? 你是做不到么??
+什么是组件?  微型化, 封装, 可组合性, 比如 Modal, Drawer, Tooltip, Popover,��
 以上问题修复一个 ,提交 git本地;

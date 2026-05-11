@@ -2,8 +2,11 @@ package org.openkawu.jfxium.component;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -74,6 +77,11 @@ public class CalendarAnt {
                 "-fx-background-radius: 8px;"
             );
 
+            if (fullscreen) {
+                HBox.setHgrow(calendar, Priority.ALWAYS);
+                VBox.setVgrow(calendar, Priority.ALWAYS);
+            }
+
             // Header
             HBox header = buildHeader();
             calendar.getChildren().add(header);
@@ -91,7 +99,10 @@ public class CalendarAnt {
         private HBox buildHeader() {
             HBox header = new HBox(8);
             header.setAlignment(Pos.CENTER);
-            header.setStyle("-fx-padding: 12px 16px; -fx-border-color: transparent transparent -color-border-muted transparent; -fx-border-width: 0 0 1px 0;");
+            header.setPadding(new javafx.geometry.Insets(12, 16, 12, 16));
+            header.setStyle("-fx-border-color: transparent transparent -color-border-muted transparent; -fx-border-width: 0 0 1px 0;");
+
+            HBox.setHgrow(header, Priority.ALWAYS);
 
             // Previous month button
             javafx.scene.control.Button prevBtn = createNavButton("<");
@@ -168,14 +179,32 @@ public class CalendarAnt {
             grid.getStyleClass().add("calendar-grid");
             grid.setHgap(0);
             grid.setVgap(0);
+            grid.setPadding(new javafx.geometry.Insets(8));
+
+            // 设置列约束 - 7 列等宽，自适应
+            for (int i = 0; i < 7; i++) {
+                ColumnConstraints colConstraints = new ColumnConstraints();
+                colConstraints.setPercentWidth(100.0 / 7.0);
+                colConstraints.setHgrow(Priority.ALWAYS);
+                grid.getColumnConstraints().add(colConstraints);
+            }
+
+            // 设置行约束 - 自适应高度
+            for (int i = 0; i < 7; i++) {
+                RowConstraints rowConstraints = new RowConstraints();
+                rowConstraints.setVgrow(Priority.ALWAYS);
+                rowConstraints.setMinHeight(40);
+                grid.getRowConstraints().add(rowConstraints);
+            }
 
             // Day headers
             String[] dayNames = {"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"};
             for (int i = 0; i < 7; i++) {
                 Label dayLabel = new Label(dayNames[i]);
-                dayLabel.setStyle("-fx-text-fill: -color-fg-muted; -fx-font-size: 12px; -fx-font-weight: 500; -fx-padding: 8px; -fx-alignment: center;");
-                dayLabel.setPrefWidth(48);
+                dayLabel.setStyle("-fx-text-fill: -color-fg-muted; -fx-font-size: 12px; -fx-font-weight: 500; -fx-padding: 8px 4px; -fx-alignment: center;");
                 dayLabel.setAlignment(Pos.CENTER);
+                dayLabel.setMaxWidth(Double.MAX_VALUE);
+                dayLabel.setMaxHeight(Double.MAX_VALUE);
                 grid.add(dayLabel, i, 0);
             }
 
@@ -192,8 +221,9 @@ public class CalendarAnt {
             int prevDays = prevMonth.lengthOfMonth();
             for (int i = dayOfWeek - 1; i >= 0; i--) {
                 int day = prevDays - (dayOfWeek - 1 - i);
-                Label dayLabel = createDayLabel(day, true);
-                grid.add(dayLabel, i, row);
+                StackPane dayCell = createDayCell(day, false, false, prevMonth.atDay(day));
+                dayCell.getStyleClass().add("calendar-cell-other-month");
+                grid.add(dayCell, i, row);
             }
 
             // Current month days
@@ -203,6 +233,8 @@ public class CalendarAnt {
                 boolean isSelected = selectedDate != null && currentDate.equals(selectedDate);
 
                 StackPane dayCell = createDayCell(day, isToday, isSelected, currentDate);
+                dayCell.setMaxWidth(Double.MAX_VALUE);
+                dayCell.setMaxHeight(Double.MAX_VALUE);
                 grid.add(dayCell, col, row);
 
                 col++;
@@ -215,8 +247,12 @@ public class CalendarAnt {
             // Next month days
             int nextDay = 1;
             while (col <= 6 && row <= 6) {
-                Label dayLabel = createDayLabel(nextDay, true);
-                grid.add(dayLabel, col, row);
+                YearMonth nextMonth = yearMonth.plusMonths(1);
+                StackPane dayCell = createDayCell(nextDay, false, false, nextMonth.atDay(nextDay));
+                dayCell.getStyleClass().add("calendar-cell-other-month");
+                dayCell.setMaxWidth(Double.MAX_VALUE);
+                dayCell.setMaxHeight(Double.MAX_VALUE);
+                grid.add(dayCell, col, row);
                 col++;
                 if (col > 6) {
                     col = 0;
@@ -225,6 +261,7 @@ public class CalendarAnt {
                 nextDay++;
             }
 
+            VBox.setVgrow(grid, Priority.ALWAYS);
             return grid;
         }
 
@@ -289,12 +326,10 @@ public class CalendarAnt {
         }
 
         private StackPane createDayCell(int day, boolean isToday, boolean isSelected, LocalDate date) {
-            StackPane cell = new StackPane();
-            cell.setPrefWidth(48);
-            cell.setPrefHeight(40);
-
             Label label = new Label(String.valueOf(day));
             label.setAlignment(Pos.CENTER);
+            label.setMaxWidth(Double.MAX_VALUE);
+            label.setMaxHeight(Double.MAX_VALUE);
             label.setStyle("-fx-font-size: 14px;");
 
             String bgColor = "transparent";
@@ -308,12 +343,15 @@ public class CalendarAnt {
                 textColor = "-color-accent-emphasis";
             }
 
+            StackPane cell = new StackPane();
+            cell.setMaxWidth(Double.MAX_VALUE);
+            cell.setMaxHeight(Double.MAX_VALUE);
+            cell.setAlignment(Pos.CENTER);
             cell.setStyle(
                 "-fx-background-color: " + bgColor + ";" +
                 "-fx-background-radius: 4px;" +
                 "-fx-cursor: hand;"
             );
-            label.setStyle("-fx-text-fill: " + textColor + "; -fx-font-size: 14px;");
 
             final String finalBgColor = bgColor;
             cell.setOnMouseEntered(e -> {
