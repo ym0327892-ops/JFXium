@@ -132,7 +132,7 @@ public class TreeSelectAnt {
             treePanel.setPrefWidth(240);
 
             if (root != null) {
-                buildTreeNodes(treePanel, root, 0);
+                buildTreeNodes(treePanel, root, 0, popup, field);
             }
 
             popup.getContent().add(treePanel);
@@ -158,7 +158,7 @@ public class TreeSelectAnt {
             return container;
         }
 
-        private void buildTreeNodes(VBox panel, TreeNode node, int depth) {
+        private void buildTreeNodes(VBox panel, TreeNode node, int depth, Popup popup, TextField field) {
             HBox row = new HBox(8);
             row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
             row.setPadding(new Insets(6, 12, 6, 12 + depth * 16));
@@ -179,9 +179,16 @@ public class TreeSelectAnt {
                     row.setStyle("-fx-cursor: hand; -fx-background-color: transparent;");
                 });
                 row.setOnMouseClicked(e -> {
+                    // 更新 TextField 显示选中的节点标签
+                    field.setText(node.getLabel());
+                    
+                    // 触发回调
                     if (onSelect != null) {
                         onSelect.accept(node);
                     }
+                    
+                    // 关闭弹出框
+                    popup.hide();
                 });
             }
 
@@ -189,7 +196,7 @@ public class TreeSelectAnt {
 
             if (node.hasChildren()) {
                 for (TreeNode child : node.getChildren()) {
-                    buildTreeNodes(panel, child, depth + 1);
+                    buildTreeNodes(panel, child, depth + 1, popup, field);
                 }
             }
         }
