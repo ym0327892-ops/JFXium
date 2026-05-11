@@ -325,6 +325,7 @@ public class JFXiumPlayground extends Application {
         componentDemos.put("Button", createButtonDemo());
         componentDemos.put("Input", createInputDemo());
         componentDemos.put("TextArea", createTextAreaDemo());
+        componentDemos.put("CodeBlock", createCodeBlockDemo());
         componentDemos.put("CheckBox", createCheckBoxDemo());
         componentDemos.put("RadioButton", createRadioButtonDemo());
         componentDemos.put("Switch", createSwitchDemo());
@@ -924,6 +925,21 @@ public class JFXiumPlayground extends Application {
         textArea.setPromptText("Enter text here...");
         textArea.setPrefRowCount(4);
         box.getChildren().add(textArea);
+        return box;
+    }
+
+    private VBox createCodeBlockDemo() {
+        VBox box = new VBox(16);
+        box.setPadding(new Insets(16));
+        
+        Node codeBlock = CodeBlockAnt.create()
+            .language("Error")
+            .title("Error Message")
+            .content("java.lang.NullPointerException: Cannot invoke \"String.length()\" because \"text\" is null\n\tat com.example.Main.process(Main.java:42)\n\tat com.example.Main.main(Main.java:15)")
+            .copyable(true)
+            .build();
+        
+        box.getChildren().add(codeBlock);
         return box;
     }
 
