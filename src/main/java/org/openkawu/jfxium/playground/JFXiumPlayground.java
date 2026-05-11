@@ -543,15 +543,73 @@ public class JFXiumPlayground extends Application {
         VBox box = new VBox(16);
         box.setPadding(new Insets(16));
 
+        // Fade animation
         Label fadeBox = new Label("Fade Animation");
         fadeBox.setStyle("-fx-padding: 20px; -fx-background-color: -color-accent-subtle; -fx-background-radius: 8px;");
-
         Button fadeBtn = ButtonAnt.create("Fade In/Out").type(ButtonAnt.Type.PRIMARY).build();
         fadeBtn.setOnAction(e -> {
-            AnimationAnt.fadeIn(fadeBox, Duration.millis(500));
+            if (fadeBox.getOpacity() == 1) {
+                AnimationAnt.fadeOut(fadeBox).play();
+            } else {
+                fadeBox.setOpacity(0);
+                fadeBox.setVisible(true);
+                AnimationAnt.fadeIn(fadeBox).play();
+            }
         });
 
-        box.getChildren().addAll(fadeBox, fadeBtn);
+        // Scale animation
+        Label scaleBox = new Label("Scale Animation");
+        scaleBox.setStyle("-fx-padding: 20px; -fx-background-color: -color-success-subtle; -fx-background-radius: 8px;");
+        Button scaleBtn = ButtonAnt.create("Scale In/Out").type(ButtonAnt.Type.PRIMARY).build();
+        scaleBtn.setOnAction(e -> {
+            if (scaleBox.getScaleX() == 1) {
+                AnimationAnt.scaleOut(scaleBox).play();
+            } else {
+                scaleBox.setScaleX(0.9);
+                scaleBox.setScaleY(0.9);
+                AnimationAnt.scaleIn(scaleBox).play();
+            }
+        });
+
+        // Slide animation
+        Label slideBox = new Label("Slide Animation");
+        slideBox.setStyle("-fx-padding: 20px; -fx-background-color: -color-warning-subtle; -fx-background-radius: 8px;");
+        Button slideBtn = ButtonAnt.create("Slide Up/Down").type(ButtonAnt.Type.PRIMARY).build();
+        slideBtn.setOnAction(e -> {
+            if (slideBox.getTranslateY() == 0) {
+                AnimationAnt.slideInFromBottom(slideBox).play();
+                slideBox.setTranslateY(30);
+            } else {
+                slideBox.setTranslateY(0);
+                AnimationAnt.slideInFromTop(slideBox).play();
+            }
+        });
+
+        // Pop animation
+        Label popBox = new Label("Pop Animation");
+        popBox.setStyle("-fx-padding: 20px; -fx-background-color: -color-error-subtle; -fx-background-radius: 8px;");
+        Button popBtn = ButtonAnt.create("Pop In/Out").type(ButtonAnt.Type.PRIMARY).build();
+        popBtn.setOnAction(e -> {
+            if (popBox.getOpacity() == 1) {
+                AnimationAnt.popOut(popBox).play();
+            } else {
+                popBox.setOpacity(0);
+                popBox.setScaleX(0.9);
+                popBox.setScaleY(0.9);
+                popBox.setVisible(true);
+                AnimationAnt.popIn(popBox).play();
+            }
+        });
+
+        box.getChildren().addAll(
+            fadeBox, fadeBtn,
+            new javafx.scene.control.Separator(),
+            scaleBox, scaleBtn,
+            new javafx.scene.control.Separator(),
+            slideBox, slideBtn,
+            new javafx.scene.control.Separator(),
+            popBox, popBtn
+        );
         return box;
     }
 
@@ -1453,7 +1511,38 @@ public class JFXiumPlayground extends Application {
     private VBox createBackTopDemo() {
         VBox box = new VBox(16);
         box.setPadding(new Insets(16));
-        box.getChildren().add(new Label("BackTop - Scroll down to see the button"));
+
+        Label desc = new Label("Scroll down to see the BackTop button appear in the bottom-right corner.");
+        desc.setStyle("-fx-text-fill: -color-fg-muted;");
+
+        // Create a scrollable area with lots of content
+        VBox longContent = new VBox(8);
+        longContent.setStyle("-fx-background-color: -color-bg-subtle; -fx-padding: 16px; -fx-background-radius: 8px;");
+        for (int i = 1; i <= 30; i++) {
+            Label item = new Label("Content line " + i);
+            item.setStyle("-fx-padding: 8px; -fx-background-color: -color-bg-default; -fx-background-radius: 4px;");
+            longContent.getChildren().add(item);
+        }
+
+        ScrollPane scrollPane = new ScrollPane(longContent);
+        scrollPane.setPrefHeight(300);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background-radius: 8px;");
+
+        // Wrap in StackPane to overlay BackTop
+        StackPane wrapper = new StackPane();
+        wrapper.getChildren().add(scrollPane);
+
+        // Add BackTop button to wrapper
+        StackPane backTop = BackTopAnt.create()
+            .target(scrollPane)
+            .visibilityHeight(200)
+            .build();
+        StackPane.setAlignment(backTop, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(backTop, new Insets(0, 20, 20, 0));
+        wrapper.getChildren().add(backTop);
+
+        box.getChildren().addAll(desc, wrapper);
         return box;
     }
 
