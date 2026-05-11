@@ -217,9 +217,38 @@
   .input-base();
 }
 
+.text-field:hover {
+  -fx-border-color: -color-accent-emphasis;
+}
+
 .text-field:focused {
   -fx-border-color: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+}
+
+/* ============================================
+   TextArea Component
+   ============================================ */
+.text-area {
+  .input-base();
+}
+
+.text-area:hover {
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.text-area:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+}
+
+.text-area .content {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: @border-radius-md;
+}
+
+.text-area:disabled {
+  -fx-opacity: 0.6;
 }
 
 /* ============================================
@@ -407,6 +436,10 @@
 .combo-box {
   .input-base();
   -fx-padding: @spacing-xs @input-padding-x;
+}
+
+.combo-box:hover {
+  -fx-border-color: -color-accent-emphasis;
 }
 
 .combo-box:focused {
@@ -679,6 +712,10 @@
   -fx-padding: @spacing-xs @input-padding-x;
 }
 
+.date-picker:hover {
+  -fx-border-color: -color-accent-emphasis;
+}
+
 .date-picker:focused {
   -fx-border-color: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
@@ -741,6 +778,10 @@
 .color-picker {
   .input-base();
   -fx-padding: @spacing-xs @input-padding-x;
+}
+
+.color-picker:hover {
+  -fx-border-color: -color-accent-emphasis;
 }
 
 .color-picker:focused {
