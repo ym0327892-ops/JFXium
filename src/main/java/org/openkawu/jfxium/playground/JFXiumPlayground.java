@@ -970,8 +970,10 @@ public class JFXiumPlayground extends Application {
     private VBox createSwitchDemo() {
         VBox box = new VBox(16);
         box.setPadding(new Insets(16));
-        javafx.scene.control.ToggleButton toggle = new javafx.scene.control.ToggleButton("Switch");
-        toggle.getStyleClass().add("switch");
+        javafx.scene.control.ToggleButton toggle = SwitchAnt.create()
+            .selected(false)
+            .onChange(checked -> System.out.println("Switch: " + checked))
+            .build();
         box.getChildren().addAll(
             new Label("Toggle Switch"),
             toggle

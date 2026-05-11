@@ -57,10 +57,18 @@ public class SwitchAnt {
         }
 
         public ToggleButton build() {
-            ToggleButton toggleButton = new ToggleButton(text);
+            ToggleButton toggleButton = new ToggleButton();
             toggleButton.setSelected(selected);
             toggleButton.setDisable(disabled);
-            toggleButton.getStyleClass().add("jfx-switch");
+            toggleButton.getStyleClass().addAll("jfx-switch", "switch");
+
+            // 设置固定尺寸，不显示文本
+            toggleButton.setMinWidth(44);
+            toggleButton.setMaxWidth(44);
+            toggleButton.setMinHeight(22);
+            toggleButton.setMaxHeight(22);
+            toggleButton.setPrefWidth(44);
+            toggleButton.setPrefHeight(22);
 
             if (onChange != null) {
                 toggleButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
