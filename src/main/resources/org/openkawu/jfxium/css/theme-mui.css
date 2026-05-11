@@ -670,18 +670,34 @@
 .date-picker-popup .day-cell {
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
+  -fx-font-size: 13px;
+  -fx-alignment: center;
+  -fx-padding: 4px;
+  -fx-border-radius: 2px;
+  -fx-background-radius: 2px;
+  -fx-min-width: 32px;
+  -fx-min-height: 32px;
+  -fx-pref-width: 32px;
+  -fx-pref-height: 32px;
 }
 .date-picker-popup .day-cell:hover {
   -fx-background-color: -color-accent-subtle;
+  -fx-cursor: hand;
 }
 .date-picker-popup .day-cell:selected {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
+  -fx-font-weight: 600;
 }
 .date-picker-popup .day-cell:today {
   -fx-border-color: -color-accent-emphasis;
   -fx-border-width: 1px;
   -fx-border-radius: 2px;
+  -fx-background-radius: 2px;
+}
+.date-picker-popup .day-cell:disabled {
+  -fx-text-fill: -color-fg-disabled;
+  -fx-opacity: 0.4;
 }
 /* ============================================
    ColorPicker Component
@@ -702,6 +718,8 @@
 .color-picker:focused {
   -fx-border-color: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 .color-picker .arrow-button {
   -fx-background-color: transparent;
@@ -1026,6 +1044,8 @@
 }
 .choice-box:focused {
   -fx-background-color: -color-accent-emphasis, -color-bg-default;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 .choice-box:disabled {
   -fx-opacity: 0.6;
@@ -1439,6 +1459,8 @@
 .password-field:focused {
   -fx-border-color: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 .password-field.small {
   -fx-padding: 4px 8px;

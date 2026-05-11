@@ -63,9 +63,16 @@ public class TimePickerAnt {
 
             // Hour spinner
             Spinner<Integer> hourSpinner = new Spinner<>(0, 23, value.getHour());
-            hourSpinner.setPrefWidth(70);
-            hourSpinner.setStyle("-fx-font-size: 14px;");
+            hourSpinner.setPrefWidth(80);
+            hourSpinner.setMinWidth(80);
+            hourSpinner.getStyleClass().add("time-spinner");
             hourSpinner.setDisable(disabled);
+            
+            // 设置编辑器样式，确保数字能完整显示
+            SpinnerValueFactory.IntegerStringConverter converter = new SpinnerValueFactory.IntegerStringConverter();
+            hourSpinner.setConverter(converter);
+            hourSpinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
+            hourSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 8px;");
 
             container.getChildren().add(hourSpinner);
 
@@ -75,9 +82,12 @@ public class TimePickerAnt {
                 }});
 
                 Spinner<Integer> minuteSpinner = new Spinner<>(0, 59, value.getMinute());
-                minuteSpinner.setPrefWidth(70);
-                minuteSpinner.setStyle("-fx-font-size: 14px;");
+                minuteSpinner.setPrefWidth(80);
+                minuteSpinner.setMinWidth(80);
+                minuteSpinner.getStyleClass().add("time-spinner");
                 minuteSpinner.setDisable(disabled);
+                minuteSpinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
+                minuteSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 8px;");
                 container.getChildren().add(minuteSpinner);
             }
 
@@ -87,9 +97,12 @@ public class TimePickerAnt {
                 }});
 
                 Spinner<Integer> secondSpinner = new Spinner<>(0, 59, value.getSecond());
-                secondSpinner.setPrefWidth(70);
-                secondSpinner.setStyle("-fx-font-size: 14px;");
+                secondSpinner.setPrefWidth(80);
+                secondSpinner.setMinWidth(80);
+                secondSpinner.getStyleClass().add("time-spinner");
                 secondSpinner.setDisable(disabled);
+                secondSpinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
+                secondSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 8px;");
                 container.getChildren().add(secondSpinner);
             }
 

@@ -19,5 +19,6 @@
 
 ![alt text](image-4.png)
 11: DatePicker 很丑陋, 需要修复; 根本不是 ant 那种样式;
-
+![alt text](image-5.png)
+12: TimePicker 默认太短,看不全两位数字;
 以上问题修复一个 ,提交 git本地;
