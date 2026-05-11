@@ -1792,13 +1792,11 @@
 .button.default {
   -fx-background-color: #ffffff;
   -fx-text-fill: rgba(0, 0, 0, 0.87);
-  -fx-border-color: rgba(0, 0, 0, 0.23);
-  -fx-border-width: 1px;
-  -fx-border-radius: 4px;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
 }
 .button.default:hover {
   -fx-background-color: rgba(25, 118, 210, 0.04);
-  -fx-border-color: rgba(0, 0, 0, 0.23);
   -fx-text-fill: rgba(0, 0, 0, 0.87);
 }
 /* Primary Button - MUI 风格 */
