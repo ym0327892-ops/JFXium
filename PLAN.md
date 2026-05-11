@@ -693,7 +693,51 @@
 - **开发节奏**: 先设计 Token + Theme + CSS，用原生控件验证样式，后期封装自定义控件
 - <br />
 
-## 项目参考 UI实现思路 ;([atlantafx 开源项目](https://github.com/mkpaz/atlantafx))
+---
+
+## PLAN1.md 问题修复记录（2026-05-11）
+
+### 问题列表与修复状态
+
+| 序号 | 问题描述 | 状态 | 提交记录 |
+|------|---------|------|---------|
+| 1 | 输入框缺少 Hover Effect | ✅ 已修复 | `fix: 为输入类组件添加 Hover Effect` |
+| 2 | Slider 超出容器框边框 | ✅ 已修复 | `fix: 修复 Slider 超出容器框边框问题` |
+| 3 | 需要 CodeBlock 报错信息显示组件 | ✅ 已修复 | `feat: 添加 CodeBlock 报错信息显示组件` |
+| 4 | Switch 显示问题（不是 ant 切换效果） | ✅ 已修复 | `fix: 修复 Switch 组件显示问题` |
+| 5 | MUI 主题阴影线与边框中间白色空白 | ✅ 已修复 | `fix: 修复 MUI 主题按钮阴影与边框空白` |
+| 6 | 组件小型化/封装/可组合性 |  持续优化 | 架构层面，非单次修复 |
+| 7 | Spinner 获取焦点后控件变大 | ✅ 已修复 | `fix: 修复 Spinner 获取焦点后控件变大` |
+| 8 | 输入框获取焦点后控件变大 | ✅ 已修复 | `fix: 修复所有输入控件获取焦点后变大` |
+| 9 | 其他输入控件焦点变大检查 | ✅ 已修复 | 同上（统一修复所有输入类组件） |
+| 10 | Anchor 与 Tabs 区别分析 | ✅ 已分析 | 功能不同，不重复；Anchor 缺少滚动功能 |
+
+### 修复总结
+
+- **已修复**: 9/10 个问题（问题 6 为架构优化，持续改进中）
+- **提交次数**: 7 次 commit
+- **核心修复**:
+  - 输入类组件 Hover Effect（TextField、TextArea、ComboBox、DatePicker、ColorPicker）
+  - 所有输入类组件焦点环禁用（-fx-focus-color: transparent）
+  - Slider 超出边框裁剪
+  - Switch 组件重写（纯切换效果）
+  - MUI 主题按钮边框移除
+  - CodeBlock 新组件
+
+### Anchor vs Tabs 分析结果
+
+| 特性 | Anchor | Tabs |
+|------|--------|------|
+| 用途 | 页面内滚动导航 | 内容面板切换 |
+| 交互 | 点击后滚动到指定区域 | 点击后切换显示/隐藏内容 |
+| 内容布局 | 所有内容在同一页面 | 内容在不同面板 |
+| 视觉指示 | 左侧竖线 | 底部横线或卡片样式 |
+
+**结论**: 功能不同，不重复。但 Anchor 组件目前缺少实际的滚动定位功能，后续需要完善。
+
+---
+
+## 项目参考 UI实现思路 ;([atlantafx 开源项目](https://github.com/mkpaz/atlantafx))
 
 [参考它 : ](https://github.com/mkpaz/atlantafx-sample-theme)[https://github.com/mkpaz/atlantafx ;    本地代码在 F:\workspace-open-code\atlantafx\sampler ; ](https://github.com/mkpaz/atlantafx)
 
