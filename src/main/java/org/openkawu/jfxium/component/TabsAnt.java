@@ -1,12 +1,14 @@
 package org.openkawu.jfxium.component;
 
+import javafx.application.Platform;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,27 +117,18 @@ public class TabsAnt {
                 tabBar.getChildren().add(extraLeft);
             }
 
-            // 创建指示条（仅 line 模式）
-            Rectangle indicator = null;
-            if (type == Type.LINE) {
-                indicator = new Rectangle(0, 2, Color.web("#1677ff"));
-                indicator.setArcWidth(2);
-                indicator.setArcHeight(2);
-            }
-
             // 创建标签
             List<Label> tabLabels = new ArrayList<>();
             for (int i = 0; i < tabs.size(); i++) {
                 final TabItem item = tabs.get(i);
                 final int idx = i;
-                final Rectangle finalIndicator = indicator;
                 Label label = createTabLabel(item, i == activeIndex);
                 tabLabels.add(label);
                 tabBar.getChildren().add(label);
 
                 label.setOnMouseClicked(e -> {
                     if (item.disabled) return;
-                    switchTab(idx, tabLabels, finalIndicator);
+                    switchTab(idx, tabLabels);
                 });
             }
 
@@ -150,26 +143,59 @@ public class TabsAnt {
                 wrapper.setAlignment(Pos.TOP_LEFT);
                 wrapper.getChildren().add(tabBar);
 
-                // 指示条容器
-                HBox indicatorBox = new HBox(0);
-                indicatorBox.setAlignment(Pos.TOP_LEFT);
-                indicatorBox.setPrefHeight(2);
-                indicatorBox.setMinHeight(2);
-                indicatorBox.setMaxHeight(2);
-                indicatorBox.setStyle("-fx-background-color: -color-border-muted;");
+                // 指示条容器 - 使用 Pane 实现绝对定位
+                Pane indicatorPane = new Pane();
+                indicatorPane.setPrefHeight(3);
+                indicatorPane.setMinHeight(3);
+                indicatorPane.setMaxHeight(3);
+                indicatorPane.setStyle("-fx-background-color: #f0f0f0;");
 
-                if (indicator != null) {
-                    indicatorBox.getChildren().add(indicator);
-                }
-                wrapper.getChildren().add(indicatorBox);
+                // 创建指示条 - 直接用硬编码颜色
+                Region indicator = new Region();
+                indicator.setPrefHeight(3);
+                indicator.setMinHeight(3);
+                indicator.setMaxHeight(3);
+                indicator.setPrefWidth(100); // 初始宽度
+                indicator.setStyle("-fx-background-color: #1677ff; -fx-background-radius: 2px;");
+                indicatorPane.getChildren().add(indicator);
+
+                wrapper.getChildren().add(indicatorPane);
+
+                // 绑定容器宽度到 tabBar
+                indicatorPane.prefWidthProperty().bind(tabBar.widthProperty());
 
                 // 初始指示条位置（在布局完成后）
-                final Rectangle finalIndicator = indicator;
+                final Region finalIndicator = indicator;
                 final List<Label> finalLabels = tabLabels;
-                tabBar.layoutBoundsProperty().addListener((obs, old, val) -> {
-                    if (finalIndicator != null && activeIndex < finalLabels.size()) {
-                        updateIndicator(finalIndicator, finalLabels, activeIndex);
+                final Pane finalPane = indicatorPane;
+                
+                // 监听每个标签的布局变化
+                for (Label label : finalLabels) {
+                    label.layoutBoundsProperty().addListener((obs, old, val) -> {
+                        updateIndicator(finalIndicator, finalLabels, finalPane, activeIndex);
+                    });
+                }
+                
+                // 监听 wrapper 添加到场景
+                wrapper.sceneProperty().addListener((obs, oldScene, newScene) -> {
+                    if (newScene != null) {
+                        // 使用 PauseTransition 延迟更新，确保布局完成
+                        PauseTransition delay = new PauseTransition(Duration.millis(300));
+                        delay.setOnFinished(e -> updateIndicator(finalIndicator, finalLabels, finalPane, activeIndex));
+                        delay.play();
                     }
+                });
+                
+                // 立即尝试更新一次（如果已经添加到场景）
+                Platform.runLater(() -> {
+                    Platform.runLater(() -> {
+                        updateIndicator(finalIndicator, finalLabels, finalPane, activeIndex);
+                    });
+                });
+                
+                // 监听 tabBar 布局变化
+                tabBar.layoutBoundsProperty().addListener((obs, old, val) -> {
+                    updateIndicator(finalIndicator, finalLabels, finalPane, activeIndex);
                 });
 
                 return wrapper;
@@ -194,7 +220,7 @@ public class TabsAnt {
             return contentAreaRef;
         }
 
-        private void switchTab(int newIndex, List<Label> tabLabels, Rectangle indicator) {
+        private void switchTab(int newIndex, List<Label> tabLabels) {
             if (newIndex == activeIndex) return;
 
             // 更新旧标签样式
@@ -209,8 +235,25 @@ public class TabsAnt {
             tabs.get(newIndex).content.setManaged(true);
 
             // 移动指示条
-            if (indicator != null && type == Type.LINE) {
-                updateIndicator(indicator, tabLabels, newIndex);
+            if (type == Type.LINE) {
+                // 找到指示条并更新位置
+                Node tabBar = tabLabels.get(0).getParent();
+                if (tabBar != null) {
+                    Node wrapper = tabBar.getParent();
+                    if (wrapper instanceof VBox) {
+                        VBox vbox = (VBox) wrapper;
+                        if (vbox.getChildren().size() > 1) {
+                            Node indicatorContainer = vbox.getChildren().get(1);
+                            if (indicatorContainer instanceof Pane) {
+                                Pane container = (Pane) indicatorContainer;
+                                if (!container.getChildren().isEmpty()) {
+                                    Region indicator = (Region) container.getChildren().get(0);
+                                    updateIndicator(indicator, tabLabels, container, newIndex);
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             activeIndex = newIndex;
@@ -312,22 +355,26 @@ public class TabsAnt {
             }
         }
 
-        private void updateIndicator(Rectangle indicator, List<Label> labels, int index) {
+        private void updateIndicator(Region indicator, List<Label> labels, Pane container, int index) {
             if (index < 0 || index >= labels.size()) return;
 
             Label label = labels.get(index);
 
-            // 获取标签在父容器中的位置
-            double labelX = label.getLayoutX();
-            double labelWidth = label.getWidth();
+            // 获取标签的实际边界
+            javafx.geometry.Bounds bounds = label.getBoundsInParent();
+            double labelX = bounds.getMinX();
+            double labelWidth = bounds.getWidth();
 
-            // 如果 layoutX 为 0（还未布局），使用 bounds
-            if (labelX == 0) {
-                labelX = label.getBoundsInParent().getMinX();
+            // 如果宽度为 0，说明还未布局完成，使用默认值确保指示条可见
+            if (labelWidth <= 0) {
+                indicator.setPrefWidth(100);
+                indicator.setLayoutX(0);
+                return;
             }
 
-            indicator.setWidth(labelWidth);
-            indicator.setTranslateX(labelX);
+            // 设置指示条宽度和位置
+            indicator.setPrefWidth(labelWidth);
+            indicator.setLayoutX(labelX);
         }
     }
 
