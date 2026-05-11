@@ -114,10 +114,6 @@ public class InputNumberAnt {
                 container.getChildren().add(prefixLabel);
             }
 
-            // Decrement button
-            Button decBtn = createButton("M4 8H12", false);
-            decBtn.setOnAction(e -> adjustValue(-step));
-
             // Text field
             TextField field = new TextField(formatValue(value));
             field.setAlignment(Pos.CENTER);
@@ -129,6 +125,7 @@ public class InputNumberAnt {
                 "-fx-text-fill: -color-fg-default;" +
                 "-fx-padding: " + padding + "px 4px;"
             );
+            HBox.setHgrow(field, Priority.ALWAYS);
 
             field.setOnAction(e -> {
                 try {
@@ -150,16 +147,20 @@ public class InputNumberAnt {
                 }
             });
 
-            // Increment button
-            Button incBtn = createButton("M4 8H12 M8 4V12", true);
-            incBtn.setOnAction(e -> adjustValue(step));
-
             // Suffix
             if (suffix != null && !suffix.isEmpty()) {
                 javafx.scene.control.Label suffixLabel = new javafx.scene.control.Label(suffix);
                 suffixLabel.setStyle("-fx-font-size: " + fontSize + "px; -fx-text-fill: -color-fg-muted; -fx-padding: 0 8px 0 4px;");
                 container.getChildren().add(suffixLabel);
             }
+
+            // Decrement button (left side)
+            Button decBtn = createButton("M2 8H14", "minus");
+            decBtn.setOnAction(e -> adjustValue(-step, field));
+
+            // Increment button (right side)
+            Button incBtn = createButton("M8 2V14 M2 8H14", "plus");
+            incBtn.setOnAction(e -> adjustValue(step, field));
 
             container.getChildren().addAll(decBtn, field, incBtn);
 
@@ -180,38 +181,72 @@ public class InputNumberAnt {
             return container;
         }
 
-        private Button createButton(String svgPath, boolean isRight) {
+        private Button createButton(String svgPath, String type) {
             Button btn = new Button();
+            btn.setMinSize(28, 32);
+            btn.setPrefSize(28, 32);
+            btn.setMaxSize(28, 32);
             btn.setStyle(
                 "-fx-background-color: transparent;" +
                 "-fx-border-color: transparent;" +
                 "-fx-cursor: hand;" +
-                "-fx-padding: 6px 8px;" +
-                "-fx-min-width: 28px;"
+                "-fx-padding: 4px;"
             );
 
             SVGPath path = new SVGPath();
             path.setContent(svgPath);
             path.setStyle("-fx-stroke: -color-fg-muted; -fx-stroke-width: 1.5; -fx-fill: none;");
 
-            btn.setGraphic(path);
+            StackPane graphic = new StackPane(path);
+            graphic.setAlignment(Pos.CENTER);
+            btn.setGraphic(graphic);
+
+            btn.setOnMousePressed(e -> {
+                if (!disabled) {
+                    btn.setStyle(
+                        "-fx-background-color: -color-bg-subtle;" +
+                        "-fx-border-color: transparent;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-padding: 4px;"
+                    );
+                }
+            });
+
+            btn.setOnMouseReleased(e -> {
+                btn.setStyle(
+                    "-fx-background-color: transparent;" +
+                    "-fx-border-color: transparent;" +
+                    "-fx-cursor: hand;" +
+                    "-fx-padding: 4px;"
+                );
+            });
 
             btn.setOnMouseEntered(e -> {
                 if (!disabled) {
-                    btn.setStyle("-fx-background-color: -color-bg-subtle; -fx-border-color: transparent; -fx-cursor: hand; -fx-padding: 6px 8px; -fx-min-width: 28px;");
+                    btn.setStyle(
+                        "-fx-background-color: -color-bg-subtle;" +
+                        "-fx-border-color: transparent;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-padding: 4px;"
+                    );
                 }
             });
 
             btn.setOnMouseExited(e -> {
-                btn.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-cursor: hand; -fx-padding: 6px 8px; -fx-min-width: 28px;");
+                btn.setStyle(
+                    "-fx-background-color: transparent;" +
+                    "-fx-border-color: transparent;" +
+                    "-fx-cursor: hand;" +
+                    "-fx-padding: 4px;"
+                );
             });
 
             return btn;
         }
 
-        private void adjustValue(double delta) {
+        private void adjustValue(double delta, TextField field) {
             double newValue = value + delta;
-            setValue(newValue, null);
+            setValue(newValue, field);
         }
 
         private void setValue(double newValue, TextField field) {
