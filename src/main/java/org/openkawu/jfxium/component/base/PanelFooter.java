@@ -1,0 +1,84 @@
+package org.openkawu.jfxium.component.base;
+
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.layout.HBox;
+
+/**
+ * 面板底部基础组件
+ * 微型化设计：只负责底部布局（左内容 + 右按钮组）
+ * 可组合到 Modal、Drawer 等组件中
+ * 
+ * 使用示例：
+ * <pre>{@code
+ * HBox footer = PanelFooter.create()
+ *     .right(ButtonAnt.create("OK").type(ButtonAnt.Type.PRIMARY).build())
+ *     .alignment(Pos.CENTER_RIGHT)
+ *     .hasBorder(true)
+ *     .build();
+ * }</pre>
+ */
+public class PanelFooter {
+    
+    public static Builder create() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private Node left = null;
+        private Node right = null;
+        private String padding = "16px 24px";
+        private boolean hasBorder = true;
+        private Pos alignment = Pos.CENTER_RIGHT;
+
+        public Builder left(Node left) {
+            this.left = left;
+            return this;
+        }
+
+        public Builder right(Node right) {
+            this.right = right;
+            return this;
+        }
+
+        public Builder padding(String padding) {
+            this.padding = padding;
+            return this;
+        }
+
+        public Builder hasBorder(boolean hasBorder) {
+            this.hasBorder = hasBorder;
+            return this;
+        }
+
+        public Builder alignment(Pos alignment) {
+            this.alignment = alignment;
+            return this;
+        }
+
+        public HBox build() {
+            HBox footer = new HBox(8);
+            footer.setAlignment(alignment);
+            
+            StringBuilder style = new StringBuilder();
+            style.append("-fx-padding: ").append(padding).append("; ");
+            if (hasBorder) {
+                style.append("-fx-border-color: -color-border-muted transparent transparent transparent; ");
+                style.append("-fx-border-width: 1px 0 0 0; ");
+            }
+            footer.setStyle(style.toString());
+
+            if (left != null) {
+                HBox leftBox = new HBox(left);
+                javafx.scene.layout.HBox.setHgrow(leftBox, javafx.scene.layout.Priority.ALWAYS);
+                footer.getChildren().add(leftBox);
+            }
+
+            if (right != null) {
+                footer.getChildren().add(right);
+            }
+
+            return footer;
+        }
+    }
+}

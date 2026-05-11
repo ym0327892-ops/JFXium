@@ -87,3 +87,29 @@
   -fx-border-radius: 0;
   -fx-background-radius: 0;
 }
+
+/* Close Button - Reusable Component */
+.close-button {
+  -fx-background-color: transparent;
+  -fx-text-fill: -jfx-text-muted;
+  -fx-font-size: 14px;
+  -fx-font-weight: 400;
+  -fx-cursor: hand;
+  -fx-padding: 4px 8px;
+  -fx-border-color: transparent;
+  -fx-min-width: 24px;
+  -fx-min-height: 24px;
+  -fx-max-width: 24px;
+  -fx-max-height: 24px;
+  -fx-alignment: center;
+}
+
+.close-button:hover {
+  -fx-background-color: -jfx-bg-hover;
+  -fx-text-fill: -jfx-text-primary;
+}
+
+.close-button:pressed {
+  -fx-background-color: -jfx-bg-active;
+  -fx-text-fill: -jfx-text-primary;
+}

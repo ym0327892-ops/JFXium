@@ -11,6 +11,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import org.openkawu.jfxium.component.base.CloseButton;
+import org.openkawu.jfxium.component.base.Overlay;
+import org.openkawu.jfxium.component.base.PanelHeader;
+import org.openkawu.jfxium.component.base.PanelFooter;
 
 import java.util.function.Consumer;
 
@@ -247,23 +251,12 @@ public class ModalAnt {
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 16, 0, 0, 4);"
             );
 
-            // Header
+            // Header - 使用 PanelHeader 基础组件
             if (!config.title.isEmpty()) {
-                HBox header = new HBox(8);
-                header.setAlignment(Pos.CENTER_LEFT);
-                header.setStyle("-fx-padding: 16px 24px; -fx-border-color: transparent transparent -color-border-muted transparent; -fx-border-width: 0 0 1px 0;");
-
-                Label titleLabel = new Label(config.title);
-                titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: -color-fg-default;");
-                HBox.setHgrow(titleLabel, Priority.ALWAYS);
-                header.getChildren().add(titleLabel);
-
-                // Close button - right aligned
-                javafx.scene.control.Button closeBtn = new javafx.scene.control.Button("\u00d7");
-                closeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: -color-fg-muted; -fx-font-size: 20px; -fx-cursor: hand; -fx-padding: 0 4px;");
-                closeBtn.setOnAction(e -> close());
-                header.getChildren().add(closeBtn);
-
+                HBox header = new PanelHeader.Builder()
+                    .title(config.title)
+                    .onClose(() -> close())
+                    .build();
                 panel.getChildren().add(header);
             }
 
@@ -274,18 +267,16 @@ public class ModalAnt {
                 panel.getChildren().add(contentBox);
             }
 
-            // Footer
+            // Footer - 使用 PanelFooter 基础组件
             if (config.footer != null) {
-                HBox footerBox = new HBox(config.footer);
-                footerBox.setAlignment(Pos.CENTER_RIGHT);
-                footerBox.setStyle("-fx-padding: 16px 24px; -fx-border-color: -color-border-muted transparent transparent transparent; -fx-border-width: 1px 0 0 0;");
+                HBox footerBox = new PanelFooter.Builder()
+                    .right(config.footer)
+                    .alignment(Pos.CENTER_RIGHT)
+                    .hasBorder(true)
+                    .build();
                 panel.getChildren().add(footerBox);
             } else {
                 // Default footer with OK/Cancel
-                HBox defaultFooter = new HBox(8);
-                defaultFooter.setAlignment(Pos.CENTER_RIGHT);
-                defaultFooter.setStyle("-fx-padding: 16px 24px; -fx-border-color: -color-border-muted transparent transparent transparent; -fx-border-width: 1px 0 0 0;");
-
                 javafx.scene.control.Button cancelBtn = ButtonAnt.create(config.cancelText)
                     .type(ButtonAnt.Type.DEFAULT)
                     .onClick(e -> close())
@@ -303,7 +294,11 @@ public class ModalAnt {
                     })
                     .build();
 
-                defaultFooter.getChildren().addAll(cancelBtn, okBtn);
+                HBox defaultFooter = new PanelFooter.Builder()
+                    .right(new HBox(8, cancelBtn, okBtn))
+                    .alignment(Pos.CENTER_RIGHT)
+                    .hasBorder(true)
+                    .build();
                 panel.getChildren().add(defaultFooter);
             }
 

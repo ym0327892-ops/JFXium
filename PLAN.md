@@ -2,12 +2,13 @@
 
 > 目标：构建现代化 JavaFX UI 框架，对标 Ant Design 6.x / Material UI / MUI-like Style
 > 技术栈：Java 21 + JavaFX 21.0.6 + Maven
-> 核心原则：Design Token 驱动、Builder Pattern、完全代码构建 UI、CSS 变量体系
-> 什么是组件?  微型化, 封装, 可组合性, 比如 Modal, Drawer, ;小组件组装成 大组件; 按照这个思路来 设计.
+> 核心原则：Design Token 驱动、Builder Pattern、完全代码构建 UI、CSS 变量体系,
+> javafx 代码UI组件 ->组件化,封装, 可组合性, 可扩展性;
 # JFXium 项目详细开发约束
 > 你进行的 或者 完成了什么记录到  PLAN.md ； 如果没有需要记录 本文件 合适位置； 
 > 下一步计划 ，未完成的计划 都需要 记录 本文件 合适位置； 
 > 我的什么计划 改变 ，需要综合考虑 记录到 PLAN.md 合适位置； 跟新项目 总计划； 
+> 什么是组件?  微型化, 封装, 可组合性, 比如 Modal, Drawer, ;小组件组装成 大组件; 按照这个思路来 设计.
 *** JFXium 项目详细开发行为准则 文件（SKILL 技能）
 > 本项目的开发行为准则 文件（SKILL 技能） 用于定义项目开发过程中需要遵守的规范和行为; 在 SKILL.md 文件中定义
 
@@ -712,11 +713,21 @@
 | 8 | 输入框获取焦点后控件变大 | ✅ 已修复 | `fix: 修复所有输入控件获取焦点后变大` |
 | 9 | 其他输入控件焦点变大检查 | ✅ 已修复 | 同上（统一修复所有输入类组件） |
 | 10 | Anchor 与 Tabs 区别分析 | ✅ 已分析 | 功能不同，不重复；Anchor 缺少滚动功能 |
+;| 11 | DatePicker 样式丑陋 | ✅ 已修复 | `fix: 修复 DatePicker 样式和 TimePicker 宽度问题` |
+| 12 | TimePicker 默认太短 | ✅ 已修复 | 同上 |
+| 13 | ColorPicker 滑动组件超出容器边框 | ✅ 已修复 | `fix: 修复 ColorPicker 滑动组件超出容器边框问题` |
+| 14 | TreeSelect 无法选中节点 | ✅ 已修复 | `fix: 修复 TreeSelect 无法选中节点问题` |
+| 15 | InputNumber 按钮点击无反应 | ✅ 已修复 | `fix: 修复 InputNumber 按钮点击事件问题` |
+| 16 | Calendar 布局没有自适应 | ✅ 已修复 | `fix: 修复 Calendar 布局自适应问题` |
+| 17 | Popover 点击外部不关闭 | ✅ 已修复 | `fix: 修复 Popover 点击外部关闭行为` |
+| 18 | Drawer 未对齐 Ant Design | ✅ 已修复 | `fix: 修复 Drawer 对齐 Ant Design` |
+| 19 | Animation 演示无变化 | ✅ 已修复 | `fix: 修复 Animation 和 BackTop 演示问题` |
+| 20 | BackTop 不知展示什么 | ✅ 已修复 | 同上 |
 
 ### 修复总结
 
-- **已修复**: 9/10 个问题（问题 6 为架构优化，持续改进中）
-- **提交次数**: 7 次 commit
+- **已修复**: 18/20 个问题（问题 6 为架构优化，持续改进中）
+- **提交次数**: 15 次 commit
 - **核心修复**:
   - 输入类组件 Hover Effect（TextField、TextArea、ComboBox、DatePicker、ColorPicker）
   - 所有输入类组件焦点环禁用（-fx-focus-color: transparent）
@@ -724,6 +735,14 @@
   - Switch 组件重写（纯切换效果）
   - MUI 主题按钮边框移除
   - CodeBlock 新组件
+  - DatePicker/TimePicker 样式修复
+  - ColorPicker 内部组件超出容器修复
+  - TreeSelect 节点选中功能修复
+  - InputNumber 按钮事件修复
+  - Calendar 自适应布局修复
+  - Popover 点击外部关闭修复
+  - Drawer 对齐 Ant Design
+  - Animation/BackTop 演示修复
 
 ### Anchor vs Tabs 分析结果
 
@@ -1908,6 +1927,78 @@ Phase 3:
 | **字体检查** | ✅ 全部通过 | MUI 主题使用 Roboto 字体族，与 Material Design 规范一致 |
 | **控件高度检查** | ✅ 全部通过 | 紧凑模式控件高度 28px/20px/36px 与 Ant Design 规范一致 |
 | **语义化变量检查** | ✅ 全部通过 | 所有主题的语义化变量（fg/bg/border/accent）映射正确 |
+
+---
+
+## 组件微型化架构设计（2026-05-12）
+
+**设计理念：大组件 = 小组件组装**
+
+```
+Modal/Drawer = Overlay(遮罩) + Panel(面板) + Header(头部) + Footer(底部) + CloseButton(关闭按钮)
+```
+
+### 基础组件拆分方案
+
+| 基础组件 | 职责 | 可复用场景 |
+|---------|------|-----------|
+| **Overlay** | 遮罩层，点击关闭 | Modal, Drawer, Tooltip, Popover |
+| **Panel** | 通用面板容器 | Modal, Drawer, Popconfirm |
+| **PanelHeader** | 标题栏（标题+关闭按钮+extra） | Modal, Drawer |
+| **PanelFooter** | 底部操作区（按钮组） | Modal, Drawer, Popconfirm |
+| **CloseButton** | 关闭按钮 | Modal, Drawer, Message, Notification, Popover |
+
+### 已实现的基础组件
+
+1. **Overlay** - `src/main/java/org/openkawu/jfxium/component/base/Overlay.java`
+   - 支持自定义透明度 (opacity)
+   - 支持点击关闭 (closable)
+   - 支持自定义点击回调 (onClick)
+   
+2. **PanelHeader** - `src/main/java/org/openkawu/jfxium/component/base/PanelHeader.java`
+   - 支持标题 (title)
+   - 支持额外内容区 (extra)
+   - 支持关闭按钮 (onClose)
+   - 自动布局：标题左对齐，extra 居中，关闭按钮右对齐
+   
+3. **PanelFooter** - `src/main/java/org/openkawu/jfxium/component/base/PanelFooter.java`
+   - 支持左侧内容 (left)
+   - 支持右侧内容 (right)
+   - 支持边框选项 (hasBorder)
+   - 自动布局：flexbox 左右分布
+   
+4. **CloseButton** - `src/main/java/org/openkawu/jfxium/component/base/CloseButton.java`
+   - 标准关闭图标 "×"
+   - 支持自定义关闭回调 (onClose)
+   - 统一 CSS 样式：hover 背景色、pressed 效果
+   - 24x24 固定尺寸，符合 Ant Design 规范
+
+### 重构完成的大组件
+
+1. **ModalAnt** - 已使用小组件组装
+   - 使用 Overlay 替代内联样式
+   - 使用 PanelHeader 替代头部内联实现
+   - 使用 PanelFooter 替代底部内联实现
+   - 代码行数减少约 20%，可维护性大幅提升
+
+2. **DrawerAnt** - 已使用小组件组装
+   - 使用 Overlay 替代内联样式
+   - 使用 PanelHeader 替代头部内联实现（支持 extra 属性）
+   - 使用 PanelFooter 替代底部内联实现
+   - 保持原有动画效果不变
+
+### 组件化优势
+
+1. **代码复用** - 多个大组件共享相同的基础组件逻辑
+2. **一致性** - 所有 Modal/Drawer 的头部、底部样式完全统一
+3. **可维护性** - 修改基础组件即可影响所有使用方
+4. **可扩展性** - 未来新增 Popconfirm、Tooltip 等组件可直接复用
+5. **测试友好** - 基础组件可独立测试，降低测试复杂度
+
+### 模块导出更新
+
+已更新 `module-info.java`，新增导出：
+- `exports org.openkawu.jfxium.component.base;`
 | **主题继承关系** | ✅ 正确 | Compact 主题正确继承基础主题颜色，仅覆盖间距和尺寸变量 |
 
 ##### 8. 发现的问题

@@ -12,6 +12,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import org.openkawu.jfxium.component.base.CloseButton;
+import org.openkawu.jfxium.component.base.Overlay;
+import org.openkawu.jfxium.component.base.PanelHeader;
+import org.openkawu.jfxium.component.base.PanelFooter;
 
 import java.util.function.Consumer;
 
@@ -189,29 +193,17 @@ public class DrawerAnt {
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 16, 0, 0, 4);"
             );
 
-            // Header
+            // Header - 使用 PanelHeader 基础组件
             if (!config.title.isEmpty()) {
-                HBox header = new HBox(8);
-                header.setAlignment(Pos.CENTER_LEFT);
-                header.setStyle("-fx-padding: 16px 24px; -fx-border-color: transparent transparent -color-border-muted transparent; -fx-border-width: 0 0 1px 0;");
-
-                // Title - 左侧
-                javafx.scene.control.Label titleLabel = new javafx.scene.control.Label(config.title);
-                titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: -color-fg-default;");
-                HBox.setHgrow(titleLabel, Priority.ALWAYS);
-                header.getChildren().add(titleLabel);
-
-                // Extra 操作区 - 右侧，对标 Ant Design extra 属性
+                PanelHeader.Builder headerBuilder = new PanelHeader.Builder()
+                    .title(config.title)
+                    .onClose(() -> close());
+                
                 if (config.extra != null) {
-                    header.getChildren().add(config.extra);
+                    headerBuilder.extra(config.extra);
                 }
-
-                // Close button - 右上角，对标 Ant Design
-                javafx.scene.control.Button closeBtn = new javafx.scene.control.Button("×");
-                closeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: -color-fg-muted; -fx-font-size: 20px; -fx-cursor: hand; -fx-padding: 0 4px;");
-                closeBtn.setOnAction(e -> close());
-                header.getChildren().add(closeBtn);
-
+                
+                HBox header = headerBuilder.build();
                 panel.getChildren().add(header);
             }
 
@@ -223,11 +215,13 @@ public class DrawerAnt {
                 panel.getChildren().add(contentBox);
             }
 
-            // Footer
+            // Footer - 使用 PanelFooter 基础组件
             if (config.footer != null) {
-                HBox footerBox = new HBox(config.footer);
-                footerBox.setAlignment(Pos.CENTER_RIGHT);
-                footerBox.setStyle("-fx-padding: 16px 24px; -fx-border-color: -color-border-muted transparent transparent transparent; -fx-border-width: 1px 0 0 0;");
+                HBox footerBox = new PanelFooter.Builder()
+                    .right(config.footer)
+                    .alignment(Pos.CENTER_RIGHT)
+                    .hasBorder(true)
+                    .build();
                 panel.getChildren().add(footerBox);
             }
 

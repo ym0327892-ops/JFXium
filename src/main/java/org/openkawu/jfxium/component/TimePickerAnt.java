@@ -69,8 +69,6 @@ public class TimePickerAnt {
             hourSpinner.setDisable(disabled);
             
             // 设置编辑器样式，确保数字能完整显示
-            SpinnerValueFactory.IntegerStringConverter converter = new SpinnerValueFactory.IntegerStringConverter();
-            hourSpinner.setConverter(converter);
             hourSpinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
             hourSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 8px;");
 
