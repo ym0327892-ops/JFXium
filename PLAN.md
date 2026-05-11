@@ -3,7 +3,7 @@
 > 目标：构建现代化 JavaFX UI 框架，对标 Ant Design 6.x / Material UI / MUI-like Style
 > 技术栈：Java 21 + JavaFX 21.0.6 + Maven
 > 核心原则：Design Token 驱动、Builder Pattern、完全代码构建 UI、CSS 变量体系
-> 什么是组件?  微型化, 封装, 可组合性, 比如 Modal, Drawer, ;小组件组装成 大组件,
+> 什么是组件?  微型化, 封装, 可组合性, 比如 Modal, Drawer, ;小组件组装成 大组件; 按照这个思路来 设计.
 # JFXium 项目详细开发约束
 > 你进行的 或者 完成了什么记录到  PLAN.md ； 如果没有需要记录 本文件 合适位置； 
 > 下一步计划 ，未完成的计划 都需要 记录 本文件 合适位置； 

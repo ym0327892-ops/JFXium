@@ -14,11 +14,16 @@ import javafx.util.Duration;
  */
 public class PopoverAnt {
 
+    public enum Trigger {
+        CLICK, HOVER
+    }
+
     public static class Builder {
         private String title = "";
         private Node content = null;
         private Node target = null;
         private Pos placement = Pos.BOTTOM_CENTER;
+        private Trigger trigger = Trigger.CLICK;
 
         public Builder title(String title) {
             this.title = title;
@@ -40,6 +45,11 @@ public class PopoverAnt {
             return this;
         }
 
+        public Builder trigger(Trigger trigger) {
+            this.trigger = trigger;
+            return this;
+        }
+
         public Popover build() {
             return new Popover(this);
         }
@@ -51,13 +61,39 @@ public class PopoverAnt {
 
         private Popover(Builder config) {
             this.config = config;
+            setupTrigger();
+        }
+
+        private void setupTrigger() {
+            if (config.target == null) return;
+
+            if (config.trigger == Trigger.HOVER) {
+                config.target.setOnMouseEntered(e -> show());
+                config.target.setOnMouseExited(e -> {
+                    // 延迟隐藏，让用户有时间移动到 Popover 上
+                    javafx.animation.PauseTransition delay = new javafx.animation.PauseTransition(Duration.millis(100));
+                    delay.setOnFinished(ev -> hide());
+                    delay.play();
+                });
+            } else {
+                config.target.setOnMouseClicked(e -> {
+                    if (popup != null && popup.isShowing()) {
+                        hide();
+                    } else {
+                        show();
+                    }
+                });
+            }
         }
 
         public void show() {
             if (config.target == null) return;
+            if (popup != null && popup.isShowing()) return;
 
             // Create popup
             popup = new Popup();
+            popup.setAutoHide(true); // 点击外部自动关闭
+            popup.setAutoFix(true); // 自动调整位置防止超出屏幕
             popup.getContent().add(createContent());
 
             // Calculate position
@@ -97,7 +133,7 @@ public class PopoverAnt {
         }
 
         public void hide() {
-            if (popup != null) {
+            if (popup != null && popup.isShowing()) {
                 popup.hide();
             }
         }
