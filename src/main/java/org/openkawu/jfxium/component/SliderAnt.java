@@ -220,9 +220,9 @@ public class SliderAnt {
                 slider.setOnMouseReleased(e -> onChangeComplete.accept(slider.getValue()));
             }
 
-            // 包装容器 - 确保宽度约束
-            VBox wrapper = new VBox(4);
-            wrapper.setAlignment(vertical ? Pos.CENTER : Pos.CENTER_LEFT);
+            // 包装容器 - 添加 clip 防止 thumb 超出
+            HBox wrapper = new HBox();
+            wrapper.setAlignment(Pos.CENTER);
             wrapper.getStyleClass().add("jfx-slider-wrapper");
 
             // 设置宽度约束 - 对标 Ant Design 默认宽度
@@ -235,11 +235,27 @@ public class SliderAnt {
                 slider.setPrefHeight(200);
             }
 
-            wrapper.getChildren().add(slider);
+            VBox contentBox = new VBox(4);
+            contentBox.setAlignment(vertical ? Pos.CENTER : Pos.CENTER_LEFT);
+            contentBox.getChildren().add(slider);
+
+            // 使用 StackPane 包装并添加 clip 防止 thumb 超出
+            StackPane clipContainer = new StackPane(contentBox);
+            clipContainer.layoutBoundsProperty().addListener((obs, old, newVal) -> {
+                javafx.scene.shape.Rectangle clip = (javafx.scene.shape.Rectangle) clipContainer.getClip();
+                if (clip == null) {
+                    clip = new javafx.scene.shape.Rectangle();
+                    clipContainer.setClip(clip);
+                }
+                clip.setWidth(newVal.getWidth());
+                clip.setHeight(newVal.getHeight());
+            });
+
+            wrapper.getChildren().add(clipContainer);
 
             // 添加刻度标签（自定义）
             if (marks != null && !marks.isEmpty()) {
-                wrapper.getChildren().add(createMarksRow());
+                contentBox.getChildren().add(createMarksRow());
             }
 
             // 提示框
@@ -258,7 +274,7 @@ public class SliderAnt {
                         slider.valueProperty()
                     )
                 );
-                wrapper.getChildren().add(tipLabel);
+                contentBox.getChildren().add(tipLabel);
             }
 
             slider.getStyleClass().addAll("jfx-slider");
