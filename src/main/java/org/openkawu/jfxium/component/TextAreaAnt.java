@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component;
 
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 import java.util.function.Consumer;
 
@@ -14,6 +15,10 @@ import java.util.function.Consumer;
  *     .placeholder("Enter description...")
  *     .rows(4)
  *     .onChange((oldVal, newVal) -> System.out.println("Changed: " + newVal))
+ *     .build();
+ *
+ * // 只读文本（用于显示错误信息）
+ * TextArea readOnly = TextAreaAnt.readOnly("Error message here...")
  *     .build();
  * }</pre>
  */
@@ -30,6 +35,7 @@ public class TextAreaAnt {
         private boolean wrapText = true;
         private boolean disabled = false;
         private boolean editable = true;
+        private boolean showCharCount = false;
         private Consumer<String> onChange;
         private String style = "";
 
@@ -65,6 +71,11 @@ public class TextAreaAnt {
             return this;
         }
 
+        public Builder showCharCount(boolean show) {
+            this.showCharCount = show;
+            return this;
+        }
+
         public Builder onChange(Consumer<String> handler) {
             this.onChange = handler;
             return this;
@@ -97,5 +108,24 @@ public class TextAreaAnt {
 
             return textArea;
         }
+    }
+
+    public static TextArea readOnly(String message) {
+        TextArea textArea = new TextArea(message);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setDisable(false);
+        textArea.getStyleClass().addAll("jfx-text-area", "jfx-text-area-read-only");
+        textArea.setStyle(
+            "-fx-background-color: -color-danger-bg;" +
+            "-fx-border-color: -color-danger-border;" +
+            "-fx-text-fill: -color-danger;" +
+            "-fx-font-size: 14px;" +
+            "-fx-padding: 12px;" +
+            "-fx-border-radius: 6px;" +
+            "-fx-background-radius: 6px;" +
+            "-fx-border-width: 1px;"
+        );
+        return textArea;
     }
 }
