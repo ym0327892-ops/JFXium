@@ -130,62 +130,63 @@
 
 // 全局默认阴影 (boxShadow)
 // Ant Design: '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)'
-@shadow-mui-1: dropshadow(gaussian, rgba(0,0,0,0.20), 2, 0, 0, 1),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 1, 0, 0, 1),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 1, 0, 0, 3);
+// spread=0 表示无扩散（JavaFX不支持负spread）
+@shadow-mui-1: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 2, 0, 1),
+                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 1, 0, 1),
+                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 3, 0, 0);
 
 // 全局次要阴影 (boxShadowSecondary)
 // Ant Design: '0px 3px 3px -2px rgba(0,0,0,0.2),0px 3px 4px 0px rgba(0,0,0,0.14),0px 1px 8px 0px rgba(0,0,0,0.12)'
-@shadow-mui-2: dropshadow(gaussian, rgba(0,0,0,0.20), 3, 0, 0, 2),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 3, 0, 0, 3),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 1, 0, 0, 8);
+@shadow-mui-2: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 3, 0, 2),
+                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 4, 0, 0),
+                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 8, 0, 0);
 
 // Button / Card 悬停阴影
 // Ant Design Button: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)'
-@shadow-mui-btn: dropshadow(gaussian, rgba(0,0,0,0.20), 3, 0, 0, 1),
-                  dropshadow(gaussian, rgba(0,0,0,0.14), 2, 0, 0, 2),
-                  dropshadow(gaussian, rgba(0,0,0,0.12), 1, 0, 0, 5);
+@shadow-mui-btn: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 1, 0, 2),
+                  dropshadow(gaussian, rgba(0,0,0,0.14), 0, 2, 0, 0),
+                  dropshadow(gaussian, rgba(0,0,0,0.12), 0, 5, 0, 0);
 
 // Select Popup / Menu 阴影
 // Ant Design Select: '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)'
-@shadow-mui-menu: dropshadow(gaussian, rgba(0,0,0,0.20), 5, 0, 0, 3),
-                   dropshadow(gaussian, rgba(0,0,0,0.14), 8, 0, 0, 4),
-                   dropshadow(gaussian, rgba(0,0,0,0.12), 3, 0, 0, 14);
+@shadow-mui-menu: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 5, 0, 3),
+                   dropshadow(gaussian, rgba(0,0,0,0.14), 0, 10, 0, 1),
+                   dropshadow(gaussian, rgba(0,0,0,0.12), 0, 14, 0, 2);
 
 // Card 中等阴影
-@shadow-mui-3: dropshadow(gaussian, rgba(0,0,0,0.20), 8, 0, 0, 3),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 8, 0, 0, 4),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 3, 0, 0, 10);
+@shadow-mui-3: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 3, 0, 2),
+                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 4, 0, 0),
+                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 10, 0, 0);
 
 // Dialog / Modal 阴影
-@shadow-mui-4: dropshadow(gaussian, rgba(0,0,0,0.20), 10, 0, 0, 4),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 10, 0, 0, 5),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 4, 0, 0, 14);
+@shadow-mui-4: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 10, 0, 4),
+                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 10, 0, 5),
+                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 14, 0, 0);
 
 // Drawer 阴影
-@shadow-mui-6: dropshadow(gaussian, rgba(0,0,0,0.20), 14, 0, 0, 6),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 14, 0, 0, 7),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 5, 0, 0, 18);
+@shadow-mui-6: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 14, 0, 6),
+                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 14, 0, 7),
+                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 18, 0, 0);
 
 // Bottom Sheet 阴影
-@shadow-mui-8: dropshadow(gaussian, rgba(0,0,0,0.20), 18, 0, 0, 8),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 18, 0, 0, 9),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 6, 0, 0, 22);
+@shadow-mui-8: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 18, 0, 8),
+                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 18, 0, 9),
+                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 22, 0, 0);
 
 // FAB 阴影
-@shadow-mui-12: dropshadow(gaussian, rgba(0,0,0,0.20), 26, 0, 0, 12),
-                 dropshadow(gaussian, rgba(0,0,0,0.14), 26, 0, 0, 13),
-                 dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 30);
+@shadow-mui-12: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 26, 0, 12),
+                 dropshadow(gaussian, rgba(0,0,0,0.14), 0, 26, 0, 13),
+                 dropshadow(gaussian, rgba(0,0,0,0.12), 0, 30, 0, 0);
 
 // Full Screen Dialog 阴影
-@shadow-mui-16: dropshadow(gaussian, rgba(0,0,0,0.20), 32, 0, 0, 16),
-                 dropshadow(gaussian, rgba(0,0,0,0.14), 32, 0, 0, 17),
-                 dropshadow(gaussian, rgba(0,0,0,0.12), 10, 0, 0, 38);
+@shadow-mui-16: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 32, 0, 16),
+                 dropshadow(gaussian, rgba(0,0,0,0.14), 0, 32, 0, 17),
+                 dropshadow(gaussian, rgba(0,0,0,0.12), 0, 38, 0, 0);
 
 // Top Layer Dialog 阴影
-@shadow-mui-24: dropshadow(gaussian, rgba(0,0,0,0.20), 40, 0, 0, 24),
-                 dropshadow(gaussian, rgba(0,0,0,0.14), 40, 0, 0, 25),
-                 dropshadow(gaussian, rgba(0,0,0,0.12), 12, 0, 0, 46);
+@shadow-mui-24: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 40, 0, 24),
+                 dropshadow(gaussian, rgba(0,0,0,0.14), 0, 40, 0, 25),
+                 dropshadow(gaussian, rgba(0,0,0,0.12), 0, 46, 0, 0);
 
 // ============================================
 // MUI Overrides
@@ -258,17 +259,18 @@
   -fx-effect: @shadow-mui-btn;
 }
 
-/* Default Button - MUI 风格 */
+/* Default Button - MUI 风格 - 默认无阴影 */
 .button.default {
   -fx-background-color: #ffffff;
   -fx-text-fill: rgba(0, 0, 0, 0.87);
   -fx-border-color: transparent;
   -fx-border-width: 0;
+  -fx-effect: none;
 }
 
 .button.default:hover {
   -fx-background-color: rgba(25, 118, 210, 0.04);
-  -fx-text-fill: rgba(0, 0, 0, 0.87);
+  -fx-effect: none;
 }
 
 /* Primary Button - MUI 风格 */
