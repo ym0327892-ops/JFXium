@@ -209,20 +209,10 @@
 
 /* Button - MUI Dark Elevated Style */
 .button {
-  -fx-effect: @shadow-mui-btn;
-  -fx-text-transform: uppercase;
-  -fx-letter-spacing: 0.02857em;
+  -fx-effect: none;
   -fx-font-weight: 500;
   -fx-padding: @btn-padding-y @btn-padding-x;
   -fx-background-radius: @border-radius-md;
-}
-
-.button:hover {
-  -fx-effect: @shadow-mui-2;
-}
-
-.button:pressed {
-  -fx-effect: @shadow-mui-btn;
 }
 
 /* Default Button - MUI Dark 风格 */
@@ -235,8 +225,7 @@
 }
 
 .button.default:hover {
-  -fx-background-color: rgba(66, 165, 245, 0.08);
-  -fx-border-color: rgba(255, 255, 255, 0.23);
+  -fx-border-color: rgba(255, 255, 255, 0.42);
   -fx-text-fill: rgba(255, 255, 255, 0.87);
 }
 
@@ -246,13 +235,13 @@
   -fx-background-color: @color-accent-5;
   -fx-text-fill: #000000;
   -fx-border-color: transparent;
-  -fx-effect: @shadow-mui-btn;
+  -fx-border-width: 0;
 }
 
 .button.accent:hover,
 .button.primary:hover {
-  -fx-background-color: @color-accent-4;
-  -fx-effect: @shadow-mui-2;
+  -fx-background-color: #1565c0;
+  -fx-text-fill: #000000;
 }
 
 /* Danger Button - MUI Dark 风格 */
@@ -431,12 +420,41 @@
 }
 
 /* Switch - MUI Dark Style */
-.toggle-button.switch {
-  -fx-effect: @shadow-mui-1;
+.jfx-switch-track {
+  -fx-background-color: rgba(255, 255, 255, 0.26);
+  -fx-background-radius: 11px;
 }
 
-.toggle-button.switch .thumb {
-  -fx-effect: @shadow-mui-btn;
+.jfx-switch-thumb {
+  -fx-background-color: #1e1e1e;
+  -fx-background-radius: 10px;
+  -fx-border-color: rgba(255, 255, 255, 0.26);
+  -fx-border-width: 1px;
+  -fx-border-radius: 10px;
+}
+
+.jfx-switch.switch-selected .jfx-switch-track {
+  -fx-background-color: @color-accent-5;
+}
+
+.jfx-switch.switch-selected .jfx-switch-thumb {
+  -fx-border-color: @color-accent-5;
+}
+
+.jfx-switch:hover .jfx-switch-track {
+  -fx-background-color: rgba(255, 255, 255, 0.42);
+}
+
+.jfx-switch:hover .jfx-switch-thumb {
+  -fx-border-color: rgba(255, 255, 255, 0.42);
+}
+
+.jfx-switch.switch-selected:hover .jfx-switch-track {
+  -fx-background-color: #1565c0;
+}
+
+.jfx-switch.switch-selected:hover .jfx-switch-thumb {
+  -fx-border-color: #1565c0;
 }
 
 /* Checkbox - MUI Dark Style */
