@@ -11,7 +11,10 @@
 > 什么是组件?  微型化, 封装, 可组合性, 比如 Modal, Drawer, ;小组件组装成 大组件; 按照这个思路来 设计.
 *** JFXium 项目详细开发行为准则 文件（SKILL 技能）
 > 本项目的开发行为准则 文件（SKILL 技能） 用于定义项目开发过程中需要遵守的规范和行为; 在 SKILL.md 文件中定义
-
+# UI 参考资源
+## 全局样式
+Ant 色彩 https://ant.design/docs/spec/colors-cn?theme=light
+布局 https://ant.design/docs/spec/layout-cn?theme=light
 ## 项目进度跟踪
 
 ### ✅ 已完成工作（2025-01-08 更新）

@@ -1,6 +1,7 @@
 # 问题修复状态（2026-05-12 全部完成）
 模仿ANt Design 组件 , 与 AtlantaFX 本地代码在 F:\workspace-open-code\atlantafx\sampler）
-
+mui主题下 ,  Hover Effect（悬停效果）不对, 根本看不到原来文字 ; 去对比ant 去; 
+所有 关于输入框 ,输入文字的 地方 都是 获取到焦点后 可以如文字 后  , 框体会微型变大;  这是正常吗? ant 也是这么做的么??? 不是吧?
 ## 已修复问题
 
 | # | 问题 | 状态 | 修复日期 |

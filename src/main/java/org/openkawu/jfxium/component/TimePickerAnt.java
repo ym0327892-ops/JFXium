@@ -28,6 +28,10 @@ import java.time.format.DateTimeFormatter;
  */
 public class TimePickerAnt {
 
+    public static Builder create() {
+        return new Builder();
+    }
+
     public static class Builder {
         private LocalTime value = LocalTime.now();
         private String format = "HH:mm:ss";
@@ -61,23 +65,7 @@ public class TimePickerAnt {
             boolean showSeconds = format.contains("ss");
             boolean showMinutes = format.contains("mm");
 
-            // Hour spinner
-            Spinner<Integer> hourSpinner = new Spinner<>(0, 23, value.getHour());
-            hourSpinner.setPrefWidth(60);
-            hourSpinner.setMinWidth(60);
-            hourSpinner.setMaxWidth(60);
-            hourSpinner.getStyleClass().add("time-spinner");
-            hourSpinner.setDisable(disabled);
-            
-            // 设置编辑器样式，确保数字能完整显示
-            hourSpinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
-            hourSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 2px; -fx-pref-width: 40px;");
-            // 隐藏箭头按钮，使用外部 +/- 按钮
-            hourSpinner.lookup(".increment-arrow-button").setVisible(false);
-            hourSpinner.lookup(".increment-arrow-button").setManaged(false);
-            hourSpinner.lookup(".decrement-arrow-button").setVisible(false);
-            hourSpinner.lookup(".decrement-arrow-button").setManaged(false);
-
+            Spinner<Integer> hourSpinner = createTimeSpinner(0, 23, value.getHour());
             container.getChildren().add(hourSpinner);
 
             if (showMinutes) {
@@ -85,18 +73,7 @@ public class TimePickerAnt {
                     setStyle("-fx-font-size: 16px; -fx-text-fill: -color-fg-muted;");
                 }});
 
-                Spinner<Integer> minuteSpinner = new Spinner<>(0, 59, value.getMinute());
-                minuteSpinner.setPrefWidth(60);
-                minuteSpinner.setMinWidth(60);
-                minuteSpinner.setMaxWidth(60);
-                minuteSpinner.getStyleClass().add("time-spinner");
-                minuteSpinner.setDisable(disabled);
-                minuteSpinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
-                minuteSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 2px; -fx-pref-width: 40px;");
-                minuteSpinner.lookup(".increment-arrow-button").setVisible(false);
-                minuteSpinner.lookup(".increment-arrow-button").setManaged(false);
-                minuteSpinner.lookup(".decrement-arrow-button").setVisible(false);
-                minuteSpinner.lookup(".decrement-arrow-button").setManaged(false);
+                Spinner<Integer> minuteSpinner = createTimeSpinner(0, 59, value.getMinute());
                 container.getChildren().add(minuteSpinner);
             }
 
@@ -105,44 +82,32 @@ public class TimePickerAnt {
                     setStyle("-fx-font-size: 16px; -fx-text-fill: -color-fg-muted;");
                 }});
 
-                Spinner<Integer> secondSpinner = new Spinner<>(0, 59, value.getSecond());
-                secondSpinner.setPrefWidth(60);
-                secondSpinner.setMinWidth(60);
-                secondSpinner.setMaxWidth(60);
-                secondSpinner.getStyleClass().add("time-spinner");
-                secondSpinner.setDisable(disabled);
-                secondSpinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
-                secondSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 2px; -fx-pref-width: 40px;");
-                secondSpinner.lookup(".increment-arrow-button").setVisible(false);
-                secondSpinner.lookup(".increment-arrow-button").setManaged(false);
-                secondSpinner.lookup(".decrement-arrow-button").setVisible(false);
-                secondSpinner.lookup(".decrement-arrow-button").setManaged(false);
+                Spinner<Integer> secondSpinner = createTimeSpinner(0, 59, value.getSecond());
                 container.getChildren().add(secondSpinner);
-            }
-
-            if (onChange != null) {
-                javafx.beans.value.ChangeListener<Number> listener = (obs, oldVal, newVal) -> {
-                    int h = hourSpinner.getValue();
-                    int m = showMinutes ? ((Spinner<Integer>) container.getChildren().get(2)).getValue() : 0;
-                    int s = showSeconds ? ((Spinner<Integer>) container.getChildren().get(showMinutes ? 4 : 2)).getValue() : 0;
-                    onChange.accept(LocalTime.of(h, m, s));
-                };
-
-                hourSpinner.valueProperty().addListener(listener);
-                if (showMinutes) {
-                    ((Spinner<Integer>) container.getChildren().get(2)).valueProperty().addListener(listener);
-                }
-                if (showSeconds) {
-                    int secIndex = showMinutes ? 4 : 2;
-                    ((Spinner<Integer>) container.getChildren().get(secIndex)).valueProperty().addListener(listener);
-                }
             }
 
             return container;
         }
-    }
 
-    public static Builder create() {
-        return new Builder();
+        private Spinner<Integer> createTimeSpinner(int min, int max, int value) {
+            Spinner<Integer> spinner = new Spinner<>(min, max, value);
+            spinner.setPrefWidth(60);
+            spinner.setMinWidth(60);
+            spinner.setMaxWidth(60);
+            spinner.getStyleClass().add("time-spinner");
+            spinner.setDisable(disabled);
+
+            spinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
+            spinner.getEditor().setStyle(
+                "-fx-font-size: 14px; " +
+                "-fx-padding: 4px 2px; " +
+                "-fx-pref-width: 40px; " +
+                "-fx-background-color: transparent; " +
+                "-fx-border-color: transparent transparent -color-border-muted transparent; " +
+                "-fx-border-width: 0 0 1 0;"
+            );
+
+            return spinner;
+        }
     }
 }
