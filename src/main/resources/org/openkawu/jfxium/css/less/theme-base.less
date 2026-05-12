@@ -218,11 +218,11 @@
 }
 
 .text-field:hover {
-  -fx-border-color: -color-accent-emphasis;
+  -fx-border-color: @color-border-default;
 }
 
 .text-field:focused {
-  -fx-border-color: @color-border-default;
+  -fx-border-color: -color-accent-emphasis;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -235,11 +235,11 @@
 }
 
 .text-area:hover {
-  -fx-border-color: -color-accent-emphasis;
+  -fx-border-color: @color-border-default;
 }
 
 .text-area:focused {
-  -fx-border-color: @color-border-default;
+  -fx-border-color: -color-accent-emphasis;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -441,12 +441,11 @@
 }
 
 .combo-box:hover {
-  -fx-border-color: -color-accent-emphasis;
+  -fx-border-color: @color-border-default;
 }
 
 .combo-box:focused {
   -fx-border-color: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -726,12 +725,11 @@
 }
 
 .date-picker:hover {
-  -fx-border-color: -color-accent-emphasis;
+  -fx-border-color: @color-border-default;
 }
 
 .date-picker:focused {
   -fx-border-color: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -815,12 +813,11 @@
 }
 
 .color-picker:hover {
-  -fx-border-color: -color-accent-emphasis;
+  -fx-border-color: @color-border-default;
 }
 
 .color-picker:focused {
   -fx-border-color: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -861,6 +858,11 @@
 .color-palette .slider {
   -fx-pref-width: 180px;
   -fx-max-width: 180px;
+  -fx-min-width: 180px;
+}
+
+.color-palette .slider .thumb {
+  -fx-padding: 0;
 }
 
 .color-palette .controls-pane {
@@ -1756,8 +1758,12 @@
   .input-base();
 }
 
-.password-field:focused {
+.password-field:hover {
   -fx-border-color: @color-border-default;
+}
+
+.password-field:focused {
+  -fx-border-color: -color-accent-emphasis;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
