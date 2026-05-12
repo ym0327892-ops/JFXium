@@ -108,12 +108,13 @@
 @border-radius-xl: 12px;
 
 // Table Selected Row - shadcn Style (覆盖 base)
+// 参考 AtlantaFX: 使用 base-1 浅色背景 + fg-default 深色文字
 .table-row-cell:selected {
-  -fx-background-color: @color-accent-1;
+  -fx-background-color: #fafafa;
 }
 
 .table-row-cell:selected .table-cell {
-  -fx-text-fill: @color-accent-5;
+  -fx-text-fill: #09090b;
 }
 
 // Import base styles

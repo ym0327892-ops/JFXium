@@ -1957,7 +1957,7 @@
   -fx-transition: translate-x 100ms ease-in-out;
 }
 .table-row-cell:selected {
-  -fx-background-color: #252542;
+  -fx-background-color: #505080;
 }
 .table-row-cell:selected .table-cell {
   -fx-text-fill: #e0e0ff;

@@ -1,8 +1,8 @@
 .table-row-cell:selected {
-  -fx-background-color: #e4e4e7;
+  -fx-background-color: #fafafa;
 }
 .table-row-cell:selected .table-cell {
-  -fx-text-fill: #18181b;
+  -fx-text-fill: #09090b;
 }
 /* ============================================
    Color Scale (Base Tokens)
