@@ -146,6 +146,22 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <!-- Custom Theme -->
+                    <execution>
+                        <id>compile-less-themes-custom</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npx</executable>
+                            <arguments>
+                                <argument>lessc</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/less/theme-custom.less</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/theme-custom.css</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
