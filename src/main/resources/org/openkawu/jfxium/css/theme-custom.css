@@ -1958,7 +1958,3 @@
   -fx-translate-x: -5px;
   -fx-transition: translate-x 100ms ease-in-out;
 }
-.root {
-  -color-cell-bg-selected: #f9f8ff;
-  -color-cell-fg-selected: rgba(0, 0, 0, 0.88);
-}
