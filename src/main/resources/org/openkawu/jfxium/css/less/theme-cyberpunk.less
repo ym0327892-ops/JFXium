@@ -112,5 +112,15 @@
 
 @font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
 
+// Table Selected Row - Cyberpunk Style
+// --------------------------------------------
+.table-row-cell:selected {
+  -fx-background-color: @color-accent-3;
+}
+
+.table-row-cell:selected .table-cell {
+  -fx-text-fill: @color-bg-default;
+}
+
 // Import base styles
 @import "theme-base.less";
