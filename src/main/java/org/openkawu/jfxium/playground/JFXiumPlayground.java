@@ -561,9 +561,11 @@ public class JFXiumPlayground extends Application {
         // Scale animation
         Label scaleBox = new Label("Scale Animation");
         scaleBox.setStyle("-fx-padding: 20px; -fx-background-color: -color-success-subtle; -fx-background-radius: 8px;");
+        scaleBox.setScaleX(1);
+        scaleBox.setScaleY(1);
         Button scaleBtn = ButtonAnt.create("Scale In/Out").type(ButtonAnt.Type.PRIMARY).build();
         scaleBtn.setOnAction(e -> {
-            if (scaleBox.getScaleX() == 1) {
+            if (scaleBox.getScaleX() > 0.95) {
                 AnimationAnt.scaleOut(scaleBox).play();
             } else {
                 scaleBox.setScaleX(0.9);
