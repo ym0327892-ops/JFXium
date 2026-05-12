@@ -54,6 +54,7 @@ public class PopoverAnt {
     public static class Popover {
         private final Builder config;
         private Popup popup;
+        private VBox panel;
 
         private Popover(Builder config) {
             this.config = config;
@@ -89,10 +90,16 @@ public class PopoverAnt {
             popup.setAutoHide(true);
             popup.setAutoFix(true);
 
-            VBox panel = new PopoverPanel.Builder()
+            panel = new PopoverPanel.Builder()
                 .title(config.title)
                 .content(config.content)
+                .closable(true)
+                .onClose(() -> hide())
                 .build();
+
+            panel.setOnMouseClicked(e -> {
+                hide();
+            });
 
             popup.getContent().add(panel);
 
@@ -124,7 +131,7 @@ public class PopoverAnt {
 
             popup.show(config.target, x, y);
 
-            FadeTransition fade = new FadeTransition(Duration.millis(150), popup.getContent().get(0));
+            FadeTransition fade = new FadeTransition(Duration.millis(150), panel);
             fade.setFromValue(0);
             fade.setToValue(1);
             fade.play();

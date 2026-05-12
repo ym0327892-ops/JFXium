@@ -63,14 +63,20 @@ public class TimePickerAnt {
 
             // Hour spinner
             Spinner<Integer> hourSpinner = new Spinner<>(0, 23, value.getHour());
-            hourSpinner.setPrefWidth(80);
-            hourSpinner.setMinWidth(80);
+            hourSpinner.setPrefWidth(60);
+            hourSpinner.setMinWidth(60);
+            hourSpinner.setMaxWidth(60);
             hourSpinner.getStyleClass().add("time-spinner");
             hourSpinner.setDisable(disabled);
             
             // 设置编辑器样式，确保数字能完整显示
             hourSpinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
-            hourSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 8px;");
+            hourSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 2px; -fx-pref-width: 40px;");
+            // 隐藏箭头按钮，使用外部 +/- 按钮
+            hourSpinner.lookup(".increment-arrow-button").setVisible(false);
+            hourSpinner.lookup(".increment-arrow-button").setManaged(false);
+            hourSpinner.lookup(".decrement-arrow-button").setVisible(false);
+            hourSpinner.lookup(".decrement-arrow-button").setManaged(false);
 
             container.getChildren().add(hourSpinner);
 
@@ -80,12 +86,17 @@ public class TimePickerAnt {
                 }});
 
                 Spinner<Integer> minuteSpinner = new Spinner<>(0, 59, value.getMinute());
-                minuteSpinner.setPrefWidth(80);
-                minuteSpinner.setMinWidth(80);
+                minuteSpinner.setPrefWidth(60);
+                minuteSpinner.setMinWidth(60);
+                minuteSpinner.setMaxWidth(60);
                 minuteSpinner.getStyleClass().add("time-spinner");
                 minuteSpinner.setDisable(disabled);
                 minuteSpinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
-                minuteSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 8px;");
+                minuteSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 2px; -fx-pref-width: 40px;");
+                minuteSpinner.lookup(".increment-arrow-button").setVisible(false);
+                minuteSpinner.lookup(".increment-arrow-button").setManaged(false);
+                minuteSpinner.lookup(".decrement-arrow-button").setVisible(false);
+                minuteSpinner.lookup(".decrement-arrow-button").setManaged(false);
                 container.getChildren().add(minuteSpinner);
             }
 
@@ -95,12 +106,17 @@ public class TimePickerAnt {
                 }});
 
                 Spinner<Integer> secondSpinner = new Spinner<>(0, 59, value.getSecond());
-                secondSpinner.setPrefWidth(80);
-                secondSpinner.setMinWidth(80);
+                secondSpinner.setPrefWidth(60);
+                secondSpinner.setMinWidth(60);
+                secondSpinner.setMaxWidth(60);
                 secondSpinner.getStyleClass().add("time-spinner");
                 secondSpinner.setDisable(disabled);
                 secondSpinner.getEditor().setAlignment(javafx.geometry.Pos.CENTER);
-                secondSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 8px;");
+                secondSpinner.getEditor().setStyle("-fx-font-size: 14px; -fx-padding: 4px 2px; -fx-pref-width: 40px;");
+                secondSpinner.lookup(".increment-arrow-button").setVisible(false);
+                secondSpinner.lookup(".increment-arrow-button").setManaged(false);
+                secondSpinner.lookup(".decrement-arrow-button").setVisible(false);
+                secondSpinner.lookup(".decrement-arrow-button").setManaged(false);
                 container.getChildren().add(secondSpinner);
             }
 

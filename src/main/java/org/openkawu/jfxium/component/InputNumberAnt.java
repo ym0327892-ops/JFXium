@@ -245,7 +245,13 @@ public class InputNumberAnt {
         }
 
         private void adjustValue(double delta, TextField field) {
-            double newValue = value + delta;
+            double currentValue;
+            try {
+                currentValue = Double.parseDouble(field.getText());
+            } catch (NumberFormatException e) {
+                currentValue = value;
+            }
+            double newValue = currentValue + delta;
             setValue(newValue, field);
         }
 

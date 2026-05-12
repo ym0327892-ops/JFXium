@@ -2025,16 +2025,20 @@ Phase 3:
 1. **ModalAnt** - ✅ 已使用 PanelHeader + PanelFooter 组装
 2. **DrawerAnt** - ✅ 已使用 PanelHeader + PanelFooter 组装
 
-### 待重构的大组件（使用新基础组件）
+### 已重构完成的大组件（使用新基础组件）
 
 | 组件 | 使用的基础组件 | 状态 |
 |------|--------------|------|
-| NotificationAnt | NotificationCard | ⏳ 待重构 |
-| MessageAnt | MessageCard | ⏳ 待重构 |
-| PopoverAnt | PopoverPanel | ⏳ 待重构 |
-| PopconfirmAnt | PopconfirmPanel | ⏳ 待重构 |
-| ResultAnt | ResultDisplay | ⏳ 待重构 |
-| AlertAnt | AlertBanner | ⏳ 待重构 |
+| ModalAnt | PanelHeader + PanelFooter | ✅ 已完成 |
+| DrawerAnt | PanelHeader + PanelFooter | ✅ 已完成 |
+| NotificationAnt | NotificationCard | ✅ 已完成 |
+| MessageAnt | MessageCard | ✅ 已完成 |
+| PopoverAnt | PopoverPanel | ✅ 已完成 |
+| PopconfirmAnt | PopconfirmPanel | ✅ 已完成 |
+| ResultAnt | ResultDisplay | ✅ 已完成 |
+| AlertAnt | 保留原实现 | ⚠️ 特殊处理 |
+
+> 注：AlertAnt 保留原实现因其 closable 动画逻辑复杂，基础组件 AlertBanner 可用于简化场景
 
 ### 组件化优势
 

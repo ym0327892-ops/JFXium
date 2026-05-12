@@ -195,8 +195,7 @@
   -fx-border-color: -color-accent-emphasis;
 }
 .text-field:focused {
-  -fx-border-color: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+  -fx-border-color: #30305a;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -216,8 +215,7 @@
   -fx-border-color: -color-accent-emphasis;
 }
 .text-area:focused {
-  -fx-border-color: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+  -fx-border-color: #30305a;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -491,12 +489,19 @@
   -fx-border-width: 2px;
   -fx-background-radius: 9999px;
   -fx-border-radius: 9999px;
-  -fx-padding: 4px;
   -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.3), 4, 0, 0, 1);
+  -fx-snap-to-pixel: false;
 }
 .slider .thumb:hover {
   -fx-background-color: -color-accent-subtle;
   -fx-cursor: hand;
+}
+.slider .slider:focused .thumb {
+  -fx-border-color: -color-accent-emphasis;
+}
+.slider:focused {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 .slider .colored-track {
   -fx-background-color: -color-accent-emphasis;
@@ -993,6 +998,36 @@
   -fx-opacity: 0.6;
   -fx-cursor: default;
 }
+/* Custom Switch Component (JFXSwitch) */
+.jfx-switch {
+  -fx-background-radius: 11px;
+  -fx-border-radius: 11px;
+}
+.jfx-switch-track {
+  -fx-background-color: -color-border-default;
+  -fx-background-radius: 11px;
+  -fx-border-radius: 11px;
+}
+.jfx-switch-thumb {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: 9px;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: 9px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+}
+.jfx-switch.switch-selected .jfx-switch-track {
+  -fx-background-color: -color-accent-emphasis;
+}
+.jfx-switch.switch-selected .jfx-switch-thumb {
+  -fx-border-color: -color-accent-emphasis;
+}
+.jfx-switch:hover .jfx-switch-track {
+  -fx-background-color: -color-accent-muted;
+}
+.jfx-switch.switch-selected:hover .jfx-switch-track {
+  -fx-background-color: -color-accent-4;
+}
 /* ============================================
    Label & Text Styles
    ============================================ */
@@ -1105,9 +1140,10 @@
   -fx-padding: 0;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
+  -fx-focus-traversable: false;
 }
 .spinner:focused {
-  -fx-border-color: -color-accent-emphasis;
+  -fx-border-color: #30305a;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -1115,6 +1151,8 @@
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-padding: 8px 12px;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 .spinner .increment-arrow-button,
 .spinner .decrement-arrow-button {
@@ -1491,8 +1529,7 @@
   -fx-text-fill: #e0e0ff;
 }
 .password-field:focused {
-  -fx-border-color: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, -color-accent-subtle, 4, 0, 0, 0);
+  -fx-border-color: #30305a;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
