@@ -6,12 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import org.openkawu.jfxium.component.base.PopoverPanel;
 
-/**
- * JFXium Popover Component
- * Inspired by Ant Design Popover
- * A floating card that appears near a target element.
- */
 public class PopoverAnt {
 
     public enum Trigger {
@@ -70,7 +66,6 @@ public class PopoverAnt {
             if (config.trigger == Trigger.HOVER) {
                 config.target.setOnMouseEntered(e -> show());
                 config.target.setOnMouseExited(e -> {
-                    // 延迟隐藏，让用户有时间移动到 Popover 上
                     javafx.animation.PauseTransition delay = new javafx.animation.PauseTransition(Duration.millis(100));
                     delay.setOnFinished(ev -> hide());
                     delay.play();
@@ -90,13 +85,17 @@ public class PopoverAnt {
             if (config.target == null) return;
             if (popup != null && popup.isShowing()) return;
 
-            // Create popup
             popup = new Popup();
-            popup.setAutoHide(true); // 点击外部自动关闭
-            popup.setAutoFix(true); // 自动调整位置防止超出屏幕
-            popup.getContent().add(createContent());
+            popup.setAutoHide(true);
+            popup.setAutoFix(true);
 
-            // Calculate position
+            VBox panel = new PopoverPanel.Builder()
+                .title(config.title)
+                .content(config.content)
+                .build();
+
+            popup.getContent().add(panel);
+
             javafx.geometry.Bounds bounds = config.target.localToScreen(config.target.getBoundsInLocal());
             double x, y;
 
@@ -125,7 +124,6 @@ public class PopoverAnt {
 
             popup.show(config.target, x, y);
 
-            // Animate in
             FadeTransition fade = new FadeTransition(Duration.millis(150), popup.getContent().get(0));
             fade.setFromValue(0);
             fade.setToValue(1);
@@ -136,36 +134,6 @@ public class PopoverAnt {
             if (popup != null && popup.isShowing()) {
                 popup.hide();
             }
-        }
-
-        private VBox createContent() {
-            VBox box = new VBox(0);
-            box.setStyle(
-                "-fx-background-color: -color-bg-overlay;" +
-                "-fx-background-radius: 8px;" +
-                "-fx-border-radius: 8px;" +
-                "-fx-border-color: -color-border-default;" +
-                "-fx-border-width: 1px;" +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);" +
-                "-fx-min-width: 200px;" +
-                "-fx-max-width: 300px;"
-            );
-
-            // Title
-            if (!config.title.isEmpty()) {
-                javafx.scene.control.Label titleLabel = new javafx.scene.control.Label(config.title);
-                titleLabel.setStyle("-fx-text-fill: -color-fg-default; -fx-font-size: 14px; -fx-font-weight: 600; -fx-padding: 12px 16px;");
-                box.getChildren().add(titleLabel);
-            }
-
-            // Content
-            if (config.content != null) {
-                VBox contentBox = new VBox(config.content);
-                contentBox.setStyle("-fx-padding: 12px 16px;");
-                box.getChildren().add(contentBox);
-            }
-
-            return box;
         }
     }
 

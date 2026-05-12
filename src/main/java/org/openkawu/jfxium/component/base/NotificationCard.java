@@ -53,6 +53,11 @@ public class NotificationCard {
             return this;
         }
 
+        public Builder content(Node content) {
+            this.extra = content;
+            return this;
+        }
+
         public Builder width(String width) {
             this.width = width;
             return this;

@@ -4,15 +4,11 @@ import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import org.openkawu.jfxium.component.base.NotificationCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,12 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-/**
- * JFXium Notification Component
- * Inspired by Ant Design Notification
- * A notification message displayed at the corner of the screen.
- * Notifications stack vertically at their placement corner.
- */
 public class NotificationAnt {
 
     public enum Type {
@@ -36,9 +26,8 @@ public class NotificationAnt {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
-    // Track active notifications per placement
     private static final Map<Placement, List<NotificationEntry>> activeNotifications = new HashMap<>();
-    private static final int SPACING = 70; // Vertical spacing between notifications
+    private static final int SPACING = 70;
 
     static {
         for (Placement p : Placement.values()) {
@@ -121,7 +110,6 @@ public class NotificationAnt {
         return new Builder();
     }
 
-    // Convenience methods
     public static void success(String title, String description) {
         create().title(title).description(description).type(Type.SUCCESS).show();
     }
@@ -150,25 +138,27 @@ public class NotificationAnt {
 
             List<NotificationEntry> list = activeNotifications.get(config.placement);
 
-            // Create notification panel
-            HBox notificationBox = createNotificationBox(config);
+            NotificationCard.Builder cardBuilder = new NotificationCard.Builder()
+                .title(config.title)
+                .description(config.description)
+                .type(convertType(config.type))
+                .closable(config.closable)
+                .content(config.content);
 
-            // Create popup
+            HBox notificationBox = cardBuilder.build();
+
             Popup popup = new Popup();
             popup.getContent().add(notificationBox);
 
-            // Calculate position based on placement
             double[] pos = calculatePosition(window, config.placement, list.size());
             popup.setX(pos[0]);
             popup.setY(pos[1]);
 
             popup.show(window);
 
-            // Add to active list
             NotificationEntry entry = new NotificationEntry(popup, notificationBox);
             list.add(entry);
 
-            // Animate in
             notificationBox.setOpacity(0);
             boolean fromLeft = config.placement == Placement.TOP_LEFT || config.placement == Placement.BOTTOM_LEFT;
             notificationBox.setTranslateX(fromLeft ? -20 : 20);
@@ -186,14 +176,12 @@ public class NotificationAnt {
             javafx.animation.ParallelTransition pt = new javafx.animation.ParallelTransition(fadeIn, slideIn);
             pt.play();
 
-            // Auto hide
             if (config.durationSeconds > 0) {
                 PauseTransition delay = new PauseTransition(Duration.seconds(config.durationSeconds));
                 delay.setOnFinished(e -> hide(entry, config));
                 delay.play();
             }
 
-            // Click to close
             if (config.closable) {
                 notificationBox.setOnMouseClicked(e -> {
                     if (config.onClick != null) {
@@ -207,7 +195,7 @@ public class NotificationAnt {
 
     private static double[] calculatePosition(javafx.stage.Window window, Placement placement, int index) {
         double x, y;
-        double width = 384; // Notification width
+        double width = 384;
         double margin = 24;
 
         switch (placement) {
@@ -267,69 +255,12 @@ public class NotificationAnt {
         }
     }
 
-    private static HBox createNotificationBox(Builder config) {
-        HBox box = new HBox(12);
-        box.setAlignment(Pos.TOP_LEFT);
-        box.setStyle(
-            "-fx-background-color: -color-bg-overlay;" +
-            "-fx-padding: 16px 24px;" +
-            "-fx-background-radius: 8px;" +
-            "-fx-border-radius: 8px;" +
-            "-fx-border-color: -color-border-default;" +
-            "-fx-border-width: 1px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);" +
-            "-fx-min-width: 384px;" +
-            "-fx-max-width: 384px;"
-        );
-
-        // Icon
-        SVGPath icon = new SVGPath();
-        icon.setContent(getIconPath(config.type));
-        icon.setStyle("-fx-fill: " + getIconColor(config.type) + ";");
-        icon.setTranslateY(2);
-        box.getChildren().add(icon);
-
-        // Content
-        VBox contentBox = new VBox(4);
-        HBox.setHgrow(contentBox, Priority.ALWAYS);
-
-        if (!config.title.isEmpty()) {
-            Label titleLabel = new Label(config.title);
-            titleLabel.setStyle("-fx-text-fill: -color-fg-default; -fx-font-size: 16px; -fx-font-weight: 600;");
-            contentBox.getChildren().add(titleLabel);
-        }
-
-        if (!config.description.isEmpty()) {
-            Label descLabel = new Label(config.description);
-            descLabel.setStyle("-fx-text-fill: -color-fg-muted; -fx-font-size: 14px;");
-            descLabel.setWrapText(true);
-            contentBox.getChildren().add(descLabel);
-        }
-
-        if (config.content != null) {
-            contentBox.getChildren().add(config.content);
-        }
-
-        box.getChildren().add(contentBox);
-
-        return box;
-    }
-
-    private static String getIconPath(Type type) {
+    private static NotificationCard.Type convertType(Type type) {
         return switch (type) {
-            case SUCCESS -> "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z";
-            case ERROR -> "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z";
-            case WARNING -> "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z";
-            case INFO -> "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z";
-        };
-    }
-
-    private static String getIconColor(Type type) {
-        return switch (type) {
-            case SUCCESS -> "-color-success-emphasis";
-            case ERROR -> "-color-danger-emphasis";
-            case WARNING -> "-color-warning-emphasis";
-            case INFO -> "-color-accent-emphasis";
+            case SUCCESS -> NotificationCard.Type.SUCCESS;
+            case ERROR -> NotificationCard.Type.ERROR;
+            case WARNING -> NotificationCard.Type.WARNING;
+            case INFO -> NotificationCard.Type.INFO;
         };
     }
 }

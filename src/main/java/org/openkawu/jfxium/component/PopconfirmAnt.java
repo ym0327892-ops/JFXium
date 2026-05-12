@@ -1,22 +1,14 @@
 package org.openkawu.jfxium.component;
 
 import javafx.animation.FadeTransition;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import org.openkawu.jfxium.component.base.PopconfirmPanel;
 
 import java.util.function.Consumer;
 
-/**
- * JFXium Popconfirm Component
- * Inspired by Ant Design Popconfirm
- * A simple confirmation dialog that appears near a target element.
- */
 public class PopconfirmAnt {
 
     public static class Builder {
@@ -79,15 +71,32 @@ public class PopconfirmAnt {
         public void show() {
             if (config.target == null) return;
 
-            // Create popup
             popup = new Popup();
-            popup.getContent().add(createContent());
 
-            // Position below target
+            VBox panel = new PopconfirmPanel.Builder()
+                .title(config.title)
+                .description(config.description)
+                .okText(config.okText)
+                .cancelText(config.cancelText)
+                .onConfirm(() -> {
+                    hide();
+                    if (config.onConfirm != null) {
+                        config.onConfirm.accept(true);
+                    }
+                })
+                .onCancel(() -> {
+                    hide();
+                    if (config.onCancel != null) {
+                        config.onCancel.accept(false);
+                    }
+                })
+                .build();
+
+            popup.getContent().add(panel);
+
             javafx.geometry.Bounds bounds = config.target.localToScreen(config.target.getBoundsInLocal());
             popup.show(config.target, bounds.getMinX(), bounds.getMaxY() + 8);
 
-            // Animate in
             FadeTransition fade = new FadeTransition(Duration.millis(150), popup.getContent().get(0));
             fade.setFromValue(0);
             fade.setToValue(1);
@@ -98,74 +107,6 @@ public class PopconfirmAnt {
             if (popup != null) {
                 popup.hide();
             }
-        }
-
-        private VBox createContent() {
-            VBox box = new VBox(12);
-            box.setStyle(
-                "-fx-background-color: -color-bg-overlay;" +
-                "-fx-padding: 12px 16px;" +
-                "-fx-background-radius: 8px;" +
-                "-fx-border-radius: 8px;" +
-                "-fx-border-color: -color-border-default;" +
-                "-fx-border-width: 1px;" +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);" +
-                "-fx-min-width: 200px;"
-            );
-
-            // Title with icon
-            HBox titleBox = new HBox(8);
-            titleBox.setAlignment(Pos.CENTER_LEFT);
-
-            SVGPath icon = new SVGPath();
-            icon.setContent("M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z");
-            icon.setStyle("-fx-fill: -color-warning-emphasis;");
-            titleBox.getChildren().add(icon);
-
-            Label titleLabel = new Label(config.title);
-            titleLabel.setStyle("-fx-text-fill: -color-fg-default; -fx-font-size: 14px; -fx-font-weight: 500;");
-            titleBox.getChildren().add(titleLabel);
-
-            box.getChildren().add(titleBox);
-
-            // Description
-            if (!config.description.isEmpty()) {
-                Label descLabel = new Label(config.description);
-                descLabel.setStyle("-fx-text-fill: -color-fg-muted; -fx-font-size: 12px;");
-                descLabel.setWrapText(true);
-                box.getChildren().add(descLabel);
-            }
-
-            // Buttons
-            HBox buttonBox = new HBox(8);
-            buttonBox.setAlignment(Pos.CENTER_RIGHT);
-
-            javafx.scene.control.Button cancelBtn = ButtonAnt.create(config.cancelText)
-                .type(ButtonAnt.Type.DEFAULT)
-                .size(ButtonAnt.Size.SMALL)
-                .onClick(e -> {
-                    hide();
-                    if (config.onCancel != null) {
-                        config.onCancel.accept(false);
-                    }
-                })
-                .build();
-
-            javafx.scene.control.Button okBtn = ButtonAnt.create(config.okText)
-                .type(ButtonAnt.Type.PRIMARY)
-                .size(ButtonAnt.Size.SMALL)
-                .onClick(e -> {
-                    hide();
-                    if (config.onConfirm != null) {
-                        config.onConfirm.accept(true);
-                    }
-                })
-                .build();
-
-            buttonBox.getChildren().addAll(cancelBtn, okBtn);
-            box.getChildren().add(buttonBox);
-
-            return box;
         }
     }
 

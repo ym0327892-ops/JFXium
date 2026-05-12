@@ -10,29 +10,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import org.openkawu.jfxium.component.base.AlertBanner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * JFXium Alert Component
- * Inspired by Ant Design Alert
- *
- * Usage:
- * <pre>{@code
- * // 成功提示
- * Node alert = AlertAnt.success("操作成功", "数据已成功保存到数据库。").build();
- *
- * // 错误提示
- * Node alert = AlertAnt.error("操作失败", "请检查网络连接后重试。").closable(true).build();
- *
- * // 警告提示
- * Node alert = AlertAnt.warning("注意", "此操作不可撤销。").build();
- *
- * // 信息提示
- * Node alert = AlertAnt.info("提示", "请仔细阅读使用说明。").build();
- * }</pre>
- */
 public class AlertAnt {
 
     public enum Type {
@@ -99,10 +81,6 @@ public class AlertAnt {
             return this;
         }
 
-        /**
-         * 顶部公告模式 - 全宽显示，默认 warning 类型
-         * 对标 Ant Design banner 属性
-         */
         public Builder banner(boolean banner) {
             this.banner = banner;
             return this;
@@ -112,10 +90,6 @@ public class AlertAnt {
             return banner(true);
         }
 
-        /**
-         * 自定义操作区域 - 右上角操作按钮
-         * 对标 Ant Design action 属性
-         */
         public Builder action(Node action) {
             this.action = action;
             return this;
@@ -141,13 +115,11 @@ public class AlertAnt {
             alert.setPadding(new Insets(12, 16, 12, 16));
             alert.setAlignment(Pos.CENTER_LEFT);
 
-            // Get colors based on type
             String bgColor = getBackgroundColor(type);
             String borderColor = getBorderColor(type);
             String textColor = getTextColor(type);
             String icon = getIcon(type);
 
-            // Style
             alert.setStyle(
                 "-fx-background-color: " + bgColor + ";" +
                 "-fx-border-color: " + borderColor + ";" +
@@ -156,7 +128,6 @@ public class AlertAnt {
                 "-fx-background-radius: 6px;"
             );
 
-            // Banner 模式 - 全宽显示，无边框圆角
             if (banner) {
                 alert.setStyle(
                     "-fx-background-color: " + bgColor + ";" +
@@ -167,7 +138,6 @@ public class AlertAnt {
                 HBox.setHgrow(alert, Priority.ALWAYS);
             }
 
-            // Header with icon and title
             HBox header = new HBox(8);
             header.setAlignment(Pos.CENTER_LEFT);
 
@@ -181,14 +151,12 @@ public class AlertAnt {
             titleLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: " + textColor + ";");
             header.getChildren().add(titleLabel);
 
-            // Action 区域 - 右上角操作按钮，对标 Ant Design action
             if (action != null) {
                 Region spacer = new Region();
                 HBox.setHgrow(spacer, Priority.ALWAYS);
                 header.getChildren().addAll(spacer, action);
             }
 
-            // Close button
             if (closable) {
                 if (action == null) {
                     Region spacer = new Region();
@@ -207,7 +175,6 @@ public class AlertAnt {
                     "-fx-cursor: hand;"
                 );
                 closeBtn.setOnAction(e -> {
-                    // Fade out animation
                     FadeTransition fadeOut = new FadeTransition(Duration.millis(200), alert);
                     fadeOut.setFromValue(1);
                     fadeOut.setToValue(0);
@@ -227,7 +194,6 @@ public class AlertAnt {
 
             alert.getChildren().add(header);
 
-            // Message
             if (message != null && !message.isEmpty()) {
                 Label messageLabel = new Label(message);
                 messageLabel.setWrapText(true);
