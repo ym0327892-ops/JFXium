@@ -112,16 +112,15 @@
 
 @font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
 
-// Import base styles (变量覆盖要放在 import 之前)
+// Import base styles
 @import "theme-base.less";
 
 // Table Selected Row - Cyberpunk Style (覆盖 base 的样式)
 .table-row-cell:selected {
-  -fx-background: @color-accent-3;
-  -fx-background-color: @color-accent-3;
+  -fx-background-color: @color-accent-0;
 }
 
 .table-row-cell:selected .table-cell {
-  -fx-text-fill: #000000;
+  -fx-text-fill: @color-accent-5;
   -fx-background-color: transparent;
 }

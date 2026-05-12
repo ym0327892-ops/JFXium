@@ -107,5 +107,14 @@
 @border-radius-lg: 8px;
 @border-radius-xl: 12px;
 
+// Table Selected Row - shadcn Style (覆盖 base)
+.table-row-cell:selected {
+  -fx-background-color: @color-accent-1;
+}
+
+.table-row-cell:selected .table-cell {
+  -fx-text-fill: @color-accent-5;
+}
+
 // Import base styles
 @import "theme-base.less";

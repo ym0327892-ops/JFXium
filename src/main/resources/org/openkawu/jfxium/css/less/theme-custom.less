@@ -114,3 +114,12 @@
 // 导入基础组件样式（使用上面的变量）
 // ============================================
 @import "theme-base.less";
+
+// Table Selected Row - Custom Purple Style (覆盖 base)
+.table-row-cell:selected {
+  -fx-background-color: @color-accent-subtle;
+}
+
+.table-row-cell:selected .table-cell {
+  -fx-text-fill: @color-accent-emphasis;
+}
