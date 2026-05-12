@@ -115,12 +115,11 @@
 // ============================================
 @import "theme-base.less";
 
-// Table Selected Row - Custom Purple Style (覆盖 base)
-// 参考 AtlantaFX: 使用 base-1 浅色背景 + fg-default 深色文字
-.table-row-cell:selected {
-  -fx-background-color: #f9f8ff;
-}
-
-.table-row-cell:selected .table-cell {
-  -fx-text-fill: rgba(0, 0, 0, 0.88);
+// ============================================
+// CSS Variable Overrides for Table Selected Row
+// 参考 AtlantaFX: 选中背景使用 base 色，不是主题色
+// ============================================
+.root {
+  -color-cell-bg-selected: #f9f8ff;
+  -color-cell-fg-selected: rgba(0, 0, 0, 0.88);
 }

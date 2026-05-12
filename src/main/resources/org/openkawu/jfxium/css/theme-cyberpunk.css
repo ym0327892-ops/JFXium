@@ -76,6 +76,8 @@
   -color-accent-emphasis: #00ffff;
   -color-accent-muted: #006666;
   -color-accent-subtle: #001a1a;
+  -color-cell-bg-selected: #1a1a2e;
+  -color-cell-fg-selected: #e0e0ff;
   -color-success-emphasis: #00ff00;
   -color-success-muted: #006600;
   -color-success-subtle: #001a00;
@@ -1240,10 +1242,10 @@
   -fx-background-color: -color-bg-subtle;
 }
 .table-row-cell:selected {
-  -fx-background-color: -color-accent-subtle;
+  -fx-background-color: -color-cell-bg-selected;
 }
 .table-row-cell:selected .table-cell {
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-cell-fg-selected;
 }
 .table-cell {
   -fx-padding: 8px 12px;
@@ -1956,9 +1958,7 @@
   -fx-translate-x: -5px;
   -fx-transition: translate-x 100ms ease-in-out;
 }
-.table-row-cell:selected {
-  -fx-background-color: #505080;
-}
-.table-row-cell:selected .table-cell {
-  -fx-text-fill: #e0e0ff;
+.root {
+  -color-cell-bg-selected: #505080;
+  -color-cell-fg-selected: #e0e0ff;
 }

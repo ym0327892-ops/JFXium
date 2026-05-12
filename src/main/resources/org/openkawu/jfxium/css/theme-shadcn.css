@@ -1,8 +1,6 @@
-.table-row-cell:selected {
-  -fx-background-color: #fafafa;
-}
-.table-row-cell:selected .table-cell {
-  -fx-text-fill: #09090b;
+:root {
+  -color-cell-bg-selected: #fafafa;
+  -color-cell-fg-selected: #09090b;
 }
 /* ============================================
    Color Scale (Base Tokens)
@@ -82,6 +80,8 @@
   -color-accent-emphasis: #18181b;
   -color-accent-muted: #d4d4d8;
   -color-accent-subtle: #f4f4f5;
+  -color-cell-bg-selected: #fafafa;
+  -color-cell-fg-selected: #09090b;
   -color-success-emphasis: #22c55e;
   -color-success-muted: #bbf7d0;
   -color-success-subtle: #f0fdf4;
@@ -1246,10 +1246,10 @@
   -fx-background-color: -color-bg-subtle;
 }
 .table-row-cell:selected {
-  -fx-background-color: -color-accent-subtle;
+  -fx-background-color: -color-cell-bg-selected;
 }
 .table-row-cell:selected .table-cell {
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-cell-fg-selected;
 }
 .table-cell {
   -fx-padding: 8px 12px;

@@ -91,6 +91,9 @@
   -color-accent-muted: @color-accent-muted;
   -color-accent-subtle: @color-accent-subtle;
 
+  -color-cell-bg-selected: @color-bg-subtle;
+  -color-cell-fg-selected: @color-fg-default;
+
   -color-success-emphasis: @color-success-emphasis;
   -color-success-muted: @color-success-muted;
   -color-success-subtle: @color-success-subtle;
@@ -1427,11 +1430,11 @@
 }
 
 .table-row-cell:selected {
-  -fx-background-color: -color-accent-subtle;
+  -fx-background-color: -color-cell-bg-selected;
 }
 
 .table-row-cell:selected .table-cell {
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-cell-fg-selected;
 }
 
 .table-cell {

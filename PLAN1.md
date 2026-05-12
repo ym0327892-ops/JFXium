@@ -2,6 +2,11 @@
 模仿ANt Design 组件 , 与 AtlantaFX 本地代码在 F:\workspace-open-code\atlantafx\sampler）
 mui主题下 ,  Hover Effect（悬停效果）不对, 根本看不到原来文字 ; 去对比ant 去; 
 所有 关于输入框 ,输入文字的 地方 都是 获取到焦点后 可以如文字 后  , 框体会微型变大;  这是正常吗? ant 也是这么做的么??? 不是吧?
+## 问题BUG
+![alt text](image-7.png)
+
+table 组件的  其他主题色 ,每行选中啥就是 背景主题色  ,文字看不到 , 不是很浅的主题色这是一个问题; 修复了好几遍 问题依旧, 是不是没有编译less 文件?  
+你参考 AtlantaFX
 ## 已修复问题
 
 | # | 问题 | 状态 | 修复日期 |

@@ -1044,10 +1044,10 @@
   -fx-background-color: -color-bg-subtle;
 }
 .table-row-cell:selected {
-  -fx-background-color: -color-accent-subtle;
+  -fx-background-color: #f9f8ff;
 }
 .table-row-cell:selected .table-cell {
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
 }
 .table-cell {
   -fx-padding: 8px 12px;

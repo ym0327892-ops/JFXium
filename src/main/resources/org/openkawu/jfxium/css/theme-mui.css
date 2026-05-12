@@ -76,6 +76,8 @@
   -color-accent-emphasis: #1976d2;
   -color-accent-muted: #90caf9;
   -color-accent-subtle: #e3f2fd;
+  -color-cell-bg-selected: #fafafa;
+  -color-cell-fg-selected: rgba(33, 33, 33, 0.87);
   -color-success-emphasis: #2e7d32;
   -color-success-muted: #a5d6a7;
   -color-success-subtle: #e8f5e9;
@@ -1240,10 +1242,10 @@
   -fx-background-color: -color-bg-subtle;
 }
 .table-row-cell:selected {
-  -fx-background-color: -color-accent-subtle;
+  -fx-background-color: -color-cell-bg-selected;
 }
 .table-row-cell:selected .table-cell {
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-cell-fg-selected;
 }
 .table-cell {
   -fx-padding: 8px 12px;
