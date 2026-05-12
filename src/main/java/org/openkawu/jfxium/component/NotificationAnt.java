@@ -4,9 +4,13 @@ import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
+import javafx.geometry.Bounds;
+import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import javafx.stage.Window;
 import javafx.util.Duration;
 import org.openkawu.jfxium.component.base.NotificationCard;
 
@@ -26,22 +30,91 @@ public class NotificationAnt {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
-    private static final Map<Placement, List<NotificationEntry>> activeNotifications = new HashMap<>();
-    private static final int SPACING = 70;
+    private static final Map<Placement, NotificationContainer> containers = new HashMap<>();
 
     static {
         for (Placement p : Placement.values()) {
-            activeNotifications.put(p, new ArrayList<>());
+            containers.put(p, new NotificationContainer(p));
         }
     }
 
     private static class NotificationEntry {
         final Popup popup;
-        final HBox box;
+        final VBox box;
 
-        NotificationEntry(Popup popup, HBox box) {
+        NotificationEntry(Popup popup, VBox box) {
             this.popup = popup;
             this.box = box;
+        }
+    }
+
+    private static class NotificationContainer {
+        final Placement placement;
+        final VBox container;
+        final Popup popup;
+        final List<NotificationEntry> entries = new ArrayList<>();
+        Window window;
+
+        NotificationContainer(Placement placement) {
+            this.placement = placement;
+            this.container = new VBox(10);
+            this.container.setAlignment(Pos.TOP_LEFT);
+            this.container.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+
+            this.popup = new Popup();
+            this.popup.getContent().add(container);
+            this.popup.setAutoHide(false);
+            this.popup.setHideOnEscape(false);
+        }
+
+        void addEntry(NotificationEntry entry) {
+            entries.add(entry);
+            container.getChildren().add(entry.box);
+            updatePosition();
+        }
+
+        void removeEntry(NotificationEntry entry) {
+            entries.remove(entry);
+            container.getChildren().remove(entry.box);
+            updatePosition();
+        }
+
+        void updatePosition() {
+            if (window == null || !window.isShowing()) return;
+
+            double x, y;
+            double margin = 24;
+            double width = 384;
+
+            Bounds bounds = window.getScene().getRoot().getLayoutBounds();
+            switch (placement) {
+                case TOP_LEFT -> {
+                    x = window.getX() + margin;
+                    y = window.getY() + margin;
+                }
+                case TOP_RIGHT -> {
+                    x = window.getX() + window.getWidth() - width - margin;
+                    y = window.getY() + margin;
+                }
+                case BOTTOM_LEFT -> {
+                    x = window.getX() + margin;
+                    y = window.getY() + window.getHeight() - margin - container.getHeight();
+                }
+                case BOTTOM_RIGHT -> {
+                    x = window.getX() + window.getWidth() - width - margin;
+                    y = window.getY() + window.getHeight() - margin - container.getHeight();
+                }
+                default -> {
+                    x = window.getX() + window.getWidth() - width - margin;
+                    y = window.getY() + margin;
+                }
+            }
+
+            if (!popup.isShowing()) {
+                popup.show(window);
+            }
+            popup.setX(x);
+            popup.setY(y);
         }
     }
 
@@ -128,15 +201,16 @@ public class NotificationAnt {
 
     private static void show(Builder config) {
         javafx.application.Platform.runLater(() -> {
-            javafx.stage.Window window = javafx.stage.Window.getWindows().stream()
-                .filter(javafx.stage.Window::isShowing)
+            Window window = Window.getWindows().stream()
+                .filter(Window::isShowing)
                 .filter(w -> w instanceof javafx.stage.Stage)
                 .findFirst()
                 .orElse(null);
 
             if (window == null) return;
 
-            List<NotificationEntry> list = activeNotifications.get(config.placement);
+            NotificationContainer container = containers.get(config.placement);
+            container.window = window;
 
             NotificationCard.Builder cardBuilder = new NotificationCard.Builder()
                 .title(config.title)
@@ -145,19 +219,13 @@ public class NotificationAnt {
                 .closable(config.closable)
                 .content(config.content);
 
-            HBox notificationBox = cardBuilder.build();
+            VBox notificationBox = cardBuilder.build();
 
             Popup popup = new Popup();
+            popup.setAutoHide(true);
             popup.getContent().add(notificationBox);
 
-            double[] pos = calculatePosition(window, config.placement, list.size());
-            popup.setX(pos[0]);
-            popup.setY(pos[1]);
-
-            popup.show(window);
-
             NotificationEntry entry = new NotificationEntry(popup, notificationBox);
-            list.add(entry);
 
             notificationBox.setOpacity(0);
             boolean fromLeft = config.placement == Placement.TOP_LEFT || config.placement == Placement.BOTTOM_LEFT;
@@ -190,69 +258,21 @@ public class NotificationAnt {
                     hide(entry, config);
                 });
             }
+
+            container.addEntry(entry);
         });
     }
 
-    private static double[] calculatePosition(javafx.stage.Window window, Placement placement, int index) {
-        double x, y;
-        double width = 384;
-        double margin = 24;
-
-        switch (placement) {
-            case TOP_LEFT -> {
-                x = window.getX() + margin;
-                y = window.getY() + margin + (index * SPACING);
-            }
-            case TOP_RIGHT -> {
-                x = window.getX() + window.getWidth() - width - margin;
-                y = window.getY() + margin + (index * SPACING);
-            }
-            case BOTTOM_LEFT -> {
-                x = window.getX() + margin;
-                y = window.getY() + window.getHeight() - margin - (index * SPACING) - 80;
-            }
-            case BOTTOM_RIGHT -> {
-                x = window.getX() + window.getWidth() - width - margin;
-                y = window.getY() + window.getHeight() - margin - (index * SPACING) - 80;
-            }
-            default -> {
-                x = window.getX() + window.getWidth() - width - margin;
-                y = window.getY() + margin + (index * SPACING);
-            }
-        }
-        return new double[]{x, y};
-    }
-
     private static void hide(NotificationEntry entry, Builder config) {
-        List<NotificationEntry> list = activeNotifications.get(config.placement);
-        if (!list.contains(entry)) return;
-
         FadeTransition fadeOut = new FadeTransition(Duration.millis(200), entry.box);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
         fadeOut.setOnFinished(e -> {
             entry.popup.hide();
-            list.remove(entry);
-            repositionNotifications(config.placement);
+            NotificationContainer container = containers.get(config.placement);
+            container.removeEntry(entry);
         });
         fadeOut.play();
-    }
-
-    private static void repositionNotifications(Placement placement) {
-        javafx.stage.Window window = javafx.stage.Window.getWindows().stream()
-            .filter(javafx.stage.Window::isShowing)
-            .filter(w -> w instanceof javafx.stage.Stage)
-            .findFirst()
-            .orElse(null);
-
-        if (window == null) return;
-
-        List<NotificationEntry> list = activeNotifications.get(placement);
-        for (int i = 0; i < list.size(); i++) {
-            double[] pos = calculatePosition(window, placement, i);
-            list.get(i).popup.setX(pos[0]);
-            list.get(i).popup.setY(pos[1]);
-        }
     }
 
     private static NotificationCard.Type convertType(Type type) {

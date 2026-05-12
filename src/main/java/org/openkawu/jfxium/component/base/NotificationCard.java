@@ -63,8 +63,8 @@ public class NotificationCard {
             return this;
         }
 
-        public HBox build() {
-            HBox card = new HBox(12);
+        public VBox build() {
+            VBox card = new VBox(12);
             card.setAlignment(Pos.TOP_LEFT);
             card.setStyle(
                 "-fx-background-color: -color-bg-overlay;" +
@@ -78,11 +78,15 @@ public class NotificationCard {
                 "-fx-max-width: " + width + ";"
             );
 
+            HBox headerBox = new HBox(12);
+            headerBox.setAlignment(Pos.TOP_LEFT);
+            HBox.setHgrow(headerBox, Priority.ALWAYS);
+
             SVGPath icon = new SVGPath();
             icon.setContent(getIconPath(type));
             icon.setStyle("-fx-fill: " + getIconColor(type) + ";");
             icon.setTranslateY(2);
-            card.getChildren().add(icon);
+            headerBox.getChildren().add(icon);
 
             VBox contentBox = new VBox(4);
             HBox.setHgrow(contentBox, Priority.ALWAYS);
@@ -104,12 +108,14 @@ public class NotificationCard {
                 contentBox.getChildren().add(extra);
             }
 
-            card.getChildren().add(contentBox);
+            headerBox.getChildren().add(contentBox);
 
             if (closable && onClose != null) {
                 CloseButton closeBtn = new CloseButton(onClose);
-                card.getChildren().add(closeBtn);
+                headerBox.getChildren().add(closeBtn);
             }
+
+            card.getChildren().add(headerBox);
 
             return card;
         }
