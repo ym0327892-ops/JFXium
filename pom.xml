@@ -162,6 +162,38 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <!-- MUI Compact Theme -->
+                    <execution>
+                        <id>compile-less-themes-mui-compact</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npx</executable>
+                            <arguments>
+                                <argument>lessc</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/less/theme-mui-compact.less</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/theme-mui-compact.css</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <!-- MUI Dark Compact Theme -->
+                    <execution>
+                        <id>compile-less-themes-mui-dark-compact</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npx</executable>
+                            <arguments>
+                                <argument>lessc</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/less/theme-mui-dark-compact.less</argument>
+                                <argument>src/main/resources/org/openkawu/jfxium/css/theme-mui-dark-compact.css</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
