@@ -2087,27 +2087,27 @@
    - popup boxShadow: 特殊 Menu 阴影
    ============================================ */
 .combo-box-popup .list-view {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 5, 0, 3), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 10, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 14, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 5, 0, 3);
   -fx-background-radius: 4px;
 }
 /* ============================================
    Card - MUI Elevation
    ============================================ */
 .card {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 2, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 1, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 3, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 2, 0, 1);
   -fx-background-radius: 4px;
 }
 .card:hover {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 8, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 3, 0, 2);
 }
 .card.shadow-sm {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 2, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 1, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 3, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 2, 0, 1);
 }
 .card.shadow-md {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 10, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 4, 0, 2);
 }
 .card.shadow-lg {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 14, 0, 6), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 14, 0, 7), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 18, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 12, 0, 6);
 }
 /* ============================================
    Dialog / Modal - MUI Elevation
@@ -2116,11 +2116,11 @@
    - borderRadiusLG: 4
    ============================================ */
 .dialog-pane {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 10, 0, 4), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 10, 0, 5), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 14, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 8, 0, 4);
   -fx-background-radius: 6px;
 }
 .modal-content {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 10, 0, 4), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 10, 0, 5), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 14, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 8, 0, 4);
   -fx-background-radius: 6px;
 }
 .modal-overlay {
@@ -2130,7 +2130,7 @@
    Menu / ContextMenu - MUI Menu
    ============================================ */
 .context-menu {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 5, 0, 3), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 10, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 14, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 5, 0, 3);
   -fx-background-radius: 4px;
 }
 .menu-item {
@@ -2140,7 +2140,7 @@
    Date Picker Popup - MUI Menu
    ============================================ */
 .date-picker-popup {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 5, 0, 3), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 10, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 14, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 5, 0, 3);
   -fx-background-radius: 4px;
 }
 /* ============================================
@@ -2150,27 +2150,27 @@
    - borderRadius: 4
    ============================================ */
 .color-palette {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 5, 0, 3), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 10, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 14, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 5, 0, 3);
   -fx-background-radius: 4px;
 }
 /* ============================================
    Tooltip - MUI Tooltip
    ============================================ */
 .tooltip {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 8, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 3, 0, 2);
   -fx-background-radius: 2px;
 }
 /* ============================================
    Menu Bar - MUI App Bar
    ============================================ */
 .menu-bar {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 8, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 3, 0, 2);
 }
 /* ============================================
    Tool Bar - MUI App Bar
    ============================================ */
 .tool-bar {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 8, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 3, 0, 2);
 }
 /* ============================================
    Slider - MUI Style
@@ -2189,12 +2189,12 @@
   -fx-background-color: rgba(25, 118, 210, 0.38);
 }
 .slider .thumb {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 1, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 2, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 5, 0, 0);
+  -fx-effect: none;
   -fx-pref-width: 20px;
   -fx-pref-height: 20px;
 }
 .slider .thumb:hover {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 8, 0, 0);
+  -fx-effect: none;
 }
 /* ============================================
    Progress Bar - MUI Style
@@ -2280,14 +2280,14 @@
    Table - MUI Data Grid Style
    ============================================ */
 .table-view {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 2, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 1, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 3, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 2, 0, 1);
   -fx-background-radius: 4px;
 }
 /* ============================================
    Tabs - MUI Style
    ============================================ */
 .tab-pane .tab-header-area {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 2, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 1, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 3, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 2, 0, 1);
 }
 .tab-pane .tab {
   -fx-background-radius: 4px 4px 0 0;
@@ -2296,23 +2296,23 @@
    Drawer - MUI Style
    ============================================ */
 .drawer-panel {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 14, 0, 6), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 14, 0, 7), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 18, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 12, 0, 6);
 }
 /* ============================================
    Floating Action Button (FAB) - MUI Style
    ============================================ */
 .fab {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 14, 0, 6), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 14, 0, 7), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 18, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 12, 0, 6);
   -fx-background-radius: 9999px;
 }
 .fab:hover {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 26, 0, 12), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 26, 0, 13), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 30, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 14, 20, 0, 12);
 }
 /* ============================================
    Snackbar - MUI Style
    ============================================ */
 .snackbar {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 14, 0, 6), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 14, 0, 7), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 18, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 12, 0, 6);
   -fx-background-radius: 2px;
 }
 /* ============================================
@@ -2320,32 +2320,32 @@
    ============================================ */
 .paper {
   -fx-background-color: -color-bg-default;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 2, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 1, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 3, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 2, 0, 1);
   -fx-background-radius: 4px;
 }
 .paper.elevation-2 {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 8, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 3, 0, 2);
 }
 .paper.elevation-3 {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 10, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 4, 0, 2);
 }
 .paper.elevation-4 {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 10, 0, 4), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 10, 0, 5), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 14, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 8, 0, 4);
 }
 .paper.elevation-6 {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 14, 0, 6), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 14, 0, 7), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 18, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 12, 0, 6);
 }
 .paper.elevation-8 {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 18, 0, 8), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 18, 0, 9), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 22, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 16, 0, 8);
 }
 .paper.elevation-12 {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 26, 0, 12), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 26, 0, 13), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 30, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 14, 20, 0, 12);
 }
 .paper.elevation-16 {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 32, 0, 16), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 32, 0, 17), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 38, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 18, 24, 0, 16);
 }
 .paper.elevation-24 {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 40, 0, 24), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 40, 0, 25), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 46, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 22, 30, 0, 24);
 }
 /* ============================================
    Steps - MUI Style

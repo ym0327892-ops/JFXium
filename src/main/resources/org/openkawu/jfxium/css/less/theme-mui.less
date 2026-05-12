@@ -129,64 +129,39 @@
 // 精确对应 Ant Design MUI 配置中的阴影值
 
 // 全局默认阴影 (boxShadow)
-// Ant Design: '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)'
-// spread=0 表示无扩散（JavaFX不支持负spread）
-@shadow-mui-1: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 2, 0, 1),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 1, 0, 1),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 3, 0, 0);
+// JavaFX dropshadow: type, color, spread, radius, offsetX, offsetY
+// Ant Design: '0px 2px 1px -1px rgba(0,0,0,0.2)'
+@shadow-mui-1: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 2, 0, 1);
 
-// 全局次要阴影 (boxShadowSecondary)
-// Ant Design: '0px 3px 3px -2px rgba(0,0,0,0.2),0px 3px 4px 0px rgba(0,0,0,0.14),0px 1px 8px 0px rgba(0,0,0,0.12)'
-@shadow-mui-2: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 3, 0, 2),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 4, 0, 0),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 8, 0, 0);
+// 全局次要阴影
+@shadow-mui-2: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 3, 0, 2);
 
 // Button / Card 悬停阴影
-// Ant Design Button: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)'
-@shadow-mui-btn: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 1, 0, 2),
-                  dropshadow(gaussian, rgba(0,0,0,0.14), 0, 2, 0, 0),
-                  dropshadow(gaussian, rgba(0,0,0,0.12), 0, 5, 0, 0);
+@shadow-mui-btn: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 2, 0, 1);
 
 // Select Popup / Menu 阴影
-// Ant Design Select: '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)'
-@shadow-mui-menu: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 5, 0, 3),
-                   dropshadow(gaussian, rgba(0,0,0,0.14), 0, 10, 0, 1),
-                   dropshadow(gaussian, rgba(0,0,0,0.12), 0, 14, 0, 2);
+@shadow-mui-menu: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 5, 0, 3);
 
 // Card 中等阴影
-@shadow-mui-3: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 3, 0, 2),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 4, 0, 0),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 10, 0, 0);
+@shadow-mui-3: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 4, 0, 2);
 
 // Dialog / Modal 阴影
-@shadow-mui-4: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 10, 0, 4),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 10, 0, 5),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 14, 0, 0);
+@shadow-mui-4: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 8, 0, 4);
 
 // Drawer 阴影
-@shadow-mui-6: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 14, 0, 6),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 14, 0, 7),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 18, 0, 0);
+@shadow-mui-6: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 12, 0, 6);
 
 // Bottom Sheet 阴影
-@shadow-mui-8: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 18, 0, 8),
-                dropshadow(gaussian, rgba(0,0,0,0.14), 0, 18, 0, 9),
-                dropshadow(gaussian, rgba(0,0,0,0.12), 0, 22, 0, 0);
+@shadow-mui-8: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 16, 0, 8);
 
 // FAB 阴影
-@shadow-mui-12: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 26, 0, 12),
-                 dropshadow(gaussian, rgba(0,0,0,0.14), 0, 26, 0, 13),
-                 dropshadow(gaussian, rgba(0,0,0,0.12), 0, 30, 0, 0);
+@shadow-mui-12: dropshadow(gaussian, rgba(0,0,0,0.2), 14, 20, 0, 12);
 
 // Full Screen Dialog 阴影
-@shadow-mui-16: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 32, 0, 16),
-                 dropshadow(gaussian, rgba(0,0,0,0.14), 0, 32, 0, 17),
-                 dropshadow(gaussian, rgba(0,0,0,0.12), 0, 38, 0, 0);
+@shadow-mui-16: dropshadow(gaussian, rgba(0,0,0,0.2), 18, 24, 0, 16);
 
 // Top Layer Dialog 阴影
-@shadow-mui-24: dropshadow(gaussian, rgba(0,0,0,0.20), 0, 40, 0, 24),
-                 dropshadow(gaussian, rgba(0,0,0,0.14), 0, 40, 0, 25),
-                 dropshadow(gaussian, rgba(0,0,0,0.12), 0, 46, 0, 0);
+@shadow-mui-24: dropshadow(gaussian, rgba(0,0,0,0.2), 22, 30, 0, 24);
 
 // ============================================
 // MUI Overrides
@@ -499,13 +474,13 @@
 }
 
 .slider .thumb {
-  -fx-effect: @shadow-mui-btn;
+  -fx-effect: none;
   -fx-pref-width: 20px;
   -fx-pref-height: 20px;
 }
 
 .slider .thumb:hover {
-  -fx-effect: @shadow-mui-2;
+  -fx-effect: none;
 }
 
 /* ============================================
