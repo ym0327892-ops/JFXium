@@ -242,35 +242,25 @@
    - primaryShadow / defaultShadow / dangerShadow: 相同阴影
    ============================================ */
 
+/* Base Button - MUI Style */
 .button {
-  -fx-effect: @shadow-mui-btn;
-  -fx-text-transform: uppercase;
-  -fx-letter-spacing: 0.02857em;
+  -fx-effect: none;
   -fx-font-weight: 500;
   -fx-padding: @btn-padding-y @btn-padding-x;
   -fx-background-radius: @border-radius-md;
 }
 
-.button:hover {
-  -fx-effect: @shadow-mui-2;
-}
-
-.button:pressed {
-  -fx-effect: @shadow-mui-btn;
-}
-
-/* Default Button - MUI 风格 - 默认无阴影 */
+/* Default Button - MUI 风格 */
 .button.default {
   -fx-background-color: #ffffff;
   -fx-text-fill: rgba(0, 0, 0, 0.87);
-  -fx-border-color: transparent;
-  -fx-border-width: 0;
-  -fx-effect: none;
+  -fx-border-color: rgba(0, 0, 0, 0.23);
+  -fx-border-width: 1px;
 }
 
 .button.default:hover {
-  -fx-background-color: rgba(25, 118, 210, 0.04);
-  -fx-effect: none;
+  -fx-border-color: rgba(0, 0, 0, 0.42);
+  -fx-text-fill: rgba(0, 0, 0, 0.87);
 }
 
 /* Primary Button - MUI 风格 */
@@ -279,13 +269,13 @@
   -fx-background-color: @color-accent-5;
   -fx-text-fill: #ffffff;
   -fx-border-color: transparent;
-  -fx-effect: @shadow-mui-btn;
+  -fx-border-width: 0;
 }
 
 .button.accent:hover,
 .button.primary:hover {
-  -fx-background-color: @color-accent-4;
-  -fx-effect: @shadow-mui-2;
+  -fx-background-color: #1565c0;
+  -fx-text-fill: #ffffff;
 }
 
 /* Danger Button - MUI 风格 */
@@ -293,24 +283,25 @@
   -fx-background-color: @color-danger-5;
   -fx-text-fill: #ffffff;
   -fx-border-color: transparent;
-  -fx-effect: @shadow-mui-btn;
+  -fx-border-width: 0;
 }
 
 .button.danger:hover {
-  -fx-background-color: @color-danger-4;
-  -fx-effect: @shadow-mui-2;
+  -fx-background-color: @color-danger-6;
+  -fx-text-fill: #ffffff;
 }
 
-/* Text Button (MUI Text variant) */
+/* Text Button - MUI 风格 */
 .button.text {
-  -fx-effect: none;
   -fx-background-color: transparent;
+  -fx-text-fill: @color-accent-5;
   -fx-border-color: transparent;
+  -fx-border-width: 0;
 }
 
 .button.text:hover {
-  -fx-effect: none;
-  -fx-background-color: rgba(25, 118, 210, 0.04);
+  -fx-background-color: rgba(25, 118, 210, 0.08);
+  -fx-text-fill: @color-accent-5;
 }
 
 /* Link Button */
@@ -537,12 +528,47 @@
    Switch - MUI Style
    ============================================ */
 
-.toggle-button.switch {
-  -fx-effect: @shadow-mui-1;
+/* Switch Track (轨道) */
+.jfx-switch-track {
+  -fx-background-color: rgba(0, 0, 0, 0.26);
+  -fx-background-radius: 11px;
+  -fx-border-radius: 11px;
 }
 
-.toggle-button.switch .thumb {
-  -fx-effect: @shadow-mui-btn;
+/* Switch Thumb (滑块) */
+.jfx-switch-thumb {
+  -fx-background-color: #fafafa;
+  -fx-background-radius: 10px;
+  -fx-border-color: rgba(0, 0, 0, 0.26);
+  -fx-border-width: 1px;
+  -fx-border-radius: 10px;
+}
+
+/* Switch Selected (选中状态) */
+.jfx-switch.switch-selected .jfx-switch-track {
+  -fx-background-color: #1976d2;
+}
+
+.jfx-switch.switch-selected .jfx-switch-thumb {
+  -fx-border-color: #1976d2;
+}
+
+/* Switch Hover (悬停状态) */
+.jfx-switch:hover .jfx-switch-track {
+  -fx-background-color: rgba(0, 0, 0, 0.42);
+}
+
+.jfx-switch:hover .jfx-switch-thumb {
+  -fx-border-color: rgba(0, 0, 0, 0.42);
+}
+
+/* Switch Selected + Hover */
+.jfx-switch.switch-selected:hover .jfx-switch-track {
+  -fx-background-color: #1565c0;
+}
+
+.jfx-switch.switch-selected:hover .jfx-switch-thumb {
+  -fx-border-color: #1565c0;
 }
 
 /* ============================================

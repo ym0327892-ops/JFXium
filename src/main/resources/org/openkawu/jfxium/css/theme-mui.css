@@ -1974,31 +1974,23 @@
    - borderRadius: 4
    - primaryShadow / defaultShadow / dangerShadow: 相同阴影
    ============================================ */
+/* Base Button - MUI Style */
 .button {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 1, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 2, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 5, 0, 0);
-  -fx-text-transform: uppercase;
-  -fx-letter-spacing: 0.02857em;
+  -fx-effect: none;
   -fx-font-weight: 500;
   -fx-padding: 6px 16px;
   -fx-background-radius: 4px;
 }
-.button:hover {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 8, 0, 0);
-}
-.button:pressed {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 1, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 2, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 5, 0, 0);
-}
-/* Default Button - MUI 风格 - 默认无阴影 */
+/* Default Button - MUI 风格 */
 .button.default {
   -fx-background-color: #ffffff;
   -fx-text-fill: rgba(0, 0, 0, 0.87);
-  -fx-border-color: transparent;
-  -fx-border-width: 0;
-  -fx-effect: none;
+  -fx-border-color: rgba(0, 0, 0, 0.23);
+  -fx-border-width: 1px;
 }
 .button.default:hover {
-  -fx-background-color: rgba(25, 118, 210, 0.04);
-  -fx-effect: none;
+  -fx-border-color: rgba(0, 0, 0, 0.42);
+  -fx-text-fill: rgba(0, 0, 0, 0.87);
 }
 /* Primary Button - MUI 风格 */
 .button.accent,
@@ -2006,33 +1998,34 @@
   -fx-background-color: #1976d2;
   -fx-text-fill: #ffffff;
   -fx-border-color: transparent;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 1, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 2, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 5, 0, 0);
+  -fx-border-width: 0;
 }
 .button.accent:hover,
 .button.primary:hover {
-  -fx-background-color: #42a5f5;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 8, 0, 0);
+  -fx-background-color: #1565c0;
+  -fx-text-fill: #ffffff;
 }
 /* Danger Button - MUI 风格 */
 .button.danger {
   -fx-background-color: #d32f2f;
   -fx-text-fill: #ffffff;
   -fx-border-color: transparent;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 1, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 2, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 5, 0, 0);
+  -fx-border-width: 0;
 }
 .button.danger:hover {
-  -fx-background-color: #ef5350;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 3, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 4, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 8, 0, 0);
+  -fx-background-color: #c62828;
+  -fx-text-fill: #ffffff;
 }
-/* Text Button (MUI Text variant) */
+/* Text Button - MUI 风格 */
 .button.text {
-  -fx-effect: none;
   -fx-background-color: transparent;
+  -fx-text-fill: #1976d2;
   -fx-border-color: transparent;
+  -fx-border-width: 0;
 }
 .button.text:hover {
-  -fx-effect: none;
-  -fx-background-color: rgba(25, 118, 210, 0.04);
+  -fx-background-color: rgba(25, 118, 210, 0.08);
+  -fx-text-fill: #1976d2;
 }
 /* Link Button */
 .button.link {
@@ -2219,11 +2212,40 @@
 /* ============================================
    Switch - MUI Style
    ============================================ */
-.toggle-button.switch {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 2, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 1, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 3, 0, 0);
+/* Switch Track (轨道) */
+.jfx-switch-track {
+  -fx-background-color: rgba(0, 0, 0, 0.26);
+  -fx-background-radius: 11px;
+  -fx-border-radius: 11px;
 }
-.toggle-button.switch .thumb {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 0, 1, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 0, 2, 0, 0), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 0, 5, 0, 0);
+/* Switch Thumb (滑块) */
+.jfx-switch-thumb {
+  -fx-background-color: #fafafa;
+  -fx-background-radius: 10px;
+  -fx-border-color: rgba(0, 0, 0, 0.26);
+  -fx-border-width: 1px;
+  -fx-border-radius: 10px;
+}
+/* Switch Selected (选中状态) */
+.jfx-switch.switch-selected .jfx-switch-track {
+  -fx-background-color: #1976d2;
+}
+.jfx-switch.switch-selected .jfx-switch-thumb {
+  -fx-border-color: #1976d2;
+}
+/* Switch Hover (悬停状态) */
+.jfx-switch:hover .jfx-switch-track {
+  -fx-background-color: rgba(0, 0, 0, 0.42);
+}
+.jfx-switch:hover .jfx-switch-thumb {
+  -fx-border-color: rgba(0, 0, 0, 0.42);
+}
+/* Switch Selected + Hover */
+.jfx-switch.switch-selected:hover .jfx-switch-track {
+  -fx-background-color: #1565c0;
+}
+.jfx-switch.switch-selected:hover .jfx-switch-thumb {
+  -fx-border-color: #1565c0;
 }
 /* ============================================
    Checkbox - MUI Style

@@ -71,6 +71,47 @@
 
 参考文件：`F:\workspace-open-code\atlantafx\styles\src\antdesign-light.scss`
 
+### 6. Switch 样式规范
+
+**AtlantaFX _toggle-switch.scss 实现方式：**
+```scss
+.toggle-switch {
+  -fx-thumb-move-animation-time: 200;
+
+  >.thumb {
+    -fx-background-color: $color-thumb-border, $color-thumb;
+    -fx-background-insets: 0, $thumb-border-width;
+    -fx-background-radius: $thumb-radius;
+    -fx-opacity: $thumb-opacity;
+  }
+
+  >.thumb-area {
+    -fx-background-radius: $thumb-area-radius;
+    -fx-background-color: $color-thumb-area-border, $color-thumb-area;
+    -fx-background-insets: 0, $thumb-area-border-width;
+  }
+
+  &:selected {
+    >.thumb {
+      -fx-background-color: $color-thumb-border-selected, $color-thumb-selected;
+      -fx-opacity: 1;
+    }
+
+    >.thumb-area {
+      -fx-background-color: $color-thumb-area-border-selected, $color-thumb-area-selected;
+    }
+  }
+}
+```
+
+**MUI 风格 Switch 颜色值：**
+| 状态 | 轨道颜色 | 滑块颜色 |
+|------|----------|----------|
+| Default | rgba(0,0,0,0.26) | #fafafa |
+| Hover | rgba(0,0,0,0.42) | #fafafa |
+| Selected | #1976d2 | #1976d2 |
+| Selected+Hover | #1565c0 | #1565c0 |
+
 ## 全局样式
 Ant 色彩 https://ant.design/docs/spec/colors-cn?theme=light
 布局 https://ant.design/docs/spec/layout-cn?theme=light
