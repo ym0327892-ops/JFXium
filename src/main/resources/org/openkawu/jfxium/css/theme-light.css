@@ -37,7 +37,7 @@
   -color-success-9: #092b00;
   /* Warning Scale */
   -color-warning-0: #fffbe6;
-  -color-warning-1: #fff1b8;
+  -color-warning-1: #fef1b8;
   -color-warning-2: #ffe58f;
   -color-warning-3: #ffd666;
   -color-warning-4: #ffc53d;
@@ -48,8 +48,8 @@
   -color-warning-9: #613400;
   /* Danger Scale */
   -color-danger-0: #fff2f0;
-  -color-danger-1: #ffccc7;
-  -color-danger-2: #ffa39e;
+  -color-danger-1: #fee2e2;
+  -color-danger-2: #fecaca;
   -color-danger-3: #ff7875;
   -color-danger-4: #ff4d4f;
   -color-danger-5: #f5222d;
@@ -83,7 +83,7 @@
   -color-warning-muted: #ffe58f;
   -color-warning-subtle: #fffbe6;
   -color-danger-emphasis: #ff4d4f;
-  -color-danger-muted: #ffa39e;
+  -color-danger-muted: #fecaca;
   -color-danger-subtle: #fff2f0;
   -color-shadow-default: rgba(0, 0, 0, 0.15);
 }
