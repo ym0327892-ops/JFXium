@@ -1,3 +1,8 @@
+---
+name: 项目约束与计划
+description: 项目约束
+---
+
 # JFXium 项目详细开发计划
 
 > 目标：构建现代化 JavaFX UI 框架，对标 Ant Design 6.x / Material UI / MUI-like Style
@@ -1930,129 +1935,75 @@ Phase 3:
 
 ---
 
-## 组件微型化架构设计（2026-05-12 第二轮）
+## 组件微型化架构设计（2026-05-12）
 
 **设计理念：大组件 = 小组件组装**
 
-### 完整基础组件体系
-
 ```
-大型组件 = 基础组件库组合
-├── Overlay（遮罩层）
-├── PanelHeader（标题栏）
-├── PanelFooter（底部操作区）
-├── CloseButton（关闭按钮）
-├── NotificationCard（通知卡片）
-├── MessageCard（消息卡片）
-├── PopoverPanel（气泡面板）
-├── PopconfirmPanel（确认面板）
-├── ResultDisplay（结果展示）
-└── AlertBanner（警告横幅）
+Modal/Drawer = Overlay(遮罩) + Panel(面板) + Header(头部) + Footer(底部) + CloseButton(关闭按钮)
 ```
 
-### 基础组件完整列表
+### 基础组件拆分方案
 
-| 基础组件 | 职责 | 可复用场景 | 状态 |
-|---------|------|-----------|------|
-| **Overlay** | 遮罩层，点击关闭 | Modal, Drawer | ✅ |
-| **PanelHeader** | 标题栏（标题+关闭按钮+extra） | Modal, Drawer | ✅ |
-| **PanelFooter** | 底部操作区（按钮组） | Modal, Drawer | ✅ |
-| **CloseButton** | 关闭按钮 | Modal, Drawer, Notification, Popover | ✅ |
-| **NotificationCard** | 通知卡片（Icon+Title+Description） | NotificationAnt | ✅ 新增 |
-| **MessageCard** | 消息卡片（Icon+Text） | MessageAnt | ✅ 新增 |
-| **PopoverPanel** | 气泡面板（Title+Content） | PopoverAnt | ✅ 新增 |
-| **PopconfirmPanel** | 确认面板（Icon+Title+Description+Buttons） | PopconfirmAnt | ✅ 新增 |
-| **ResultDisplay** | 结果展示（Icon+Title+SubTitle+Extra） | ResultAnt | ✅ 新增 |
-| **AlertBanner** | 警告横幅（Icon+Content+Action） | AlertAnt | ✅ 新增 |
+| 基础组件 | 职责 | 可复用场景 |
+|---------|------|-----------|
+| **Overlay** | 遮罩层，点击关闭 | Modal, Drawer, Tooltip, Popover |
+| **Panel** | 通用面板容器 | Modal, Drawer, Popconfirm |
+| **PanelHeader** | 标题栏（标题+关闭按钮+extra） | Modal, Drawer |
+| **PanelFooter** | 底部操作区（按钮组） | Modal, Drawer, Popconfirm |
+| **CloseButton** | 关闭按钮 | Modal, Drawer, Message, Notification, Popover |
 
 ### 已实现的基础组件
 
-#### 第一批（2026-05-12）
-
-1. **Overlay** - `component/base/Overlay.java`
+1. **Overlay** - `src/main/java/org/openkawu/jfxium/component/base/Overlay.java`
    - 支持自定义透明度 (opacity)
    - 支持点击关闭 (closable)
    - 支持自定义点击回调 (onClick)
-
-2. **PanelHeader** - `component/base/PanelHeader.java`
-   - 支持标题 (title)、额外内容区 (extra)、关闭按钮 (onClose)
+   
+2. **PanelHeader** - `src/main/java/org/openkawu/jfxium/component/base/PanelHeader.java`
+   - 支持标题 (title)
+   - 支持额外内容区 (extra)
+   - 支持关闭按钮 (onClose)
    - 自动布局：标题左对齐，extra 居中，关闭按钮右对齐
-
-3. **PanelFooter** - `component/base/PanelFooter.java`
-   - 支持左侧内容 (left)、右侧内容 (right)
+   
+3. **PanelFooter** - `src/main/java/org/openkawu/jfxium/component/base/PanelFooter.java`
+   - 支持左侧内容 (left)
+   - 支持右侧内容 (right)
    - 支持边框选项 (hasBorder)
    - 自动布局：flexbox 左右分布
-
-4. **CloseButton** - `component/base/CloseButton.java`
+   
+4. **CloseButton** - `src/main/java/org/openkawu/jfxium/component/base/CloseButton.java`
    - 标准关闭图标 "×"
-   - 24x24 固定尺寸，符合 Ant Design 规范
+   - 支持自定义关闭回调 (onClose)
    - 统一 CSS 样式：hover 背景色、pressed 效果
-
-#### 第二批（2026-05-12 新增）
-
-5. **NotificationCard** - `component/base/NotificationCard.java`
-   - 支持标题、描述、图标类型、成功/错误/警告/信息
-   - 支持关闭按钮、额外内容区
-   - 固定宽度 384px
-
-6. **MessageCard** - `component/base/MessageCard.java`
-   - 轻量级消息卡片
-   - 支持图标类型、成功/错误/警告/信息/加载中
-   - 支持关闭按钮
-
-7. **PopoverPanel** - `component/base/PopoverPanel.java`
-   - 气泡弹出面板
-   - 支持标题、内容、关闭按钮
-   - 可配置最小/最大宽度
-
-8. **PopconfirmPanel** - `component/base/PopconfirmPanel.java`
-   - 确认对话框
-   - 警告图标 + 标题 + 描述
-   - 集成确认/取消按钮
-
-9. **ResultDisplay** - `component/base/ResultDisplay.java`
-   - 结果展示页面
-   - 大图标 + 标题 + 副标题 + 额外操作区
-   - 支持多种状态：成功/错误/警告/信息/404/403/500
-
-10. **AlertBanner** - `component/base/AlertBanner.java`
-    - 警告提示横幅
-    - 支持成功/信息/警告/错误类型
-    - 支持操作按钮、关闭按钮、banner 模式
+   - 24x24 固定尺寸，符合 Ant Design 规范
 
 ### 重构完成的大组件
 
-1. **ModalAnt** - ✅ 已使用 PanelHeader + PanelFooter 组装
-2. **DrawerAnt** - ✅ 已使用 PanelHeader + PanelFooter 组装
+1. **ModalAnt** - 已使用小组件组装
+   - 使用 Overlay 替代内联样式
+   - 使用 PanelHeader 替代头部内联实现
+   - 使用 PanelFooter 替代底部内联实现
+   - 代码行数减少约 20%，可维护性大幅提升
 
-### 待重构的大组件（使用新基础组件）
-
-| 组件 | 使用的基础组件 | 状态 |
-|------|--------------|------|
-| NotificationAnt | NotificationCard | ⏳ 待重构 |
-| MessageAnt | MessageCard | ⏳ 待重构 |
-| PopoverAnt | PopoverPanel | ⏳ 待重构 |
-| PopconfirmAnt | PopconfirmPanel | ⏳ 待重构 |
-| ResultAnt | ResultDisplay | ⏳ 待重构 |
-| AlertAnt | AlertBanner | ⏳ 待重构 |
+2. **DrawerAnt** - 已使用小组件组装
+   - 使用 Overlay 替代内联样式
+   - 使用 PanelHeader 替代头部内联实现（支持 extra 属性）
+   - 使用 PanelFooter 替代底部内联实现
+   - 保持原有动画效果不变
 
 ### 组件化优势
 
 1. **代码复用** - 多个大组件共享相同的基础组件逻辑
-2. **一致性** - 所有组件的头部、底部、卡片样式完全统一
+2. **一致性** - 所有 Modal/Drawer 的头部、底部样式完全统一
 3. **可维护性** - 修改基础组件即可影响所有使用方
-4. **可扩展性** - 未来新增组件可直接复用基础组件
+4. **可扩展性** - 未来新增 Popconfirm、Tooltip 等组件可直接复用
 5. **测试友好** - 基础组件可独立测试，降低测试复杂度
 
 ### 模块导出更新
 
 已更新 `module-info.java`，新增导出：
-```java
-exports org.openkawu.jfxium.component.base;
-```
-
----
-
+- `exports org.openkawu.jfxium.component.base;`
 | **主题继承关系** | ✅ 正确 | Compact 主题正确继承基础主题颜色，仅覆盖间距和尺寸变量 |
 
 ##### 8. 发现的问题
