@@ -12,6 +12,65 @@
 *** JFXium 项目详细开发行为准则 文件（SKILL 技能）
 > 本项目的开发行为准则 文件（SKILL 技能） 用于定义项目开发过程中需要遵守的规范和行为; 在 SKILL.md 文件中定义
 # UI 参考资源
+## AtlantaFX 参考心得（2026-05-12）
+
+### 1. Text Input / TextField 样式规范
+
+**AtlantaFX antdesign-light.scss 实现方式：**
+```scss
+.text-input {
+    -fx-border-color: #d9d9d9;  // 默认灰色边框
+
+    &:focused {
+        -fx-border-color: #4096ff;  // 聚焦时蓝色边框
+        -fx-effect: dropshadow(three-pass-box, rgba(22, 119, 255, 0.2), 4, 0, 0, 0);
+    }
+}
+```
+
+**重要发现：Ant Design 风格的 TextInput 没有 :hover 效果！**
+- 只有 Default 和 Focused 两个状态
+- Hover 不会改变边框颜色
+- 这是 Ant Design 的标准行为
+
+### 2. MUI 主题 Input 规范
+
+**MUI 风格输入框颜色值：**
+| 状态 | 边框颜色 | 文字颜色 |
+|------|----------|----------|
+| Default | rgba(0, 0, 0, 0.23) | rgba(0, 0, 0, 0.88) |
+| Hover | 无变化 | 无变化 |
+| Focused | #1976d2 | rgba(0, 0, 0, 0.88) |
+
+### 3. 焦点效果实现
+
+**JavaFX 焦点环问题：**
+- 问题：JavaFX 默认会在焦点时显示蓝色边框
+- 解决：添加 `-fx-focus-color: transparent; -fx-faint-focus-color: transparent;`
+
+**正确的 CSS 顺序：**
+```css
+.text-input {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+
+    &:focused {
+        -fx-border-color: #1976d2;
+    }
+}
+```
+
+### 4. 避免的常见错误
+
+1. **不要给 Input 添加 Hover 效果** - Ant Design/MUI 没有 hover
+2. **不要在 Focused 时改变 border-width** - 会导致控件大小变化
+3. **始终设置 text-fill** - 确保文字颜色正确显示
+4. **使用 transparent 移除焦点环** - 而非其他方式
+
+### 5. 文件位置
+
+参考文件：`F:\workspace-open-code\atlantafx\styles\src\antdesign-light.scss`
+
 ## 全局样式
 Ant 色彩 https://ant.design/docs/spec/colors-cn?theme=light
 布局 https://ant.design/docs/spec/layout-cn?theme=light

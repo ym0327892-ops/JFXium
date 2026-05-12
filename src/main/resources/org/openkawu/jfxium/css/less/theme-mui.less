@@ -338,23 +338,13 @@
 .color-picker,
 .choice-box,
 .spinner {
-  -fx-border-color: @input-border-color;
+  -fx-border-color: rgba(0, 0, 0, 0.23);
   -fx-border-width: 1px;
   -fx-border-radius: @border-radius-md;
   -fx-background-radius: @border-radius-md;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
-}
-
-.text-field:hover,
-.text-area:hover,
-.password-field:hover,
-.combo-box:hover,
-.date-picker:hover,
-.color-picker:hover,
-.choice-box:hover,
-.spinner:hover {
-  -fx-border-color: rgba(0, 0, 0, 0.42);
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
 }
 
 .text-field:focused,
@@ -365,7 +355,7 @@
 .color-picker:focused,
 .choice-box:focused,
 .spinner:focused {
-  -fx-border-color: @color-accent-5;
+  -fx-border-color: #1976d2;
   -fx-border-width: 1px;
   -fx-effect: none;
   -fx-focus-color: transparent;
