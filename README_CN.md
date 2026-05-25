@@ -41,20 +41,28 @@ import org.openkawu.jfxium.core.theme.LightTheme;
 @Override
 public void start(Stage stage) {
     Scene scene = new Scene(root, 800, 600);
-    
-    // 方式一：使用 ThemeManager（推荐）
-    ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.applyTheme(new LightTheme());
-    themeManager.registerScene(scene);  // 注册 Scene 以支持动态主题切换
-    
+
+    // 最简：只切主题
+    ThemeManager.getInstance().applyTheme(new LightTheme());
+
+    // 进阶：要支持运行时切主题色（setPrimaryColor）时才需要 registerScene
+    // ThemeManager.getInstance().registerScene(scene);
+
     stage.setScene(scene);
     stage.show();
 }
 ```
 
+**`applyTheme` vs `registerScene` 的区别**：
+
+| API | 作用域 | 何时调用 |
+|---|---|---|
+| `applyTheme(theme)` | **全 JVM 全局**（内部用 `Application.setUserAgentStylesheet`，不需要 Scene）| 启动时调用一次决定基础主题；后续切亮/暗、紧凑度都是它 |
+| `registerScene(scene)` | 单个 Scene | **只有当你打算运行时调 `setPrimaryColor` 切换主题色时才需要**。注册后切色才能把 inline `-color-accent-*` 注入这个 scene |
+
 **为什么推荐用 ThemeManager？**
 - 支持运行时动态切换主题（`toggleTheme()` / `switchToMui()` 等）
-- 支持动态修改主题色（`setPrimaryColor("#ff6b6b")`）
+- 支持动态修改主题色（`setPrimaryColor("#ff6b6b")`，需要先 registerScene）
 - 统一管理多个 Scene/Region 的主题状态
 - 避免硬编码 CSS 路径
 
