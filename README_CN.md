@@ -332,6 +332,19 @@ Button ghost = ButtonAnt.create("订阅")
 - `onClick` 接收 `EventHandler<ActionEvent>`，写法是 `e -> {...}`
 - 按钮状态变化（loading / disabled）通过 `setDisable(true)` 或自定义 styleClass 切换，**不要 setStyle 拼字符串**
 - 想做"图标 + 文字"按钮：`.icon(IconAnt.path(IconAnt.Path.SAVE, 14))`
+- **运行时切换 type**（如「保存」按钮在 dirty/clean 状态间切色）：`ButtonAnt.changeType(button, Type.PRIMARY)`
+
+```java
+// 运行时切色示例：表单修改时按钮提醒
+Button save = ButtonAnt.create("保存").type(ButtonAnt.Type.DEFAULT).build();
+
+editor.dirtyProperty().addListener((obs, ov, nv) ->
+    ButtonAnt.changeType(save, nv ? ButtonAnt.Type.PRIMARY : ButtonAnt.Type.DEFAULT));
+
+// 或直接切：
+ButtonAnt.changeType(save, ButtonAnt.Type.DANGER);    // 切红色
+ButtonAnt.changeType(save, ButtonAnt.Type.SUCCESS);   // 切绿色
+```
 
 ---
 

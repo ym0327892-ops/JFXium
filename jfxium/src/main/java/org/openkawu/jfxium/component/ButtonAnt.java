@@ -78,6 +78,51 @@ public class ButtonAnt {
         return new Builder("");
     }
 
+    /**
+     * 运行时切换已构建按钮的 type（M19.26）。
+     *
+     * <p>注意：build() 之后 Builder 已不可达；想动态切色（比如「保存」按钮在「未修改/已修改」之间切换），
+     * 用此静态方法即可。内部清掉旧 type 的 styleClass 再挂新 type 的 styleClass。</p>
+     *
+     * <pre>{@code
+     * Button save = ButtonAnt.create("保存").type(Type.DEFAULT).build();
+     *
+     * // 用户改了表单 → 保存按钮变主题色提醒
+     * editor.dirtyProperty().addListener((obs, ov, nv) ->
+     *     ButtonAnt.changeType(save, nv ? Type.PRIMARY : Type.DEFAULT));
+     * }</pre>
+     *
+     * @param button 已通过 {@link #create()} 构建的按钮
+     * @param newType 目标类型；null 视为 {@link Type#DEFAULT}
+     */
+    public static void changeType(Button button, Type newType) {
+        if (button == null) return;
+        if (newType == null) newType = Type.DEFAULT;
+        // 清掉所有 type 相关 styleClass（保留 size / shape / ghost / 用户自定义类）
+        button.getStyleClass().removeAll(
+                CssClasses.BUTTON_DEFAULT,
+                CssClasses.BUTTON_PRIMARY,
+                CssClasses.BUTTON_ACCENT,
+                CssClasses.BUTTON_OUTLINED,
+                CssClasses.BUTTON_DASHED,
+                CssClasses.BUTTON_TEXT,
+                CssClasses.BUTTON_LINK,
+                "success", "warning", "danger"
+        );
+        // 重新挂上新 type 的 styleClass（与 Builder.build() 保持一致）
+        switch (newType) {
+            case PRIMARY, ACCENT -> button.getStyleClass().add(CssClasses.BUTTON_ACCENT);
+            case SUCCESS -> button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "success");
+            case WARNING -> button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "warning");
+            case DANGER -> button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "danger");
+            case OUTLINED -> button.getStyleClass().add(CssClasses.BUTTON_OUTLINED);
+            case DASHED -> button.getStyleClass().add(CssClasses.BUTTON_DASHED);
+            case TEXT -> button.getStyleClass().add(CssClasses.BUTTON_TEXT);
+            case LINK -> button.getStyleClass().add(CssClasses.BUTTON_LINK);
+            default -> button.getStyleClass().add(CssClasses.BUTTON_DEFAULT);
+        }
+    }
+
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private final String text;
         private Type type = Type.DEFAULT;
