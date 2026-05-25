@@ -10,6 +10,7 @@ module org.openkawu.jfxium {
     exports org.openkawu.jfxium.core.animation;
     exports org.openkawu.jfxium.core.layout;
     exports org.openkawu.jfxium.core.i18n;
+    exports org.openkawu.jfxium.core.form;
     exports org.openkawu.jfxium.component;
     exports org.openkawu.jfxium.component.base;
 }

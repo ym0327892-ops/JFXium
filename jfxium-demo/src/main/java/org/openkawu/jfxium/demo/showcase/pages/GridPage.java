@@ -1,38 +1,40 @@
 package org.openkawu.jfxium.demo.showcase.pages;
 
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.CardAnt;
-import org.openkawu.jfxium.component.GridAnt;
-import org.openkawu.jfxium.component.IconAnt;
-import org.openkawu.jfxium.component.InputAnt;
 import org.openkawu.jfxium.core.container.VBoxBuilder;
 import org.openkawu.jfxium.demo.showcase.ShowcasePage;
 import org.openkawu.jfxium.demo.showcase.ShowcaseSection;
 
 /**
- * GridAnt 24 列栅格 + 响应式断点（M19.21）展示页。
+ * Grid 栅格 / 自动 wrap 展示页（M19.21 简化版）。
  *
- * <p>本页聚焦真实 admin 业务场景，每个 section 的代码都可以直接复制到项目里用。</p>
+ * <p><b>桌面应用响应式实战说明</b>：</p>
+ * <p>Web 上常见的 xs/sm/md/lg/xl/xxl 6 档断点在 JavaFX 桌面应用里几乎用不到 ——
+ * 桌面窗口 1280×800 起步，跑到 lg 阈值（992px）以下的概率极低；真正有用的是
+ * <b>"卡片数量不定、宽度固定，自动 wrap"</b> 这种模式。</p>
+ *
+ * <p>本页因此只展示一个高频场景：用 JavaFX 原生 <b>FlowPane</b> 实现 dashboard 风格自动 wrap。
+ * 如果你确实需要 24 列栅格 + 响应式断点，{@code GridAnt.create().responsive()} 完整 API 仍然可用，
+ * 详见 GridAnt 类 javadoc。</p>
  */
 public class GridPage implements ShowcasePage {
 
     @Override public String   key()      { return "grid"; }
-    @Override public String   title()    { return "Grid 栅格"; }
+    @Override public String   title()    { return "Grid 栅格 / Wrap"; }
     @Override public Category category() { return Category.LAYOUT; }
 
     @Override
     public Node getView() {
-        Label pageTitle = new Label("Grid 24 列栅格");
+        Label pageTitle = new Label("Grid 栅格 / Wrap");
         pageTitle.setStyle("-fx-font-size: 28px; -fx-font-weight: 700;");
         Label pageDesc = new Label(
-                "对标 Ant Design Grid。M19.21 加 5 个标准响应式断点（xs/sm/md/lg/xl/xxl）。" +
-                "下方三个场景都是 admin 后台高频模式 —— 拖动窗口宽度看响应式效果。"
+                "桌面应用响应式实战 —— 卡片数量不定、宽度固定、容器变窄自动换行。" +
+                "用 JavaFX 原生 FlowPane 实现，比 24 列栅格更直接。"
         );
         pageDesc.setStyle("-fx-text-fill: -color-fg-muted;");
         pageDesc.setWrapText(true);
@@ -43,140 +45,98 @@ public class GridPage implements ShowcasePage {
                 .spacing(20)
                 .children(
                         header,
-                        sectionAdminForm(),
-                        sectionDashboardStats(),
-                        sectionContentAside(),
                         sectionAutoWrap(),
-                        sectionApiReference()
+                        sectionAutoWrapManyCards(),
+                        sectionApiNote()
                 )
                 .build();
     }
 
-    // ============================================================
-    // 场景 4：自动 wrap（不指定 span，按容器宽度自动每行放 N 个）
-    // ============================================================
+    /** 4 张卡 + FlowPane 自动 wrap —— 拖窗口看效果 */
     private Node sectionAutoWrap() {
-        // FlowPane：一行放不下自动换行；每个子节点 prefWidth = 240，宽度变化时自动重新 wrap
-        javafx.scene.layout.FlowPane flow = new javafx.scene.layout.FlowPane();
+        FlowPane flow = new FlowPane();
         flow.setHgap(16);
         flow.setVgap(16);
-        flow.setPrefWrapLength(0);   // 让宽度由父容器决定，自动换行
+        flow.setPrefWrapLength(0);
         flow.getChildren().addAll(
-                fixedCard("总用户", "8,492", "↑ 12.5%", true),
-                fixedCard("今日订单", "234", "↓ 3.2%", false),
-                fixedCard("月销售额", "¥125k", "↑ 8.4%", true),
-                fixedCard("转化率", "23.4%", "↑ 1.2%", true)
+                statCard("总用户", "8,492", "↑ 12.5%", true),
+                statCard("今日订单", "234", "↓ 3.2%", false),
+                statCard("月销售额", "¥125k", "↑ 8.4%", true),
+                statCard("转化率", "23.4%", "↑ 1.2%", true)
         );
 
         return ShowcaseSection.create()
-                .title("场景 4：自动 wrap（不指定 span，按容器宽度自动排列）")
-                .description("用 JavaFX FlowPane —— 卡片宽度固定，容器窄时自动换行成 1/2 列，宽时排成 1×4。" +
-                        "不需要 GridAnt 的 24 列语义，更适合 \"卡片数量不定\" 的场景")
+                .title("Dashboard 4 张统计卡 —— 拖窗口看 wrap 效果")
+                .description("窗口宽时一排 4 张；变窄时自动 2 张 / 1 张。卡片本身固定 220px 不变形")
                 .demo(flow)
                 .code("""
-                        // 不需要 GridAnt —— 用 JavaFX 原生 FlowPane 即可
+                        // 不需要任何栅格组件，JavaFX 原生 FlowPane 即可
                         FlowPane flow = new FlowPane();
                         flow.setHgap(16);
                         flow.setVgap(16);
                         flow.getChildren().addAll(
-                            statCard("总用户", "8,492", ...),
-                            statCard("今日订单", "234", ...),
-                            statCard("月销售额", "¥125k", ...),
-                            statCard("转化率", "23.4%", ...)
+                            statCard("总用户", "8,492", "↑ 12.5%", true),
+                            statCard("今日订单", "234", "↓ 3.2%", false),
+                            statCard("月销售额", "¥125k", "↑ 8.4%", true),
+                            statCard("转化率", "23.4%", "↑ 1.2%", true)
                         );
-                        // 容器变窄时自动换行；卡片本身不变形
+                        // 卡片自身设固定 prefWidth；FlowPane 自动按容器宽度 wrap
                         """)
                 .build();
     }
 
-    /** 固定宽度的统计卡（FlowPane 子节点必须有 prefWidth 才能正确 wrap）。 */
-    private Node fixedCard(String title, String value, String trend, boolean up) {
-        Node card = statCard(title, value, trend, up);
-        if (card instanceof javafx.scene.layout.Region r) {
-            r.setMinWidth(220);
-            r.setPrefWidth(220);
+    /** 12 张卡的更密集场景 —— 同样一行/两行/三行自动 wrap */
+    private Node sectionAutoWrapManyCards() {
+        FlowPane flow = new FlowPane();
+        flow.setHgap(12);
+        flow.setVgap(12);
+        flow.setPrefWrapLength(0);
+        for (int i = 1; i <= 12; i++) {
+            flow.getChildren().add(simpleTile("Tile " + i));
         }
-        return card;
-    }
-
-    // ============================================================
-    // 场景 1：admin 表单两栏布局
-    // ============================================================
-    private Node sectionAdminForm() {
-        // 单个表单字段 = label + input 一对（不放 GridAnt 里，否则会被栅格再切一次）
-        Node row = GridAnt.create()
-                .gutter(16)
-                .responsive()
-                .row(GridAnt.row()
-                        .col(GridAnt.col(formItem("姓名", "请输入")).xs(24).sm(12))
-                        .col(GridAnt.col(formItem("邮箱", "user@example.com")).xs(24).sm(12)))
-                .row(GridAnt.row()
-                        .col(GridAnt.col(formItem("公司", "请输入")).xs(24).sm(12))
-                        .col(GridAnt.col(formItem("职位", "请输入")).xs(24).sm(12)))
-                .row(GridAnt.row()
-                        .col(GridAnt.col(formItem("备注", "可选")).xs(24)))
-                .build();
 
         return ShowcaseSection.create()
-                .title("场景 1：admin 表单两栏布局（xs 单栏 / sm+ 双栏）")
-                .description("最常见的后台表单 —— 窄屏单栏可读、宽屏双栏密度高")
-                .demo(row)
+                .title("12 张瓦片 —— 数量不定时的标准模式")
+                .description("拖窗口宽度看 wrap 效果。瓦片宽度固定 140px，容器宽度自动决定每排几张")
+                .demo(flow)
                 .code("""
-                        GridAnt.create()
-                            .gutter(16)
-                            .responsive()
-                            .row(GridAnt.row()
-                                .col(GridAnt.col(nameField).xs(24).sm(12))
-                                .col(GridAnt.col(emailField).xs(24).sm(12)))
-                            .row(GridAnt.row()
-                                .col(GridAnt.col(companyField).xs(24).sm(12))
-                                .col(GridAnt.col(titleField).xs(24).sm(12)))
-                            .row(GridAnt.row()
-                                .col(GridAnt.col(remarkField).xs(24)))   // 备注独占一行
-                            .build();
+                        FlowPane flow = new FlowPane();
+                        flow.setHgap(12);
+                        flow.setVgap(12);
+                        for (Item item : items) {
+                            flow.getChildren().add(buildTile(item));
+                        }
                         """)
                 .build();
     }
 
-    private Node formItem(String label, String placeholder) {
-        Label l = new Label(label);
-        l.setStyle("-fx-font-size: 13px; -fx-text-fill: -color-fg-default;");
-        TextField input = InputAnt.create().placeholder(placeholder).build();
-        input.setMaxWidth(Double.MAX_VALUE);
-        return new VBox(6, l, input);
-    }
-
-    // ============================================================
-    // 场景 2：Dashboard 统计卡矩阵
-    // ============================================================
-    private Node sectionDashboardStats() {
-        Node row = GridAnt.create()
-                .gutter(16)
-                .responsive()
-                .row(GridAnt.row()
-                        .col(GridAnt.col(statCard("总用户", "8,492", "↑ 12.5%", true)).xs(24).sm(12).lg(6))
-                        .col(GridAnt.col(statCard("今日订单", "234", "↓ 3.2%", false)).xs(24).sm(12).lg(6))
-                        .col(GridAnt.col(statCard("月销售额", "¥125k", "↑ 8.4%", true)).xs(24).sm(12).lg(6))
-                        .col(GridAnt.col(statCard("转化率", "23.4%", "↑ 1.2%", true)).xs(24).sm(12).lg(6)))
-                .build();
+    private Node sectionApiNote() {
+        StringBuilder note = new StringBuilder();
+        note.append("// 桌面应用建议\n");
+        note.append("//   - 大多数场景用 FlowPane（自动 wrap）/ HBox+VBox（固定布局）就够\n");
+        note.append("//   - GridAnt 24 列栅格仅在你确实需要 \"label-input 表单 6+18 比例\"\n");
+        note.append("//     或 \"详情页 16+8 主辅栏\" 这种精确比例时才用\n\n");
+        note.append("// GridAnt 24 列基础用法（响应式断点桌面应用一般用不到）\n");
+        note.append("VBox grid = GridAnt.create()\n");
+        note.append("    .gutter(16)\n");
+        note.append("    .row(GridAnt.row()\n");
+        note.append("        .col(16, mainContent)        // 16/24 = 66.7%\n");
+        note.append("        .col(8, asidePanel))         //  8/24 = 33.3%\n");
+        note.append("    .build();\n\n");
+        note.append("// 完整响应式 API（GridAnt.create().responsive() + xs/sm/md/lg/xl/xxl）\n");
+        note.append("// 仍然保留，详见 GridAnt javadoc，需要时再用");
 
         return ShowcaseSection.create()
-                .title("场景 2：Dashboard 统计卡矩阵（xs 1 列 / sm 2 列 / lg 4 列）")
-                .description("admin 首页通用模式 —— 4 张数字卡随窗口宽度自适应")
-                .demo(row)
-                .code("""
-                        GridAnt.create()
-                            .gutter(16)
-                            .responsive()
-                            .row(GridAnt.row()
-                                .col(GridAnt.col(card1).xs(24).sm(12).lg(6))
-                                .col(GridAnt.col(card2).xs(24).sm(12).lg(6))
-                                .col(GridAnt.col(card3).xs(24).sm(12).lg(6))
-                                .col(GridAnt.col(card4).xs(24).sm(12).lg(6)))
-                            .build();
-                        """)
+                .title("API 说明")
+                .description("GridAnt 与 FlowPane 各自适用场景")
+                .demo(new Label(""))
+                .code(note.toString())
                 .build();
     }
+
+    // ============================================================
+    // 内部工具
+    // ============================================================
 
     private Node statCard(String title, String value, String trend, boolean up) {
         Label t = new Label(title);
@@ -189,90 +149,23 @@ public class GridPage implements ShowcasePage {
         VBox body = new VBox(6, t, v, tr);
         body.setStyle("-fx-padding: 16;");
         Node card = CardAnt.create().bordered(true).content(body).build();
+        if (card instanceof Region r) {
+            r.setMinWidth(220);
+            r.setPrefWidth(220);
+        }
         return card;
     }
 
-    // ============================================================
-    // 场景 3：内容 + 辅助侧栏
-    // ============================================================
-    private Node sectionContentAside() {
-        Node main = mainContentBlock("正文内容（16 列）",
-                "详情页 / 文章页 / 工单详情常用结构。窄屏时辅助信息会自动下沉到正文下方。");
-        Node aside = asideBlock("辅助信息（8 列）",
-                "可放：操作按钮、元信息、关联实体、状态标签等。");
-
-        Node row = GridAnt.create()
-                .gutter(16)
-                .responsive()
-                .row(GridAnt.row()
-                        .col(GridAnt.col(main).xs(24).md(16))
-                        .col(GridAnt.col(aside).xs(24).md(8)))
-                .build();
-
-        return ShowcaseSection.create()
-                .title("场景 3：内容 + 辅助侧栏（xs 单列 / md+ 16+8 双列）")
-                .description("详情页 / 文章页骨架 —— 窄屏时辅助信息下沉，宽屏时右侧固定")
-                .demo(row)
-                .code("""
-                        GridAnt.create()
-                            .gutter(16)
-                            .responsive()
-                            .row(GridAnt.row()
-                                .col(GridAnt.col(mainContent).xs(24).md(16))   // 主区
-                                .col(GridAnt.col(asidePanel).xs(24).md(8)))    // 辅助
-                            .build();
-                        """)
-                .build();
-    }
-
-    private Node mainContentBlock(String title, String desc) {
-        Label t = new Label(title);
-        t.setStyle("-fx-font-size: 16px; -fx-font-weight: 600;");
-        Label d = new Label(desc);
-        d.setStyle("-fx-text-fill: -color-fg-muted;");
-        d.setWrapText(true);
-        VBox body = new VBox(8, t, d);
-        body.setStyle("-fx-padding: 16; -fx-min-height: 120;");
-        return CardAnt.create().bordered(true).content(body).build();
-    }
-
-    private Node asideBlock(String title, String desc) {
-        Label t = new Label(title);
-        t.setStyle("-fx-font-size: 14px; -fx-font-weight: 600;");
-        Label d = new Label(desc);
-        d.setStyle("-fx-text-fill: -color-fg-muted;");
-        d.setWrapText(true);
-        VBox body = new VBox(8, t, d);
-        body.setStyle("-fx-padding: 16; -fx-min-height: 120;" +
-                "-fx-background-color: -color-bg-subtle;");
-        return CardAnt.create().bordered(true).content(body).build();
-    }
-
-    // ============================================================
-    // API 速查
-    // ============================================================
-    private Node sectionApiReference() {
-        StringBuilder code = new StringBuilder();
-        code.append("// 6 个标准断点（对齐 Ant Design / Bootstrap）\n");
-        code.append("xs   < 576px      // 极窄（手机竖屏）\n");
-        code.append("sm   ≥ 576px      // 窄（手机横屏）\n");
-        code.append("md   ≥ 768px      // 平板\n");
-        code.append("lg   ≥ 992px      // 桌面\n");
-        code.append("xl   ≥ 1200px     // 大桌面\n");
-        code.append("xxl  ≥ 1600px     // 超大桌面\n\n");
-        code.append("// 回退规则：未设的断点向下查找最近有效值\n");
-        code.append("// .xs(24).md(8)  →  sm 也是 24（继承 xs）；lg/xl/xxl 都是 8（继承 md）\n\n");
-        code.append("// 老 API 完全兼容\n");
-        code.append("GridAnt.row().col(12, node);             // 固定 span\n");
-        code.append("GridAnt.row().col(8, 4, node);           // span=8, offset=4\n\n");
-        code.append("// 不调 .responsive() 时所有断点退化为默认 span\n");
-        code.append("// 调 .responsive() 才启用 Scene 宽度监听 + 跨断点重排");
-
-        return ShowcaseSection.create()
-                .title("API 速查")
-                .description("断点定义 + 回退规则")
-                .demo(new Label(""))
-                .code(code.toString())
-                .build();
+    private Node simpleTile(String text) {
+        Label l = new Label(text);
+        l.setStyle("-fx-text-fill: -color-fg-default;");
+        VBox body = new VBox(l);
+        body.setStyle("-fx-padding: 24; -fx-alignment: center;");
+        Node card = CardAnt.create().bordered(true).content(body).build();
+        if (card instanceof Region r) {
+            r.setMinWidth(140);
+            r.setPrefWidth(140);
+        }
+        return card;
     }
 }

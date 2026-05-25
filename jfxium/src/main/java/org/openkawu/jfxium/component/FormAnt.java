@@ -12,40 +12,69 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.form.FormContext;
+import org.openkawu.jfxium.core.form.Rule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 /**
  * JFXium 表单组件 - 对标 Ant Design Form。
  *
- * <h2>修复说明</h2>
- * 原实现存在 4 个问题：
+ * <h2>M19.23 增强：校验规则 + 字段联动 + 嵌套表单</h2>
  * <ul>
- *   <li>{@code Label#setStyle} 拼字符串注入颜色/字号/字重，违反 SKILL 强约束（应走 styleClass + LESS）</li>
- *   <li>{@code helpLabel} 状态色（error/warning/success）在 Java 端硬编码状态分支，而非通过 styleClass 触发</li>
- *   <li>{@code footerBox} 通过内联 style 设置 padding，应该走 LESS 的 {@code .form-footer} 选择器</li>
- *   <li>{@code labelAlign} 类型为 {@code String}（"left"/"right"），运行时拼写错就静默回退；应改为枚举</li>
+ *   <li>命名 item（{@code .item(label, control, name)}）+ 链式 {@link ItemBuilder} 配置规则 / helpText / 校验状态</li>
+ *   <li>{@link Rule} 校验规则（required / pattern / minLength / email / custom 等）</li>
+ *   <li>{@link FormContext} 统一管理字段值 / 错误，支持 {@link FormContext#onChange} 字段联动</li>
+ *   <li>嵌套表单：item 控件本身可以是另一个 FormAnt 的 build 产物</li>
+ *   <li>{@link FormResult} 包装：{@code buildResult()} 返回包含 root + context 的结果对象</li>
  * </ul>
  *
- * <h2>本次改动</h2>
- * <ul>
- *   <li>所有 styleClass 改用 {@link CssClasses}（FORM_*、FORM_LABEL_*、FORM_HELP_*）</li>
- *   <li>{@code Label/HelpLabel} 不再 setStyle 拼颜色/字号，全部交给 LESS 选择器</li>
- *   <li>状态色通过 {@code form-help-error/warning/success} 子类切换，对齐组件状态机模式</li>
- *   <li>{@code labelAlign} 改成枚举 {@link Align}</li>
- *   <li>新增 {@code style/styleClass} 钩子，对齐其他 *Ant 组件</li>
- *   <li>{@code build()} 返回类型从 {@code VBox} 改为 {@link Pane}（实际仍是 VBox，但接口更宽容）</li>
- * </ul>
+ * <h2>老 API 完全兼容</h2>
+ * 不调 {@code .item(label, control, name)} 形式时，字段不进入 FormContext（与原行为一致）。
  *
  * <h2>使用示例</h2>
+ *
+ * <h3>基础（向下兼容）</h3>
  * <pre>{@code
- * VBox form = (VBox) FormAnt.create()
+ * VBox form = FormAnt.create()
  *     .layout(FormAnt.Layout.HORIZONTAL)
  *     .item("用户名", usernameField, true)
- *     .item("邮箱",   emailField,    true, "请输入有效邮箱")
- *     .footer(submitButton)
+ *     .footer(submitBtn)
  *     .build();
+ * }</pre>
+ *
+ * <h3>校验 + 联动（M19.23）</h3>
+ * <pre>{@code
+ * FormAnt.Result result = FormAnt.create()
+ *     .item("用户名", usernameField, "username")
+ *         .required()
+ *         .rule(Rule.minLength(3, "至少 3 个字符"))
+ *         .end()
+ *     .item("密码", passwordField, "password")
+ *         .required()
+ *         .end()
+ *     .item("确认密码", confirmField, "confirm")
+ *         .required()
+ *         .rule(Rule.custom(v -> {
+ *             // 这里 v 是 confirm 字段的值；password 通过下面 onChange 同步
+ *             return java.util.Objects.equals(v, passwordField.getText());
+ *         }, "两次密码不一致"))
+ *         .end()
+ *     .footer(submitBtn)
+ *     .buildResult();
+ *
+ * // 字段联动：password 变化时重新校验 confirm
+ * result.context().onChange("password", (val, ctx) -> ctx.validateField("confirm"));
+ *
+ * submitBtn.setOnAction(e -> {
+ *     if (result.validate()) {
+ *         doSubmit(result.getValues());
+ *     }
+ * });
  * }</pre>
  */
 public class FormAnt {
@@ -58,12 +87,10 @@ public class FormAnt {
         SMALL, DEFAULT, LARGE
     }
 
-    /** 标签水平对齐 */
     public enum Align {
         LEFT, RIGHT
     }
 
-    /** 校验状态。{@link #DEFAULT} 表示无校验信息（中性）。*/
     public enum ValidateStatus {
         DEFAULT, SUCCESS, WARNING, ERROR, VALIDATING
     }
@@ -72,26 +99,77 @@ public class FormAnt {
         return new Builder();
     }
 
-    /**
-     * 单个表单项配置。包内可见，仅供 Builder 使用。
-     */
-    public static class FormItem {
+    /** 单个表单项配置（包内可见）。 */
+    static class FormItem {
         String label;
         Node control;
+        String name;        // M19.23：null 表示未命名，不进入 FormContext
         boolean required;
         String helpText;
         ValidateStatus validateStatus;
-        int labelCol;
-        int wrapperCol;
+        List<Rule> rules = new ArrayList<>();
 
-        public FormItem(String label, Node control) {
+        FormItem(String label, Node control, String name) {
             this.label = label != null ? label : "";
             this.control = control;
+            this.name = name;
             this.required = false;
             this.helpText = "";
             this.validateStatus = ValidateStatus.DEFAULT;
-            this.labelCol = 6;
-            this.wrapperCol = 18;
+        }
+    }
+
+    /**
+     * 表单项链式配置器（M19.23）。
+     * 通过 {@code .item(label, control, name)} 进入；通过 {@link #end()} 回链 Builder。
+     */
+    public static class ItemBuilder {
+        private final FormItem item;
+        private final Builder parent;
+
+        ItemBuilder(FormItem item, Builder parent) {
+            this.item = item;
+            this.parent = parent;
+        }
+
+        /** 标记为必填（同时挂红 * 标签 + 自动加 required Rule）。 */
+        public ItemBuilder required() {
+            item.required = true;
+            // 自动加一条 required 规则；用户也可以通过 rule(Rule.required("自定义消息")) 覆盖
+            if (item.rules.stream().noneMatch(r -> r.getMessage().equals("此项必填"))) {
+                item.rules.add(0, Rule.required());
+            }
+            return this;
+        }
+
+        public ItemBuilder rule(Rule rule) {
+            if (rule != null) item.rules.add(rule);
+            return this;
+        }
+
+        public ItemBuilder rules(Rule... rules) {
+            if (rules != null) item.rules.addAll(Arrays.asList(rules));
+            return this;
+        }
+
+        public ItemBuilder rules(Collection<Rule> rules) {
+            if (rules != null) item.rules.addAll(rules);
+            return this;
+        }
+
+        public ItemBuilder helpText(String text) {
+            item.helpText = text != null ? text : "";
+            return this;
+        }
+
+        public ItemBuilder validateStatus(ValidateStatus status) {
+            item.validateStatus = status != null ? status : ValidateStatus.DEFAULT;
+            return this;
+        }
+
+        /** 回链到父 Builder 继续链式配置。 */
+        public Builder end() {
+            return parent;
         }
     }
 
@@ -101,94 +179,88 @@ public class FormAnt {
         private Size size = Size.DEFAULT;
         private boolean colon = true;
         private Align labelAlign = Align.RIGHT;
-        // 默认 24 栅格里 6 + 18 = 24，对齐 Ant Form 默认
         private int labelCol = 6;
         private int wrapperCol = 18;
         private Node footer;
 
         private Builder() {}
 
-        public Builder layout(Layout layout) {
-            this.layout = layout;
-            return this;
-        }
-
-        public Builder size(Size size) {
-            this.size = size;
-            return this;
-        }
-
-        public Builder colon(boolean colon) {
-            this.colon = colon;
-            return this;
-        }
-
-        public Builder labelAlign(Align align) {
-            this.labelAlign = align;
-            return this;
-        }
-
-        public Builder labelCol(int labelCol) {
-            this.labelCol = labelCol;
-            return this;
-        }
-
-        public Builder wrapperCol(int wrapperCol) {
-            this.wrapperCol = wrapperCol;
-            return this;
-        }
-
-        public Builder footer(Node footer) {
-            this.footer = footer;
-            return this;
-        }
+        public Builder layout(Layout layout) { this.layout = layout; return this; }
+        public Builder size(Size size) { this.size = size; return this; }
+        public Builder colon(boolean colon) { this.colon = colon; return this; }
+        public Builder labelAlign(Align align) { this.labelAlign = align; return this; }
+        public Builder labelCol(int labelCol) { this.labelCol = labelCol; return this; }
+        public Builder wrapperCol(int wrapperCol) { this.wrapperCol = wrapperCol; return this; }
+        public Builder footer(Node footer) { this.footer = footer; return this; }
 
         // ===========================================================
-        // item 重载：每个表单项的 required/helpText/状态 通过参数传递，
-        // 而不是塞到 Builder 字段里——避免"上一个 item 的 required=true
-        // 被下一个 item 误继承"这种 Builder 状态污染问题。
+        // 老 API（向下兼容）
         // ===========================================================
 
-        /** 添加一个普通表单项（非必填、无 helpText）。 */
         public Builder item(String label, Node control) {
-            return item(label, control, false, "", ValidateStatus.DEFAULT);
+            return itemInternal(label, control, null, false, "", ValidateStatus.DEFAULT);
         }
 
-        /** 添加一个表单项，可指定是否必填。 */
         public Builder item(String label, Node control, boolean required) {
-            return item(label, control, required, "", ValidateStatus.DEFAULT);
+            return itemInternal(label, control, null, required, "", ValidateStatus.DEFAULT);
         }
 
-        /** 添加一个表单项，可指定是否必填和帮助文本。 */
         public Builder item(String label, Node control, boolean required, String helpText) {
-            return item(label, control, required, helpText, ValidateStatus.DEFAULT);
+            return itemInternal(label, control, null, required, helpText, ValidateStatus.DEFAULT);
         }
 
-        /** 添加一个表单项，完整指定必填/帮助文本/校验状态（最详细重载）。 */
         public Builder item(String label, Node control,
                             boolean required, String helpText,
                             ValidateStatus validateStatus) {
-            FormItem item = new FormItem(label, control);
-            item.required = required;
-            item.helpText = helpText != null ? helpText : "";
-            item.validateStatus = validateStatus != null ? validateStatus : ValidateStatus.DEFAULT;
-            item.labelCol = this.labelCol;
-            item.wrapperCol = this.wrapperCol;
-            items.add(item);
+            return itemInternal(label, control, null, required, helpText, validateStatus);
+        }
+
+        // ===========================================================
+        // 新 API（M19.23）：命名 item + 链式配置
+        // ===========================================================
+
+        /**
+         * 添加一个命名表单项，返回 {@link ItemBuilder} 链式配置。
+         * <p>name 用于 FormContext 索引值 / 错误 / 联动。</p>
+         */
+        public ItemBuilder item(String label, Node control, String name) {
+            FormItem fi = new FormItem(label, control, name);
+            items.add(fi);
+            return new ItemBuilder(fi, this);
+        }
+
+        private Builder itemInternal(String label, Node control, String name,
+                                     boolean required, String helpText,
+                                     ValidateStatus status) {
+            FormItem fi = new FormItem(label, control, name);
+            fi.required = required;
+            fi.helpText = helpText != null ? helpText : "";
+            fi.validateStatus = status != null ? status : ValidateStatus.DEFAULT;
+            items.add(fi);
             return this;
         }
 
+        // ===========================================================
+        // 构建
+        // ===========================================================
+
+        /** 直接构建（不需要 FormContext 时用此 API）。 */
         public VBox build() {
-            // 容器外壳：始终是 VBox（layout 主体 + 可选 footer）
+            return buildResult().getRoot();
+        }
+
+        /** 构建并返回 Result（含 FormContext 用于校验/联动）。 */
+        public Result buildResult() {
+            FormContext ctx = new FormContext();
+
             VBox form = new VBox(0);
             form.getStyleClass().add(CssClasses.FORM);
-            // size 通过 styleClass 暴露给 LESS 控制字号/间距，不在 Java 拼字符串
             form.getStyleClass().add("form-size-" + size.name().toLowerCase());
 
             Pane body = switch (layout) {
-                case HORIZONTAL -> buildHorizontalForm();
-                case VERTICAL -> buildVerticalForm();
-                case INLINE -> buildInlineForm();
+                case HORIZONTAL -> buildHorizontalForm(ctx);
+                case VERTICAL -> buildVerticalForm(ctx);
+                case INLINE -> buildInlineForm(ctx);
             };
             form.getChildren().add(body);
 
@@ -198,16 +270,15 @@ public class FormAnt {
                 footerBox.getStyleClass().add(CssClasses.FORM_FOOTER);
                 form.getChildren().add(footerBox);
             }
-            // 用户 style/styleClass 在所有内置类后应用，便于覆盖
             applyStyles(form);
-            return form;
+            return new Result(form, ctx);
         }
 
         // ===========================================================
         // 三种布局
         // ===========================================================
 
-        private GridPane buildHorizontalForm() {
+        private GridPane buildHorizontalForm(FormContext ctx) {
             GridPane grid = new GridPane();
             grid.getStyleClass().add(CssClasses.FORM_HORIZONTAL);
             grid.setHgap(16);
@@ -219,10 +290,9 @@ public class FormAnt {
                 Label label = createLabel(item);
                 GridPane.setHalignment(label, labelAlign == Align.RIGHT ? HPos.RIGHT : HPos.LEFT);
                 grid.add(label, 0, i);
-                grid.add(createWrapper(item), 1, i);
+                grid.add(createWrapper(item, ctx), 1, i);
             }
 
-            // 列宽按 labelCol/wrapperCol 比例分配，对齐 Ant Form 24 栅格习惯
             double total = labelCol + wrapperCol;
             ColumnConstraints labelConstraint = new ColumnConstraints();
             labelConstraint.setPercentWidth((labelCol / total) * 100);
@@ -233,19 +303,19 @@ public class FormAnt {
             return grid;
         }
 
-        private VBox buildVerticalForm() {
+        private VBox buildVerticalForm(FormContext ctx) {
             VBox container = new VBox(getVerticalGap());
             container.getStyleClass().add(CssClasses.FORM_VERTICAL);
             for (FormItem item : items) {
                 VBox itemBox = new VBox(4);
                 itemBox.getChildren().add(createLabel(item));
-                itemBox.getChildren().add(createWrapper(item));
+                itemBox.getChildren().add(createWrapper(item, ctx));
                 container.getChildren().add(itemBox);
             }
             return container;
         }
 
-        private HBox buildInlineForm() {
+        private HBox buildInlineForm(FormContext ctx) {
             HBox container = new HBox(16);
             container.getStyleClass().add(CssClasses.FORM_INLINE);
             container.setAlignment(Pos.CENTER_LEFT);
@@ -255,6 +325,9 @@ public class FormAnt {
                     itemBox.getChildren().add(createLabel(item));
                 }
                 itemBox.getChildren().add(item.control);
+                if (item.name != null) {
+                    ctx.registerField(item.name, item.control, item.rules);
+                }
                 container.getChildren().add(itemBox);
             }
             return container;
@@ -264,10 +337,6 @@ public class FormAnt {
         // Label / Wrapper 工厂
         // ===========================================================
 
-        /**
-         * 创建标签。颜色/字号/字重全部走 LESS，
-         * Java 这边只挂 styleClass：基础类 + 必填修饰类。
-         */
         private Label createLabel(FormItem item) {
             String labelText = item.label;
             if (colon && !labelText.isEmpty()) {
@@ -282,28 +351,41 @@ public class FormAnt {
         }
 
         /**
-         * 创建控件包装器。包含控件本体 + 可选 helpText。
-         * helpText 的状态色通过 styleClass 切换：
-         * {@code form-help-text} 是基础类，{@code form-help-error} 等是状态修饰类。
+         * Wrapper：控件本体 + 可选 helpText + 动态 errorLabel（M19.23）。
          */
-        private VBox createWrapper(FormItem item) {
+        private VBox createWrapper(FormItem item, FormContext ctx) {
             VBox wrapper = new VBox(4);
             wrapper.getStyleClass().add(CssClasses.FORM_ITEM_WRAPPER);
             wrapper.getChildren().add(item.control);
 
+            // 静态 helpText（不变）
             if (!item.helpText.isEmpty()) {
                 Label helpLabel = new Label(item.helpText);
                 helpLabel.getStyleClass().add(CssClasses.FORM_HELP_TEXT);
                 String stateClass = stateClassFor(item.validateStatus);
-                if (stateClass != null) {
-                    helpLabel.getStyleClass().add(stateClass);
-                }
+                if (stateClass != null) helpLabel.getStyleClass().add(stateClass);
                 wrapper.getChildren().add(helpLabel);
+            }
+
+            // 命名 item：注册到 ctx + 动态 errorLabel 监听 errorProperty
+            if (item.name != null) {
+                ctx.registerField(item.name, item.control, item.rules);
+                Label errorLabel = new Label();
+                errorLabel.getStyleClass().addAll(
+                        CssClasses.FORM_HELP_TEXT, CssClasses.FORM_HELP_ERROR);
+                errorLabel.setVisible(false);
+                errorLabel.setManaged(false);
+                ctx.errorProperty(item.name).addListener((obs, ov, nv) -> {
+                    boolean hasErr = nv != null && !nv.isEmpty();
+                    errorLabel.setText(hasErr ? nv : "");
+                    errorLabel.setVisible(hasErr);
+                    errorLabel.setManaged(hasErr);
+                });
+                wrapper.getChildren().add(errorLabel);
             }
             return wrapper;
         }
 
-        /** 把校验状态映射到 LESS 选择器子类，DEFAULT/VALIDATING 返回 null（不加额外类）。*/
         private static String stateClassFor(ValidateStatus status) {
             return switch (status) {
                 case ERROR -> CssClasses.FORM_HELP_ERROR;
@@ -313,13 +395,43 @@ public class FormAnt {
             };
         }
 
-        /** 行间距由 size 决定，纯数字交给 VBox.spacing；视觉细节（字号等）由 LESS 处理。*/
         private int getVerticalGap() {
             return switch (size) {
                 case SMALL -> 12;
                 case LARGE -> 24;
                 default -> 16;
             };
+        }
+    }
+
+    /**
+     * 构建结果（M19.23）：root VBox + FormContext 句柄。
+     *
+     * <p>常用 API：</p>
+     * <ul>
+     *   <li>{@link #validate()} 跑全部规则；返回是否全部通过</li>
+     *   <li>{@link #getValues()} 一次性取全部字段值（提交表单时用）</li>
+     *   <li>{@link #context()} 直接拿 FormContext 做 onChange 字段联动 / setValue / clearErrors 等</li>
+     * </ul>
+     */
+    public static class Result {
+        private final VBox root;
+        private final FormContext ctx;
+
+        Result(VBox root, FormContext ctx) {
+            this.root = root;
+            this.ctx = ctx;
+        }
+
+        public VBox getRoot() { return root; }
+        public FormContext context() { return ctx; }
+
+        public boolean validate() { return ctx.validate(); }
+        public java.util.Map<String, Object> getValues() { return ctx.getValues(); }
+
+        /** 字段联动语法糖（直接转发到 context.onChange）。 */
+        public void onChange(String dependency, BiConsumer<Object, FormContext> handler) {
+            ctx.onChange(dependency, handler);
         }
     }
 }
