@@ -6,6 +6,7 @@ import org.openkawu.jfxium.demo.showcase.pages.ButtonPage;
 import org.openkawu.jfxium.demo.showcase.pages.ButtonGroupPage;
 import org.openkawu.jfxium.demo.showcase.pages.AlertPage;
 import org.openkawu.jfxium.demo.showcase.pages.AnchorPage;
+import org.openkawu.jfxium.demo.showcase.pages.AppShellPage;
 import org.openkawu.jfxium.demo.showcase.pages.AutoCompletePage;
 import org.openkawu.jfxium.demo.showcase.pages.AvatarBadgePage;
 import org.openkawu.jfxium.demo.showcase.pages.BreadcrumbPage;
@@ -25,6 +26,7 @@ import org.openkawu.jfxium.demo.showcase.pages.DropdownPage;
 import org.openkawu.jfxium.demo.showcase.pages.EmptyPage;
 import org.openkawu.jfxium.demo.showcase.pages.FeedbackPage;
 import org.openkawu.jfxium.demo.showcase.pages.FormPage;
+import org.openkawu.jfxium.demo.showcase.pages.GridPage;
 import org.openkawu.jfxium.demo.showcase.pages.I18nPage;
 import org.openkawu.jfxium.demo.showcase.pages.ImagePage;
 import org.openkawu.jfxium.demo.showcase.pages.InputNumberPage;
@@ -99,6 +101,8 @@ public class ShowcaseDemo extends Application {
         // 布局
         frame.register(new CardPage());
         frame.register(new SplitBarPage());
+        frame.register(new GridPage());
+        frame.register(new AppShellPage());
 
         // 数据录入
         frame.register(new InputPage());

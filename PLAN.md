@@ -213,6 +213,7 @@ HBox actions = SplitBarAnt.create()
 - 接入 AbstractStyleBuilder：**32 个**（M19.6 新增 3 个）
 - **i18n 国际化**：默认 Locale = `Locale.SIMPLIFIED_CHINESE` / 3 份 properties / 9 个组件迁移 / Messages 静态门面 + ReadOnly localeProperty（M19.18）
 - **三件套形状变体**（M19.20）：Switch / CheckBox / Radio 都有 Size + Shape 双维度，可组合 ~12 种视觉
+- **响应式布局**（M19.21+M19.22）：GridAnt 6 档断点 + AppShellAnt Sider 折叠/breakpoint 自适应（共享 Breakpoint 枚举）
 - 抽出通用 LESS 选择器：**~99 段**（M19.6 加 toggle-button 通用块 + 3 组按钮 size 规则）
 - 新增 CssClasses 常量：**295+**（M19.6 复用现有 SIZE_SMALL/LARGE/SHAPE_*，无新增）
 - 项目级 inline color 注入：**29 个文件 → 0 个文件**
@@ -1556,6 +1557,103 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 
 ---
 
+### 🎯 M19.21 GridAnt 响应式断点（2026-05-24）
+
+**动机**：用户提议把 P2.3「GridAnt 二期：xs/sm/md/lg/xl/xxl 响应式断点」做掉。原 GridAnt（M3）只支持固定 span，admin 后台在不同窗口宽度下无法自动重排。
+
+**产出**：
+
+**子阶段 19.21.1：Breakpoint 枚举 + 响应式监听**
+- [x] 新增 `Breakpoint { XS, SM, MD, LG, XL, XXL }`，阈值对齐 Ant Design / Bootstrap：0/576/768/992/1200/1600
+- [x] `Breakpoint.of(double width)` 静态方法，根据宽度返回所属断点
+- [x] `Builder.responsive()` 启用 Scene 宽度监听（用 `sceneProperty()` 链 + `widthProperty()` 链，跨断点重建所有行）
+- [x] **不调 .responsive() 时所有断点配置退化为默认 span**，老 API 完全兼容
+
+**子阶段 19.21.2：ColBuilder 链式响应式 API**
+- [x] 新增 `ColBuilder` 链式构造器：`.span(int) / .offset(int)` + 6 档 `.xs/.sm/.md/.lg/.xl/.xxl(int)` + 6 档 `.xsOffset(...)`
+- [x] 静态工厂 `GridAnt.col(node)` → `ColBuilder`
+- [x] `Row.col(ColBuilder)` 重载收纳新 API
+- [x] **回退规则**：未设的断点向下查找最近有效值（lg → md → sm → xs → 默认 span），都没设用 24
+
+**子阶段 19.21.3：兼容性**
+- [x] 老 `Col(span, node)` / `Col(span, offset, node)` 构造器保留
+- [x] 老 `Row.col(int span, Node)` / `Row.col(int span, int offset, Node)` 保留
+- [x] `placeNode` 加去重：rebuild 场景下同一节点会被多次挂 styleClass，需要 `if (!contains)` 兜底
+
+**子阶段 19.21.4：GridPage Showcase**
+
+迭代了两版：
+- **v1（鸡肋版）**：5 个 section 演示 24 列等分 / gutter 0/16/32 对比 / offset / 6 卡响应式 / 断点表 —— 用户反馈「展示的全是变体语法，没有真实业务场景」
+- **v2（业务版）**：3 个 admin 真实场景 + API 速查 —— 每个 section 代码可直接复制粘贴
+  1. **admin 表单两栏布局**（4 字段，xs 单栏 / sm+ 双栏，备注独占一行）
+  2. **Dashboard 统计卡矩阵**（4 卡，xs 1 列 / sm 2 列 / lg 4 列）
+  3. **内容 + 辅助侧栏**（左 16 列 + 右 8 列，xs 时辅助下沉，详情页骨架）
+  4. **自动 wrap（FlowPane）**（用户提需求："不用 24 列语义，N 个等宽卡片自动 wrap"）—— **诚实告诉用户 GridAnt 不天然支持，给出 JavaFX 原生 FlowPane 替代方案**
+
+**关键改动**：
+- `jfxium/src/main/java/org/openkawu/jfxium/component/GridAnt.java`：~340 行（M3 原版 ~150 行）
+- `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/showcase/pages/GridPage.java`（新建）
+- `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/showcase/ShowcaseDemo.java`（注册 GridPage）
+
+**踩坑实证（沉淀）**：
+1. **Showcase v1 鸡肋的根因**：纯展示「API 怎么写」，没展示「什么时候用」。用户拿到不知道怎么照搬。**Showcase 应该是"业务模板复制源"，不是"API 文档可视化"**。
+2. **响应式不一定要复杂栅格**：用户提的"窄 1 排 2、宽 1 排 4 自动 wrap"原生 FlowPane 就能做。**不要为了用栅格而用栅格** —— 加场景 4 给出 FlowPane 替代方案，避免用户被 24 列模型困住。
+
+**为什么这一步重要**：
+1. **响应式是 admin 后台基本能力**：用户切窗口大小（特别是从全屏切到分屏），布局应该跟着变
+2. **复用给 AppShellAnt（M19.22）**：Breakpoint 枚举建好后下个里程碑直接用，不重复造轮子
+3. **Showcase 哲学的转折点**：从 v1 → v2 的迭代是"Showcase 是业务模板而不是 API 文档"的明确实证，沉淀进 PLAN 后续每次新建 Page 都要回想这个原则
+
+---
+
+### 🎯 M19.22 AppShellAnt 增强：Sider 折叠 + 响应式自适应（2026-05-24）
+
+**动机**：M19.21 做完 GridAnt 响应式后，admin AppShellAnt 是下一个需要响应式能力的组件 —— 窄屏时左侧菜单应该能折叠成图标条。
+
+**产出**：
+
+**子阶段 19.22.1：Sider 折叠**
+- [x] `Builder.collapsible(boolean)` 启用折叠能力
+- [x] `Builder.collapsed(boolean)` 初始折叠状态
+- [x] `Builder.collapsedWidth(double)` 折叠后宽度（默认 64px，admin 行业惯例）
+- [x] `Builder.trigger(boolean)` 是否显示 sider 底部内置 ‹/› 触发按钮（默认 true）
+- [x] `Builder.onCollapseChange(Consumer<Boolean>)` 状态变化回调
+- [x] 折叠态在 sider 节点上挂 `.app-shell-sider-collapsed` styleClass，方便业务用 LESS 切换内部细节（如菜单文字隐藏）
+- [x] 用 `BooleanProperty` 持有折叠状态，所有相关组件（trigger 按钮文字 / sider 宽度 / onCollapseChange / styleClass）都订阅它
+
+**子阶段 19.22.2：响应式断点自适应**
+- [x] `Builder.breakpoint(GridAnt.Breakpoint)` —— Scene 宽度小于此断点的 minWidth 时自动折叠
+- [x] **复用 GridAnt.Breakpoint 枚举**（M19.21），不重复造轮子
+- [x] 用 `sceneProperty()` 链 + `widthProperty()` 链监听，跨阈值时自动 toggle
+- [x] 入场景图当下立即按当前宽度判断一次（避免初次渲染状态错）
+
+**子阶段 19.22.3：Result 外部控制句柄**
+- [x] 新增 `Result` 类：包含 root BorderPane + collapsed BooleanProperty
+- [x] `result.toggle()` / `result.setCollapsed(b)` / `result.collapsedProperty()`
+- [x] `Builder.buildResult()` 返回 `Result`；`Builder.build()` 仍返回 `BorderPane`（向下兼容）
+- [x] 适用场景：让 Header 上的汉堡按钮 / 自定义触发器控制折叠（用 `.trigger(false)` 隐藏内置按钮）
+
+**子阶段 19.22.4：AppShellPage Showcase**
+- [x] 4 个 section：基础 / 可折叠 / 外部控制 / 响应式断点自适应
+- [x] 每个都是真实可用的代码（吸取 M19.21 v2 教训：Showcase 是业务模板）
+
+**LESS 新增**：
+- `.app-shell-sider-collapsed` 占位钩子
+- `.button.app-shell-sider-trigger` 内置触发按钮（hover/armed 状态全覆盖）
+
+**关键改动**：
+- `jfxium/src/main/java/org/openkawu/jfxium/component/AppShellAnt.java`：~140 行 → ~280 行
+- `jfxium/src/main/resources/org/openkawu/jfxium/css/less/theme-base.less`：新增 ~20 行
+- `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/showcase/pages/AppShellPage.java`（新建）
+- `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/showcase/ShowcaseDemo.java`（注册 AppShellPage）
+
+**为什么这一步重要**：
+1. **Sider 折叠是 admin 后台必备**：缩小窗口看正文 / 移动办公场景必须能折菜单
+2. **Result 包装型 API 模式实证**：M19.13 SKILL #18 讲过「直接节点型 vs Result 包装型」契约，AppShellAnt 这次实证 — 想让外部控制内部状态时，**明确返回 Result 比返回 BorderPane 加无数 setter 更清晰**
+3. **复用 GridAnt.Breakpoint 是好示范**：跨组件共享枚举，避免每个组件都定义自己的 Breakpoint
+
+---
+
 
 - [x] **SpinAnt `Color.web("#1677ff")` 硬编码**：已修复（M7），改用 Region + CSS 变量替代 Shape
 - [x] **AlertBanner 孤儿类**（`component/base/AlertBanner.java`）：已删除（M7），功能被 AlertAnt 完全覆盖
@@ -1648,8 +1746,8 @@ ShowcaseDemo
 #### P2.3 控件层查漏补缺（被 P2.1' Showcase 倒逼，按需推进）
 
 - [x] 数据表格高级功能：排序、列宽、对齐、操作列、边框模式、隐藏表头（M11 + M11.1 完成）
-- [ ] GridAnt 二期：xs/sm/md/lg/xl/xxl 响应式断点（监听 Scene 宽度）
-- [ ] AppShellAnt 增强：Sider 折叠 / breakpoint
+- [x] GridAnt 二期：xs/sm/md/lg/xl/xxl 响应式断点（M19.21 完成）
+- [x] AppShellAnt 增强：Sider 折叠 / breakpoint（M19.22 完成）
 - [ ] FormAnt 增强：校验规则、字段联动、嵌套表单
 - [x] CardAnt 缺失 props（M10 完成）
 
