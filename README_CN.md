@@ -93,6 +93,80 @@ themeManager.applyTheme(new LightTheme());
 themeManager.registerScene(scene);  // 注册以支持动态切换
 ```
 
+### 4. 写一个完整 admin 页（5 分钟）
+
+把上面的零件拼成"用户管理"页 — 顶部筛选 + 中间表格 + 底部分页：
+
+```java
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+import org.openkawu.jfxium.component.*;
+import org.openkawu.jfxium.core.theme.*;
+import org.openkawu.jfxium.template.CrudTemplate;
+
+public class MyAdmin extends Application {
+    @Override
+    public void start(Stage stage) {
+        // 1. 顶部工具栏：搜索 + 新增按钮
+        TextField search = InputAnt.create().placeholder("搜索用户").build();
+        Node addBtn = ButtonAnt.create("新增")
+            .type(ButtonAnt.Type.PRIMARY)
+            .onClick(e -> openAddModal())
+            .build();
+
+        // 2. 中间表格
+        TableView<User> table = TableAnt.<User>create()
+            .data(loadUsers())                                  // 你的业务数据
+            .column("姓名", User::getName).end()
+            .column("邮箱", User::getEmail).end()
+            .actionColumn("操作")
+                .action("编辑", u -> openEdit(u))
+                .action("删除", u -> doDelete(u)).type(ButtonAnt.Type.LINK).danger()
+                .end()
+            .build();
+
+        // 3. 底部分页
+        Pagination pager = PaginationAnt.create()
+            .pageCount(10)
+            .currentPage(0)
+            .onChange(p -> reload(p))
+            .build();
+
+        // 4. 用 CrudTemplate 拼整页
+        BorderPane page = CrudTemplate.create()
+            .title("用户管理")
+            .topRight(SplitBarAnt.create().left(search).right(addBtn).build())
+            .body(table)
+            .bottomRight(pager)
+            .build();
+
+        // 5. Scene + 主题
+        Scene scene = new Scene(page, 1280, 800);
+        ThemeManager.getInstance().applyTheme(new LightTheme());
+        ThemeManager.getInstance().registerScene(scene);
+
+        stage.setTitle("用户管理");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void openAddModal() {
+        ModalAnt.create()
+            .title("新增用户")
+            .content("...")
+            .onOk(() -> { /* 提交 */ })
+            .build()
+            .open(stage.getScene().getRoot());
+    }
+
+    public static void main(String[] args) { launch(args); }
+}
+```
+
+要再上一层 admin shell（顶栏 + 侧栏菜单 + 路由），见后面 `AppShellAnt 详细说明` 和 `LoginTemplate / DashboardTemplate / CrudTemplate 业务模板`。
+
 ---
 
 ## 主题系统
@@ -197,6 +271,216 @@ themeManager.setPrimaryColor(ThemeColor.Preset.PURPLE);     // 预设颜色
 | **SwitchAnt** | 开关 | `HBox` > 轨道 + 滑块（StackPane）+ 状态文本 | `SwitchAnt.create().shape(Shape.ROUNDED).checkedText("开").build()` |
 | **SliderAnt** | 滑块 | `VBox` > `Slider` + 数值标签 | `SliderAnt.create().min(0).max(100).build()` |
 | **SpinnerAnt** | 计数器 | `HBox` > `TextField` + 上下按钮 | `SpinnerAnt.create().min(0).max(100).build()` |
+
+#### ButtonAnt 详细说明
+
+最高频组件。支持 10 种 Type / 3 档 Size / 3 种 Shape，可叠加 ghost / block / loading / icon。
+
+```java
+import org.openkawu.jfxium.component.ButtonAnt;
+
+// 主按钮
+Button save = ButtonAnt.create("保存")
+    .type(ButtonAnt.Type.PRIMARY)
+    .onClick(e -> doSave())
+    .build();
+
+// 危险按钮 + 大尺寸
+Button delete = ButtonAnt.create("删除")
+    .type(ButtonAnt.Type.DANGER)
+    .size(ButtonAnt.Size.LARGE)
+    .build();
+
+// 链接按钮（看起来像超链接）
+Button link = ButtonAnt.create("查看详情")
+    .type(ButtonAnt.Type.LINK)
+    .build();
+
+// 加载状态（提交时按钮转圈不可点）
+Button submit = ButtonAnt.create("提交").type(ButtonAnt.Type.PRIMARY).build();
+submit.setOnAction(e -> {
+    submit.setDisable(true);
+    // 业务逻辑...
+});
+
+// Block 撑满父容器宽度（移动端常见）
+Button login = ButtonAnt.create("登录")
+    .type(ButtonAnt.Type.PRIMARY)
+    .block(true)
+    .build();
+
+// Ghost 幽灵按钮（透明背景 + 边框/文字主题色，常用于彩色背景）
+Button ghost = ButtonAnt.create("订阅")
+    .type(ButtonAnt.Type.PRIMARY)
+    .ghost(true)
+    .build();
+```
+
+**Type 全档**：DEFAULT / PRIMARY / DASHED / TEXT / LINK / DANGER / SUCCESS / WARNING / INFO / ACCENT
+**Size 全档**：SMALL / DEFAULT / LARGE
+**Shape 全档**：DEFAULT（小圆角）/ ROUNDED（大圆角）/ SQUARE（直角）/ CIRCLE（圆形，仅图标按钮）
+
+**特殊点**：
+- `onClick` 接收 `EventHandler<ActionEvent>`，写法是 `e -> {...}`
+- 按钮状态变化（loading / disabled）通过 `setDisable(true)` 或自定义 styleClass 切换，**不要 setStyle 拼字符串**
+- 想做"图标 + 文字"按钮：`.icon(IconAnt.path(IconAnt.Path.SAVE, 14))`
+
+---
+
+#### InputAnt 详细说明
+
+文本输入框。支持前/后缀图标、状态、密码模式、清空按钮。
+
+```java
+import org.openkawu.jfxium.component.InputAnt;
+import javafx.scene.control.TextField;
+
+// 基础输入
+TextField name = InputAnt.create()
+    .placeholder("请输入姓名")
+    .build();
+
+// 带前后缀图标
+TextField search = InputAnt.create()
+    .placeholder("搜索...")
+    .prefixIcon(IconAnt.path(IconAnt.Path.SEARCH, 14))
+    .build();
+
+// 带后缀单位
+TextField money = InputAnt.create()
+    .placeholder("0.00")
+    .suffix("元")
+    .build();
+
+// 密码输入（自动用 PasswordField）
+TextField password = InputAnt.create()
+    .placeholder("密码")
+    .password(true)
+    .build();
+
+// 三档尺寸
+TextField small = InputAnt.create().size(InputAnt.Size.SMALL).build();
+TextField large = InputAnt.create().size(InputAnt.Size.LARGE).build();
+
+// 错误态（红边）
+TextField err = InputAnt.create()
+    .placeholder("用户名已被占用")
+    .status(InputAnt.Status.ERROR)
+    .build();
+```
+
+**特殊点**：
+- `.password(true)` 内部会用 `PasswordField` 替换 `TextField`，**返回类型仍是 TextField**（兼容性）
+- 监听值变化用 `field.textProperty().addListener(...)` —— 跟 JavaFX 原生一致
+- 想配合 FormAnt 校验：见 FormAnt + Rule（M19.23）
+
+---
+
+#### SwitchAnt 详细说明
+
+开关。3 种 Shape（PILL / ROUNDED / SQUARE），支持双态文字。
+
+```java
+import org.openkawu.jfxium.component.SwitchAnt;
+
+// 最简
+HBox toggle = SwitchAnt.create().build();
+
+// 带文字 + 监听变化
+HBox notify = SwitchAnt.create()
+    .checkedText("开")
+    .uncheckedText("关")
+    .selected(true)
+    .onChange(checked -> System.out.println("通知: " + checked))
+    .build();
+
+// 形状变体
+HBox pill = SwitchAnt.create().shape(SwitchAnt.Shape.PILL).build();      // 胶囊（默认）
+HBox roundd = SwitchAnt.create().shape(SwitchAnt.Shape.ROUNDED).build();  // 圆角矩形
+HBox sqr = SwitchAnt.create().shape(SwitchAnt.Shape.SQUARE).build();      // 直角矩形
+```
+
+**特殊点**：
+- `.build()` 返回的是 `HBox`（容器 + 状态文字），不是单独的开关节点。如果需要拿到内部开关本身，需要从 children 取
+- `onChange` 在状态变化时立即触发，包括程序调 `setSelected`
+
+---
+
+#### CheckBoxAnt / RadioButtonAnt 详细说明
+
+复选框 / 单选框。3 档 Size + 3-4 种 Shape，CheckBox 还支持三态（半选）。
+
+```java
+// CheckBox - 基础
+CheckBox remember = CheckBoxAnt.create("记住我")
+    .selected(true)
+    .onChange(checked -> saveRemember(checked))
+    .build();
+
+// CheckBox - 三态半选（用于"全选"场景）
+CheckBox triState = CheckBoxAnt.create("全选")
+    .allowIndeterminate(true)   // 允许 selected ↔ indeterminate ↔ unselected 循环
+    .build();
+
+// CheckBox - 形状变体（默认方角，可选 CIRCLE 圆形外观但仍是多选语义）
+CheckBox circular = CheckBoxAnt.create("订阅")
+    .shape(CheckBoxAnt.Shape.CIRCLE)
+    .build();
+
+// RadioButton - 必须配 ToggleGroup 互斥
+ToggleGroup gender = new ToggleGroup();
+RadioButton male = RadioButtonAnt.create("男").toggleGroup(gender).selected(true).build();
+RadioButton female = RadioButtonAnt.create("女").toggleGroup(gender).build();
+
+// RadioButton - 形状变体（默认圆形，SQUARE 看起来像 CheckBox 但仍是单选语义）
+RadioButton square = RadioButtonAnt.create("选项")
+    .shape(RadioButtonAnt.Shape.SQUARE)
+    .toggleGroup(gender)
+    .build();
+```
+
+**特殊点**：
+- RadioButton **必须** 配 `ToggleGroup` 才能互斥，单独用 = 它自己一个组（点了就选中，无法取消）
+- CheckBox `allowIndeterminate(true)` 后用户点击会在三态间循环；不开则只有 selected ↔ unselected 两态
+- 形状是**视觉**层面的 — Shape.CIRCLE 的 CheckBox 仍然是多选语义（点击多个能同时选中）
+
+---
+
+#### SliderAnt / SpinnerAnt 详细说明
+
+```java
+// Slider 基础
+Slider volume = SliderAnt.create()
+    .min(0).max(100).value(40)
+    .onChange(v -> setVolume(v.intValue()))
+    .build();
+
+// Slider 带步进点 + 刻度
+Slider quality = SliderAnt.create()
+    .min(0).max(100).value(50)
+    .step(10).dots(true)
+    .build();
+
+// Slider 范围选择（双滑块）
+Slider price = SliderAnt.create()
+    .min(0).max(1000)
+    .range()                              // 启用 range 模式
+    .defaultValue(new double[]{200, 800})
+    .build();
+
+// Spinner 数字步进
+Spinner age = SpinnerAnt.create()
+    .min(0).max(120).value(18)
+    .step(1)
+    .build();
+```
+
+**特殊点**：
+- Slider 的 `onChange` 接收 `Double`，要 cast 才能拿 int
+- Spinner 内部是 `TextField + 上下按钮`，不是 JavaFX 原生 `Spinner`（更可控）
+- 想要带千分位的 InputNumberAnt 用 `InputNumberAnt`（独立组件，对标 Ant Design InputNumber）
+
+---
 
 ### 布局组件 (Layout)
 
@@ -663,6 +947,63 @@ OverlayManager.getInstance().clearAll();
 | **GridAnt** | 24 栅格系统 | `VBox` > GridPane（24 列 percentWidth）| `GridAnt.create().row(GridAnt.row().col(12, a).col(12, b)).build()` |
 | **SpaceAnt** | 间距组件 | `HBox/VBox` + spacer 间隔 | `SpaceAnt.create().size(16).children(ns).build()` |
 
+#### AppShellAnt 详细说明（M19.22 Sider 折叠 + breakpoint）
+
+整个 admin 应用的"骨架"组件 —— 顶部 Header / 左侧 Sider / 中间 Content / 底部 Footer 五区位。
+
+```java
+import org.openkawu.jfxium.component.AppShellAnt;
+import org.openkawu.jfxium.component.GridAnt;
+
+// 基础用法
+BorderPane shell = AppShellAnt.create()
+    .header(headerNode)                         // 顶部应用栏
+    .sider(menuNode, 240)                       // 左侧菜单 + 宽度
+    .content(routerOutletNode)                  // 主内容区（路由切换替换这里）
+    .footer(footerNode)                          // 底部状态栏（可选）
+    .build();
+Scene scene = new Scene(shell, 1280, 800);
+
+// 可折叠 Sider（M19.22）
+BorderPane shell2 = AppShellAnt.create()
+    .header(headerNode)
+    .sider(menuNode, 240)
+    .collapsible(true)                          // 启用折叠
+    .collapsedWidth(64)                          // 折叠后宽度（默认 64）
+    .trigger(true)                               // 显示底部 ‹/› 按钮（默认 true）
+    .onCollapseChange(c -> log.info("collapsed=" + c))
+    .content(pageNode)
+    .build();
+
+// 响应式自适应（窄屏自动折叠）
+BorderPane shell3 = AppShellAnt.create()
+    .sider(menuNode, 240)
+    .collapsible(true)
+    .breakpoint(GridAnt.Breakpoint.LG)          // < 992px 自动折叠
+    .content(pageNode)
+    .build();
+
+// 外部控制折叠（自定义按钮触发）
+AppShellAnt.Result result = AppShellAnt.create()
+    .sider(menuNode, 240)
+    .collapsible(true)
+    .trigger(false)                              // 隐藏内置按钮
+    .content(pageNode)
+    .buildResult();
+
+myHamburgerBtn.setOnAction(e -> result.toggle());
+BorderPane shell4 = result.getRoot();
+```
+
+**特殊点**：
+- `.build()` 直接返回 `BorderPane`（向下兼容老 API）
+- `.buildResult()` 返回 `Result`，含 `toggle()` / `setCollapsed(b)` / `collapsedProperty()` 用于外部控制
+- `breakpoint` 复用 GridAnt.Breakpoint 枚举（XS/SM/MD/LG/XL/XXL）—— 共用一套标准
+- 折叠时 sider 节点自动挂 `.app-shell-sider-collapsed` styleClass，业务方可在 LESS 里自定义"折叠时隐藏文字只剩图标"等细节
+- Header / Footer 区域是任意 Node —— 通常用 SplitBarAnt 拼三段式（左 logo + 中间空 + 右用户菜单）
+
+---
+
 ### 导航组件 (Navigation)
 
 | 组件 | 说明 | 布局结构 | 示例 |
@@ -674,6 +1015,69 @@ OverlayManager.getInstance().clearAll();
 | **PaginationAnt** | 分页器 | `HBox` > 上一页 + 页码 + 下一页 + 每页条数 | `PaginationAnt.create().total(100).pageSize(10).build()` |
 | **StepsAnt** | 步骤条 | `HBox` > StepItem + 连接线 | `StepsAnt.create().step("下单").step("支付").build()` |
 | **TabsAnt** | 标签页 | `VBox` > [HBox:标签] + [指示条] + StackPane:内容 | `TabsAnt.create().tab("Tab1", content).build()` |
+
+#### MenuAnt 详细说明（M15 4 模式正交）
+
+admin 后台侧栏的核心组件。支持 INLINE / HORIZONTAL × LIGHT / DARK × 折叠 × 选中态 4 个维度正交组合。
+
+```java
+import org.openkawu.jfxium.component.MenuAnt;
+
+// 基础侧栏菜单
+Pane sider = MenuAnt.create()
+    .item("dashboard", "首页", () -> router.go("dashboard"))
+    .item("users", "用户管理", () -> router.go("users"))
+    .selectedKey("dashboard")               // 当前选中（高亮 + 左侧主题色竖线）
+    .onSelect(key -> log.info("选中: " + key))
+    .build();
+
+// 多级嵌套（subMenu 必须 .endSubMenu() 收口）
+Pane nested = MenuAnt.create()
+    .item("dashboard", "首页", () -> {})
+    .subMenu("user", "用户管理")
+        .item("user.list", "列表", () -> {})
+        .item("user.add", "新增", () -> {})
+        .endSubMenu()                        // 必须！否则后续 item 还会塞到 subMenu 里
+    .item("settings", "设置", () -> {})
+    .build();
+
+// 顶部横向导航（HORIZONTAL）
+Pane topNav = MenuAnt.create()
+    .mode(MenuAnt.Mode.HORIZONTAL)
+    .item("home", "首页", () -> {})
+    .subMenu("products", "产品")            // 横向时 subMenu 改为下拉 Popup
+        .item("p1", "产品 A", () -> {})
+        .endSubMenu()
+    .build();
+
+// 暗色侧栏（admin Pro 经典）
+Pane darkSider = MenuAnt.create()
+    .theme(MenuAnt.Theme.DARK)               // 深色背景 + 白字
+    .item(...).build();
+
+// 折叠模式（仅 INLINE）
+Pane collapsed = MenuAnt.create()
+    .collapsed(true)                         // 缩到 64px，只显示图标
+    .item("home", "首页",
+          IconAnt.path(IconAnt.Path.HOME, 16),    // 提供图标
+          () -> {})
+    .build();
+
+// 手风琴展开模式（M19.19）
+Pane accordion = MenuAnt.create()
+    .expandMode(MenuAnt.ExpandMode.EXCLUSIVE)  // 展开 A 时其他自动收起
+    .subMenu("a", "A").item(...).endSubMenu()
+    .subMenu("b", "B").item(...).endSubMenu()
+    .build();
+```
+
+**特殊点**：
+- `build()` 返回 `Pane`（不是 `VBox`）—— 因为 HORIZONTAL 模式返回 HBox。需要持有引用时用 `Pane sider = ...`
+- `subMenu(...)` **必须** 跟 `.endSubMenu()`，否则后续 item 全塞进 subMenu
+- `selectedKey` 是受控的 —— 路由切换时调 `MenuAnt` 重新 build 并传新 selectedKey；内部不会自动跟随用户点击（要监听 `onSelect` 自己更新业务路由）
+- 折叠 + 暗色 + 选中态可以**同时叠加**（M15 4 模式正交）
+
+---
 
 ### 数据录入 (Data Entry)
 
@@ -689,6 +1093,74 @@ OverlayManager.getInstance().clearAll();
 | **MentionsAnt** | @提及 | `VBox` > `TextArea` + 提及建议弹窗 | `MentionsAnt.create().option("user1","张三").build()` |
 | **UploadAnt** | 文件上传 | `VBox` > 拖拽区 + 文件列表 | `UploadAnt.create().multiple(true).build()` |
 | **TransferAnt** | 穿梭框 | `HBox` > 源列表 + 操作按钮 + 目标列表 | `TransferAnt.create().source(l1).target(l2).build()` |
+
+#### FormAnt 详细说明（M19.23 校验 + 联动 + Result 句柄）
+
+最重要的数据录入组件。3 种 Layout / 3 档 Size / 完整校验规则系统 + 字段联动。
+
+```java
+import org.openkawu.jfxium.component.FormAnt;
+import org.openkawu.jfxium.core.form.Rule;
+
+// 基础（向下兼容）
+VBox form = FormAnt.create()
+    .layout(FormAnt.Layout.HORIZONTAL)
+    .labelCol(6).wrapperCol(18)              // label 占 6/24，控件占 18/24
+    .item("用户名", usernameField, true)      // 第 3 参数 true = 必填（红 *）
+    .item("邮箱", emailField, true, "请输入有效邮箱")  // 第 4 参数 = helpText
+    .footer(submitBtn)
+    .build();
+
+// 完整校验（M19.23 新增）
+FormAnt.Result result = FormAnt.create()
+    .item("用户名", usernameField, "username")          // 第 3 参数 name = 进入 FormContext
+        .required()                                     // 自动加 required Rule
+        .rule(Rule.minLength(3, "至少 3 个字符"))
+        .rule(Rule.maxLength(16, "至多 16 个字符"))
+        .rule(Rule.pattern("^[a-zA-Z0-9_]+$", "仅字母数字下划线"))
+        .end()                                          // 必须！回链 Builder
+    .item("邮箱", emailField, "email")
+        .required().rule(Rule.email()).end()
+    .item("年龄", ageField, "age")
+        .required().rule(Rule.range(18, 120, "请输入 18-120")).end()
+    .buildResult();
+
+// 提交校验
+submitBtn.setOnAction(e -> {
+    if (result.validate()) {
+        Map<String, Object> values = result.getValues();   // {username=..., email=..., age=...}
+        doSubmit(values);
+    }
+    // 校验失败时每个字段下方自动显示红色错误消息
+});
+
+// 字段联动（密码 / 确认密码）
+FormAnt.Result pwd = FormAnt.create()
+    .item("密码", passwordField, "password")
+        .required().rule(Rule.minLength(6, "至少 6 位")).end()
+    .item("确认密码", confirmField, "confirm")
+        .required()
+        .rule(Rule.custom(
+            v -> Objects.equals(v, passwordField.getText()),
+            "两次输入不一致"))
+        .end()
+    .buildResult();
+
+// 联动：password 变化时自动重新校验 confirm
+pwd.onChange("password", (val, ctx) -> ctx.validateField("confirm"));
+pwd.onChange("confirm", (val, ctx) -> ctx.validateField("confirm"));
+```
+
+**Rule 全档**：required / minLength / maxLength / lengthBetween / pattern / email / range / custom
+
+**特殊点**：
+- 老 `.item(label, control, required)` API 完全保留，**未命名（不传 name）的 item 不进 FormContext，零开销**
+- `.item(label, control, name).required()...rule(...).end()` 是新链式 API，**.end() 必须** 回链
+- `result.getValues()` 自动从 6 类常用控件提取值（TextField / CheckBox / Radio / Toggle / ComboBox / DatePicker）
+- 嵌套表单：item 的 control 可以是另一个 FormAnt 的 build 产物 —— 零特殊代码
+- 想要"重置错误显示但保留输入值"：`result.context().clearErrors()`
+
+---
 
 ### 数据展示 (Data Display)
 
@@ -731,6 +1203,100 @@ OverlayManager.getInstance().clearAll();
 | **ResultAnt** | 结果页 | `VBox` > 图标 + 标题 + 副标题 + 操作 | `ResultAnt.create().status(SUCCESS).title("成功").build()` |
 | **SkeletonAnt** | 骨架屏 | `VBox` > 骨架形状占位 | `SkeletonAnt.create().rows(3).animated(true).build()` |
 | **SpinAnt** | 加载中 | `Region` CSS 旋转动画 | `SpinAnt.create().indicator(SPINNER).tip("加载中").build()` |
+
+#### ModalAnt 详细说明
+
+模态对话框。**注意：build() 返回的是 `ModalResult`，不是 Node。需要调 `.open(owner)` 才会显示。**
+
+```java
+import org.openkawu.jfxium.component.ModalAnt;
+
+// 基础确认对话框
+ButtonAnt.create("删除").onClick(e -> {
+    ModalAnt.create()
+        .title("确认删除")
+        .content("此操作不可撤销，确定要删除该条记录吗？")
+        .onOk(() -> doDelete())                       // OK 回调
+        .build()
+        .open(deleteBtn);                              // open(任意 Node 作为 owner)
+}).build();
+
+// 自定义 footer
+Button cancel = ButtonAnt.create("取消").build();
+Button confirm = ButtonAnt.create("我已知晓").type(ButtonAnt.Type.PRIMARY).build();
+HBox footer = new HBox(8, cancel, confirm);
+
+ModalAnt.ModalResult result = ModalAnt.create()
+    .title("用户协议")
+    .content(scrollableContentNode)                   // 任意 Node
+    .footer(footer)
+    .width(640)                                        // 自定义宽度（默认 520）
+    .closePlacement(ModalAnt.ClosePlacement.RIGHT)    // RIGHT/LEFT/NONE
+    .maskClosable(true)                                // 点击遮罩可关闭（默认 true）
+    .keyboard(true)                                    // ESC 可关闭（默认 true）
+    .build();
+
+confirm.setOnAction(e -> {
+    saveAcknowledge();
+    result.close();                                    // 程序关闭
+});
+
+result.open(triggerBtn);
+
+// 静态便捷方法
+ModalAnt.info("标题", "提示内容", ownerNode);
+ModalAnt.confirm("删除？", "不可恢复", ownerNode, () -> doDelete());
+```
+
+**特殊点**：
+- `build()` 返回 `ModalResult`（不是 Node！）—— SKILL #18 中的「Result 包装型 API」实证
+- `.open(owner)` 中的 owner 可以是触发按钮 / 当前页面任意 Node —— Modal 会从 owner.getScene().getWindow() 取根 Stage
+- `.content(...)` 接受 String 或 Node 两种重载 —— Node 时可以放任何复杂布局
+- 默认按钮文字「确定/取消」走 i18n —— 切到英文 Locale 时自动变 OK/Cancel（M19.18）
+- `closePlacement(NONE)` 时 maskClosable + keyboard + 默认 footer 至少保留一个，否则 build() 抛 IllegalStateException
+
+---
+
+#### DrawerAnt 详细说明
+
+抽屉面板。从屏幕一侧滑出，常用于详情查看 / 表单编辑。同样是 Result 包装型，需要 `.open(owner)`。
+
+```java
+import org.openkawu.jfxium.component.DrawerAnt;
+
+// 右侧抽屉（默认）
+DrawerAnt.create()
+    .title("用户详情")
+    .content(detailNode)                              // 任意 Node
+    .placement(DrawerAnt.Placement.RIGHT)             // LEFT/RIGHT/TOP/BOTTOM
+    .size(480)                                         // 宽度（左右）或高度（上下）
+    .build()
+    .open(triggerBtn);
+
+// 左侧抽屉 + 自定义 footer
+DrawerAnt.DrawerResult drawer = DrawerAnt.create()
+    .title("筛选条件")
+    .content(filterForm)
+    .placement(DrawerAnt.Placement.LEFT)
+    .size(360)
+    .footer(new HBox(8, resetBtn, applyBtn))
+    .build();
+
+applyBtn.setOnAction(e -> {
+    applyFilters();
+    drawer.close();
+});
+
+drawer.open(filterBtn);
+```
+
+**特殊点**：
+- 跟 ModalAnt 同样 Result 包装型，`build()` 后必须 `.open(owner)`
+- `placement` 决定动画方向（LEFT 从左滑入 / RIGHT 从右滑入 / TOP 从上滑入 / BOTTOM 从下滑入）
+- `size` 在 LEFT/RIGHT 是宽度，TOP/BOTTOM 是高度
+- 内容超长时自动出滚动条（内部已包了 ScrollPane）
+
+---
 
 #### TableAnt 详细说明（M11 高级化）
 
