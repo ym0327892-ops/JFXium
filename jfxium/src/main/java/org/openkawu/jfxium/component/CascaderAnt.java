@@ -1,0 +1,209 @@
+package org.openkawu.jfxium.component;
+
+import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.SVGPath;
+import javafx.stage.Popup;
+import org.openkawu.jfxium.core.css.CssClasses;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+/**
+ * CascaderAnt - 对标 Ant Design Cascader。
+ *
+ * 重构：所有 inline 视觉样式改为 LESS（{@code cascader-*}），hover 由 LESS 控制。
+ */
+public class CascaderAnt {
+
+    public static class Option {
+        private final String value;
+        private final String label;
+        private final List<Option> children;
+        private final boolean disabled;
+
+        public Option(String value, String label) { this(value, label, null, false); }
+        public Option(String value, String label, List<Option> children) { this(value, label, children, false); }
+        public Option(String value, String label, List<Option> children, boolean disabled) {
+            this.value = value;
+            this.label = label;
+            this.children = children != null ? children : new ArrayList<>();
+            this.disabled = disabled;
+        }
+
+        public String getValue() { return value; }
+        public String getLabel() { return label; }
+        public List<Option> getChildren() { return children; }
+        public boolean isDisabled() { return disabled; }
+        public boolean hasChildren() { return children != null && !children.isEmpty(); }
+    }
+
+    public static class Builder {
+        private List<Option> options = new ArrayList<>();
+        private String placeholder = "Please select";
+        private boolean disabled = false;
+        private boolean allowClear = true;
+        private boolean showSearch = false;
+        private Consumer<List<String>> onChange = null;
+        private List<String> selectedPath = new ArrayList<>();
+
+        public Builder options(List<Option> options) { this.options = options; return this; }
+        public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
+        public Builder disabled(boolean disabled) { this.disabled = disabled; return this; }
+        public Builder disabled() { return disabled(true); }
+        public Builder allowClear(boolean allowClear) { this.allowClear = allowClear; return this; }
+        public Builder showSearch(boolean showSearch) { this.showSearch = showSearch; return this; }
+        public Builder onChange(Consumer<List<String>> onChange) { this.onChange = onChange; return this; }
+        public Builder value(List<String> path) { this.selectedPath = path != null ? path : new ArrayList<>(); return this; }
+
+        public HBox build() {
+            HBox container = new HBox(0);
+            container.setAlignment(Pos.CENTER_LEFT);
+            container.getStyleClass().add(CssClasses.CASCADER);
+
+            TextField field = new TextField();
+            field.setPromptText(placeholder);
+            field.setEditable(showSearch);
+            field.getStyleClass().add(CssClasses.CASCADER_FIELD);
+            HBox.setHgrow(field, Priority.ALWAYS);
+
+            if (!selectedPath.isEmpty()) {
+                field.setText(String.join(" / ", selectedPath));
+            }
+
+            Popup popup = new Popup();
+            popup.setAutoHide(true);
+            popup.setHideOnEscape(true);
+
+            HBox cascaderPanel = new HBox(0);
+            cascaderPanel.getStyleClass().add(CssClasses.POPUP_MENU);
+            popup.getContent().add(cascaderPanel);
+
+            buildColumns(cascaderPanel, options, 0, field, popup);
+
+            field.setOnMouseClicked(e -> {
+                if (disabled) return;
+                if (popup.isShowing()) {
+                    popup.hide();
+                } else {
+                    Bounds bounds = field.localToScreen(field.getBoundsInLocal());
+                    popup.show(field, bounds.getMinX(), bounds.getMaxY() + 4);
+                }
+            });
+            field.setOnKeyPressed(e -> {
+                if (e.getCode() == KeyCode.ESCAPE) popup.hide();
+            });
+
+            container.getChildren().add(field);
+
+            if (disabled) {
+                field.setDisable(true);
+                container.setDisable(true);
+            }
+            return container;
+        }
+
+        private void buildColumns(HBox panel, List<Option> currentOptions, int depth, TextField field, Popup popup) {
+            panel.getChildren().clear();
+            if (currentOptions == null || currentOptions.isEmpty()) return;
+
+            VBox column = new VBox(0);
+            column.getStyleClass().add(CssClasses.CASCADER_COLUMN);
+            column.setPrefHeight(200);
+
+            for (Option option : currentOptions) {
+                HBox item = new HBox(8);
+                item.setAlignment(Pos.CENTER_LEFT);
+                item.getStyleClass().add(CssClasses.CASCADER_ITEM);
+                if (option.isDisabled()) {
+                    item.getStyleClass().add(CssClasses.CASCADER_ITEM_DISABLED);
+                }
+
+                Label label = new Label(option.getLabel());
+                label.getStyleClass().add(CssClasses.CASCADER_ITEM_LABEL);
+                item.getChildren().add(label);
+
+                if (option.hasChildren() && !option.isDisabled()) {
+                    SVGPath arrow = new SVGPath();
+                    arrow.setContent("M6 4L10 8L6 12");
+                    arrow.getStyleClass().add(CssClasses.CASCADER_ARROW);
+                    HBox spacer = new HBox();
+                    HBox.setHgrow(spacer, Priority.ALWAYS);
+                    item.getChildren().addAll(spacer, arrow);
+                }
+
+                if (!option.isDisabled()) {
+                    item.setOnMouseClicked(e -> {
+                        if (option.hasChildren()) {
+                            List<String> newPath = new ArrayList<>(selectedPath);
+                            if (depth < newPath.size()) {
+                                newPath = newPath.subList(0, depth);
+                            }
+                            newPath.add(option.getLabel());
+                            selectedPath = newPath;
+                            buildColumns(panel, options, 0, field, popup);
+                        } else {
+                            List<String> newPath = new ArrayList<>();
+                            for (int i = 0; i < depth && i < selectedPath.size(); i++) {
+                                newPath.add(selectedPath.get(i));
+                            }
+                            newPath.add(option.getLabel());
+                            selectedPath = newPath;
+                            field.setText(String.join(" / ", selectedPath));
+                            popup.hide();
+                            if (onChange != null) {
+                                List<String> values = new ArrayList<>();
+                                collectValues(options, selectedPath, 0, values);
+                                onChange.accept(values);
+                            }
+                        }
+                    });
+                }
+                column.getChildren().add(item);
+            }
+            panel.getChildren().add(column);
+
+            // 根据 selectedPath 递归展开下一级
+            if (!selectedPath.isEmpty() && depth < selectedPath.size()) {
+                Region divider = new Region();
+                divider.getStyleClass().add(CssClasses.CASCADER_DIVIDER);
+                panel.getChildren().add(divider);
+
+                String selectedLabel = selectedPath.get(depth);
+                for (Option option : currentOptions) {
+                    if (option.getLabel().equals(selectedLabel) && option.hasChildren()) {
+                        buildColumns(panel, option.getChildren(), depth + 1, field, popup);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private boolean collectValues(List<Option> options, List<String> path, int depth, List<String> values) {
+            if (depth >= path.size()) return true;
+            String targetLabel = path.get(depth);
+            for (Option option : options) {
+                if (option.getLabel().equals(targetLabel)) {
+                    values.add(option.getValue());
+                    if (option.hasChildren() && depth + 1 < path.size()) {
+                        return collectValues(option.getChildren(), path, depth + 1, values);
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public static Builder create() {
+        return new Builder();
+    }
+}

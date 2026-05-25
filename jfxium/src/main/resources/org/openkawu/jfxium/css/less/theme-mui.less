@@ -1,0 +1,708 @@
+// ============================================
+// JFXium MUI Theme (Material Design inspired)
+// Based on Ant Design official MUI theme config
+// ============================================
+// 参考来源: src\main\resources\org\openkawu\AntDesign\类MUI风格.txt
+// 该文件是 Ant Design 官方提供的 MUI 风格配置
+// ============================================
+
+@import "variables-base.less";
+
+// ============================================
+// MUI Color Palette
+// ============================================
+// 与 Ant Design MUI 配置完全对应
+
+// Primary - Blue (#1976d2)
+@color-accent-0: #e3f2fd;
+@color-accent-1: #bbdefb;
+@color-accent-2: #90caf9;
+@color-accent-3: #64b5f6;
+@color-accent-4: #42a5f5;
+@color-accent-5: #1976d2;    // colorPrimary
+@color-accent-6: #1565c0;    // colorPrimaryActive
+@color-accent-7: #0d47a1;
+@color-accent-8: #0a3d91;
+@color-accent-9: #083380;
+
+// Success - Green
+@color-success-0: #e8f5e9;   // colorSuccessBg
+@color-success-1: #c8e6c9;   // colorSuccessBgHover
+@color-success-2: #a5d6a7;   // colorSuccessBorder
+@color-success-3: #81c784;   // colorSuccessBorderHover
+@color-success-4: #66bb6a;
+@color-success-5: #2e7d32;   // colorSuccess
+@color-success-6: #1b5e20;   // colorSuccessActive
+@color-success-7: #144717;
+@color-success-8: #0d300f;
+@color-success-9: #061907;
+
+// Warning - Orange
+@color-warning-0: #fff3e0;   // colorWarningBg
+@color-warning-1: #ffe0b2;   // colorWarningBgHover
+@color-warning-2: #ffcc80;   // colorWarningBorder
+@color-warning-3: #ffb74d;   // colorWarningBorderHover
+@color-warning-4: #ffa726;
+@color-warning-5: #ed6c02;   // colorWarning
+@color-warning-6: #e65100;   // colorWarningActive
+@color-warning-7: #bf4502;
+@color-warning-8: #993802;
+@color-warning-9: #732b02;
+
+// Danger - Red
+@color-danger-0: #ffebee;    // colorErrorBg
+@color-danger-1: #ffcdd2;    // colorErrorBgHover
+@color-danger-2: #ef9a9a;    // colorErrorBorder
+@color-danger-3: #e57373;    // colorErrorBorderHover
+@color-danger-4: #ef5350;    // colorErrorHover
+@color-danger-5: #d32f2f;    // colorError
+@color-danger-6: #c62828;    // colorErrorActive
+@color-danger-7: #b71c1c;
+@color-danger-8: #a31616;
+@color-danger-9: #8f1111;
+
+// Info - Light Blue
+@color-info-0: #e1f5fe;      // colorInfoBg
+@color-info-1: #b3e5fc;      // colorInfoBgHover
+@color-info-2: #81d4fa;      // colorInfoBorder
+@color-info-3: #4fc3f7;      // colorInfoBorderHover
+@color-info-4: #29b6f6;      // colorInfoHover
+@color-info-5: #0288d1;      // colorInfo
+@color-info-6: #01579b;      // colorInfoActive
+@color-info-7: #014a82;
+@color-info-8: #013d6a;
+@color-info-9: #013051;
+
+// MUI Base Colors
+@color-base-0: #ffffff;
+@color-base-1: #fafafa;      // colorBgBase
+@color-base-2: #f5f5f5;      // colorBgLayout
+@color-base-3: #eeeeee;      // colorBorderSecondary
+@color-base-4: #e0e0e0;      // colorBorder
+@color-base-5: #bdbdbd;
+@color-base-6: #9e9e9e;
+@color-base-7: #757575;
+@color-base-8: #616161;
+@color-base-9: #424242;
+@color-base-10: #212121;     // colorTextBase
+
+// ============================================
+// Semantic Variables (MUI style)
+// ============================================
+// 与 Ant Design MUI token 精确对应
+
+@color-fg-default: rgba(33, 33, 33, 0.87);        // colorText
+@color-fg-muted: rgba(33, 33, 33, 0.60);          // colorTextSecondary
+@color-fg-subtle: rgba(33, 33, 33, 0.38);         // colorTextTertiary / colorTextDisabled
+@color-fg-on-emphasis: #ffffff;
+
+@color-bg-default: #ffffff;                        // colorBgContainer
+@color-bg-overlay: #ffffff;                        // colorBgElevated
+@color-bg-subtle: #fafafa;                         // colorBgBase
+@color-bg-inset: #f5f5f5;                          // colorBgLayout
+
+@color-border-default: #e0e0e0;                    // colorBorder
+@color-border-muted: #eeeeee;                      // colorBorderSecondary
+@color-border-subtle: rgba(0, 0, 0, 0.12);
+
+// Accent Color Scale (MUI Light)
+@color-accent-emphasis: @color-accent-5;           // colorPrimary - Base (主色)
+@color-accent-hover: @color-accent-0;              // Hover (浅色背景)
+@color-accent-active: @color-accent-6;              // Active (深色按压)
+@color-accent-muted: @color-accent-2;              // colorPrimaryBorder - 边框/图标
+@color-accent-subtle: @color-accent-0;             // colorPrimaryBg - 背景
+
+// Success Color Scale (MUI Light)
+@color-success-emphasis: @color-success-5;
+@color-success-hover: @color-success-0;
+@color-success-active: @color-success-6;
+@color-success-muted: @color-success-2;
+@color-success-subtle: @color-success-0;
+
+// Warning Color Scale (MUI Light)
+@color-warning-emphasis: @color-warning-5;
+@color-warning-hover: @color-warning-0;
+@color-warning-active: @color-warning-6;
+@color-warning-muted: @color-warning-2;
+@color-warning-subtle: @color-warning-0;
+
+// Danger Color Scale (MUI Light)
+@color-danger-emphasis: @color-danger-5;
+@color-danger-hover: @color-danger-0;
+@color-danger-active: @color-danger-6;
+@color-danger-muted: @color-danger-2;
+@color-danger-subtle: @color-danger-0;
+
+@color-shadow-default: rgba(0, 0, 0, 0.2);
+
+// Motion
+@motion-duration-fast: 0.1s;
+@motion-duration-mid: 0.2s;
+@motion-duration-slow: 0.3s;
+
+// ============================================
+// MUI Box Shadow Tokens
+// ============================================
+// 精确对应 Ant Design MUI 配置中的阴影值
+
+// 全局默认阴影 (boxShadow)
+// JavaFX dropshadow: type, color, spread, radius, offsetX, offsetY
+// Ant Design: '0px 2px 1px -1px rgba(0,0,0,0.2)'
+@shadow-mui-1: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 2, 0, 1);
+
+// 全局次要阴影
+@shadow-mui-2: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 3, 0, 2);
+
+// Button / Card 悬停阴影
+@shadow-mui-btn: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 2, 0, 1);
+
+// Select Popup / Menu 阴影
+@shadow-mui-menu: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 5, 0, 3);
+
+// Card 中等阴影
+@shadow-mui-3: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 4, 0, 2);
+
+// Dialog / Modal 阴影
+@shadow-mui-4: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 8, 0, 4);
+
+// Drawer 阴影
+@shadow-mui-6: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 12, 0, 6);
+
+// Bottom Sheet 阴影
+@shadow-mui-8: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 16, 0, 8);
+
+// FAB 阴影
+@shadow-mui-12: dropshadow(gaussian, rgba(0,0,0,0.2), 14, 20, 0, 12);
+
+// Full Screen Dialog 阴影
+@shadow-mui-16: dropshadow(gaussian, rgba(0,0,0,0.2), 18, 24, 0, 16);
+
+// Top Layer Dialog 阴影
+@shadow-mui-24: dropshadow(gaussian, rgba(0,0,0,0.2), 22, 30, 0, 24);
+
+// ============================================
+// MUI Overrides
+// ============================================
+
+// 圆角系统 - 与 Ant Design MUI 精确对应
+// borderRadiusXS: 1, borderRadiusSM: 2, borderRadius: 4, borderRadiusLG: 6
+@border-radius-xs: 1px;
+@border-radius-sm: 2px;
+@border-radius-md: 4px;
+@border-radius-lg: 6px;
+@border-radius-xl: 8px;
+
+// 字体
+@font-family: 'Roboto', 'Helvetica', 'Arial', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+// Button Padding - 与 Ant Design MUI 精确对应
+// paddingInline: 16, paddingBlock: 6
+@btn-padding-y: 6px;
+@btn-padding-x: 16px;
+@btn-padding-y-sm: 4px;
+@btn-padding-x-sm: 8px;
+@btn-padding-y-lg: 8px;
+@btn-padding-x-lg: 22px;
+
+// Input 边框颜色 - 与 Ant Design MUI 精确对应
+// borderColor: 'rgba(0, 0, 0, 0.23)'
+@input-border-color: rgba(0, 0, 0, 0.23);
+
+// Import base styles
+@import "theme-base.less";
+
+// ============================================
+// MUI Specific Overrides (after base styles)
+// ============================================
+
+/* ============================================
+   Button - MUI Elevated Style
+   ============================================
+   Ant Design MUI Button 配置:
+   - fontWeight: 500
+   - textTransform: uppercase
+   - letterSpacing: 0.02857em
+   - defaultBorderColor: rgba(0,0,0,0.23)
+   - defaultColor: rgba(0,0,0,0.87)
+   - defaultBg: #ffffff
+   - defaultHoverBg: rgba(25,118,210,0.04)
+   - defaultHoverBorderColor: rgba(0,0,0,0.23)
+   - paddingInline: 16
+   - paddingBlock: 6
+   - contentFontSize: 14
+   - borderRadius: 4
+   - primaryShadow / defaultShadow / dangerShadow: 相同阴影
+   ============================================ */
+
+/* Base Button - MUI Style */
+.button {
+  -fx-effect: none;
+  -fx-font-weight: 500;
+  -fx-padding: @btn-padding-y @btn-padding-x;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* Default Button - MUI 风格 */
+.button.default {
+  -fx-background-color: -color-bg-default;
+  -fx-text-fill: -color-fg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+}
+
+.button.default:hover {
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-fg-default;
+}
+
+/* Primary Button - MUI 风格 */
+.button.accent,
+.button.primary {
+  -fx-background-color: @color-accent-5;
+  -fx-text-fill: @color-fg-on-emphasis;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+
+.button.accent:hover,
+.button.primary:hover {
+  -fx-background-color: @color-accent-6;
+  -fx-text-fill: @color-fg-on-emphasis;
+}
+
+/* Danger Button - MUI 风格 */
+.button.danger {
+  -fx-background-color: @color-danger-5;
+  -fx-text-fill: #ffffff;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+
+.button.danger:hover {
+  -fx-background-color: @color-danger-6;
+  -fx-text-fill: #ffffff;
+}
+
+/* Text Button - MUI 风格 */
+.button.text {
+  -fx-background-color: transparent;
+  -fx-text-fill: @color-accent-5;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+
+.button.text:hover {
+  -fx-background-color: rgba(25, 118, 210, 0.08);
+  -fx-text-fill: @color-accent-5;
+}
+
+/* Link Button */
+.button.link {
+  -fx-effect: none;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+/* ============================================
+   Input - MUI Outlined Style
+   ============================================
+   Ant Design MUI Input 配置:
+   - borderColor: rgba(0, 0, 0, 0.23)
+   - color: rgba(0, 0, 0, 0.87)
+   - fontFamily: Roboto
+   - error borderColor: #d32f2f
+   ============================================ */
+
+.text-field,
+.text-area,
+.password-field,
+.combo-box,
+.date-picker,
+.color-picker,
+.choice-box,
+.spinner {
+  -fx-border-color: rgba(0, 0, 0, 0.23);
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+  // 注意：text-fill 不在此处声明，继承 theme-base.less 的 -color-fg-default
+  // 与 mui-compact / mui-dark / mui-dark-compact 保持一致，避免硬编码导致换肤失效
+}
+
+.text-field:focused,
+.text-area:focused,
+.password-field:focused,
+.combo-box:focused,
+.date-picker:focused,
+.color-picker:focused,
+.choice-box:focused,
+.spinner:focused {
+  // 焦点效果统一为"边框变色 + 外阴影"，对齐 SKILL 强约束 #5；
+  // 边框宽度保持 1px，避免聚焦时尺寸抖动；
+  // 颜色走语义变量，便于换肤
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 1px;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+/* Input Error State */
+.text-field.error,
+.combo-box.error {
+  -fx-border-color: @color-danger-5;
+}
+
+/* ============================================
+   Select / ComboBox - MUI Style
+   ============================================
+   Ant Design MUI Select 配置:
+   - borderColor: rgba(0, 0, 0, 0.23)
+   - fontFamily: Roboto
+   - popup borderRadius: 4
+   - popup boxShadow: 特殊 Menu 阴影
+   ============================================ */
+
+.combo-box-popup .list-view {
+  -fx-effect: @shadow-mui-menu;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* ============================================
+   Card - MUI Elevation
+   ============================================ */
+
+.card {
+  -fx-effect: @shadow-mui-1;
+  -fx-background-radius: @border-radius-md;
+}
+
+.card:hover {
+  -fx-effect: @shadow-mui-2;
+}
+
+.card.shadow-sm {
+  -fx-effect: @shadow-mui-1;
+}
+
+.card.shadow-md {
+  -fx-effect: @shadow-mui-3;
+}
+
+.card.shadow-lg {
+  -fx-effect: @shadow-mui-6;
+}
+
+/* ============================================
+   Dialog / Modal - MUI Elevation
+   ============================================
+   Ant Design MUI Modal 配置:
+   - borderRadiusLG: 4
+   ============================================ */
+
+.dialog-pane {
+  -fx-effect: @shadow-mui-4;
+  -fx-background-radius: @border-radius-lg;
+}
+
+.modal-content {
+  -fx-effect: @shadow-mui-4;
+  -fx-background-radius: @border-radius-lg;
+}
+
+.modal-overlay {
+  -fx-background-color: rgba(33, 33, 33, 0.5);
+}
+
+/* ============================================
+   Menu / ContextMenu - MUI Menu
+   ============================================ */
+
+.context-menu {
+  -fx-effect: @shadow-mui-menu;
+  -fx-background-radius: @border-radius-md;
+}
+
+.menu-item {
+  -fx-background-radius: @border-radius-xs;
+}
+
+/* ============================================
+   Date Picker Popup - MUI Menu
+   ============================================ */
+
+.date-picker-popup {
+  -fx-effect: @shadow-mui-menu;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* ============================================
+   Color Picker Popup
+   ============================================
+   Ant Design MUI ColorPicker 配置:
+   - borderRadius: 4
+   ============================================ */
+
+.color-palette {
+  -fx-effect: @shadow-mui-menu;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* ============================================
+   Tooltip - MUI Tooltip
+   ============================================ */
+
+.tooltip {
+  -fx-effect: @shadow-mui-2;
+  -fx-background-radius: @border-radius-sm;
+}
+
+/* ============================================
+   Menu Bar - MUI App Bar
+   ============================================ */
+
+.menu-bar {
+  -fx-effect: @shadow-mui-2;
+}
+
+/* ============================================
+   Tool Bar - MUI App Bar
+   ============================================ */
+
+.tool-bar {
+  -fx-effect: @shadow-mui-2;
+}
+
+/* ============================================
+   Slider - MUI Style
+   ============================================
+   Ant Design MUI Slider 配置:
+   - trackBg: rgba(25, 118, 210, 0.26)
+   - trackHoverBg: rgba(25, 118, 210, 0.38)
+   - handleSize: 20
+   - handleSizeHover: 20
+   - railSize: 4
+   ============================================ */
+
+.slider .track {
+  -fx-background-color: rgba(25, 118, 210, 0.26);
+}
+
+.slider .track:hover {
+  -fx-background-color: rgba(25, 118, 210, 0.38);
+}
+
+.slider .thumb {
+  -fx-effect: none;
+  -fx-pref-width: 20px;
+  -fx-pref-height: 20px;
+}
+
+.slider .thumb:hover {
+  -fx-effect: none;
+}
+
+/* ============================================
+   Progress Bar - MUI Style
+   ============================================
+   Ant Design MUI Progress 配置:
+   - defaultColor: #1976d2
+   - remainingColor: rgba(25, 118, 210, 0.12)
+   ============================================ */
+
+.progress-bar .bar {
+  -fx-background-color: @color-accent-5;
+}
+
+.progress-bar .track {
+  -fx-background-color: rgba(25, 118, 210, 0.12);
+}
+
+/* ============================================
+   Switch - MUI Style
+   ============================================ */
+
+/* Switch Track (轨道) */
+.jfx-switch-track {
+  -fx-background-color: rgba(0, 0, 0, 0.26);
+  -fx-background-radius: 11px;
+  -fx-border-radius: 11px;
+}
+
+/* Switch Thumb (滑块) */
+.jfx-switch-thumb {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: 10px;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: 10px;
+}
+
+/* Switch Selected (选中状态) */
+.jfx-switch.switch-selected .jfx-switch-track {
+  -fx-background-color: @color-accent-5;
+}
+
+.jfx-switch.switch-selected .jfx-switch-thumb {
+  -fx-border-color: @color-accent-5;
+}
+
+/* Switch Hover (悬停状态) */
+.jfx-switch:hover .jfx-switch-track {
+  -fx-background-color: -color-accent-muted;
+}
+
+.jfx-switch:hover .jfx-switch-thumb {
+  -fx-border-color: -color-accent-muted;
+}
+
+/* Switch Selected + Hover */
+.jfx-switch.switch-selected:hover .jfx-switch-track {
+  -fx-background-color: @color-accent-6;
+}
+
+.jfx-switch.switch-selected:hover .jfx-switch-thumb {
+  -fx-border-color: @color-accent-6;
+}
+
+/* ============================================
+   Checkbox - MUI Style
+   ============================================
+   Ant Design MUI Checkbox 配置:
+   - borderRadiusSM: 2
+   ============================================ */
+
+.check-box .box {
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+}
+
+/* ============================================
+   Alert - MUI Style
+   ============================================
+   Ant Design MUI Alert 配置:
+   - borderRadiusLG: 4
+   ============================================ */
+
+.alert-success,
+.alert-info,
+.alert-warning,
+.alert-error {
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* ============================================
+   Badge - MUI Style
+   ============================================ */
+
+.badge-count {
+  -fx-font-size: @font-size-xs;
+}
+
+/* ============================================
+   Table - MUI Data Grid Style
+   ============================================ */
+
+.table-view {
+  -fx-effect: @shadow-mui-1;
+  -fx-background-radius: @border-radius-md;
+}
+
+/* ============================================
+   Tabs - MUI Style
+   ============================================ */
+
+.tab-pane .tab-header-area {
+  -fx-effect: @shadow-mui-1;
+}
+
+.tab-pane .tab {
+  -fx-background-radius: @border-radius-md @border-radius-md 0 0;
+}
+
+/* ============================================
+   Drawer - MUI Style
+   ============================================ */
+
+.drawer-panel {
+  -fx-effect: @shadow-mui-6;
+}
+
+/* ============================================
+   Floating Action Button (FAB) - MUI Style
+   ============================================ */
+
+.fab {
+  -fx-effect: @shadow-mui-6;
+  -fx-background-radius: @border-radius-full;
+}
+
+.fab:hover {
+  -fx-effect: @shadow-mui-12;
+}
+
+/* ============================================
+   Snackbar - MUI Style
+   ============================================ */
+
+.snackbar {
+  -fx-effect: @shadow-mui-6;
+  -fx-background-radius: @border-radius-sm;
+}
+
+/* ============================================
+   Paper / Surface - MUI Style
+   ============================================ */
+
+.paper {
+  -fx-background-color: -color-bg-default;
+  -fx-effect: @shadow-mui-1;
+  -fx-background-radius: @border-radius-md;
+}
+
+.paper.elevation-2 {
+  -fx-effect: @shadow-mui-2;
+}
+
+.paper.elevation-3 {
+  -fx-effect: @shadow-mui-3;
+}
+
+.paper.elevation-4 {
+  -fx-effect: @shadow-mui-4;
+}
+
+.paper.elevation-6 {
+  -fx-effect: @shadow-mui-6;
+}
+
+.paper.elevation-8 {
+  -fx-effect: @shadow-mui-8;
+}
+
+.paper.elevation-12 {
+  -fx-effect: @shadow-mui-12;
+}
+
+.paper.elevation-16 {
+  -fx-effect: @shadow-mui-16;
+}
+
+.paper.elevation-24 {
+  -fx-effect: @shadow-mui-24;
+}
+
+/* ============================================
+   Steps - MUI Style
+   ============================================
+   Ant Design MUI Steps 配置:
+   - iconSize: 24
+   ============================================ */
+
+.step-icon {
+  -fx-pref-width: 24px;
+  -fx-pref-height: 24px;
+  -fx-min-width: 24px;
+  -fx-min-height: 24px;
+}

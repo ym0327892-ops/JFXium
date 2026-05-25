@@ -1,0 +1,5140 @@
+// ============================================
+// JFXium Theme Base Styles
+// Shared component styles (theme-agnostic)
+// Import AFTER variables to use themed values
+// ============================================
+
+/* ============================================
+   Color Scale (Base Tokens)
+   ============================================ */
+.root {
+  -color-base-0: @color-base-0;
+  -color-base-1: @color-base-1;
+  -color-base-2: @color-base-2;
+  -color-base-3: @color-base-3;
+  -color-base-4: @color-base-4;
+  -color-base-5: @color-base-5;
+  -color-base-6: @color-base-6;
+  -color-base-7: @color-base-7;
+  -color-base-8: @color-base-8;
+  -color-base-9: @color-base-9;
+  -color-base-10: @color-base-10;
+
+  /* Accent Scale */
+  -color-accent-0: @color-accent-0;
+  -color-accent-1: @color-accent-1;
+  -color-accent-2: @color-accent-2;
+  -color-accent-3: @color-accent-3;
+  -color-accent-4: @color-accent-4;
+  -color-accent-5: @color-accent-5;
+  -color-accent-6: @color-accent-6;
+  -color-accent-7: @color-accent-7;
+  -color-accent-8: @color-accent-8;
+  -color-accent-9: @color-accent-9;
+
+  /* Success Scale */
+  -color-success-0: @color-success-0;
+  -color-success-1: @color-success-1;
+  -color-success-2: @color-success-2;
+  -color-success-3: @color-success-3;
+  -color-success-4: @color-success-4;
+  -color-success-5: @color-success-5;
+  -color-success-6: @color-success-6;
+  -color-success-7: @color-success-7;
+  -color-success-8: @color-success-8;
+  -color-success-9: @color-success-9;
+
+  /* Warning Scale */
+  -color-warning-0: @color-warning-0;
+  -color-warning-1: @color-warning-1;
+  -color-warning-2: @color-warning-2;
+  -color-warning-3: @color-warning-3;
+  -color-warning-4: @color-warning-4;
+  -color-warning-5: @color-warning-5;
+  -color-warning-6: @color-warning-6;
+  -color-warning-7: @color-warning-7;
+  -color-warning-8: @color-warning-8;
+  -color-warning-9: @color-warning-9;
+
+  /* Danger Scale */
+  -color-danger-0: @color-danger-0;
+  -color-danger-1: @color-danger-1;
+  -color-danger-2: @color-danger-2;
+  -color-danger-3: @color-danger-3;
+  -color-danger-4: @color-danger-4;
+  -color-danger-5: @color-danger-5;
+  -color-danger-6: @color-danger-6;
+  -color-danger-7: @color-danger-7;
+  -color-danger-8: @color-danger-8;
+  -color-danger-9: @color-danger-9;
+}
+
+/* ============================================
+   Semantic Variables
+   ============================================ */
+.root {
+  -color-fg-default: @color-fg-default;
+  -color-fg-muted: @color-fg-muted;
+  -color-fg-subtle: @color-fg-subtle;
+  -color-fg-on-emphasis: @color-fg-on-emphasis;
+
+  -color-bg-default: @color-bg-default;
+  -color-bg-overlay: @color-bg-overlay;
+  -color-bg-subtle: @color-bg-subtle;
+  -color-bg-inset: @color-bg-inset;
+  -color-bg-container: @color-bg-default;
+  -color-bg-layout: @color-bg-subtle;
+  -color-bg-masked: rgba(0, 0, 0, 0.45);
+
+  -color-border-default: @color-border-default;
+  -color-border-muted: @color-border-muted;
+  -color-border-subtle: @color-border-subtle;
+
+  // Accent Color Scale
+  -color-accent-emphasis: @color-accent-emphasis;
+  -color-accent-hover: @color-accent-hover;
+  -color-accent-active: @color-accent-active;
+  -color-accent-muted: @color-accent-muted;
+  -color-accent-subtle: @color-accent-subtle;
+
+  // 表格/树表选中态：对齐 Ant Design controlItemBgActive token
+  // 绑定到主题色色阶（accent-subtle = accent-0 极浅主题色），
+  // 这样换主题色时选中态自动跟着变；文字保持默认前景色，对比度安全
+  -color-cell-bg-selected: @color-accent-subtle;
+  -color-cell-fg-selected: @color-fg-default;
+
+  // Success Color Scale
+  -color-success-emphasis: @color-success-emphasis;
+  -color-success-hover: @color-success-hover;
+  -color-success-active: @color-success-active;
+  -color-success-muted: @color-success-muted;
+  -color-success-subtle: @color-success-subtle;
+
+  // Warning Color Scale
+  -color-warning-emphasis: @color-warning-emphasis;
+  -color-warning-hover: @color-warning-hover;
+  -color-warning-active: @color-warning-active;
+  -color-warning-muted: @color-warning-muted;
+  -color-warning-subtle: @color-warning-subtle;
+
+  // Danger Color Scale
+  -color-danger-emphasis: @color-danger-emphasis;
+  -color-danger-hover: @color-danger-hover;
+  -color-danger-active: @color-danger-active;
+  -color-danger-muted: @color-danger-muted;
+  -color-danger-subtle: @color-danger-subtle;
+
+  -color-shadow-default: @color-shadow-default;
+}
+
+/* ============================================
+   Global Styles
+   ============================================ */
+.root {
+  -fx-font-family: @font-family;
+  -fx-font-size: @font-size-md;
+  -fx-background-color: -color-bg-layout;
+}
+
+/* ============================================
+   Page / Layout Surfaces
+   ============================================ */
+/* 老 PageAnt 已删除（M18），相关 .page / .page-header / .page-title 等样式同步移除 */
+
+/* CrudTemplate（业务模板，M18 新增）：通用三段式骨架 */
+.crud-template {
+  -fx-background-color: -color-bg-default;
+  -fx-padding: @spacing-xl;
+}
+
+.crud-template.bordered {
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+  -fx-background-radius: @border-radius-lg;
+}
+
+.crud-template-title {
+  -fx-font-size: @font-size-xl;
+  -fx-font-weight: 700;
+  -fx-text-fill: -color-fg-default;
+}
+
+.crud-template-topbar {
+  -fx-background-color: transparent;
+}
+
+.crud-template-body {
+  -fx-background-color: transparent;
+}
+
+.crud-template-bottombar {
+  -fx-background-color: transparent;
+}
+
+.surface {
+  -fx-background-color: -color-bg-container;
+  -fx-background-radius: @border-radius-lg;
+  -fx-border-radius: @border-radius-lg;
+  -fx-padding: @spacing-lg;
+}
+
+.surface.bordered {
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+}
+
+.surface.shadow-sm {
+  .shadow-sm();
+}
+
+.surface.shadow-md {
+  .shadow-md();
+}
+
+.surface.shadow-lg {
+  .shadow-lg();
+}
+
+.surface-header {
+  -fx-background-color: transparent;
+  -fx-padding: 0 0 @spacing-md 0;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+.surface-title {
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.surface-content {
+  -fx-background-color: transparent;
+}
+
+/* SplitBarAnt（M19）：横向左/中/右三段式
+   - 自身仅承担布局职责，无视觉装饰（背景透明）
+   - spacer 是结构性弹性占位，无外观属性
+   - 用户需要装饰（边框/背景）请挂自己的 styleClass
+   - M19 之后：取代了老 .action-bar（ActionBarAnt 已删除） */
+.split-bar {
+  -fx-background-color: transparent;
+}
+
+.split-bar-spacer {
+  -fx-background-color: transparent;
+}
+
+/* ============================================
+   SelectableTextAnt（M19.7）— 只读可选可复制文本
+   关键：底层是 TextField/TextArea，去掉所有 input chrome（背景/边框/focus 阴影/padding）
+   让它看起来像一个普通 Label，但保留 selection + Ctrl+C 能力
+   注：用 .text-field.jfx-selectable-text / .text-area.jfx-selectable-text 复合选择器
+       提高优先级，确保盖掉 .text-field / .text-area 默认样式（M19.7.2 修）
+   ============================================ */
+.text-field.jfx-selectable-text,
+.text-area.jfx-selectable-text {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 0;
+  -fx-effect: none;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-cursor: text;
+  -fx-highlight-fill: -color-accent-subtle;
+  -fx-highlight-text-fill: -color-fg-default;
+}
+
+.text-field.jfx-selectable-text:hover,
+.text-area.jfx-selectable-text:hover {
+  /* hover 不变化，避免视觉抖动 */
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-effect: none;
+}
+
+/* 焦点态默认无视觉变化（M19.7.3 改：focusHalo 默认开但通过 styleClass 控制） */
+.text-field.jfx-selectable-text:focused,
+.text-area.jfx-selectable-text:focused {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-effect: none;
+  -fx-faint-focus-color: transparent;
+  -fx-focus-color: transparent;
+}
+
+/* 焦点光晕开关（M19.7.3）：仅当挂了 .jfx-selectable-text-focus-halo 时
+   在 :focused 态显示蓝边 + 外阴影光晕。让用户明确"已聚焦、可 Ctrl+C" */
+.text-field.jfx-selectable-text.jfx-selectable-text-focus-halo:focused,
+.text-area.jfx-selectable-text.jfx-selectable-text-focus-halo:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 4, 0, 0, 0);
+}
+
+/* TextArea 子结构：去掉内嵌滚动面板的所有装饰 */
+.text-area.jfx-selectable-text > .scroll-pane,
+.text-area.jfx-selectable-text > .scroll-pane > .viewport,
+.text-area.jfx-selectable-text > .scroll-pane .content {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+/* 隐藏 TextArea 内部滚动条（高度自适应模式下不需要） */
+.text-area.jfx-selectable-text > .scroll-pane > .scroll-bar {
+  -fx-opacity: 0;
+  -fx-pref-width: 0;
+  -fx-pref-height: 0;
+  -fx-max-width: 0;
+  -fx-max-height: 0;
+}
+
+/* 带边框模式（M19.7.1）：卡片式只读文本块——长 stack/JSON/配置展示用 */
+.text-field.jfx-selectable-text.jfx-selectable-text-bordered,
+.text-area.jfx-selectable-text.jfx-selectable-text-bordered {
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: @spacing-sm @spacing-md;
+}
+
+.text-field.jfx-selectable-text.jfx-selectable-text-bordered:focused,
+.text-area.jfx-selectable-text.jfx-selectable-text-bordered:focused {
+  /* bordered + focused：边框升级为主题蓝 + 保留浅灰底 */
+  -fx-border-color: -color-accent-emphasis;
+  -fx-background-color: -color-bg-subtle;
+  -fx-effect: none;
+  -fx-faint-focus-color: transparent;
+  -fx-focus-color: transparent;
+}
+
+/* TextArea 子结构在 bordered 模式下需要透明（让外层 padding/边框生效） */
+.text-area.jfx-selectable-text.jfx-selectable-text-bordered > .scroll-pane,
+.text-area.jfx-selectable-text.jfx-selectable-text-bordered > .scroll-pane > .viewport,
+.text-area.jfx-selectable-text.jfx-selectable-text-bordered > .scroll-pane .content {
+  -fx-background-color: transparent;
+}
+
+/* 语义类型：覆盖 text-fill */
+.jfx-selectable-text-secondary {
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-selectable-text-success {
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.jfx-selectable-text-warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.jfx-selectable-text-error {
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.app-shell,
+.layout {
+  -fx-background-color: -color-bg-layout;
+}
+
+.app-shell-header,
+.layout-header {
+  -fx-background-color: -color-bg-container;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+.app-shell-sider,
+.layout-sider {
+  -fx-background-color: -color-bg-container;
+  -fx-border-color: transparent -color-border-muted transparent transparent;
+  -fx-border-width: 0 1px 0 0;
+}
+
+.app-shell-content,
+.layout-content {
+  -fx-background-color: -color-bg-layout;
+}
+
+.app-shell-footer,
+.layout-footer {
+  -fx-background-color: -color-bg-container;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+}
+
+.split-pane-ant {
+  -fx-background-color: -color-bg-layout;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.split-pane-ant > .split-pane-divider {
+  -fx-background-color: -color-border-muted;
+  -fx-padding: @split-divider-padding;
+}
+
+.split-pane-ant > .split-pane-divider:hover {
+  -fx-background-color: -color-border-default;
+}
+
+.resizable-panel {
+  -fx-background-color: -color-bg-container;
+  -fx-background-radius: @border-radius-lg;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+}
+
+.resizable-panel-content {
+  -fx-background-color: transparent;
+}
+
+.resizable-panel-handle {
+  -fx-background-color: transparent;
+}
+
+.resizable-panel-handle:hover {
+  -fx-background-color: -color-accent-subtle;
+}
+
+.resizable-panel-handle.both {
+  -fx-background-color: -color-border-muted;
+  -fx-background-radius: @border-radius-sm 0 @border-radius-lg 0;
+}
+
+.resizable-panel-handle.both:hover {
+  -fx-background-color: -color-accent-muted;
+}
+
+.scroll-container {
+  -fx-background-color: -color-bg-layout;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.scroll-container > .viewport {
+  -fx-background-color: -color-bg-layout;
+}
+
+.scroll-container-viewport {
+  -fx-background-color: -color-bg-layout;
+}
+
+/* ============================================
+   Button Component
+   ============================================ */
+.button {
+  .button-base();
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  
+}
+
+.button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+}
+
+.button:armed,
+.button:pressed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+}
+
+.button:disabled {
+  -fx-opacity: 0.6;
+  -fx-cursor: default;
+}
+
+/* Button Variants */
+.button.default {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+}
+
+.button.default:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+}
+
+.button.default:armed,
+.button.default:pressed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+}
+
+.button.accent,
+.button.primary {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.accent:hover,
+.button.primary:hover {
+  -fx-background-color: -color-accent-4;
+  -fx-border-color: -color-accent-4;
+}
+
+.button.accent:armed,
+.button.accent:pressed,
+.button.primary:armed,
+.button.primary:pressed {
+  -fx-background-color: -color-accent-6;
+  -fx-border-color: -color-accent-6;
+}
+
+.button.outlined {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.button.outlined:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.button.outlined:armed,
+.button.outlined:pressed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.text {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.button.text:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.button.text:armed,
+.button.text:pressed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.link {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-underline: true;
+}
+
+.button.link:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-accent-4;
+}
+
+.button.link:armed,
+.button.link:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-accent-6;
+}
+
+/* Button Sizes */
+.button.small {
+  -fx-padding: @btn-padding-y-sm @btn-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.button.large {
+  -fx-padding: @btn-padding-y-lg @btn-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* ============================================
+   Input Component
+   ============================================ */
+.text-field {
+  .input-base();
+  
+}
+
+.text-field:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.text-field:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+/* ============================================
+   TextArea Component
+   ============================================ */
+.text-area {
+  .input-base();
+}
+
+.text-area:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.text-area:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.text-area .content {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: @border-radius-md;
+}
+
+.text-area:disabled {
+  -fx-opacity: 0.6;
+}
+
+/* ============================================
+   Card Component
+   ============================================ */
+.card {
+  .card-base();
+}
+
+.card.bordered {
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+}
+
+.card.shadow-sm {
+  .shadow-sm();
+}
+
+.card.shadow-md {
+  .shadow-md();
+}
+
+.card.shadow-lg {
+  .shadow-lg();
+}
+
+/* M10 新增：Card 增强功能 */
+
+/* 小尺寸卡片 */
+.card.card-small {
+  -fx-font-size: 14px;
+}
+
+.card.card-small .card-header {
+  -fx-padding: 12px 12px;
+}
+
+.card.card-small .card-body {
+  -fx-padding: 12px;
+}
+
+/* 内嵌卡片 */
+.card.card-inner {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+}
+
+/* 卡片 Header */
+.card .card-header {
+  -fx-padding: 16px 24px;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+.card.card-small .card-header {
+  -fx-padding: 12px 12px;
+}
+
+/* 卡片 Body */
+.card .card-body {
+  -fx-padding: 24px;
+}
+
+.card.card-small .card-body {
+  -fx-padding: 12px;
+}
+
+/* 卡片封面 */
+.card .card-cover {
+  -fx-background-color: -color-bg-subtle;
+  -fx-min-height: 200px;
+}
+
+.card .card-cover .image-view {
+  -fx-fit-width: stretch;
+  -fx-preserve-ratio: true;
+}
+
+/* 卡片 Footer（操作区） */
+.card .card-actions {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+  -fx-padding: 12px 0;
+}
+
+.card .card-action-item {
+  -fx-padding: 12px 16px;
+  -fx-cursor: hand;
+}
+
+.card .card-action-item:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+/* 卡片标签页 */
+.card .card-tab-bar {
+  -fx-padding: 0 24px;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+  -fx-alignment: center-left;
+}
+
+.card.card-small .card-tab-bar {
+  -fx-padding: 0 12px;
+}
+
+.card .card-tab-list {
+  -fx-spacing: 0;
+  -fx-alignment: center-left;
+}
+
+.card .card-tab-item {
+  -fx-padding: 12px 16px;
+  -fx-text-fill: -color-fg-muted;
+  -fx-cursor: hand;
+  -fx-border-color: transparent;
+  -fx-border-width: 0 0 2px 0;
+}
+
+.card .card-tab-item:hover {
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.card .card-tab-item.active {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 0 0 2px 0;
+}
+
+.card .card-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.card.card-small .card-title {
+  -fx-font-size: 14px;
+}
+
+/* ============================================
+   Table Component
+   ============================================ */
+.table-view {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+  -fx-background-radius: @border-radius-lg;
+  -fx-background-insets: 0;
+}
+
+.table-view .column-header {
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: 0;
+  -fx-font-weight: 600;
+  -fx-alignment: center-left;
+  -fx-background-insets: 0;
+}
+
+/* padding 移到内部 .label 上（AtlantaFX 同款做法），让 column-header 自己 padding=0，
+   排序区（label + arrow + sort-order-dots-container）能自由布局，不会出现"重叠"或"大空白"。 */
+.table-view .column-header .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: 600;
+  -fx-padding: 0 @table-header-padding-x 0 @table-header-padding-x;
+  -fx-alignment: center-left;
+}
+
+/* GridPane 是 column-header 内部包 label+arrow+sort-order 的容器，
+   给它一点右内边距，避免内容贴到列右边线。 */
+.table-view .column-header > GridPane {
+  -fx-padding: 0 4px 0 0;
+}
+
+/* 关键：JavaFX 表头高度由 .column-header-background 控制（外层容器），
+   而不是 .column-header（仅控制单列）。
+   Ant Design 默认 56px，这里设 48px（admin 实用感更紧凑）。 */
+.table-view .column-header-background {
+  -fx-pref-height: 48px;
+  /* 整个表头容器的背景：包括最后一列右侧的"剩余空白区" */
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+  -fx-effect: null;        /* 去掉系统默认的内阴影，避免出现深色阴影线 */
+}
+
+/* 表头容器中间层：嵌套列容器（多级表头时存在）也染同色 */
+.table-view .column-header-background .nested-column-header {
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+}
+
+/* 表头整体底部边框：跨越所有列+剩余空白区，保证视觉连续 */
+.table-view .column-header-background {
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+/* 列分隔线（拖拽手柄）：默认显示一条淡淡的右竖线，让用户能看到列与列的边界。
+   底部横线由 .column-header-background 统一画，这里只画右竖线避免双线。
+   AtlantaFX 同款做法。 */
+.table-view .column-header {
+  -fx-border-color: transparent -color-border-subtle transparent transparent;
+  -fx-border-width: 0 1px 0 0;
+}
+
+.table-view.bordered .column-header {
+  -fx-border-color: transparent -color-border-muted transparent transparent;
+}
+
+/* 表头列 hover：高亮提示"可点击排序" */
+.table-view .column-header:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-cursor: hand;
+}
+
+/* 列宽拖拽手柄：鼠标拖动时显示主题色竖线 */
+.table-view .column-resize-line {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* 排序箭头：AtlantaFX 标准做法。padding 3×4 是默认正常宽度（看起来正好，不是"太宽"）。
+   sorted 时 JavaFX 会自动旋转该节点表示升降序方向。 */
+.table-view .column-header .arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-padding: 3px 4px 3px 4px;
+  -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+}
+
+.table-view .column-header.sorted .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* 排序时显示的小指示点（多列排序时显示序号）。
+   保留默认 padding，AtlantaFX 同款；之前压成 0 会导致箭头与文字重叠。 */
+.table-view .column-header .sort-order-dots-container {
+  -fx-padding: 2px 0 2px 0;
+}
+
+.table-view .column-header .sort-order-dots-container > .sort-order-dot {
+  -fx-background-color: -color-fg-muted;
+  -fx-padding: 0.115em;
+  -fx-background-radius: 0.115em;
+}
+
+/* 多列排序数字（>3 列时显示） */
+.table-view .column-header .sort-order {
+  -fx-padding: 0 0 0 2px;
+}
+
+/* filler 和 show-hide-columns-button：AtlantaFX 标准做法。
+   背景透明（继承自 column-header-background），但保留底部 1px 边框跟 column-header 一致。
+   不再隐藏 show-hide-button（保留默认行为，少改）。 */
+.table-view .column-header-background > .filler {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+.table-view .column-header-background > .show-hide-columns-button {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+  -fx-cursor: hand;
+}
+
+/* Column alignment classes
+   关键：JavaFX 把 column-header 和 table-cell 自身打上 align-* 类，
+   所以选择器必须用".class.class"形式（同节点），不能是空格分隔的后代选择器。 */
+.table-view .column-header.align-left,
+.table-view .table-cell.align-left {
+  -fx-alignment: center-left;
+}
+
+.table-view .column-header.align-left .label,
+.table-view .table-cell.align-left .label {
+  -fx-alignment: center-left;
+  -fx-text-alignment: left;
+}
+
+.table-view .column-header.align-center,
+.table-view .table-cell.align-center {
+  -fx-alignment: center;
+}
+
+.table-view .column-header.align-center .label,
+.table-view .table-cell.align-center .label {
+  -fx-alignment: center;
+  -fx-text-alignment: center;
+}
+
+.table-view .column-header.align-right,
+.table-view .table-cell.align-right {
+  -fx-alignment: center-right;
+}
+
+.table-view .column-header.align-right .label,
+.table-view .table-cell.align-right .label {
+  -fx-alignment: center-right;
+  -fx-text-alignment: right;
+}
+
+/* 表头独立对齐：headerAlign(...) 只影响 column-header */
+.table-view .column-header.align-header-left   { -fx-alignment: center-left; }
+.table-view .column-header.align-header-center { -fx-alignment: center; }
+.table-view .column-header.align-header-right  { -fx-alignment: center-right; }
+
+.table-view .column-header.align-header-left   .label { -fx-alignment: center-left;   -fx-text-alignment: left; }
+.table-view .column-header.align-header-center .label { -fx-alignment: center;        -fx-text-alignment: center; }
+.table-view .column-header.align-header-right  .label { -fx-alignment: center-right;  -fx-text-alignment: right; }
+
+/* 内容独立对齐：contentAlign(...) 只影响 table-cell */
+.table-view .table-cell.align-content-left   { -fx-alignment: center-left; }
+.table-view .table-cell.align-content-center { -fx-alignment: center; }
+.table-view .table-cell.align-content-right  { -fx-alignment: center-right; }
+
+.table-view .table-cell.align-content-left   .label { -fx-alignment: center-left;   -fx-text-alignment: left; }
+.table-view .table-cell.align-content-center .label { -fx-alignment: center;        -fx-text-alignment: center; }
+.table-view .table-cell.align-content-right  .label { -fx-alignment: center-right;  -fx-text-alignment: right; }
+
+/* 表头默认整体居左（保持 Ant 风格），
+   单元格内容默认垂直居中（避免内容看起来贴在顶部） */
+.table-view .table-cell {
+  -fx-alignment: center-left;
+}
+
+/* CheckBoxTableCell 居中（booleanColumn 渲染勾选框时，让勾选框居中显示） */
+.table-view .check-box-table-cell {
+  -fx-alignment: center;
+}
+
+/* ============================================
+   Menu Component
+   ============================================ */
+.menu-bar {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+/* ============================================
+   Tabs Component
+   ============================================ */
+.tab-pane .tab-header-area {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+.tab-pane .tab {
+  
+}
+
+.tab-pane .tab:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.tab-pane .tab:selected {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: transparent transparent -color-accent-emphasis transparent;
+  -fx-border-width: 0 0 2px 0;
+}
+
+/* ============================================
+   Tree Component
+   ============================================ */
+.tree-view {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+  -fx-background-radius: @border-radius-lg;
+}
+
+/* ============================================
+   CheckBox Component
+   ============================================ */
+/* ============================================
+   CheckBox Component（M19.6.3 修复 — 对齐 AtlantaFX _checkbox.scss）
+   关键：.box padding 控制框尺寸，.mark min/max 控制中间✓尺寸
+   ============================================ */
+.check-box {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.check-box .box {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-padding: 3px 3px 3px 3px;     /* mark(8) + padding(3) = 14×14 方框，与 Radio 圆框等大 */
+  -fx-alignment: CENTER;
+}
+
+.check-box .box .mark {
+  /* mark 是中间的 ✓ —— 默认 modena 已有 shape，这里保证尺寸一致 */
+  -fx-min-width: 8px;
+  -fx-max-width: 8px;
+  -fx-min-height: 8px;
+  -fx-max-height: 8px;
+  -fx-background-color: transparent;   /* 未选中时透明（隐藏） */
+}
+
+.check-box .box:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.check-box:hover:selected .box {
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.check-box:selected .box {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.check-box:selected .box .mark {
+  -fx-background-color: -color-fg-on-emphasis;   /* 选中显示白色 ✓ */
+}
+
+.check-box:disabled {
+  -fx-opacity: 0.6;
+}
+
+.check-box:indeterminate .box {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.check-box:indeterminate .box .mark {
+  -fx-background-color: -color-fg-on-emphasis;
+}
+
+/* ============================================
+   RadioButton Component（M19.6.3 修复 — 对齐 AtlantaFX _radio.scss）
+   关键：.radio padding 控制圆框尺寸（与 .box 完全一致），.dot min/max 控制中间小圆点尺寸
+   ============================================ */
+.radio-button {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.radio-button .radio {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-full;
+  -fx-background-radius: @border-radius-full;
+  -fx-padding: 4px 4px 4px 4px;     /* 与 CheckBox 外径一致：dot(6) + padding(4) = 14×14 */
+  -fx-alignment: CENTER;
+}
+
+.radio-button .radio .dot {
+  /* dot 是中间小圆点 —— 必须显式设尺寸（默认是 0 不可见）
+     Ant Design 风格：比 CheckBox 的 mark 略小，约 6×6 */
+  -fx-min-width: 6px;
+  -fx-max-width: 6px;
+  -fx-min-height: 6px;
+  -fx-max-height: 6px;
+  -fx-background-radius: @border-radius-full;
+  -fx-background-color: transparent;    /* 未选中透明 */
+}
+
+.radio-button:hover .radio {
+  -fx-border-color: -color-accent-muted;
+}
+
+.radio-button:hover:selected .radio {
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.radio-button:selected .radio {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.radio-button:selected .radio .dot {
+  -fx-background-color: -color-fg-on-emphasis;   /* 选中显示白色小圆点 */
+}
+
+.radio-button:disabled {
+  -fx-opacity: 0.6;
+}
+
+/* ============================================
+   ComboBox Component
+   ============================================ */
+.combo-box {
+  .input-base();
+  
+}
+
+.combo-box:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.combo-box:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.combo-box .arrow-button {
+  -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+  -fx-background-color: -color-fg-muted;
+  
+}
+
+.combo-box:hover .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+.combo-box-popup .list-view {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+}
+
+.combo-box-popup .list-cell {
+  -fx-padding: @list-cell-padding-y @list-cell-padding-x;
+  -fx-text-fill: -color-fg-default;
+  
+}
+
+.combo-box-popup .list-cell:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.combo-box-popup .list-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.combo-box-popup .list-cell:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* ============================================
+   ListView Component
+   ============================================ */
+.list-view {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+  -fx-background-radius: @border-radius-lg;
+}
+
+.list-view .list-cell {
+  -fx-padding: @list-cell-padding-y @list-cell-padding-x;
+  -fx-text-fill: -color-fg-default;
+  -fx-background-color: transparent;
+  
+}
+
+.list-view .list-cell:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.list-view .list-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.list-view .list-cell:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.list-view .list-cell:empty {
+  -fx-background-color: transparent;
+}
+
+/* ============================================
+   Slider Component
+   ============================================ */
+
+/* JavaFX Slider 内置属性：让"已选中轨道"颜色随主题切换。
+   原 SliderAnt.getSliderStyle 在 Java 端 setStyle 拼这两个值，现搬到 LESS。 */
+.slider {
+  -fx-control-inner-background: -color-border-muted;
+  -fx-control-inner-background-alt: -color-border-muted;
+  -fx-accent: -color-accent-emphasis;
+}
+
+.slider .track {
+  -fx-background-color: -color-border-default;
+  -fx-background-radius: @border-radius-full;
+  -fx-pref-height: 4px;
+}
+
+.slider .thumb {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 2px;
+  -fx-background-radius: @border-radius-full;
+  -fx-border-radius: @border-radius-full;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 4, 0, 0, 1);
+  -fx-snap-to-pixel: false;
+  
+}
+
+.slider .thumb:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-cursor: hand;
+}
+
+.slider .thumb:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.slider .slider:focused .thumb {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.slider:focused {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+.slider .colored-track {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-radius: @border-radius-full;
+}
+
+.slider .axis {
+  -fx-tick-label-fill: -color-fg-muted;
+  -fx-tick-length: 4px;
+}
+
+/* ============================================
+   ProgressBar Component
+   ============================================ */
+.progress-bar {
+  -fx-background-color: -color-border-muted;
+  -fx-background-radius: @border-radius-full;
+  -fx-pref-height: 8px;
+}
+
+.progress-bar .track {
+  -fx-background-color: -color-border-muted;
+  -fx-background-radius: @border-radius-full;
+}
+
+.progress-bar .bar {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-radius: @border-radius-full;
+}
+
+.progress-bar.success .bar {
+  -fx-background-color: -color-success-emphasis;
+}
+
+.progress-bar.warning .bar {
+  -fx-background-color: -color-warning-emphasis;
+}
+
+.progress-bar.error .bar {
+  -fx-background-color: -color-danger-emphasis;
+}
+
+/* ============================================
+   ProgressIndicator Component
+   ============================================ */
+.progress-indicator {
+  -fx-progress-color: -color-accent-emphasis;
+}
+
+.progress-indicator.success {
+  -fx-progress-color: -color-success-emphasis;
+}
+
+.progress-indicator.warning {
+  -fx-progress-color: -color-warning-emphasis;
+}
+
+.progress-indicator.error {
+  -fx-progress-color: -color-danger-emphasis;
+}
+
+/* ============================================
+   ProgressAnt 百分比文字
+   颜色随 status 切换，避免 Java 端拼字符串
+   ============================================ */
+.jfx-progress-info {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.jfx-progress-info.success { -fx-text-fill: -color-success-emphasis; }
+.jfx-progress-info.warning { -fx-text-fill: -color-warning-emphasis; }
+.jfx-progress-info.error   { -fx-text-fill: -color-danger-emphasis;  }
+
+/* ============================================
+   Alert / Notification Styles
+   ============================================ */
+.alert-success {
+  -fx-background-color: -color-success-subtle;
+  -fx-border-color: -color-success-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: @alert-padding-y @alert-padding-x;
+}
+
+.alert-info {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: @alert-padding-y @alert-padding-x;
+}
+
+.alert-warning {
+  -fx-background-color: -color-warning-subtle;
+  -fx-border-color: -color-warning-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: @alert-padding-y @alert-padding-x;
+}
+
+.alert-error {
+  -fx-background-color: -color-danger-subtle;
+  -fx-border-color: -color-danger-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: @alert-padding-y @alert-padding-x;
+}
+
+/* ============================================
+   Badge Component
+   ============================================ */
+.badge {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-background-radius: @border-radius-full;
+  -fx-padding: 0 @spacing-xs;
+  -fx-font-size: @font-size-xs;
+  -fx-font-weight: 600;
+}
+
+.badge-success {
+  -fx-background-color: -color-success-emphasis;
+}
+
+.badge-warning {
+  -fx-background-color: -color-warning-emphasis;
+}
+
+.badge-error {
+  -fx-background-color: -color-danger-emphasis;
+}
+
+.badge-dot {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-background-radius: @border-radius-full;
+  -fx-min-width: 8px;
+  -fx-min-height: 8px;
+  -fx-max-width: 8px;
+  -fx-max-height: 8px;
+  -fx-padding: 0;
+}
+
+/* ============================================
+   Divider / Separator Component
+   ============================================ */
+.separator .line {
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px 0 0 0;
+}
+
+.separator:vertical .line {
+  -fx-border-width: 0 1px 0 0;
+}
+
+/* ============================================
+   DatePicker Component
+   ============================================ */
+.date-picker {
+  .input-base();
+  
+}
+
+.date-picker:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.date-picker:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.date-picker .arrow-button {
+  -fx-background-color: transparent;
+}
+
+.date-picker .arrow-button .arrow {
+  -fx-background-color: -color-fg-muted;
+  
+}
+
+.date-picker:hover .arrow-button .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+.date-picker-popup {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+  -fx-padding: 0;
+}
+
+.date-picker-popup > * {
+  -fx-pref-width: 280px;
+  -fx-min-width: 280px;
+  -fx-max-width: 280px;
+}
+
+.date-picker-popup .month-year-pane {
+  -fx-background-color: transparent;
+  -fx-padding: 12px 16px;
+  -fx-hgap: 8px;
+  -fx-vgap: 0;
+}
+
+.date-picker-popup .spinner {
+  -fx-pref-width: 120px;
+  -fx-min-width: 120px;
+}
+
+.date-picker-popup .spinner .button {
+  -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 4px 8px;
+}
+
+.date-picker-popup .spinner .button:hover {
+  -fx-background-color: -color-accent-subtle;
+}
+
+.date-picker-popup .day-cell {
+  -fx-text-fill: -color-fg-default;
+  -fx-background-color: transparent;
+  -fx-font-size: 13px;
+  -fx-alignment: center;
+  -fx-padding: 4px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-min-width: 32px;
+  -fx-min-height: 32px;
+  -fx-pref-width: 32px;
+  -fx-pref-height: 32px;
+}
+
+.date-picker-popup .day-cell:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-cursor: hand;
+}
+
+.date-picker-popup .day-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.date-picker-popup .day-cell:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-font-weight: 600;
+}
+
+.date-picker-popup .day-cell:today {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.date-picker-popup .day-cell:disabled {
+  -fx-text-fill: -color-fg-disabled;
+  -fx-opacity: 0.4;
+}
+
+/* DatePicker Popup 增强样式 */
+.date-picker-popup .calendar-header {
+  -fx-background-color: transparent;
+  -fx-padding: 12px 16px;
+  -fx-alignment: center;
+}
+
+.date-picker-popup .navigate-btn {
+  -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 4px 8px;
+  -fx-cursor: hand;
+}
+
+.date-picker-popup .navigate-btn:hover {
+  -fx-background-color: -color-accent-subtle;
+}
+
+.date-picker-popup .title-label {
+  -fx-font-size: 14px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.date-picker-popup .day-name-cell {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 12px;
+  -fx-font-weight: 500;
+  -fx-padding: 8px 4px;
+}
+
+.date-picker-popup .week-number-cell {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 11px;
+}
+
+/* ============================================
+   ColorPicker Component
+   ============================================ */
+.color-picker {
+  .input-base();
+  -fx-min-width: 60px;
+  -fx-pref-width: 80px;
+  
+}
+
+.color-picker:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.color-picker:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.color-picker .arrow-button {
+  -fx-background-color: transparent;
+}
+
+/* ColorPicker Popup - 防止内部组件超出容器 */
+.color-palette {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+  -fx-padding: 10px;
+  -fx-min-width: 200px;
+}
+
+.color-palette .color-picker-grid {
+  -fx-padding: 0;
+}
+
+.color-palette .color-picker-grid .color-square {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-padding: 0;
+}
+
+.color-palette .color-picker-grid .color-square:hover {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 2px;
+}
+
+/* ColorPicker 内部 Slider 防止超出 */
+.color-palette .slider {
+  -fx-pref-width: 180px;
+  -fx-max-width: 180px;
+  -fx-min-width: 180px;
+}
+
+.color-palette .slider .thumb {
+  -fx-padding: 0;
+}
+
+.color-palette .controls-pane {
+  -fx-padding: 5px 0;
+}
+
+/* ============================================
+   Accordion Component
+   ============================================ */
+.accordion .titled-pane {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+.accordion .titled-pane > .title {
+  -fx-background-color: -color-bg-default;
+  -fx-padding: @accordion-title-padding-y @accordion-title-padding-x;
+  -fx-font-weight: 500;
+  
+}
+
+.accordion .titled-pane > .title:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.accordion .titled-pane > .title:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.accordion .titled-pane > .content {
+  -fx-background-color: -color-bg-default;
+  -fx-padding: @accordion-content-padding-y @accordion-content-padding-x;
+}
+
+.accordion .titled-pane:expanded > .title {
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+/* ============================================
+   TitledPane Component
+   ============================================ */
+.titled-pane {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.titled-pane > .title {
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: @titled-pane-title-padding-y @titled-pane-title-padding-x;
+  -fx-font-weight: 500;
+  -fx-background-radius: @border-radius-md @border-radius-md 0 0;
+}
+
+.titled-pane > .content {
+  -fx-background-color: -color-bg-default;
+  -fx-padding: @titled-pane-content-padding;
+  -fx-background-radius: 0 0 @border-radius-md @border-radius-md;
+}
+
+/* ============================================
+   Tooltip Component
+   ============================================ */
+.tooltip {
+  -fx-background-color: -color-bg-overlay;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-sm;
+  -fx-padding: @tooltip-padding-y @tooltip-padding-x;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+}
+
+/* ============================================
+   Pagination Component
+   ============================================ */
+.pagination {
+  -fx-background-color: transparent;
+}
+
+.pagination .pagination-control {
+  -fx-background-color: transparent;
+}
+
+.pagination .pagination-control .button {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: @pagination-padding-y @pagination-padding-x;
+  -fx-cursor: hand;
+}
+
+.pagination .pagination-control .button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.pagination .pagination-control .button:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.pagination .pagination-control .button:disabled {
+  -fx-opacity: 0.4;
+}
+
+.pagination .pagination-control .toggle-button {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: @pagination-padding-y @pagination-padding-x;
+  -fx-cursor: hand;
+}
+
+.pagination .pagination-control .toggle-button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.pagination .pagination-control .toggle-button:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.pagination .pagination-control .toggle-button:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* ============================================
+   ScrollBar Component
+   ============================================ */
+.scroll-bar {
+  -fx-background-color: transparent;
+  -fx-pref-width: @scrollbar-size;
+  -fx-pref-height: @scrollbar-size;
+}
+
+.scroll-bar .thumb {
+  -fx-background-color: -color-base-4;
+  -fx-background-radius: @border-radius-full;
+  
+}
+
+.scroll-bar .thumb:hover {
+  -fx-background-color: -color-base-5;
+}
+
+.scroll-bar .thumb:pressed {
+  -fx-background-color: -color-base-6;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+  -fx-background-color: transparent;
+  -fx-padding: @spinner-arrow-padding;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+  -fx-background-color: -color-base-5;
+}
+
+/* ============================================
+   ContextMenu Component
+   ============================================ */
+.context-menu {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: @context-menu-padding-y @context-menu-padding-x;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+}
+
+.context-menu .menu-item {
+  -fx-padding: @menu-item-padding-y @menu-item-padding-x;
+  
+}
+
+.context-menu .menu-item:hover,
+.context-menu .menu-item:focused {
+  -fx-background-color: -color-accent-hover;
+}
+
+.context-menu .menu-item:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.context-menu .menu-item .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.context-menu .separator-menu-item .line {
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px 0 0 0;
+  -fx-padding: @spacing-xs 0;
+}
+
+/* ============================================
+   MenuItem within MenuBar
+   ============================================ */
+.menu-bar > .container > .menu {
+  -fx-padding: @menu-padding-y @menu-padding-x;
+}
+
+.menu-bar > .container > .menu > .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.menu-bar > .container > .menu:hover,
+.menu-bar > .container > .menu:showing {
+  -fx-background-color: -color-accent-hover;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.menu-bar > .container > .menu:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.menu-item {
+  -fx-padding: @menu-item-padding-y @menu-item-padding-x;
+  
+}
+
+.menu-item:hover,
+.menu-item:focused {
+  -fx-background-color: -color-accent-hover;
+}
+
+.menu-item:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.menu-item .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+/* ============================================
+   Dialog / Modal Overlay
+   ============================================ */
+.dialog-pane {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+  -fx-background-radius: @border-radius-lg;
+}
+
+.dialog-pane > .button-bar {
+  -fx-padding: @dialog-padding;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: 0 0 @border-radius-lg @border-radius-lg;
+}
+
+/* ============================================
+   Switch (ToggleButton) Component
+   ============================================ */
+.toggle-button.switch {
+  -fx-background-color: -color-border-default, -color-bg-default;
+  -fx-background-insets: 0, 2;
+  -fx-background-radius: @border-radius-full, @border-radius-full;
+  -fx-padding: 0;
+  -fx-min-width: 44px;
+  -fx-min-height: 22px;
+  -fx-max-width: 44px;
+  -fx-max-height: 22px;
+  -fx-pref-width: 44px;
+  -fx-pref-height: 22px;
+  -fx-cursor: hand;
+  -fx-text-fill: transparent;
+  
+}
+
+.toggle-button.switch:hover {
+  -fx-background-color: -color-accent-muted, -color-bg-default;
+}
+
+.toggle-button.switch:armed,
+.toggle-button.switch:pressed {
+  -fx-background-color: -color-accent-active, -color-bg-default;
+}
+
+.toggle-button.switch:selected {
+  -fx-background-color: -color-accent-emphasis, -color-bg-default;
+}
+
+.toggle-button.switch:selected:hover {
+  -fx-background-color: -color-accent-4, -color-bg-default;
+}
+
+.toggle-button.switch:selected:armed,
+.toggle-button.switch:selected:pressed {
+  -fx-background-color: -color-accent-6, -color-bg-default;
+}
+
+.toggle-button.switch .label {
+  -fx-text-fill: transparent;
+  -fx-padding: 0;
+}
+
+.toggle-button.switch:disabled {
+  -fx-opacity: 0.6;
+  -fx-cursor: default;
+}
+
+/* Custom Switch Component (JFXSwitch) */
+.jfx-switch {
+  -fx-background-radius: 11px;
+  -fx-border-radius: 11px;
+  -fx-cursor: hand;
+}
+
+/* 禁用状态：透明度降低 + 禁用 hand cursor，让组件视觉与交互都明确 */
+.jfx-switch.switch-disabled {
+  -fx-opacity: 0.5;
+  -fx-cursor: default;
+}
+
+/* Switch 旁的状态文本（"开/关"/"On/Off"），通过 styleClass 控制视觉，
+   不再在 Java 端 setStyle 拼字号/颜色 */
+.jfx-switch-status-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 0 0 0 8;
+}
+
+.jfx-switch-track {
+  -fx-background-color: -color-border-default;
+  -fx-background-radius: 11px;
+  -fx-border-radius: 11px;
+  
+}
+
+.jfx-switch-thumb {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: 9px;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: 9px;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);
+}
+
+.jfx-switch.switch-selected .jfx-switch-track {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+.jfx-switch.switch-selected .jfx-switch-thumb {
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.jfx-switch:hover .jfx-switch-track {
+  -fx-background-color: -color-accent-muted;
+}
+
+.jfx-switch.switch-selected:hover .jfx-switch-track {
+  -fx-background-color: -color-accent-4;
+}
+
+.jfx-switch:armed .jfx-switch-track,
+.jfx-switch:pressed .jfx-switch-track {
+  -fx-background-color: -color-accent-active;
+}
+
+.jfx-switch.switch-selected:armed .jfx-switch-track,
+.jfx-switch.switch-selected:pressed .jfx-switch-track {
+  -fx-background-color: -color-accent-6;
+}
+
+/* Switch 形状变体（M19.20）：默认 PILL（11px 半径），其他覆盖
+   关键：必须同时覆盖 -fx-background-radius 和 -fx-border-radius，
+   否则 thumb/track 边框还会按 modena 默认圆形渲染（M19.20 实证） */
+.jfx-switch.shape-rounded,
+.jfx-switch.shape-rounded .jfx-switch-track {
+  -fx-background-radius: 4px;
+  -fx-border-radius: 4px;
+}
+.jfx-switch.shape-rounded .jfx-switch-thumb {
+  -fx-background-radius: 3px;
+  -fx-border-radius: 3px;
+}
+
+.jfx-switch.shape-square,
+.jfx-switch.shape-square .jfx-switch-track {
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+}
+.jfx-switch.shape-square .jfx-switch-thumb {
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+}
+
+/* CheckBox 形状变体（M19.20）：默认方形小圆角（modena 默认），其他覆盖
+   关键：选择器要带 .check-box 提优先级，否则被默认 .check-box .box 覆盖 */
+.check-box.shape-circle .box {
+  -fx-background-radius: 9999;
+  -fx-border-radius: 9999;
+}
+.check-box.shape-circle .box .mark {
+  -fx-background-radius: 9999;
+}
+
+.check-box.shape-square .box {
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+}
+
+.check-box.shape-rounded .box {
+  -fx-background-radius: 6px;
+  -fx-border-radius: 6px;
+}
+
+/* RadioButton 形状变体（M19.20）：默认圆形（modena 默认），SQUARE/ROUNDED 覆盖 */
+.radio-button.shape-square .radio {
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+}
+.radio-button.shape-square .radio .dot {
+  -fx-background-radius: 0;
+}
+
+.radio-button.shape-rounded .radio {
+  -fx-background-radius: 4px;
+  -fx-border-radius: 4px;
+}
+.radio-button.shape-rounded .radio .dot {
+  -fx-background-radius: 2px;
+}
+
+/* ============================================
+   Label & Text Styles
+   ============================================ */
+.label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.label.muted {
+  -fx-text-fill: -color-fg-muted;
+}
+
+.label.subtle {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.label.heading {
+  -fx-font-size: @font-size-xl;
+  -fx-font-weight: 600;
+}
+
+/* ============================================
+   Hyperlink
+   ============================================ */
+.hyperlink {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: transparent;
+  -fx-underline: true;
+  -fx-cursor: hand;
+}
+
+.hyperlink:hover {
+  -fx-text-fill: -color-accent-4;
+}
+
+.hyperlink:disabled {
+  -fx-opacity: 0.6;
+}
+
+/* ============================================
+   ScrollPane
+   ============================================ */
+.scroll-pane {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-padding: 0;
+}
+
+.scroll-pane > .viewport {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane > .corner {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.scroll-pane:disabled > .scroll-bar {
+  -fx-opacity: 0.3;
+}
+
+/* ============================================
+   ToolBar
+   ============================================ */
+.tool-bar {
+  -fx-background-color: -color-border-muted, -color-bg-subtle;
+  -fx-background-insets: 0, 0 0 1px 0;
+  -fx-border-color: transparent;
+  -fx-padding: @toolbar-padding-y @toolbar-padding-x;
+  -fx-spacing: @spacing-xs;
+  -fx-alignment: CENTER_LEFT;
+}
+
+.tool-bar > .container > .button,
+.tool-bar > .container > .menu-button,
+.tool-bar > .container > .split-menu-button {
+  -fx-background-insets: 0;
+  -fx-effect: none;
+}
+
+.tool-bar > .container > .toggle-button {
+  -fx-background-insets: 0;
+  -fx-effect: none;
+}
+
+/* ============================================
+   ChoiceBox
+   ============================================ */
+.choice-box {
+  -fx-background-color: -color-border-default, -color-bg-default;
+  -fx-background-insets: 0, 1px;
+  -fx-background-radius: @border-radius-md, @border-radius-sm;
+  -fx-text-fill: -color-fg-default;
+  -fx-alignment: CENTER;
+  -fx-content-display: LEFT;
+  -fx-padding: @spacing-xs @input-padding-x;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  
+}
+
+.choice-box:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.choice-box:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.choice-box:disabled {
+  -fx-opacity: 0.6;
+}
+
+.choice-box .open-button {
+  -fx-background-color: transparent;
+  -fx-padding: @input-padding-y @input-padding-x;
+}
+
+.choice-box .open-button .arrow {
+  -fx-background-color: -color-fg-muted;
+}
+
+/* ============================================
+   Spinner (Number/Text Spinner)
+   ============================================ */
+.spinner {
+  .input-base();
+  -fx-padding: 0;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+  -fx-focus-traversable: false;
+}
+
+.spinner:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.spinner .text-field {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-padding: @input-padding-y @input-padding-x;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1px;
+  
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.spinner .increment-arrow-button:armed,
+.spinner .increment-arrow-button:pressed,
+.spinner .decrement-arrow-button:armed,
+.spinner .decrement-arrow-button:pressed {
+  -fx-background-color: -color-accent-active;
+}
+
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+  -fx-background-color: -color-fg-muted;
+}
+
+.spinner .increment-arrow-button:hover .increment-arrow,
+.spinner .decrement-arrow-button:hover .decrement-arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+.spinner .increment-arrow-button:armed .increment-arrow,
+.spinner .increment-arrow-button:pressed .increment-arrow,
+.spinner .decrement-arrow-button:armed .decrement-arrow,
+.spinner .decrement-arrow-button:pressed .decrement-arrow {
+  -fx-background-color: -color-fg-on-emphasis;
+}
+
+/* ============================================
+   SplitPane
+   ============================================ */
+.split-pane {
+  -fx-background-color: -color-bg-default;
+}
+
+.split-pane .split-pane-divider {
+  -fx-background-color: -color-border-muted;
+  -fx-padding: 0 @split-divider-padding;
+}
+
+.split-pane:horizontal .split-pane-divider {
+  -fx-padding: 0 @split-divider-padding;
+}
+
+.split-pane:vertical .split-pane-divider {
+  -fx-padding: @split-divider-padding 0;
+}
+
+/* ============================================
+   Table Row & Cell Enhancements
+   ============================================ */
+.table-row-cell {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent -color-border-subtle transparent;
+  -fx-border-width: 0 0 1px 0;
+  
+}
+
+.table-row-cell:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.table-row-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.table-row-cell:selected {
+  -fx-background-color: -color-cell-bg-selected;
+}
+
+.table-row-cell:selected .table-cell {
+  -fx-text-fill: -color-cell-fg-selected;
+}
+
+/* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，
+   背景在 subtle(accent-0) 基础上加深一档到 muted(accent-2)，
+   给用户"选中后还能继续交互"的反馈 */
+.table-row-cell:selected:hover {
+  -fx-background-color: -color-accent-muted;
+}
+
+.table-cell {
+  -fx-padding: @table-cell-padding-y @table-cell-padding-x;
+  -fx-text-fill: -color-fg-default;
+  /* 默认垂直居中（水平由 align-* 复合类控制；不设的话默认 center-left）*/
+  -fx-alignment: center-left;
+}
+
+/* 行高保护：保证最低行高足以容纳 Avatar(32px)/Tag(24px)/按钮(28px) 等内容，
+   同时文字行也有舒适的上下留白。
+   不用 -fx-cell-size（那个会强制裁切高内容），用 min-height 让行高自适应但有下限。 */
+.table-view .table-row-cell {
+  -fx-min-height: 48px;
+}
+
+/* M11.2 三档尺寸（对齐 Ant Design Table size：SMALL / MIDDLE / LARGE）
+   ============================================================ */
+
+/* SMALL：紧凑模式（mini 表格）。表头 40 / 行高 36 / padding 6×8 / 字号 13 */
+.table-view.jfx-table-small .column-header-background {
+  -fx-pref-height: 40px;
+}
+.table-view.jfx-table-small .column-header {
+  -fx-padding: 6px 8px;
+}
+.table-view.jfx-table-small .table-row-cell {
+  -fx-min-height: 36px;
+}
+.table-view.jfx-table-small .table-cell {
+  -fx-padding: 6px 8px;
+  -fx-font-size: 13px;
+}
+
+/* MIDDLE：默认（无需重写，使用上方的 .column-header / .table-cell 默认值）
+   .jfx-table-middle 仅用于 styleClass 标识，便于用户后续 grep 调试 */
+
+/* LARGE：宽松模式。表头 56 / 行高 56 / padding 14×16 / 字号 15 */
+.table-view.jfx-table-large .column-header-background {
+  -fx-pref-height: 56px;
+}
+.table-view.jfx-table-large .column-header {
+  -fx-padding: 14px 16px;
+}
+.table-view.jfx-table-large .table-row-cell {
+  -fx-min-height: 56px;
+}
+.table-view.jfx-table-large .table-cell {
+  -fx-padding: 14px 16px;
+  -fx-font-size: 15px;
+}
+
+/* 老 .jfx-table-compact 兼容（等价 SMALL）。
+   保留是为了万一有用户手动挂 styleClass，但 Java API 走 size(SMALL) 会自动加 jfx-table-small。 */
+.table-view.jfx-table-compact .table-row-cell {
+  -fx-min-height: 36px;
+}
+
+/* Striped rows */
+.table-view.striped .table-row-cell:odd {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.table-view.striped .table-row-cell:even {
+  -fx-background-color: -color-bg-default;
+}
+
+/* Bordered table（兼容老 .bordered API；新代码请用 Border.BOTH） */
+.table-view.bordered .table-cell {
+  -fx-border-color: transparent -color-border-muted -color-border-muted transparent;
+  -fx-border-width: 0 1px 1px 0;
+}
+
+/* M11.x 内容区分割线 4 种模式 ============================================ */
+
+/* NONE：完全无分割线（行底线也去掉） */
+.table-view.jfx-table-border-none .table-row-cell {
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+.table-view.jfx-table-border-none .table-cell {
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+
+/* HORIZONTAL：仅行底横线（默认） */
+.table-view.jfx-table-border-h .table-row-cell {
+  -fx-border-color: transparent transparent -color-border-subtle transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+.table-view.jfx-table-border-h .table-cell {
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+
+/* VERTICAL：仅列竖线（行底无线） */
+.table-view.jfx-table-border-v .table-row-cell {
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+.table-view.jfx-table-border-v .table-cell {
+  -fx-border-color: transparent -color-border-subtle transparent transparent;
+  -fx-border-width: 0 1px 0 0;
+}
+
+/* BOTH：横竖都有（Excel 风格） */
+.table-view.jfx-table-border-both .table-row-cell {
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+.table-view.jfx-table-border-both .table-cell {
+  -fx-border-color: transparent -color-border-muted transparent transparent;
+  -fx-border-width: 0 1px 0 0;
+}
+
+/* 隐藏表头：showHeader(false) ============================================ */
+.table-view.jfx-table-no-header .column-header-background {
+  -fx-pref-height: 0;
+  -fx-min-height: 0;
+  -fx-max-height: 0;
+}
+
+.table-view.jfx-table-no-header .column-header,
+.table-view.jfx-table-no-header .filler {
+  -fx-pref-height: 0;
+  -fx-min-height: 0;
+  -fx-max-height: 0;
+  -fx-padding: 0;
+  -fx-border-width: 0;
+}
+
+/* ============================================
+   ListView Selection Enhancements
+   ============================================ */
+.list-view:focused .list-cell:selected {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* ============================================
+   ComboBox ListCell in Button
+   ============================================ */
+.combo-box .list-cell {
+  -fx-text-fill: -color-fg-default;
+  -fx-background-color: transparent;
+}
+
+/* ============================================
+   Tab Enhancements
+   ============================================ */
+.tab-pane .tab {
+  -fx-background-color: transparent;
+  -fx-padding: @tab-padding-y @tab-padding-x;
+}
+
+.tab-pane .tab:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.tab-pane .tab .tab-label {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+}
+
+.tab-pane .tab:selected .tab-label {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+}
+
+.tab-pane .tab:hover .tab-label {
+  -fx-text-fill: -color-fg-default;
+}
+
+/* Close button on tabs */
+.tab-pane .tab .tab-close-button {
+  -fx-background-color: transparent;
+  -fx-background-radius: @border-radius-sm;
+  -fx-padding: @close-btn-padding;
+  -fx-min-width: 14px;
+  -fx-min-height: 14px;
+  -fx-pref-width: 14px;
+  -fx-pref-height: 14px;
+}
+
+/* Tab close button 'X' shape color */
+.tab-pane .tab .tab-close-button .tab-close-cross {
+  -fx-stroke: -color-fg-muted;
+  -fx-stroke-width: 1.5px;
+}
+
+.tab-pane .tab .tab-close-button:hover {
+  -fx-background-color: -color-danger-subtle;
+}
+
+.tab-pane .tab .tab-close-button:hover .tab-close-cross {
+  -fx-stroke: -color-danger-emphasis;
+}
+
+/* ============================================
+   Tree Cell Enhancements
+   ============================================ */
+.tree-cell {
+  -fx-padding: @tree-cell-padding-y @tree-cell-padding-x;
+  -fx-text-fill: -color-fg-default;
+  -fx-background-color: transparent;
+  
+}
+
+.tree-cell:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.tree-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.tree-cell:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.tree-cell .tree-disclosure-node .arrow {
+  -fx-background-color: -color-fg-muted;
+}
+
+.tree-cell:expanded .tree-disclosure-node .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* ============================================
+   MenuBar Submenu Enhancements
+   ============================================ */
+.menu > .right-container > .arrow {
+  -fx-background-color: -color-fg-muted;
+}
+
+.menu:hover > .right-container > .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* ============================================
+   DatePicker Popup Enhancements
+   ============================================ */
+.date-picker-popup .previous-month,
+.date-picker-popup .next-month {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.date-picker-popup .previous-month:hover,
+.date-picker-popup .next-month:hover {
+  -fx-text-fill: -color-fg-default;
+}
+
+.date-picker-popup .week-number-cell {
+  -fx-text-fill: -color-fg-subtle;
+  -fx-font-size: @font-size-xs;
+}
+
+/* ============================================
+   ColorPicker Popup
+   ============================================ */
+.color-palette {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+}
+
+.color-palette .color-picker-grid .color-square {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+}
+
+.color-palette .color-picker-grid .color-square:hover {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 2px;
+}
+
+/* ============================================
+   Slider Tick Enhancements
+   ============================================ */
+.slider .axis .axis-tick-mark {
+  -fx-stroke: -color-border-default;
+}
+
+.slider .axis .axis-minor-tick-mark {
+  -fx-stroke: -color-border-muted;
+}
+
+/* ============================================
+   SliderAnt 辅助元素样式
+   tipLabel / range 数字标签 / range 分隔符 / marksRow / markLabel
+   颜色与字号统一通过 LESS 控制，避免 Java 端拼 inline style
+   ============================================ */
+.jfx-slider-tip {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-slider-range-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-slider-range-separator {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-slider-marks {
+  -fx-padding: 4 0 0 0;
+}
+
+.jfx-slider-mark-label {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-muted;
+}
+
+/* 禁用状态：通过 styleClass 切换，不再 inline 拼 -fx-opacity */
+.jfx-slider.slider-disabled {
+  -fx-opacity: 0.5;
+}
+
+/* ============================================
+   CodeBlockAnt 完整状态机：
+   - 容器：浅灰背景、边框、圆角
+   - header：稍深的背景 + 顶部圆角，承载 title/lang/copyBtn
+   - title/lang/content：等宽字体显示代码
+   - copy 按钮：默认浅色背景，hover 变主题色 subtle
+   原 Java 端 7 处 inline setStyle 的视觉样式现已搬入此 section。
+   ============================================ */
+.jfx-codeblock {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.jfx-codeblock-header {
+  -fx-background-color: -color-border-muted;
+  -fx-padding: 8 12 8 12;
+  /* 头部仅保留顶部圆角，与容器圆角配合，底部为直角让上下两段视觉连续 */
+  -fx-background-radius: @border-radius-md @border-radius-md 0 0;
+}
+
+.jfx-codeblock-title {
+  -fx-font-weight: 600;
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-codeblock-lang {
+  -fx-font-size: @font-size-xs;
+  -fx-text-fill: -color-fg-muted;
+  /* 等宽字体让语言标识与代码内容视觉一致 */
+  -fx-font-family: "Consolas", "Monaco", monospace;
+}
+
+.jfx-codeblock-copy-btn {
+  -fx-font-size: @font-size-xs;
+  -fx-padding: 2 8 2 8;
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-cursor: hand;
+}
+
+.jfx-codeblock-copy-btn:hover {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-muted;
+}
+
+.jfx-codeblock-scroll {
+  -fx-background-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 12;
+}
+
+/* ScrollPane 的视口也需要透明，否则会盖住 codeblock 容器的浅灰背景 */
+.jfx-codeblock-scroll > .viewport {
+  -fx-background-color: transparent;
+}
+
+.jfx-codeblock-content {
+  -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-default;
+  -fx-wrap-text: true;
+}
+
+/* ============================================
+   Tier 1 简单组件 LESS 选择器
+   ============================================ */
+
+/* IconAnt：极简符号图标，颜色随主题切换 */
+.jfx-icon {
+  -fx-text-fill: -color-fg-default;
+}
+
+/* IconAnt SVG path 模式：用 -fx-background-color 给 Region 上色（配合 -fx-shape） */
+.jfx-icon-path {
+  -fx-background-color: -color-fg-default;
+}
+
+/* 主题色变体：用户挂额外 styleClass 即可切色 */
+.jfx-icon-path.icon-muted   { -fx-background-color: -color-fg-muted; }
+.jfx-icon-path.icon-accent  { -fx-background-color: -color-accent-emphasis; }
+.jfx-icon-path.icon-success { -fx-background-color: -color-success-emphasis; }
+.jfx-icon-path.icon-warning { -fx-background-color: -color-warning-emphasis; }
+.jfx-icon-path.icon-danger  { -fx-background-color: -color-danger-emphasis; }
+
+/* EmptyAnt：空状态 */
+.jfx-empty {
+  -fx-padding: 48;
+}
+
+.jfx-empty-icon {
+  -fx-fill: -color-fg-subtle;
+}
+
+.jfx-empty-description {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+}
+
+/* BackTopAnt：回到顶部圆形按钮，hover 时背景与阴影加深 */
+.jfx-back-top {
+  -fx-background-color: -color-bg-overlay;
+  -fx-background-radius: 9999;
+  -fx-border-radius: 9999;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-padding: 12;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
+}
+
+.jfx-back-top:hover {
+  -fx-background-color: -color-bg-subtle;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 3);
+}
+
+.jfx-back-top-arrow {
+  -fx-fill: -color-fg-default;
+}
+
+/* SpinAnt：加载中容器与 tip 文字 */
+.jfx-spin {
+  -fx-background-color: transparent;
+}
+
+/* fullscreen 模式：半透明白色背景遮罩 */
+.jfx-spin.spin-fullscreen {
+  -fx-background-color: rgba(255, 255, 255, 0.7);
+}
+
+.jfx-spin-tip {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+/* SpinAnt Indicator：三种加载动画样式 */
+/* Spinner：圆形旋转弧线（使用 border 模拟 Arc） */
+.jfx-spin-indicator-spinner {
+  -fx-border-color: -color-accent-emphasis transparent transparent transparent;
+  -fx-border-width: 3;
+  -fx-border-radius: 50%;
+  -fx-background-radius: 50%;
+}
+
+/* Dots：圆点（使用 border-radius: 50% 实现圆形） */
+.jfx-spin-indicator-dot {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-radius: 50%;
+}
+
+/* Bars：矩形条 */
+.jfx-spin-indicator-bar {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-radius: 2;
+}
+
+/* TimePickerAnt：时分秒分隔符与 spinner 编辑器 */
+.jfx-time-picker {
+  -fx-background-color: transparent;
+}
+
+.jfx-time-picker-separator {
+  -fx-font-size: @font-size-lg;
+  -fx-text-fill: -color-fg-muted;
+}
+
+/* spinner 编辑框：去除默认边框，仅保留底部一根线，对齐 Material 风格 */
+.jfx-time-picker-editor {
+  -fx-font-size: @font-size-md;
+  -fx-padding: 4 2 4 2;
+  -fx-pref-width: 40;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+/* ============================================
+   通用 Popup 菜单
+   DropdownAnt / AutoCompleteAnt / MentionsAnt 等浮层共用同一套视觉
+   ============================================ */
+.jfx-popup-menu {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-border-width: 1px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 4);
+  -fx-padding: 4 0 4 0;
+  -fx-min-width: 160;
+}
+
+.jfx-popup-menu-item {
+  -fx-padding: 8 12 8 12;
+  -fx-cursor: hand;
+  -fx-background-color: transparent;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-popup-menu-item:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.jfx-popup-menu-item-disabled {
+  -fx-cursor: default;
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.jfx-popup-menu-item-disabled:hover {
+  -fx-background-color: transparent;
+}
+
+.jfx-popup-menu-divider {
+  -fx-background-color: -color-border-default;
+  -fx-min-height: 1;
+  -fx-pref-height: 1;
+  -fx-padding: 0;
+}
+
+/* ============================================
+   Batch 1 Tier 2 组件
+   ============================================ */
+
+/* AnchorAnt 锚点导航 */
+.anchor {
+  -fx-padding: 8 12 8 0;
+}
+
+.anchor-link {
+  -fx-font-size: @font-size-md;
+  -fx-cursor: hand;
+  -fx-padding: 4 8 4 8;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.anchor-link:hover {
+  -fx-text-fill: -color-fg-default;
+}
+
+.anchor-link.anchor-link-active {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+  -fx-border-color: transparent transparent transparent -color-accent-emphasis;
+  -fx-border-width: 0 0 0 2px;
+}
+
+/* AutoCompleteAnt 输入框 */
+.jfx-auto-complete-field {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 8 12 8 12;
+}
+
+/* AutoCompleteAnt disabled */
+.jfx-auto-complete:disabled {
+  -fx-opacity: 0.6;
+}
+
+/* ImageAnt 容器：浅灰底用于占位/错误状态 */
+.jfx-image {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.jfx-image-fallback {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+/* ============================================
+   WatermarkAnt - 水印组件
+   ============================================ */
+
+/* 水印容器（StackPane 根节点）*/
+.jfx-watermark {
+  -fx-background-color: transparent;
+}
+
+/* 水印层（Pane，用于平铺水印节点）*/
+.jfx-watermark-layer {
+  -fx-background-color: transparent;
+}
+
+/* 文字水印（单行）*/
+.jfx-watermark-text {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-weight: normal;
+}
+
+/* 文字水印组（多行）*/
+.jfx-watermark-text-group {
+  -fx-background-color: transparent;
+}
+
+/* 图片水印 */
+.jfx-watermark-image {
+  -fx-opacity: 1.0;  /* 透明度由 Java 代码控制 */
+}
+
+/* MentionsAnt TextArea */
+.jfx-mentions-area {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 8 12 8 12;
+}
+
+/* StatisticAnt 统计数值 */
+.jfx-statistic-title {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-statistic.statistic-small .jfx-statistic-title { -fx-font-size: @font-size-sm; }
+.jfx-statistic.statistic-large .jfx-statistic-title { -fx-font-size: @font-size-lg; }
+
+.jfx-statistic-value {
+  -fx-font-size: 24px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-statistic.statistic-small .jfx-statistic-value { -fx-font-size: 20px; }
+.jfx-statistic.statistic-large .jfx-statistic-value { -fx-font-size: 36px; }
+
+.jfx-statistic-prefix,
+.jfx-statistic-suffix {
+  -fx-font-size: 20px;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-statistic.statistic-small .jfx-statistic-prefix,
+.jfx-statistic.statistic-small .jfx-statistic-suffix { -fx-font-size: 16px; }
+
+.jfx-statistic.statistic-large .jfx-statistic-prefix,
+.jfx-statistic.statistic-large .jfx-statistic-suffix { -fx-font-size: 32px; }
+
+/* ============================================
+   Batch 2 Tier 2/3：TypographyAnt / CollapseAnt / TreeSelectAnt /
+                     SegmentedAnt / InputNumberAnt / CarouselAnt
+   ============================================ */
+
+/* TypographyAnt */
+.typography-title {
+  -fx-text-fill: -color-fg-default;
+}
+
+.typography-paragraph {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.typography-text {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+/* Type 修饰类（Primary 已是默认） */
+.typography-text.typography-secondary { -fx-text-fill: -color-fg-muted; }
+.typography-text.typography-success   { -fx-text-fill: -color-success-emphasis; }
+.typography-text.typography-warning   { -fx-text-fill: -color-warning-emphasis; }
+.typography-text.typography-danger    { -fx-text-fill: -color-danger-emphasis; }
+.typography-text.typography-disabled  { -fx-text-fill: -color-fg-subtle; }
+
+/* 修饰行为：italic / underline / delete / mark / code，
+   通过 styleClass 切换 fontStyle/装饰，避免 inline 拼字符串 */
+.typography-text.typography-italic    { -fx-font-style: italic; }
+.typography-text.typography-underline { -fx-underline: true; }
+.typography-text.typography-delete    { -fx-strikethrough: true; }
+.typography-text.typography-copyable  { -fx-cursor: hand; }
+
+.typography-text.typography-mark {
+  -fx-background-color: -color-warning-subtle;
+  -fx-padding: 0 4 0 4;
+}
+
+.typography-text.typography-code {
+  -fx-font-family: "SFMono-Regular", "Consolas", monospace;
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: 2 6 2 6;
+  -fx-background-radius: @border-radius-sm;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-sm;
+}
+
+/* CollapseAnt */
+.collapse {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+}
+
+.collapse-panel {
+  -fx-background-color: transparent;
+}
+
+.collapse-header {
+  -fx-padding: 12 16 12 16;
+  -fx-cursor: hand;
+}
+
+.collapse-header.collapse-disabled {
+  -fx-cursor: default;
+}
+
+.collapse-header-label {
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 500;
+  -fx-text-fill: -color-fg-default;
+}
+
+.collapse-header.collapse-disabled .collapse-header-label {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.collapse-arrow {
+  -fx-stroke: -color-fg-muted;
+  -fx-stroke-width: 2;
+  -fx-fill: none;
+}
+
+.collapse-content {
+  -fx-background-color: -color-bg-default;
+  -fx-padding: 0 16 16 40;
+}
+
+.collapse-divider {
+  -fx-background-color: -color-border-default;
+  -fx-min-height: 1;
+  -fx-pref-height: 1;
+}
+
+/* TreeSelectAnt */
+.tree-select {
+  -fx-background-color: transparent;
+}
+
+.tree-select:disabled {
+  -fx-opacity: 0.6;
+}
+
+.tree-select-field {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 8 32 8 12;
+}
+
+.tree-select-row {
+  -fx-cursor: hand;
+  -fx-background-color: transparent;
+  -fx-padding: 6 12 6 12;
+}
+
+.tree-select-row:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.tree-select-row.tree-select-disabled {
+  -fx-cursor: default;
+}
+
+.tree-select-arrow {
+  -fx-font-size: 8px;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.tree-select-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+}
+
+.tree-select-row.tree-select-disabled .tree-select-label {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+/* SegmentedAnt */
+.segmented {
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: 2;
+  -fx-background-radius: @border-radius-md;
+}
+
+.segmented.segmented-disabled {
+  -fx-opacity: 0.6;
+}
+
+.segmented-item {
+  -fx-background-color: transparent;
+  -fx-background-radius: @border-radius-sm;
+  -fx-cursor: hand;
+}
+
+.segmented-item:hover {
+  -fx-background-color: -color-bg-overlay;
+}
+
+.segmented-item.segmented-item-selected {
+  -fx-background-color: -color-bg-default;
+}
+
+.segmented-item.segmented-item-selected:hover {
+  -fx-background-color: -color-bg-default;
+}
+
+.segmented-item-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.segmented-item.segmented-item-selected .segmented-item-label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: 500;
+}
+
+/* SegmentedAnt 尺寸 */
+.segmented.segmented-small .segmented-item-label  { -fx-font-size: @font-size-sm; }
+.segmented.segmented-large .segmented-item-label  { -fx-font-size: @font-size-lg; }
+
+/* InputNumberAnt */
+.input-number {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.input-number.input-number-disabled {
+  -fx-opacity: 0.6;
+}
+
+.input-number-prefix,
+.input-number-suffix {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.input-number-prefix { -fx-padding: 0 4 0 8; }
+.input-number-suffix { -fx-padding: 0 8 0 4; }
+
+.input-number-field {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 8 4 8 4;
+}
+
+.input-number-btn {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-cursor: hand;
+  -fx-padding: 4;
+}
+
+.input-number-btn:hover,
+.input-number-btn:armed,
+.input-number-btn:pressed {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.input-number-arrow {
+  -fx-stroke: -color-fg-muted;
+  -fx-stroke-width: 1.5;
+  -fx-fill: none;
+}
+
+/* CarouselAnt */
+.carousel {
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: @border-radius-md;
+}
+
+.carousel-content {
+  -fx-background-radius: @border-radius-md;
+}
+
+/* 箭头按钮：Ant 风格圆形浮层（半透明黑底 + 白字 + 阴影 + hover 加深）
+   注意：用 .button.carousel-arrow-btn 复合选择器提优先级，
+   否则会被 .button / .button:hover / .button:armed 等通用规则覆盖 */
+.button.carousel-arrow-btn {
+  -fx-background-color: rgba(0, 0, 0, 0.4);
+  -fx-background-radius: 9999;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-border-radius: 9999;
+  -fx-min-width: 40;
+  -fx-min-height: 40;
+  -fx-pref-width: 40;
+  -fx-pref-height: 40;
+  -fx-max-width: 40;
+  -fx-max-height: 40;
+  -fx-text-fill: white;
+  -fx-font-size: 16;
+  -fx-font-weight: 700;
+  -fx-padding: 0;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 6, 0, 0, 2);
+}
+
+.button.carousel-arrow-btn:hover {
+  -fx-background-color: rgba(0, 0, 0, 0.6);
+  -fx-border-color: transparent;
+  -fx-text-fill: white;
+}
+
+.button.carousel-arrow-btn:armed,
+.button.carousel-arrow-btn:pressed {
+  -fx-background-color: rgba(0, 0, 0, 0.75);
+  -fx-border-color: transparent;
+  -fx-text-fill: white;
+}
+
+/* dots 容器：透明背景，仅做布局；干净浮在 slide 之上不喧宾夺主（Ant Design 风格） */
+.carousel-dots {
+  -fx-padding: 0;
+  -fx-background-color: transparent;
+  -fx-spacing: 8;
+}
+
+/* dot 用 styleClass 切换 fill；尺寸由 Java 端 setRadius 控制 */
+.carousel-dot {
+  -fx-fill: rgba(255, 255, 255, 0.55);
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 4, 0, 0, 1);
+}
+
+.carousel-dot.carousel-dot-active {
+  -fx-fill: white;
+}
+
+/* ============================================
+   Batch 3 Tier 3：DrawerAnt / ModalAnt / CascaderAnt /
+                   TimelineAnt / TransferAnt
+   ============================================ */
+
+/* 通用 overlay 遮罩层（Drawer / Modal 共用） */
+.jfx-overlay-mask {
+  -fx-background-color: rgba(0, 0, 0, 0.45);
+}
+
+/* 通用面板"圆角 + 阴影 + 背景"（Drawer 与 Modal 主体复用） */
+.jfx-overlay-panel {
+  -fx-background-color: -color-bg-overlay;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 16, 0, 0, 4);
+}
+
+.jfx-overlay-panel.jfx-overlay-panel-rounded {
+  -fx-background-radius: @border-radius-lg;
+  -fx-border-radius: @border-radius-lg;
+}
+
+/* overlay 标题区（顶部边框 + 标题 + 关闭按钮） */
+.jfx-overlay-header {
+  -fx-padding: 16 24 16 24;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+.jfx-overlay-title {
+  -fx-font-size: @font-size-lg;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-overlay-close-btn {
+  /* 清除 JavaFX modena 默认按钮的层叠背景/边框/圆角，让 × 只显示纯文字符号 */
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: @border-radius-sm;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 18px;
+  /* 留出 hover 圆形背景的余地，但内边距不要太大避免视觉撑开 */
+  -fx-padding: 2 6 2 6;
+  -fx-min-width: 28;
+  -fx-min-height: 28;
+  -fx-cursor: hand;
+  /* 显式去掉默认 focus 描边，避免聚焦时弹出蓝框 */
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+/* hover 时才显浅色圆形背景，对齐 Ant Design Modal/Drawer × 的微交互 */
+.jfx-overlay-close-btn:hover {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-overlay-close-btn:armed,
+.jfx-overlay-close-btn:pressed {
+  -fx-background-color: -color-border-muted;
+}
+
+/* overlay 内容区与底部 */
+.jfx-overlay-body {
+  -fx-padding: 24;
+}
+
+.jfx-overlay-footer {
+  -fx-padding: 16 24 16 24;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1 0 0 0;
+}
+
+/* CascaderAnt */
+.cascader {
+  -fx-background-color: transparent;
+}
+
+.cascader:disabled {
+  -fx-opacity: 0.6;
+}
+
+.cascader-field {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 8 12 8 12;
+}
+
+.cascader-column {
+  -fx-min-width: 160;
+  -fx-padding: 4 0 4 0;
+}
+
+.cascader-item {
+  -fx-padding: 8 12 8 12;
+  -fx-background-color: transparent;
+  -fx-cursor: hand;
+}
+
+.cascader-item:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.cascader-item.cascader-item-disabled {
+  -fx-cursor: default;
+}
+
+.cascader-item.cascader-item-disabled:hover {
+  -fx-background-color: transparent;
+}
+
+.cascader-item-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+}
+
+.cascader-item.cascader-item-disabled .cascader-item-label {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.cascader-arrow {
+  -fx-stroke: -color-fg-muted;
+  -fx-stroke-width: 1.5;
+  -fx-fill: none;
+}
+
+.cascader-divider {
+  -fx-background-color: -color-border-default;
+  -fx-min-width: 1;
+  -fx-pref-width: 1;
+}
+
+/* TimelineAnt */
+.timeline {
+  -fx-padding: 16;
+}
+
+.timeline-item {
+  -fx-padding: 0 0 16 0;
+}
+
+.timeline-label {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-sm;
+}
+
+.timeline-content {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.timeline-line {
+  -fx-stroke: -color-border-muted;
+  -fx-stroke-width: 2;
+}
+
+/* dot 颜色：基础类 + 颜色修饰类，避免 Java 拼字符串 */
+.timeline-dot {
+  -fx-fill: -color-accent-emphasis;
+}
+
+.timeline-dot.timeline-dot-blue   { -fx-fill: -color-accent-emphasis; }
+.timeline-dot.timeline-dot-red    { -fx-fill: -color-danger-emphasis; }
+.timeline-dot.timeline-dot-green  { -fx-fill: -color-success-emphasis; }
+.timeline-dot.timeline-dot-gray   { -fx-fill: -color-fg-muted; }
+
+/* pending 状态：空心圆 */
+.timeline-dot.timeline-dot-pending {
+  -fx-fill: transparent;
+  -fx-stroke: -color-border-default;
+  -fx-stroke-width: 2;
+}
+
+.timeline-pending-text {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+}
+
+/* TransferAnt */
+.transfer {
+  -fx-background-color: transparent;
+}
+
+.transfer-list {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.transfer-list-header {
+  -fx-padding: 8 12 8 12;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+.transfer-list-title {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 500;
+}
+
+.transfer-list-count {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-sm;
+}
+
+.transfer-list-search-wrapper {
+  -fx-padding: 8 12 8 12;
+}
+
+.transfer-list-search {
+  -fx-padding: 4 8 4 8;
+  -fx-font-size: @font-size-sm;
+}
+
+.transfer-list-view {
+  -fx-background-color: transparent;
+  -fx-border-width: 0;
+}
+
+/* Transfer 中间方向按钮（hover 变主题色） */
+.transfer-arrow-btn {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-min-width: 32;
+  -fx-min-height: 32;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: bold;
+  -fx-cursor: hand;
+}
+
+.transfer-arrow-btn:hover {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* ============================================
+   Batch 4 Tier 3/4：ListAnt / MenuAnt / UploadAnt /
+                     StepsAnt / BreadcrumbAnt
+   ============================================ */
+
+/* ListAnt */
+.list {
+  -fx-background-color: -color-bg-default;
+}
+
+.list.list-bordered {
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.list.list-loading {
+  -fx-opacity: 0.6;
+}
+
+.list-header {
+  -fx-font-size: @font-size-lg;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 12 24 12 24;
+}
+
+.list-footer {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+  -fx-padding: 12 24 12 24;
+}
+
+.list-item {
+  -fx-background-color: transparent;
+  -fx-padding: 12 24 12 24;
+}
+
+.list-item.list-item-clickable {
+  -fx-cursor: hand;
+}
+
+.list-item.list-item-clickable:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.list-item-title {
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 500;
+  -fx-text-fill: -color-fg-default;
+}
+
+.list-item-description {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.list-divider {
+  -fx-background-color: -color-border-default;
+  -fx-min-height: 1;
+  -fx-pref-height: 1;
+}
+
+/* MenuAnt */
+.menu {
+  -fx-background-color: -color-bg-default;
+}
+
+/* INLINE 模式：默认竖向，右侧给一条边框线（admin 侧栏典型） */
+.menu.menu-inline {
+  -fx-border-color: transparent -color-border-default transparent transparent;
+  -fx-border-width: 0 1 0 0;
+}
+
+/* HORIZONTAL 模式：横向顶导航，底部给一条边框线 */
+.menu.menu-horizontal {
+  -fx-border-color: transparent transparent -color-border-default transparent;
+  -fx-border-width: 0 0 1 0;
+  -fx-background-color: -color-bg-default;
+}
+
+.menu-item {
+  -fx-background-color: transparent;
+  -fx-cursor: hand;
+}
+
+.menu-item:hover {
+  -fx-background-color: -color-accent-subtle;
+}
+
+/* 选中态：背景 + 文字主题色。INLINE 时再加左侧 3px 主题色竖线，HORIZONTAL 加底部 3px 横线 */
+.menu-inline .menu-item-selected,
+.menu-inline .menu-submenu-header.menu-item-selected {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-emphasis transparent transparent transparent;
+  -fx-border-width: 0 0 0 3;
+}
+
+.menu-inline .menu-item-selected .menu-item-label {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+}
+
+.menu-horizontal .menu-item-selected,
+.menu-horizontal .menu-submenu-header.menu-item-selected {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent -color-accent-emphasis transparent;
+  -fx-border-width: 0 0 3 0;
+}
+
+.menu-horizontal .menu-item-selected .menu-item-label {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+}
+
+/* HORIZONTAL 顶级 item hover 视觉：底部细线，仿 Ant Design horizontal Menu */
+.menu-horizontal .menu-item:hover,
+.menu-horizontal .menu-submenu-header:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent -color-accent-muted transparent;
+  -fx-border-width: 0 0 3 0;
+}
+
+.menu-item-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+}
+
+.menu-submenu-header {
+  -fx-background-color: transparent;
+  -fx-cursor: hand;
+}
+
+.menu-submenu-header:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.menu-submenu-body {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.menu-submenu-arrow {
+  -fx-fill: -color-fg-muted;
+}
+
+.menu-submenu-arrow-box {
+  -fx-padding: 0 0 0 8;
+}
+
+.menu-group-label {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-weight: 600;
+}
+
+.menu-divider {
+  -fx-background-color: -color-border-muted;
+  -fx-min-height: 1;
+  -fx-pref-height: 1;
+  -fx-max-height: 1;
+}
+
+/* M14.3 DARK 主题：深色侧栏（admin 经典暗色风格） */
+.menu.menu-dark {
+  -fx-background-color: #001529;        /* Ant Design 默认侧栏深色 */
+  -fx-border-color: transparent;
+}
+
+.menu-dark .menu-item-label,
+.menu-dark .menu-submenu-header .menu-item-label {
+  -fx-text-fill: rgba(255, 255, 255, 0.85);
+}
+
+.menu-dark .menu-item:hover,
+.menu-dark .menu-submenu-header:hover {
+  -fx-background-color: rgba(255, 255, 255, 0.08);
+}
+
+.menu-dark .menu-item-selected,
+.menu-dark .menu-submenu-header.menu-item-selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: transparent;
+}
+
+.menu-dark .menu-item-selected .menu-item-label,
+.menu-dark .menu-submenu-header.menu-item-selected .menu-item-label {
+  -fx-text-fill: white;
+  -fx-font-weight: 600;
+}
+
+.menu-dark .menu-submenu-body {
+  -fx-background-color: #000c17;        /* 比 menu 更深一档 */
+}
+
+.menu-dark .menu-submenu-arrow {
+  -fx-fill: rgba(255, 255, 255, 0.65);
+}
+
+.menu-dark .menu-group-label {
+  -fx-text-fill: rgba(255, 255, 255, 0.45);
+}
+
+.menu-dark .menu-divider {
+  -fx-background-color: rgba(255, 255, 255, 0.12);
+}
+
+.menu-dark .jfx-icon-path {
+  -fx-background-color: rgba(255, 255, 255, 0.85);
+}
+
+.menu-dark .menu-item-selected .jfx-icon-path {
+  -fx-background-color: white;
+}
+
+/* M14.4 折叠模式（仅 INLINE 有效）：宽度收窄，仅显示图标 */
+.menu.menu-collapsed {
+  -fx-pref-width: 64;
+  -fx-min-width: 64;
+  -fx-max-width: 64;
+}
+
+.menu-collapsed .menu-item,
+.menu-collapsed .menu-submenu-header {
+  -fx-padding: 0;
+}
+
+/* 折叠 + 选中态：左侧主题色竖线（保留 INLINE 视觉）*/
+.menu-collapsed .menu-item-selected,
+.menu-collapsed .menu-submenu-header.menu-item-selected {
+  -fx-border-color: -color-accent-emphasis transparent transparent transparent;
+  -fx-border-width: 0 0 0 3;
+}
+
+/* UploadAnt */
+.upload {
+  -fx-background-color: transparent;
+}
+
+.upload-drag {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-style: dashed;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: 32;
+  -fx-min-height: 180;
+  -fx-cursor: hand;
+}
+
+/* drag 激活态：拖拽进入时切换主题色边框 */
+.upload-drag.upload-drag-active {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 2px;
+}
+
+.upload-drag-icon {
+  -fx-fill: -color-accent-emphasis;
+}
+
+.upload-drag-text {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-lg;
+}
+
+.upload-hint-text {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-sm;
+}
+
+.upload-list {
+  -fx-padding: 8 0 8 0;
+  -fx-background-color: transparent;
+}
+
+.upload-file-item {
+  -fx-padding: 8;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.upload-file-name {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.upload-file-error {
+  -fx-text-fill: -color-danger-emphasis;
+  -fx-font-size: @font-size-sm;
+}
+
+.upload-remove-btn {
+  -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-lg;
+  -fx-cursor: hand;
+}
+
+.upload-remove-btn:hover {
+  -fx-text-fill: -color-fg-default;
+}
+
+/* StepsAnt */
+.steps {
+  -fx-padding: 16 0 16 0;
+}
+
+.steps-vertical {
+  -fx-padding: 16;
+}
+
+.steps-item {
+  -fx-padding: 8 0 8 0;
+}
+
+/* steps 圆圈 + 数字 + 标题 + 描述 + 连线，状态用修饰类切换 */
+.steps-circle {
+  -fx-fill: -color-bg-default;
+  -fx-stroke: -color-border-default;
+  -fx-stroke-width: 1px;
+}
+
+.steps-circle.steps-finished {
+  -fx-fill: -color-accent-emphasis;
+  -fx-stroke: -color-accent-emphasis;
+}
+
+.steps-circle.steps-current {
+  -fx-stroke: -color-accent-emphasis;
+}
+
+.steps-number {
+  -fx-text-fill: -color-fg-subtle;
+  -fx-font-weight: 600;
+}
+
+.steps-number.steps-finished {
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.steps-number.steps-current {
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.steps-title {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: 400;
+}
+
+.steps-title.steps-current {
+  -fx-font-weight: 600;
+}
+
+.steps-title.steps-wait {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.steps-description {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-sm;
+}
+
+.steps-line {
+  -fx-stroke: -color-border-muted;
+  -fx-stroke-width: 1px;
+}
+
+.steps-line.steps-finished {
+  -fx-stroke: -color-accent-emphasis;
+}
+
+/* BreadcrumbAnt */
+.breadcrumb {
+  -fx-padding: 8 0 8 0;
+}
+
+.breadcrumb-item {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 0 4 0 4;
+}
+
+/* 最后一项：高亮显示当前位置 */
+.breadcrumb-item.breadcrumb-last {
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 0;
+}
+
+.breadcrumb-link {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 0 4 0 4;
+  -fx-border-color: transparent;
+}
+
+.breadcrumb-link:hover {
+  -fx-text-fill: -color-fg-default;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.breadcrumb-separator {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 0 4 0 4;
+}
+
+/* ============================================
+   Batch 5 Tier 4：DescriptionsAnt / CalendarAnt
+   ============================================ */
+
+/* DescriptionsAnt */
+.descriptions {
+  -fx-background-color: transparent;
+}
+
+.descriptions-title {
+  -fx-font-size: @font-size-lg;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 0 0 16 0;
+}
+
+.descriptions-label {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 8 16 8 16;
+  -fx-font-weight: 400;
+}
+
+.descriptions-content {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 8 16 8 16;
+  -fx-font-weight: 500;
+}
+
+/* 尺寸修饰类切换字号与 padding */
+.descriptions.descriptions-small .descriptions-label,
+.descriptions.descriptions-small .descriptions-content {
+  -fx-font-size: @font-size-xs;
+  -fx-padding: 4 8 4 8;
+}
+
+.descriptions.descriptions-middle .descriptions-label,
+.descriptions.descriptions-middle .descriptions-content {
+  -fx-font-size: @font-size-sm;
+  -fx-padding: 8 12 8 12;
+}
+
+.descriptions.descriptions-large .descriptions-label,
+.descriptions.descriptions-large .descriptions-content {
+  -fx-font-size: @font-size-lg;
+  -fx-padding: 16 24 16 24;
+}
+
+/* bordered 模式：每个 label/content 都有 1px 边框 */
+.descriptions.descriptions-bordered .descriptions-label,
+.descriptions.descriptions-bordered .descriptions-content {
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+}
+
+/* CalendarAnt */
+.calendar {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.calendar-header {
+  -fx-padding: 12 16 12 16;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+.calendar-header-label {
+  -fx-font-size: @font-size-lg;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+/* 导航按钮（上一月/下一月），hover 浅色背景 */
+.calendar-nav-btn {
+  -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 4 12 4 12;
+  -fx-cursor: hand;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.calendar-nav-btn:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.calendar-grid {
+  -fx-padding: 8;
+}
+
+.calendar-day-header {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-sm;
+  -fx-font-weight: 500;
+  -fx-padding: 8 4 8 4;
+  -fx-alignment: center;
+}
+
+/* 日期单元格：默认透明，hover 浅色，selected 主题色，today 主题色 subtle */
+.calendar-cell {
+  -fx-background-color: transparent;
+  -fx-background-radius: @border-radius-sm;
+  -fx-cursor: hand;
+}
+
+.calendar-cell:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.calendar-cell.calendar-cell-today {
+  -fx-background-color: -color-accent-subtle;
+}
+
+.calendar-cell.calendar-cell-today:hover {
+  -fx-background-color: -color-accent-subtle;
+}
+
+.calendar-cell.calendar-cell-selected,
+.calendar-cell.calendar-cell-selected:hover {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* 日期文本颜色：默认前景色，selected 反白，today 主题色，other-month 模糊色 */
+.calendar-day-label {
+  -fx-font-size: @font-size-md;
+  -fx-padding: 4;
+  -fx-text-fill: -color-fg-default;
+}
+
+.calendar-cell.calendar-cell-other-month .calendar-day-label {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.calendar-cell.calendar-cell-today .calendar-day-label {
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.calendar-cell.calendar-cell-selected .calendar-day-label {
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* Year View */
+.calendar-year-view {
+  -fx-padding: 16;
+}
+
+.calendar-month-btn {
+  -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-default;
+  -fx-background-radius: @border-radius-sm;
+  -fx-font-size: @font-size-md;
+  -fx-cursor: hand;
+}
+
+.calendar-month-btn:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.calendar-month-btn.calendar-month-btn-current,
+.calendar-month-btn.calendar-month-btn-current:hover {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* ============================================
+   ProgressBar Sizes
+   ============================================ */
+.progress-bar.small {
+  -fx-pref-height: 4px;
+}
+
+.progress-bar.large {
+  -fx-pref-height: 12px;
+}
+
+/* ============================================
+   Form Layout Helpers
+   ============================================ */
+.form-label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 500;
+}
+
+.form-label-required::after {
+  -fx-content: " *";
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.form-help-text {
+  -fx-text-fill: -color-fg-subtle;
+  -fx-font-size: @font-size-sm;
+}
+
+/* 校验状态色：通过修饰类切换 helpText 颜色，避免在 Java 端拼 inline style */
+.form-help-text.form-help-error {
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.form-help-text.form-help-warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.form-help-text.form-help-success {
+  -fx-text-fill: -color-success-emphasis;
+}
+
+/* Form footer：padding 通过 LESS 控制，对齐"组件不在 Java 注入样式"原则 */
+.form-footer {
+  -fx-padding: 16 0 0 0;
+}
+
+/* Form 尺寸调节：仅控制字号与控件最小高度，间距由 Java 侧 VBox.spacing 负责 */
+.form-size-small {
+  -fx-font-size: @font-size-sm;
+}
+
+.form-size-large {
+  -fx-font-size: @font-size-lg;
+}
+
+/* ============================================
+   Layout Primitive 命名空间挂载点
+   FlexAnt / GridAnt / SpaceAnt / DividerAnt 的 styleClass。
+   当前仅作为外部主题/扩展的样式锚点，本基础主题不为它们注入特殊样式，
+   保持"布局原语保持原生 JavaFX 行为"的原则。
+   ============================================ */
+.flex,
+.flex-horizontal,
+.flex-vertical,
+.flex-wrap {
+  -fx-background-color: transparent;
+}
+
+.grid,
+.grid-row,
+.grid-col {
+  -fx-background-color: transparent;
+}
+
+.space,
+.space-horizontal,
+.space-vertical {
+  -fx-background-color: transparent;
+}
+
+/* DividerAnt 文本与线条样式 */
+.divider {
+  -fx-background-color: transparent;
+}
+
+.divider-text {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 0 12 0 12;
+}
+
+.divider-line {
+  /* 让带文本的 Divider 中线段保持与单独 Separator 一致的视觉粗细 */
+  -fx-pref-height: 1px;
+}
+
+/* ============================================
+   Modal / Dialog Backdrop
+   ============================================ */
+.modal-overlay {
+  -fx-background-color: rgba(0, 0, 0, 0.45);
+}
+
+.modal-content {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+  -fx-background-radius: @border-radius-lg;
+  -fx-padding: @dialog-padding;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 16, 0, 0, 4);
+}
+
+.modal-header {
+  -fx-padding: 0 0 @modal-header-padding-bottom 0;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+.modal-footer {
+  -fx-padding: @modal-footer-padding-top 0 0 0;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+}
+
+/* ============================================
+   Card Hover Effect
+   ============================================ */
+.card.hoverable:hover {
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 12, 0, 0, 3);
+  -fx-translate-y: -2px;
+}
+
+/* ============================================
+   Input Sizes
+   ============================================ */
+.text-field.small {
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.text-field.large {
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* ============================================
+   TextArea Sizes
+   ============================================ */
+.text-area.small {
+  -fx-font-size: @font-size-sm;
+}
+
+.text-area.large {
+  -fx-font-size: @font-size-lg;
+}
+
+/* ============================================
+   Disabled State Global
+   ============================================ */
+*:disabled {
+  -fx-opacity: 0.6;
+}
+
+/* ============================================
+   MenuButton Component（M19.6 修复 — 对齐 AtlantaFX _menu-button.scss）
+   关键：padding=0 在 .menu-button 自身，padding 下放到 > .label 和 > .arrow-button
+   ============================================ */
+.menu-button {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: 0;
+  -fx-alignment: CENTER_LEFT;
+  -fx-cursor: hand;
+}
+
+.menu-button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+}
+
+.menu-button:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+}
+
+.menu-button > .label {
+  -fx-padding: @btn-padding-y @btn-padding-x @btn-padding-y @btn-padding-x;
+  -fx-text-fill: -color-fg-default;
+}
+
+.menu-button:hover > .label {
+  -fx-text-fill: -color-fg-default;
+}
+
+.menu-button > .arrow-button {
+  /* 上下 padding 与 label 一致；水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），
+     避免箭头区过宽显得不协调 */
+  -fx-padding: @btn-padding-y @spacing-sm @btn-padding-y 0;
+  -fx-background-color: transparent;
+}
+
+.menu-button > .arrow-button > .arrow {
+  /* 默认 Ant Design chevron 样式（细 V 形描边） */
+  -fx-shape: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z";
+  -fx-min-width: 10px;
+  -fx-min-height: 6px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 6px;
+  -fx-background-color: -color-fg-muted;
+}
+
+.menu-button:hover > .arrow-button > .arrow {
+  -fx-background-color: -color-fg-default;
+}
+
+/* MenuButton 箭头样式变体（M19.6.1） */
+.menu-button.arrow-triangle > .arrow-button > .arrow {
+  -fx-shape: "M7 10l5 5 5-5z";
+  -fx-min-width: 8px;
+  -fx-min-height: 8px;
+  -fx-pref-width: 8px;
+  -fx-pref-height: 8px;
+}
+
+/* 关闭箭头（对齐 AtlantaFX `&.no-arrow`） */
+.menu-button.no-arrow > .arrow-button {
+  -fx-padding: 0;
+}
+
+.menu-button.no-arrow > .arrow-button > .arrow {
+  -fx-shape: null;
+  -fx-min-width: 0;
+  -fx-min-height: 0;
+  -fx-pref-width: 0;
+  -fx-pref-height: 0;
+  -fx-background-color: transparent;
+}
+
+/* MenuButton Popup */
+.menu-button .menu-item {
+  -fx-padding: @menu-item-padding-y @menu-item-padding-x;
+}
+
+.menu-button .menu-item:hover,
+.menu-button .menu-item:focused {
+  -fx-background-color: -color-accent-subtle;
+}
+
+.menu-button .menu-item .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+/* ============================================
+   SplitMenuButton Component（M19.6 修复 — 对齐 AtlantaFX）
+   关键：padding=0 在容器；左 .label 拿水平 padding；右 .arrow-button 拿水平 padding；
+        左右两块自身有视觉区分（中间分隔线）
+   ============================================ */
+.split-menu-button {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: 0;
+  -fx-cursor: hand;
+}
+
+.split-menu-button > .label {
+  -fx-padding: @btn-padding-y @btn-padding-x @btn-padding-y @btn-padding-x;
+  -fx-background-color: -color-bg-default;
+  -fx-text-fill: -color-fg-default;
+}
+
+.split-menu-button > .label:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.split-menu-button > .label:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.split-menu-button > .arrow-button {
+  /* 水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），避免箭头区过宽 */
+  -fx-padding: @btn-padding-y @spacing-sm @btn-padding-y @spacing-sm;
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1px;
+}
+
+.split-menu-button > .arrow-button:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.split-menu-button > .arrow-button:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.split-menu-button > .arrow-button > .arrow {
+  /* 默认 Ant Design chevron 样式（细 V 形描边） */
+  -fx-shape: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z";
+  -fx-min-width: 10px;
+  -fx-min-height: 6px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 6px;
+  -fx-background-color: -color-fg-muted;
+}
+
+.split-menu-button:hover > .arrow-button > .arrow {
+  -fx-background-color: -color-fg-default;
+}
+
+/* SplitMenuButton 箭头样式变体（M19.6.1） */
+.split-menu-button.arrow-triangle > .arrow-button > .arrow {
+  -fx-shape: "M7 10l5 5 5-5z";
+  -fx-min-width: 8px;
+  -fx-min-height: 8px;
+  -fx-pref-width: 8px;
+  -fx-pref-height: 8px;
+}
+
+/* ============================================
+   ToggleButton Component (M19.6 — 通用 .toggle-button 视觉)
+   注：.toggle-button.switch 的 Switch 样式已在前面单独定义；
+       这里是"独立切换按钮"通用视觉，不会污染 Switch（CSS 后定义优先级在 Switch 那块就近覆盖）
+   ============================================ */
+.toggle-button {
+  .button-base();
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-text-fill: -color-fg-default;
+  -fx-cursor: hand;
+}
+
+.toggle-button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+}
+
+.toggle-button:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+}
+
+.toggle-button:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.toggle-button:selected:hover {
+  -fx-background-color: -color-accent-4;
+}
+
+.toggle-button:selected:armed {
+  -fx-background-color: -color-accent-6;
+}
+
+.toggle-button:disabled {
+  -fx-opacity: 0.4;
+  -fx-cursor: default;
+}
+
+/* ToggleButton sizes — 与 .button.small/.large 保持一致 */
+.toggle-button.small {
+  -fx-padding: @btn-padding-y-sm @btn-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.toggle-button.large {
+  -fx-padding: @btn-padding-y-lg @btn-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* MenuButton sizes — padding 下放到 .label 和 .arrow-button（M19.6） */
+.menu-button.small > .label {
+  -fx-padding: @btn-padding-y-sm @btn-padding-x-sm @btn-padding-y-sm @btn-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.menu-button.small > .arrow-button {
+  /* 水平 padding 减半，对齐 AtlantaFX */
+  -fx-padding: @btn-padding-y-sm @spacing-xs @btn-padding-y-sm 0;
+}
+
+.menu-button.large > .label {
+  -fx-padding: @btn-padding-y-lg @btn-padding-x-lg @btn-padding-y-lg @btn-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+.menu-button.large > .arrow-button {
+  -fx-padding: @btn-padding-y-lg @spacing-md @btn-padding-y-lg 0;
+}
+
+/* SplitMenuButton sizes — padding 下放到 .label 和 .arrow-button（M19.6） */
+.split-menu-button.small > .label {
+  -fx-padding: @btn-padding-y-sm @btn-padding-x-sm @btn-padding-y-sm @btn-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.split-menu-button.small > .arrow-button {
+  /* 水平 padding 减半，对齐 AtlantaFX */
+  -fx-padding: @btn-padding-y-sm @spacing-xs @btn-padding-y-sm @spacing-xs;
+}
+
+.split-menu-button.large > .label {
+  -fx-padding: @btn-padding-y-lg @btn-padding-x-lg @btn-padding-y-lg @btn-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+.split-menu-button.large > .arrow-button {
+  -fx-padding: @btn-padding-y-lg @spacing-md @btn-padding-y-lg @spacing-md;
+}
+
+/* ============================================
+   PasswordField Component
+   ============================================ */
+.password-field {
+  .input-base();
+  
+}
+
+.password-field:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.password-field:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.password-field.small {
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.password-field.large {
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* ============================================
+   TreeTableView Component
+   ============================================ */
+.tree-table-view {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+  -fx-background-radius: @border-radius-lg;
+}
+
+.tree-table-view .column-header {
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: @table-header-padding-y @table-header-padding-x;
+  -fx-font-weight: 600;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+  -fx-alignment: center-left;
+}
+
+.tree-table-view .column-header .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: 600;
+}
+
+.tree-table-row-cell {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent -color-border-subtle transparent;
+  -fx-border-width: 0 0 1px 0;
+  
+}
+
+.tree-table-row-cell:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.tree-table-row-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.tree-table-row-cell:selected {
+  -fx-background-color: -color-cell-bg-selected;
+}
+
+.tree-table-row-cell:selected .tree-table-cell {
+  -fx-text-fill: -color-cell-fg-selected;
+}
+
+/* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，
+   背景在 subtle(accent-0) 基础上加深一档到 muted(accent-2)，
+   给用户"选中后还能继续交互"的反馈 */
+.tree-table-row-cell:selected:hover {
+  -fx-background-color: -color-accent-muted;
+}
+
+.tree-table-cell {
+  -fx-padding: @table-cell-padding-y @table-cell-padding-x;
+  -fx-text-fill: -color-fg-default;
+}
+
+.tree-table-view .tree-disclosure-node .arrow {
+  -fx-background-color: -color-fg-muted;
+  
+}
+
+.tree-table-view .tree-disclosure-node:hover .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* TreeTableView Striped */
+.tree-table-view.striped .tree-table-row-cell:odd {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.tree-table-view.striped .tree-table-row-cell:even {
+  -fx-background-color: -color-bg-default;
+}
+
+/* TreeTableView Bordered */
+.tree-table-view.bordered .tree-table-cell {
+  -fx-border-color: transparent -color-border-muted -color-border-muted transparent;
+  -fx-border-width: 0 1px 1px 0;
+}
+
+/* ============================================
+   Button Color Variants (Success/Danger/Warning)
+   ============================================ */
+.button.success {
+  -fx-background-color: -color-success-emphasis;
+  -fx-border-color: -color-success-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.success:hover {
+  -fx-background-color: -color-success-hover;
+  -fx-border-color: -color-success-muted;
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.button.success:armed,
+.button.success:pressed {
+  -fx-background-color: -color-success-active;
+  -fx-border-color: -color-success-active;
+}
+
+.button.danger {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-border-color: -color-danger-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.danger:hover {
+  -fx-background-color: -color-danger-hover;
+  -fx-border-color: -color-danger-muted;
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.button.danger:armed,
+.button.danger:pressed {
+  -fx-background-color: -color-danger-active;
+  -fx-border-color: -color-danger-active;
+}
+
+.button.warning {
+  -fx-background-color: -color-warning-emphasis;
+  -fx-border-color: -color-warning-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.warning:hover {
+  -fx-background-color: -color-warning-hover;
+  -fx-border-color: -color-warning-muted;
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.button.warning:armed,
+.button.warning:pressed {
+  -fx-background-color: -color-warning-active;
+  -fx-border-color: -color-warning-active;
+}
+
+/* Outlined variants */
+.button.outlined.success {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-success-emphasis;
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.button.outlined.success:hover {
+  -fx-background-color: -color-success-hover;
+  -fx-border-color: -color-success-muted;
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.button.outlined.success:armed,
+.button.outlined.success:pressed {
+  -fx-background-color: -color-success-active;
+  -fx-border-color: -color-success-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.outlined.danger {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.button.outlined.danger:hover {
+  -fx-background-color: -color-danger-hover;
+  -fx-border-color: -color-danger-muted;
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.button.outlined.danger:armed,
+.button.outlined.danger:pressed {
+  -fx-background-color: -color-danger-active;
+  -fx-border-color: -color-danger-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.outlined.warning {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.button.outlined.warning:hover {
+  -fx-background-color: -color-warning-hover;
+  -fx-border-color: -color-warning-muted;
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.button.outlined.warning:armed,
+.button.outlined.warning:pressed {
+  -fx-background-color: -color-warning-active;
+  -fx-border-color: -color-warning-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* Text variants */
+.button.text.success {
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.button.text.success:hover {
+  -fx-background-color: -color-success-subtle;
+}
+
+.button.text.danger {
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.button.text.danger:hover {
+  -fx-background-color: -color-danger-subtle;
+}
+
+.button.text.warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.button.text.warning:hover {
+  -fx-background-color: -color-warning-subtle;
+}
+
+/* ============================================
+   Badge Enhancements
+   ============================================ */
+.badge-count {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-background-radius: @border-radius-full;
+  -fx-padding: 0 6px;
+  -fx-font-size: @font-size-xs;
+  -fx-font-weight: 600;
+  -fx-min-width: 18px;
+  -fx-min-height: 18px;
+  -fx-alignment: center;
+}
+
+.badge-count.success {
+  -fx-background-color: -color-success-emphasis;
+}
+
+.badge-count.warning {
+  -fx-background-color: -color-warning-emphasis;
+}
+
+.badge-count.error {
+  -fx-background-color: -color-danger-emphasis;
+}
+
+.badge-count.info {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* ============================================
+   BadgeAnt status 形态
+   小圆点 + 状态色，对齐 Ant Design Badge#status。
+   颜色由 styleClass 切换，避免在 Java 端拼 -fx-background-color。
+   尺寸（8x8）与圆角由 Java 端 setPrefSize / setStyle 配合 LESS 共同控制。
+   ============================================ */
+.badge-status {
+  -fx-background-radius: @border-radius-full;
+  -fx-background-color: -color-fg-muted;
+}
+
+.badge-status.badge-status-success {
+  -fx-background-color: -color-success-emphasis;
+}
+
+.badge-status.badge-status-warning {
+  -fx-background-color: -color-warning-emphasis;
+}
+
+.badge-status.badge-status-error {
+  -fx-background-color: -color-danger-emphasis;
+}
+
+.badge-status.badge-status-default {
+  -fx-background-color: -color-fg-muted;
+}
+
+/* Badge with text */
+.badge-text {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-fg-default;
+  -fx-background-radius: @border-radius-sm;
+  -fx-padding: 2px 8px;
+  -fx-font-size: @font-size-xs;
+  -fx-font-weight: 500;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+}
+
+.badge-text.success {
+  -fx-background-color: -color-success-subtle;
+  -fx-text-fill: -color-success-emphasis;
+  -fx-border-color: -color-success-muted;
+}
+
+.badge-text.warning {
+  -fx-background-color: -color-warning-subtle;
+  -fx-text-fill: -color-warning-emphasis;
+  -fx-border-color: -color-warning-muted;
+}
+
+.badge-text.error {
+  -fx-background-color: -color-danger-subtle;
+  -fx-text-fill: -color-danger-emphasis;
+  -fx-border-color: -color-danger-muted;
+}
+
+.badge-text.info {
+  -fx-background-color: -color-accent-subtle;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: -color-accent-muted;
+}
+
+/* ============================================
+   Alert Enhancements with Icons
+   ============================================ */
+.alert-with-icon {
+  -fx-padding: @alert-padding-y @alert-padding-x;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-width: 1px;
+}
+
+.alert-with-icon.success {
+  -fx-background-color: -color-success-subtle;
+  -fx-border-color: -color-success-muted;
+}
+
+.alert-with-icon.info {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-muted;
+}
+
+.alert-with-icon.warning {
+  -fx-background-color: -color-warning-subtle;
+  -fx-border-color: -color-warning-muted;
+}
+
+.alert-with-icon.error {
+  -fx-background-color: -color-danger-subtle;
+  -fx-border-color: -color-danger-muted;
+}
+
+.alert-icon {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+}
+
+.alert-icon.success {
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.alert-icon.info {
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.alert-icon.warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.alert-icon.error {
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.alert-title {
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.alert-description {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-muted;
+}
+
+/* ============================================
+   AlertAnt 完整状态机：
+   - 容器形态：默认（带边框圆角） / banner（无边框、占满宽度）
+   - 文本三件套：alert-title / alert-message / alert-icon，颜色由 type 修饰类切换
+   - 关闭按钮：alert-close-btn，文字色随 type 变化
+   原 Java 端 inline setStyle 的所有视觉样式现已搬入此 section。
+   ============================================ */
+.jfx-alert {
+  -fx-padding: 12 16 12 16;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-radius: @border-radius-md;
+  -fx-border-width: 1px;
+}
+
+/* banner 形态：无圆角、无边框，整条横幅 */
+.jfx-alert.alert-banner {
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+  -fx-border-width: 0;
+}
+
+/* Alert 标题 + 各 type 文字色 */
+.jfx-alert .alert-title {
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 600;
+}
+
+.jfx-alert.alert-success .alert-title { -fx-text-fill: -color-success-emphasis; }
+.jfx-alert.alert-info .alert-title    { -fx-text-fill: -color-accent-emphasis;  }
+.jfx-alert.alert-warning .alert-title { -fx-text-fill: -color-warning-emphasis; }
+.jfx-alert.alert-error .alert-title   { -fx-text-fill: -color-danger-emphasis;  }
+
+/* Alert 描述/正文 */
+.jfx-alert .alert-message {
+  -fx-font-size: @font-size-sm;
+}
+
+.jfx-alert.alert-success .alert-message { -fx-text-fill: -color-success-emphasis; }
+.jfx-alert.alert-info .alert-message    { -fx-text-fill: -color-accent-emphasis;  }
+.jfx-alert.alert-warning .alert-message { -fx-text-fill: -color-warning-emphasis; }
+.jfx-alert.alert-error .alert-message   { -fx-text-fill: -color-danger-emphasis;  }
+
+/* Alert 状态图标（容器内）字号 */
+.jfx-alert .alert-icon {
+  -fx-font-size: 16px;
+}
+
+/* Alert 关闭按钮：透明背景，文字色随 type，hover 浅化通过 opacity 控制 */
+.jfx-alert .alert-close-btn {
+  -fx-background-color: transparent;
+  -fx-font-size: @font-size-sm;
+  -fx-padding: 0;
+  -fx-min-width: 20px;
+  -fx-min-height: 20px;
+  -fx-cursor: hand;
+}
+
+.jfx-alert.alert-success .alert-close-btn { -fx-text-fill: -color-success-emphasis; }
+.jfx-alert.alert-info .alert-close-btn    { -fx-text-fill: -color-accent-emphasis;  }
+.jfx-alert.alert-warning .alert-close-btn { -fx-text-fill: -color-warning-emphasis; }
+.jfx-alert.alert-error .alert-close-btn   { -fx-text-fill: -color-danger-emphasis;  }
+
+.jfx-alert .alert-close-btn:hover {
+  -fx-opacity: 0.7;
+}
+
+/* ============================================
+   Focus Traversal
+   ============================================ */
+*:focused {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+/* ============================================
+   Focus Visible (Accessibility)
+   ============================================ */
+.button:focused,
+.text-field:focused,
+.text-area:focused,
+.password-field:focused,
+.combo-box:focused,
+.choice-box:focused {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+/* ============================================
+   Size Variants (Small / Large)
+   ============================================ */
+
+/* Button sizes */
+.button.small {
+  -fx-padding: @spacing-xs @spacing-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.button.large {
+  -fx-padding: @spacing-sm @spacing-lg;
+  -fx-font-size: @font-size-md;
+}
+
+/* Input/TextField sizes */
+.text-field.small,
+.text-area.small,
+.password-field.small {
+  -fx-padding: @spacing-xs @input-padding-x;
+  -fx-font-size: @font-size-sm;
+}
+
+.text-field.large,
+.text-area.large,
+.password-field.large {
+  -fx-padding: @spacing-sm @input-padding-x;
+  -fx-font-size: @font-size-md;
+}
+
+/* ComboBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
+.combo-box.small {
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.combo-box.large {
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* ChoiceBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
+.choice-box.small {
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.choice-box.large {
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* DatePicker sizes — 与 input-base 家族其他成员一致（M19.5 新增） */
+.date-picker.small {
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.date-picker.large {
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* ColorPicker sizes — 与 input-base 家族其他成员一致（M19.5 新增） */
+.color-picker.small {
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.color-picker.large {
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* Tag sizes */
+.tag.small {
+  -fx-padding: 0 @spacing-xs;
+  -fx-font-size: @font-size-xs;
+}
+
+.tag.large {
+  -fx-padding: @spacing-xs @spacing-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+/* Badge sizes */
+.badge.small {
+  -fx-padding: 0 4px;
+  -fx-font-size: 10px;
+}
+
+.badge.large {
+  -fx-padding: 2px 10px;
+  -fx-font-size: @font-size-sm;
+}
+
+/* ============================================
+   Animation Utilities
+   ============================================ */
+
+/* Fade in animation */
+.fade-in {
+  -fx-opacity: 0;
+}
+
+.fade-in.visible {
+  -fx-opacity: 1;
+  -fx-transition: opacity 200ms ease-out;
+}
+
+/* Slide up animation */
+.slide-up {
+  -fx-translate-y: 20px;
+  -fx-opacity: 0;
+}
+
+.slide-up.visible {
+  -fx-translate-y: 0;
+  -fx-opacity: 1;
+  -fx-transition: all 200ms ease-out;
+}
+
+/* Scale animation */
+.scale-in {
+  -fx-scale-x: 0.9;
+  -fx-scale-y: 0.9;
+  -fx-opacity: 0;
+}
+
+.scale-in.visible {
+  -fx-scale-x: 1;
+  -fx-scale-y: 1;
+  -fx-opacity: 1;
+  -fx-transition: all 200ms ease-out;
+}
+
+/* Shake animation for error states */
+.shake {
+  -fx-translate-x: 0;
+}
+
+.shake.error {
+  -fx-translate-x: -5px;
+  -fx-transition: translate-x 100ms ease-in-out;
+}

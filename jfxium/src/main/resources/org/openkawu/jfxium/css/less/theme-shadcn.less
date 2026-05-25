@@ -1,0 +1,128 @@
+// ============================================
+// JFXium shadcn/ui Theme (Modern minimal)
+// ============================================
+
+@import "variables-base.less";
+
+// shadcn Color Palette - Zinc-based
+// --------------------------------------------
+@color-accent-0: #f4f4f5;
+@color-accent-1: #e4e4e7;
+@color-accent-2: #d4d4d8;
+@color-accent-3: #a1a1aa;
+@color-accent-4: #71717a;
+@color-accent-5: #18181b;    // Zinc-900 as primary
+@color-accent-6: #27272a;
+@color-accent-7: #3f3f46;
+@color-accent-8: #52525b;
+@color-accent-9: #52525b;
+
+// Success
+@color-success-0: #f0fdf4;
+@color-success-1: #dcfce7;
+@color-success-2: #bbf7d0;
+@color-success-3: #86efac;
+@color-success-4: #4ade80;
+@color-success-5: #22c55e;
+@color-success-6: #16a34a;
+@color-success-7: #15803d;
+@color-success-8: #166534;
+@color-success-9: #14532d;
+
+// Warning
+@color-warning-0: #fffbeb;
+@color-warning-1: #fef3c7;
+@color-warning-2: #fde68a;
+@color-warning-3: #fcd34d;
+@color-warning-4: #fbbf24;
+@color-warning-5: #f59e0b;
+@color-warning-6: #d97706;
+@color-warning-7: #b45309;
+@color-warning-8: #92400e;
+@color-warning-9: #78350f;
+
+// Danger
+@color-danger-0: #fef2f2;
+@color-danger-1: #fee2e2;
+@color-danger-2: #fecaca;
+@color-danger-3: #fca5a5;
+@color-danger-4: #f87171;
+@color-danger-5: #ef4444;
+@color-danger-6: #dc2626;
+@color-danger-7: #b91c1c;
+@color-danger-8: #991b1b;
+@color-danger-9: #7f1d1d;
+
+// Base Colors - Zinc scale
+@color-base-0: #ffffff;
+@color-base-1: #fafafa;
+@color-base-2: #f4f4f5;
+@color-base-3: #e4e4e7;
+@color-base-4: #d4d4d8;
+@color-base-5: #a1a1aa;
+@color-base-6: #71717a;
+@color-base-7: #52525b;
+@color-base-8: #3f3f46;
+@color-base-9: #27272a;
+@color-base-10: #18181b;
+
+// Semantic Variables
+// --------------------------------------------
+@color-fg-default: #09090b;
+@color-fg-muted: #71717a;
+@color-fg-subtle: #a1a1aa;
+@color-fg-on-emphasis: #ffffff;
+
+@color-bg-default: #ffffff;
+@color-bg-overlay: #ffffff;
+@color-bg-subtle: #fafafa;
+@color-bg-inset: #f4f4f5;
+
+@color-border-default: #e4e4e7;
+@color-border-muted: #f4f4f5;
+@color-border-subtle: rgba(0, 0, 0, 0.05);
+
+// Accent Color Scale (shadcn)
+@color-accent-emphasis: @color-accent-5;           // Base (主色)
+@color-accent-hover: @color-accent-0;              // Hover (浅色背景)
+@color-accent-active: @color-accent-6;              // Active (深色按压)
+@color-accent-muted: @color-accent-2;              // 边框/图标
+@color-accent-subtle: @color-accent-0;             // 背景
+
+// Success Color Scale (shadcn)
+@color-success-emphasis: @color-success-5;
+@color-success-hover: @color-success-0;
+@color-success-active: @color-success-6;
+@color-success-muted: #bbf7d0;
+@color-success-subtle: #f0fdf4;
+
+// Warning Color Scale (shadcn)
+@color-warning-emphasis: @color-warning-5;
+@color-warning-hover: @color-warning-0;
+@color-warning-active: @color-warning-6;
+@color-warning-muted: #fde68a;
+@color-warning-subtle: #fffbeb;
+
+// Danger Color Scale (shadcn)
+@color-danger-emphasis: @color-danger-5;
+@color-danger-hover: @color-danger-0;
+@color-danger-active: @color-danger-6;
+@color-danger-muted: #fecaca;
+@color-danger-subtle: #fef2f2;
+
+@color-shadow-default: rgba(0, 0, 0, 0.08);
+
+// Motion
+@motion-duration-fast: 0.1s;
+@motion-duration-mid: 0.2s;
+@motion-duration-slow: 0.3s;
+
+// shadcn Overrides - Very subtle radius
+// --------------------------------------------
+@border-radius-sm: 4px;
+@border-radius-md: 6px;
+@border-radius-lg: 8px;
+@border-radius-xl: 12px;
+
+// Import base styles
+@import "theme-base.less";

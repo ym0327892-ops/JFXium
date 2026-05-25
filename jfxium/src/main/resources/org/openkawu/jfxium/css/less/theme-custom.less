@@ -1,0 +1,133 @@
+// ============================================
+// JFXium Custom Theme Example
+// 自定义主题示例 - 企业紫主题
+// 
+// 使用方法：
+// 1. 复制此文件和 variables.less
+// 2. 修改变量值
+// 3. 在 pom.xml 中添加 lessc 编译配置
+// 4. 运行 mvn compile 生成 CSS
+// ============================================
+
+// 导入基础变量（尺寸、间距等）
+@import "variables-base.less";
+
+// ============================================
+// 自定义颜色变量 - 修改这里即可改变整套 UI 风格
+// ============================================
+
+// 基础色板
+@color-base-0: #ffffff;
+@color-base-1: #f9f8ff;
+@color-base-2: #eeebff;
+@color-base-3: #ddd8f5;
+@color-base-4: #bbb5e0;
+@color-base-5: #9a93c4;
+@color-base-6: #7a72a8;
+@color-base-7: #5d558c;
+@color-base-8: #423a70;
+@color-base-9: #2a2454;
+@color-base-10: #151038;
+
+// 主题色 - 紫色
+@color-accent-0: #f3e8ff;
+@color-accent-1: #e4ccff;
+@color-accent-2: #d1aaff;
+@color-accent-3: #bc87ff;
+@color-accent-4: #a564ff;
+@color-accent-5: #8b41f5;
+@color-accent-6: #7228dc;
+@color-accent-7: #5910c2;
+@color-accent-8: #4100a8;
+@color-accent-9: #2a008e;
+
+// 成功色 - 青绿色
+@color-success-0: #e6fffb;
+@color-success-1: #b5f5ec;
+@color-success-2: #87e8de;
+@color-success-3: #5cdbd3;
+@color-success-4: #36cfc9;
+@color-success-5: #13c2c2;
+@color-success-6: #08979c;
+@color-success-7: #006d75;
+@color-success-8: #00474f;
+@color-success-9: #002329;
+
+// 警告色 - 橙黄色
+@color-warning-0: #fffbe6;
+@color-warning-1: #fff1b8;
+@color-warning-2: #ffe58f;
+@color-warning-3: #ffd666;
+@color-warning-4: #ffc53d;
+@color-warning-5: #faad14;
+@color-warning-6: #d48806;
+@color-warning-7: #ad6800;
+@color-warning-8: #874d00;
+@color-warning-9: #613400;
+
+// 危险色 - 玫红色
+@color-danger-0: #fff0f6;
+@color-danger-1: #ffd6e7;
+@color-danger-2: #ffadd2;
+@color-danger-3: #ff85c0;
+@color-danger-4: #f759ab;
+@color-danger-5: #eb2f96;
+@color-danger-6: #c41d7f;
+@color-danger-7: #9e1068;
+@color-danger-8: #780650;
+@color-danger-9: #520339;
+
+// 语义变量
+@color-fg-default: rgba(0, 0, 0, 0.88);
+@color-fg-muted: rgba(0, 0, 0, 0.65);
+@color-fg-subtle: rgba(0, 0, 0, 0.45);
+@color-fg-on-emphasis: #ffffff;
+
+@color-bg-default: #ffffff;
+@color-bg-overlay: #ffffff;
+@color-bg-subtle: #f9f8ff;
+@color-bg-inset: #f5f3ff;
+
+@color-border-default: #ddd8f5;
+@color-border-muted: #eeebff;
+@color-border-subtle: rgba(0, 0, 0, 0.06);
+
+// Accent Color Scale (Custom Purple)
+@color-accent-emphasis: @color-accent-5;
+@color-accent-hover: @color-accent-0;
+@color-accent-active: @color-accent-6;
+@color-accent-muted: @color-accent-2;
+@color-accent-subtle: @color-accent-0;
+
+// Success Color Scale (Custom)
+@color-success-emphasis: @color-success-5;
+@color-success-hover: @color-success-0;
+@color-success-active: @color-success-6;
+@color-success-muted: @color-success-2;
+@color-success-subtle: @color-success-0;
+
+// Warning Color Scale (Custom)
+@color-warning-emphasis: @color-warning-5;
+@color-warning-hover: @color-warning-0;
+@color-warning-active: @color-warning-6;
+@color-warning-muted: @color-warning-2;
+@color-warning-subtle: @color-warning-0;
+
+// Danger Color Scale (Custom)
+@color-danger-emphasis: @color-danger-4;
+@color-danger-hover: @color-danger-0;
+@color-danger-active: @color-danger-6;
+@color-danger-muted: @color-danger-2;
+@color-danger-subtle: @color-danger-0;
+
+@color-shadow-default: rgba(0, 0, 0, 0.15);
+
+// Motion
+@motion-duration-fast: 0.1s;
+@motion-duration-mid: 0.2s;
+@motion-duration-slow: 0.3s;
+
+// ============================================
+// 导入基础组件样式（使用上面的变量）
+// ============================================
+@import "theme-base.less";

@@ -4,6 +4,75 @@
 
 JFXium 提供了一套流式 API 用于创建常见布局，简化 JavaFX 布局代码，提高可读性和开发效率。
 
+## 页面语义布局
+
+页面不应该整页全白。推荐使用以下组件分层承载页面背景与内容：
+
+- `CrudTemplate`（M18 新增，业务模板）：admin 90% 业务页通用三段式骨架（顶工具栏 + body + 底工具栏）。
+- `SurfaceAnt`：使用 `color-bg-container`，用于表单、列表、详情等内容面板。
+- `SplitBarAnt`（M19，取代 ActionBarAnt + Headers 工厂）：横向 左/中/右 三段式工具栏；center 不传即退化为二段。
+- `AppShellAnt`：用于 Header / Sider / Content / Footer 应用骨架。
+
+> 老 `PageAnt` / `ActionBarAnt` / `Headers` 工厂已删除（M18+M19）。三段式工具栏统一改用 SplitBarAnt。
+
+```java
+HBox actions = SplitBarAnt.create()
+    .left(ButtonAnt.create("刷新").build())
+    .right(ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY).build())
+    .build();
+
+VBox filters = SurfaceAnt.create()
+    .title("筛选条件")
+    .content(form)
+    .build();
+
+BorderPane page = CrudTemplate.create()
+    .title("用户管理")
+    .topRight(actions)
+    .body(VBoxBuilder.create().spacing(16).children(filters, table).build())
+    .build();
+
+BorderPane shell = AppShellAnt.create()
+    .header(header)
+    .sider(menu, 240)
+    .content(page)
+    .build();
+```
+
+## 高级布局容器
+
+### SplitPaneAnt 分割面板
+
+```java
+SplitPane split = SplitPaneAnt.create()
+    .direction(SplitPaneAnt.Direction.HORIZONTAL)
+    .items(leftPanel, rightPanel)
+    .dividerPositions(0.3)
+    .build();
+```
+
+### ResizablePanelAnt 可调整尺寸面板
+
+```java
+StackPane details = ResizablePanelAnt.create()
+    .content(detailView)
+    .mode(ResizablePanelAnt.Mode.HORIZONTAL)
+    .prefWidth(320)
+    .minWidth(220)
+    .maxWidth(520)
+    .build();
+```
+
+### ScrollContainerAnt 滚动容器
+
+```java
+ScrollPane scroll = ScrollContainerAnt.create()
+    .content(page)
+    .fitToWidth(true)
+    .padding(new Insets(24))
+    .build();
+```
+
 ## VBox 垂直布局
 
 ### 基本用法

@@ -1,0 +1,222 @@
+// ============================================
+// JFXium Light Theme Variables
+// ============================================
+
+@import "variables-base.less";
+
+// Color Scale (Base Tokens)
+// --------------------------------------------
+@color-base-0: #ffffff;
+@color-base-1: #f6f8fa;
+@color-base-2: #eaeef2;
+@color-base-3: #d0d7de;
+@color-base-4: #afb8c1;
+@color-base-5: #8c959f;
+@color-base-6: #6e7781;
+@color-base-7: #57606a;
+@color-base-8: #424a53;
+@color-base-9: #32383f;
+@color-base-10: #1f2328;
+
+// Accent Colors (Blue - Ant Design) - 完整色阶 0-10
+// 0-2: 浅色（hover背景）, 3-6: 中间色（主色）, 7-10: 深色（active/pressed）
+@color-accent-0: #e6f4ff;
+@color-accent-1: #bae0ff;
+@color-accent-2: #91caff;
+@color-accent-3: #69b1ff;
+@color-accent-4: #4096ff;
+@color-accent-5: #1677ff;  // Base (主色)
+@color-accent-6: #0958d9;
+@color-accent-7: #003eb3;
+@color-accent-8: #002c8c;
+@color-accent-9: #001d66;
+
+// Success Colors (Green) - 完整色阶
+@color-success-0: #f6ffed;
+@color-success-1: #d9f7be;
+@color-success-2: #b7eb8f;
+@color-success-3: #95de64;
+@color-success-4: #73d13d;
+@color-success-5: #52c41a;  // Base (主色)
+@color-success-6: #389e0d;
+@color-success-7: #237804;
+@color-success-8: #135200;
+@color-success-9: #092b00;
+
+// Warning Colors (Orange/Yellow) - 完整色阶
+@color-warning-0: #fffbe6;
+@color-warning-1: #fef1b8;
+@color-warning-2: #ffe58f;
+@color-warning-3: #ffd666;
+@color-warning-4: #ffc53d;
+@color-warning-5: #faad14;  // Base (主色)
+@color-warning-6: #d48806;
+@color-warning-7: #ad6800;
+@color-warning-8: #874d00;
+@color-warning-9: #613400;
+
+// Danger Colors (Red) - 完整色阶
+@color-danger-0: #fff2f0;
+@color-danger-1: #fee2e2;
+@color-danger-2: #fecaca;
+@color-danger-3: #ff7875;
+@color-danger-4: #ff4d4f;
+@color-danger-5: #f5222d;  // Base (主色)
+@color-danger-6: #cf1322;
+@color-danger-7: #a8071a;
+@color-danger-8: #820014;
+@color-danger-9: #5c0011;
+
+// Semantic Variables
+// --------------------------------------------
+@color-fg-default: rgba(0, 0, 0, 0.88);
+@color-fg-muted: rgba(0, 0, 0, 0.65);
+@color-fg-subtle: rgba(0, 0, 0, 0.45);
+@color-fg-on-emphasis: #ffffff;
+
+@color-bg-default: #ffffff;
+@color-bg-overlay: #ffffff;
+@color-bg-subtle: #f6f8fa;
+@color-bg-inset: #f3f4f6;
+
+@color-border-default: #d9d9d9;
+@color-border-muted: #f0f0f0;
+@color-border-subtle: rgba(0, 0, 0, 0.06);
+
+// Accent Color Scale (完整色阶: Base/Hover/Active)
+// Base: 主色，Hover: 浅色背景，Active: 深色按压
+@color-accent-emphasis: @color-accent-5;      // Base (主色)
+@color-accent-hover: @color-accent-0;       // Hover (浅色背景)
+@color-accent-active: @color-accent-6;      // Active (深色按压)
+@color-accent-muted: @color-accent-2;       // 边框/图标
+@color-accent-subtle: @color-accent-0;      // 背景
+
+// Success Color Scale
+@color-success-emphasis: @color-success-5;    // Base (主色)
+@color-success-hover: @color-success-0;      // Hover (浅色背景)
+@color-success-active: @color-success-6;     // Active (深色按压)
+@color-success-muted: @color-success-2;     // 边框/图标
+@color-success-subtle: @color-success-0;    // 背景
+
+// Warning Color Scale
+@color-warning-emphasis: @color-warning-5;   // Base (主色)
+@color-warning-hover: @color-warning-0;     // Hover (浅色背景)
+@color-warning-active: @color-warning-6;     // Active (深色按压)
+@color-warning-muted: @color-warning-2;     // 边框/图标
+@color-warning-subtle: @color-warning-0;   // 背景
+
+// Danger Color Scale
+@color-danger-emphasis: @color-danger-4;   // Base (主色)
+@color-danger-hover: @color-danger-0;      // Hover (浅色背景)
+@color-danger-active: @color-danger-6;      // Active (深色按压)
+@color-danger-muted: @color-danger-2;       // 边框/图标
+@color-danger-subtle: @color-danger-0;     // 背景
+
+@color-shadow-default: rgba(0, 0, 0, 0.15);
+
+// ============================================
+// Ant Design 风格别名 (新命名)
+// ============================================
+
+// Seed Token (主色色阶)
+@color-primary: @color-accent-5;       // Base (主色)
+@color-primary-hover: @color-accent-4; // Hover (浅一点)
+@color-primary-active: @color-accent-6; // Active (深一点)
+@color-primary-text: @color-accent-7;  // Text (最深)
+
+@color-success: @color-success-5;       // Base (主色)
+@color-success-hover: @color-success-4; // Hover
+@color-success-active: @color-success-6; // Active
+@color-success-text: @color-success-7;  // Text
+
+@color-warning: @color-warning-5;       // Base (主色)
+@color-warning-hover: @color-warning-4; // Hover
+@color-warning-active: @color-warning-6; // Active
+@color-warning-text: @color-warning-7; // Text
+
+@color-error: @color-danger-5;       // Base (主色)
+@color-error-hover: @color-danger-4; // Hover
+@color-error-active: @color-danger-6; // Active
+@color-error-text: @color-danger-7; // Text
+
+@color-info: @color-accent-5;
+
+// Alias Token (语义颜色)
+@color-text: @color-fg-default;
+@color-text-secondary: @color-fg-muted;
+@color-text-tertiary: @color-fg-subtle;
+@color-text-on-color: @color-fg-on-emphasis;
+
+@color-bg: @color-bg-default;
+@color-bg-container: @color-bg-default;
+@color-bg-layout: @color-bg-subtle;
+@color-bg-masked: rgba(0, 0, 0, 0.45);
+
+@color-border: @color-border-default;
+@color-border-secondary: @color-border-muted;
+@color-border-tertiary: @color-border-subtle;
+
+@color-shadow: @color-shadow-default;
+
+// Map Token (衍生颜色)
+@color-primary-bg: @color-accent-0;
+@color-primary-bg-hover: @color-accent-1;
+@color-primary-border: @color-accent-2;
+@color-primary-border-hover: @color-accent-3;
+
+@color-success-bg: @color-success-0;
+@color-success-bg-hover: @color-success-1;
+@color-success-border: @color-success-2;
+@color-success-border-hover: @color-success-3;
+
+@color-warning-bg: @color-warning-0;
+@color-warning-bg-hover: @color-warning-1;
+@color-warning-border: @color-warning-2;
+@color-warning-border-hover: @color-warning-3;
+
+@color-error-bg: @color-danger-0;
+@color-error-bg-hover: @color-danger-1;
+@color-error-border: @color-danger-2;
+@color-error-border-hover: @color-danger-3;
+
+// Component Token
+@color-table-row-hover: @color-bg-subtle;
+@color-table-selected-row: @color-primary-bg;
+@color-table-selected-color: @color-primary;
+
+@color-input: @color-bg-default;
+@color-input-bg: @color-bg-default;
+@color-input-border: @color-border-default;
+@color-input-hover-border: @color-border-default;
+@color-input-focus-border: @color-primary;
+@color-input-placeholder: @color-fg-subtle;
+
+@color-button-default: @color-bg-default;
+@color-button-default-hover: @color-bg-default;
+@color-button-default-active: @color-bg-subtle;
+
+@color-link: @color-primary;
+@color-link-hover: @color-primary-hover;
+@color-link-active: @color-primary-active;
+
+@color-slider-track: @color-primary;
+@color-slider-track-background: @color-border-muted;
+
+@color-switch: @color-bg-default;
+@color-switch-bg: rgba(0, 0, 0, 0.25);
+@color-switch-bg-hover: rgba(0, 0, 0, 0.45);
+
+@color-tag-default-bg: @color-bg-subtle;
+@color-tag-default-color: @color-text;
+
+@color-avatar-bg: @color-primary-bg;
+@color-avatar-color: @color-primary;
+
+@color-badge-count-bg: @color-error;
+
+@color-progress-default: @color-primary;
+
+// Motion
+@motion-duration-fast: 0.1s;
+@motion-duration-mid: 0.2s;
+@motion-duration-slow: 0.3s;

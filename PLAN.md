@@ -2,2331 +2,1714 @@
 
 > 目标：构建现代化 JavaFX UI 框架，对标 Ant Design 6.x / Material UI / MUI-like Style
 > 技术栈：Java 21 + JavaFX 21.0.6 + Maven
-> 核心原则：Design Token 驱动、Builder Pattern、完全代码构建 UI、CSS 变量体系,
-> javafx 代码UI组件 ->组件化,封装, 可组合性, 可扩展性;
-# JFXium 项目详细开发约束
-> 你进行的 或者 完成了什么记录到  PLAN.md ； 如果没有需要记录 本文件 合适位置； 
-> 下一步计划 ，未完成的计划 都需要 记录 本文件 合适位置； 
-> 我的什么计划 改变 ，需要综合考虑 记录到 PLAN.md 合适位置； 跟新项目 总计划； 
-> 什么是组件?  微型化, 封装, 可组合性, 比如 Modal, Drawer, ;小组件组装成 大组件; 按照这个思路来 设计.
-*** JFXium 项目详细开发行为准则 文件（SKILL 技能）
-> 本项目的开发行为准则 文件（SKILL 技能） 用于定义项目开发过程中需要遵守的规范和行为; 在 SKILL.md 文件中定义
-# UI 参考资源
-## AtlantaFX 参考心得（2026-05-12）
+> 核心原则：Design Token 驱动、Builder Pattern、完全代码构建 UI、CSS 变量体系
+> 组件理念：微型化、封装、可组合性、可扩展性
 
-### 1. Text Input / TextField 样式规范
+---
 
-**AtlantaFX antdesign-light.scss 实现方式：**
-```scss
-.text-input {
-    -fx-border-color: #d9d9d9;  // 默认灰色边框
+## 一、项目开发约束
 
-    &:focused {
-        -fx-border-color: #4096ff;  // 聚焦时蓝色边框
-        -fx-effect: dropshadow(three-pass-box, rgba(22, 119, 255, 0.2), 4, 0, 0, 0);
-    }
+1. **开发记录**：完成的、修改的内容需记录到 PLAN.md 合适位置
+2. **计划更新**：下一步计划、未完成的计划都需要记录
+3. **计划变更**：任何计划改变需综合考虑并更新项目总计划
+4. **什么是组件**：微型化、封装、可组合性，如 Modal、Drawer；小组件组装成大组件
+5. **开发规范**：详见 [docs/SKILL.md](docs/SKILL.md)
+
+---
+
+## 二、Builder API 命名约定
+
+- **组件入口类**：使用 `Ant` 后缀，如 `ButtonAnt`、`ModalAnt`、`DrawerAnt`
+- **内部构造器**：`XxxAnt.Builder`
+- **创建入口**：`XxxAnt.create(...)`
+- **构建方法**：`.build()` 返回 JavaFX 原生控件
+- **API 风格**：`XxxAnt.create(...).xxx().build()`
+
+```java
+Button btn = ButtonAnt.create("点击我")
+    .type(ButtonAnt.Type.PRIMARY)
+    .onClick(e -> System.out.println("点击"))
+    .build();
+
+HBox actions = SplitBarAnt.create()
+    .left(ButtonAnt.create("取消").build())
+    .right(ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY).build())
+    .build();
+```
+
+---
+
+## 三、UI 参考资源
+
+- Ant Design 色彩：https://ant.design/docs/spec/colors-cn
+- Ant Design 布局：https://ant.design/docs/spec/layout-cn
+- AtlantaFX 参考：[AtlantaFX 仓库](https://github.com/mkpaz/atlantafx)  本地 /Users/openai/workspace/work_open/atlantafx
+
+---
+
+## 四、项目进度跟踪
+
+### ✅ 已完成工作
+
+#### Phase 1: 基础设施
+- [x] CSS 文件驱动的架构重构
+- [x] Theme API 实现（ThemeManager）
+- [x] CSS 类名常量化
+- [x] 组件封装（Builder Pattern）
+- [x] Playground 应用
+
+#### Phase 2: 核心组件
+- [x] ButtonAnt（按钮）
+- [x] InputAnt（输入框）
+- [x] CardAnt（卡片）
+- [x] ModalAnt（对话框）
+- [x] DrawerAnt（抽屉）
+- [x] SelectAnt（选择器）
+- [x] AutoCompleteAnt（自动补全）
+- [x] MentionsAnt（提及）
+
+#### Phase 3: 扩展组件
+- [x] SpinnerAnt（计数器）
+- [x] ComboBoxAnt（组合框）
+- [x] DatePickerAnt（日期选择）
+- [x] TableAnt（表格）
+- [x] TreeAnt（树）
+- [x] TabsAnt（标签页）
+- [x] PaginationAnt（分页）
+- [x] MenuAnt（菜单）
+
+#### LESS 主题系统
+- [x] 完整色阶定义（0-9 级）
+- [x] 语义变量映射（Base/Hover/Active）
+- [x] 主题切换机制
+- [x] 统一焦点效果规范
+- [x] 统一过渡动画规范
+- [x] MUI 系列主题
+- [x] Dark 主题适配
+
+### 📝 进度时间线
+
+> 按时间顺序记录里程碑。每个里程碑都有"动机 → 产出 → 关键改动"三个维度。
+
+---
+
+### 🎯 M0 历史阶段（~2026-05-13）
+
+**最近一次旧版更新**：
+- 统一了所有组件的交互状态（hover/armed/pressed/disabled）
+- 修复了 MUI 系列主题输入框焦点边框宽度问题
+- 调整了焦点外发光大小（4px → 2px）
+
+---
+
+### 🎯 M1 活跃 Bug 修复（2026-05-17）
+
+**动机**：BUG.md 顶部存在 3 条未编号未关闭的活跃问题描述，与表格里"全部完成"自相矛盾，需要落地。
+
+**产出**：3 条 bug 全部修复并补编号入表（详见 [BUG.md](BUG.md) #21/#22/#23）。
+
+**关键改动**：
+- [x] **#21 Table 选中色对比度**：`theme-base.less` 中 `-color-cell-bg-selected` 从 `@color-base-1` 改绑到 `@color-accent-subtle`（对齐 Ant Design `controlItemBgActive` token），新增 `:selected:hover` 规则
+- [x] **#22 MUI 输入框文字硬编码**：删除 `theme-mui.less` 中遗漏的 `-fx-text-fill: rgba(0, 0, 0, 0.88)` 硬编码（其他 3 个 mui 子主题早已修对）
+- [x] **#23 焦点效果统一**：4 个 mui 主题的 `:focused` 块从 `-fx-effect: none` 改回 `dropshadow(...)`，对齐 SKILL 强约束 #5
+
+---
+
+### 🎯 M2 项目摸底与文档修正（2026-05-17）
+
+**动机**：开始大重构前，需要先把项目实情摸清楚，避免凭印象动手；同时清理已发现的文档与代码不一致。
+
+**产出**：项目结构与约定全面对齐文档；BUG.md/PLAN.md/README_CN 三处一致性修正。
+
+**关键改动**：
+- [x] 项目实情摸底：多模块结构（`jfxium` + `jfxium-demo`）、Java 21 + JavaFX 21.0.6、8 个 lessc execution 在 `generate-resources` 阶段
+- [x] 发现并记录隐性依赖：LESS 编译强依赖宿主机 Node.js
+- [x] BUG.md 重整：顶部 3 条未编号描述移入表格，按编号重排，新增"修复说明"小节
+- [x] PLAN.md 文件结构区从单模块视角扩展为多模块（补 `jfxium/` + `jfxium-demo/` 路径前缀）
+
+---
+
+### 🎯 M3 布局组件体检与重构（2026-05-17）
+
+**动机**：用户希望"UI 更好扩展、优雅实现"，但布局组件存在多个隐藏问题。
+
+**产出**：15 个布局组件完成体检；6 个重灾组件完全重写。
+
+**关键改动**：
+- [x] 完整体检 15 个布局组件（找到 6 重灾、9 中度、文档撒谎 1 处、孤儿类 1 个）
+- [x] **LayoutAnt** → 重构为 AppShellAnt 的轻量委托（90% 重复代码消除）
+- [x] **FlexAnt** → 重写：build() 返回 `Pane` 不再撒谎、wrap 真用 FlowPane、justify=BETWEEN/AROUND/EVENLY 用 Region spacer 实现 CSS 标准语义
+- [x] **GridAnt** → 重写：用真 GridPane + percentWidth 实现 24 栅格（替代原"像素当百分比"的错误实现）
+- [x] **SpaceAnt** → 修复 BASELINE+VBox 静默失效 bug、split=true 默认渲染原生 Separator
+- [x] **DividerAnt** → 实现 text 支持（修复 README 撒谎问题，原代码不支持但文档说支持）
+- [x] **FormAnt** → 删除全部 setStyle 拼字符串、状态色 styleClass、labelAlign 改枚举
+
+---
+
+### 🎯 M4 公共基础设施抽取（2026-05-17）
+
+**动机**：M3 重写组件时发现"style + extraStyleClasses + styleClass()"三件套在 9+ 个 Builder 重复实现，应该抽公共基类。
+
+**产出**：新建 `AbstractStyleBuilder<SELF>` 基类；28 个 *Ant 组件接入；通用工具类同步加 styleClass 钩子。
+
+**关键改动**：
+- [x] 新建 `core/builder/AbstractStyleBuilder.java`（self-bounded 泛型，支持链式 API 返回子类自身）
+- [x] 提供 `applyStyles(Node)` 与 `applyStyles(Styleable)` 两个重载，覆盖 Tooltip 这类非 Node 的 Styleable
+- [x] 接入 28 个 *Ant 组件（A 类 17 个完整三件套 + B 类 11 个仅 style 字段）
+- [x] `core/layout/Layouts.java`（VBox/HBox/Grid 工厂）补 `styleClass()` 方法，对齐 *Ant API
+
+---
+
+### 🎯 M5 SKILL #1 全合规重构（2026-05-17）
+
+**动机**：M3 重构时发现 6 个组件大量 inline `setStyle("-fx-...: -color-..."`)，违反 SKILL 强约束 #1（禁止硬编码）；进一步 grep 发现全项目共 29 个文件有此问题。
+
+**产出**：项目级 inline color 注入**29 个文件 → 0 个文件**；6 个深重构组件 + 22 个批量清扫；激活了原本"死代码"的多段 LESS 选择器。
+
+**关键改动**：
+
+**子阶段 5.1：6 个深重构组件**
+- [x] **SwitchAnt** → 删除死代码 textLabel、修复 disabled cursor 残留隐患
+- [x] **BadgeAnt** → indicator 三种形态（count/dot/status）styleClass 化（激活原本死代码的 `.badge-count` LESS）
+- [x] **AlertAnt** → 4 类型 × 4 inline = 16 处全部走 styleClass + LESS 状态机（激活 `.alert-success/info/warning/error` 死代码）
+- [x] **ProgressAnt** → bar/circle 双 Builder 状态色走 LESS（激活 `.progress-bar.success` 死代码）
+- [x] **SliderAnt** → tip/range/marks 全部 LESS 化，`-fx-accent` 搬到 `.slider` 选择器
+- [x] **CodeBlockAnt** → 7 处 inline 全清；顺手修 spacer 死代码 bug
+
+**子阶段 5.2：22 个批量清扫**
+- [x] **Tier 1**（5 个）：IconAnt、EmptyAnt、BackTopAnt、SpinAnt、TimePickerAnt
+- [x] **Batch 1**（6 个）：DropdownAnt、AnchorAnt、AutoCompleteAnt、ImageAnt、MentionsAnt、StatisticAnt
+- [x] **Batch 2**（6 个）：TypographyAnt、CollapseAnt、TreeSelectAnt、SegmentedAnt、InputNumberAnt、CarouselAnt
+- [x] **Batch 3**（5 个）：DrawerAnt、ModalAnt、CascaderAnt、TimelineAnt、TransferAnt（抽出通用 `overlay-*` 选择器）
+- [x] **Batch 4**（5 个）：ListAnt、MenuAnt、UploadAnt、StepsAnt、BreadcrumbAnt
+- [x] **Batch 5**（2 个）：DescriptionsAnt、CalendarAnt（最复杂，21 处 setStyle）
+
+**抽出的可复用 LESS 选择器组**：
+- `.jfx-popup-menu` / `.jfx-popup-menu-item` —— Dropdown / AutoComplete / Mentions / TreeSelect 共用
+- `.jfx-overlay-mask` / `.jfx-overlay-panel` / `.jfx-overlay-header` —— Drawer / Modal 共用
+- `.jfx-empty` / `.timeline-dot-*` / `.steps-*` 等状态机系列
+
+---
+
+### 🎯 M6 文档完善（2026-05-17）
+
+**动机**：M1-M5 的工作量巨大但散落在对话历史中，需要落档让后续维护者可追溯。
+
+**产出**：本次 PLAN.md 重组为时间线 + README_CN.md 同步重构成果。
+
+**关键改动**：
+- [x] PLAN.md：原"📝 当前状态"+ 单一里程碑展开为 M0-M6 六个里程碑
+- [x] PLAN.md：第五章下一阶段计划重新分级为 P0/P1/P2/P3 路线图
+- [x] BUG.md：末尾新增"项目级里程碑"小节，串联 #21/#22/#23 与全量重构
+- [x] README_CN.md：新增"styleClass 体系"章节，主题文件清单补全到 8 个
+
+---
+
+### 📊 整体量化成果（M1-M19 累计）
+
+- 已重构 *Ant 组件：**54 个**（M11 重写 TableAnt / M15 重写 MenuAnt / M16 重写 WatermarkAnt / M18 删 PageAnt 加 CrudTemplate / M19 加 SplitBarAnt **+ 同时删除 ActionBarAnt + Headers 工厂** / M19.6 加 ToggleButtonAnt + MenuButtonAnt + SplitButtonAnt / M19.7 加 SelectableTextAnt）
+- **业务模板（template/）**：**3 个**（CrudTemplate @ M18 / LoginTemplate @ M19.16 / DashboardTemplate @ M19.16）
+- 总组件量：82 \*Ant + 3 \*Template = **85 个**
+- 接入 AbstractStyleBuilder：**32 个**（M19.6 新增 3 个）
+- **i18n 国际化**：默认 Locale = `Locale.SIMPLIFIED_CHINESE` / 3 份 properties / 9 个组件迁移 / Messages 静态门面 + ReadOnly localeProperty（M19.18）
+- **三件套形状变体**（M19.20）：Switch / CheckBox / Radio 都有 Size + Shape 双维度，可组合 ~12 种视觉
+- 抽出通用 LESS 选择器：**~99 段**（M19.6 加 toggle-button 通用块 + 3 组按钮 size 规则）
+- 新增 CssClasses 常量：**295+**（M19.6 复用现有 SIZE_SMALL/LARGE/SHAPE_*，无新增）
+- 项目级 inline color 注入：**29 个文件 → 0 个文件**
+- 编译诊断：**全部 0 报错**
+- 顺手修复的隐性 bug：**4 处**
+- 影响文件总数：**100+ 个**
+- 新增组件：**7 个**（WatermarkAnt / FilterBarAnt / CrudTemplate / SplitBarAnt / **ToggleButtonAnt** / **MenuButtonAnt** / **SplitButtonAnt**）
+- 删除组件 / 工具类：**3 个**（PageAnt @ M18 / ActionBarAnt @ M19 / Headers @ M19）
+- 增强组件：**5 个**
+  - CardAnt：9 功能（M10）
+  - TableAnt：列级+表级 + actionColumn + 4 边框模式 + 隐藏表头 + 双重对齐 + Size 三态 + AtlantaFX 视觉对齐（M11/M11.1/M11.2）
+  - MenuAnt：4 模式正交（INLINE/HORIZONTAL × LIGHT/DARK × NORMAL/COLLAPSED + 选中态）（M15）
+  - **CheckBoxAnt**：Size 三态 + allowIndeterminate（M19.6）
+  - **RadioButtonAnt**：Size 三态（M19.6）
+- **完整重写**：WatermarkAnt（M16，对齐 Element Plus，节点 80→1，零开销）
+- 新增工具类：**3 个**（SceneLayout / OverlayManager / Spacers；Headers 已于 M19 删除）
+- 新增容器 Builder：**8 个**
+- 废弃/移除的类：**7 个**（含 M18 PageAnt + M19 ActionBarAnt + M19 Headers）
+- 废弃的 API：**4 个**
+- SKILL 强约束条数：**18 条**（M19.13 沉淀：项目约束 SKILL 加 #16/#17/#18 + 组件组合规范加 §7「包结构归约」+ 反模式 §4.9/4.10/4.11）
+- IconAnt 业务图标：**13 个**
+- Admin Demo 沉淀页面：**4 个**（参考实现保留 + selectedKey 接入）
+- Showcase Demo 已实现页面：**13 个**（覆盖 80 个 Section / Ant Design 7 大类全覆盖 + 业务模板）
+  - 通用：ButtonPage（8）、**ButtonGroupPage（8，M19.6 + M19.6.1，含箭头样式）**、SwitchPage（4）
+  - 导航：MenuPage（7）
+  - 布局：CardPage（9）、SplitBarPage（5，M19）、CrudTemplatePage（4，M18）
+  - 数据录入：InputPage（5）
+  - 数据展示：TablePage（10）、TagPage（5）
+  - 反馈：ModalPage（5）、DrawerPage（5）
+  - 其他：WatermarkPage（5）
+- 第三方实现对齐：**2 处**
+  - AtlantaFX：TableView 表头/箭头/分割线（M11.2）+ ComboBox/DatePicker/ColorPicker padding（M19.5）
+  - Element Plus：Watermark Canvas snapshot + REPEAT 平铺（M16）
+- **包结构演化（M18）**：`jfxium/component/` + `jfxium/template/`（新增）+ `jfxium/layout/`（预留）
+- **Bar 类组件唯一真相源（M19）**：项目内布局原子层只剩 `SplitBarAnt`，业务模板层 `FilterBarAnt`；ActionBarAnt + Headers 已删除，三段式重复实现 N→1
+- **按钮族 API 全对齐（M19.6）**：Button / Toggle / Menu / Split / Radio / CheckBox 全部支持 Size 三态，与 InputAnt/ButtonAnt 视觉一致
+- **内部消重（M19）**：CrudTemplate / CardAnt / SurfaceAnt 三处私有 / 工厂式 hbox 实现，全部统一到 SplitBarAnt
+
+---
+
+### 🎯 M7 全局布局管理 + MessageAnt 位置功能（2026-05-21）
+
+**动机**：用户需要更好的全局布局管理方案，以及 MessageAnt 需要支持多位置显示（顶部/底部/中间）。
+
+**产出**：
+1. 创建 SceneLayout（Scene 根布局管理器）和 OverlayManager（全局浮层管理器）
+2. 独立 8 个容器 Builder 类（VBoxBuilder/HBoxBuilder 等）
+3. MessageAnt 支持 TOP/BOTTOM/CENTER 三个位置
+4. MyDemo 添加滚动布局
+
+**关键改动**：
+
+**子阶段 7.1：架构重构 - Builder 类独立 + 全局布局管理**
+- [x] 创建 8 个独立 Builder 类（`core/container/`）：VBoxBuilder, HBoxBuilder, BorderPaneBuilder, StackPaneBuilder, FlowPaneBuilder, ScrollPaneBuilder, SplitPaneBuilder, GridPaneBuilder
+- [x] 创建 `Spacers` 工具类（`core/util/Spacers.java`）：提供 `grow()` 和 `spacer()` 方法
+- [x] 标记 `Layouts.java` 为废弃（`@Deprecated`）
+- [x] 创建 `SceneLayout.java`（Scene 根布局管理器）- 只提供骨架（BorderPane），不限制内部布局
+- [x] 创建 `OverlayManager.java`（全局浮层管理器）- 管理 4 层 z-index
+
+**子阶段 7.2：Drawer/Modal Header 布局修复**
+- [x] 修复 DrawerAnt 和 ModalAnt 的 Header 布局问题
+- [x] 改用 Region spacer 模式（符合组件组合规范 3.1 Header 三段式）
+- [x] 删除错误的 `HBox.setHgrow(titleLabel, Priority.ALWAYS)` 模式
+
+**子阶段 7.3：MessageAnt 位置功能**
+- [x] 添加 `Position.TOP` / `Position.BOTTOM` / `Position.CENTER` 三个位置
+- [x] 实现独立堆叠管理（顶部/底部/中间消息互不影响）
+- [x] 中间位置只显示一个消息（新消息替换旧消息）
+- [x] 动画差异：顶部/底部滑入，中间淡入
+- [x] 支持手动关闭（`MessageResult.close()`）
+
+**子阶段 7.4：MyDemo 完善**
+- [x] 添加 ScrollPane 滚动布局（内容超出窗口高度时自动显示滚动条）
+- [x] 添加 MessageAnt、NotificationAnt、AlertAnt 展示
+- [x] 添加"中间 Info"按钮展示 CENTER 位置消息
+
+**文档更新**：
+- [x] README_CN.md：更新 MessageAnt 文档，添加详细的位置功能说明
+- [x] README_CN.md：更新主题加载示例，改用 ThemeManager
+- [x] PLAN.md：添加 M7 里程碑记录
+
+**影响文件**：
+- `core/container/` (8 个 Builder 类)
+- `core/util/Spacers.java`
+- `core/layout/SceneLayout.java`
+- `core/layout/OverlayManager.java`
+- `component/MessageAnt.java`
+- `component/DrawerAnt.java`
+- `component/ModalAnt.java`
+- `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/MyDemo.java`
+- `README_CN.md`
+
+### 🎯 M8 WatermarkAnt 组件实现（2026-05-21）
+
+**动机**：用户需要水印组件，用于在内容上叠加水印（文字或图片），常用于文档保护、版权声明等场景。
+
+**产出**：
+1. 创建 WatermarkAnt 组件（支持文字水印和图片水印）
+2. 添加 CSS 样式定义（theme-base.less）
+3. 添加 CSS 常量（CssClasses.java）
+4. 更新文档（README_CN.md）
+
+**关键改动**：
+
+**子阶段 8.1：核心实现（P0）**
+- [x] 创建 `WatermarkAnt.java`（文字水印 + 图片水印 + 平铺模式）
+- [x] 添加 CSS 常量到 `CssClasses.java`（WATERMARK / WATERMARK_LAYER / WATERMARK_TEXT / WATERMARK_TEXT_GROUP / WATERMARK_IMAGE）
+- [x] 添加 LESS 样式到 `theme-base.less`（`.jfx-watermark` 系列选择器）
+- [x] 更新 `README_CN.md`（添加组件清单 + 详细使用说明）
+- [x] 更新 `PLAN.md`（添加 M8 里程碑记录）
+
+**子阶段 8.2：扩展功能（P2）**
+- [x] 支持自定义水印内容（Node 类型，通过 Supplier 工厂方法）
+- [x] 支持防删除保护（监听子节点列表变化，自动恢复水印层）
+- [x] 添加 Demo 示例（自定义水印节点 + 防删除保护）
+- [x] 更新 `README_CN.md`（添加新功能说明和 API 文档）
+
+**核心特性**：
+- ✅ 文字水印：支持单行/多行文字
+- ✅ 图片水印：支持自定义图片
+- ✅ 自定义水印：支持任意 Node 类型（通过工厂方法）
+- ✅ 平铺模式：自动平铺填充整个容器
+- ✅ 旋转角度：支持自定义旋转角度（默认 -22°）
+- ✅ 间距控制：支持自定义水印间距（gapX / gapY）
+- ✅ 透明度控制：支持自定义水印透明度（默认 0.15）
+- ✅ 字体大小：支持自定义字体大小（默认 16px）
+- ✅ 防删除保护：监听 DOM 变化，自动恢复水印层
+
+**设计说明**：
+- 使用 StackPane 叠层：底层是内容，顶层是水印层
+- 水印层使用 Pane 容器，通过绝对定位平铺水印节点
+- 水印节点使用 Rotate 变换实现旋转
+- 监听容器尺寸变化，动态生成水印节点
+- 所有颜色和样式通过 CSS 控制（`.jfx-watermark`）
+- 防删除保护通过 ListChangeListener 监听子节点变化，自动恢复被移除的水印层
+- 自定义水印节点通过 Supplier 工厂方法创建，避免节点克隆问题
+
+**影响文件**：
+- `component/WatermarkAnt.java`（新建，450+ 行）
+- `core/css/CssClasses.java`（添加 5 个常量）
+- `css/less/theme-base.less`（添加 `.jfx-watermark` 样式）
+- `README_CN.md`（添加组件清单 + 详细说明 + P2 新功能）
+- `PLAN.md`（添加 M8 里程碑）
+- `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/MyDemo.java`（添加 5 个示例）
+
+**待完成（可选）**：
+- [ ] 支持 Canvas 渲染模式（性能优化，适用于大量水印节点的场景）
+- [ ] 支持水印层 z-index 控制（允许用户调整水印层的层级）
+- [ ] 支持水印节点缓存（避免重复创建相同的水印节点）
+
+### 🎯 M9 P1 基础设施二期完成（2026-05-21）
+
+**动机**：完成 P1 基础设施二期的所有任务，进一步提升代码复用性和 API 一致性。
+
+**产出**：
+1. 创建 Headers 工厂类（统一 title+extra Header 布局）
+2. 弃用 Color-based API（AnchorAnt/StatisticAnt）
+3. 完全移除 Layouts.java（已废弃）
+
+**关键改动**：
+
+**子阶段 9.1：抽公共 Header 工厂**
+- [x] 创建 `Headers.java` 工厂类（`core/util/Headers.java`）
+- [x] 实现"左 + 右"布局：左侧标题 + 中间弹性填充 + 右侧操作区
+- [x] 使用 Region spacer 实现弹性填充（符合组件组合规范 3.1）
+- [x] 重构 CardAnt 和 SurfaceAnt（从 20+ 行减少到 7 行）
+- [x] PageAnt 因有 subtitle 特殊需求，暂时保留原实现
+
+**子阶段 9.2：弃用 Color-based API**
+- [x] 为 `AnchorAnt.inkColor(Color)` 添加 `@Deprecated` 注解
+- [x] 为 `StatisticAnt.valueColor(Color)` 添加 `@Deprecated` 注解
+- [x] 添加详细的废弃说明，引导用户改用 styleClass
+- [x] 保留向下兼容性（旧代码仍可运行但会有编译警告）
+
+**子阶段 9.3：完全移除 Layouts.java**
+- [x] 删除已废弃的 `Layouts.java` 文件
+- [x] 更新 JFXiumDemo.java 中唯一的使用处，改用 `VBoxBuilder.create()`
+- [x] 移除 JFXiumDemo.java 中的 `import Layouts` 语句
+- [x] 编译验证通过（整个项目编译成功）
+
+**影响文件**：
+- `core/util/Headers.java`（新建）
+- `component/CardAnt.java`（重构）
+- `component/SurfaceAnt.java`（重构）
+- `component/AnchorAnt.java`（添加 @Deprecated）
+- `component/StatisticAnt.java`（添加 @Deprecated）
+- `core/layout/Layouts.java`（已删除）
+- `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/JFXiumDemo.java`（更新）
+
+**设计说明**：
+- Headers 工厂实现了"左 + 右"布局，符合 Ant Design 规范
+- 使用 Region spacer 实现弹性填充，避免 Label Hgrow 陷阱
+- Color-based API 保留向下兼容，但引导用户改用 styleClass
+- Layouts.java 完全移除，所有引用已迁移到独立 Builder 类
+
+### 🎯 M10 CardAnt 功能补齐（2026-05-21）
+
+**动机**：CardAnt 缺失 Ant Design Card 的多个核心功能（loading / cover / actions / tabList），需要补齐以提升实用性。
+
+**产出**：
+1. 重构 CardAnt 结构（清晰分离 Cover / Header / Body / Footer）
+2. 新增 loading 状态（骨架屏）
+3. 新增 cover 封面图片支持
+4. 新增 actions 底部操作按钮
+5. 新增 tabList 标签页支持
+6. 新增 size / type 样式变体
+
+**关键改动**：
+
+**子阶段 10.1：结构重构**
+- [x] 重构 build() 方法，清晰分离 Cover / Header / Body / Footer
+- [x] 每个部分独立构建方法（buildCover / buildHeader / buildBody / buildFooter）
+- [x] 符合 Ant Design 语义结构
+
+**子阶段 10.2：新增功能**
+- [x] **loading** - 加载状态，显示骨架屏
+- [x] **cover** - 封面图片支持（支持路径和自定义 Node）
+- [x] **actions** - 底部操作按钮列表
+- [x] **tabList** - 标签页支持（多标签切换）
+- [x] **activeTabKey / defaultActiveTabKey** - 标签页激活状态管理
+- [x] **onTabChange** - 标签页切换回调
+- [x] **tabBarExtraContent** - 标签栏额外内容
+- [x] **size** - 卡片尺寸（MEDIUM / SMALL）
+- [x] **type** - 卡片类型（DEFAULT / INNER）
+
+**子阶段 10.3：样式和文档**
+- [x] 添加 CSS 常量到 `CssClasses.java`（13 个新常量）
+- [x] 添加 LESS 样式到 `theme-base.less`（完整样式定义）
+- [x] 更新 `README_CN.md`（添加详细使用说明和 API 文档）
+- [x] 编译验证通过
+
+**核心特性**：
+- ✅ Cover：封面图片支持（在 header 之前）
+- ✅ Header：标题栏 + 标签页导航（可选）
+- ✅ Body：内容区（必选，可包含标签页内容）
+- ✅ Footer：操作按钮区（可选）
+- ✅ Loading：骨架屏加载状态
+- ✅ Tabs：多标签页切换支持
+- ✅ Size：两种尺寸（medium / small）
+- ✅ Type：内嵌卡片样式
+
+**影响文件**：
+- `component/CardAnt.java`（重构，新增 9 个功能）
+- `core/css/CssClasses.java`（新增 13 个常量）
+- `css/less/theme-base.less`（新增 80+ 行样式）
+- `README_CN.md`（添加详细说明）
+
+**设计说明**：
+- 严格遵循 Ant Design Card 语义结构（Cover + Header + Body + Footer）
+- 每个部分独立构建方法，职责单一
+- 标签页通过 Label 实现轻量级切换
+- 所有颜色和样式通过 CSS 控制
+- 骨架屏复用 SkeletonAnt 组件
+
+### 🎯 M11 TableAnt 高级化重构 + LESS 选择器陷阱修复（2026-05-23）
+
+**动机**：`.column(...)` 系列只支持基础取值，列宽/排序/操作列等高级能力都要 build() 后用原生 API 救场，链式 API 断裂。同时 demo 验收时发现 `.align(...)` API 完全没生效。
+
+**产出**：
+1. TableAnt 路 B 重构：`.column(...)` 返回 `ColumnBuilder`，强制 `.end()` 回链
+2. 新增 `ActionColumnBuilder` 操作列糖（admin 列表页高频场景）
+3. 修复 LESS `align-*` 选择器陷阱（隐性 bug，影响所有列对齐）
+4. SKILL.md 新增第 14 条"复合选择器 vs 后代选择器"约束
+
+**关键改动**：
+
+**子阶段 11.1：TableAnt 路 B 重构**
+- [x] 列级 Builder（`ColumnBuilder<T, V>`）：`width / minWidth / maxWidth / resizable / sortable / sorter / align / visible / end`
+- [x] 表级 API：`resizePolicy(CONSTRAINED/UNCONSTRAINED) / sortable / defaultSortBy(title, SortType)`
+- [x] `.column / .numberColumn / .booleanColumn / .nodeColumn` 全部返回 `ColumnBuilder`
+- [x] nodeColumn 默认 `sortable=false`（Node 不可比较）
+- [x] 选择列默认禁用排序和拖宽
+
+**子阶段 11.2：actionColumn 语法糖**
+- [x] `.actionColumn(title).action(label, handler).type(...).danger().end()` 链式 API
+- [x] 修饰方法（`.type / .danger`）作用于"最后一个 action"
+- [x] 内部用 `nodeColumn` + `HBox` 实现，按钮垂直水平居中
+- [x] 列宽默认 160，可 `.width(...)` 调整
+
+**子阶段 11.3：LESS 选择器陷阱修复（顺手发现的隐性 bug）**
+- [x] 旧：`.table-view .align-left .column-header`（**后代**选择器，**永远不匹配**）
+- [x] 新：`.table-view .column-header.align-left`（**复合**选择器，正确语义）
+- [x] 同步修 `.label` 子节点对齐、`booleanColumn` 居中、`actionColumn` `Pos.CENTER`
+- [x] booleanColumn / 选择列默认挂 `align-center`
+
+**子阶段 11.4：约束沉淀**
+- [x] `项目约束与计划/SKILL.md` 第 14 条："复合选择器 vs 后代选择器"
+- [x] 末尾"为什么这些很重要"新增第 3 条：复合选择器陷阱（编译/运行都不报错的隐性 bug）
+
+**核心特性**：
+- ✅ 列宽：`.width(pref)` / `.width(pref, min, max)` / `.minWidth / .maxWidth`
+- ✅ 列排序：`.sortable(boolean)` / `.sorter(Comparator)` / 表级 `.defaultSortBy(...)`
+- ✅ 列宽策略：`.resizePolicy(CONSTRAINED / UNCONSTRAINED)`
+- ✅ 操作列糖：`actionColumn` 一行写多按钮，自带居中
+- ✅ 列对齐：`.align(LEFT/CENTER/RIGHT)`（修复后真正生效）
+- ✅ 列可见：`.visible(boolean)`（为后续"列管理"埋点）
+
+**影响文件**：
+- `component/TableAnt.java`（重写，~380 行；老代码 ~240 行）
+- `css/less/theme-base.less`（修 align-* 选择器 + 新增 booleanColumn 居中）
+- `jfxium-demo/.../JFXiumDemo.java`（适配路 B：补 `.end()`）
+- `jfxium-demo/.../MyDemo.java`（新增 Table 高级示例：5 列 + actionColumn + UNCONSTRAINED + 默认排序）
+- `.kiro/steering/项目约束与计划/SKILL.md`（新增第 14 条约束）
+
+**设计说明**：
+- 路 B 选择基于影响面评估：项目内只有 1 处真实调用（JFXiumDemo），破坏式重构成本可控
+- ColumnBuilder 与 Builder 分离，避免"魔法"（持有 lastColumn 字段隐式修改）
+- ActionColumnBuilder 按"最后一个 action"接受修饰，符合阅读直觉
+- LESS bug 修复同时把所有列对齐相关样式串起来一致化（包括 .label 子节点）
+
+**踩坑记录（沉淀进 SKILL）**：
+- LESS 选择器组合方式：`.A .B`（后代，带空格）≠ `.A.B`（复合，无空格）
+- JavaFX 把 styleClass 直接挂在 column-header / table-cell 节点上，**必须用复合选择器**
+- 这类 bug 编译/运行都不报错，只能靠肉眼看截图发现样式没生效——已沉淀为 SKILL 第 14 条强约束
+
+### 🎯 M11.1 TableAnt 表头/分割线/对齐增强（2026-05-23）
+
+**动机**：M12.4 用户列表页验收时发现 4 个真实痛点：表头无上下边距/无分割线、内容贴顶不居中、排序箭头不可见、列宽拖拽点不可见、表头与内容对齐不能拆分。
+
+**产出**：
+
+**子阶段 11.1.1：表头视觉修复**
+- [x] 修对表头高度选择器：`.column-header-background -fx-pref-height: 48px`（之前错挂在 `.column-header` 不生效）
+- [x] 列分割线：默认显示淡淡的右竖线，让用户找到拖拽点
+- [x] 表头 hover 高亮 + 手型光标（提示"可点击排序"）
+- [x] 排序箭头显式着色（默认 `-color-fg-muted`，激活时 `-color-accent-emphasis`）
+- [x] 列宽拖拽时显示主题色 `.column-resize-line`
+
+**子阶段 11.1.2：双重对齐 API**
+- [x] 拆分 `align()` 为 `headerAlign()` + `contentAlign()`
+- [x] 老 `.align(...)` 保留兼容，等价"同时设两者"
+- [x] LESS 新增 `.align-header-*` 和 `.align-content-*` 6 个 styleClass
+
+**子阶段 11.1.3：内容区分割线 4 种模式**
+- [x] 新增 `Border` 枚举：`NONE / HORIZONTAL / VERTICAL / BOTH`
+- [x] `.borders(Border)` 替代老 `.bordered(boolean)`（后者标 `@Deprecated`）
+- [x] LESS 4 套样式 `.jfx-table-border-{none,h,v,both}`
+
+**子阶段 11.1.4：隐藏表头**
+- [x] 新增 `.showHeader(false)` API
+- [x] LESS `.jfx-table-no-header` 把 `.column-header-background` 高度设 0
+
+**子阶段 11.1.5：行高保护**
+- [x] 撤销错误的 `-fx-cell-size: 54px`（强制裁切高内容）
+- [x] 改用 `.table-row-cell -fx-min-height: 48px`（自适应但有下限）
+
+**关键改动**：
+- `component/TableAnt.java`：`Border` 枚举 + `borders/showHeader/headerAlign/contentAlign` 4 个新方法
+- `core/css/CssClasses.java`：新增 `TABLE_BORDER_*` 4 个 + `TABLE_NO_HEADER` 共 5 个常量
+- `css/less/theme-base.less`：~120 行新样式（4 边框模式 + 隐藏表头 + 双重对齐 + 排序箭头 + 列分割线 + 表头 hover）
+- `jfxium-demo/.../UserListPage.java`：换用新 API（`.borders(HORIZONTAL)` + 创建时间列双重对齐）
+
+**踩坑实证**：
+- ❌ `-fx-min-height` 设在 `.column-header`（错误：仅控制单列文字框，不控整体表头高度）
+- ✅ `-fx-pref-height` 设在 `.column-header-background`（外层容器，整行表头）
+- ❌ `-fx-cell-size` 强制裁切（导致 actionColumn 按钮变 "..."）
+- ✅ `.table-row-cell -fx-min-height` 自适应（容纳高内容，纯文字行也有下限）
+
+**API 兼容性**：老代码 `.bordered(true)` / `.bordered(false)` / `.align(...)` 全部继续可用（`@Deprecated` 注解但保留实现）。
+
+### 🎯 M11.2 TableAnt size 三态 + 表头视觉对齐 AtlantaFX（2026-05-23）
+
+**动机**：M11.1 之后 TablePage 验收时发现：
+1. `.compact(true)` 只改了行高，没改表头高度和 padding，半残实现
+2. 排序箭头时大时小、位置错乱、消失/重叠等多次回归
+3. 表头右上角"色块不协调"、最后一列右分割线问题
+
+直接对照 AtlantaFX 源码（`/Users/openai/workspace/work_open/atlantafx/styles/src/components/_data.scss`）一次性修干净。
+
+**产出**：
+
+**子阶段 11.2.1：Size 三态**
+- [x] 新增 `Size` 枚举（SMALL / MIDDLE / LARGE）+ `.size(Size)` API
+- [x] LESS 三档样式：表头高 / 行高 / padding / 字号联动
+  - SMALL：40 / 36 / 6×8 / 13px
+  - MIDDLE（默认）：48 / 48 / 8×12 / 14px
+  - LARGE：56 / 56 / 14×16 / 15px
+- [x] 老 `.compact(boolean)` 保留兼容，标 `@Deprecated`
+- [x] 删除硬编码 `setPrefHeight(300)`（让父容器决定）
+
+**子阶段 11.2.2：表头视觉完全对齐 AtlantaFX**
+- [x] **`.column-header` padding=0**，padding 下放到内部 `.label`（修过去贴顶/排序按钮重叠的根因）
+- [x] **`.column-header > GridPane`** 是排序区容器（之前不知道这一层）
+- [x] **`.arrow` 用 AtlantaFX 标准**：padding `3 4 3 4` + shape `"M 0 0 h 7 l -3.5 4 z"`
+- [x] **`.sort-order-dots-container` 保留默认 padding**（之前压成 0 导致重叠）
+- [x] **`.column-header-background` 染色 + 去内阴影**（之前的"右上角色块"根因）
+- [x] **`.filler / .show-hide-columns-button`** 透明背景 + 底部 1px 边框（AtlantaFX 同款）
+
+**关键改动**：
+- `component/TableAnt.java`：新增 `Size` 枚举 + `.size(Size)` 方法
+- `core/css/CssClasses.java`：新增 `TABLE_SIZE_SMALL/MIDDLE/LARGE` 常量
+- `css/less/theme-base.less`：完全重写表头/箭头/分割线样式，对齐 AtlantaFX
+- `jfxium-demo/.../showcase/pages/TablePage.java`：新增 sectionSizes 三档对比展示
+
+**踩坑实证（5 次）**：
+1. ❌ `-fx-min-height` 设在 `.column-header`（不影响整体表头高度）
+2. ❌ `-fx-cell-size` 强制裁切高内容（actionColumn 按钮变 "..."）
+3. ❌ `.arrow` 自定义 padding=0 + 自定义 shape（导致箭头消失或重叠）
+4. ❌ `.sort-order-dots-container` 压成 0（导致箭头与文字重叠）
+5. ❌ `.column-header` 自身设 padding（导致排序区无法正确布局）
+
+**正解（AtlantaFX 同款）**：
+- ✅ `.column-header-background -fx-pref-height: 48px` 控整体表头高度
+- ✅ `.table-row-cell -fx-min-height: 48px` 弹性行高
+- ✅ `.arrow padding 3×4` + shape `"M 0 0 h 7 l -3.5 4 z"` 是 modena 默认值
+- ✅ `.sort-order-dots-container padding: 2px 0` 保留
+- ✅ `.column-header padding: 0`，padding 下放到 `.label` 和 `> GridPane`
+
+**已知不可完美解决**：JavaFX 表头右上角 `show-hide-columns-button` 区域 + 滚动条交叉点，连 AtlantaFX 也只能做到"染色 + 加底线"——这是 JavaFX TableView 的固有限制，不是 LESS 能完美修的。
+
+### 🎯 M14 ShowcaseDemo 控件展示骨架（2026-05-23）
+
+**动机**：原 P2.1 Web Admin demo 做到 M12.4 后，发现"业务 demo 工程量大、复用价值低"，转向"控件 Showcase Demo"——每个组件一页，源码即文档。
+
+**产出**：
+- [x] 删除老 demo：`JFXiumDemo.java` / `MyDemo.java`
+- [x] 新增 `showcase/` 包：4 个骨架文件（ShowcaseDemo / ShowcaseFrame / ShowcasePage / ShowcaseSection）
+- [x] 新增 `pages/TablePage.java`：M11 + M11.1 + M11.2 全功能展示，10 个 Section
+- [x] 切换 mainClass 到 `ShowcaseDemo`
+- [x] AtlantaFX 源码作为"复杂 JavaFX 控件 LESS 标准答案"参考路径
+
+**Showcase 设计要点**：
+- 左侧菜单按 Ant Design 7 类分组（通用/布局/导航/数据录入/数据展示/反馈/其他）
+- 每个 Section = CardAnt + 标题 + 描述 + 演示节点 + 折叠代码块（CodeBlockAnt）
+- 切换组件 = 替换 ScrollPane content（无路由参数，简单直接）
+- 沿用 AdminShell 的 IconAnt SVG path 体系
+
+**保留的 admin demo**：作为业务模板参考实现保留（M12.1-M12.4），后续 P2.2 模板沉淀的参考。
+
+### 🎯 M15 MenuAnt 增强：4 模式正交（2026-05-23）
+
+**动机**：原 MenuAnt 只支持 INLINE 单模式，缺横向导航 / 选中态 / 暗色 / 折叠四种 admin 高频场景。一次性补齐，对齐 Ant Design Menu 全功能。
+
+**产出**：4 个正交特性（任意组合），`Pane build()` 替代 `VBox build()` 不再撒谎。
+
+**子阶段 15.1：横向模式（Mode）**
+- [x] 新增 `Mode` 枚举：INLINE（默认）/ HORIZONTAL
+- [x] HORIZONTAL 模式 build() 返回 `HBox`，顶级横排，subMenu Popup 下拉
+- [x] `MenuItem` 拆出 `buildInline()` 和 `buildHorizontal()` 两套渲染
+- [x] `Builder.build()` 返回类型从 `VBox` 改为 `Pane`（不再撒谎）
+
+**子阶段 15.2：选中态（selectedKey）**
+- [x] `MenuItem.key` 字段 + 所有 `item / subMenu` 加带 key 的重载
+- [x] `Builder.selectedKey(String)` + `onSelect(Consumer<String>)` API
+- [x] LESS 选中态视觉：
+  - INLINE：背景 `-color-accent-subtle` + 左侧 3px 主题色竖线 + 文字主题色加粗
+  - HORIZONTAL：底部 3px 主题色横线 + 文字主题色加粗
+- [x] `BuildContext` 类传递全菜单共享状态（mode/theme/collapsed/selectedKey/onSelect），解耦内部类
+
+**子阶段 15.3：暗色主题（Theme.DARK）**
+- [x] 新增 `Theme` 枚举：LIGHT（默认）/ DARK
+- [x] LESS `.menu-dark` 样式：
+  - 背景 `#001529`（Ant Design 默认侧栏深色）
+  - 文字 `rgba(255,255,255,0.85)`
+  - hover `rgba(255,255,255,0.08)`
+  - 选中态主题色填充
+  - subMenu body 更深一档 `#000c17`
+  - `.jfx-icon-path` 自动变白色（无需用户改 styleClass）
+
+**子阶段 15.4：折叠模式（collapsed）**
+- [x] `Builder.collapsed(boolean)` API（仅 INLINE 有效，HORIZONTAL 自动忽略）
+- [x] LESS `.menu-collapsed` 样式：宽度 64px、padding=0
+- [x] `MenuItem.buildInline` 在 collapsed 下隐藏文字、改居中对齐
+- [x] `SubMenuBuilder` 折叠时改用 `buildInlineCollapsed`：subMenu 改 Popup 从右侧弹出
+- [x] `MenuGroup` / `MenuDivider` 在 collapsed 下隐藏标题/收窄
+- [x] 与 DARK 主题正交（可叠加 `.collapsed(true).theme(DARK)` = Ant Pro 经典样式）
+
+**关键改动**：
+- `component/MenuAnt.java`：完整重写，~370 行 → ~470 行，加 4 个枚举/API
+- `core/css/CssClasses.java`：新增 `MENU_DARK / MENU_COLLAPSED / MENU_INLINE / MENU_HORIZONTAL / MENU_ITEM_SELECTED / MENU_SUBMENU_ARROW_BOX` 6 个常量
+- `css/less/theme-base.less`：新增 ~80 行（INLINE/HORIZONTAL/DARK/COLLAPSED/选中态）
+- `jfxium-demo/.../showcase/pages/MenuPage.java`：新建，7 个 Section 全功能展示
+
+**老调用方迁移**：
+- `MenuAnt.create().build()` 返回类型从 `VBox` 改为 `Pane`
+- `AdminShell` / `ShowcaseFrame` 加 `(VBox)` cast 兼容（仅这两处）
+
+**API 兼容性**：
+- 老 `.item(text, onClick)` / `.item(text, icon, onClick)` 全部继续可用
+- `.subMenu(text)` / `.subMenu(text, icon)` 继续可用
+- 新加 key 的重载是新增方法，不破坏老 API
+
+**设计要点**：
+- **4 个特性正交**：Mode / Theme / Collapsed / SelectedKey 任意组合
+- **collapsed 仅 INLINE 有效**：HORIZONTAL 没"折叠"语义，build() 自动 `effectiveCollapsed = false`
+- **BuildContext 模式**：全菜单共享状态打包，避免 MenuItem 持有 Builder 引用
+- **subMenu 双 Popup 来源**：HORIZONTAL 从下方 / collapsed 从右侧，复用同一套 Popup 逻辑
+
+### 🎯 M16 Showcase 5 个组件页 + WatermarkAnt 重写（2026-05-23）
+
+**动机**：M14 ShowcaseDemo 骨架完成后只有 1 个 Table 页，需要快速覆盖更多组件。同时 WatermarkAnt 老实现性能差（80+ 节点 + 反复重建），需要按 Element Plus 标准做法重写。
+
+**子阶段 16.1：4 个 Showcase 页快速覆盖**
+- [x] **CardPage**（9 Section）：M10 9 个新功能全展示（基础/4阴影/2尺寸/2类型/Hoverable/Actions/Tabs/Loading/Cover）
+- [x] **ButtonPage**（8 Section）：10 type / 3 size / 2 shape / disabled / ghost / block / icon / loading
+- [x] **WatermarkPage**（5 Section）：单行/多行文字 / 自定义样式 / 自定义 Node / 防删除保护
+- [x] **MenuPage**（7 Section，M15 同步做）：INLINE/HORIZONTAL × LIGHT/DARK × 折叠 × 选中态全组合
+
+**子阶段 16.2：admin demo 接 selectedKey**
+- [x] AdminShell sider 给 menu item 加 key
+- [x] `router.onChange()` 触发 `rebuildSider()` 让选中态跟随当前路由
+- [x] 验证 admin demo 实战体验，确认 M15 API 好用
+
+**子阶段 16.3：WatermarkAnt 重写（性能 + 视觉双优化）**
+
+**触发原因**：WatermarkPage 验收时发现 5 个 Section 都不渲染水印——根因是 `getBoundsInParent()` 在节点未入场景图时返回 0，而 ScrollPane 嵌套场景下时序更复杂。
+
+**根本改造**：放弃"循环创建 80+ 节点"的方案，对齐 Element Plus useClips.ts 的 Canvas snapshot + BackgroundImage 平铺方案。
+
+**实现对照**：
+
+| 步骤 | 我们的实现 | Element Plus useClips.ts |
+|---|---|---|
+| 测文字尺寸 | `Text.getLayoutBounds()` | `ctx.measureText()` |
+| 画 contentCanvas | `gc.fillText()` 多行 | `ctx.fillText()` 多行 |
+| 旋转到 rCanvas | `gc.rotate(rotate) + drawImage` | `rCtx.rotate(angle) + drawImage` |
+| 算紧凑边界 | 4 角点 × 旋转矩阵 min/max | 同 |
+| 错位 3 次 | `drawClip()` × 3（中/上/下） | `drawImg()` × 3 |
+| 输出 | `Canvas.snapshot()` → WritableImage | `toDataURL()` |
+| 平铺 | `BackgroundImage(REPEAT, REPEAT)` | `background-image + repeat` |
+
+**性能对比**：
+
+| 项 | 老实现 | M16.3 新实现 |
+|---|---|---|
+| 节点数 | 80+ Label/HBox | **1 Region + 1 Image** |
+| 滚动/缩放 | clear + 重建 80+ 节点 | **零开销**（CSS 自动平铺） |
+| 错位 | 网格对齐 | 对角错位 |
+| DPR | 不处理 | `Screen.getOutputScaleX()` 适配 |
+| 代码 | ~470 行 | ~360 行 |
+
+**新增 API**：
+- `.color(Color)` —— 文字颜色（Element Plus 的 `font.color` 对应）
+- `.fontFamily(String)` —— 字体族
+- `.fontWeight(FontWeight)` —— 字重
+- `.fontGap(double)` —— 多行文字行间距（默认 3）
+
+**关键改动**：
+- `component/WatermarkAnt.java`：完整重写（~470 → ~360 行）
+- `core/css/CssClasses.java`：保留旧常量（向下兼容）
+- `jfxium-demo/.../showcase/pages/`：新增 ButtonPage / CardPage / WatermarkPage（MenuPage 在 M15 已加）
+
+**API 兼容性**：所有原 API（content / text / image / customNode / preventRemoval / rotate / opacity / fontSize / gapX / gapY / imageWidth / imageHeight）100% 保留。
+
+**踩坑实证**：
+- ❌ 老 WatermarkAnt 用 `getBoundsInParent()` 测量节点尺寸：节点未入场景图时返回 0，导致整个水印不渲染（ScrollPane 嵌套场景必发）
+- ✅ 正解：用 `Text.getLayoutBounds()` 不依赖场景图，可立即测量；自定义 Node 用 `snapshot()` 后从 Image 拿尺寸
+- ⚠️ Canvas snapshot 时要 `SnapshotParameters.setFill(Color.TRANSPARENT)`，否则默认白底会污染水印
+
+**对齐设计哲学**：M15 SKILL 核心原则提到的"吸取 Ant + Element Plus + AtlantaFX 三家优点"——M16 是第一次明确按 Element Plus 源码实现的组件。
+
+### 🎯 M17 Showcase 5 个新页（admin 高频四大件 + Switch）（2026-05-23）
+
+**动机**：M16 完成 5 页后，admin 高频组件还差 Input/Switch/Tag/Modal/Drawer 五个，一次性补齐覆盖 admin 全栈。
+
+**产出**：
+
+**Showcase 新增 5 页 / 24 Section**：
+- [x] **SwitchPage**（4 Section）：基础 / 文字标签 / 启用禁用 / 状态变化回调
+- [x] **TagPage**（5 Section）：6 type / 3 size / 3 shape / 边框开关 / 可关闭
+- [x] **InputPage**（5 Section）：基础 / 3 size / 状态 / 配 Label 表单 / 竖向表单组合
+- [x] **ModalPage**（5 Section）：基础 / 确认对话框 / 关闭回调 / 禁止遮罩 / 自定义 Footer
+- [x] **DrawerPage**（5 Section）：4 方向 / 尺寸 / 表单 Drawer / Extra 标题区 / 禁止遮罩
+
+**ShowcaseDemo 总览**：
+```
+通用：     Button(8) + Switch(4)
+导航：     Menu(7)
+布局：     Card(9)
+数据录入： Input(5)
+数据展示： Table(10) + Tag(5)
+反馈：     Modal(5) + Drawer(5)
+其他：     Watermark(5)
+=========================================
+共 10 页 / 63 Section，覆盖 Ant Design 7 大类
+```
+
+**踩坑实证（API 不一致）**：
+- ❌ 写 ModalPage / DrawerPage 时凭印象 `ModalAnt.create().xxx().open(node)`，编译失败
+- ✅ 实际 API：`build()` 返回 `ModalResult` / `DrawerResult`，`open()` 在 Result 上
+- 📝 与 Button/Card/Table 等 `build()` 直接返回最终节点的模式**不一致**
+
+**API 不一致归类**：
+| 类型 | 代表 | `build()` 返回 |
+|---|---|---|
+| 直接节点型 | Button / Input / Card / Table / Watermark | 直接可用的 Node |
+| Result 包装型 | Modal / Drawer / Dropdown | Result 对象，需要 `.open()` 触发 |
+
+**关键改动**：
+- `jfxium-demo/.../showcase/pages/`：新增 5 个页
+- `jfxium-demo/.../showcase/ShowcaseDemo.java`：注册 5 个新页
+
+**新增 SKILL 候选条目**：建议补 SKILL 第 16 条"返回类型契约：直接节点型 vs Result 包装型"，但本轮先不动 SKILL，等下次 API 不一致再次踩坑时再沉淀。
+
+### 🎯 M18 包结构归约 + CrudTemplate 业务模板沉淀（2026-05-24）
+
+**动机**：M12.4 沉淀了 FilterBarAnt 业务级组件，做完 ShowcaseDemo 后用户提出真实痛点——
+
+> "card 是高频组件，要功能丰富，类似 BorderPane 顶部+中部+底部，可包容 TableView 模板，顶部塞删改，中部表格，底部分页"
+
+进一步讨论发现两个深层问题：
+1. CardAnt 是装饰容器（带边框/阴影/cover/actions），扩展为"业务页骨架"会污染语义；
+2. 老 PageAnt 是早期产物，命名含糊，subtitle/actions/content/children API 拼凑式，**已被 CrudTemplate 完全覆盖**；
+3. 整个 `jfxium/component/` 包名"组件"过度泛化，把"原子控件"和"业务模板"塞在一起，规模化后命名空间紊乱。
+
+**讨论决策**（按用户选择 A/B 顺序）：
+- **B 方案**：新增独立组件而非扩展 CardAnt
+- **A 方案**：删除老 PageAnt（推翻重来）
+- **A 方案**：新组件命名 `CrudTemplate`（不带 Ant 后缀，明确"业务模板"语义）
+- **A 方案**：放在新建 `jfxium/template/` 包下（与 `component/` 严格区分）
+
+**产出**：
+
+**子阶段 18.1：删除老 PageAnt**
+- [x] 删除 `component/PageAnt.java`
+- [x] 删除 CssClasses 中 5 个 `PAGE_*` 常量（PAGE / PAGE_HEADER / PAGE_TITLE / PAGE_SUBTITLE / PAGE_ACTIONS）
+- [x] 删除 `theme-base.less` 中 `.page / .page-header / .page-title / .page-subtitle / .page-actions` 整段
+- [x] 编译产物 8 套主题 CSS 全部重新生成（`mvn install -pl jfxium`）
+
+**子阶段 18.2：新建 CrudTemplate**
+- [x] 新建 `jfxium/template/` 包（项目内首个非 component 子包）
+- [x] 实现 `template/CrudTemplate.java`（~270 行 + AbstractStyleBuilder 继承）
+- [x] CssClasses 新增 5 个常量：`CRUD_TEMPLATE / _TITLE / _TOPBAR / _BODY / _BOTTOMBAR`
+- [x] LESS 新增 `.crud-template` 系列样式（默认无边框 + .bordered 修饰类支持）
+- [x] 装饰能力：bordered / topbarSpacing / bottombarSpacing / sectionGap / padding（继承自 AbstractStyleBuilder）
+
+**子阶段 18.3：API 设计要点**
+- [x] 底层 BorderPane（top/center/bottom）：顶/底自适应内容高度，center 撑满
+- [x] topbar / bottombar 各为 HBox 三段式：`[ left... ] spacer [ right... ]`（用独立 Region 做 spacer，符合组件组合规范 3.1）
+- [x] title 可选：null 不渲染，topbar 顶到顶部
+- [x] 任一边没节点不渲染该侧（避免空 HBox 占位）
+- [x] `build()` 诚实返回 `BorderPane`（不撒谎）
+
+**子阶段 18.4：CrudTemplatePage 验收**
+- [x] 新建 `showcase/pages/CrudTemplatePage.java`（4 Section）
+  - Section 1：经典 CRUD 列表页（搜索 + 筛选 + 新增 + 表格 + 分页）
+  - Section 2：表单页（仅 body + 底部右侧提交按钮）
+  - Section 3：仪表盘（顶部刷新/导出 + 4 列统计卡矩阵）
+  - Section 4：极简（只有 title + body）
+- [x] ShowcaseDemo 注册 CrudTemplatePage（归类到"布局"分类）
+
+**关键改动**：
+- `jfxium/template/CrudTemplate.java`（新建，~270 行）
+- `core/css/CssClasses.java`（删 5 个 PAGE_* 加 5 个 CRUD_TEMPLATE_*）
+- `css/less/theme-base.less`（删 .page-* 系列加 .crud-template 系列）
+- `component/PageAnt.java`（删除）
+- `jfxium-demo/.../showcase/pages/CrudTemplatePage.java`（新建）
+- `jfxium-demo/.../showcase/ShowcaseDemo.java`（注册）
+- 文档同步：`README_CN.md` / `README.md` / `docs/COMPONENTS.md` / `docs/LAYOUT.md` 中 PageAnt 引用替换为 CrudTemplate（保留迁移说明）
+
+**API 兼容性破坏**：
+- ❌ `PageAnt.create()` 不存在 → 用 `CrudTemplate.create()`
+- ❌ `.subtitle(...)` API 已删除 → CrudTemplate 不支持副标题（admin 后台实际用得很少）
+- ❌ `.actions(...)` → `.topRight(...)`
+- ❌ `.content(...)` → `.body(...)`
+- 项目内仅 `docs/BUILDER_API_AUDIT.md` 残留 1 处（审计文档，已是历史快照，不修）
+
+**设计哲学（落档）**：
+
+**包分类规范（P3 SKILL 候选条目"组件分类归约"）**：
+
+| 包路径 | 后缀 | 定位 | 示例 |
+|---|---|---|---|
+| `jfxium/component/` | `*Ant` | 原子控件 + 装饰容器 + 浮层（粒度小，可独立使用） | ButtonAnt / CardAnt / DrawerAnt / FilterBarAnt |
+| `jfxium/template/` | `*Template` | **业务模板**（粒度大，针对业务场景的整页骨架） | **CrudTemplate** |
+| `jfxium/layout/` | `*Layout`（预留） | 应用骨架（粒度最大，跨页面架构） | AppShell / 未来的 SidebarLayout 等 |
+
+**为什么这个分类重要**：
+1. 命名后缀（Ant / Template / Layout）让用户**一眼看出粒度**
+2. 业务模板天然耦合多个原子控件，**不能塞回 component/ 让用户误以为它是原子控件**
+3. CrudTemplate 是 template/ 首个成员，未来 LoginTemplate / DetailTemplate / DashboardTemplate 都进这里
+4. 与组件组合规范 SKILL 第二章"微组件清单"打通：原子（component/）→ 业务模板（template/）→ 应用骨架（layout/）三层依赖单向递增
+
+**下次写新组件前问自己**：
+- 这玩意儿是"原子控件 / 装饰容器 / 浮层"？→ `component/`，加 `*Ant` 后缀
+- 这玩意儿是"针对业务场景的整页骨架"？→ `template/`，加 `*Template` 后缀
+- 这玩意儿是"应用级跨页面架构"？→ `layout/`，加 `*Layout` 后缀（暂未启用）
+
+**踩坑实证**：
+- ❌ 早期 PageAnt 命名歧义：PaginationAnt / PageHeader 等都可能被误读为相关
+- ❌ 早期把 FilterBarAnt 放 component/：实际上 FilterBarAnt 已经是"工具栏业务模板"，应该放 template/——这是 M18 之后**待迁移**的历史债（暂不动，避免连带打破调用方）
+- ✅ CrudTemplate 直接进 template/，避免重蹈覆辙
+
+**API 一致性**（提醒）：CrudTemplate `build()` 返回直接节点（BorderPane），不是 Result 包装型——延续 ButtonAnt / TableAnt 的"直接节点型"契约，与 ModalAnt / DrawerAnt 的"Result 包装型"做语义区分。
+
+### 🎯 M19 SplitBarAnt 三段式横向布局沉淀（2026-05-24）
+
+**动机**：M18 落地 CrudTemplate 后，用户提出真实痛点——
+
+> "有那个 hbox 分为左中右布局的控件没有？这也是一个高频使用，可以用在模态窗口、card 顶部使用，有很多场景的"
+
+回查项目里这个模式的覆盖情况：
+
+| 现状 | 模型 | 问题 |
+|---|---|---|
+| `ActionBarAnt` | 顺序 add + 手动 spacer | 二段勉强能用，三段写不出，spacer 顺序难记 |
+| `Headers` 工厂 | title + spacer + extra | 仅二段，名字限定 Header 场景 |
+| `CrudTemplate.buildBar(...)` | 三段（私有方法） | 已识别但写死给自己用，未对外开放 |
+| 组件组合规范 SKILL 3.1 | 标准模式已识别 | **要求用户手写**，未抽成组件 |
+
+**结论**：是个"已识别为高频模式、却没抽出可复用组件"的真空区。SKILL 已经把它定为标准 pattern，CrudTemplate 已复刻了一遍，到了正式抽出来的时机。
+
+**讨论决策**（按用户选择）：
+- **A 方案**：新建独立组件 `SplitBarAnt`（推荐方案）
+- center 用 **多节点 Node...**，与 CrudTemplate 的 topLeft/topRight 一致
+- center **真正居中**（左 + spacer + 中 + spacer + 右），受挤压时自然偏移——flex 标准行为
+
+**产出**：
+
+**子阶段 19.1：核心组件实现**
+- [x] 新建 `component/SplitBarAnt.java`（~180 行 + AbstractStyleBuilder 继承）
+- [x] API：`.left(Node...)` / `.center(Node...)` / `.right(Node...)` / `.gap(double)` / `.alignment(Pos)`
+- [x] **center 自动退化**：不调用或传空数组 → 二段（左 + spacer + 右）；非空 → 三段（左 + spacer + 中 + spacer + 右）
+- [x] 每段允许多节点累加（多次调用 `.left(a).left(b)` 累加，不覆盖）
+- [x] `build()` 诚实返回 `HBox`（不撒谎）
+- [x] CssClasses 新增 2 个常量：`SPLIT_BAR / SPLIT_BAR_SPACER`
+- [x] LESS 新增 `.split-bar / .split-bar-spacer`（自身仅承担布局，无视觉装饰，spacer 透明）
+
+**子阶段 19.2：消除内部重复（精准动刀）**
+- [x] CrudTemplate 内部私有 `buildBar(left, right, spacing)` 方法**改为复用 SplitBarAnt**
+- [x] 删除 CrudTemplate 中 import `Priority` / `Region`（不再直接拼 spacer）
+- [x] CrudTemplate 公开 API 完全不变，调用方零感知
+
+**子阶段 19.3：SplitBarPage 验收**
+- [x] 新建 `showcase/pages/SplitBarPage.java`（5 Section）
+  - Section 1：三段式（左+中+右）—— 页面/Modal 顶部栏标题居中
+  - Section 2：二段式（不传 center 自动退化）—— 等价 ActionBar 但语义清晰
+  - Section 3：每段多节点 —— 图标+标题+Tag / Tab 组 / 图标按钮组
+  - Section 4：Modal Header + Footer 拼装 —— 一个 Modal 用 2 个 SplitBar
+  - Section 5：App Header —— Logo + 全局搜索框 + 消息+用户
+- [x] ShowcaseDemo 注册 SplitBarPage（归类到"布局"）
+
+**子阶段 19.4：彻底删除 ActionBarAnt + Headers（一次性清干净）**
+- [x] 全项目 grep 调用方：CardAnt / SurfaceAnt 各 1 处使用 `Headers.create()`，ActionBarAnt 在源码与 demo 内**零调用**
+- [x] CardAnt.buildHeader：`Headers.create()...build()` → `SplitBarAnt.create().left(titleLabel).right(extra).build()`
+- [x] SurfaceAnt.build：`Headers.create()...build()` → `SplitBarAnt.create().left(titleLabel).right(extra).build()`，header styleClass 在 build 后挂回
+- [x] 删除 `component/ActionBarAnt.java`
+- [x] 删除 `core/util/Headers.java`
+- [x] 删除 CssClasses 中 `ACTION_BAR / ACTION_BAR_SPACER` 2 个常量
+- [x] 删除 `theme-base.less` 中 `.action-bar { ... }` 选择器（spacer 选择器从未单独使用，一并清掉）
+- [x] 8 套主题 CSS 重新生成，确认无残留
+- [x] 文档同步：README_CN.md / README.md / docs/COMPONENTS.md / docs/LAYOUT.md / PLAN.md（"二、Builder 命名约定"示例）所有 ActionBarAnt 调用替换为 SplitBarAnt
+
+**子阶段 19.5：input-base 家族高度对齐 + Size API 补齐（CrudTemplate 验收触发）**
+
+**触发现场**：CrudTemplatePage 列表页验收时用户发现"管理员/启用"两个 ComboBox 比 Input/Button 矮一截，明显不齐。
+
+**根因分析**：
+1. **默认 padding bug**：`theme-base.less` 中 `.combo-box / .date-picker / .color-picker` 三个选择器 `.input-base()` mixin 之后又 override `-fx-padding: @spacing-xs(4px) @input-padding-x` —— 把 padding-y 从默认 8px 砍到 4px，导致比 `.text-field` 矮 8px。**对照 AtlantaFX `_combo-box.scss`**（line 95/134）发现 ComboBox/ColorPicker/DatePicker 应该用**完整 `padding-y padding-x`**，与 text-field 完全一致——验证为 bug。
+2. **Java 端 Size API 缺失**：`ComboBoxAnt / DatePickerAnt / ColorPickerAnt` 三个 Builder 都没有 `Size` 枚举和 `.size()` 方法。但 LESS 端 `.combo-box.small / .choice-box.small` 选择器**早就写好**——这是死代码，用户永远拿不到 small/large 形态。
+3. **Size LESS 规则不统一**：现存 `.combo-box.small` 用 `@spacing-xs / @spacing-sm`，与 `.text-field.small` 用 `@input-padding-y-sm / @input-padding-y-lg` 不一致——同一行 Input + ComboBox 设 SMALL 后还是不齐。
+
+**修复**：
+
+- [x] **默认 padding 修对**：删除 `.combo-box / .date-picker / .color-picker` 三处错误的 `-fx-padding: @spacing-xs @input-padding-x`，让它们继承 `.input-base()` 默认 `@input-padding-y @input-padding-x`（8px / 12px）
+- [x] **Size LESS 规则统一**：4 个组件全部改用 `@input-padding-y-sm/lg @input-padding-x-sm/lg + @font-size-sm/lg`，与 `.text-field.small / .large` 完全一致
+  - `.combo-box.small / .large`（修正）
+  - `.choice-box.small / .large`（修正）
+  - `.date-picker.small / .large`（**新增**，原本没有）
+  - `.color-picker.small / .large`（**新增**，原本没有）
+- [x] **Java 端 Size API 补齐**：
+  - `ComboBoxAnt`：新增 `Size` 枚举 + `.size(Size)` 方法（复用 `CssClasses.SIZE_SMALL/LARGE` 通用常量）
+  - `DatePickerAnt`：同上
+  - `ColorPickerAnt`：同上
+- [x] **ChoiceBoxAnt** 不存在 Java 类（仅 LESS 选择器），无需补 API
+
+**验收**：CrudTemplatePage 中 search/role/status 三个组件高度完全一致；`.size(Size.SMALL/LARGE)` 三档高度联动正常。
+
+**关键改动**：
+- `component/ComboBoxAnt.java`（加 `Size` enum + `.size()` 方法 + build 时挂 styleClass）
+- `component/DatePickerAnt.java`（同上）
+- `component/ColorPickerAnt.java`（同上）
+- `css/less/theme-base.less`（删 3 处错误 padding 覆盖；统一 4 个组件 Size 规则；新增 date-picker / color-picker `.small/.large`）
+
+**踩坑实证**：
+- ❌ "微调"心态在底层 mixin 之后 override padding，只盯着自己组件看显得"挺好"，但与同家族其他组件并排就破功——SKILL 5.2 状态联动原则（"相同状态的组件必须表现完全一致"）就是为防这个
+- ✅ 写 LESS 默认值时，**优先继承 mixin**，需要 override 时**必须对照同家族其他成员**确认值能对齐
+- ✅ AtlantaFX 又一次成为 JavaFX CSS 标准答案——遇到"我们的 ComboBox/DatePicker padding 选什么"时直接扒 AtlantaFX `_combo-box.scss`（M11.2 已经验证过这条经验，M19.5 再次印证）
+- ❌ 早期"LESS 写好但 Java 不挂 styleClass" → 用户永远拿不到那个形态。验证规则：**新增 LESS 选择器时同步检查 Java 端是否真的挂得上**（不然就是死代码）
+
+### 🎯 M19.6 按钮族补全：Toggle / Menu / Split + Radio/CheckBox 配套（2026-05-24）
+
+**动机**：用户参照"按钮类组件 + 下拉与列表选择类"清单全量体检，发现项目缺 3 个 JavaFX 标准按钮族成员。
+
+**审计结论**：
+
+| 你列的需求 | 我们的实现 | 状态 |
+|---|---|---|
+| 普通按钮 | ButtonAnt（10 type / 3 size / 2 shape / icon / loading） | ✅ |
+| 切换按钮（ToggleButton） | **缺 ToggleButtonAnt** | ❌ |
+| 单选按钮（RadioButton） | RadioButtonAnt 有，但缺 Size API | ⚠️ |
+| 复选框（CheckBox） | CheckBoxAnt 有 indeterminate，缺 Size + allowIndeterminate | ⚠️ |
+| 菜单按钮（MenuButton） | **缺 MenuButtonAnt**（DropdownAnt 是 trigger+Popup，结构不同） | ❌ |
+| 分割按钮（SplitMenuButton） | **缺 SplitButtonAnt** | ❌ |
+| 下拉框（ComboBox） | ComboBoxAnt（M19.5 加了 Size） | ✅ |
+| 选择框（ChoiceBox） | **缺 ChoiceBoxAnt**（LESS 早写好，Java 端没人挂） | ⚠️ |
+
+**产出**：
+
+**子阶段 19.6.1：3 个新按钮族组件**
+- [x] **ToggleButtonAnt**：包装 JavaFX ToggleButton，API 镜像 ButtonAnt（size / shape / icon / disabled / toggleGroup / onChange / onAction）
+- [x] **MenuButtonAnt**：包装 JavaFX MenuButton，链式 `.item / .itemDisabled / .separator / .add` 添加菜单项 + size / shape / icon
+- [x] **SplitButtonAnt**：包装 JavaFX SplitMenuButton，多了 `.onClick`（主按钮）API
+- 三者 LESS 视觉走 `.toggle-button / .menu-button / .split-menu-button` 系列（已有完整规则；新增三档 size 规则；新增独立 `.toggle-button` 通用视觉块）
+
+**子阶段 19.6.2：Radio / CheckBox 配套补齐**
+- [x] **RadioButtonAnt**：新增 `Size` 枚举 + `.size(Size)` 方法（与 ButtonAnt/InputAnt 一致）
+- [x] **CheckBoxAnt**：
+  - 新增 `Size` 枚举 + `.size(Size)`
+  - 新增 `.allowIndeterminate(boolean)` 方法（让用户能在 selected ↔ indeterminate ↔ unselected 三态间循环点击，对应 Ant Design Checkbox 三态语义）
+
+**子阶段 19.6.3：ChoiceBoxAnt 历史债处理**
+- 决策：**不补 Java 类**。理由：
+  - ChoiceBox 是 ComboBox 的"轻量简化版"，能力被 ComboBox 完全覆盖
+  - 项目内零调用方
+  - 但 LESS 端 `.choice-box / .choice-box.small / .large` 等规则**保留**——它们对裸 `new ChoiceBox()` 仍生效，删掉是"过度极简"
+- 已记账：用户若需要轻量下拉直接用 ComboBoxAnt（语义无差别）
+
+**子阶段 19.6.4：ButtonGroupPage 验收**
+- [x] 新建 `showcase/pages/ButtonGroupPage.java`（7 Section）
+  - Section 1：ToggleButton 独立切换（加粗/斜体/下划线）
+  - Section 2：ToggleButton 互斥组（ToggleGroup）—— admin 视图切换
+  - Section 3：ToggleButton 三档尺寸
+  - Section 4：MenuButton 基础（"批量操作"+ 子项 + 分隔线 + 禁用项）
+  - Section 5：MenuButton 三档尺寸
+  - Section 6：SplitButton 基础（"保存 / 保存并新建 / 保存并退出"）
+  - Section 7：SplitButton 三档尺寸
+- [x] ShowcaseDemo 注册 ButtonGroupPage（归类到"通用"）
+
+**关键改动**：
+- `component/ToggleButtonAnt.java`（新建）
+- `component/MenuButtonAnt.java`（新建）
+- `component/SplitButtonAnt.java`（新建）
+- `component/RadioButtonAnt.java`（加 Size enum + .size()）
+- `component/CheckBoxAnt.java`（加 Size enum + .size() + allowIndeterminate(boolean)）
+- `css/less/theme-base.less`：
+  - 新增独立 `.toggle-button` 通用块（hover / armed / selected / disabled）
+  - 新增 `.toggle-button.small/.large / .menu-button.small/.large / .split-menu-button.small/.large` 三档 size 规则
+  - 注：现有 `.pagination .pagination-control .toggle-button` 和 `.toggle-button.switch` 因选择器更具体（后代/复合）不受影响
+- `jfxium-demo/.../showcase/pages/ButtonGroupPage.java`（新建，7 Section）
+- `jfxium-demo/.../showcase/ShowcaseDemo.java`（注册）
+- `README_CN.md`（组件清单加 3 行）
+
+**API 一致性结果**：
+
+| 组件 | Size API | 与 ButtonAnt 一致 |
+|---|---|---|
+| ButtonAnt | ✅ | — |
+| InputAnt | ✅ | ✅ |
+| ComboBoxAnt | ✅（M19.5）| ✅ |
+| DatePickerAnt | ✅（M19.5）| ✅ |
+| ColorPickerAnt | ✅（M19.5）| ✅ |
+| **RadioButtonAnt** | ✅（M19.6）| ✅ |
+| **CheckBoxAnt** | ✅（M19.6）| ✅ |
+| **ToggleButtonAnt** | ✅（M19.6 新建即带）| ✅ |
+| **MenuButtonAnt** | ✅（M19.6 新建即带）| ✅ |
+| **SplitButtonAnt** | ✅（M19.6 新建即带）| ✅ |
+
+**踩坑提示**：
+- 新增独立 `.toggle-button` 通用块时一度担心污染 SwitchAnt（`.toggle-button.switch`）和 PaginationAnt（`.pagination .pagination-control .toggle-button`）—— 实际安全：CSS 选择器特异性规则（compound > generic、descendant > generic）保证后两者优先级更高
+- ChoiceBox 不补 Java 类反而是"精准动刀"——它的能力 100% 被 ComboBox 覆盖，加一个就是为重复造轮子
+
+### 🎯 M19.6.1 MenuButton/SplitButton 视觉打磨：箭头三件套（2026-05-24）
+
+**触发现场**：M19.6 上线 ButtonGroupPage 后用户连续指出 3 个视觉问题。
+
+**问题 1：箭头不显示（▼ 字符 fallback）**
+
+- 现象：MenuButton 渲染成 "批量操作▼"——文字带 Unicode 箭头字符，不是图形 arrow
+- 根因：modena 默认对 `.combo-box .arrow` 设了 shape，但 **MenuButton/SplitMenuButton 的 `.arrow` 没有默认 shape**。我们的 LESS 只覆盖 `-fx-background-color`，shape 缺失导致 `.arrow` 节点 0 尺寸不可见，JavaFX fallback 到文字层渲染了 ▼ 字符
+- 修复：显式设 `-fx-shape` + `min/pref-width/height`（参考 AtlantaFX `_icons.scss`）
+- **沉淀经验**：JavaFX 内部控件的 `.arrow` 节点遇到默认 shape 不存在的情况，必须显式设 shape + 尺寸；只设颜色会变成"有色无形"
+
+**问题 2：箭头位置错乱（左贴文字、右大空白）**
+
+- 现象：场景 4 截图显示 "批量操作▼" 后右侧大段空白；MenuButton 整体 padding 与子节点 padding 双层叠加
+- 根因：原写法 `.menu-button { .button-base(); }` 让容器自己拿了 16px padding，**同时** `.label` 和 `.arrow-button` 又各自带 padding——modena 默认布局错位
+- 修复：对齐 AtlantaFX `_menu-button.scss` 标准模式
+  - **容器 `-fx-padding: 0`**
+  - padding 全部下放到 `> .label`（左右等距）和 `> .arrow-button`（仅垂直 + 按需水平）
+- **沉淀经验**：JavaFX 组合控件（容器+`.label`+`.arrow-button`）的 padding 必须遵循 AtlantaFX 模式——**容器 padding=0，padding 下放到 label/arrow-button**。给容器设 padding 会与子节点 padding 叠加，造成箭头位置错乱
+- 这是第三次踩到（M11.2 TableView 表头 / 现在 MenuButton），下次再踩沉淀到 SKILL 第 16 条「内部 padding 下放原则」
+
+**问题 3：箭头样式不符合 Ant Design + 缺关闭/切换 API**
+
+- 现象：原箭头是实心三角 `M7 10l5 5 5-5z`（AtlantaFX 风格），但用户截图对比 Ant Design 是细 V 形 chevron——视觉风格不统一
+- 修复：
+  - **默认 shape 改为 Material Icons keyboard_arrow_down 的 chevron 路径**：`M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z`
+  - 新增 `ArrowStyle` 枚举：`CHEVRON`（默认，Ant Design 风格）/ `TRIANGLE`（AtlantaFX 风格）/ `NONE`（无箭头，仅 MenuButton 支持，SplitButton 没箭头会退化无意义）
+  - 新增 `.arrowStyle(ArrowStyle)` API + `.noArrow()` 语法糖
+  - LESS 实现 `.arrow-triangle` 和 `.no-arrow`（对齐 AtlantaFX `&.no-arrow` 模式）
+
+**问题 4：箭头区域过宽**
+
+- 现象：场景 7 SplitButton 截图，箭头区水平宽度 ≈ 50px（比 Ant Design 截图宽近一倍）
+- 根因：arrow-button 沿用了 `.label` 的水平 padding (16px×2)
+- 修复：对齐 AtlantaFX `_menu-button.scss:174` 的 `cfg.$padding-x / 2` —— **arrow-button 水平 padding 减半**
+  - DEFAULT：16px → **8px**（用 `@spacing-sm`）
+  - SMALL：8px → **4px**（用 `@spacing-xs`）
+  - LARGE：24px → **12px**（用 `@spacing-md`）
+- 视觉宽度：50px → **34px**，与 Ant Design (~30-36px) 基本对齐
+
+**关键改动**：
+- `component/MenuButtonAnt.java`（新增 `ArrowStyle` 枚举 + `.arrowStyle()` + `.noArrow()`）
+- `component/SplitButtonAnt.java`（新增 `ArrowStyle` 枚举 + `.arrowStyle()`，不支持 NONE）
+- `css/less/theme-base.less`：
+  - 容器 padding=0，padding 下放到 `.label / .arrow-button`
+  - 默认 shape 改为 chevron（Ant Design 风格）
+  - 新增 `.arrow-triangle / .no-arrow` 修饰类
+  - arrow-button 水平 padding 全档位减半（DEFAULT/SMALL/LARGE）
+- `jfxium-demo/.../showcase/pages/ButtonGroupPage.java`（新增"场景 6：MenuButton 箭头样式"，原 6/7 顺延为 7/8，共 8 Section）
+
+**调整后 Showcase 总览（M19.6.1 收尾）**：
+```
+通用：     Button(8) + Toggle/Menu/SplitButton(8) + Switch(4)
+导航：     Menu(7)
+布局：     Card(9) + SplitBar(5) + CrudTemplate(4)
+数据录入： Input(5)
+数据展示： Table(10) + Tag(5)
+反馈：     Modal(5) + Drawer(5)
+其他：     Watermark(5)
+=========================================
+共 13 页 / 80 Section
+```
+
+**沉淀经验汇总（M19.6 + M19.6.1 共 4 条）**：
+1. 内部 padding 下放原则：JavaFX 组合控件（带 `.label` + `.arrow-button` 的）必须容器 padding=0
+2. 箭头节点必须显式设 shape：MenuButton/SplitMenuButton 的 `.arrow` 没默认 shape
+3. arrow-button 水平 padding 减半：对齐 AtlantaFX 标准
+4. 箭头视觉风格优先 Ant Design chevron，TRIANGLE/NONE 作为 opt-in 选项
+
+
+**关键改动**：
+- `component/SplitBarAnt.java`（新建）
+- `core/css/CssClasses.java`（加 2 个 SPLIT_BAR_* 常量；删除 ACTION_BAR / ACTION_BAR_SPACER 2 个常量）
+- `css/less/theme-base.less`（加 `.split-bar / .split-bar-spacer` 选择器；删除 `.action-bar` 选择器）
+- `template/CrudTemplate.java`（私有 buildBar 改用 SplitBarAnt，删 spacer 自拼代码）
+- `component/CardAnt.java`（buildHeader 内部从 Headers 工厂迁到 SplitBarAnt）
+- `component/SurfaceAnt.java`（build 内部从 Headers 工厂迁到 SplitBarAnt）
+- **删除** `component/ActionBarAnt.java`（M19 子阶段 19.4）
+- **删除** `core/util/Headers.java`（M19 子阶段 19.4）
+- `jfxium-demo/.../showcase/pages/SplitBarPage.java`（新建，5 Section）
+- `jfxium-demo/.../showcase/ShowcaseDemo.java`（注册）
+- `README_CN.md` / `README.md` / `docs/COMPONENTS.md` / `docs/LAYOUT.md` / `PLAN.md`（ActionBarAnt 引用全部替换）
+
+**与既有组件的关系**：
+
+| 场景 | 选谁 | 理由 |
+|---|---|---|
+| 简单顺序排列（仅"左+右"或"左+中+右"） | **`SplitBarAnt`** | 唯一布局原子，已覆盖 ActionBar/Header 全部场景 |
+| 仅 title + extra 的 Header | **`SplitBarAnt`**（二段模式） | 老 Headers 工厂已删除 |
+| 真三段（左+中+右） | **`SplitBarAnt`** | 语义明确 |
+| admin 列表页带 search/filter/action 业务 API | `FilterBarAnt` | L2 业务模板，内部用 SplitBarAnt 二段 |
+| 整页业务骨架 | `CrudTemplate`（内部已用 SplitBarAnt） | 三段工具栏是 CrudTemplate 的子能力 |
+
+**设计要点**：
+- **center 真正居中**：不是"靠左+紧跟"，而是左/右两侧用独立 spacer 撑开做对称分配——admin 顶部栏的"中间标题"是高频诉求
+- **center 受挤压偏移**：当 left/right 内容宽度不对称时，center 会向较窄的一侧偏移——这是 flex 标准行为，不是 bug
+- **退化为二段**：center 为空时只有一个 spacer，等价于 `[left ─── right]`，与 ActionBar 的 spacer 模式语义一致
+
+**踩坑实证**：
+- M18 写 CrudTemplate 时 buildBar 是私有方法，本质上已经写过一遍三段式逻辑——M19 之前是"项目内重复实现 N 次"的反例
+- SKILL 3.1 一直把三段式列为"标准模式"但只给用户示范代码，没抽成组件——M19 才补全这个标准模式的"组件层"
+- 单元测试性优势：以前每次用户手写 `[left, spacer, right]` 都得重新检查 spacer 是否设了 `Hgrow + maxWidth`，现在只需要相信 SplitBarAnt 即可
+
+**Showcase 总览更新**：
+```
+布局：     Card(9) + SplitBar(5) + CrudTemplate(4)        ← 3 个布局组件
+```
+共 11 → **12 页 / 67 → 72 Section**。
+
+
+### 🎯 M19.13 SKILL 沉淀：踩坑实证 → 强约束（2026-05-24，B 路线）
+
+**动机**：M11.2 / M19.5 / M19.6 / M19.7 等里程碑积累了多次踩坑实证，但都散落在 PLAN.md 单个里程碑里，未提炼为 SKILL 强约束。本轮一次性沉淀。
+
+**产出**：
+
+**子阶段 19.13.1：项目约束 SKILL 新增 3 条强约束（#16 / #17 / #18）**
+- [x] **#16 JavaFX 组合控件「内部 padding 下放原则」**（M11.2 + M19.5 + M19.6 三次实证）
+  - 容器 `-fx-padding: 0`，padding 全部下放到 `> .label` 和 `> .arrow-button`
+  - arrow-button 水平 padding 减半（用 `@spacing-sm`）
+  - 适用：ComboBox / MenuButton / SplitMenuButton / DatePicker / ColorPicker / TableView 表头
+- [x] **#17 JavaFX 内部 `.arrow` 节点必须显式设 shape**（M19.6 实证）
+  - modena 默认对部分 `.arrow`（MenuButton / SplitMenuButton）没设 shape
+  - 必须显式 `-fx-shape` + min/pref-width/height
+  - 提供两种标准 SVG path：Chevron（Ant 风格）/ Triangle（AtlantaFX 风格）
+- [x] **#18 \*Ant Builder `build()` 返回类型契约**（M17 实证）
+  - 直接节点型 vs Result 包装型 —— 一表对比
+  - 命名约定：build() 诚实返回（不撒谎）/ Result 类公开 open()/show()/close() 触发方法
+
+**子阶段 19.13.2：项目约束 SKILL「为什么这些很重要」补 3 条**
+- [x] 第 5 条：内部 padding 下放原则（统一组合控件视觉的钥匙）
+- [x] 第 6 条：`.arrow` 没默认 shape 时只设颜色 = 看不见
+- [x] 第 7 条：Builder 返回类型契约要诚实
+
+**子阶段 19.13.3：组件组合规范 SKILL 新增第七章「包结构归约」**
+- [x] 三层包结构表（component/template/layout）+ 命名后缀强制对应
+- [x] 「写新组件前问自己」三连问决策树
+- [x] `*Ant` vs `*Template` 的判别标准
+- [x] 反例记录：FilterBarAnt 历史债（实际是业务模板，应迁 template/，暂不迁）
+- [x] 与第二章「微组件清单」的衔接：四层依赖单向递增（微组件 → 原子控件 → 业务模板 → 应用骨架）
+
+**子阶段 19.13.4：组件组合规范 SKILL 反模式新增 3 条（§4.9 / §4.10 / §4.11）**
+- [x] **§4.9 容器吞 padding 导致内部布局错乱**（与项目约束 #16 互引）
+- [x] **§4.10 `.arrow` 节点只设颜色不设 shape**（与项目约束 #17 互引）
+- [x] **§4.11 字符串模板里嵌套未转义的双引号**（M19.7 + M19.10 多次踩到，写 Showcase description 时反复编译失败）
+
+**关键改动**：
+- `.kiro/steering/项目约束与计划/SKILL.md`（加 #16/#17/#18 + 「为什么重要」补 3 条；版本号未必单独标注）
+- `.kiro/steering/组件组合规范/SKILL.md`（加 §7 + §4.9/4.10/4.11；版本 1.0 → 1.1）
+- `PLAN.md`（累计成果 SKILL 强约束条数 15 → 18）
+
+**统计**：
+- 项目约束 SKILL：原 15 条 → 现 18 条（+3）
+- 组件组合规范 SKILL：原 8 条反模式 → 现 11 条（+3）；新增第七章 4 节
+- 「为什么这些很重要」补充 4→7 条
+
+**B 路线意义**：
+1. **降低未来重复踩坑概率** —— 这些 bug 都不是「编译报错」型，而是「视觉效果不对」「Modal 不弹出」型，没有沉淀就会反复踩
+2. **缩短新协作者上手时间** —— 直接读 SKILL 即可知道 JavaFX 组合控件的 padding 规则
+3. **PLAN.md 减负** —— PLAN.md 是日志，SKILL 是规约，两者不应混用——本轮把 PLAN 里的「踩坑实证」提炼到 SKILL，PLAN.md 只保留时间线
+
+### 🎯 M19.14-M19.15 Showcase 第三/四/五/六批 + 收尾两页（2026-05-24，A 路线）
+
+**动机**：完成 admin 高频组件的 Showcase 全覆盖；admin 项目能直接照着 Showcase 抄。
+
+**产出**：
+
+**M19.14**（第六批 + 第七批 + 收尾两页）：
+- 第三批（DropdownPage / ListPage / TabsPage / StepsPage / TimelinePage / DescriptionsPage / SkeletonPage）—— 7 页 / 32 Section
+- 第四批（DatePicker / Slider / InputNumber / Upload / Breadcrumb / Carousel / Calendar）—— 7 页 / 33 Section
+- 第五批（CodeBlock / Empty / Result / Spin / Cascader / TimePicker / Transfer）—— 7 页 / 27 Section
+- 第六批（Anchor / AutoComplete / Mentions / Segmented / Spinner / TextArea / TreeSelect）—— 7 页 / 27 Section
+
+**M19.15**（A 路线收尾）：
+- CollapsePage（5 Section，含 AccordionAnt 对比）
+- ImagePage（4 Section，src/fallback/borderRadius/objectFit）
+- **A 路线正式封盘**：剩余 ~15 个组件（IconAnt/DividerAnt/Space/Flex/Grid/AppShell/Surface/SplitPane 等）按需补，不再做单独 Showcase
+
+**Showcase 总览（M19.15 后）**：57 页 / **273 Section**，覆盖 admin 后台 90% 业务场景。
+
+**踩坑实证**：
+- 字符串模板里嵌套未转义双引号（中英文场景）多次踩坑——已沉淀到 SKILL §4.11
+- TreeAnt 的 `.root(value, graphic, ...)` 不支持 graphic 参数；正解：用 `TreeAnt.node(value, graphic, ...)` 包出 TreeItem 后传 `.root(TreeItem)`
+
+### 🎯 M19.16 业务模板沉淀：LoginTemplate + DashboardTemplate（2026-05-24，B 路线）
+
+**动机**：A 路线 57 页 Showcase 已经覆盖单组件全集，但用户仍要把组件拼成完整业务页 —— admin 后台 90% 业务页（登录/概览/列表）的骨架是固定的，应抽成模板复用。
+
+**产出**：
+
+**子阶段 19.16.1：LoginTemplate**
+- [x] 新建 `template/LoginTemplate.java`（~330 行）—— 双栏 banner 登录页
+- [x] API：brandName / tagline / features(...) / copyright / formTitle / formSubtitle / submitText / showRememberMe / onSubmit(BiConsumer<u,p>) / onForgot(Runnable) / onRegister(Runnable)
+- [x] 抽自 admin demo `LoginStage`（~300 行手写 → 一行 builder 调用）
+- [x] PasswordField + 前置图标的复合输入框（HBox 自拼边框，模拟集成式输入）
+- [x] 渐变 banner 用 CSS 变量（`-color-accent-4 → emphasis → -color-accent-7`），切主题自动跟随
+- [x] 可选回调 default null —— 不调即不显示对应链接
+
+**子阶段 19.16.2：DashboardTemplate**
+- [x] 新建 `template/DashboardTemplate.java`（~210 行）—— admin 概览首页骨架
+- [x] API：welcome / stat(icon, title, value, trend, up) / statColumns / bottomLeft / bottomRight / leftRatio / sectionGap
+- [x] 抽自 admin demo `DashboardPage` —— 欢迎语 + N 列统计卡 + 底部双栏
+- [x] 自动按 stat 数量决定列数（也可强制 statColumns）
+- [x] 底部双栏比例可调（默认 60:40，admin 行业惯例）
+
+**子阶段 19.16.3：Showcase 整合 + 菜单分组**
+- [x] 新建 `LoginDashboardTemplatePage.java`（4 Section）—— 基础登录 + 完整登录 + 基础 Dashboard + 完整 Dashboard
+- [x] ShowcasePage 新增 `Category.TEMPLATE("业务模板")` 枚举
+- [x] CrudTemplatePage 从 LAYOUT → TEMPLATE 分类
+- [x] LoginDashboardTemplatePage 注册到 TEMPLATE
+- [x] SplitBarPage 保留在 LAYOUT（SplitBarAnt 是布局原子，不是业务模板）
+- [x] 左侧菜单底部新增「业务模板」独立分组
+
+**关键改动**：
+- `template/LoginTemplate.java`（新建）
+- `template/DashboardTemplate.java`（新建）
+- `showcase/pages/LoginDashboardTemplatePage.java`（新建）
+- `showcase/ShowcasePage.java`（加 TEMPLATE 枚举值）
+- `showcase/ShowcaseDemo.java`（按业务模板分类重新组织注册块）
+
+**template/ 包现状（M19.16 后）**：
+- CrudTemplate（M18，业务页三段式）
+- LoginTemplate（M19.16，登录页双栏）
+- DashboardTemplate（M19.16，概览首页）
+
+**Showcase 总览（M19.16 后）**：57 页 / 273 Section（其中「业务模板」分类 2 页 / 8 Section）
+
+**设计取舍**：
+- 模板的 API 优先暴露「常见配置」（brandName/welcome/stat），罕见配置走 styleClass + LESS 覆盖
+- 所有可选项 default null —— 不调用即不渲染该区，避免空 `null` 占位
+- build() 诚实返回容器（BorderPane / VBox），调用方自己包 Scene/Stage
+
+### 🎯 M19.17 文档加固：README + QUICKSTART（2026-05-24，C 路线）
+
+**动机**：项目已经发展到 82 个 *Ant + 3 个 *Template，但 README_CN 还停在 M7 时代「74 个组件」；新协作者读完 README 也不知道怎么 5 分钟搭起一个 admin 后台。本轮一次性补齐文档。
+
+**产出**：
+
+**子阶段 19.17.1：README_CN.md 加固**
+- [x] 「组件分类」头部 "74 个组件" → "82 个 *Ant + 3 个 *Template = 85 个"
+- [x] 数据展示组件表加 SelectableTextAnt 行（M19.7）
+- [x] 新增「业务模板（Templates）」整章 —— CrudTemplate / LoginTemplate / DashboardTemplate 三个完整 API 示例 + 区别说明（*Ant vs *Template）
+- [x] M19.6 按钮族（Toggle/Menu/Split）已经在「通用组件」表里
+
+**子阶段 19.17.2：README.md（英文）同步**
+- [x] Features：74 → 82 *Ant + 3 Templates
+- [x] Data Display 节加 SelectableTextAnt
+- [x] 新增「Business Templates (3)」章，对外讲清楚 template/ 包的存在
+- [x] 末尾指向 docs/QUICKSTART.md
+
+**子阶段 19.17.3：新建 docs/QUICKSTART.md**
+- [x] 5 分钟搞起一个完整 admin 后台 —— 登录页 + 主页 + 列表页
+- [x] 三个示例完整代码（LoginTemplate ~30 行 / DashboardTemplate ~30 行 / CrudTemplate + TableAnt + FilterBarAnt 列表页）
+- [x] 末尾指引到主题/自定义/SKILL 文档
+
+**关键改动**：
+- `README_CN.md`（+ 业务模板整章 ~70 行 + 数据展示一行 + 头部数字）
+- `README.md`（+ Business Templates 表 ~10 行 + 数据展示一行 + 头部数字）
+- `docs/QUICKSTART.md`（新建，~140 行）
+
+**为什么这一步重要**：
+1. **降低用户上手门槛** —— 之前用户读完 README 还不知道怎么从 0 起一个项目，QUICKSTART 给「复制粘贴可运行」的最小代码
+2. **凸显业务模板价值** —— 新加的 template/ 包不在 README 里就等于不存在；现在三个模板都有 API 示例
+3. **README 与项目同步** —— "74 个组件" 这种过期数字会让用户怀疑项目已停更
+
+### 🎯 M19.18 i18n 国际化（默认中文）+ Carousel 修复（2026-05-24）
+
+**动机**：项目原本所有用户可见文案都硬编码在 *.java 里（CodeBlock 的「复制」、TreeSelect 的「请选择」、Modal/Popconfirm 的 OK/Cancel/Yes/No、Upload 的英文拖拽提示、Transfer 的「Source/Target」、LoginTemplate 中文表单等），无法切换语言。用户路线 4 选择 i18n 国际化，明确「默认中文」。
+
+**产出**：
+
+**子阶段 19.18.1：i18n 基础设施**
+- [x] 新建 `jfxium/core/i18n/Messages.java`（~150 行）
+  - 静态门面：`get(String) / get(String, Object...) / setLocale(Locale) / getLocale() / localeProperty()`
+  - 默认 Locale = `Locale.SIMPLIFIED_CHINESE`（用户明确「默认中文」）
+  - 三级 fallback：current locale → ROOT bundle (messages.properties) → key 自身 + WARNING 日志
+  - 线程安全：synchronized + Platform.runLater 把 localeProperty 写入推到 FX 线程
+  - 0 第三方依赖（仅 JDK ResourceBundle/MessageFormat/Locale）
+- [x] 新建 3 份 properties（`src/main/resources/org/openkawu/jfxium/i18n/`）
+  - `messages.properties`（fallback，与 zh_CN 同内容）
+  - `messages_zh_CN.properties`（默认中文）
+  - `messages_en.properties`（英文）
+  - 每份 28 个 key，按组件分组用 `#` 注释
+- [x] `module-info.java` 新增 `exports org.openkawu.jfxium.core.i18n` + `requires java.logging`
+
+**子阶段 19.18.2：组件迁移（9 个）**
+- [x] **CodeBlockAnt**：「复制」/「已复制!」 → `Messages.get("codeblock.copy" / "codeblock.copied")` + 监听 localeProperty 自动刷新
+- [x] **TreeSelectAnt**：placeholder「请选择」 → null + build 时 i18n + 监听刷新
+- [x] **EmptyAnt**：description「No Data」 → null + i18n + 监听刷新
+- [x] **ModalAnt**：okText「OK」/ cancelText「Cancel」 → null + 取 i18n + 监听刷新
+- [x] **PopconfirmAnt**：okText「Yes」/ cancelText「No」 → null + show 时取 i18n
+- [x] **UploadAnt**：buttonText / dragText / hintText / 「Error」 → 全部 i18n
+- [x] **TransferAnt**：titles「Source;Target」 → null + i18n；count "items" 用 `transfer.items` 参数化
+- [x] **LoginTemplate**：8 个 banner/表单字段 + 错误前缀 + 「记住我」/「忘记密码？」/「还没账号？」/「立即注册」 → null + i18n
+- [x] **DashboardTemplate**：「 较上周」 → `Messages.get("dashboard.compared_to_last_week")`
+
+**迁移策略**（待沉淀到 SKILL）：
+- **Builder 默认值用 null + build() 时 lazy 求值**（不要写 `private String x = Messages.get(...)`，会在 Builder 实例化时锁死 Locale）
+- **A 类（一次性弹窗 / 短生命周期）**：构造时取一次 `Messages.get(...)`，不监听 localeProperty，避免 listener 泄漏
+- **B 类（常驻 UI 容器树）**：监听 localeProperty 自动刷新，且仅当用户没显式覆盖时才挂 listener
+
+**子阶段 19.18.3：I18nPage Showcase**
+- [x] 新建 `jfxium-demo/.../showcase/pages/I18nPage.java`（~250 行 / 8 Section）
+  - Locale 切换器（中文 / English 按钮 + 当前 Locale 标签实时刷新）
+  - EmptyAnt / TreeSelectAnt / CodeBlockAnt / ModalAnt + PopconfirmAnt / UploadAnt / TransferAnt 各自演示
+  - API 速查
+- [x] ShowcaseDemo 注册（「其他」分类，与 Watermark 同组）
+
+**子阶段 19.18.4：CarouselAnt 顺手修 4 个 UI bug**
+
+验收 demo 时用户发现 Carousel 多个问题，一并修了：
+
+| 问题 | 根因 | 修法 |
+|---|---|---|
+| 箭头按钮难看（白底无视觉） | `.carousel-arrow-btn` 被全局 `.button` / `:hover` / `:armed` 通用规则覆盖（同特异性，但通用规则有伪类优先） | 改用复合选择器 `.button.carousel-arrow-btn`（特异性=2），补全 `:hover/:armed/:pressed` 全状态。Ant 风格 40×40 圆形 `rgba(0,0,0,0.4)` 半透明黑底 + 白字 + 阴影 |
+| dots 飘在 carousel 中心（不在底部） | `HBox` 默认 `maxWidth/maxHeight = MAX_VALUE`，被 StackPane 拉伸撑满 → `setAlignment(BOTTOM_CENTER)` 失效 | `dotsBox.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE)` 强制收缩到内容尺寸 |
+| dots 被 slide 遮住看不见 | StackPane 子节点默认按添加顺序叠层，slide 在 dotsBox 之前 | `dotsBox.setViewOrder(-100)` + `arrowBtn.setViewOrder(-100)` 强制浮在最上层 |
+| SCROLL 切换无方向感（prev/next 都从右滑入，旧 slide 瞬间消失） | navigateTo 单方向 + 旧 slide 直接 `setVisible(false)` | 加 `direction` 参数：next 旧左滑出 + 新右滑入，prev 旧右滑出 + 新左滑入。两 TranslateTransition 并行播放。`contentPane.setClip(Rectangle)` 裁剪边界防越界 |
+
+**新增 API**：
+- `CarouselAnt.dotPosition(DotPosition)` —— TOP / CENTER / BOTTOM 三档（默认 BOTTOM）
+- CarouselPage 加场景 5 演示三种位置
+
+**关键改动**：
+- `jfxium/src/main/java/org/openkawu/jfxium/core/i18n/Messages.java`（新建，~150 行）
+- `jfxium/src/main/resources/org/openkawu/jfxium/i18n/`（新建 3 份 properties，每份 28 keys）
+- `jfxium/src/main/java/org/openkawu/jfxium/module-info.java`（exports + requires java.logging）
+- 9 个 *Ant / *Template 迁移
+- `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/showcase/pages/I18nPage.java`（新建）
+- `ShowcaseDemo.java`（注册 I18nPage）
+- `jfxium/src/main/java/org/openkawu/jfxium/component/CarouselAnt.java`（修 4 处 bug + dotPosition API）
+- `css/less/theme-base.less`（carousel-arrow-btn 复合选择器 + dots 样式重写）
+- `CarouselPage.java`（新增场景 5）
+
+**踩坑实证（待沉淀到 SKILL）**：
+1. **JavaFX CSS 复合选择器优先级陷阱**：裸 `.carousel-arrow-btn` 被 `.button` 通用规则覆盖。M11 的 SKILL #14 是「复合 vs 后代」，本轮补的是「**复合优先级提升**」—— 同特异性下，需要主动写出 `.button.carousel-arrow-btn` 这种带具体场景标识的复合选择器，否则被通用 `.button:hover` 等伪类规则压制
+2. **HBox 在 StackPane 内默认拉伸到 MAX**：`setAlignment` 看似失效是因为节点已被拉伸到撑满父容器；必须配合 `setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE)` 才能真正按 alignment 摆位
+3. **viewOrder 是控 z 序的标准答案**：StackPane 子节点叠层默认按 children 顺序，但 `setViewOrder` 优先级最高（数值越小越靠前），用来让 dots/箭头浮在 slide 之上不被遮挡
+4. **i18n Builder 默认值不要在字段初始化时取 Messages.get**：会在 Builder 实例化那一刻锁死 Locale，正确做法是 null + build() 时 lazy 取
+
+**为什么这一步重要**：
+1. **i18n 是 0 → 1 的能力**：之前所有面向用户字符串都硬编码，海外用户 / 双语项目根本没法用；现在 `Messages.setLocale(Locale.ENGLISH)` 一行切换
+2. **CarouselAnt 修 4 个 bug**：UI 组件的「能用」和「好用」差距巨大，验收 demo 是发现真实痛点的最好时机
+3. **viewOrder + setMaxSize(USE_PREF_SIZE)**：JavaFX 布局两个鲜为人知但极其关键的 API，沉淀进 SKILL 后续高频用得上
+
+---
+
+### 🎯 M19.19 Showcase 顶栏 + 菜单分组 + ThemeColor 色阶 bug（2026-05-24）
+
+**动机**：用户体验路线 4（i18n）后顺手提了多个真实痛点：
+1. Showcase 左侧菜单 60+ 项全平铺，没分组超难找；
+2. 想要在顶部直观切换主题、主题色、紧凑度；
+3. 切换主题色时菜单选中态背景变成纯色实块，遮住文字（截图证据：紫色实色把"SplitBar 三段式布局"那一行吞了）；
+4. 菜单分类的展开 / 折叠行为应该可配置（手风琴 vs 多展开）；
+5. SubMenu 箭头紧贴文字、没顶到行尾。
+
+**产出**：
+
+**子阶段 19.19.1：Showcase 菜单改成 subMenu 折叠分组**
+- [x] 7 大分类（通用 / 布局 / 导航 / 数据录入 / 数据展示 / 反馈 / 其他 / 业务模板）每个独立 subMenu
+- [x] 当前路由所在分类**自动展开**（让用户随时知道自己在哪）
+- [x] MenuAnt 加 `SubMenuBuilder.defaultExpanded(boolean)` 公开 API
+- [x] MenuAnt 加 `containsKey(selectedKey)` 自动展开判断逻辑
+
+**子阶段 19.19.2：Showcase 顶栏全套主题工具栏**
+- [x] 主题家族 Segmented：Ant / MUI 切换
+- [x] 紧凑度 Segmented：默认 / 紧凑
+- [x] 主题色 11 个色点（ThemeColor.Preset 全列）：Blue / Purple / Cyan / Green / Magenta / Red / Orange / Gold / Lime / GeekBlue / Volcano，hover 显示 Tooltip
+- [x] 🌗 / ☀ 切亮暗
+- [x] 切换时 `refreshAccent()` 把当前主题色重新应用到新主题，避免切到 Dark 丢色
+
+**子阶段 19.19.3：修 ThemeColor.generateColorScale 算法 bug（隐性 + 高影响）**
+
+**根因**（`ThemeColor.java`）：
+```java
+// 旧算法：i=0 时 factor = 1，1-factor = 0
+double factor = 1 - (i * 0.18);
+Color c = base.interpolate(Color.WHITE, 1 - factor);
+// → interpolate(white, 0) = base 本色（紫色实色）
+```
+
+i=0 时算出的 `accent-0` 直接 = 主色实色，而 `-color-accent-subtle = -color-accent-0`，导致 `.menu-item-selected` 选中行背景变实色把文字吞掉。**这个 bug 一直没暴露**：默认 LightTheme / MuiTheme 的色阶是 LESS 静态写死的；只有点了主题色 dot（触发 `setPrimaryColor` → `applyPrimaryColorToAll`）后才会用 Java 端动态注入 inline，覆盖 LESS。
+
+**修法**：用显式 mix 数组替代 off-by-one 错误的乘法。
+- 亮色色阶：i=0 → 5% base + 95% white（极浅）→ i=5 base → i=9 70% black 混色
+- 暗色色阶同理对称翻转
+- `lightMix = {0.05, 0.20, 0.35, 0.50, 0.70}` / `darkMix = {0.15, 0.30, 0.50, 0.70}`
+
+**子阶段 19.19.4：MenuAnt 加 ExpandMode（手风琴 vs 多展开）**
+
+**动机**：用户反馈「展开 A 分类后展开 B，再点 B 下的 item，A 被折叠 — 应该要么手风琴互斥，要么多展开互不影响」。原 bug 根因：`navigateTo → rebuildSider` 重建菜单时只保留"含 selectedKey 的分类自动展开"，用户手动展开的状态全丢。
+
+**修法**：
+- [x] MenuAnt 新增 `ExpandMode { MULTIPLE, EXCLUSIVE }` 枚举
+- [x] Builder 加 `expandMode(ExpandMode)` / `expandedKeys(Collection<String>)` / `onExpandChange(Consumer<Set<String>>)` 三个 API
+- [x] BuildContext 持有 `expandedKeys` Set + 顶级 SubMenu 列表，互斥时通知兄弟节点收起
+- [x] ShowcaseFrame 用 `expandedCategoryKeys` 持久化跨 rebuildSider 的展开状态
+- [x] 顶栏加「多展开 / 手风琴」Segmented 让用户实时切换
+
+**子阶段 19.19.5：subMenu 箭头推到最右**
+
+**根因**：MenuAnt `createInlineHeader` 给 Label 设 `Hgrow=ALWAYS` 想撑开右侧空间——但 **Label 默认 maxWidth=USE_PREF_SIZE，Hgrow 不会让它拉伸**（SKILL §4.1 / §20.1 反复实证）。结果箭头紧贴文字，右侧大片空白。
+
+**修法**：用独立 Region spacer 替代给 Label 设 Hgrow。
+
+**这是 MenuAnt 自身的实证**：之前 SKILL §4.1 / §20.1 总在讲外部业务代码，**框架内部组件自己也踩同样的坑**，说明这个反模式真的极其隐蔽，每次都要靠肉眼看截图发现。
+
+**关键改动**：
+- `jfxium/src/main/java/org/openkawu/jfxium/component/MenuAnt.java`：新增 `ExpandMode` 枚举 + `defaultExpanded` / `expandMode` / `expandedKeys` / `onExpandChange` 4 个 API + `containsKey` 递归判断 + `SubMenuRenderInfo` 互斥 + spacer 修复
+- `jfxium/src/main/java/org/openkawu/jfxium/core/theme/ThemeColor.java`：色阶算法整段重写（`generateColorScale` + `generateDarkColorScale` 都修了相同 off-by-one bug）
+- `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/showcase/ShowcaseFrame.java`：顶栏全套主题工具栏 + 菜单分组渲染 + 展开状态持久化 + 菜单模式切换
+
+**踩坑实证（沉淀）**：
+1. **Label Hgrow 反模式 — 框架内部第二次实证**：M19.18 Carousel dots 是第一次（HBox 撑满 StackPane），本轮 MenuAnt subMenu header 是第二次（Label 不拉伸）。**SKILL 有写，但代码里还是漏点位**。下次写新组件时 grep 一遍 `HBox.setHgrow(label`、`HBox.setHgrow(.*Label`、`setHgrow(.*new Label` 类似模式，提前清掉。
+2. **Java 端动态色阶 bug 隐藏 N 个版本**：因为默认主题的色阶来自 LESS 静态写死，只有调 `setPrimaryColor` 时才会触发动态算法。**任何"只有特定路径才执行的代码"都要单独验证**。
+3. **rebuild 模式下要做状态持久化**：菜单 / Tabs / Tree 等组件如果用 rebuild 重建，必须把交互态（展开 / 选中 / 滚动位置）跨实例持久化，否则用户看上去就是"点击导致状态丢失"。
+
+**为什么这一步重要**：
+1. **菜单分组 + 顶栏工具栏让 Showcase 真正可用**：60+ 组件全平铺找不到，做完后用户找组件几秒到位
+2. **ThemeColor 色阶算法是项目级地基**：所有"动态切主题色"功能都依赖它；之前 bug 没暴露纯属侥幸
+3. **MenuAnt ExpandMode 是 admin 通用能力**：手风琴 vs 多展开两种 UX 选择都很常见，业务方应该可配
+
+---
+
+### 🎯 M19.20 Switch / CheckBox / Radio 三件套加 Shape API（2026-05-24）
+
+**动机**：用户提出三个选择类组件能不能支持多形态——圆形 / 方形 / 圆角等。M19.6 已经给三个组件加了 Size API，本轮补 Shape API 完成"全维度变体"。
+
+**产出**：
+
+**子阶段 19.20.1：三个组件的 Shape 枚举**
+- [x] **SwitchAnt**：`Shape { PILL, ROUNDED, SQUARE }` —— PILL 默认胶囊；ROUNDED 圆角矩形；SQUARE 直角矩形
+- [x] **CheckBoxAnt**：`Shape { DEFAULT, CIRCLE, SQUARE, ROUNDED }` —— DEFAULT 方形小圆角；**CIRCLE 圆形**（仍是多选语义）；SQUARE 直角；ROUNDED 大圆角
+- [x] **RadioButtonAnt**：`Shape { DEFAULT, SQUARE, ROUNDED }` —— DEFAULT 圆形；SQUARE 方形（仍是单选语义）；ROUNDED 圆角方形
+
+**子阶段 19.20.2：LESS 复合选择器修饰类**
+- [x] `.jfx-switch.shape-rounded/.shape-square` + 嵌套到 `.jfx-switch-track` / `.jfx-switch-thumb`
+- [x] `.check-box.shape-circle/.shape-square/.shape-rounded` + 嵌套到 `.box`
+- [x] `.radio-button.shape-square/.shape-rounded` + 嵌套到 `.radio` / `.dot`
+
+**子阶段 19.20.3：踩坑实证 —— Switch thumb radius 必须同时盖 background + border**
+
+**第一次提交**：Switch ROUNDED/SQUARE thumb 视觉不对——thumb 看起来还是圆形贴在方角轨道上，特别违和。
+
+**根因**：thumb 节点 modena 默认有 **两个** radius：
+```less
+.jfx-switch-thumb {
+  -fx-background-radius: 9px;
+  -fx-border-radius: 9px;       /* 我只覆盖了 background-radius，border-radius 漏了 */
 }
 ```
 
-**重要发现：Ant Design 风格的 TextInput 没有 :hover 效果！**
-- 只有 Default 和 Focused 两个状态
-- Hover 不会改变边框颜色
-- 这是 Ant Design 的标准行为
-
-### 2. MUI 主题 Input 规范
-
-**MUI 风格输入框颜色值：**
-| 状态 | 边框颜色 | 文字颜色 |
-|------|----------|----------|
-| Default | rgba(0, 0, 0, 0.23) | rgba(0, 0, 0, 0.88) |
-| Hover | 无变化 | 无变化 |
-| Focused | #1976d2 | rgba(0, 0, 0, 0.88) |
-
-### 3. 焦点效果实现
-
-**JavaFX 焦点环问题：**
-- 问题：JavaFX 默认会在焦点时显示蓝色边框
-- 解决：添加 `-fx-focus-color: transparent; -fx-faint-focus-color: transparent;`
-
-**正确的 CSS 顺序：**
-```css
-.text-input {
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
-
-    &:focused {
-        -fx-border-color: #1976d2;
-    }
-}
-```
-
-### 4. 避免的常见错误
-
-1. **不要给 Input 添加 Hover 效果** - Ant Design/MUI 没有 hover
-2. **不要在 Focused 时改变 border-width** - 会导致控件大小变化
-3. **始终设置 text-fill** - 确保文字颜色正确显示
-4. **使用 transparent 移除焦点环** - 而非其他方式
-
-### 5. 文件位置
-
-参考文件：`F:\workspace-open-code\atlantafx\styles\src\antdesign-light.scss`
-
-### 6. Switch 样式规范
-
-**AtlantaFX _toggle-switch.scss 实现方式：**
-```scss
-.toggle-switch {
-  -fx-thumb-move-animation-time: 200;
-
-  >.thumb {
-    -fx-background-color: $color-thumb-border, $color-thumb;
-    -fx-background-insets: 0, $thumb-border-width;
-    -fx-background-radius: $thumb-radius;
-    -fx-opacity: $thumb-opacity;
-  }
-
-  >.thumb-area {
-    -fx-background-radius: $thumb-area-radius;
-    -fx-background-color: $color-thumb-area-border, $color-thumb-area;
-    -fx-background-insets: 0, $thumb-area-border-width;
-  }
-
-  &:selected {
-    >.thumb {
-      -fx-background-color: $color-thumb-border-selected, $color-thumb-selected;
-      -fx-opacity: 1;
-    }
-
-    >.thumb-area {
-      -fx-background-color: $color-thumb-area-border-selected, $color-thumb-area-selected;
-    }
-  }
-}
-```
-
-**MUI 风格 Switch 颜色值：**
-| 状态 | 轨道颜色 | 滑块颜色 |
-|------|----------|----------|
-| Default | rgba(0,0,0,0.26) | #fafafa |
-| Hover | rgba(0,0,0,0.42) | #fafafa |
-| Selected | #1976d2 | #1976d2 |
-| Selected+Hover | #1565c0 | #1565c0 |
-
-## 全局样式
-Ant 色彩 https://ant.design/docs/spec/colors-cn?theme=light
-布局 https://ant.design/docs/spec/layout-cn?theme=light
-## 项目进度跟踪
-
-### ✅ 已完成工作（2025-01-08 更新）
-
-#### 1. CSS 文件驱动的架构重构（参考 AtlantaFX）
-
-- ✅ 创建了 `theme-light.css` 和 `theme-dark.css` 主题文件
-- ✅ 实现了三级别 Token 系统：
-  - **Base Token**: 颜色梯度（color-base-0 到 color-base-10）
-  - **Semantic Token**: 语义化颜色（color-fg-default, color-bg-default 等）
-  - **Component Token**: 组件特定样式（button、input、card）
-- ✅ 使用 JavaFX looked-up colors（`-color-*`）替代 CSS `var()` 函数
-- ✅ 实现了类似 AtlantaFX 的简洁 CSS 类名（如 `primary`, `outlined` 而非 `jfx-button-primary`）
-
-#### 2. Theme API 实现
-
-- ✅ 创建了 `Theme` 接口定义主题契约
-- ✅ 实现了 `LightTheme` 和 `DarkTheme` 类
-- ✅ 实现了 `ThemeManager` 单例管理主题切换
-- ✅ 使用 `Application.setUserAgentStylesheet()` 实现主题切换
-- ✅ 支持运行时主题切换（Light ↔ Dark）
-
-#### 3. CSS 类名常量化
-
-- ✅ 创建了 `CssClasses.java` 集中管理 CSS 类名
-- ✅ 定义了 Button、Input、Card 的所有样式类名常量
-- ✅ 防止拼写错误，提供 IDE 自动补全支持
-
-#### 4. 组件封装（Builder Pattern）
-
-- ✅ **JFXButton**: 支持 6 种类型（DEFAULT, PRIMARY, OUTLINED, DASHED, TEXT, LINK）
-- ✅ **JFXButton**: 支持 3 种尺寸（SMALL, DEFAULT, LARGE）
-- ✅ **JFXButton**: 支持圆角形状（rounded）
-- ✅ **JFXInput**: 支持尺寸、禁用状态
-- ✅ **JFXCard**: 支持边框、阴影、悬浮效果
-- ✅ 所有组件使用流畅的 Builder Pattern API
-
-#### 5. Playground 应用
-
-- ✅ 创建了 `JFXiumPlayground` 演示应用
-- ✅ 实现了 Button 组件的所有变体演示
-- ✅ 实现了 Input 组件演示
-- ✅ 实现了 Card 组件演示
-- ✅ 添加了主题切换按钮（实时切换 Light/Dark）
-- ✅ 验证了 CSS 样式在 Light/Dark 主题下正确渲染
-
-#### 6. 关键技术决策
-
-- ✅ 采用 AtlantaFX 的 CSS First 理念
-- ✅ 使用 JavaFX looked-up colors 解决 CSS 变量兼容性问题
-- ✅ 参考 GitHub Primer 色彩系统设计颜色梯度
-- ✅ 简化 CSS 类名，提升易用性
-
-#### 7. 本次更新完成的工作（2025-01-08 第二轮更新）
-
-- ✅ **完善 JFXButton 组件**:
-  - 添加图标支持（`icon(Node)` 和 `loadingIcon(Node)`）
-  - 添加加载状态（`loading(boolean)`）
-  - 添加内容显示位置控制（`contentDisplay(ContentDisplay)`）
-  - 优化 CSS 样式：字体加粗、对齐方式、图标间距
-- ✅ **优化 CSS 样式，对标 Ant Design 6.x**:
-  - 完善按钮交互状态（hover、focused、armed、disabled）
-  - 添加按钮图标样式支持
-  - 优化尺寸样式（small/large 的圆角适配）
-  - 统一 disabled 状态透明度为 0.6
-- ✅ **添加 JFXModal 对话框组件**:
-  - 支持标题、内容、自定义尺寸
-  - 支持确认/取消按钮自定义文本和类型
-  - 支持点击遮罩关闭（maskClosable）
-  - 支持关闭按钮和回调函数（onOk、onCancel、onClose）
-  - 内置淡入淡出 + 缩放动画效果
-- ✅ **添加 JFXAnimation 动画系统**:
-  - 淡入淡出（fadeIn/fadeOut）
-  - 缩放动画（scaleIn/scaleOut、popIn/popOut）
-  - 滑入动画（slideInFromBottom/Top/Left/Right）
-  - 自定义动画构建器（AnimationBuilder），支持链式组合
-  - 对标 Ant Design 动画时长和缓动函数
-- ✅ **更新 Playground 演示**:
-  - 添加 Modal 对话框演示页面
-  - 添加 Animation 动画效果演示页面
-  - 演示所有新功能
-
-### 📝 当前状态
-
-- **阶段**: Phase 1 基础设施已完成，Phase 2 扩展组件进行中
-- **进度**:
-  - ✅ 步骤 1-5: 基础设施完成
-  - ✅ 步骤 6-8: Button、Input、Card 组件完成
-  - ✅ Modal 组件完成
-  - ✅ 动画系统完成
-
-#### 8. 本次更新完成的工作（2025-01-08 第三轮更新）
-
-- ✅ **添加 JFXTable 表格组件**:
-  - 支持文本列（`column()`）
-  - 支持自定义节点列（`nodeColumn()`）
-  - 支持数字列（`numberColumn()`，右对齐）
-  - 支持布尔列（`booleanColumn()`，显示勾选框）
-  - 支持斑马纹（`striped`）
-  - 支持边框（`bordered`）
-  - 支持选择列（`selectable`）
-  - 支持紧凑模式（`compact`）
-- ✅ **添加 JFXForm 表单系统**:
-  - 支持三种布局：VERTICAL、HORIZONTAL、INLINE
-  - 支持普通表单项和必填表单项
-  - 支持帮助文本提示
-  - 支持标签宽度自定义
-  - 支持提交按钮和回调函数
-  - 自动收集表单数据
-- ✅ **添加 Layouts DSL 布局系统**:
-  - VBox 布局构建器（`Layouts.vbox()`）
-  - HBox 布局构建器（`Layouts.hbox()`）
-  - GridPane 布局构建器（`Layouts.grid()`）
-  - 弹性占位（`Layouts.grow()`）
-  - 固定尺寸占位（`Layouts.spacer()`）
-  - 支持间距、边距、对齐方式链式设置
-- ✅ **更新 Playground 演示**:
-  - 添加 Table 表格演示页面
-  - 添加 Form 表单演示页面（垂直和水平布局）
-  - 添加 Layout DSL 布局演示页面
-
-### 📝 当前状态
-
-- **阶段**: Phase 1 基础设施已完成，Phase 2 扩展组件基本完成
-- **进度**:
-  - ✅ 步骤 1-5: 基础设施完成
-  - ✅ 步骤 6-8: Button、Input、Card 组件完成
-  - ✅ Modal 组件完成
-  - ✅ 动画系统完成
-  - ✅ Table 表格组件完成
-  - ✅ Form 表单系统完成
-  - ✅ Layout DSL 布局系统完成
-
-#### 9. 本次更新完成的工作（2025-01-08 第四轮更新）
-
-- ✅ **优化 CSS 样式细节**:
-  - 添加 Table 表格组件样式（表头、行、单元格、斑马纹、边框、紧凑模式）
-  - 添加 Form 表单组件样式
-  - 添加 Menu 菜单组件样式（菜单栏、菜单项、上下文菜单）
-  - 添加 Tabs 标签页组件样式（选中状态、悬停状态）
-  - 添加 Tree 树形组件样式（节点、选中状态、展开图标）
-- ✅ **添加 JFXMenu 菜单组件**:
-  - 支持菜单项（`item()`）
-  - 支持带图标的菜单项
-  - 支持带快捷键的菜单项
-  - 支持分隔线（`separator()`）
-  - 支持子菜单（`subMenu()`）
-- ✅ **添加 JFXTabs 标签页组件**:
-  - 支持添加标签页（`tab()`）
-  - 支持带提示文本的标签页
-  - 支持可关闭标签页（`closable()`）
-  - 支持关闭策略和拖拽策略
-- ✅ **添加 JFXTree 树形组件**:
-  - 支持叶子节点（`leaf()`）
-  - 支持父节点（`node()`）
-  - 支持带图标的节点
-  - 支持选择回调（`onSelect()`）
-  - 支持显示/隐藏根节点
-- ✅ **更新 Playground 演示**:
-  - 添加 Menu 菜单演示页面
-  - 添加 Tabs 标签页演示页面
-  - 添加 Tree 树形演示页面
-
-### 📝 当前状态
-
-- **阶段**: Phase 1 基础设施已完成，Phase 2 扩展组件基本完成
-- **进度**:
-  - ✅ 步骤 1-5: 基础设施完成
-  - ✅ 步骤 6-8: Button、Input、Card 组件完成
-  - ✅ Modal 组件完成
-  - ✅ 动画系统完成
-  - ✅ Table 表格组件完成
-  - ✅ Form 表单系统完成
-  - ✅ Layout DSL 布局系统完成
-  - ✅ Menu 菜单组件完成
-  - ✅ Tabs 标签页组件完成
-  - ✅ Tree 树形组件完成
-
-#### 10. 本次更新完成的工作（2025-01-08 第五轮更新）
-
-- ✅ **添加 JFXDatePicker 日期选择组件**:
-  - 支持占位文本（`placeholder()`）
-  - 支持默认值（`value()`）
-  - 支持可编辑控制（`editable()`）
-  - 支持显示周数（`showWeekNumbers()`）
-  - 支持值变化回调（`onChange()`）
-- ✅ **添加 JFXSlider 滑块组件**:
-  - 支持最小值、最大值、当前值（`min()`、`max()`、`value()`）
-  - 支持步长（`step()`）
-  - 支持刻度标签和刻度线（`showTickLabels()`、`showTickMarks()`）
-  - 支持垂直/水平方向（`vertical()`）
-  - 支持值变化回调（`onChange()`）
-- ✅ **添加 JFXProgress 进度条组件**:
-  - 支持进度条（`JFXProgress.bar()`）
-  - 支持环形进度（`JFXProgress.circle()`）
-  - 支持多种尺寸（SMALL、DEFAULT、LARGE）
-  - 支持多种状态（NORMAL、SUCCESS、WARNING、ERROR）
-  - 支持显示进度信息
-- ✅ **添加 JFXAlert 警告提示组件**:
-  - 支持四种类型：success、info、warning、error
-  - 支持标题和消息内容
-  - 支持可关闭（`closable()`）
-  - 支持关闭回调（`onClose()`）
-  - 支持显示/隐藏图标
-  - 内置淡入淡出动画
-- ✅ **更新 Playground 演示**:
-  - 添加 DatePicker 日期选择演示页面
-  - 添加 Slider 滑块演示页面
-  - 添加 Progress 进度条演示页面
-  - 添加 Alert 警告提示演示页面
-
-### 📝 当前状态
-
-- **阶段**: Phase 1 基础设施已完成，Phase 2 扩展组件基本完成
-- **进度**:
-  - ✅ 步骤 1-5: 基础设施完成
-  - ✅ 步骤 6-8: Button、Input、Card 组件完成
-  - ✅ Modal 组件完成
-  - ✅ 动画系统完成
-  - ✅ Table 表格组件完成
-  - ✅ Form 表单系统完成
-  - ✅ Layout DSL 布局系统完成
-  - ✅ Menu 菜单组件完成
-  - ✅ Tabs 标签页组件完成
-  - ✅ Tree 树形组件完成
-  - ✅ DatePicker 日期选择组件完成
-  - ✅ Slider 滑块组件完成
-  - ✅ Progress 进度条组件完成
-  - ✅ Alert 警告提示组件完成
-#### 11. 本次更新完成的工作（2025-01-08 第六轮更新）
-
-- ✅ **创建组件使用文档** (`docs/COMPONENTS.md`):
-  - JFXButton、JFXInput、JFXCard 文档
-  - JFXTable、JFXForm、JFXModal 文档
-  - JFXMenu、JFXTabs、JFXTree 文档
-  - JFXDatePicker、JFXSlider、JFXProgress、JFXAlert 文档
-  - 包含基本用法、配置方法、完整示例
-  - 快速参考章节
-
-- ✅ **创建动画系统文档** (`docs/ANIMATION.md`):
-  - 动画时长和缓动函数说明
-  - 淡入淡出、缩放、弹出、滑入动画
-  - 自定义动画构建器
-  - 实际示例（模态框、列表项、页面切换、提示信息）
-  - 最佳实践和性能优化
-
-- ✅ **创建布局 DSL 文档** (`docs/LAYOUT.md`):
-  - VBox、HBox、GridPane 布局构建器
-  - 辅助方法（grow、spacer）
-  - 实际示例（登录页面、卡片列表、工具栏、仪表盘）
-  - 最佳实践
-
-- ✅ **创建主题系统文档** (`docs/THEME.md`):
-  - 三层 Token 体系说明
-  - 主题切换方法
-  - 创建自定义主题
-  - CSS 类名常量
-  - 最佳实践
-
-- ✅ **更新 Playground 实际示例**:
-  - 添加 Examples 标签页
-  - 登录表单示例
-  - 仪表盘示例（统计卡片、活动列表）
-  - 设置面板示例
-
-### 📝 当前状态
-
-- **阶段**: Phase 1 基础设施已完成，Phase 2 扩展组件和文档已完成
-- **进度**:
-  - ✅ 步骤 1-5: 基础设施完成
-  - ✅ 步骤 6-8: Button、Input、Card 组件完成
-  - ✅ Modal 组件完成
-  - ✅ 动画系统完成
-  - ✅ Table 表格组件完成
-  - ✅ Form 表单系统完成
-  - ✅ Layout DSL 布局系统完成
-  - ✅ Menu 菜单组件完成
-  - ✅ Tabs 标签页组件完成
-  - ✅ Tree 树形组件完成
-  - ✅ DatePicker 日期选择组件完成
-  - ✅ Slider 滑块组件完成
-  - ✅ Progress 进度条组件完成
-  - ✅ Alert 警告提示组件完成
-  - ✅ 组件文档完成
-  - ✅ 动画文档完成
-  - ✅ 布局文档完成
-  - ✅ 主题文档完成
-#### 12. 本次更新完成的工作（2025-01-08 第七轮更新）
-
-- ✅ **分析 JavaFX 原生控件缺失情况**:
-  - 识别出 8 个缺失的常用原生控件
-  - 制定补充计划
-
-- ✅ **添加 JFXCheckBox 复选框组件**:
-  - 支持选中状态（`selected()`）
-  - 支持禁用状态（`disabled()`）
-  - 支持不确定状态（`indeterminate()`）
-  - 支持值变化回调（`onChange()`）
-
-- ✅ **添加 JFXRadioButton 单选按钮组件**:
-  - 支持选中状态（`selected()`）
-  - 支持禁用状态（`disabled()`）
-  - 支持 ToggleGroup（`toggleGroup()`）
-  - 支持值变化回调（`onChange()`）
-
-- ✅ **添加 JFXComboBox 下拉框组件**:
-  - 支持选项列表（`items()`）
-  - 支持默认值（`value()`）
-  - 支持占位文本（`placeholder()`）
-  - 支持可编辑（`editable()`）
-  - 支持值变化回调（`onChange()`）
-
-- ✅ **添加 JFXListView 列表组件**:
-  - 支持数据列表（`items()`）
-  - 支持选择回调（`onSelect()`）
-  - 支持禁用状态（`disabled()`）
-
-- ✅ **添加 JFXTextArea 多行文本组件**:
-  - 支持占位文本（`placeholder()`）
-  - 支持行数（`rows()`）
-  - 支持自动换行（`wrapText()`）
-  - 支持值变化回调（`onChange()`）
-
-- ✅ **添加 JFXSpinner 加载中组件**:
-  - 支持自定义大小（`size()`）
-
-- ✅ **添加 JFXBadge 徽标组件**:
-  - 支持数字徽标（`count()`）
-  - 支持圆点徽标（`dot()`）
-  - 支持状态点（`status()`）
-  - 支持四种状态（SUCCESS, WARNING, ERROR, DEFAULT）
-
-- ✅ **添加 JFXDivider 分割线组件**:
-  - 支持水平/垂直方向（`vertical()`）
-
-- ✅ **更新 Playground 演示**:
-  - 添加 CheckBox 演示页面
-  - 添加 RadioButton 演示页面
-  - 添加 ComboBox 演示页面
-  - 添加 ListView 演示页面
-  - 添加 TextArea 演示页面
-  - 添加 Spinner 演示页面
-  - 添加 Badge 演示页面
-  - 添加 Divider 演示页面
-
-- ✅ **创建单元测试**:
-  - JFXButtonTest（5 个测试用例）
-  - JFXInputTest（4 个测试用例）
-  - JFXCheckBoxTest（4 个测试用例）
-  - JFXComboBoxTest（4 个测试用例）
-  - LayoutsTest（5 个测试用例）
-  - JavaFXTestBase（测试基类）
-  - 所有测试通过
-
-### 📝 当前状态
-
-- **阶段**: Phase 1 基础设施已完成，Phase 2 扩展组件和测试已完成
-- **进度**:
-  - ✅ 步骤 1-5: 基础设施完成
-  - ✅ 步骤 6-8: Button、Input、Card 组件完成
-  - ✅ Modal 组件完成
-  - ✅ 动画系统完成
-  - ✅ Table 表格组件完成
-  - ✅ Form 表单系统完成
-  - ✅ Layout DSL 布局系统完成
-  - ✅ Menu 菜单组件完成
-  - ✅ Tabs 标签页组件完成
-  - ✅ Tree 树形组件完成
-  - ✅ DatePicker 日期选择组件完成
-  - ✅ Slider 滑块组件完成
-  - ✅ Progress 进度条组件完成
-  - ✅ Alert 警告提示组件完成
-  - ✅ CheckBox 复选框组件完成
-  - ✅ RadioButton 单选按钮组件完成
-  - ✅ ComboBox 下拉框组件完成
-  - ✅ ListView 列表组件完成
-  - ✅ TextArea 多行文本组件完成
-  - ✅ Spinner 加载中组件完成
-  - ✅ Badge 徽标组件完成
-  - ✅ Divider 分割线组件完成
-  - ✅ 组件文档完成
-  - ✅ 动画文档完成
-  - ✅ 布局文档完成
-  - ✅ 主题文档完成
-  - ✅ 单元测试完成
-#### 13. 本次更新完成的工作（2025-01-08 第八轮更新）
-
-- ✅ **JavaFX 原生控件覆盖完成**:
-  - JFXTooltip 工具提示组件
-  - JFXSwitch 开关组件（ToggleButton 封装）
-  - JFXPagination 分页组件
-  - JFXAccordion 折叠面板组件
-  - JFXTitledPane 标题面板组件
-  - JFXColorPicker 颜色选择组件
-
-- ✅ **更新 Playground 演示**:
-  - 添加 Tooltip 演示页面
-  - 添加 Switch 演示页面
-  - 添加 Pagination 演示页面
-  - 添加 Accordion 演示页面
-  - 添加 ColorPicker 演示页面
-
-#### 14. 本次更新完成的工作（2026-05-09 - LESS 主题系统）
-
-- ✅ **LESS 主题变量系统**:
-  - 创建 `variables-base.less`：共享的尺寸、间距、圆角、Mixin（与主题无关）
-  - 创建 `variables.less`：Light 主题颜色变量
-  - 创建 `variables-dark.less`：Dark 主题颜色变量
-  - 颜色体系：Base Token（11级灰度 + 10级彩色）→ Semantic Token → Component Token
-
-- ✅ **共享组件样式**:
-  - 创建 `theme-base.less`：所有组件样式（Button、Input、Card、Table、Menu、Tabs、Tree）
-  - 样式与变量分离，通过 LESS 变量引用实现主题无关
-
-- ✅ **主题入口文件**:
-  - `theme-light.less` = `@import "variables.less"` + `@import "theme-base.less"`
-  - `theme-dark.less` = `@import "variables-dark.less"` + `@import "theme-base.less"`
-  - 同一套组件样式，两套颜色变量，生成两套 CSS
-
-- ✅ **Node.js LESS 编译**:
-  - 使用本机 Node.js + less@4.6.4 编译
-  - 编译命令：`npx lessc theme-light.less theme-light.css`
-  - 创建 `build-themes.js` 脚本一键编译所有主题
-  - 输出到 `src/main/resources/org/openkawu/jfxium/css/` 供 Java 加载
-
-- ✅ **验证**:
-  - Light CSS 生成正确（白色背景 `#ffffff`，黑色文字）
-  - Dark CSS 生成正确（深色背景 `#0d1117`，白色文字）
-  - 所有单元测试通过
-  - Playground 主题切换功能正常
-
-### 📝 当前状态
-
-- **阶段**: Phase 1 基础设施已完成，Phase 2 JavaFX 原生控件覆盖已完成
-- **JavaFX 原生控件覆盖**: 27 个组件
-  - ✅ 基础组件：Button、Input、Card、Modal
-  - ✅ 表单组件：CheckBox、RadioButton、ComboBox、TextArea、DatePicker、Slider、ColorPicker
-  - ✅ 数据展示：Table、ListView、Tree、Progress、Badge、Pagination
-  - ✅ 导航：Menu、Tabs、Accordion、TitledPane
-  - ✅ 反馈：Alert、Spinner、Tooltip
-  - ✅ 布局：Divider、Layouts DSL
-  - ✅ 其他：Switch
-
-#### 15. 本次更新完成的工作（2026-05-09 第二轮 - CSS 补全 + Phase 3 组件）
-
-- ✅ **补全 theme-base.less CSS 样式覆盖**（所有27个组件）：
-  - CheckBox、RadioButton、ComboBox、ListView、TextArea
-  - Slider、ProgressBar、ProgressIndicator
-  - Alert（success/info/warning/error 四色）
-  - Badge（数字徽标、圆点、状态点）
-  - Divider/Separator
-  - DatePicker（含弹出面板日历样式）
-  - ColorPicker（含弹出调色板样式）
-  - Accordion、TitledPane
-  - Tooltip、Pagination
-  - ScrollBar、ScrollPane、ContextMenu、MenuBar 子菜单
-  - Switch（ToggleButton）
-  - Label、Hyperlink、ToolBar、ChoiceBox、Spinner
-  - SplitPane、Dialog/Modal 遮罩
-  - Table 增强（行、单元格、斑马纹、边框）
-  - Tab 增强（标签、关闭按钮）
-  - Tree 增强（单元格、展开图标）
-  - Form 辅助样式（label、required、help-text）
-  - 全局禁用状态、焦点遍历清除
-
-- ✅ **参考 AtlantaFX 完善 CSS 细节**：
-  - 对照 AtlantaFX 本地代码完善组件选择器
-  - 添加阴影、悬停、选中状态细节
-  - 统一圆角和间距规范
-
-- ✅ **Maven 集成 LESS 编译**：
-  - 配置 exec-maven-plugin 在 generate-resources 阶段自动编译
-  - `mvn compile` 自动生成 theme-light.css 和 theme-dark.css
-  - 无需手动执行 npx lessc
-
-- ✅ **Phase 3 高级组件**：
-  - JFXTag：6种类型（Default/Primary/Success/Warning/Error/Processing）、3种尺寸、3种形状、可关闭、无边框
-  - JFXAvatar：4种尺寸（SM/DEFAULT/LG/XL）、2种形状（Circle/Square）、自定义背景色、图片/文字支持
-  - JFXRate：5星评分、半星支持、禁用状态、3种尺寸、hover/click 回调
-  - JFXEmpty：空状态图标、描述文字、操作按钮
-  - JFXSteps：水平/垂直方向、步骤标题+描述、当前步骤高亮、完成/等待状态
-  - JFXSkeleton：4种变体（Text/Circular/Rectangular/Rounded）、动画 shimmer、段落/头像组合辅助方法
-
-- ✅ **更新 Playground 演示**：
-  - 添加 Tag、Avatar、Rate、Empty、Steps、Skeleton 演示页面
-  - 每个组件展示所有变体和配置选项
-
-- ✅ **Padding 变量统一化**：
-  - `variables-base.less` 新增组件级 padding 变量（Button/Input/Card/Table/Menu/Tab/Tree/Dialog 等）
-  - `theme-base.less` 所有组件 padding 从写死值改为引用变量
-  - 为后续 Small/Medium/Large 主题尺寸变体做准备
-
-- ✅ **UI Bug 修复**：
-  - 修复按钮 hover 文字消失问题（双层背景改为单层+边框）
-  - 修复 Menu Bar 菜单项间距（添加 padding）
-  - 修复 Tab 关闭按钮默认红色问题（改为灰色，hover 才变红）
-
-- ✅ **验证**：
-  - LESS 编译成功
-  - mvn compile 成功（含自动 LESS 编译）
-  - mvn test 全部通过
-  - Light/Dark 主题切换截图验证通过
-
-### 📝 当前状态（2026-05-09 更新）
-
-- **阶段**: Phase 1-6 完成，优化阶段完成，长期规划完成，剩余组件补全完成
-- **JavaFX 原生控件覆盖**: 27 个组件 ✅
-- **Phase 3-6 组件**: 32 个已完成
-- **剩余组件补全**: 12 个（Layout、TimePicker、TreeSelect、Typography、FloatButton、List、Flex、Grid、Space、Mentions、QRCode、Icon）
-- **优化阶段完成**:
-  - 组件尺寸变体：Button、Input、Tag、Badge、ComboBox、ChoiceBox 支持 Small/Large
-  - 动画增强：ModalAnt（淡入+缩放）、DrawerAnt（淡入+滑动）
-  - 主题色：ButtonAnt 新增 SUCCESS、WARNING、DANGER 类型
-- **性能优化完成**:
-  - 合并重复 CSS 选择器（radio-button）
-  - 添加 `-fx-background-insets: 0` 减少 TableView/TreeTableView 重绘
-  - ScrollPane、ToolBar、ChoiceBox 样式优化
-- **可访问性完成**:
-  - ButtonAnt：FocusTraversable + Enter/Space 键盘激活
-  - InputAnt：AccessibleText 自动设置
-  - 新增 AccessibilityUtils 工具类（ARIA 标签、焦点管理）
-  - CSS Focus Visible 样式（accent 色焦点环）
-- **图标方案完成**:
-  - 引入 Ikonli 图标库（ikonli-javafx + ikonli-antdesignicons-pack）
-  - 内置极简 Unicode 符号（窗口控制、状态、箭头等 16 个）
-- **文档完成**:
-  - 生成 API.md（67 个组件完整 API 参考）
-- **运行时 Bug 修复**:
-  - InputNumberAnt：`String.format("%.*f", ...)` 改为 `"%." + precision + "f"`（Java 不支持 `%.*f` 语法）
-  - SpinAnt：`Color.web("-color-accent-emphasis")` 改为 `Color.web("#1677ff")`（JavaFX Color.web 不支持 CSS 变量）
-- **命名规范变更**: 所有扁平化组件已从 `JFX` 前缀改为 `Ant` 后缀
-- **组件总数**: 67 个
-- **Ant Design 6.x 覆盖度**: ~98.5%（67/68 个组件，Tour 不需要）
-- **Playground 布局**: 已重构为左侧分类菜单 + 右侧内容区域
-
-- **项目状态**: 核心开发完成，进入维护阶段
-
-- **未来可能的方向**:
-  1. 主题市场（第三方主题扩展）
-  2. FXML 兼容层（可选）
-  3. 更多 Ant Design 组件（剩余 9 个）
-
-#### 17. 本次更新完成的工作（2026-05-11 - Tabs 组件指示条修复）
-
-- ✅ **TabsAnt 指示条显示修复**：
-  - **问题**：Line 模式下初始状态没有下划线指示条，点击后才出现
-  - **根本原因**：`updateIndicator` 方法在标签布局完成前被调用，`getBoundsInParent()` 返回宽度为 0，导致指示条宽度设置为 0 而不可见
-  - **修复方案**：
-    - 使用 `Pane` 作为指示条容器，支持绝对定位
-    - 使用 `Region` 作为指示条，通过 CSS 样式控制颜色
-    - 添加 `PauseTransition` 延迟 300ms 更新，确保布局完成
-    - 监听每个标签的 `layoutBoundsProperty`，布局变化时自动更新指示条
-    - 监听 `wrapper.sceneProperty`，场景加载后触发更新
-    - 使用 `Platform.runLater` 嵌套调用，确保在 JavaFX 渲染周期后执行
-    - 如果标签宽度为 0，设置默认宽度 100px 确保指示条可见
-  - **技术要点**：
-    - 指示条容器绑定到 tabBar 宽度：`indicatorPane.prefWidthProperty().bind(tabBar.widthProperty())`
-    - 指示条使用硬编码颜色 `#1677ff` 避免 CSS 变量问题
-    - 使用 `label.layoutBoundsProperty().addListener` 监听标签布局变化
-
-- ✅ **TabsAnt vs Ant Design Tabs 详细对比**：
-
-| 功能/属性 | Ant Design API | JFXium TabsAnt 实现 | 状态 | 差异说明 |
-|-----------|----------------|---------------------|------|----------|
-| **type** | line / card | line / card | ✅ 已实现 | 完全对齐 |
-| **size** | small / middle / large | SMALL / MIDDLE / LARGE | ✅ 已实现 | 完全对齐 |
-| **tabPosition** | top / bottom / left / right | TOP / BOTTOM / LEFT / RIGHT | ✅ 已实现 | 完全对齐 |
-| **centered** | boolean | boolean | ✅ 已实现 | 完全对齐 |
-| **tabBarGutter** | number (默认 32) | ❌ 未实现 | 🔴 缺失 | 标签之间的间隙 |
-| **tabBarExtraContent** | ReactNode / {left, right} | extraLeft / extraRight | ✅ 已实现 | 功能等价 |
-| **indicator** | {size, align} |  未实现 | 🟡 缺失 | 指示条自定义（宽度、对齐） |
-| **animated** | boolean / {inkBar, tabPane} | ❌ 未实现 | 🟡 缺失 | 动画切换效果 |
-| **destroyOnHidden** | boolean | ❌ 未实现 | 🟢 低优先级 | 销毁隐藏面板 |
-| **onChange** | (activeKey) => void | Consumer<String> onChange | ✅ 已实现 | 功能等价 |
-| **onTabClick** | (key, event) => void | ❌ 未实现 | 🟢 低优先级 | 点击回调 |
-| **onEdit** | (targetKey, action) => void | ❌ 未实现 | 🟡 缺失 | editable-card 模式回调 |
-| **onTabScroll** | (direction) => void | ❌ 未实现 | 🟢 低优先级 | 滚动回调 |
-| **TabItem.key** | string | String key | ✅ 已实现 | 完全对齐 |
-| **TabItem.label** | string / ReactNode | String label | ✅ 已实现 | 完全对齐 |
-| **TabItem.icon** | ReactNode | ❌ 未实现 | 🟡 缺失 | 标签图标 |
-| **TabItem.disabled** | boolean | boolean disabled | ✅ 已实现 | 完全对齐 |
-| **TabItem.closable** | boolean | ❌ 未实现 | 🔴 缺失 | 可关闭标签 |
-| **TabItem.forceRender** | boolean | ❌ 未实现 | 🟢 低优先级 | 强制渲染 |
-
-- ✅ **验证**：
-  - `mvn compile` 编译成功
-  - Playground 运行正常
-  - Line 模式初始状态显示下划线指示条
-  - 切换 Tab 时下划线跟随移动
+JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控**边框圆角**，两者独立。只覆盖一个时另一个保留 modena 默认值 9px → 边框还是圆形 → 视觉违和。
+
+**修法**：所有形状变体规则**同时**覆盖两个 radius。
+
+**这是 SKILL 候选条目**（待沉淀）：「JavaFX CSS 圆角必须 `-fx-background-radius` + `-fx-border-radius` 两个一起覆盖」。
+
+**子阶段 19.20.4：Showcase 三页加 Shape Section**
+- [x] SwitchPage：新增「形状变体」section，三种形状 × 选中/未选中 = 6 个开关
+- [x] CheckBoxPage：新增「场景 6：形状变体」section，DEFAULT/CIRCLE/SQUARE/ROUNDED 四种
+- [x] RadioPage：新增「场景 5：形状变体」section，DEFAULT/SQUARE/ROUNDED 三种
+
+**关键改动**：
+- `jfxium/src/main/java/org/openkawu/jfxium/component/{SwitchAnt,CheckBoxAnt,RadioButtonAnt}.java`：各加 `Shape` 枚举 + `.shape(Shape)` API + 挂修饰类
+- `jfxium/src/main/resources/org/openkawu/jfxium/css/less/theme-base.less`：新增 ~50 行形状变体 LESS
+- `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/showcase/pages/{SwitchPage,CheckBoxPage,RadioPage}.java`：各加 1 个 Shape Section
+- `README_CN.md` / `README.md`：组件表更新示例代码体现 `.shape(...)` API
+
+**设计哲学（M15 落档）**：再次实证「吸取三家优点」原则——
+- Ant Design 没有 Switch 形状 API，但 CheckBox/Radio 默认就是方/圆
+- Element Plus 有 size 但没 shape API
+- AtlantaFX 完全无形状变体
+- 我们综合：**Size + Shape 双维度变体**，业务方能拼出 12+ 种不同视觉的同语义控件
+
+**为什么这一步重要**：
+1. **同语义不同外观是 admin 实战常见需求**：合规系统要求"必勾选"的复选框做圆形以提示重要性、设置页面想用方形 Switch 显示"硬开关"风格，这些都需要形状自由
+2. **`-fx-background-radius` + `-fx-border-radius` 双覆盖**：JavaFX CSS 圆角的隐藏陷阱，下次修组件圆角先 grep 一遍 LESS 看俩属性都覆盖没
 
 ---
 
-## 下一阶段准备（Phase 3 继续 + 优化）
 
-- ✅ **紧凑主题系统**（对标 Ant Design Compact Algorithm）：
-  - 创建 `ThemeDensity` 枚举：DEFAULT / COMPACT 两种密度模式
-  - 创建 `LightCompactTheme` 类：浅色紧凑主题
-  - 创建 `DarkCompactTheme` 类：深色紧凑主题
-  - 创建 `theme-light-compact.css`：紧凑模式样式覆盖
-  - 创建 `theme-dark-compact.css`：深色紧凑模式样式覆盖
-  - 紧凑模式核心变化（参考 Ant Design `sizeStep: 4 -> 2`, `controlHeight: 32 -> 28`）：
-    - 全局字体：14px -> 13px
-    - Button 默认 padding：8px 16px -> 4px 12px
-    - Input/TextField padding：8px 12px -> 4px 10px
-    - Card padding：16px -> 12px
-    - Table 表头 padding：16px -> 10px，单元格 8px -> 6px
-    - Menu/MenuItem padding：8px -> 4px
-    - Tabs padding：8px -> 6px
-    - Switch 尺寸：44x22 -> 36x18
-    - Badge 尺寸整体缩小
-    - 所有组件间距统一缩小约 25-30%
-
-- ✅ **ThemeManager 增强**：
-  - 添加 `toggleCompact()` 方法：在当前主题类型下切换紧凑/默认密度
-  - 添加 `isCompact()` 方法：检查当前是否为紧凑模式
-  - 支持四种主题组合：Light / Light Compact / Dark / Dark Compact
-
-- ✅ **Playground 演示增强**：
-  - 顶部工具栏添加 "Compact" 切换按钮
-  - 支持实时切换紧凑/默认模式
-  - 与主题切换（Light/Dark）组合使用，共 4 种主题状态
-
-- ✅ **验证**：
-  - `mvn compile` 编译成功
-  - Playground 运行正常
-  - 紧凑主题切换功能正常
+- [x] **SpinAnt `Color.web("#1677ff")` 硬编码**：已修复（M7），改用 Region + CSS 变量替代 Shape
+- [x] **AlertBanner 孤儿类**（`component/base/AlertBanner.java`）：已删除（M7），功能被 AlertAnt 完全覆盖
+- [x] **AnchorAnt / StatisticAnt 的 `Color`-based API**：已弃用（M9），添加 @Deprecated 注解，引导用户改用 styleClass
+- [x] **SceneLayout/OverlayManager 使用文档**：已补充（M7），README_CN.md 中添加完整使用示例
+- [x] **Layouts.java 废弃迁移**：已完全移除（M9），所有引用已迁移到独立 Builder 类
 
 ---
 
-## 下一阶段准备（Phase 3 继续 + 优化）
+## 五、下一阶段计划
 
-> **新对话接入指南**：直接阅读本 PLAN.md 即可了解项目完整状态，无需重复询问历史。
+### 🔴 P0：本次重构遗留收尾（短期）
+- [x] 跑 demo 全面验收（待 JDK 就绪）：`mvn -pl jfxium compile` + 启动 demo，覆盖所有主题
+- [x] 修 SpinAnt 硬编码主题色 TODO（用 Region 替代 Shape 或 Looked-up colors API）
+- [x] 决定 AlertBanner 孤儿类去留
+- [x] 补充 SceneLayout/OverlayManager 完整使用文档（README_CN.md）
 
-### 已完成（无需重复）
-- ✅ LESS 主题系统（Light/Dark 两套 CSS）
-- ✅ 27 个 JavaFX 原生控件样式覆盖
-- ✅ 14 个 Phase 3 高级组件
-- ✅ 8 个 Phase 4 反馈/导航组件（Breadcrumb、Drawer、Modal、Message、Notification、Popconfirm、Popover、Form）
-- ✅ CSS 修复（MenuButton、SplitMenuButton、PasswordField、TreeTableView、Button 颜色变体、Badge、Alert）
-- ✅ Padding 变量统一化
-- ✅ Maven 自动编译 LESS
-- ✅ Playground 演示应用
+### 🟠 P1：基础设施二期（中期）
+- [x] 抽公共 padding(Insets) Builder 钩子（5+ 组件重复）
+- [x] 抽公共 title+extra Header 工厂（CardAnt/PageAnt/SurfaceAnt 重复）
+- [x] 弃用 `Color`-based API（AnchorAnt.inkColor / StatisticAnt.valueColor），引导用户改用 styleClass
+- [x] 完全移除 Layouts.java（已标记 @Deprecated）
 
-### 待做任务（按优先级）
+### 🟡 P2：从"造控件"到"用好控件"（下一阶段重点）
 
-**高优先级：**
-1. 参考 AtlantaFX 完善缺失的 CSS（ScrollPane、ToolBar、ChoiceBox 等细节）
-2. 对标 Ant Design 6.x 组件列表，检查缺失项
-3. Phase 5 中优先级组件（Anchor、AutoComplete、Cascader、Collapse、Dropdown、Image、InputNumber、Segmented、Spin、Statistic）
+> **核心思路**：从造控件转向用好控件。
+> **方向调整（M12.4 后）**：原计划做完整 Web Admin demo，做到 M12.4 用户列表页时发现：
+> - 控件层痛点已基本暴露（M11 + M11.1 集中修完 TableAnt）
+> - 完整业务 demo 工程量大、复用价值低（每个项目业务不同）
+> - **转向"控件 Showcase Demo"**：每个组件展示完整的"姿态、API、变体、最佳实践"，源码即文档（类似 AtlantaFX Sampler）
 
-**中优先级：**
-4. 组件尺寸变体（Small/Medium/Large）- padding 变量已准备好
-5. 更多主题色（Success/Warning/Danger 主题的按钮变体）
-6. 动画效果增强（组件出现/消失动画）
+#### P2.1 Web Admin 后台 Demo（已转向，里程碑已达成）
 
-**低优先级：**
-7. 性能优化
-8. 可访问性（键盘导航、屏幕阅读器）
-9. 文档完善
+**已完成的部分**（沉淀到主框架）：
+- ✅ M12.1 应用骨架：双 Stage（Login 400×520 / Main 1280×800）+ Router + IconAnt SVG path 13 个业务图标
+- ✅ M12.2 登录页双栏 banner：760×520，主题色渐变
+- ✅ M12.3 Dashboard 首页：4 列统计卡 + Timeline + 待办
+- ✅ M12.4 用户列表页：FilterBarAnt（新通用组件）+ TableAnt 三段式模板（驱动出 M11.1 5 项增强）
 
-### 技术要点（新对话需知）
-- **LESS 编译**：`mvn compile` 自动生成 CSS，或 `npx lessc` 手动编译
-- **主题切换**：`Application.setUserAgentStylesheet()` + `ThemeManager`
-- **组件模式**：Builder Pattern（`JFXButton.create().text("OK").build()`）
-- **CSS 变量**：`-color-*` 格式（JavaFX looked-up colors）
-- **文件位置**：
-  - LESS 源文件：`src/main/resources/org/openkawu/jfxium/css/less/`
-  - 生成 CSS：`src/main/resources/org/openkawu/jfxium/css/`
-  - 组件代码：`src/main/java/org/openkawu/jfxium/component/`
-  - Playground：`src/main/java/org/openkawu/jfxium/playground/JFXiumPlayground.java`
+**沉淀产物**（保留，作为"参考实现 + 模板代码"）：
+- `jfxium/component/FilterBarAnt.java`：筛选+搜索+操作工具栏（admin 通用）
+- `jfxium/component/IconAnt.Path` 枚举：13 个业务 SVG 图标
+- `jfxium-demo/admin/`：完整骨架代码可复制粘贴
 
-***
+**已停止的部分**：404 异常页、表单页、个人中心、注册等单价值低的页面（M12.5+ 不再做）
 
-## 项目信息
+#### P2.1' 控件 Showcase Demo（NEW，下一阶段主线）
 
-- **JavaFX 版本**: 21.0.6（不升级）
-- **构建工具**: Maven
-- **FXML**: 完全移除，纯代码构建 UI
-- **CSS 策略**: CSS 文件为主，CSS 变量映射 Token，参考 Ant Design 6.x Token 规范
-- **模块系统**: module-info.java 随包结构扩展更新
-- **开发节奏**: 先设计 Token + Theme + CSS，用原生控件验证样式，后期封装自定义控件
-- <br />
+**核心思路**：类似 AtlantaFX Sampler，每个组件一页，展示其全部"姿态、API 变体、典型用法、复制粘贴片段"。源码本身就是该组件的活文档。
+
+**目标**：
+1. 让用户**5 分钟内**找到任何组件的所有用法
+2. 源码可直接复制粘贴到自己项目
+3. 反向驱动控件 API 不一致、文档不全的问题暴露
+
+**结构（参考 AtlantaFX Sampler）**：
+```
+ShowcaseDemo
+├─ 左侧组件列表（按分类：通用/布局/导航/数据录入/数据展示/反馈/其他）
+├─ 中间组件展示区（卡片化分块：基础用法/变体/状态/事件/最佳实践）
+└─ 右侧侧边（可选）：API 速查、当前主题切换器
+```
+
+**实施策略（按需迭代，不一次性做完）**：
+- [ ] **基础设施**：ShowcaseFrame（左侧菜单 + 主内容区路由）
+- [ ] **第一批组件**（已重写过的 / 高频）：
+  - ButtonAnt（10+ 变体已覆盖最完整）
+  - InputAnt（基础/前后缀/校验态/disabled/password 等）
+  - **TableAnt**（M11 + M11.1 全部新功能展示）
+  - CardAnt（M10 9 个新功能展示）
+  - WatermarkAnt（M8 P0+P2 全功能展示）
+- [ ] **第二批组件**：DatePicker / Select / Modal / Drawer / ...
+- [ ] **第三批**：剩余 50 个组件（按字母序或分类批量推进）
+
+**预期产出**：
+- 一个独立的 `jfxium-showcase` 模块（或 jfxium-demo 内子包）
+- 每个组件一个独立 ShowcasePage，~80-150 行
+- 源码可直接拷贝复用
+
+#### P2.2 业务模板沉淀（保留，按需推进）
+
+> 部分模板已在 P2.1 中沉淀（FilterBarAnt 等）；后续按真实需求继续。
+
+- [x] **FilterBarAnt** —— 筛选+搜索+操作工具栏（M12.4 已沉淀）
+- [x] **CrudTemplate** —— admin 通用三段式业务页骨架（M18 已沉淀，覆盖 CRUD 列表/表单/仪表盘/详情）
+- [ ] **LoginPageTemplate** —— LoginStage 已是参考实现
+- [ ] **DetailPageTemplate** —— 详情/编辑页模板（左表单 + 右辅助信息）
+- [ ] **DashboardTemplate** —— 仪表盘网格模板（DashboardPage 已是参考实现）
+
+#### P2.3 控件层查漏补缺（被 P2.1' Showcase 倒逼，按需推进）
+
+- [x] 数据表格高级功能：排序、列宽、对齐、操作列、边框模式、隐藏表头（M11 + M11.1 完成）
+- [ ] GridAnt 二期：xs/sm/md/lg/xl/xxl 响应式断点（监听 Scene 宽度）
+- [ ] AppShellAnt 增强：Sider 折叠 / breakpoint
+- [ ] FormAnt 增强：校验规则、字段联动、嵌套表单
+- [x] CardAnt 缺失 props（M10 完成）
+
+#### P2.4 元工具（次优先级）
+
+- [ ] 主题预览器（在线切换主题、调色、复制 LESS）
+- [ ] 组件文档自动生成（扫描 Builder API → Markdown）
+
+### 🟢 P3：长期愿景
+- [x] 国际化（i18n）支持（按钮文字、复制提示等硬编码字符串外置）—— M19.18 完成
+- [ ] 主题色板在线编辑器
+- [ ] 单元测试覆盖（核心 Builder API）
+- [ ] 发布到 Maven Central
+- [ ] Figma 设计稿导入
+- [ ] 组件市场
 
 ---
 
-## PLAN1.md 问题修复记录（2026-05-11）
-
-### 问题列表与修复状态
-
-| 序号 | 问题描述 | 状态 | 提交记录 |
-|------|---------|------|---------|
-| 1 | 输入框缺少 Hover Effect | ✅ 已修复 | `fix: 为输入类组件添加 Hover Effect` |
-| 2 | Slider 超出容器框边框 | ✅ 已修复 | `fix: 修复 Slider 超出容器框边框问题` |
-| 3 | 需要 CodeBlock 报错信息显示组件 | ✅ 已修复 | `feat: 添加 CodeBlock 报错信息显示组件` |
-| 4 | Switch 显示问题（不是 ant 切换效果） | ✅ 已修复 | `fix: 修复 Switch 组件显示问题` |
-| 5 | MUI 主题阴影线与边框中间白色空白 | ✅ 已修复 | `fix: 修复 MUI 主题按钮阴影与边框空白` |
-| 6 | 组件小型化/封装/可组合性 |  持续优化 | 架构层面，非单次修复 |
-| 7 | Spinner 获取焦点后控件变大 | ✅ 已修复 | `fix: 修复 Spinner 获取焦点后控件变大` |
-| 8 | 输入框获取焦点后控件变大 | ✅ 已修复 | `fix: 修复所有输入控件获取焦点后变大` |
-| 9 | 其他输入控件焦点变大检查 | ✅ 已修复 | 同上（统一修复所有输入类组件） |
-| 10 | Anchor 与 Tabs 区别分析 | ✅ 已分析 | 功能不同，不重复；Anchor 缺少滚动功能 |
-;| 11 | DatePicker 样式丑陋 | ✅ 已修复 | `fix: 修复 DatePicker 样式和 TimePicker 宽度问题` |
-| 12 | TimePicker 默认太短 | ✅ 已修复 | 同上 |
-| 13 | ColorPicker 滑动组件超出容器边框 | ✅ 已修复 | `fix: 修复 ColorPicker 滑动组件超出容器边框问题` |
-| 14 | TreeSelect 无法选中节点 | ✅ 已修复 | `fix: 修复 TreeSelect 无法选中节点问题` |
-| 15 | InputNumber 按钮点击无反应 | ✅ 已修复 | `fix: 修复 InputNumber 按钮点击事件问题` |
-| 16 | Calendar 布局没有自适应 | ✅ 已修复 | `fix: 修复 Calendar 布局自适应问题` |
-| 17 | Popover 点击外部不关闭 | ✅ 已修复 | `fix: 修复 Popover 点击外部关闭行为` |
-| 18 | Drawer 未对齐 Ant Design | ✅ 已修复 | `fix: 修复 Drawer 对齐 Ant Design` |
-| 19 | Animation 演示无变化 | ✅ 已修复 | `fix: 修复 Animation 和 BackTop 演示问题` |
-| 20 | BackTop 不知展示什么 | ✅ 已修复 | 同上 |
-
-### 修复总结
-
-- **已修复**: 18/20 个问题（问题 6 为架构优化，持续改进中）
-- **提交次数**: 15 次 commit
-- **核心修复**:
-  - 输入类组件 Hover Effect（TextField、TextArea、ComboBox、DatePicker、ColorPicker）
-  - 所有输入类组件焦点环禁用（-fx-focus-color: transparent）
-  - Slider 超出边框裁剪
-  - Switch 组件重写（纯切换效果）
-  - MUI 主题按钮边框移除
-  - CodeBlock 新组件
-  - DatePicker/TimePicker 样式修复
-  - ColorPicker 内部组件超出容器修复
-  - TreeSelect 节点选中功能修复
-  - InputNumber 按钮事件修复
-  - Calendar 自适应布局修复
-  - Popover 点击外部关闭修复
-  - Drawer 对齐 Ant Design
-  - Animation/BackTop 演示修复
-
-### Anchor vs Tabs 分析结果
-
-| 特性 | Anchor | Tabs |
-|------|--------|------|
-| 用途 | 页面内滚动导航 | 内容面板切换 |
-| 交互 | 点击后滚动到指定区域 | 点击后切换显示/隐藏内容 |
-| 内容布局 | 所有内容在同一页面 | 内容在不同面板 |
-| 视觉指示 | 左侧竖线 | 底部横线或卡片样式 |
-
-**结论**: 功能不同，不重复。但 Anchor 组件目前缺少实际的滚动定位功能，后续需要完善。
-
----
-
-## 项目参考 UI实现思路 ;([atlantafx 开源项目](https://github.com/mkpaz/atlantafx))
-
-[参考它 : ](https://github.com/mkpaz/atlantafx-sample-theme)[https://github.com/mkpaz/atlantafx ;    本地代码在 F:\workspace-open-code\atlantafx\sampler ; ](https://github.com/mkpaz/atlantafx)
-
-本地[atlantafx 生成的 UI 主题 文件 里面非常全 完全的覆盖了  javafx 已有 控件](https://github.com/mkpaz/atlantafx)  F:\workspace-open-code\atlantafx\styles\dist
-
-还有 看人家的思路;  直接用 css 就能 展示出一套 ui
+## 六、文件结构
 
 ```
-public class Launcher extends Application {
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    @Override
-    public void start(Stage stage) {
-        // find more themes in 'atlantafx.base.theme' package
-        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
-        Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-
-        // the rest of the code ...
-    }
-}
+JFXium/                                # 多模块 Maven 项目（parent）
+├── pom.xml                           # 父 POM（modules: jfxium, jfxium-demo）
+├── docs/
+│   ├── SKILL.md                      # 开发规范（主题色阶、交互规范）
+│   ├── API.md                        # API 文档
+│   └── COMPONENTS.md                 # 组件清单
+│
+├── jfxium/                           # 主框架模块（发布产物）
+│   ├── pom.xml                       # 含 8 个 lessc execution
+│   └── src/main/
+│       ├── java/org/openkawu/jfxium/
+│       │   ├── JFXiumApp.java        # 框架入口
+│       │   ├── module-info.java      # JPMS 模块声明
+│       │   ├── component/            # 原子控件 + 装饰容器 + 浮层（*Ant 后缀）
+│       │   │   ├── ButtonAnt.java
+│       │   │   ├── InputAnt.java
+│       │   │   ├── ModalAnt.java
+│       │   │   └── ...               # 详见 README_CN 组件清单
+│       │   ├── template/             # 业务模板（M18 新增，*Template 后缀）
+│       │   │   └── CrudTemplate.java # 通用三段式业务页骨架
+│       │   └── core/                 # 内核：CssClasses、Theme API 等
+│       └── resources/org/openkawu/jfxium/css/
+│           ├── less/                 # LESS 源
+│           │   ├── variables-base.less   # 共享尺寸/间距/mixin
+│           │   ├── variables.less        # 亮色色阶
+│           │   ├── variables-dark.less   # 暗色色阶
+│           │   ├── theme-base.less       # 所有组件样式（主题无关）
+│           │   ├── theme-light.less      # 亮色主题入口
+│           │   ├── theme-dark.less       # 暗色主题入口
+│           │   ├── theme-mui*.less       # MUI 系列（4 套）
+│           │   ├── theme-shadcn.less     # shadcn 主题
+│           │   ├── theme-cyberpunk.less  # cyberpunk 主题
+│           │   └── theme-custom.less     # 自定义主题示例
+│           └── theme-*.css           # 编译产物（generate-resources 阶段由 npx lessc 生成）
+│
+└── jfxium-demo/                      # Demo / Playground 模块（不发布）
+    ├── pom.xml                       # 含 javafx-maven-plugin 运行配置
+    └── src/main/java/org/openkawu/jfxium/demo/
+        └── JFXiumDemo.java           # mainClass，演示所有组件
 ```
 
-最好 是 less 来组装 css 等, 别人一运行  就能生成一套 UI css;  别人稍微更改写 就又是一套 UI;  如果java也能实现 类似 less 那样  生成 一套 或者多套  UI  css 主题 也可以用Java 来写?  
-
- .calss 常用的名称 改成 java 常量 ,其他  个性化 UI ,通用组件 都能用;  
-
-剩下就是 参考 Ant Design 6.x Token  美化样式; 
-
-## 验证代码与UI 补充建议
-
-AI去运行示例项目Demo,   截图 , 你自己分析 是否达到了 Ant Design 6.x Token 美化
-
-***
-
-##  一、Phase 1: 基础设施 + 核心组件
-
-### 步骤 1: 项目结构重构
-
-**目标**: 建立清晰的包结构和模块划分
-
-**具体操作**:
-
-1. 删除 `hello-view.fxml`、`HelloController.java`、`HelloApplication.java`
-2. 创建新的包结构：
-   ```
-   org.openkawu.jfxium/
-   ├── core/
-   │   ├── token/         # Design Token 定义
-   │   ├── theme/         # Theme Engine
-   │   └── css/           # CSS 资源管理
-   ├── component/
-   │   └── (预留，Phase 1 后期使用)
-   ├── playground/        # Demo / 样式验证
-   └── JFXiumApp.java     # 新的入口类
-   ```
-3. 更新 `module-info.java` 导出新的包
-4. 更新 `pom.xml`（如有需要）
-   **验收标准**:
-
-- 项目能正常编译运行
-- 新的入口类能启动一个空窗口
-  \*\* CSS 参考 \*\*:
-  <https://github.com/mkpaz/atlantafx> 现代 JavaFX CSS 主题合集，包含更多控制选项。
-  This is an example of creating custom JavaFX CSS theme based on AtlantaFX stylesheet. Just clone the repository and use it as a starting point for creating your own theme.
-  <https://github.com/mkpaz/atlantafx-sample-theme>
-
-***
-
-### 步骤 2: Design Token System 设计
-
-**目标**: 建立对标 Ant Design 的 Token 分层体系
-
-**Token 三层架构**:
-
-```
-Base Token (基础/原子级)
-  └── 颜色板、字体尺寸、间距步长、圆角基数、阴影层级
-      ↓
-Semantic Token (语义级)
-  └── 主色、成功色、警告色、错误色、文本色、背景色、边框色
-      ↓
-Component Token (组件级)
-  └── Button Token、Input Token、Card Token...
-```
-
-**具体 Token 分类**:
-
-#### 2.1 颜色 Token (Colors)
-
-- 主色板：Primary (品牌色，6-10 个梯度)
-- 功能色：Success、Warning、Error、Info (各 6-10 个梯度)
-- 中性色：Gray (13 个梯度，从白到黑)
-- 语义映射：
-  - `color-primary` → Primary-600
-  - `color-success` → Success-600
-  - `color-warning` → Warning-600
-  - `color-error` → Error-600
-  - `color-text-primary` → Gray-900
-  - `color-text-secondary` → Gray-600
-  - `color-text-disabled` → Gray-400
-  - `color-bg-container` → White
-  - `color-bg-secondary` → Gray-100
-  - `color-border` → Gray-300
-
-#### 2.2 间距 Token (Spacing)
-
-- 基础步长：2px、4px、8px、12px、16px、20px、24px、32px、40px、48px
-- 语义映射：
-  - `spacing-xs` → 4px
-  - `spacing-sm` → 8px
-  - `spacing-md` → 16px
-  - `spacing-lg` → 24px
-  - `spacing-xl` → 32px
-
-#### 2.3 圆角 Token (Radius)
-
-- `radius-sm` → 2px
-- `radius-md` → 4px
-- `radius-lg` → 8px
-- `radius-xl` → 16px
-- `radius-full` → 9999px (pill 形状)
-
-#### 2.4 字体 Token (Typography)
-
-- 字体族：`font-family` → "Inter", "Segoe UI", system-ui, sans-serif
-- 字号：
-  - `font-size-xs` → 12px
-  - `font-size-sm` → 14px
-  - `font-size-md` → 16px
-  - `font-size-lg` → 18px
-  - `font-size-xl` → 20px
-  - `font-size-xxl` → 24px
-- 字重：
-  - `font-weight-regular` → 400
-  - `font-weight-medium` → 500
-  - `font-weight-semibold` → 600
-  - `font-weight-bold` → 700
-- 行高：
-  - `line-height-tight` → 1.25
-  - `line-height-normal` → 1.5
-  - `line-height-relaxed` → 1.75
-
-#### 2.5 阴影 Token (Shadow)
-
-- `shadow-sm` → 0 1px 2px rgba(0,0,0,0.05)
-- `shadow-md` → 0 4px 6px rgba(0,0,0,0.07)
-- `shadow-lg` → 0 10px 15px rgba(0,0,0,0.1)
-- `shadow-xl` → 0 20px 25px rgba(0,0,0,0.1)
-
-#### 2.6 动画 Token (Animation)
-
-- `duration-fast` → 150ms
-- `duration-normal` → 250ms
-- `duration-slow` → 350ms
-- `ease-in-out` → cubic-bezier(0.4, 0, 0.2, 1)
-- `ease-out` → cubic-bezier(0, 0, 0.2, 1)
-
-**Java 实现方式**:
-
-- 使用 Java Records 定义 Token 结构
-- 使用不可变 Map 存储 Token 值
-- 提供 Token 覆盖机制（用户可自定义 Token）
-
-**验收标准**:
-
-- Token 定义完整，覆盖颜色、间距、圆角、字体、阴影、动画
-- 能通过 Java API 访问任意 Token 值
-- 支持 Token 值的覆盖和扩展
-
-***
-
-### 步骤 3: Theme Engine 设计
-
-**目标**: 实现 Light/Dark 主题切换、Token 动态覆盖
-
-**核心组件**:
-
-#### 3.1 Theme 接口/类
-
-```java
-public interface Theme {
-    String getName();                    // "light" 或 "dark"
-    Color getColor(String token);        // 获取颜色 Token
-    double getSpacing(String token);     // 获取间距 Token
-    double getRadius(String token);      // 获取圆角 Token
-    // ... 其他 Token 获取方法
-}
-```
-
-#### 3.2 LightTheme / DarkTheme 实现
-
-- `LightTheme`: 默认亮色主题，基于 Ant Design 默认色板
-- `DarkTheme`: 暗色主题，颜色值反转/调整
-
-#### 3.3 ThemeContext（全局主题上下文）
-
-- 单例模式管理当前主题
-- 支持主题切换事件监听
-- 提供 `current()` 方法获取当前主题
-
-#### 3.4 ThemeManager
-
-- 注册/切换主题
-- 应用主题到 Scene（注入 CSS 变量）
-- 监听主题变化，动态更新样式
-
-**主题切换机制**:
-
-1. ThemeManager 维护当前 Theme 实例
-2. 切换主题时，重新生成 CSS 变量字符串
-3. 将 CSS 变量注入到 Scene 的 stylesheet
-4. 所有使用 CSS 变量的控件自动更新
-
-**验收标准**:
-
-- 能切换 Light/Dark 主题
-- 切换后所有使用 CSS 变量的控件自动更新颜色
-- 支持运行时 Token 覆盖
-
-***
-
-### 步骤 4: CSS 文件体系设计
-
-**目标**: 建立完整的 CSS 变量体系，映射 Token 到 CSS
-
-**文件结构**:
-
-```
-resources/org/openkawu/jfxium/css/
-├── base/                    # 基础 CSS
-│   ├── variables-light.css  # Light 主题 CSS 变量
-│   ├── variables-dark.css   # Dark 主题 CSS 变量
-│   └── reset.css            # 基础重置样式
-├── components/              # 组件样式（Phase 1 后期开始）
-│   ├── button.css
-│   ├── input.css
-│   └── card.css
-└── theme.css                # 主题入口（动态加载）
-```
-
-**CSS 变量命名规范**（对标 Ant Design CSS 变量）:
-
-```css
-/* variables-light.css */
-.root {
-  /* 主色 */
-  --jfx-primary: #1677ff;
-  --jfx-primary-hover: #4096ff;
-  --jfx-primary-active: #0958d9;
-  --jfx-primary-disabled: #bae0ff;
-  
-  /* 功能色 */
-  --jfx-success: #52c41a;
-  --jfx-warning: #faad14;
-  --jfx-error: #f5222d;
-  --jfx-info: #1677ff;
-  
-  /* 文本色 */
-  --jfx-text-primary: rgba(0, 0, 0, 0.88);
-  --jfx-text-secondary: rgba(0, 0, 0, 0.65);
-  --jfx-text-disabled: rgba(0, 0, 0, 0.25);
-  
-  /* 背景色 */
-  --jfx-bg-container: #ffffff;
-  --jfx-bg-secondary: #f5f5f5;
-  --jfx-bg-tertiary: #f0f0f0;
-  
-  /* 边框色 */
-  --jfx-border: #d9d9d9;
-  --jfx-border-secondary: #f0f0f0;
-  
-  /* 间距 */
-  --jfx-spacing-xs: 4px;
-  --jfx-spacing-sm: 8px;
-  --jfx-spacing-md: 16px;
-  --jfx-spacing-lg: 24px;
-  --jfx-spacing-xl: 32px;
-  
-  /* 圆角 */
-  --jfx-radius-sm: 2px;
-  --jfx-radius-md: 4px;
-  --jfx-radius-lg: 8px;
-  --jfx-radius-xl: 16px;
-  
-  /* 阴影 */
-  --jfx-shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --jfx-shadow-md: 0 4px 6px rgba(0,0,0,0.07);
-  --jfx-shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-  
-  /* 字体 */
-  --jfx-font-family: "Inter", "Segoe UI", system-ui, sans-serif;
-  --jfx-font-size-sm: 14px;
-  --jfx-font-size-md: 16px;
-}
-```
-
-**Dark 主题变量**:
-
-- 颜色反转：背景变暗、文本变亮
-- 边框调整：使用 rgba 透明度
-- 阴影调整：降低透明度
-
-**动态加载机制**:
-
-- ThemeManager 根据当前主题加载对应的 variables-xxx.css
-- 支持运行时切换（移除旧样式表，添加新样式表）
-
-**验收标准**:
-
-- CSS 变量完整覆盖所有 Token
-- Light/Dark 两套变量文件完整
-- 能动态加载和切换 CSS 文件
-- 原生 JavaFX 控件应用 CSS 变量后显示正确
-
-***
-
-### 步骤 5: Playground / Demo 搭建
-
-**目标**: 创建样式验证环境，用原生控件测试 CSS
-
-**内容**:
-
-1. 创建 `JFXiumPlayground` 入口类
-2. 创建多个 Demo 页面：
-   - **Colors Demo**: 展示所有颜色 Token 和色板
-   - **Typography Demo**: 展示字体、字号、字重
-   - **Spacing Demo**: 展示间距体系
-   - **Shadow Demo**: 展示阴影效果
-   - **Components Demo**: 用原生 Button、TextField、Label 等测试 CSS 样式
-3. 添加主题切换按钮（Light ↔ Dark）
-
-**原生控件测试策略**:
-
-- 用 `javafx.scene.control.Button` 测试按钮样式
-- 用 `javafx.scene.control.TextField` 测试输入框样式
-- 用 `javafx.scene.layout.VBox/HBox` 测试间距和布局
-- 所有控件通过 CSS 类名应用样式
-
-**验收标准**:
-
-- Playground 能正常启动
-- 能展示所有 Token 的视觉效果
-- 主题切换按钮能实时切换 Light/Dark
-- 所有原生控件应用 CSS 后视觉效果符合 Ant Design 风格
-
-***
-
-### 步骤 6: Button 组件封装（Phase 1 后期）
-
-**目标**: 封装第一个自定义组件，验证完整架构
-
-**组件结构**:
-
-```
-component/button/
-  ├── JFXButton.java          # API 类（Builder Pattern）
-  ├── JFXButtonSkin.java      # Skin 类（视觉渲染）
-  ├── JFXButtonTheme.java     # 组件主题配置
-  └── JFXButtonTokens.java    # 组件 Token 默认值
-```
-
-**API 设计**:
-
-```java
-JFXButton button = UI.button("Click Me")
-    .type(ButtonType.PRIMARY)    // PRIMARY, DEFAULT, DASHED, TEXT, LINK
-    .size(ButtonSize.LARGE)       // SMALL, MEDIUM, LARGE
-    .shape(ButtonShape.ROUNDED)   // SQUARE, ROUNDED, CIRCLE
-    .icon(Icons.PLUS)             # 图标
-    .disabled(true)               # 禁用状态
-    .loading(true)                # 加载状态
-    .onClick(event -> {...})      # 点击事件
-    .build();
-```
-
-**样式实现**:
-
-- 优先使用 CSS 类名控制样式
-- 复杂状态（loading、disabled）通过 Skin 类处理
-- 颜色、间距、圆角全部使用 CSS 变量
-
-**验收标准**:
-
-- Button 组件能正常显示和使用
-- 支持所有类型、尺寸、形状
-- 支持禁用和加载状态
-- 主题切换时 Button 样式自动更新
-
-***
-
-### 步骤 7: Input 组件封装
-
-**目标**: 封装文本输入组件
-
-**API 设计**:
-
-```java
-JFXInput input = UI.input()
-    .placeholder("请输入内容")
-    .size(InputSize.LARGE)
-    .prefix(Icons.USER)           # 前缀图标
-    .suffix(Icons.EYE)            # 后缀图标
-    .clearable(true)              # 可清空
-    .disabled(true)
-    .onChange(value -> {...})
-    .build();
-```
-
-**验收标准**:
-
-- 支持普通文本、密码输入
-- 支持前缀/后缀图标
-- 支持清空按钮
-- 支持禁用状态
-- 主题切换时样式自动更新
-
-***
-
-### 步骤 8: Card 组件封装
-
-**目标**: 封装卡片容器组件
-
-**API 设计**:
-
-```java
-JFXCard card = UI.card()
-    .title("Card Title")
-    .extra(UI.button("More").link().build())
-    .bordered(true)
-    .hoverable(true)
-    .shadow(ShadowSize.MD)
-    .padding(Spacing.MD)
-    .content(...)
-    .build();
-```
-
-**验收标准**:
-
-- 支持标题、额外操作区
-- 支持边框、阴影、悬浮效果
-- 支持自定义内容
-- 主题切换时样式自动更新
-
-***
-
-## 二、Phase 2: 扩展组件 + 布局系统
-
-### 步骤 9: Modal / Dialog 组件
-
-**目标**: 封装对话框组件
-
-**API 设计**:
-
-```java
-JFXModal modal = UI.modal()
-    .title("确认删除")
-    .content("确定要删除这条记录吗？")
-    .width(400)
-    .closable(true)
-    .maskClosable(true)
-    .okText("确认")
-    .cancelText("取消")
-    .onOk(() -> {...})
-    .onCancel(() -> {...})
-    .show();
-```
-
-***
-
-### 步骤 10: Table 组件
-
-**目标**: 封装数据表格组件
-
-**API 设计**:
-
-```java
-JFXTable<Person> table = UI.table(Person.class)
-    .column("Name", Person::getName)
-    .column("Age", Person::getAge)
-    .column("Action", person -> UI.button("Edit").build())
-    .data(personList)
-    .striped(true)
-    .bordered(true)
-    .pagination(10)
-    .build();
-```
-
-***
-
-### 步骤 11: Form System
-
-**目标**: 封装表单系统
-
-**API 设计**:
-
-```java
-JFXForm form = UI.form()
-    .item("用户名", UI.input().placeholder("请输入用户名").build())
-    .item("密码", UI.input().password().placeholder("请输入密码").build())
-    .item("性别", UI.select().options("男", "女").build())
-    .layout(FormLayout.HORIZONTAL)
-    .onSubmit(data -> {...})
-    .build();
-```
-
-***
-
-### 步骤 12: Layout DSL
-
-**目标**: 创建流式布局 DSL
-
-**API 设计**:
-
-```java
-// 垂直布局
-VBox vbox = UI.vbox()
-    .spacing(Spacing.MD)
-    .align(Align.CENTER)
-    .children(
-        UI.button("A").build(),
-        UI.button("B").build(),
-        UI.button("C").build()
-    )
-    .build();
-
-// 水平布局
-HBox hbox = UI.hbox()
-    .spacing(Spacing.MD)
-    .justify(Justify.SPACE_BETWEEN)
-    .children(...)
-    .build();
-
-// 网格布局
-Grid grid = UI.grid()
-    .cols(3)
-    .gap(Spacing.MD)
-    .children(...)
-    .build();
-
-// 弹性布局
-Flex flex = UI.flex()
-    .wrap(true)
-    .gap(Spacing.MD)
-    .children(...)
-    .build();
-```
-
-***
-
-## 三、Phase 3: 动画 + 工具链
-
-### 步骤 13: Animation System
-
-**目标**: 封装常用动画效果
-
-**API 设计**:
-
-```java
-// 淡入
-Animation.fadeIn(node, Duration.millis(250));
-
-// 淡出
-Animation.fadeOut(node, Duration.millis(250));
-
-// 缩放
-Animation.scaleIn(node, Duration.millis(200));
-
-// 滑动
-Animation.slideInFromBottom(node, Duration.millis(300));
-
-// 自定义过渡
-Animation.builder(node)
-    .fromOpacity(0)
-    .toOpacity(1)
-    .fromTranslateY(20)
-    .toTranslateY(0)
-    .duration(Duration.millis(250))
-    .play();
-```
-
-***
-
-### 步骤 14: Playground 完善
-
-**目标**: 完善 Demo 系统
-
-**内容**:
-
-1. 所有组件的独立 Demo 页面
-2. 组件 API 文档展示
-3. 代码示例展示
-4. 主题实时切换
-5. Token 值实时查看
-
-***
-
-### 步骤 15: CLI Tooling（可选）
-
-**目标**: 提供脚手架工具
-
-**内容**:
-
-1. 组件生成器（自动生成组件模板）
-2. 主题生成器（根据 Token 生成 CSS）
-3. 文档生成器（从代码生成文档）
-
-***
-
-## 四、CSS 开发详细计划
-
-### CSS 文件清单
-
-| 文件                    | 说明              | 优先级 |
-| --------------------- | --------------- | --- |
-| `variables-light.css` | Light 主题 CSS 变量 | P0  |
-| `variables-dark.css`  | Dark 主题 CSS 变量  | P0  |
-| `reset.css`           | 基础重置样式          | P0  |
-| `button.css`          | 按钮样式            | P1  |
-| `input.css`           | 输入框样式           | P1  |
-| `card.css`            | 卡片样式            | P1  |
-| `modal.css`           | 对话框样式           | P2  |
-| `table.css`           | 表格样式            | P2  |
-| `form.css`            | 表单样式            | P2  |
-| `layout.css`          | 布局辅助样式          | P2  |
-
-### CSS 变量命名规范
-
-- 前缀：`--jfx-`（避免与项目其他 CSS 冲突）
-- 层级：`--jfx-{category}-{name}-{state}`
-- 示例：
-  - `--jfx-color-primary`
-  - `--jfx-color-primary-hover`
-  - `--jfx-button-bg-primary`
-  - `--jfx-button-border-radius`
-
-### 原生控件 CSS 映射
-
-| 原生控件      | CSS 类名                | 说明     |
-| --------- | --------------------- | ------ |
-| Button    | `.jfx-button`         | 基础按钮样式 |
-| Button    | `.jfx-button-primary` | 主按钮    |
-| Button    | `.jfx-button-large`   | 大尺寸    |
-| TextField | `.jfx-input`          | 输入框样式  |
-| Label     | `.jfx-text`           | 文本样式   |
-| VBox/HBox | `.jfx-layout`         | 布局辅助   |
-
-***
-
-## 五、开发顺序总结
-
-```
-Phase 1（当前阶段）:
-  步骤 1: 项目结构重构
-  步骤 2: Design Token System
-  步骤 3: Theme Engine
-  步骤 4: CSS 文件体系
-  步骤 5: Playground / Demo
-  步骤 6: Button 组件
-  步骤 7: Input 组件
-  步骤 8: Card 组件
-
-Phase 2:
-  步骤 9: Modal 组件
-  步骤 10: Table 组件
-  步骤 11: Form System
-  步骤 12: Layout DSL
-
-Phase 3:
-  步骤 13: Animation System
-  步骤 14: Playground 完善
-  步骤 15: CLI Tooling
-```
-
-***
-
-## 六、技术决策记录
-
-| 决策              | 选择              | 理由                     |
-| --------------- | --------------- | ---------------------- |
-| FXML            | 删除              | 完全代码构建，符合现代 UI 框架趋势    |
-| CSS 策略          | CSS 文件 + CSS 变量 | 对标 Ant Design，支持动态主题切换 |
-| JavaFX 版本       | 21.0.6          | 稳定，无需升级                |
-| 控件封装顺序          | 先原生验证，后自定义封装    | 降低风险，先验证 CSS 设计        |
-| Token 规范        | Ant Design 6.x  | 成熟、文档完善、社区认可           |
-| Builder Pattern | 链式调用            | 现代化 API 风格，对标前端框架      |
-
-***
-
-## 七、下一步行动（2026-05-09 更新）
-
-当前项目 Phase 1-6、优化阶段及长期规划已全部完成。
-
-### 已完成的全部工作
-
-| 类别 | 完成内容 |
-|------|----------|
-| **Phase 1-6** | 59 个组件实现 |
-| **命名规范** | JFX → Ant 后缀统一 |
-| **尺寸变体** | Button、Input、Tag、Badge、ComboBox、ChoiceBox 支持 Small/Large |
-| **动画增强** | ModalAnt（淡入+缩放）、DrawerAnt（淡入+滑动） |
-| **主题色** | ButtonAnt 新增 SUCCESS、WARNING、DANGER |
-| **性能优化** | CSS 选择器合并、background-insets 优化 |
-| **可访问性** | 键盘导航、ARIA 标签、Focus Visible 样式、AccessibilityUtils |
-| **文档** | API.md 完整 API 参考文档 |
-
-### 项目里程碑
-
-| 阶段 | 状态 | 内容 |
-|------|------|------|
-| Phase 1 | ✅ | 基础设施（Token、Theme、CSS、Playground） |
-| Phase 2 | ✅ | 扩展组件（Modal、Table、Form、Layout DSL） |
-| Phase 3 | ✅ | 高级组件（14个） |
-| Phase 4 | ✅ | 反馈/导航组件（8个） |
-| Phase 5 | ✅ | 中优先级组件（9个） |
-| Phase 6 | ✅ | CascaderAnt + CSS 细节完善 |
-| 优化阶段 | ✅ | 尺寸变体 + 动画增强 + 主题色 |
-| 性能优化 | ✅ | CSS 优化 + 重绘减少 |
-| 可访问性 | ✅ | 键盘导航 + ARIA + Focus |
-| 文档 | ✅ | API.md 生成 |
-
-- **Ant Design 6.x 覆盖**：59/68 个组件（~87%）
-- **组件总数**：59 个
-- **Java 文件数**：50+ 个组件类
-- **CSS 覆盖率**：27 个原生控件 + 自定义组件样式
-
-### 本次更新完成的工作（2026-05-09 第三轮 - 剩余组件补全）
-
-- ✅ **LayoutAnt 布局组件**：Header/Sider/Content/Footer 页面结构
-- ✅ **TimePickerAnt 时间选择器**：时/分/秒 Spinner，支持格式自定义
-- ✅ **TreeSelectAnt 树形选择器**：下拉树形节点选择
-- ✅ **TypographyAnt 排版组件**：Title（1-5级）/ Paragraph / Text（Primary/Secondary/Success/Warning/Danger）
-- ✅ **FloatButtonAnt 悬浮按钮**：圆形按钮，支持图标和 Tooltip
-- ✅ **ListAnt 高级列表**：Avatar + Title + Description + Action 组合
-- ✅ **FlexAnt 弹性布局**：方向、换行、对齐、间隙控制
-- ✅ **GridAnt 栅格系统**：24列栅格，支持偏移和间距
-- ✅ **SpaceAnt 间距组件**：水平/垂直间距，支持自动换行
-- ✅ **MentionsAnt 提及组件**：@ 触发下拉选择
-- ✅ **QRCodeAnt 二维码**：Canvas 绘制，支持自定义颜色
-- ✅ **IconAnt 图标系统**：
-  - 引入 Ikonli 图标库（ikonli-javafx + ikonli-antdesignicons-pack）
-  - 内置极简 Unicode 符号（窗口控制：× □ – ❐，状态：✓ ✕ ℹ ⚠，箭头：↑ ↓ ← → 等）
-  - 如需丰富图标，使用 Ikonli：`FontIcon icon = new FontIcon(AntDesignIconsFilled.HOME)`
-
-- ✅ **Playground 更新**：添加 QRCode、Mentions 演示页面
-
-### 本次更新完成的工作（2026-05-09 第四轮 - 多主题系统）
-
-- ✅ **MenuAnt 高级菜单组件**：
-  - 支持折叠/展开子菜单
-  - 左侧图标 + 文字 + 右侧箭头
-  - 支持无限嵌套子菜单
-  - Playground 左侧菜单已替换为 MenuAnt
-
-- ✅ **多主题系统**：
-  - `theme-light` - 默认浅色（蓝色 #1677ff）
-  - `theme-dark` - 深色模式
-  - `theme-mui` - Material Design 风格（靛蓝 #1976d2，Roboto 字体，小圆角）
-  - `theme-shadcn` - shadcn/ui 风格（Zinc 色系，极简设计）
-  - `theme-cyberpunk` - 赛博朋克风格（霓虹色，深色背景，等宽字体）
-  - Playground 支持点击 "Switch Theme" 按钮循环切换
-
-- ✅ **文档完善**：
-  - 新建 README.md（英文版，67 个组件完整列表）
-  - 更新 README_CN.md（补充 12 个新组件）
-  - 更新 API.md（组件数 67，覆盖率 98.5%）
-
-### 本次更新完成的工作（2026-05-10 第五轮 - Ant Design 对照分析与差异对齐）
-
-#### 一、对照分析思路
-
-1. 获取 Ant Design 官网组件列表（https://ant-design.antgroup.com/components/overview-cn）
-2. 检查本地 ant-design-ref/ 源码路径（存在，React 源码参考）
-3. 逐项对比每个组件：宽高、边距、颜色、布局、按钮位置、X号位置、标题、复用关系
-4. 标记缺失组件和 UI/功能差异
-
-#### 二、组件对照总表
-
-| Ant Design | JFXium | 状态 |
-|------------|--------|------|
-| Button 按钮 | ButtonAnt | ✅ 基本对齐，缺 ghost/block/波纹 |
-| FloatButton 悬浮按钮 | FloatButtonAnt | ✅ |
-| Icon 图标 | IconAnt | ✅ |
-| Typography 排版 | TypographyAnt | ✅ |
-| Divider 分割线 | DividerAnt | ✅ |
-| Flex 弹性布局 | FlexAnt | ✅ |
-| Grid 栅格 | GridAnt | ✅ |
-| Layout 布局 | LayoutAnt | ✅ |
-| **Masonry 瀑布流** | - | ❌ **缺失** |
-| Space 间距 | SpaceAnt | ✅ |
-| **Splitter 分隔面板** | - | ❌ **缺失** |
-| Anchor 锚点 | AnchorAnt | ✅ |
-| Breadcrumb 面包屑 | BreadcrumbAnt | ✅ |
-| Dropdown 下拉菜单 | DropdownAnt | ✅ |
-| Menu 导航菜单 | MenuAnt | ⚠️ 仅 inline 模式 |
-| Pagination 分页 | PaginationAnt | ✅ |
-| Steps 步骤条 | StepsAnt | ✅ |
-| Tabs 标签页 | TabsAnt | ✅ |
-| AutoComplete 自动完成 | AutoCompleteAnt | ✅ |
-| Cascader 级联选择 | CascaderAnt | ✅ |
-| Checkbox 多选框 | CheckBoxAnt | ✅ |
-| ColorPicker 颜色选择器 | ColorPickerAnt | ✅ |
-| DatePicker 日期选择框 | DatePickerAnt | ✅ |
-| Form 表单 | FormAnt | ⚠️ 缺栅格布局/校验/数据管理 |
-| Input 输入框 | InputAnt | ✅ |
-| InputNumber 数字输入框 | InputNumberAnt | ✅ |
-| Mentions 提及 | MentionsAnt | ✅ |
-| Radio 单选框 | RadioButtonAnt | ✅ |
-| Rate 评分 | RateAnt | ✅ |
-| Select 选择器 | ComboBoxAnt | ✅ |
-| Slider 滑动输入条 | SliderAnt | ✅ |
-| Switch 开关 | SwitchAnt | ✅ |
-| TimePicker 时间选择框 | TimePickerAnt | ✅ |
-| Transfer 穿梭框 | TransferAnt | ✅ |
-| TreeSelect 树选择 | TreeSelectAnt | ✅ |
-| Upload 上传 | UploadAnt | ✅ |
-| Avatar 头像 | AvatarAnt | ✅ |
-| Badge 徽标数 | BadgeAnt | ✅ |
-| Calendar 日历 | CalendarAnt | ✅ |
-| Card 卡片 | CardAnt | ✅ |
-| Carousel 走马灯 | CarouselAnt | ✅ |
-| Collapse 折叠面板 | CollapseAnt | ✅ |
-| Descriptions 描述列表 | DescriptionsAnt | ✅ |
-| Empty 空状态 | EmptyAnt | ✅ |
-| Image 图片 | ImageAnt | ✅ |
-| List 列表 | ListAnt | ✅ |
-| Popover 气泡卡片 | PopoverAnt | ✅ |
-| QRCode 二维码 | QRCodeAnt | ✅ |
-| Segmented 分段控制器 | SegmentedAnt | ✅ |
-| Statistic 统计数值 | StatisticAnt | ✅ |
-| Table 表格 | TableAnt | ⚠️ 缺排序/筛选/分页/固定列 |
-| Tag 标签 | TagAnt | ✅ |
-| Timeline 时间轴 | TimelineAnt | ✅ |
-| Tooltip 文字提示 | TooltipAnt | ✅ |
-| **Tour 漫游式引导** | - | ❌ 不需要 |
-| Tree 树形控件 | TreeAnt | ✅ |
-| Alert 警告提示 | AlertAnt | ⚠️ 缺 action/banner 模式 |
-| Drawer 抽屉 | DrawerAnt | ⚠️ 关闭按钮位置与 Ant 不同 |
-| Message 全局提示 | MessageAnt | ✅ |
-| Modal 对话框 | ModalAnt | ⚠️ 缺键盘ESC/静态方法/加载态 |
-| Notification 通知提醒框 | NotificationAnt | ✅ |
-| Popconfirm 气泡确认框 | PopconfirmAnt | ✅ |
-| Progress 进度条 | ProgressAnt | ✅ |
-| Result 结果 | ResultAnt | ✅ |
-| Skeleton 骨架屏 | SkeletonAnt | ✅ |
-| Spin 加载中 | SpinAnt | ✅ |
-| **Watermark 水印** | - | ❌ **缺失** |
-| **App 包裹组件** | - | ❌ **缺失** |
-| **ConfigProvider** | - | ❌ ThemeManager 替代 |
-
-#### 三、功能缺失分析（JavaFX 实现难易度评估）
-
-| 缺失功能 | 组件 | 难度 | 是否实现 | 原因 |
-|----------|------|------|----------|------|
-| **ghost 幽灵按钮** | ButtonAnt | 低 | ✅ 本次实现 | CSS 背景透明+边框反色 |
-| **block 块级按钮** | ButtonAnt | 低 | ✅ 本次实现 | maxWidth=Double.MAX_VALUE |
-| **波纹点击效果** | ButtonAnt | 中 | ❌ 不做 | JavaFX 无原生波纹，需自定义动画，复杂度较高 |
-| **键盘 ESC 关闭** | ModalAnt | 低 | ✅ 本次实现 | 添加 KeyEvent 监听 |
-| **confirmLoading 加载态** | ModalAnt | 低 | ✅ 本次实现 | 确定按钮 loading 状态 |
-| **静态方法** | ModalAnt | 中 | ❌ 不做 | JavaFX 无 React hooks 机制，静态方法需全局状态管理，与现有架构冲突 |
-| **响应式宽度** | ModalAnt | 中 | ❌ 不做 | JavaFX 无 CSS media query 等效机制 |
-| **关闭按钮位置** | DrawerAnt | 低 | ✅ 本次实现 | 改为左上角与 Ant Design 一致 |
-| **size="large" 宽度** | DrawerAnt | 低 | ✅ 本次实现 | 添加 size 属性，default=378, large=736 |
-| **可调整大小** | DrawerAnt | 高 | ❌ 不做 | 需自定义鼠标拖拽+边缘检测，JavaFX Popup 不支持原生 resize |
-| **extra 操作区** | DrawerAnt | 低 | ✅ 本次实现 | Header 右侧添加额外节点 |
-| **栅格 labelCol/wrapperCol** | FormAnt | 中 | ✅ 本次实现 | 使用 ColumnConstraints percentWidth |
-| **rules 校验规则** | FormAnt | 高 | ❌ 不做 | 需完整表单数据流管理，JavaFX 无 React 受控组件机制 |
-| **数据管理** | FormAnt | 高 | ❌ 不做 | 需构建类似 rc-field-form 的完整表单引擎，超出当前范围 |
-| **action 自定义操作** | AlertAnt | 低 | ✅ 本次实现 | Header 右侧添加 action 节点 |
-| **banner 顶部公告模式** | AlertAnt | 低 | ✅ 本次实现 | fullWidth + 默认 warning 类型 |
-| **排序功能** | TableAnt | 中 | ❌ 不做 | JavaFX TableView 原生支持排序，但需封装为 Ant Design API 风格 |
-| **筛选功能** | TableAnt | 高 | ❌ 不做 | 需自定义弹出筛选面板，复杂度高 |
-| **分页功能** | TableAnt | 中 | ❌ 不做 | 需与 PaginationAnt 集成，当前可外部组合使用 |
-| **固定列/表头** | TableAnt | 高 | ❌ 不做 | JavaFX TableView 不支持原生固定列，需重写虚拟滚动 |
-| **horizontal 模式** | MenuAnt | 中 | ❌ 不做 | 需重写布局为水平排列，当前 inline 模式已满足主要需求 |
-| **选中指示条** | MenuAnt | 低 | ✅ 本次实现 | 左侧添加蓝色指示条 |
-| **分组/分割线** | MenuAnt | 低 | ✅ 本次实现 | 添加 group() 和 divider() 方法 |
-
-#### 四、完整 UI/功能差异现状表
-
-> 以下表格详细列出每个双向组件的 Ant Design 功能与 JFXium 现状对比
-
-##### 1. Button 按钮
-
-| Ant Design 功能 | JFXium 现状 | 差异说明 | 实现难度 | 计划 |
-|-----------------|-------------|----------|----------|------|
-| type (primary/default/dashed/text/link) | ✅ 已实现 | 类型对齐 | - | 已完成 |
-| size (large/middle/small) | ✅ 已实现 | 尺寸对齐 | - | 已完成 |
-| shape (default/circle/round) | ✅ 已实现 rounded/square | 圆角/方形对齐 | - | 已完成 |
-| loading | ✅ 已实现 | 加载状态 | - | 已完成 |
-| disabled | ✅ 已实现 | 禁用状态 | - | 已完成 |
-| icon | ✅ 已实现 | 图标支持 | - | 已完成 |
-| iconPosition (start/end) | ✅ 已实现 LEFT/RIGHT | 图标位置 | - | 已完成 |
-| **ghost 幽灵按钮** | ❌ 未实现 | 背景透明+边框反色 | 低 | ✅ 本次实现 |
-| **block 块级按钮** | ❌ 未实现 | 宽度100% | 低 | ✅ 本次实现 |
-| **color + variant** | ❌ 未实现 | 5.21.0 新增颜色+变体系统 | 中 | ❌ 不做 |
-| **href 链接** | ❌ 未实现 | 作为链接使用 | 低 | ❌ 不做 |
-| **波纹点击效果** | ❌ 未实现 | Wave 组件点击动画 | 中 | ❌ 不做 |
-| autoInsertSpace | ❌ 未实现 | 两个汉字间加空格 | 低 | ❌ 不做 |
-
-##### 2. Modal 对话框
-
-| Ant Design 功能 | JFXium 现状 | 差异说明 | 实现难度 | 计划 |
-|-----------------|-------------|----------|----------|------|
-| 默认宽度 520px | ✅ 已实现 | 宽度对齐 | - | 已完成 |
-| 确认按钮右下角 | ✅ 已实现 | 取消左/确定右 | - | 已完成 |
-| X 关闭按钮右上角 | ✅ 已实现 | 位置对齐 | - | 已完成 |
-| Header 内边距 16px 24px | ✅ 已实现 | 内边距对齐 | - | 已完成 |
-| Body 内边距 24px | ✅ 已实现 | 内边距对齐 | - | 已完成 |
-| Footer 内边距 16px 24px | ✅ 已实现 | 内边距对齐 | - | 已完成 |
-| 圆角 8px | ✅ 已实现 | 圆角对齐 | - | 已完成 |
-| 遮罩 rgba(0,0,0,0.45) | ✅ 已实现 | 颜色对齐 | - | 已完成 |
-| 动画 Zoom+Fade | ✅ 已实现 | Fade+Scale | - | 已完成 |
-| footer 自定义 | ✅ 已实现 | 支持自定义节点 | - | 已完成 |
-| centered 垂直居中 | ✅ 已实现 | 居中展示 | - | 已完成 |
-| **键盘 ESC 关闭** | ❌ 未实现 | keyboard=true | 低 | ✅ 本次实现 |
-| **confirmLoading** | ❌ 未实现 | 确定按钮 loading | 低 | ✅ 本次实现 |
-| **静态方法** | ❌ 未实现 | Modal.info/success/error/warning/confirm | 中 | ❌ 不做 |
-| **响应式宽度** | ❌ 未实现 | Breakpoint 对象 | 中 | ❌ 不做 |
-| **zIndex** | ❌ 未实现 | 层级控制 | 低 | ❌ 不做 |
-| **destroyOnHidden** | ❌ 未实现 | 关闭时销毁子元素 | 低 | ❌ 不做 |
-| **loading 骨架屏** | ❌ 未实现 | 5.18.0 新增 | 低 | ❌ 不做 |
-
-##### 3. Drawer 抽屉
-
-| Ant Design 功能 | JFXium 现状 | 差异说明 | 实现难度 | 计划 |
-|-----------------|-------------|----------|----------|------|
-| 默认宽度 378px | ✅ 已实现 | 宽度对齐 | - | 已完成 |
-| Header 内边距 16px 24px | ✅ 已实现 | 内边距对齐 | - | 已完成 |
-| Body 内边距 24px | ✅ 已实现 | 内边距对齐 | - | 已完成 |
-| Footer 支持 | ✅ 已实现 | 底部区域 | - | 已完成 |
-| 动画 Slide+Fade | ✅ 已实现 | 滑入动画 | - | 已完成 |
-| placement (top/right/bottom/left) | ✅ 已实现 | 四个方向 | - | 已完成 |
-| mask 遮罩 | ✅ 已实现 | 遮罩层 | - | 已完成 |
-| maskClosable | ✅ 已实现 | 点击遮罩关闭 | - | 已完成 |
-| **关闭按钮位置** | ❌ 右上角 | Ant Design 默认左上角 | 低 | ✅ 本次实现 |
-| **size="large"** | ❌ 未实现 | 736px 宽度 | 低 | ✅ 本次实现 |
-| **extra 操作区** | ❌ 未实现 | 右上角额外操作 | 低 | ✅ 本次实现 |
-| **可调整大小** | ❌ 未实现 | resizable 拖拽边缘 | 高 | ❌ 不做 |
-| **多层抽屉 push** | ❌ 未实现 | 多层推动效果 | 高 | ❌ 不做 |
-| **loading 骨架屏** | ❌ 未实现 | 5.17.0 新增 | 低 | ❌ 不做 |
-
-##### 4. Form 表单
-
-| Ant Design 功能 | JFXium 现状 | 差异说明 | 实现难度 | 计划 |
-|-----------------|-------------|----------|----------|------|
-| layout (horizontal/vertical/inline) | ✅ 已实现 | 三种布局 | - | 已完成 |
-| labelAlign (left/right) | ✅ 已实现 | 标签对齐 | - | 已完成 |
-| colon | ✅ 已实现 | 冒号显示 | - | 已完成 |
-| size (small/middle/large) | ✅ 已实现 | 尺寸控制 | - | 已完成 |
-| **labelCol/wrapperCol** | ⚠️ 固定 25%/75% | Ant Design 使用栅格(默认 8/16) | 中 | ✅ 本次实现 |
-| **rules 校验规则** | ❌ 未实现 | 完整校验引擎 | 高 | ❌ 不做 |
-| **initialValues** | ❌ 未实现 | 表单默认值 | 高 | ❌ 不做 |
-| **onFinish/onFinishFailed** | ❌ 未实现 | 提交回调 | 高 | ❌ 不做 |
-| **Form.useForm()** | ❌ 未实现 | 表单实例管理 | 高 | ❌ 不做 |
-| **disabled 禁用整个表单** | ❌ 未实现 | 统一禁用 | 中 | ❌ 不做 |
-| **requiredMark** | ❌ 未实现 | 必选/可选样式 | 中 | ❌ 不做 |
-| **variant 变体** | ❌ 未实现 | outlined/filled/borderless/underlined | 中 | ❌ 不做 |
-| **scrollToFirstError** | ❌ 未实现 | 自动滚动到错误字段 | 中 | ❌ 不做 |
-
-##### 5. Table 表格
-
-| Ant Design 功能 | JFXium 现状 | 差异说明 | 实现难度 | 计划 |
-|-----------------|-------------|----------|----------|------|
-| 基础列定义 | ✅ 已实现 | column/nodeColumn/numberColumn/booleanColumn | - | 已完成 |
-| 斑马纹 striped | ✅ 已实现 | 交替行背景 | - | 已完成 |
-| 边框 bordered | ✅ 已实现 | 边框线 | - | 已完成 |
-| 选择列 selectable | ✅ 已实现 | 复选框列 | - | 已完成 |
-| 紧凑模式 compact | ✅ 已实现 | 小型表格 | - | 已完成 |
-| **排序 sorter** | ❌ 未实现 | 列排序功能 | 中 | ❌ 不做 |
-| **筛选 filters** | ❌ 未实现 | 列筛选菜单 | 高 | ❌ 不做 |
-| **分页 pagination** | ❌ 未实现 | 内部分页 | 中 | ❌ 不做 |
-| **固定列 fixed** | ❌ 未实现 | 左右固定列 | 高 | ❌ 不做 |
-| **固定表头** | ❌ 未实现 | scroll.y | 高 | ❌ 不做 |
-| **树形数据** | ❌ 未实现 | children 字段 | 高 | ❌ 不做 |
-| **可展开行** | ❌ 未实现 | expandable | 中 | ❌ 不做 |
-| **行/列合并** | ❌ 未实现 | colSpan/rowSpan | 高 | ❌ 不做 |
-
-##### 6. Menu 导航菜单
-
-| Ant Design 功能 | JFXium 现状 | 差异说明 | 实现难度 | 计划 |
-|-----------------|-------------|----------|----------|------|
-| inline 模式 | ✅ 已实现 | 垂直内嵌菜单 | - | 已完成 |
-| 折叠/展开子菜单 | ✅ 已实现 | 点击展开/收起 | - | 已完成 |
-| 左侧图标+文字+右侧箭头 | ✅ 已实现 | 菜单项布局 | - | 已完成 |
-| 无限嵌套 | ✅ 已实现 | 多级子菜单 | - | 已完成 |
-| 点击回调 | ✅ 已实现 | onClick | - | 已完成 |
-| **horizontal 模式** | ❌ 未实现 | 水平顶部导航 | 中 | ❌ 不做 |
-| **选中指示条** | ❌ 未实现 | 左侧蓝色条 | 低 | ✅ 本次实现 |
-| **分组 group** | ❌ 未实现 | Menu.ItemGroup | 低 | ✅ 本次实现 |
-| **分割线 divider** | ❌ 未实现 | Menu.Divider | 低 | ✅ 本次实现 |
-| **theme (light/dark)** | ❌ 未实现 | 菜单独立主题 | 低 | ❌ 不做 |
-| **inlineCollapsed** | ❌ 未实现 | 缩起状态 | 中 | ❌ 不做 |
-| **inlineIndent** | ⚠️ level*16px | Ant Design 默认 24px | 低 | ❌ 不做 |
-| **selectedKeys** | ❌ 未实现 | 受控选中 | 中 | ❌ 不做 |
-| **openKeys** | ❌ 未实现 | 受控展开 | 中 | ❌ 不做 |
-
-##### 7. Alert 警告提示
-
-| Ant Design 功能 | JFXium 现状 | 差异说明 | 实现难度 | 计划 |
-|-----------------|-------------|----------|----------|------|
-| 四种类型 success/info/warning/error | ✅ 已实现 | 类型对齐 | - | 已完成 |
-| 图标显示 | ✅ 已实现 | showIcon | - | 已完成 |
-| 可关闭 closable | ✅ 已实现 | 关闭按钮 | - | 已完成 |
-| 关闭动画 | ✅ 已实现 | Fade 淡出 | - | 已完成 |
-| 标题+描述 | ✅ 已实现 | title+message | - | 已完成 |
-| **action 自定义操作** | ❌ 未实现 | 右上角操作按钮 | 低 | ✅ 本次实现 |
-| **banner 顶部公告** | ❌ 未实现 | 全宽顶部显示 | 低 | ✅ 本次实现 |
-| **description 辅助文字** | ✅ 已实现 | 描述文本 | - | 已完成 |
-| **icon 自定义图标** | ❌ 未实现 | 自定义图标节点 | 低 | ❌ 不做 |
-
-##### 8. Tabs 标签页
-
-| Ant Design 功能 | JFXium 现状 | 差异说明 | 实现难度 | 计划 |
-|-----------------|-------------|----------|----------|------|
-| 基础标签页 | ✅ 已实现 | TabPane 封装 | - | 已完成 |
-| closable 可关闭 | ✅ 已实现 | 关闭按钮 | - | 已完成 |
-| dragPolicy 拖拽 | ✅ 已实现 | 标签拖拽 | - | 已完成 |
-| **type="card"** | ❌ 未实现 | 卡片式标签 | 低 | ❌ 不做 |
-| **type="editable-card"** | ❌ 未实现 | 可编辑卡片 | 中 | ❌ 不做 |
-| **centered 居中** | ❌ 未实现 | 标签居中 | 低 | ❌ 不做 |
-| **indicator 指示条** | ❌ 未实现 | 自定义指示条 | 中 | ❌ 不做 |
-| **tabBarExtraContent** | ❌ 未实现 | 附加操作 | 低 | ❌ 不做 |
-| **size (large/middle/small)** | ❌ 未实现 | 标签尺寸 | 低 | ❌ 不做 |
-| **tabPlacement** | ❌ 未实现 | top/bottom/left/right | 中 | ❌ 不做 |
-
-##### 9. Message 全局提示
-
-| Ant Design 功能 | JFXium 现状 | 差异说明 | 实现难度 | 计划 |
-|-----------------|-------------|----------|----------|------|
-| 五种类型 success/error/warning/info/loading | ✅ 已实现 | 类型对齐 | - | 已完成 |
-| 顶部居中显示 | ✅ 已实现 | 位置对齐 | - | 已完成 |
-| 自动关闭 | ✅ 已实现 | duration | - | 已完成 |
-| 堆叠显示 | ✅ 已实现 | 最多5条 | - | 已完成 |
-| 进入/退出动画 | ✅ 已实现 | Fade+Slide | - | 已完成 |
-| **静态方法** | ✅ 已实现 | success/error/warning/info/loading | - | 已完成 |
-| **自定义图标** | ❌ 未实现 | 自定义图标节点 | 低 | ❌ 不做 |
-| **更新消息** | ❌ 未实现 | 动态更新内容 | 中 | ❌ 不做 |
-
-##### 10. Notification 通知提醒框
-
-| Ant Design 功能 | JFXium 现状 | 差异说明 | 实现难度 | 计划 |
-|-----------------|-------------|----------|----------|------|
-| 四种类型 success/error/warning/info | ✅ 已实现 | 类型对齐 | - | 已完成 |
-| 四个位置 | ✅ 已实现 | 四角显示 | - | 已完成 |
-| 标题+描述 | ✅ 已实现 | title+description | - | 已完成 |
-| 自动关闭 | ✅ 已实现 | duration | - | 已完成 |
-| 点击关闭 | ✅ 已实现 | closable | - | 已完成 |
-| 堆叠显示 | ✅ 已实现 | 垂直堆叠 | - | 已完成 |
-| 进入/退出动画 | ✅ 已实现 | Fade+Slide | - | 已完成 |
-| **自定义内容** | ✅ 已实现 | content 节点 | - | 已完成 |
-| **onClick 回调** | ✅ 已实现 | 点击事件 | - | 已完成 |
-| **onClose 回调** | ✅ 已实现 | 关闭事件 | - | 已完成 |
-| **自定义图标** | ❌ 未实现 | 自定义图标 | 低 | ❌ 不做 |
-| **进度条** | ❌ 未实现 | 自动关闭进度条 | 中 | ❌ 不做 |
-
-#### 五、UI 差异对齐（本次实现）
-
-1. **ButtonAnt** - 添加 ghost、block 属性
-2. **ModalAnt** - 添加键盘 ESC 关闭、confirmLoading
-3. **DrawerAnt** - 关闭按钮改到左上角、添加 size 属性、extra 操作区
-4. **FormAnt** - labelCol/wrapperCol 改为百分比约束（支持自定义比例）
-5. **AlertAnt** - 添加 action 区域、banner 模式
-6. **MenuAnt** - 添加选中指示条、分组、分割线
-
-#### 六、主题系统审核报告（2026-05-11）
-
-> 以下是对所有主题与 Ant Design 规范的详细对比审核结果
-
-##### 1. LightCompactTheme - 浅色紧凑主题
-
-| 检查项 | Ant Design 规范 | JFXium 实现 | 状态 | 差异说明 |
-|--------|-----------------|-------------|------|----------|
-| 主色 Blue | #1677ff | #1677ff | ✅ 无色差 | 完全对齐 |
-| 成功色 Green | #52c41a | #52c41a | ✅ 无色差 | 完全对齐 |
-| 警告色 Orange | #faad14 | #faad14 | ✅ 无色差 | 完全对齐 |
-| 危险色 Red | #f5222d | #f5222d | ✅ 无色差 | 完全对齐 |
-| 背景色 | #ffffff | #ffffff | ✅ 无色差 | 完全对齐 |
-| 文字色 | rgba(0,0,0,0.88) | rgba(0,0,0,0.88) | ✅ 无色差 | 完全对齐 |
-| 边框色 | #d9d9d9 | #d9d9d9 | ✅ 无色差 | 完全对齐 |
-| 间距缩放 | ~25-30% 缩小 | 4→2, 8→6, 12→8, 16→12, 24→16 | ✅ 正确 | 紧凑比例正确 |
-| 控件高度 | 28px/20px/36px | 28px/20px/36px | ✅ 正确 | 与 Ant Design Compact 对齐 |
-| 字号 | 13px | 13px | ✅ 正确 | 紧凑模式标准字号 |
-
-##### 2. DarkCompactTheme - 深色紧凑主题
-
-| 检查项 | Ant Design 规范 | JFXium 实现 | 状态 | 差异说明 |
-|--------|-----------------|-------------|------|----------|
-| 主色 Blue (dark) | #1668dc | #1668dc | ✅ 无色差 | 深色模式主色正确 |
-| 背景色 | #0d1117 | #0d1117 | ✅ 无色差 | GitHub Dark 风格背景 |
-| 文字色 | rgba(255,255,255,0.85) | rgba(255,255,255,0.85) | ✅ 无色差 | 完全对齐 |
-| 边框色 | #30363d | #30363d | ✅ 无色差 | 完全对齐 |
-| 间距缩放 | ~25-30% 缩小 | 同 LightCompact | ✅ 正确 | 紧凑比例正确 |
-| 阴影强度 | rgba(0,0,0,0.4) | rgba(0,0,0,0.4) | ✅ 正确 | 深色模式阴影增强 |
-
-##### 3. MuiTheme - MUI 风格主题
-
-| 检查项 | Ant Design MUI 配置 | JFXium 实现 | 状态 | 差异说明 |
-|--------|---------------------|-------------|------|----------|
-| 主色 Primary | #1976d2 | #1976d2 | ✅ 无色差 | MUI 标准蓝 |
-| 成功色 Success | #2e7d32 | #2e7d32 | ✅ 无色差 | MUI 标准绿 |
-| 警告色 Warning | #ed6c02 | #ed6c02 | ✅ 无色差 | MUI 标准橙 |
-| 危险色 Error | #d32f2f | #d32f2f | ✅ 无色差 | MUI 标准红 |
-| 信息色 Info | #0288d1 | #0288d1 | ✅ 无色差 | MUI 标准浅蓝 |
-| 背景色 Base | #fafafa | #fafafa | ✅ 无色差 | MUI 浅灰背景 |
-| 容器背景 | #ffffff | #ffffff | ✅ 无色差 | 完全对齐 |
-| 文字色 | rgba(33,33,33,0.87) | rgba(33,33,33,0.87) | ✅ 无色差 | MUI 标准文字 |
-| 次要文字 | rgba(33,33,33,0.60) | rgba(33,33,33,0.60) | ✅ 无色差 | 完全对齐 |
-| 禁用文字 | rgba(33,33,33,0.38) | rgba(33,33,33,0.38) | ✅ 无色差 | 完全对齐 |
-| 边框色 | #e0e0e0 | #e0e0e0 | ✅ 无色差 | MUI 标准边框 |
-| 圆角系统 | 1/2/4/6/8px | 1/2/4/6/8px | ✅ 正确 | 与 Ant Design MUI 精确对应 |
-| 阴影系统 | 9 级阴影 | 9 级阴影 | ✅ 正确 | 与 Ant Design MUI 精确对应 |
-| 字体 | Roboto, Helvetica, Arial | Roboto, Helvetica, Arial | ✅ 正确 | MUI 标准字体 |
-
-##### 4. MuiCompactTheme - MUI 紧凑主题
-
-| 检查项 | Ant Design MUI Compact | JFXium 实现 | 状态 | 差异说明 |
-|--------|------------------------|-------------|------|----------|
-| 颜色体系 | 同 MuiTheme | 同 MuiTheme | ✅ 无色差 | 颜色完全继承 |
-| 间距缩放 | ~25-30% 缩小 | 4→2, 8→6, 12→8, 16→12, 24→16 | ✅ 正确 | 紧凑比例正确 |
-| 控件高度 | 28px/20px/36px | 28px/20px/36px | ✅ 正确 | MUI Compact 标准 |
-| 按钮内边距 | 4px/12px | 4px/12px | ✅ 正确 | 紧凑模式按钮内边距 |
-| 字号 | 13px | 13px | ✅ 正确 | 紧凑模式标准字号 |
-| 圆角系统 | 1/2/4/6/8px | 1/2/4/6/8px | ✅ 正确 | 保持 MUI 圆角 |
-| 阴影系统 | 同 MuiTheme | 同 MuiTheme | ✅ 正确 | 阴影保持不变 |
-
-##### 5. MuiDarkTheme - MUI 深色主题
-
-| 检查项 | Ant Design MUI Dark | JFXium 实现 | 状态 | 差异说明 |
-|--------|---------------------|-------------|------|----------|
-| 主色 Primary (dark) | #42a5f5 | #42a5f5 | ✅ 无色差 | 深色模式使用更亮的主色 |
-| 成功色 Success (dark) | #66bb6a | #66bb6a | ✅ 无色差 | 深色模式使用更亮的成功色 |
-| 警告色 Warning (dark) | #ffa726 | #ffa726 | ✅ 无色差 | 深色模式使用更亮的警告色 |
-| 危险色 Error (dark) | #ef5350 | #ef5350 | ✅ 无色差 | 深色模式使用更亮的危险色 |
-| 背景色 | #121212 | #121212 | ✅ 无色差 | MUI 标准深色背景 |
-| 卡片背景 | #1e1e1e | #1e1e1e | ✅ 无色差 | MUI 标准卡片背景 |
-| 文字色 | rgba(255,255,255,0.87) | rgba(255,255,255,0.87) | ✅ 无色差 | MUI 标准文字 |
-| 次要文字 | rgba(255,255,255,0.60) | rgba(255,255,255,0.60) | ✅ 无色差 | 完全对齐 |
-| 禁用文字 | rgba(255,255,255,0.38) | rgba(255,255,255,0.38) | ✅ 无色差 | 完全对齐 |
-| 边框色 | #424242 | #424242 | ✅ 无色差 | MUI 标准边框 |
-| 阴影强度 | rgba(0,0,0,0.40-0.24) | rgba(0,0,0,0.40-0.24) | ✅ 正确 | 深色模式阴影增强 2x |
-| 圆角系统 | 1/2/4/6/8px | 1/2/4/6/8px | ✅ 正确 | 保持 MUI 圆角 |
-| 字体 | Roboto, Helvetica, Arial | Roboto, Helvetica, Arial | ✅ 正确 | MUI 标准字体 |
-
-##### 6. MuiDarkCompactTheme - MUI 深色紧凑主题
-
-| 检查项 | Ant Design MUI Dark Compact | JFXium 实现 | 状态 | 差异说明 |
-|--------|----------------------------|-------------|------|----------|
-| 颜色体系 | 同 MuiDarkTheme | 同 MuiDarkTheme | ✅ 无色差 | 颜色完全继承 |
-| 间距缩放 | ~25-30% 缩小 | 4→2, 8→6, 12→8, 16→12, 24→16 | ✅ 正确 | 紧凑比例正确 |
-| 控件高度 | 28px/20px/36px | 28px/20px/36px | ✅ 正确 | MUI Dark Compact 标准 |
-| 按钮内边距 | 4px/12px | 4px/12px | ✅ 正确 | 紧凑模式按钮内边距 |
-| 字号 | 13px | 13px | ✅ 正确 | 紧凑模式标准字号 |
-| 圆角系统 | 1/2/4/6/8px | 1/2/4/6/8px | ✅ 正确 | 保持 MUI 圆角 |
-| 阴影系统 | 同 MuiDarkTheme | 同 MuiDarkTheme | ✅ 正确 | 阴影保持不变 |
-
-##### 7. 主题系统总体评估
-
-| 评估维度 | 结果 | 说明 |
-|----------|------|------|
-| **色差检查** | ✅ 全部通过 | 所有 6 个主题的颜色值与 Ant Design 规范完全一致，无任何色差 |
-| **间距检查** | ✅ 全部通过 | 紧凑主题间距缩小比例正确（~25-30%），符合 Ant Design Compact Algorithm |
-| **圆角检查** | ✅ 全部通过 | MUI 主题圆角系统精确对应 Ant Design MUI 配置（1/2/4/6/8px） |
-| **阴影检查** | ✅ 全部通过 | MUI 主题 9 级阴影系统精确对应 Ant Design MUI 配置，深色模式阴影强度正确 |
-| **字体检查** | ✅ 全部通过 | MUI 主题使用 Roboto 字体族，与 Material Design 规范一致 |
-| **控件高度检查** | ✅ 全部通过 | 紧凑模式控件高度 28px/20px/36px 与 Ant Design 规范一致 |
-| **语义化变量检查** | ✅ 全部通过 | 所有主题的语义化变量（fg/bg/border/accent）映射正确 |
-
----
-
-## 组件微型化架构设计（2026-05-12 第二轮）
-
-**设计理念：大组件 = 小组件组装**
-
-### 完整基础组件体系
-
-```
-大型组件 = 基础组件库组合
-├── Overlay（遮罩层）
-├── PanelHeader（标题栏）
-├── PanelFooter（底部操作区）
-├── CloseButton（关闭按钮）
-├── NotificationCard（通知卡片）
-├── MessageCard（消息卡片）
-├── PopoverPanel（气泡面板）
-├── PopconfirmPanel（确认面板）
-├── ResultDisplay（结果展示）
-└── AlertBanner（警告横幅）
-```
-
-### 基础组件完整列表
-
-| 基础组件 | 职责 | 可复用场景 | 状态 |
-|---------|------|-----------|------|
-| **Overlay** | 遮罩层，点击关闭 | Modal, Drawer | ✅ |
-| **PanelHeader** | 标题栏（标题+关闭按钮+extra） | Modal, Drawer | ✅ |
-| **PanelFooter** | 底部操作区（按钮组） | Modal, Drawer | ✅ |
-| **CloseButton** | 关闭按钮 | Modal, Drawer, Notification, Popover | ✅ |
-| **NotificationCard** | 通知卡片（Icon+Title+Description） | NotificationAnt | ✅ 新增 |
-| **MessageCard** | 消息卡片（Icon+Text） | MessageAnt | ✅ 新增 |
-| **PopoverPanel** | 气泡面板（Title+Content） | PopoverAnt | ✅ 新增 |
-| **PopconfirmPanel** | 确认面板（Icon+Title+Description+Buttons） | PopconfirmAnt | ✅ 新增 |
-| **ResultDisplay** | 结果展示（Icon+Title+SubTitle+Extra） | ResultAnt | ✅ 新增 |
-| **AlertBanner** | 警告横幅（Icon+Content+Action） | AlertAnt | ✅ 新增 |
-
-### 已实现的基础组件
-
-#### 第一批（2026-05-12）
-
-1. **Overlay** - `component/base/Overlay.java`
-   - 支持自定义透明度 (opacity)
-   - 支持点击关闭 (closable)
-   - 支持自定义点击回调 (onClick)
-
-2. **PanelHeader** - `component/base/PanelHeader.java`
-   - 支持标题 (title)、额外内容区 (extra)、关闭按钮 (onClose)
-   - 自动布局：标题左对齐，extra 居中，关闭按钮右对齐
-
-3. **PanelFooter** - `component/base/PanelFooter.java`
-   - 支持左侧内容 (left)、右侧内容 (right)
-   - 支持边框选项 (hasBorder)
-   - 自动布局：flexbox 左右分布
-
-4. **CloseButton** - `component/base/CloseButton.java`
-   - 标准关闭图标 "×"
-   - 24x24 固定尺寸，符合 Ant Design 规范
-   - 统一 CSS 样式：hover 背景色、pressed 效果
-
-#### 第二批（2026-05-12 新增）
-
-5. **NotificationCard** - `component/base/NotificationCard.java`
-   - 支持标题、描述、图标类型、成功/错误/警告/信息
-   - 支持关闭按钮、额外内容区
-   - 固定宽度 384px
-
-6. **MessageCard** - `component/base/MessageCard.java`
-   - 轻量级消息卡片
-   - 支持图标类型、成功/错误/警告/信息/加载中
-   - 支持关闭按钮
-
-7. **PopoverPanel** - `component/base/PopoverPanel.java`
-   - 气泡弹出面板
-   - 支持标题、内容、关闭按钮
-   - 可配置最小/最大宽度
-
-8. **PopconfirmPanel** - `component/base/PopconfirmPanel.java`
-   - 确认对话框
-   - 警告图标 + 标题 + 描述
-   - 集成确认/取消按钮
-
-9. **ResultDisplay** - `component/base/ResultDisplay.java`
-   - 结果展示页面
-   - 大图标 + 标题 + 副标题 + 额外操作区
-   - 支持多种状态：成功/错误/警告/信息/404/403/500
-
-10. **AlertBanner** - `component/base/AlertBanner.java`
-    - 警告提示横幅
-    - 支持成功/信息/警告/错误类型
-    - 支持操作按钮、关闭按钮、banner 模式
-
-### 重构完成的大组件
-
-1. **ModalAnt** - ✅ 已使用 PanelHeader + PanelFooter 组装
-2. **DrawerAnt** - ✅ 已使用 PanelHeader + PanelFooter 组装
-
-### 已重构完成的大组件（使用新基础组件）
-
-| 组件 | 使用的基础组件 | 状态 |
-|------|--------------|------|
-| ModalAnt | PanelHeader + PanelFooter | ✅ 已完成 |
-| DrawerAnt | PanelHeader + PanelFooter | ✅ 已完成 |
-| NotificationAnt | NotificationCard | ✅ 已完成 |
-| MessageAnt | MessageCard | ✅ 已完成 |
-| PopoverAnt | PopoverPanel | ✅ 已完成 |
-| PopconfirmAnt | PopconfirmPanel | ✅ 已完成 |
-| ResultAnt | ResultDisplay | ✅ 已完成 |
-| AlertAnt | 保留原实现 | ⚠️ 特殊处理 |
-
-> 注：AlertAnt 保留原实现因其 closable 动画逻辑复杂，基础组件 AlertBanner 可用于简化场景
-
-### 组件化优势
-
-1. **代码复用** - 多个大组件共享相同的基础组件逻辑
-2. **一致性** - 所有组件的头部、底部、卡片样式完全统一
-3. **可维护性** - 修改基础组件即可影响所有使用方
-4. **可扩展性** - 未来新增组件可直接复用基础组件
-5. **测试友好** - 基础组件可独立测试，降低测试复杂度
-
-### 模块导出更新
-
-已更新 `module-info.java`，新增导出：
-```java
-exports org.openkawu.jfxium.component.base;
-```
-
----
-
-| **主题继承关系** | ✅ 正确 | Compact 主题正确继承基础主题颜色，仅覆盖间距和尺寸变量 |
-
-##### 8. 发现的问题
-
-| 问题 | 严重程度 | 状态 | 说明 |
-|------|----------|------|------|
-| 无 | - | ✅ | 所有主题颜色、间距、圆角、阴影均与 Ant Design 规范精确对齐，未发现问题 |
-
-### 项目最终状态
-
-- **Ant Design 6.x 覆盖**：67/68 个组件（~98.5%，Tour 不需要）
-- **组件总数**：67 个
-- **Java 文件数**：60+ 个组件类
-- **主题数量**：9 套（Light/LightCompact/Dark/DarkCompact/MUI/MUICompact/MUIDark/MUIDarkCompact/shadcn/Cyberpunk）
-- **图标方案**：Ikonli（第三方）+ 内置 Unicode 符号（零依赖）
-- **文档**：README.md（英文）、README_CN.md（中文）、API.md、PLAN.md
-- **主题审核状态**：✅ 全部通过，无色差，无差异，与 Ant Design 规范精确对齐
-
----
-
-## 组件完整性审核报告（2026-05-12）
-
-> 本报告详细列出 JFXium 所有组件与 Ant Design 的对比分析
-
-### 一、组件总览
-
-| 类别 | Ant Design 数量 | JFXium 数量 | 覆盖率 |
-|------|----------------|-------------|--------|
-| **数据录入** | 23 | 22 | 95.7% |
-| **数据展示** | 15 | 15 | 100% |
-| **反馈** | 9 | 9 | 100% |
-| **导航** | 10 | 10 | 100% |
-| **布局** | 4 | 4 | 100% |
-| **其他** | 5 | 5 | 100% |
-| **总计** | 66 | 65 | 98.5% |
-
-### 二、基础组件（已实现）
-
-| 组件 | 文件路径 | Ant Design 等价 | 状态 |
-|------|---------|-----------------|------|
-| **ButtonAnt** | component/ButtonAnt.java | Button | ✅ 完整 |
-| **InputAnt** | component/InputAnt.java | Input | ✅ 完整 |
-| **TextAreaAnt** | component/TextAreaAnt.java | Input.TextArea | ✅ 完整 |
-| **SelectAnt** | component/SelectAnt.java | Select | ✅ 完整 |
-| **CheckboxAnt** | component/CheckBoxAnt.java | Checkbox | ✅ 完整 |
-| **RadioButtonAnt** | component/RadioButtonAnt.java | Radio | ✅ 完整 |
-| **SwitchAnt** | component/SwitchAnt.java | Switch | ✅ 完整 |
-| **SliderAnt** | component/SliderAnt.java | Slider | ✅ 完整 |
-| **DatePickerAnt** | component/DatePickerAnt.java | DatePicker | ✅ 完整 |
-| **TimePickerAnt** | component/TimePickerAnt.java | TimePicker | ✅ 完整 |
-| **ColorPickerAnt** | component/ColorPickerAnt.java | ColorPicker | ✅ 完整 |
-| **InputNumberAnt** | component/InputNumberAnt.java | InputNumber | ✅ 完整 |
-| **TreeSelectAnt** | component/TreeSelectAnt.java | TreeSelect | ✅ 完整 |
-| **TreeAnt** | component/TreeAnt.java | Tree | ✅ 完整 |
-
-### 三、反馈组件
-
-| 组件 | 文件路径 | Ant Design 等价 | 状态 |
-|------|---------|-----------------|------|
-| **AlertAnt** | component/AlertAnt.java | Alert | ✅ 完整 |
-| **ModalAnt** | component/ModalAnt.java | Modal | ✅ 完整 |
-| **DrawerAnt** | component/DrawerAnt.java | Drawer | ✅ 完整 |
-| **MessageAnt** | component/MessageAnt.java | Message | ✅ 完整 |
-| **NotificationAnt** | component/NotificationAnt.java | Notification | ✅ 完整 |
-| **PopconfirmAnt** | component/PopconfirmAnt.java | Popconfirm | ✅ 完整 |
-| **PopoverAnt** | component/PopoverAnt.java | Popover | ✅ 完整 |
-| **ProgressAnt** | component/ProgressAnt.java | Progress | ✅ 完整 |
-| **SkeletonAnt** | component/SkeletonAnt.java | Skeleton | ✅ 完整 |
-| **SpinAnt** | component/SpinAnt.java | Spin | ✅ 完整 |
-| **ResultAnt** | component/ResultAnt.java | Result | ✅ 完整 |
-
-### 四、导航组件
-
-| 组件 | 文件路径 | Ant Design 等价 | 状态 |
-|------|---------|-----------------|------|
-| **MenuAnt** | component/MenuAnt.java | Menu | ✅ 完整 |
-| **TabsAnt** | component/TabsAnt.java | Tabs | ✅ 完整 |
-| **BreadcrumbAnt** | component/BreadcrumbAnt.java | Breadcrumb | ✅ 完整 |
-| **StepsAnt** | component/StepsAnt.java | Steps | ✅ 完整 |
-| **AnchorAnt** | component/AnchorAnt.java | Anchor | ✅ 完整 |
-| **PaginationAnt** | component/PaginationAnt.java | Pagination | ✅ 完整 |
-| **DropdownAnt** | component/DropdownAnt.java | Dropdown | ✅ 完整 |
-| **FloatButtonAnt** | component/FloatButtonAnt.java | FloatButton | ✅ 完整 |
-| **BackTopAnt** | component/BackTopAnt.java | BackTop | ✅ 完整 |
-
-### 五、展示组件
-
-| 组件 | 文件路径 | Ant Design 等价 | 状态 |
-|------|---------|-----------------|------|
-| **TableAnt** | component/TableAnt.java | Table | ✅ 完整 |
-| **ListAnt** | component/ListAnt.java | List | ✅ 完整 |
-| **CardAnt** | component/CardAnt.java | Card | ✅ 完整 |
-| **CollapseAnt** | component/CollapseAnt.java | Collapse | ✅ 完整 |
-| **CarouselAnt** | component/CarouselAnt.java | Carousel | ✅ 完整 |
-| **TimelineAnt** | component/TimelineAnt.java | Timeline | ✅ 完整 |
-| **TagAnt** | component/TagAnt.java | Tag | ✅ 完整 |
-| **BadgeAnt** | component/BadgeAnt.java | Badge | ✅ 完整 |
-| **AvatarAnt** | component/AvatarAnt.java | Avatar | ✅ 完整 |
-| **StatisticAnt** | component/StatisticAnt.java | Statistic | ✅ 完整 |
-| **EmptyAnt** | component/EmptyAnt.java | Empty | ✅ 完整 |
-| **DescriptionsAnt** | component/DescriptionsAnt.java | Descriptions | ✅ 完整 |
-| **ImageAnt** | component/ImageAnt.java | Image | ✅ 完整 |
-| **QRCodeAnt** | component/QRCodeAnt.java | QRCode | ✅ 完整 |
-
-### 六、布局组件
-
-| 组件 | 文件路径 | Ant Design 等价 | 状态 |
-|------|---------|-----------------|------|
-| **LayoutAnt** | component/LayoutAnt.java | Layout | ✅ 完整 |
-| **GridAnt** | component/GridAnt.java | Grid (Row/Col) | ✅ 完整 |
-| **SpaceAnt** | component/SpaceAnt.java | Space | ✅ 完整 |
-| **FlexAnt** | component/FlexAnt.java | Flex | ✅ 完整 |
-| **DividerAnt** | component/DividerAnt.java | Divider | ✅ 完整 |
-
-### 七、基础组件体系（微型化架构）
-
-| 基础组件 | 文件路径 | 用途 |
-|---------|---------|------|
-| **Overlay** | component/base/Overlay.java | 遮罩层 |
-| **PanelHeader** | component/base/PanelHeader.java | 标题栏 |
-| **PanelFooter** | component/base/PanelFooter.java | 底部操作区 |
-| **CloseButton** | component/base/CloseButton.java | 关闭按钮 |
-| **NotificationCard** | component/base/NotificationCard.java | 通知卡片 |
-| **MessageCard** | component/base/MessageCard.java | 消息卡片 |
-| **PopoverPanel** | component/base/PopoverPanel.java | 气泡面板 |
-| **PopconfirmPanel** | component/base/PopconfirmPanel.java | 确认面板 |
-| **ResultDisplay** | component/base/ResultDisplay.java | 结果展示 |
-| **AlertBanner** | component/base/AlertBanner.java | 警告横幅 |
-
-### 八、PLAN1.md 问题修复状态
-
-| 状态 | 数量 | 说明 |
-|------|------|------|
-| **已修复** | 19 | 所有高/中/低优先级问题已修复 |
-| **分析后无需处理** | 1 | Anchor/Tabs 非重复组件 |
-| **总计** | 20 | 全部处理完成 |
-
-### 九、与 Ant Design 差异对齐状态
-
-#### 已完全对齐的组件
-- ✅ ButtonAnt - type, size, shape, loading, disabled, icon, ghost, block
-- ✅ ModalAnt - 宽度 520px, 按钮位置, 动画, ESC关闭, confirmLoading
-- ✅ DrawerAnt - 宽度 378px, 四个方向, mask, extra, size
-- ✅ AlertAnt - 四种类型, showIcon, closable, action, banner
-- ✅ MenuAnt - inline模式, 折叠/展开, 图标, 选中指示条, 分组, 分割线
-- ✅ MessageAnt - 五种类型, 堆叠, 动画
-- ✅ NotificationAnt - 四种类型, 四个位置, 自动关闭
-
-#### 需要注意的差异（低优先级）
-| 组件 | 差异 | 说明 |
-|------|------|------|
-| FormAnt | rules 校验 | 需要完整校验引擎（高难度） |
-| TableAnt | 排序/筛选/分页 | 需要复杂实现 |
-| TabsAnt | tabBarGutter | 标签间隙 |
-| Input | 波纹点击效果 | JavaFX 难以实现 |
-
-### 未来可能的方向（可选）
-
-1. 更多主题风格（卡通、插画、拟物化、玻璃风格）
-2. 主题市场（第三方主题扩展）
-3. FXML 兼容层
-4. 更多动画效果（页面过渡、微交互）
-5. 数据表格高级功能（排序、过滤、分页）
-
-***
-
-*计划版本: v2.7*
-*创建日期: 2026-05-08*
-*最后更新: 2026-05-12*
-*状态: 项目核心开发完成，组件覆盖 98.5%，支持 9 套主题，已完成 Ant Design 差异对齐，PLAN1.md 全部问题已修复*
+> **构建约束**：LESS 编译强依赖宿主机 Node.js（pom 中 8 个 execution 调 `npx lessc`），新机器需先确保 `node -v && npx -v` 可用，否则 `mvn compile` 会在 `generate-resources` 阶段失败。

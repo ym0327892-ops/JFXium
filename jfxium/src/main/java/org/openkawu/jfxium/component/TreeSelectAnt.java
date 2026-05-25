@@ -1,0 +1,190 @@
+package org.openkawu.jfxium.component;
+
+import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
+import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.i18n.Messages;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+/**
+ * TreeSelectAnt - 对标 Ant Design TreeSelect。
+ *
+ * 重构：field / 弹层 / row / arrow / label 全部走 LESS（{@link CssClasses#TREE_SELECT} 系列），
+ * hover 由 LESS 控制；删除原来 inline 注入的 SVG-data-URL 下拉箭头（依赖 JavaFX 不一定支持）。
+ */
+public class TreeSelectAnt {
+
+    public static class TreeNode {
+        private final String value;
+        private final String label;
+        private final List<TreeNode> children;
+        private boolean disabled;
+        private boolean expanded = true;
+
+        public TreeNode(String value, String label) {
+            this(value, label, null);
+        }
+
+        public TreeNode(String value, String label, List<TreeNode> children) {
+            this.value = value;
+            this.label = label;
+            this.children = children != null ? children : new ArrayList<>();
+        }
+
+        public TreeNode disabled(boolean disabled) { this.disabled = disabled; return this; }
+        public TreeNode expanded(boolean expanded) { this.expanded = expanded; return this; }
+
+        public String getValue() { return value; }
+        public String getLabel() { return label; }
+        public List<TreeNode> getChildren() { return children; }
+        public boolean isDisabled() { return disabled; }
+        public boolean isExpanded() { return expanded; }
+        public boolean hasChildren() { return children != null && !children.isEmpty(); }
+    }
+
+    public static class Builder {
+        // null = 用 i18n 默认值；非 null = 调用方显式指定
+        private String placeholder = null;
+        private TreeNode root;
+        private boolean disabled = false;
+        private boolean multiple = false;
+        private Consumer<TreeNode> onSelect = null;
+        private Consumer<List<TreeNode>> onMultipleSelect = null;
+        private TreeNode selectedNode = null;
+
+        public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
+        public Builder tree(TreeNode root) { this.root = root; return this; }
+        public Builder disabled(boolean disabled) { this.disabled = disabled; return this; }
+        public Builder multiple(boolean multiple) { this.multiple = multiple; return this; }
+        public Builder onSelect(Consumer<TreeNode> onSelect) { this.onSelect = onSelect; return this; }
+        public Builder onMultipleSelect(Consumer<List<TreeNode>> onMultipleSelect) { this.onMultipleSelect = onMultipleSelect; return this; }
+
+        public HBox build() {
+            HBox container = new HBox(0);
+            container.getStyleClass().add(CssClasses.TREE_SELECT);
+
+            TextField field = new TextField();
+            // placeholder 走 Messages 默认；调用方 .placeholder("...") 覆盖时使用其值
+            String effectivePlaceholder = placeholder != null
+                    ? placeholder
+                    : Messages.get("treeselect.placeholder");
+            field.setPromptText(effectivePlaceholder);
+            // 仅当未显式指定 placeholder 时才订阅 locale 变化（避免覆盖用户文案）
+            if (placeholder == null) {
+                Messages.localeProperty().addListener((obs, ov, nv) ->
+                        field.setPromptText(Messages.get("treeselect.placeholder")));
+            }
+            field.setEditable(false);
+            field.getStyleClass().add(CssClasses.TREE_SELECT_FIELD);
+            HBox.setHgrow(field, Priority.ALWAYS);
+
+            Popup popup = new Popup();
+            popup.setAutoHide(true);
+            popup.setAutoFix(true);
+
+            VBox treePanel = new VBox(0);
+            // 复用通用 popup-menu 视觉
+            treePanel.getStyleClass().add(CssClasses.POPUP_MENU);
+            treePanel.setPrefWidth(240);
+
+            if (root != null) {
+                buildTreeNodes(treePanel, root, 0, popup, field);
+            }
+            popup.getContent().add(treePanel);
+
+            field.setOnMouseClicked(e -> {
+                if (disabled) return;
+                if (popup.isShowing()) {
+                    popup.hide();
+                } else {
+                    Bounds bounds = field.localToScreen(field.getBoundsInLocal());
+                    popup.show(field, bounds.getMinX(), bounds.getMaxY() + 4);
+                }
+            });
+
+            container.getChildren().add(field);
+
+            if (disabled) {
+                field.setDisable(true);
+                container.setDisable(true);
+            }
+            return container;
+        }
+
+        private void buildTreeNodes(VBox panel, TreeNode node, int depth, Popup popup, TextField field) {
+            if (node == null) return;
+
+            VBox rowBox = new VBox();
+            rowBox.setFillWidth(true);
+
+            HBox row = new HBox(8);
+            row.setAlignment(Pos.CENTER_LEFT);
+            // depth 缩进通过 padding-left 动态控制（结构性属性，inline 在此可接受）
+            row.setStyle("-fx-padding: 6 12 6 " + (12 + depth * 16) + ";");
+            row.getStyleClass().add(CssClasses.TREE_SELECT_ROW);
+            if (node.isDisabled()) {
+                row.getStyleClass().add(CssClasses.TREE_SELECT_DISABLED);
+            }
+
+            if (node.hasChildren()) {
+                Label arrow = new Label(node.isExpanded() ? "\u25bc" : "\u25b6");
+                arrow.getStyleClass().add(CssClasses.TREE_SELECT_ARROW);
+                row.getChildren().add(arrow);
+
+                arrow.setOnMouseClicked(e -> {
+                    node.expanded = !node.isExpanded();
+                    refreshTree(panel, popup, field);
+                });
+            } else {
+                Label spacer = new Label(" ");
+                spacer.setMinWidth(12);
+                row.getChildren().add(spacer);
+            }
+
+            Label label = new Label(node.getLabel());
+            label.getStyleClass().add(CssClasses.TREE_SELECT_LABEL);
+            row.getChildren().add(label);
+
+            if (!node.isDisabled()) {
+                // hover 由 LESS .tree-select-row:hover 控制
+                row.setOnMouseClicked(e -> {
+                    field.setText(node.getLabel());
+                    selectedNode = node;
+                    if (onSelect != null) onSelect.accept(node);
+                    if (popup != null) popup.hide();
+                });
+            }
+
+            rowBox.getChildren().add(row);
+
+            if (node.hasChildren() && node.isExpanded()) {
+                VBox childrenBox = new VBox(0);
+                for (TreeNode child : node.getChildren()) {
+                    buildTreeNodes(childrenBox, child, depth + 1, popup, field);
+                }
+                rowBox.getChildren().add(childrenBox);
+            }
+            panel.getChildren().add(rowBox);
+        }
+
+        private void refreshTree(VBox panel, Popup popup, TextField field) {
+            panel.getChildren().clear();
+            if (root != null) {
+                buildTreeNodes(panel, root, 0, popup, field);
+            }
+        }
+    }
+
+    public static Builder create() {
+        return new Builder();
+    }
+}

@@ -15,6 +15,97 @@
 - [JFXSlider](#jfxslider) - 滑块组件
 - [JFXProgress](#jfxprogress) - 进度条组件
 - [JFXAlert](#jfxalert) - 警告提示组件
+- [页面语义布局组件](#页面语义布局组件) - CrudTemplate / Surface / AppShell / SplitBar
+
+---
+
+## 页面语义布局组件
+
+页面级布局组件用于建立清晰的背景层级：页面背景使用 `color-bg-layout`，内容面板使用 `color-bg-container`。
+
+### CrudTemplate（M18 新增，业务模板）
+
+> `org.openkawu.jfxium.template.CrudTemplate` —— admin 后台 90% 业务页通用三段式骨架。
+> body 装什么都行：TableView / Form / Detail / Chart 等。
+
+```java
+BorderPane page = CrudTemplate.create()
+    .title("用户管理")
+    .topLeft(searchField, roleCombo)        // 左：筛选/搜索
+    .topRight(refreshBtn, addBtn)            // 右：操作按钮
+    .body(table)                             // 中：主内容
+    .bottomLeft(totalLabel)                  // 左：统计文字
+    .bottomRight(pagination, pageSizeCombo)  // 右：分页器
+    .bordered(true)
+    .build();
+```
+
+> 老 `PageAnt` 已在 M18 删除，使用 `CrudTemplate` 替代。
+
+### SurfaceAnt
+
+```java
+VBox surface = SurfaceAnt.create()
+    .title("筛选条件")
+    .extra(resetButton)
+    .content(form)
+    .bordered(true)
+    .shadow(SurfaceAnt.Shadow.SMALL)
+    .build();
+```
+
+### AppShellAnt
+
+```java
+BorderPane shell = AppShellAnt.create()
+    .header(header)
+    .sider(menu, 240)
+    .content(page)
+    .footer(footer)
+    .build();
+```
+
+### SplitBarAnt（M19，横向 左/中/右 三段式）
+
+> `SplitBarAnt` 取代了原 `ActionBarAnt` 与 `Headers` 工厂——一个组件同时覆盖
+> "左+右"、"左+中+右"两种 hbox 布局，center 不传即自动退化为二段。
+
+```java
+HBox actions = SplitBarAnt.create()
+    .left(ButtonAnt.create("刷新").build())
+    .right(ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY).build())
+    .build();
+
+HBox header = SplitBarAnt.create()
+    .left(closeBtn)
+    .center(titleLabel)         // 三段式：center 真正居中
+    .right(saveBtn, cancelBtn)
+    .build();
+```
+
+> 老 `ActionBarAnt` 已在 M19 删除，请用 SplitBarAnt 替代。
+
+### SplitPaneAnt / ResizablePanelAnt / ScrollContainerAnt
+
+```java
+SplitPane split = SplitPaneAnt.create()
+    .items(leftPanel, rightPanel)
+    .dividerPositions(0.3)
+    .build();
+
+StackPane panel = ResizablePanelAnt.create()
+    .content(details)
+    .mode(ResizablePanelAnt.Mode.HORIZONTAL)
+    .prefWidth(320)
+    .build();
+
+ScrollPane scroll = ScrollContainerAnt.create()
+    .content(page)
+    .fitToWidth(true)
+    .build();
+```
+
+> 不新增 `ToolbarAnt`，页面和面板操作区统一使用 `SplitBarAnt`（M19 之前为 `ActionBarAnt`，已删除）。
 
 ---
 
