@@ -1,0 +1,245 @@
+// ============================================
+// JFXium Light Compact Theme
+// ============================================
+// 紧凑模式 = Light 配色 + Ant Design 官方 compact 尺寸算法
+//
+// Ant Design compact 算法（components/theme/themes/compact）：
+//   compactSizeStep = sizeStep - 2 = 4 - 2 = 2
+//   controlHeight   = controlHeight - 4 = 32 - 4 = 28
+//   size 阶梯（sizeUnit=4）：
+//     sizeXXS=4×(2-1)=4  sizeXS=4×(2-1)=4  sizeSM=4×2=8
+//     size=4×2=8         sizeMD=4×(2+2)=16 sizeLG=4×(2+2)=16  sizeXL=4×(2+6)=32
+//
+// 做法：先覆盖尺寸 token，再 import 配色变量 + theme-base，
+//      所有组件 padding 自动按 compact token 重新生成（不再手写硬编码 CSS）。
+// ============================================
+
+// Step 1: 导入基础尺寸 token（拿到默认定义，下面按需覆盖）
+@import "variables-base.less";
+
+// Step 2: 覆盖为 Ant Design compact 尺寸
+// --------------------------------------------
+// Spacing（对齐 compact size 阶梯）
+@spacing-xs: 4px;   // sizeXXS/XS = 4
+@spacing-sm: 8px;   // sizeSM/size = 8
+@spacing-md: 8px;   // size = 8（紧凑下 md 收到 8）
+@spacing-lg: 12px;  // 介于 size(8) 与 sizeLG(16)，admin 实战取 12 更平衡
+@spacing-xl: 16px;  // sizeLG = 16
+
+// Control Height：compact = default - 4
+@control-height: 28px;     // 32 - 4
+@control-height-sm: 20px;  // 24 - 4
+@control-height-lg: 36px;  // 40 - 4
+
+// 控件 padding 反推（高 28 → y=5；高 20 → y=1；高 36 → y=7）
+@ctrl-padding-y: 5px;
+@ctrl-padding-x: 11px;       // compact 水平也收窄（Ant compact Button paddingInline 11）
+@ctrl-padding-y-sm: 1px;
+@ctrl-padding-x-sm: 7px;
+@ctrl-padding-y-lg: 7px;
+@ctrl-padding-x-lg: 11px;
+
+// Button / Input padding 重新指向 compact 控件 padding
+@btn-padding-y: @ctrl-padding-y;
+@btn-padding-x: @ctrl-padding-x;
+@btn-padding-y-sm: @ctrl-padding-y-sm;
+@btn-padding-x-sm: @ctrl-padding-x-sm;
+@btn-padding-y-lg: @ctrl-padding-y-lg;
+@btn-padding-x-lg: @ctrl-padding-x-lg;
+
+@input-padding-y: @ctrl-padding-y;
+@input-padding-x: 8px;       // compact Input 水平 8（default 11）
+@input-padding-y-sm: @ctrl-padding-y-sm;
+@input-padding-x-sm: 7px;
+@input-padding-y-lg: @ctrl-padding-y-lg;
+@input-padding-x-lg: 8px;
+
+// Card padding：compact 收到 8（default 16）
+@card-padding: 8px;
+
+// 字号：compact 下正文略小
+@font-size-md: 13px;
+
+// Step 3: 导入 Light 配色（注意 variables.less 也会 import variables-base，
+//         但 LESS 后定义覆盖前定义——这里 variables.less 的 import 在最前，
+//         我们上面的覆盖在它之后会失效。故改为只引入配色，不再走 variables.less）
+// --------------------------------------------
+// 直接内联 Light 配色（与 variables.less 一致），避免 variables.less 反向覆盖尺寸 token
+@color-base-0: #ffffff;
+@color-base-1: #f6f8fa;
+@color-base-2: #eaeef2;
+@color-base-3: #d0d7de;
+@color-base-4: #afb8c1;
+@color-base-5: #8c959f;
+@color-base-6: #6e7781;
+@color-base-7: #57606a;
+@color-base-8: #424a53;
+@color-base-9: #32383f;
+@color-base-10: #1f2328;
+
+@color-accent-0: #e6f4ff;
+@color-accent-1: #bae0ff;
+@color-accent-2: #91caff;
+@color-accent-3: #69b1ff;
+@color-accent-4: #4096ff;
+@color-accent-5: #1677ff;
+@color-accent-6: #0958d9;
+@color-accent-7: #003eb3;
+@color-accent-8: #002c8c;
+@color-accent-9: #001d66;
+
+@color-success-0: #f6ffed;
+@color-success-1: #d9f7be;
+@color-success-2: #b7eb8f;
+@color-success-3: #95de64;
+@color-success-4: #73d13d;
+@color-success-5: #52c41a;
+@color-success-6: #389e0d;
+@color-success-7: #237804;
+@color-success-8: #135200;
+@color-success-9: #092b00;
+
+@color-warning-0: #fffbe6;
+@color-warning-1: #fef1b8;
+@color-warning-2: #ffe58f;
+@color-warning-3: #ffd666;
+@color-warning-4: #ffc53d;
+@color-warning-5: #faad14;
+@color-warning-6: #d48806;
+@color-warning-7: #ad6800;
+@color-warning-8: #874d00;
+@color-warning-9: #613400;
+
+@color-danger-0: #fff2f0;
+@color-danger-1: #fee2e2;
+@color-danger-2: #fecaca;
+@color-danger-3: #ff7875;
+@color-danger-4: #ff4d4f;
+@color-danger-5: #f5222d;
+@color-danger-6: #cf1322;
+@color-danger-7: #a8071a;
+@color-danger-8: #820014;
+@color-danger-9: #5c0011;
+
+@color-fg-default: rgba(0, 0, 0, 0.88);
+@color-fg-muted: rgba(0, 0, 0, 0.65);
+@color-fg-subtle: rgba(0, 0, 0, 0.45);
+@color-fg-on-emphasis: #ffffff;
+
+@color-bg-default: #ffffff;
+@color-bg-overlay: #ffffff;
+@color-bg-subtle: #f6f8fa;
+@color-bg-inset: #f3f4f6;
+
+@color-border-default: #d9d9d9;
+@color-border-muted: #f0f0f0;
+@color-border-subtle: rgba(0, 0, 0, 0.06);
+
+@color-accent-emphasis: @color-accent-5;
+@color-accent-hover: @color-accent-0;
+@color-accent-active: @color-accent-6;
+@color-accent-muted: @color-accent-2;
+@color-accent-subtle: @color-accent-0;
+
+@color-success-emphasis: @color-success-5;
+@color-success-hover: @color-success-0;
+@color-success-active: @color-success-6;
+@color-success-muted: @color-success-2;
+@color-success-subtle: @color-success-0;
+
+@color-warning-emphasis: @color-warning-5;
+@color-warning-hover: @color-warning-0;
+@color-warning-active: @color-warning-6;
+@color-warning-muted: @color-warning-2;
+@color-warning-subtle: @color-warning-0;
+
+@color-danger-emphasis: @color-danger-4;
+@color-danger-hover: @color-danger-0;
+@color-danger-active: @color-danger-6;
+@color-danger-muted: @color-danger-2;
+@color-danger-subtle: @color-danger-0;
+
+@color-shadow-default: rgba(0, 0, 0, 0.15);
+
+// Ant Design 别名（theme-base 中部分组件直接引用）
+@color-primary: @color-accent-5;
+@color-primary-hover: @color-accent-4;
+@color-primary-active: @color-accent-6;
+@color-primary-text: @color-accent-7;
+@color-success: @color-success-5;
+@color-success-hover: @color-success-4;
+@color-success-active: @color-success-6;
+@color-success-text: @color-success-7;
+@color-warning: @color-warning-5;
+@color-warning-hover: @color-warning-4;
+@color-warning-active: @color-warning-6;
+@color-warning-text: @color-warning-7;
+@color-error: @color-danger-5;
+@color-error-hover: @color-danger-4;
+@color-error-active: @color-danger-6;
+@color-error-text: @color-danger-7;
+@color-info: @color-accent-5;
+
+@color-text: @color-fg-default;
+@color-text-secondary: @color-fg-muted;
+@color-text-tertiary: @color-fg-subtle;
+@color-text-on-color: @color-fg-on-emphasis;
+@color-bg: @color-bg-default;
+@color-bg-container: @color-bg-default;
+@color-bg-layout: @color-bg-subtle;
+@color-bg-masked: rgba(0, 0, 0, 0.45);
+@color-border: @color-border-default;
+@color-border-secondary: @color-border-muted;
+@color-border-tertiary: @color-border-subtle;
+@color-shadow: @color-shadow-default;
+
+@color-primary-bg: @color-accent-0;
+@color-primary-bg-hover: @color-accent-1;
+@color-primary-border: @color-accent-2;
+@color-primary-border-hover: @color-accent-3;
+@color-success-bg: @color-success-0;
+@color-success-bg-hover: @color-success-1;
+@color-success-border: @color-success-2;
+@color-success-border-hover: @color-success-3;
+@color-warning-bg: @color-warning-0;
+@color-warning-bg-hover: @color-warning-1;
+@color-warning-border: @color-warning-2;
+@color-warning-border-hover: @color-warning-3;
+@color-error-bg: @color-danger-0;
+@color-error-bg-hover: @color-danger-1;
+@color-error-border: @color-danger-2;
+@color-error-border-hover: @color-danger-3;
+
+@color-table-row-hover: @color-bg-subtle;
+@color-table-selected-row: @color-primary-bg;
+@color-table-selected-color: @color-primary;
+@color-input: @color-bg-default;
+@color-input-bg: @color-bg-default;
+@color-input-border: @color-border-default;
+@color-input-hover-border: @color-border-default;
+@color-input-focus-border: @color-primary;
+@color-input-placeholder: @color-fg-subtle;
+@color-button-default: @color-bg-default;
+@color-button-default-hover: @color-bg-default;
+@color-button-default-active: @color-bg-subtle;
+@color-link: @color-primary;
+@color-link-hover: @color-primary-hover;
+@color-link-active: @color-primary-active;
+@color-slider-track: @color-primary;
+@color-slider-track-background: @color-border-muted;
+@color-switch: @color-bg-default;
+@color-switch-bg: rgba(0, 0, 0, 0.25);
+@color-switch-bg-hover: rgba(0, 0, 0, 0.45);
+@color-tag-default-bg: @color-bg-subtle;
+@color-tag-default-color: @color-text;
+@color-avatar-bg: @color-primary-bg;
+@color-avatar-color: @color-primary;
+@color-badge-count-bg: @color-error;
+@color-progress-default: @color-primary;
+
+@motion-duration-fast: 0.1s;
+@motion-duration-mid: 0.2s;
+@motion-duration-slow: 0.3s;
+
+// Step 4: 导入全部组件样式（用上面 compact token 重新生成）
+@import "theme-base.less";

@@ -109,6 +109,27 @@
   -fx-background-color: -color-bg-layout;
 }
 /* ============================================
+   通用背景层级（M19.35）— Background 枚举对应的 styleClass
+   ============================================
+   用法：组件挂 .jfx-bg-* 后，对应 LESS 变量驱动的色随主题切换自动适配。
+   命名前缀 jfx- 避免跟用户自定义 styleClass 冲突。
+*/
+.jfx-bg-default {
+  -fx-background-color: -color-bg-default;
+}
+.jfx-bg-subtle {
+  -fx-background-color: -color-bg-subtle;
+}
+.jfx-bg-layout {
+  -fx-background-color: -color-bg-layout;
+}
+.jfx-bg-inset {
+  -fx-background-color: -color-bg-inset;
+}
+.jfx-bg-transparent {
+  -fx-background-color: transparent;
+}
+/* ============================================
    Page / Layout Surfaces
    ============================================ */
 /* 老 PageAnt 已删除（M18），相关 .page / .page-header / .page-title 等样式同步移除 */
@@ -135,6 +156,26 @@
   -fx-background-color: transparent;
 }
 .crud-template-bottombar {
+  -fx-background-color: transparent;
+}
+/* PageTemplate（M19.33 新增）：通用展示页骨架「大标题 + 描述 + 内容区」 */
+.page-template {
+  -fx-background-color: transparent;
+}
+.page-template-header {
+  -fx-spacing: 8px;
+}
+.page-template-title {
+  -fx-font-size: 28px;
+  -fx-font-weight: 700;
+  -fx-text-fill: -color-fg-default;
+}
+.page-template-desc {
+  -fx-font-size: 14px;
+  -fx-text-fill: -color-fg-muted;
+  -fx-wrap-text: true;
+}
+.page-template-body {
   -fx-background-color: transparent;
 }
 .surface {
@@ -199,7 +240,8 @@
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
   -fx-cursor: text;
-  -fx-highlight-fill: -color-accent-subtle;
+  /* 选区高亮：用更实的浅蓝（accent-1）+ 深色文字，避免选中时文字与半透明高亮叠加发虚（M19.42 修） */
+  -fx-highlight-fill: -color-accent-1;
   -fx-highlight-text-fill: -color-fg-default;
 }
 .text-field.jfx-selectable-text:hover,
@@ -379,8 +421,8 @@
    Button Component
    ============================================ */
 .button {
-  -fx-text-fill: #e0e0ff;
-  -fx-padding: 8px 16px;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 6px 15px;
   -fx-cursor: hand;
   -fx-font-weight: 500;
   -fx-alignment: center;
@@ -417,21 +459,17 @@
   -fx-background-color: -color-accent-active;
   -fx-border-color: -color-accent-active;
 }
-.button.accent,
-.button.primary {
+.button.accent {
   -fx-background-color: -color-accent-emphasis;
   -fx-border-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
 }
-.button.accent:hover,
-.button.primary:hover {
+.button.accent:hover {
   -fx-background-color: -color-accent-4;
   -fx-border-color: -color-accent-4;
 }
 .button.accent:armed,
-.button.accent:pressed,
-.button.primary:armed,
-.button.primary:pressed {
+.button.accent:pressed {
   -fx-background-color: -color-accent-6;
   -fx-border-color: -color-accent-6;
 }
@@ -485,11 +523,11 @@
 }
 /* Button Sizes */
 .button.small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 7px;
   -fx-font-size: 12px;
 }
 .button.large {
-  -fx-padding: 12px 24px;
+  -fx-padding: 9px 15px;
   -fx-font-size: 16px;
 }
 /* ============================================
@@ -501,7 +539,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 11px;
   -fx-text-fill: #e0e0ff;
 }
 .text-field:hover {
@@ -520,7 +558,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 11px;
   -fx-text-fill: #e0e0ff;
 }
 .text-area:hover {
@@ -578,16 +616,13 @@
 }
 /* 卡片 Header */
 .card .card-header {
-  -fx-padding: 16px 24px;
+  -fx-padding: 12px 16px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
-.card.card-small .card-header {
-  -fx-padding: 12px 12px;
-}
 /* 卡片 Body */
 .card .card-body {
-  -fx-padding: 24px;
+  -fx-padding: 16px;
 }
 .card.card-small .card-body {
   -fx-padding: 12px;
@@ -987,7 +1022,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 11px;
   -fx-text-fill: #e0e0ff;
 }
 .combo-box:hover {
@@ -1068,7 +1103,11 @@
 }
 .slider .track {
   -fx-background-color: -color-border-default;
-  -fx-background-radius: 9999px;
+  /* M19.43.2 #6 真正根因：track 用 @border-radius-full(9999px) 会把 track 的视觉边界
+     向左右各撑出 ~9999px（SliderSkin 不裁切 track 圆角），形成「一根线横穿整个窗口」的
+     假溢出（探针实测 track 宽达 20000px）。track 只有 4px 高，4px 圆角即可完全圆头。
+     对齐 AtlantaFX：track-radius = 普通 border-radius，不用 full。 */
+  -fx-background-radius: 4px;
   -fx-pref-height: 4px;
 }
 .slider .thumb {
@@ -1079,6 +1118,13 @@
   -fx-border-radius: 9999px;
   -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.3), 4, 0, 0, 1);
   -fx-snap-to-pixel: false;
+  /* 显式设尺寸——modena 默认 thumb 偏小，对齐 Ant Design 14px 圆点手柄 */
+  -fx-min-width: 14px;
+  -fx-min-height: 14px;
+  -fx-pref-width: 14px;
+  -fx-pref-height: 14px;
+  -fx-max-width: 14px;
+  -fx-max-height: 14px;
 }
 .slider .thumb:hover {
   -fx-background-color: -color-accent-hover;
@@ -1097,7 +1143,8 @@
 }
 .slider .colored-track {
   -fx-background-color: -color-accent-emphasis;
-  -fx-background-radius: 9999px;
+  /* 同 .track：避免 9999px 圆角撑爆视觉边界 */
+  -fx-background-radius: 4px;
 }
 .slider .axis {
   -fx-tick-label-fill: -color-fg-muted;
@@ -1243,8 +1290,21 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 11px;
   -fx-text-fill: #e0e0ff;
+  /* M19.43 #7：modena 算的 pref 宽偏窄，配上我们的 padding + 箭头按钮会把日期文字裁掉「显示不全」。
+     给一个能容纳「2026/05/31 + 箭头」的最小宽度，文字不再被截断。 */
+  -fx-min-width: 130px;
+  -fx-pref-width: 160px;
+}
+/* 去掉内部 text-field 自带的边框/背景，否则与外层 .date-picker 的 input-base 边框叠成"双边框"（M19.42 #7） */
+.date-picker > .text-field {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 0;
+  -fx-effect: none;
 }
 .date-picker:hover {
   -fx-border-color: -color-accent-muted;
@@ -1255,8 +1315,18 @@
 }
 .date-picker .arrow-button {
   -fx-background-color: transparent;
+  -fx-cursor: hand;
 }
 .date-picker .arrow-button .arrow {
+  /* 显式设 shape + 尺寸——modena 的 DatePicker arrow 默认没 shape，只设颜色会"有色无形"（SKILL §17）。
+     用日历图标 shape（Material event/calendar），保证箭头可见可点 */
+  -fx-shape: "M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z";
+  -fx-min-width: 14px;
+  -fx-min-height: 14px;
+  -fx-pref-width: 14px;
+  -fx-pref-height: 14px;
+  -fx-max-width: 14px;
+  -fx-max-height: 14px;
   -fx-background-color: -color-fg-muted;
 }
 .date-picker:hover .arrow-button .arrow {
@@ -1270,42 +1340,75 @@
   -fx-background-radius: 4px;
   -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.3), 8, 0, 0, 2);
   -fx-padding: 0;
-}
-.date-picker-popup > * {
-  -fx-pref-width: 280px;
-  -fx-min-width: 280px;
-  -fx-max-width: 280px;
+  -fx-alignment: center;
+  -fx-spacing: 0;
 }
 .date-picker-popup .month-year-pane {
   -fx-background-color: transparent;
-  -fx-padding: 12px 16px;
-  -fx-hgap: 8px;
-  -fx-vgap: 0;
+  -fx-padding: 8px 12px;
+  -fx-alignment: center;
 }
+/* 名为 .spinner 实为 HBox（左箭头+标签+右箭头），靠 class 名复用 spinner 样式。
+   对齐 AtlantaFX：居中 + 紧凑间距，去掉边框/圆角。 */
 .date-picker-popup .spinner {
-  -fx-pref-width: 120px;
-  -fx-min-width: 120px;
+  -fx-spacing: 4px;
+  -fx-alignment: center;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
 }
 .date-picker-popup .spinner .button {
   -fx-background-color: transparent;
-  -fx-text-fill: -color-fg-default;
-  -fx-padding: 4px 8px;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 4px 6px;
+  -fx-cursor: hand;
 }
 .date-picker-popup .spinner .button:hover {
-  -fx-background-color: -color-accent-subtle;
+  -fx-background-color: transparent;
+}
+/* DatePicker popup 月/年 spinner 的左右箭头：modena 不给默认 shape，必须显式设
+   （否则箭头 0 尺寸不可见，只剩空圆角按钮——SKILL §17「有色无形」，M19.42 #49） */
+.date-picker-popup .spinner .left-arrow,
+.date-picker-popup .spinner .right-arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-padding: 4px;
+  -fx-scale-shape: true;
+}
+/* 左箭头：Material chevron-left；右箭头：chevron-right */
+.date-picker-popup .spinner .left-arrow {
+  -fx-shape: "M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z";
+}
+.date-picker-popup .spinner .right-arrow {
+  -fx-shape: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z";
+}
+.date-picker-popup .spinner .button:hover .left-arrow,
+.date-picker-popup .spinner .button:hover .right-arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+.date-picker-popup .spinner .label {
+  -fx-alignment: center;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 14px;
+  -fx-font-weight: 600;
+}
+.date-picker-popup .calendar-grid {
+  -fx-background-color: transparent;
+  -fx-padding: 8px;
+  -fx-hgap: 4px;
+  -fx-vgap: 2px;
+  -fx-alignment: center;
 }
 .date-picker-popup .day-cell {
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
   -fx-font-size: 13px;
   -fx-alignment: center;
-  -fx-padding: 4px;
+  -fx-padding: 0;
+  -fx-cell-size: 32px;
   -fx-border-radius: 2px;
   -fx-background-radius: 2px;
-  -fx-min-width: 32px;
-  -fx-min-height: 32px;
-  -fx-pref-width: 32px;
-  -fx-pref-height: 32px;
 }
 .date-picker-popup .day-cell:hover {
   -fx-background-color: -color-accent-hover;
@@ -1353,7 +1456,8 @@
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
   -fx-font-weight: 500;
-  -fx-padding: 8px 4px;
+  -fx-alignment: center;
+  -fx-padding: 4px;
 }
 .date-picker-popup .week-number-cell {
   -fx-text-fill: -color-fg-muted;
@@ -1368,7 +1472,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 11px;
   -fx-text-fill: #e0e0ff;
   -fx-min-width: 60px;
   -fx-pref-width: 80px;
@@ -1418,6 +1522,98 @@
 }
 .color-palette .controls-pane {
   -fx-padding: 5px 0;
+}
+/* ============================================
+   CustomColorDialog（点「自定义颜色」弹出的高级取色对话框）
+   --------------------------------------------
+   根因（BUG #55）：项目此前完全没有 .custom-color-dialog 样式，
+   导致 #settings-pane 行（label + slider + 单位 + 输入框）没有显式宽度约束，
+   RGB/HSB 调节 slider 把整行撑出对话框宽度，且整体排版不居中、边线杂乱。
+   解法：照抄 AtlantaFX _color-picker.scss 的 .custom-color-dialog 规范，
+   em 值按项目根字号 14px 换算成 px（如 10em → 140px、5.75em → 80px）。
+   关键：给 settings-pane 内每个微组件显式宽度，整行才能在固定宽度内排布。
+   ============================================ */
+.custom-color-dialog {
+  -fx-background-color: -color-bg-overlay;
+  -fx-padding: 16px;
+  -fx-spacing: 16px;
+}
+/* 左侧大色块 + 竖向色带 */
+.custom-color-dialog > .color-rect-pane {
+  -fx-spacing: 14px;
+  -fx-pref-height: 224px;
+  /* 16em */
+  -fx-alignment: TOP_LEFT;
+  -fx-fill-height: true;
+}
+.custom-color-dialog > .color-rect-pane > .color-rect {
+  -fx-min-width: 224px;
+  /* 16em */
+  -fx-min-height: 224px;
+}
+.custom-color-dialog > .color-rect-pane > .color-rect .color-rect-border {
+  -fx-border-color: -color-border-default;
+}
+.custom-color-dialog > .color-rect-pane > .color-bar {
+  -fx-min-width: 24px;
+  /* 1.666667em */
+  -fx-max-width: 24px;
+  -fx-min-height: 234px;
+  /* 16.666667em */
+  -fx-border-color: -color-border-default;
+}
+/* 右侧控制区 */
+.custom-color-dialog > .controls-pane > .current-new-color-grid > .color-rect {
+  -fx-min-width: 140px;
+  /* 10em */
+  -fx-pref-width: 140px;
+  -fx-min-height: 24px;
+  /* 1.75em */
+  -fx-pref-height: 24px;
+}
+.custom-color-dialog > .controls-pane > .current-new-color-grid > #current-new-color-border {
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+}
+/* settings-pane：RGB/HSB 调节行（label + slider + 单位 + 输入框）—— 溢出根因区 */
+.custom-color-dialog #settings-pane {
+  -fx-hgap: 6px;
+  -fx-vgap: 6px;
+}
+.custom-color-dialog #settings-pane > .settings-label {
+  -fx-min-width: 80px;
+  /* 5.75em，左侧 R/G/B 标签列固定宽 */
+}
+.custom-color-dialog #settings-pane > .slider {
+  -fx-pref-width: 140px;
+  /* 10em，关键：给 slider 固定宽，不再撑爆整行 */
+}
+.custom-color-dialog #settings-pane > .settings-unit {
+  -fx-min-width: 21px;
+  /* 1.5em，% / ° 单位列 */
+  -fx-pref-width: 21px;
+  -fx-max-width: 21px;
+}
+.custom-color-dialog #settings-pane > .color-input-field {
+  -fx-min-width: 56px;
+  /* 4em，数值输入框 */
+  -fx-pref-width: 56px;
+  -fx-max-width: 56px;
+}
+.custom-color-dialog #settings-pane > .web-field {
+  -fx-pref-width: 112px;
+  /* 8em，十六进制色值输入框 */
+}
+.custom-color-dialog #settings-pane > #spacer-side {
+  -fx-min-width: 7px;
+  /* 0.5em */
+  -fx-pref-width: 7px;
+}
+/* 底部按钮区右对齐 */
+.custom-color-dialog > .controls-pane > #buttons-hbox {
+  -fx-spacing: 10px;
+  -fx-padding: 14px 0 0 0;
+  -fx-alignment: BOTTOM_RIGHT;
 }
 /* ============================================
    Accordion Component
@@ -1869,7 +2065,7 @@
   -fx-text-fill: -color-fg-default;
   -fx-alignment: CENTER;
   -fx-content-display: LEFT;
-  -fx-padding: 4px 12px;
+  -fx-padding: 4px 11px;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
@@ -1886,7 +2082,7 @@
 }
 .choice-box .open-button {
   -fx-background-color: transparent;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 11px;
 }
 .choice-box .open-button .arrow {
   -fx-background-color: -color-fg-muted;
@@ -1900,7 +2096,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 11px;
   -fx-text-fill: #e0e0ff;
   -fx-padding: 0;
   -fx-focus-color: transparent;
@@ -1914,7 +2110,7 @@
 .spinner .text-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 11px;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -2039,11 +2235,11 @@
 .table-view.jfx-table-compact .table-row-cell {
   -fx-min-height: 36px;
 }
-/* Striped rows */
-.table-view.striped .table-row-cell:odd {
+/* Striped rows —— styleClass 由 TableAnt 挂 jfx-table-striped（不是 striped），M19.40 修对齐 */
+.table-view.jfx-table-striped .table-row-cell:odd {
   -fx-background-color: -color-bg-subtle;
 }
-.table-view.striped .table-row-cell:even {
+.table-view.jfx-table-striped .table-row-cell:even {
   -fx-background-color: -color-bg-default;
 }
 /* Bordered table（兼容老 .bordered API；新代码请用 Border.BOTH） */
@@ -2322,6 +2518,76 @@
   -fx-font-size: 12px;
   -fx-text-fill: -color-fg-default;
   -fx-wrap-text: true;
+}
+/* selectable 模式：只读 TextArea 单色渲染，可拖选 + Ctrl+C。
+   去掉 TextArea 默认 chrome（背景/边框/焦点环），让它融入代码块容器。
+   用复合选择器 .text-area.jfx-codeblock-textarea 提高优先级盖掉 modena 默认（参考 SelectableTextAnt M19.7.2）。
+   关键：content 区用不透明浅灰底（-color-bg-subtle）而非 transparent，
+   否则 macOS 上 LCD 文本渲染退化为灰度抗锯齿导致文字发虚（M19.39 修）。 */
+.text-area.jfx-codeblock-textarea {
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-text-fill: -color-fg-default;
+  -fx-highlight-fill: -color-accent-muted;
+  -fx-highlight-text-fill: -color-fg-default;
+  -fx-padding: 8;
+  -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
+  -fx-font-size: 12px;
+  /* 去掉 modena 默认焦点阴影（会导致子节点重绘时亚像素偏移 → 文字模糊） */
+  -fx-effect: null;
+}
+.text-area.jfx-codeblock-textarea .content {
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+}
+/* 焦点态：去掉所有视觉变化（代码块不是输入控件，不需要焦点环） */
+.text-area.jfx-codeblock-textarea:focused {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+  -fx-effect: null;
+}
+/* TextArea 内嵌 scroll-pane / viewport 用同色不透明底，保证 LCD 文本渲染清晰 */
+.text-area.jfx-codeblock-textarea > .scroll-pane,
+.text-area.jfx-codeblock-textarea > .scroll-pane > .viewport,
+.text-area.jfx-codeblock-textarea > .scroll-pane .content {
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+}
+/* 代码语法高亮（用于 CodeBlockAnt 只读显示） */
+.jfx-codeblock-content .code-keyword {
+  -fx-fill: -color-accent-emphasis;
+  -fx-font-weight: bold;
+}
+.jfx-codeblock-content .code-string {
+  -fx-fill: -color-success-emphasis;
+}
+.jfx-codeblock-content .code-comment {
+  -fx-fill: -color-fg-muted;
+  -fx-font-style: italic;
+}
+.jfx-codeblock-content .code-number {
+  -fx-fill: -color-warning-emphasis;
+}
+.jfx-codeblock-content .code-text {
+  -fx-fill: -color-fg-default;
+}
+/* 行号样式 */
+.code-line-numbers {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: transparent -color-border-muted transparent transparent;
+  -fx-border-width: 0 1 0 0;
+}
+.code-line-number {
+  -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
+  -fx-font-size: 12px;
+  -fx-text-fill: -color-fg-muted;
+  -fx-alignment: center-right;
+  -fx-padding: 0 4 0 0;
 }
 /* ============================================
    Tier 1 简单组件 LESS 选择器
@@ -2711,6 +2977,14 @@
 }
 .tree-select-row.tree-select-disabled .tree-select-label {
   -fx-text-fill: -color-fg-subtle;
+}
+/* 多选模式：选中行高亮（BUG #53，对齐 Ant Design TreeSelect 选中项浅蓝底 + 主色文字） */
+.tree-select-row.tree-select-selected {
+  -fx-background-color: -color-accent-subtle;
+}
+.tree-select-row.tree-select-selected .tree-select-label {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
 }
 /* SegmentedAnt */
 .segmented {
@@ -3577,6 +3851,19 @@
 .form-footer {
   -fx-padding: 16 0 0 0;
 }
+/* Form header 区（M19.39）：顶部 banner 区，底部加分隔线与表单体拉开 */
+.form-header {
+  -fx-padding: 0 0 12px 0;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+/* Form section 分段标题（M19.39）：长表单分组标题，上方留间距与前一组拉开 */
+.form-section-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 16px 0 8px 0;
+}
 /* Form 尺寸调节：仅控制字号与控件最小高度，间距由 Java 侧 VBox.spacing 负责 */
 .form-size-small {
   -fx-font-size: 12px;
@@ -3655,11 +3942,11 @@
    Input Sizes
    ============================================ */
 .text-field.small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 7px;
   -fx-font-size: 12px;
 }
 .text-field.large {
-  -fx-padding: 12px 16px;
+  -fx-padding: 9px 11px;
   -fx-font-size: 16px;
 }
 /* ============================================
@@ -3700,7 +3987,7 @@
   -fx-border-color: -color-accent-active;
 }
 .menu-button > .label {
-  -fx-padding: 8px 16px 8px 16px;
+  -fx-padding: 6px 15px 6px 15px;
   -fx-text-fill: -color-fg-default;
 }
 .menu-button:hover > .label {
@@ -3709,7 +3996,7 @@
 .menu-button > .arrow-button {
   /* 上下 padding 与 label 一致；水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），
      避免箭头区过宽显得不协调 */
-  -fx-padding: 8px 8px 8px 0;
+  -fx-padding: 6px 8px 6px 0;
   -fx-background-color: transparent;
 }
 .menu-button > .arrow-button > .arrow {
@@ -3771,28 +4058,36 @@
   -fx-cursor: hand;
 }
 .split-menu-button > .label {
-  -fx-padding: 8px 16px 8px 16px;
+  -fx-padding: 6px 15px 6px 15px;
   -fx-background-color: -color-bg-default;
   -fx-text-fill: -color-fg-default;
+  /* 左侧两角跟随容器圆角，避免方角盖住容器圆角露出"缺角"（M19.42 #3） */
+  -fx-background-radius: 4px 0 0 4px;
 }
 .split-menu-button > .label:hover {
   -fx-background-color: -color-accent-hover;
+  -fx-background-radius: 4px 0 0 4px;
 }
 .split-menu-button > .label:armed {
   -fx-background-color: -color-accent-active;
+  -fx-background-radius: 4px 0 0 4px;
 }
 .split-menu-button > .arrow-button {
   /* 水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），避免箭头区过宽 */
-  -fx-padding: 8px 8px 8px 8px;
+  -fx-padding: 6px 8px 6px 8px;
   -fx-background-color: -color-bg-default;
   -fx-border-color: transparent transparent transparent -color-border-muted;
   -fx-border-width: 0 0 0 1px;
+  /* 右侧两角跟随容器圆角 */
+  -fx-background-radius: 0 4px 4px 0;
 }
 .split-menu-button > .arrow-button:hover {
   -fx-background-color: -color-accent-hover;
+  -fx-background-radius: 0 4px 4px 0;
 }
 .split-menu-button > .arrow-button:armed {
   -fx-background-color: -color-accent-active;
+  -fx-background-radius: 0 4px 4px 0;
 }
 .split-menu-button > .arrow-button > .arrow {
   /* 默认 Ant Design chevron 样式（细 V 形描边） */
@@ -3821,8 +4116,7 @@
    ============================================ */
 .toggle-button {
   -fx-background-radius: 4px;
-  -fx-text-fill: #e0e0ff;
-  -fx-padding: 8px 16px;
+  -fx-padding: 6px 15px;
   -fx-font-weight: 500;
   -fx-alignment: center;
   -fx-background-color: -color-bg-default;
@@ -3856,44 +4150,44 @@
 }
 /* ToggleButton sizes — 与 .button.small/.large 保持一致 */
 .toggle-button.small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 7px;
   -fx-font-size: 12px;
 }
 .toggle-button.large {
-  -fx-padding: 12px 24px;
+  -fx-padding: 9px 15px;
   -fx-font-size: 16px;
 }
 /* MenuButton sizes — padding 下放到 .label 和 .arrow-button（M19.6） */
 .menu-button.small > .label {
-  -fx-padding: 4px 8px 4px 8px;
+  -fx-padding: 2px 7px 2px 7px;
   -fx-font-size: 12px;
 }
 .menu-button.small > .arrow-button {
   /* 水平 padding 减半，对齐 AtlantaFX */
-  -fx-padding: 4px 4px 4px 0;
+  -fx-padding: 2px 4px 2px 0;
 }
 .menu-button.large > .label {
-  -fx-padding: 12px 24px 12px 24px;
+  -fx-padding: 9px 15px 9px 15px;
   -fx-font-size: 16px;
 }
 .menu-button.large > .arrow-button {
-  -fx-padding: 12px 12px 12px 0;
+  -fx-padding: 9px 12px 9px 0;
 }
 /* SplitMenuButton sizes — padding 下放到 .label 和 .arrow-button（M19.6） */
 .split-menu-button.small > .label {
-  -fx-padding: 4px 8px 4px 8px;
+  -fx-padding: 2px 7px 2px 7px;
   -fx-font-size: 12px;
 }
 .split-menu-button.small > .arrow-button {
   /* 水平 padding 减半，对齐 AtlantaFX */
-  -fx-padding: 4px 4px 4px 4px;
+  -fx-padding: 2px 4px 2px 4px;
 }
 .split-menu-button.large > .label {
-  -fx-padding: 12px 24px 12px 24px;
+  -fx-padding: 9px 15px 9px 15px;
   -fx-font-size: 16px;
 }
 .split-menu-button.large > .arrow-button {
-  -fx-padding: 12px 12px 12px 12px;
+  -fx-padding: 9px 12px 9px 12px;
 }
 /* ============================================
    PasswordField Component
@@ -3904,7 +4198,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 11px;
   -fx-text-fill: #e0e0ff;
 }
 .password-field:hover {
@@ -3915,11 +4209,11 @@
   -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
 }
 .password-field.small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 7px;
   -fx-font-size: 12px;
 }
 .password-field.large {
-  -fx-padding: 12px 16px;
+  -fx-padding: 9px 11px;
   -fx-font-size: 16px;
 }
 /* ============================================
@@ -3998,14 +4292,15 @@
   -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.success:hover {
-  -fx-background-color: -color-success-hover;
-  -fx-border-color: -color-success-muted;
-  -fx-text-fill: -color-success-emphasis;
+  -fx-background-color: -color-success-4;
+  -fx-border-color: -color-success-4;
+  -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.success:armed,
 .button.success:pressed {
   -fx-background-color: -color-success-active;
   -fx-border-color: -color-success-active;
+  -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.danger {
   -fx-background-color: -color-danger-emphasis;
@@ -4013,14 +4308,15 @@
   -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.danger:hover {
-  -fx-background-color: -color-danger-hover;
-  -fx-border-color: -color-danger-muted;
-  -fx-text-fill: -color-danger-emphasis;
+  -fx-background-color: -color-danger-4;
+  -fx-border-color: -color-danger-4;
+  -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.danger:armed,
 .button.danger:pressed {
   -fx-background-color: -color-danger-active;
   -fx-border-color: -color-danger-active;
+  -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.warning {
   -fx-background-color: -color-warning-emphasis;
@@ -4028,14 +4324,15 @@
   -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.warning:hover {
-  -fx-background-color: -color-warning-hover;
-  -fx-border-color: -color-warning-muted;
-  -fx-text-fill: -color-warning-emphasis;
+  -fx-background-color: -color-warning-4;
+  -fx-border-color: -color-warning-4;
+  -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.warning:armed,
 .button.warning:pressed {
   -fx-background-color: -color-warning-active;
   -fx-border-color: -color-warning-active;
+  -fx-text-fill: -color-fg-on-emphasis;
 }
 /* Outlined variants */
 .button.outlined.success {
@@ -4104,6 +4401,103 @@
 }
 .button.text.warning:hover {
   -fx-background-color: -color-warning-subtle;
+}
+/* ============================================
+   Button Ghost variant（M19.28 重构：从 Java inline style 迁出）
+   规则：背景透明 + 描边 1px + 文字色随 type 变化。
+   与 type 修饰类组合使用：.button.ghost / .button.ghost.accent / .button.ghost.danger 等。
+   注意：必须用复合选择器（.button.ghost vs .button.ghost.accent），
+   优先级（特异性）才能压过单 type 的实色规则。
+   ============================================ */
+/* default：无 type 时的 ghost——中性边框 + 默认前景色 */
+.button.ghost {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-fg-default;
+  -fx-border-width: 1px;
+  -fx-text-fill: -color-fg-default;
+}
+.button.ghost:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-emphasis;
+}
+.button.ghost:armed,
+.button.ghost:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-accent-active;
+}
+/* accent ghost（PRIMARY/ACCENT 共用 .accent 类） */
+.button.ghost.accent {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-emphasis;
+}
+.button.ghost.accent:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-accent-4;
+  -fx-text-fill: -color-accent-4;
+}
+.button.ghost.accent:armed,
+.button.ghost.accent:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-accent-6;
+  -fx-text-fill: -color-accent-6;
+}
+/* success ghost */
+.button.ghost.success {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-success-emphasis;
+  -fx-text-fill: -color-success-emphasis;
+}
+.button.ghost.success:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-success-muted;
+  -fx-text-fill: -color-success-emphasis;
+}
+.button.ghost.success:armed,
+.button.ghost.success:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-success-active;
+  -fx-text-fill: -color-success-active;
+}
+/* warning ghost */
+.button.ghost.warning {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-emphasis;
+}
+.button.ghost.warning:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-warning-muted;
+  -fx-text-fill: -color-warning-emphasis;
+}
+.button.ghost.warning:armed,
+.button.ghost.warning:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-warning-active;
+  -fx-text-fill: -color-warning-active;
+}
+/* danger ghost */
+.button.ghost.danger {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-emphasis;
+}
+.button.ghost.danger:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-danger-muted;
+  -fx-text-fill: -color-danger-emphasis;
+}
+.button.ghost.danger:armed,
+.button.ghost.danger:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-danger-active;
+  -fx-text-fill: -color-danger-active;
+}
+/* 禁用态：所有 ghost 共用 */
+.button.ghost:disabled {
+  -fx-opacity: 0.6;
 }
 /* ============================================
    Badge Enhancements
@@ -4350,49 +4744,49 @@
 .text-field.small,
 .text-area.small,
 .password-field.small {
-  -fx-padding: 4px 12px;
+  -fx-padding: 4px 11px;
   -fx-font-size: 12px;
 }
 .text-field.large,
 .text-area.large,
 .password-field.large {
-  -fx-padding: 8px 12px;
+  -fx-padding: 8px 11px;
   -fx-font-size: 14px;
 }
 /* ComboBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
 .combo-box.small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 7px;
   -fx-font-size: 12px;
 }
 .combo-box.large {
-  -fx-padding: 12px 16px;
+  -fx-padding: 9px 11px;
   -fx-font-size: 16px;
 }
 /* ChoiceBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
 .choice-box.small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 7px;
   -fx-font-size: 12px;
 }
 .choice-box.large {
-  -fx-padding: 12px 16px;
+  -fx-padding: 9px 11px;
   -fx-font-size: 16px;
 }
 /* DatePicker sizes — 与 input-base 家族其他成员一致（M19.5 新增） */
 .date-picker.small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 7px;
   -fx-font-size: 12px;
 }
 .date-picker.large {
-  -fx-padding: 12px 16px;
+  -fx-padding: 9px 11px;
   -fx-font-size: 16px;
 }
 /* ColorPicker sizes — 与 input-base 家族其他成员一致（M19.5 新增） */
 .color-picker.small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 7px;
   -fx-font-size: 12px;
 }
 .color-picker.large {
-  -fx-padding: 12px 16px;
+  -fx-padding: 9px 11px;
   -fx-font-size: 16px;
 }
 /* Tag sizes */
@@ -4453,4 +4847,96 @@
 .shake.error {
   -fx-translate-x: -5px;
   -fx-transition: translate-x 100ms ease-in-out;
+}
+/* ============================================================
+   LoginTemplate（M19.39 LESS 化）
+   双栏 banner 登录页所有视觉规则集中在此
+   ============================================================ */
+.login-template {
+  -fx-background-color: -color-bg-default;
+}
+/* ----- 左 Banner（渐变背景 + 卖点） ----- */
+.login-template-banner {
+  -fx-background-color: linear-gradient(to bottom right, -color-accent-4, -color-accent-emphasis 60%, -color-accent-7);
+}
+/* Banner 内部所有文字默认白色（半透明分级） */
+.login-template-banner-brand {
+  -fx-font-size: 22px;
+  -fx-font-weight: 700;
+  -fx-text-fill: white;
+}
+.login-template-banner-tagline {
+  -fx-font-size: 14px;
+  -fx-text-fill: rgba(255, 255, 255, 0.85);
+}
+.login-template-banner-feature-check {
+  -fx-text-fill: rgba(255, 255, 255, 0.95);
+  -fx-font-size: 14px;
+  -fx-font-weight: 700;
+}
+.login-template-banner-feature-text {
+  -fx-text-fill: rgba(255, 255, 255, 0.9);
+  -fx-font-size: 13px;
+}
+.login-template-banner-copyright {
+  -fx-font-size: 11px;
+  -fx-text-fill: rgba(255, 255, 255, 0.6);
+}
+/* Logo 盒：半透明白底 + 圆角 */
+.login-template-banner-logo {
+  -fx-background-color: rgba(255, 255, 255, 0.18);
+  -fx-background-radius: 8;
+}
+/* Logo 盒内部图标统一白色（IconAnt 的 .jfx-icon-path） */
+.login-template-banner-logo .jfx-icon-path {
+  -fx-background-color: white;
+}
+/* ----- 右 表单 ----- */
+.login-template-form-title {
+  -fx-font-size: 22px;
+  -fx-font-weight: 700;
+}
+.login-template-form-subtitle {
+  -fx-font-size: 13px;
+  -fx-text-fill: -color-fg-muted;
+}
+.login-template-form-error {
+  -fx-text-fill: -color-danger-emphasis;
+  -fx-font-size: 12px;
+}
+/* 复合输入行：HBox 自拼边框（左前置图标 + 右文本框） */
+.login-template-input-row {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1;
+  -fx-border-radius: 6;
+  -fx-background-radius: 6;
+}
+/* 行内文本框：抹掉默认边框/背景，让它视觉融入外层 row 边框 */
+.login-template-input-field {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-padding: 8 12 8 0;
+  -fx-background-insets: 0;
+}
+.login-template-input-field:focused {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-effect: null;
+}
+/* 记住我 + 链接小字 */
+.login-template-remember {
+  -fx-font-size: 13px;
+}
+.login-template-link-small {
+  -fx-font-size: 13px;
+}
+/* 登录按钮：稍大字号 + 提高 height */
+.login-template-submit {
+  -fx-font-size: 14px;
+}
+/* 底部"还没账号？" 提示 */
+.login-template-no-account {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 13px;
 }

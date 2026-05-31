@@ -60,6 +60,8 @@ public class TreeSelectAnt {
         private Consumer<TreeNode> onSelect = null;
         private Consumer<List<TreeNode>> onMultipleSelect = null;
         private TreeNode selectedNode = null;
+        // 多选模式下已选中的节点集合（BUG #53：原 onMultipleSelect 死回调，从未维护选中态）
+        private final List<TreeNode> selectedNodes = new ArrayList<>();
 
         public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
         public Builder tree(TreeNode root) { this.root = root; return this; }
@@ -134,6 +136,10 @@ public class TreeSelectAnt {
             if (node.isDisabled()) {
                 row.getStyleClass().add(CssClasses.TREE_SELECT_DISABLED);
             }
+            // 多选模式：已选中的行加高亮修饰类（BUG #53）
+            if (multiple && selectedNodes.contains(node)) {
+                row.getStyleClass().add(CssClasses.TREE_SELECT_SELECTED);
+            }
 
             if (node.hasChildren()) {
                 Label arrow = new Label(node.isExpanded() ? "\u25bc" : "\u25b6");
@@ -157,10 +163,22 @@ public class TreeSelectAnt {
             if (!node.isDisabled()) {
                 // hover 由 LESS .tree-select-row:hover 控制
                 row.setOnMouseClicked(e -> {
-                    field.setText(node.getLabel());
-                    selectedNode = node;
-                    if (onSelect != null) onSelect.accept(node);
-                    if (popup != null) popup.hide();
+                    if (multiple) {
+                        // BUG #53：多选模式——点击切换选中态，回填所有已选 label，触发 onMultipleSelect
+                        toggleMultiSelect(node);
+                        field.setText(joinSelectedLabels());
+                        if (onMultipleSelect != null) {
+                            onMultipleSelect.accept(new ArrayList<>(selectedNodes));
+                        }
+                        // 多选不关闭弹层，方便连续勾选；刷新行高亮
+                        refreshTree(panel, popup, field);
+                    } else {
+                        // 单选模式——回填单个 label，触发 onSelect，关闭弹层
+                        field.setText(node.getLabel());
+                        selectedNode = node;
+                        if (onSelect != null) onSelect.accept(node);
+                        if (popup != null) popup.hide();
+                    }
                 });
             }
 
@@ -181,6 +199,26 @@ public class TreeSelectAnt {
             if (root != null) {
                 buildTreeNodes(panel, root, 0, popup, field);
             }
+        }
+
+        /** 多选：切换某节点的选中态（已选则取消，未选则加入）。 */
+        private void toggleMultiSelect(TreeNode node) {
+            if (selectedNodes.contains(node)) {
+                selectedNodes.remove(node);
+            } else {
+                selectedNodes.add(node);
+            }
+        }
+
+        /** 多选：把所有已选节点的 label 用 "、" 拼接，作为输入框回填文案。 */
+        private String joinSelectedLabels() {
+            if (selectedNodes.isEmpty()) return "";
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < selectedNodes.size(); i++) {
+                if (i > 0) sb.append("、");
+                sb.append(selectedNodes.get(i).getLabel());
+            }
+            return sb.toString();
         }
     }
 

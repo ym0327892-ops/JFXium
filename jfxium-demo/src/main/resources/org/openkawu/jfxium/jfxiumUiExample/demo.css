@@ -1,0 +1,53 @@
+/* ============================================
+   jfxium-demo 示例项目专用样式
+   ============================================
+   这里放仅 demo 用的辅助样式（如「显示代码」toggle）。
+   规则：
+   - 类名前缀统一 `.jfx-demo-*`，与库内 `.jfx-*` 区隔
+   - 颜色全部走 LESS 编译出的语义变量（-color-accent-emphasis 等）
+   - 不引入新主题变量，保证主题切换自动适配
+   ============================================ */
+
+/* 「显示代码 / 收起代码」可点击 toggle */
+.jfx-demo-code-toggle {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-size: 12px;
+  -fx-cursor: hand;
+  -fx-padding: 4 0 4 0;
+}
+
+.jfx-demo-code-toggle:hover {
+  -fx-text-fill: -color-accent-active;
+  -fx-underline: true;
+}
+
+/* 演示区与代码区之间的分隔线 */
+.jfx-demo-code-separator {
+  -fx-opacity: 0.5;
+}
+
+/* Grid 栅格示例专用：交替蓝色色块（对齐 Ant Design Grid 文档风格） */
+.jfx-demo-col-block {
+  -fx-padding: 16 0 16 0;
+  -fx-alignment: center;
+  -fx-min-height: 48;
+  -fx-background-radius: 4;
+}
+
+.jfx-demo-col-dark {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+.jfx-demo-col-dark .label {
+  -fx-text-fill: white;
+  -fx-font-size: 13px;
+}
+
+.jfx-demo-col-light {
+  -fx-background-color: -color-accent-muted;
+}
+
+.jfx-demo-col-light .label {
+  -fx-text-fill: white;
+  -fx-font-size: 13px;
+}

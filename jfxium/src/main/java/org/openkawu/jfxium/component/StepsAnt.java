@@ -50,6 +50,8 @@ public class StepsAnt {
         private Direction direction = Direction.HORIZONTAL;
         private Size size = Size.DEFAULT;
         private boolean responsive = true;
+        // runtime 控制器：build() 后装配，支持不重建节点切换当前步骤（BUG #51）
+        private Controller controller;
 
         public Builder step(String title) { steps.add(new Step(title, null, null)); return this; }
         public Builder step(String title, String description) { steps.add(new Step(title, description, null)); return this; }
@@ -59,7 +61,22 @@ public class StepsAnt {
         public Builder size(Size size) { this.size = size; return this; }
 
         public Node build() {
+            // 每次 build 装配一个新的 Controller，持有所有状态相关节点引用
+            this.controller = new Controller(steps.size(), current);
             return direction == Direction.HORIZONTAL ? buildHorizontal() : buildVertical();
+        }
+
+        /**
+         * 拿到 runtime 控制器（必须在 {@link #build()} 之后调用）。
+         *
+         * <p>用例：交互式步进（上一步/下一步）只需调 {@link Controller#setCurrent(int)} 刷新高亮，
+         * 不必 rebuild 整个步骤条节点（对齐 MenuAnt.Controller 的 runtime 模式，BUG #51）。</p>
+         */
+        public Controller controller() {
+            if (controller == null) {
+                throw new IllegalStateException("controller() 必须在 build() 之后调用");
+            }
+            return controller;
         }
 
         private HBox buildHorizontal() {
@@ -72,6 +89,7 @@ public class StepsAnt {
             for (int i = 0; i < steps.size(); i++) {
                 Step step = steps.get(i);
                 State state = stateFor(i);
+                StepNodes sn = controller.stepNodes.get(i);
 
                 VBox stepBox = new VBox(8);
                 stepBox.setAlignment(Pos.CENTER);
@@ -81,7 +99,7 @@ public class StepsAnt {
 
                 HBox iconBox = new HBox(0);
                 iconBox.setAlignment(Pos.CENTER);
-                iconBox.getChildren().add(makeStepIcon(stepSize, state, i + 1));
+                iconBox.getChildren().add(makeStepIcon(stepSize, state, i + 1, sn));
 
                 if (i < steps.size() - 1) {
                     Line line = new Line(0, 0, 60, 0);
@@ -89,11 +107,12 @@ public class StepsAnt {
                     if (state == State.FINISHED) {
                         line.getStyleClass().add(CssClasses.STEPS_STATE_FINISHED);
                     }
+                    sn.line = line;
                     iconBox.getChildren().add(line);
                 }
                 stepBox.getChildren().add(iconBox);
 
-                stepBox.getChildren().add(makeTitle(step.title, state));
+                stepBox.getChildren().add(makeTitle(step.title, state, sn));
                 if (step.description != null) {
                     Label descLabel = new Label(step.description);
                     descLabel.getStyleClass().add(CssClasses.STEPS_DESCRIPTION);
@@ -114,6 +133,7 @@ public class StepsAnt {
             for (int i = 0; i < steps.size(); i++) {
                 Step step = steps.get(i);
                 State state = stateFor(i);
+                StepNodes sn = controller.stepNodes.get(i);
 
                 HBox stepBox = new HBox(12);
                 stepBox.setAlignment(Pos.TOP_LEFT);
@@ -122,7 +142,7 @@ public class StepsAnt {
                 VBox leftBox = new VBox(0);
                 leftBox.setAlignment(Pos.TOP_CENTER);
                 leftBox.setPrefWidth(stepSize);
-                leftBox.getChildren().add(makeStepIcon(stepSize, state, i + 1));
+                leftBox.getChildren().add(makeStepIcon(stepSize, state, i + 1, sn));
 
                 if (i < steps.size() - 1) {
                     Line line = new Line(0, 0, 0, 40);
@@ -130,13 +150,14 @@ public class StepsAnt {
                     if (state == State.FINISHED) {
                         line.getStyleClass().add(CssClasses.STEPS_STATE_FINISHED);
                     }
+                    sn.line = line;
                     leftBox.getChildren().add(line);
                 }
                 stepBox.getChildren().add(leftBox);
 
                 VBox contentBox = new VBox(4);
                 contentBox.setAlignment(Pos.TOP_LEFT);
-                contentBox.getChildren().add(makeTitle(step.title, state));
+                contentBox.getChildren().add(makeTitle(step.title, state, sn));
                 if (step.description != null) {
                     Label descLabel = new Label(step.description);
                     descLabel.getStyleClass().add(CssClasses.STEPS_DESCRIPTION);
@@ -148,8 +169,8 @@ public class StepsAnt {
             return container;
         }
 
-        /** 生成圆圈 + 数字（颜色由 LESS 状态修饰类切换）*/
-        private StackPane makeStepIcon(int stepSize, State state, int number) {
+        /** 生成圆圈 + 数字（颜色由 LESS 状态修饰类切换；引用存入 sn 供 runtime 切换）*/
+        private StackPane makeStepIcon(int stepSize, State state, int number, StepNodes sn) {
             Circle circle = new Circle(stepSize / 2.0);
             circle.getStyleClass().add(CssClasses.STEPS_CIRCLE);
             circle.getStyleClass().add(stateClass(state));
@@ -160,15 +181,19 @@ public class StepsAnt {
             // font-size 与 stepSize 联动（动态属性，留 inline）
             numberLabel.setStyle("-fx-font-size: " + (stepSize * 0.4) + "px;");
 
+            sn.circle = circle;
+            sn.number = numberLabel;
+
             StackPane iconPane = new StackPane();
             iconPane.getChildren().addAll(circle, numberLabel);
             return iconPane;
         }
 
-        private Label makeTitle(String text, State state) {
+        private Label makeTitle(String text, State state, StepNodes sn) {
             Label titleLabel = new Label(text);
             titleLabel.getStyleClass().add(CssClasses.STEPS_TITLE);
             titleLabel.getStyleClass().add(stateClass(state));
+            sn.title = titleLabel;
             return titleLabel;
         }
 
@@ -184,6 +209,106 @@ public class StepsAnt {
                 case CURRENT -> CssClasses.STEPS_STATE_CURRENT;
                 case WAIT -> CssClasses.STEPS_STATE_WAIT;
             };
+        }
+    }
+
+    /** 单个步骤的状态相关节点引用（供 Controller runtime 切换 styleClass，BUG #51）。 */
+    private static class StepNodes {
+        Circle circle;
+        Label number;
+        Label title;
+        Line line;   // 该步骤右侧/下方的连接线，可能为 null（最后一步）
+    }
+
+    /**
+     * 步骤条运行时控制器：在不重建节点的前提下切换当前步骤（BUG #51）。
+     *
+     * <p>对齐 MenuAnt.Controller 的 runtime 模式。{@link #setCurrent(int)} 直接更新各步骤
+     * circle/number/title 的状态修饰类（finished/current/wait）和连接线高亮，
+     * 调用方拿到的 Node 引用始终有效，不丢动画/布局状态。</p>
+     *
+     * <pre>{@code
+     * StepsAnt.Builder b = StepsAnt.create().step("A").step("B").step("C").current(0);
+     * Node steps = b.build();
+     * StepsAnt.Controller ctrl = b.controller();
+     * ctrl.next();            // 前进到下一步
+     * ctrl.setCurrent(2);     // 直接跳到第三步
+     * }</pre>
+     */
+    public static class Controller {
+        private final List<StepNodes> stepNodes = new ArrayList<>();
+        private final int total;
+        private int current;
+
+        Controller(int total, int current) {
+            this.total = total;
+            this.current = current;
+            for (int i = 0; i < total; i++) {
+                stepNodes.add(new StepNodes());
+            }
+        }
+
+        /** 当前步骤下标（0-based）。 */
+        public int getCurrent() {
+            return current;
+        }
+
+        /** 总步骤数。 */
+        public int getTotal() {
+            return total;
+        }
+
+        /**
+         * 切换当前步骤：重算所有步骤状态并更新 styleClass，不重建节点。
+         * 越界（&lt;0 或 ≥total）时无操作。
+         */
+        public void setCurrent(int newCurrent) {
+            if (newCurrent < 0 || newCurrent >= total) return;
+            this.current = newCurrent;
+            for (int i = 0; i < stepNodes.size(); i++) {
+                State state = stateFor(i);
+                StepNodes sn = stepNodes.get(i);
+                applyState(sn.circle, state);
+                applyState(sn.number, state);
+                applyState(sn.title, state);
+                // 连接线：仅当本步骤已完成时高亮
+                if (sn.line != null) {
+                    sn.line.getStyleClass().remove(CssClasses.STEPS_STATE_FINISHED);
+                    if (state == State.FINISHED) {
+                        sn.line.getStyleClass().add(CssClasses.STEPS_STATE_FINISHED);
+                    }
+                }
+            }
+        }
+
+        /** 前进到下一步（已是最后一步则无操作）。 */
+        public void next() {
+            setCurrent(current + 1);
+        }
+
+        /** 后退到上一步（已是第一步则无操作）。 */
+        public void prev() {
+            setCurrent(current - 1);
+        }
+
+        private State stateFor(int i) {
+            if (i < current) return State.FINISHED;
+            if (i == current) return State.CURRENT;
+            return State.WAIT;
+        }
+
+        /** 移除三种状态修饰类后挂上目标状态类（节点为 null 时跳过）。 */
+        private static void applyState(Node node, State state) {
+            if (node == null) return;
+            node.getStyleClass().removeAll(
+                    CssClasses.STEPS_STATE_FINISHED,
+                    CssClasses.STEPS_STATE_CURRENT,
+                    CssClasses.STEPS_STATE_WAIT);
+            node.getStyleClass().add(switch (state) {
+                case FINISHED -> CssClasses.STEPS_STATE_FINISHED;
+                case CURRENT -> CssClasses.STEPS_STATE_CURRENT;
+                case WAIT -> CssClasses.STEPS_STATE_WAIT;
+            });
         }
     }
 

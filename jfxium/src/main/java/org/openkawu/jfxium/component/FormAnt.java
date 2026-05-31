@@ -174,14 +174,17 @@ public class FormAnt {
     }
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
-        private final List<FormItem> items = new ArrayList<>();
+        private final List<Object> entries = new ArrayList<>(); // FormItem 或 SectionMarker（混合序列）
         private Layout layout = Layout.HORIZONTAL;
         private Size size = Size.DEFAULT;
         private boolean colon = true;
         private Align labelAlign = Align.RIGHT;
         private int labelCol = 6;
         private int wrapperCol = 18;
-        private Node footer;
+        // header / footer 增强（M19.39 spec）
+        private Node header;
+        private final List<Node> footerNodes = new ArrayList<>();
+        private Pos footerAlign = Pos.CENTER_RIGHT;
 
         private Builder() {}
 
@@ -191,7 +194,60 @@ public class FormAnt {
         public Builder labelAlign(Align align) { this.labelAlign = align; return this; }
         public Builder labelCol(int labelCol) { this.labelCol = labelCol; return this; }
         public Builder wrapperCol(int wrapperCol) { this.wrapperCol = wrapperCol; return this; }
-        public Builder footer(Node footer) { this.footer = footer; return this; }
+
+        /**
+         * 设置 footer 区（单节点，向下兼容 M19.23 之前的 API）。
+         * <p>覆盖语义：多次调用以最后一次为准。</p>
+         */
+        public Builder footer(Node footer) {
+            this.footerNodes.clear();
+            if (footer != null) this.footerNodes.add(footer);
+            return this;
+        }
+
+        /**
+         * 设置 footer 区（变长重载，M19.39 新增）—— 支持「取消 / 重置 / 提交」多按钮。
+         * <p>覆盖语义：多次调用以最后一次为准。null 元素会被跳过。</p>
+         */
+        public Builder footer(Node... nodes) {
+            this.footerNodes.clear();
+            if (nodes != null) {
+                for (Node n : nodes) {
+                    if (n != null) this.footerNodes.add(n);
+                }
+            }
+            return this;
+        }
+
+        /**
+         * footer 按钮组对齐方式（M19.39 新增）。
+         * <p>默认 {@code Pos.CENTER_RIGHT}（Ant Design 标准）。
+         * 常见取值：{@code CENTER_LEFT}（向导步骤）/ {@code CENTER}（登录确认）。</p>
+         */
+        public Builder footerAlign(Pos align) {
+            if (align != null) this.footerAlign = align;
+            return this;
+        }
+
+        /**
+         * 顶部 banner 区（M19.39 新增）—— 放置重要提示 / 标题图 / 用户信息等。
+         * <p>覆盖语义：多次调用以最后一次为准。null 表示不渲染 header。</p>
+         */
+        public Builder header(Node header) {
+            this.header = header;
+            return this;
+        }
+
+        /**
+         * 长表单分段标题（M19.39 新增）—— 在后续 item 之前插入一个视觉分组标题。
+         * <p>INLINE layout 下忽略（单行表单分段无意义）。</p>
+         */
+        public Builder section(String title) {
+            if (title != null && !title.isEmpty()) {
+                entries.add(new SectionMarker(title));
+            }
+            return this;
+        }
 
         // ===========================================================
         // 老 API（向下兼容）
@@ -225,7 +281,7 @@ public class FormAnt {
          */
         public ItemBuilder item(String label, Node control, String name) {
             FormItem fi = new FormItem(label, control, name);
-            items.add(fi);
+            entries.add(fi);
             return new ItemBuilder(fi, this);
         }
 
@@ -236,7 +292,7 @@ public class FormAnt {
             fi.required = required;
             fi.helpText = helpText != null ? helpText : "";
             fi.validateStatus = status != null ? status : ValidateStatus.DEFAULT;
-            items.add(fi);
+            entries.add(fi);
             return this;
         }
 
@@ -257,6 +313,14 @@ public class FormAnt {
             form.getStyleClass().add(CssClasses.FORM);
             form.getStyleClass().add("form-size-" + size.name().toLowerCase());
 
+            // header 区（M19.39）：位于全部内容之上
+            if (header != null) {
+                VBox headerBox = new VBox(header);
+                headerBox.getStyleClass().add(CssClasses.FORM_HEADER);
+                form.getChildren().add(headerBox);
+            }
+
+            // body 区：根据 layout 渲染 items + section markers
             Pane body = switch (layout) {
                 case HORIZONTAL -> buildHorizontalForm(ctx);
                 case VERTICAL -> buildVerticalForm(ctx);
@@ -264,10 +328,12 @@ public class FormAnt {
             };
             form.getChildren().add(body);
 
-            if (footer != null) {
-                HBox footerBox = new HBox(footer);
-                footerBox.setAlignment(Pos.CENTER_RIGHT);
+            // footer 区（M19.39 增强：支持多节点 + 对齐配置）
+            if (!footerNodes.isEmpty()) {
+                HBox footerBox = new HBox(8);
+                footerBox.setAlignment(footerAlign);
                 footerBox.getStyleClass().add(CssClasses.FORM_FOOTER);
+                footerBox.getChildren().addAll(footerNodes);
                 form.getChildren().add(footerBox);
             }
             applyStyles(form);
@@ -285,12 +351,21 @@ public class FormAnt {
             grid.setVgap(getVerticalGap());
             grid.setAlignment(Pos.TOP_LEFT);
 
-            for (int i = 0; i < items.size(); i++) {
-                FormItem item = items.get(i);
-                Label label = createLabel(item);
-                GridPane.setHalignment(label, labelAlign == Align.RIGHT ? HPos.RIGHT : HPos.LEFT);
-                grid.add(label, 0, i);
-                grid.add(createWrapper(item, ctx), 1, i);
+            int row = 0;
+            for (Object entry : entries) {
+                if (entry instanceof SectionMarker sm) {
+                    // section 标题占满两列（M19.39）
+                    Label sectionLabel = new Label(sm.title());
+                    sectionLabel.getStyleClass().add(CssClasses.FORM_SECTION_TITLE);
+                    grid.add(sectionLabel, 0, row, 2, 1); // colspan=2
+                    row++;
+                } else if (entry instanceof FormItem item) {
+                    Label label = createLabel(item);
+                    GridPane.setHalignment(label, labelAlign == Align.RIGHT ? HPos.RIGHT : HPos.LEFT);
+                    grid.add(label, 0, row);
+                    grid.add(createWrapper(item, ctx), 1, row);
+                    row++;
+                }
             }
 
             double total = labelCol + wrapperCol;
@@ -306,11 +381,17 @@ public class FormAnt {
         private VBox buildVerticalForm(FormContext ctx) {
             VBox container = new VBox(getVerticalGap());
             container.getStyleClass().add(CssClasses.FORM_VERTICAL);
-            for (FormItem item : items) {
-                VBox itemBox = new VBox(4);
-                itemBox.getChildren().add(createLabel(item));
-                itemBox.getChildren().add(createWrapper(item, ctx));
-                container.getChildren().add(itemBox);
+            for (Object entry : entries) {
+                if (entry instanceof SectionMarker sm) {
+                    Label sectionLabel = new Label(sm.title());
+                    sectionLabel.getStyleClass().add(CssClasses.FORM_SECTION_TITLE);
+                    container.getChildren().add(sectionLabel);
+                } else if (entry instanceof FormItem item) {
+                    VBox itemBox = new VBox(4);
+                    itemBox.getChildren().add(createLabel(item));
+                    itemBox.getChildren().add(createWrapper(item, ctx));
+                    container.getChildren().add(itemBox);
+                }
             }
             return container;
         }
@@ -319,16 +400,20 @@ public class FormAnt {
             HBox container = new HBox(16);
             container.getStyleClass().add(CssClasses.FORM_INLINE);
             container.setAlignment(Pos.CENTER_LEFT);
-            for (FormItem item : items) {
-                VBox itemBox = new VBox(4);
-                if (!item.label.isEmpty()) {
-                    itemBox.getChildren().add(createLabel(item));
+            // INLINE 模式忽略 section markers（spec Req 4 AC 6）
+            for (Object entry : entries) {
+                if (entry instanceof FormItem item) {
+                    VBox itemBox = new VBox(4);
+                    if (!item.label.isEmpty()) {
+                        itemBox.getChildren().add(createLabel(item));
+                    }
+                    itemBox.getChildren().add(item.control);
+                    if (item.name != null) {
+                        ctx.registerField(item.name, item.control, item.rules);
+                    }
+                    container.getChildren().add(itemBox);
                 }
-                itemBox.getChildren().add(item.control);
-                if (item.name != null) {
-                    ctx.registerField(item.name, item.control, item.rules);
-                }
-                container.getChildren().add(itemBox);
+                // SectionMarker 在 INLINE 模式下被忽略
             }
             return container;
         }
@@ -434,4 +519,11 @@ public class FormAnt {
             ctx.onChange(dependency, handler);
         }
     }
+
+    // ============================================================
+    // 内部数据结构
+    // ============================================================
+
+    /** 分段标题标记（M19.39）—— 与 FormItem 混合存储在 entries 列表中。 */
+    record SectionMarker(String title) {}
 }

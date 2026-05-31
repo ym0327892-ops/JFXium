@@ -7,12 +7,21 @@
 ## 目录
 
 1. [快速开始](#快速开始)
-2. [主题系统](#主题系统)
-3. [组件分类](#组件分类)
-4. [自定义主题](#自定义主题)
-5. [styleClass 体系](#styleclass-体系)
-6. [自定义组件](#自定义组件)
-7. [最佳实践](#最佳实践)
+2. [按场景找组件](#按场景找组件) ⭐ **快速查找组件**
+3. [已知限制 / 绕行方案](#已知限制--绕行方案) ⭐ **避免撞墙**
+4. [主题系统](#主题系统)
+5. [组件分类](#组件分类)
+6. [业务模板（Templates）](#业务模板templates)
+7. [国际化（i18n）](#国际化i18n)
+8. [自定义主题](#自定义主题)
+9. [styleClass 体系](#styleclass-体系)
+10. [自定义组件](#自定义组件)
+11. [完整使用示例](#完整使用示例)
+12. [最佳实践](#最佳实践)
+13. [5 分钟快速入手示例](#5-分钟快速入手示例) ⭐ **5 个完整可运行的业务场景**
+14. [常见问题](#常见问题)
+
+> **新人推荐阅读顺序**：1（快速开始）→ 2（找组件）→ 3（避坑）→ 13（5 个完整示例直接拷贝改）→ 12（最佳实践）
 
 ---
 
@@ -174,6 +183,50 @@ public class MyAdmin extends Application {
 ```
 
 要再上一层 admin shell（顶栏 + 侧栏菜单 + 路由），见后面 `AppShellAnt 详细说明` 和 `LoginTemplate / DashboardTemplate / CrudTemplate 业务模板`。
+
+---
+
+## 按场景找组件
+
+> 业务进来直接查这张表——比翻整个组件分类章节快。
+
+| 我要做... | 用什么 |
+|---|---|
+| **登录页** | LoginTemplate（最快）/ FormAnt + VBoxAnt（自由）|
+| **admin 列表页** | CrudTemplate + TableAnt + PaginationAnt |
+| **数据概览页** | DashboardTemplate + StatisticAnt |
+| **简单展示页** | PageTemplate（title + description + body）|
+| **应用骨架**（顶栏 + 侧栏 + 内容）| AppShellAnt |
+| **表单 + 校验** | FormAnt + Rule.required() + Rule.email() |
+| **跨窗口通信** | EventBus + record 事件 |
+| **多窗口管理** | WindowManager.getDefault().register(stage) |
+| **页面骨架基类**（业务继承）| extends VBoxAnt / BorderPaneAnt |
+| **响应式 24 栅格** | GridAnt（不是 GridPaneAnt！）|
+| **简单二维网格** | GridPaneAnt（cell/row/column 链式 API）|
+| **垂直滚动长内容** | ScrollPaneAnt 或 ScrollContainerAnt |
+| **拖拽分屏 IDE 风格** | SplitPaneAnt |
+| **顶部三段式工具栏**（左/中/右）| SplitBarAnt |
+| **背景色分层**（容器 vs 内容）| Background.LAYOUT / SUBTLE / DEFAULT |
+| **输入限制**（数字/手机号/邮箱）| TextFormatters.integerOnly() 等 12 种 |
+| **跨平台 OS 判断** | PlatformUtils.isMac() / isWindows() |
+
+> **5 个完整可运行示例** 见末尾「[5 分钟快速入手示例](#5-分钟快速入手示例)」章节。
+
+---
+
+## 已知限制 / 绕行方案
+
+> 业务侧实测「想这么干但当前 API 不够顺」的场景。**这些不是 bug**，是 API 演进期的边界，列在这避免你撞墙。
+
+| 想做的事 | 当前限制 | 绕行方案 | 待优化 |
+|---|---|---|---|
+| **FormAnt 按钮居中** | `footer(Node)` 写死 CENTER_RIGHT | 用 VBoxAnt/HBoxAnt 包一层自己控制 align | ⚠️ 待加 `footerAlign(Pos)` API |
+| **FormAnt 多按钮** | `footer` 只接 1 个节点 | 用 HBoxAnt/VBoxAnt 把多个按钮打包成 1 节点 | ⚠️ 待加 `footer(Node...)` 变长重载 |
+| **FormAnt 顶部 banner** | 没有 `header` 区 | 在 form 外层用 VBoxAnt 包，banner 放上面 | ⚠️ 待加 `header(Node)` API |
+| **FormAnt 分段标题** | 没有 section API | 自己用 `Label + Divider` 拼，插在 items 之间 | ⚠️ 待加 `section(String)` API |
+| **InputAnt 密码模式** | 没暴露 password 开关 | 直接用 `new PasswordField()` + 加 styleClass `text-field` | ⚠️ 待加 `.password(true)` |
+| **InputAnt focus 时显隐密码** | 没内置 | 用 `PasswordTextFormatter`（参考 AtlantaFX）业务自拼 | 可考虑加 |
+| **图标颜色** | `IconAnt.path()` 默认主题色，反色场景需 inline style | `iconNode.setStyle("-fx-background-color: white;")` | 可加 `.color(Color)` |
 
 ---
 
@@ -1728,9 +1781,94 @@ StackPane watermarked = WatermarkAnt.create()
 
 | 模板 | 说明 | 抽象自 | 示例 |
 |------|------|--------|------|
+| **PageTemplate** | 通用展示页骨架（大标题 + 描述 + 内容区，M19.33）| Showcase 20+ 个 page 共同的样板代码 | `PageTemplate.create().title("Button 按钮").description("...").sections(s1, s2, s3).build()` |
 | **CrudTemplate** | 通用三段式业务页（顶工具栏 + body + 底工具栏，M18）| admin demo 列表页/表单页/详情页/仪表盘的共同骨架 | `CrudTemplate.create().title("用户管理").topRight(addBtn).body(table).bottomRight(pagination).build()` |
 | **LoginTemplate** | 双栏 banner 登录页（M19.16）| admin demo LoginStage —— 行业标准 760×520 双栏布局 | `LoginTemplate.create().brandName("My Admin").features("...").onSubmit((u,p)->auth(u,p)).build()` |
 | **DashboardTemplate** | 概览首页骨架（欢迎 + N 列统计卡 + 双栏底部，M19.16）| admin demo DashboardPage 的标准结构 | `DashboardTemplate.create().welcome("...").stat(...).bottomLeft(...).bottomRight(...).build()` |
+
+### 4 个模板边界对照
+
+| 想做的页面 | 用哪个 |
+|---|---|
+| 简单展示页 / 文档 / 设置 / showcase 页 | **PageTemplate**（最简，只有大标题 + 描述 + 内容）|
+| 列表 / 表单 / 详情 / 仪表盘（带工具栏） | **CrudTemplate** |
+| 数据概览首页（统计卡 + 多区） | **DashboardTemplate** |
+| 登录 / 注册（双栏 banner）| **LoginTemplate** |
+
+### PageTemplate 详细说明
+
+PageTemplate 是最简的展示页骨架——「大标题 + 描述 + 内容区」三层结构。**适合所有不需要 topbar/bottombar 的简单内容页**。它直接替代了 admin / showcase 项目里到处重复的下面这段样板代码：
+
+```java
+// ❌ 改造前：每个 page 都要写 8-10 行样板，且违反 SKILL #1（inline setStyle）
+Label pageTitle = new Label("Button 按钮");
+pageTitle.setStyle("-fx-font-size: 28px; -fx-font-weight: 700;");
+Label pageDesc = new Label("最常用的交互组件...");
+pageDesc.setStyle("-fx-text-fill: -color-fg-muted;");
+VBox header = VBoxBuilder.create().spacing(8).children(pageTitle, pageDesc).build();
+return VBoxBuilder.create()
+        .spacing(20)
+        .children(header, sectionA(), sectionB(), sectionC())
+        .build();
+
+// ✅ 改造后：一处定义，零 inline setStyle
+return PageTemplate.create()
+        .title("Button 按钮")
+        .description("最常用的交互组件...")
+        .sections(sectionA(), sectionB(), sectionC())
+        .build();
+```
+
+**多种用法**：
+
+```java
+// 1. Showcase 页（多 section 竖排）
+VBox page = PageTemplate.create()
+    .title("Button 按钮")
+    .description("可点击的交互元素，支持多种 type / size / shape")
+    .section(buildBasicSection())
+    .section(buildSizeSection())
+    .section(buildShapeSection())
+    .build();
+
+// 2. 设置页（单一 body 节点）
+VBox page = PageTemplate.create()
+    .title("应用设置")
+    .description("配置主题、语言、快捷键等偏好")
+    .body(settingsForm)
+    .build();
+
+// 3. 极简（仅标题 + body，无描述）
+VBox page = PageTemplate.create()
+    .title("欢迎")
+    .body(welcomeContent)
+    .build();
+
+// 4. 文档页（仅标题 + 描述，不带 body）
+VBox doc = PageTemplate.create()
+    .title("使用说明")
+    .description("本系统支持以下操作...")
+    .build();
+```
+
+**装饰参数**（按需调整）：
+
+```java
+PageTemplate.create()
+    .title("...")
+    .description("...")
+    .sections(...)
+    .headerGap(8)         // title ↔ description 间距（默认 8）
+    .sectionGap(20)       // section 之间间距（默认 20）
+    .headerToBodyGap(20)  // header → body 间距（默认 20）
+    .padding(24)          // 整体 padding（默认 0，让父容器决定）
+    .build();
+```
+
+> **设计要点**：
+> - 视觉样式 100% 走 styleClass + LESS（`.page-template-title` / `.page-template-desc`），符合 SKILL #1 强约束
+> - title / description / body 全部可选——不调用就不渲染
+> - 底层是 VBox（不是 BorderPane），高度自适应内容
 
 ### CrudTemplate 详细说明
 
@@ -2476,6 +2614,833 @@ AccessibilityUtils.configureTextInput(
     "请输入您的用户名"      // 占位提示
 );
 ```
+
+### 5. 跨模块通信用 EventBus + record
+
+> JFXium 提供轻量 `EventBus`（`org.openkawu.jfxium.core.util.EventBus`），用于跨 Stage / 跨模块通信场景。**框架不强制事件用某个基类**，业务自由。
+
+**事件用 record 定义，不要用基类**：
+
+```java
+// ✅ 推荐：record 定义事件——不可变、自动 equals/toString、定义只要 1 行
+public record UserLoggedIn(String username) {}
+public record OrderCreated(long orderId, BigDecimal amount) {}
+
+// ❌ 反模式：通用 Event<T> 信封类——丢失类型安全 + 字符串路由
+public record Event<T>(String type, T data) {}
+bus.publish(new Event<>("user.login", "alice"));   // 订阅者拿到的是 Object，要强转
+```
+
+**需要"统一标记"或事件命名空间时，用 sealed interface 而非基类**：
+
+```java
+public sealed interface AppEvent
+        permits UserLoggedIn, UserLoggedOut, OrderCreated {
+    // 可选公共方法，子类自动实现
+    default long timestamp() { return System.currentTimeMillis(); }
+}
+
+public record UserLoggedIn(String username) implements AppEvent {}
+public record UserLoggedOut(String username) implements AppEvent {}
+public record OrderCreated(long orderId, BigDecimal amount) implements AppEvent {}
+```
+
+**订阅 + 发布**（线程安全，可在任意线程发布）：
+
+```java
+import org.openkawu.jfxium.core.util.EventBus;
+import org.openkawu.jfxium.core.util.EventBus.Subscription;
+
+EventBus bus = EventBus.getDefault();
+
+// 订阅，保存 Subscription 句柄用于取消
+Subscription sub = bus.subscribe(UserLoggedIn.class, e -> {
+    // 注意：不在 FX Thread——UI 操作要 runLater
+    Platform.runLater(() -> welcomeLabel.setText("欢迎，" + e.username()));
+});
+
+// 发布（任意线程）
+bus.publish(new UserLoggedIn("alice"));
+
+// 不再需要时取消订阅，防止内存泄漏
+sub.unsubscribe();
+```
+
+**典型场景**：
+
+| 场景 | 发布方 → 订阅方 |
+|---|---|
+| 登录成功通知主窗口刷新 | `LoginStage` → `MainStage` |
+| 后台任务结果上报 | worker 线程 → UI 多模块 |
+| 配置变更广播 | `SettingsDialog` → 各业务页 |
+| 数据 CRUD 后通知列表刷新 | `EditDialog` → `TablePage` |
+
+**避免误用**：
+
+- ❌ 不要用 EventBus 做「请求-响应」（RPC 场景用 `CompletableFuture` 或接口注入）
+- ❌ 不要订阅 `AppEvent.class` 期望收到所有子类事件 —— 本框架是**精确类型匹配**
+- ❌ 不要忘记 `unsubscribe()` —— listener 会持有外部引用，导致 GC 失败
+
+详细设计契约见 `EventBus.java` 类 javadoc。
+
+### 6. 页面骨架继承式写法（M19.36）
+
+> JFXium 在 `component/layout/` 下提供 **8 个继承式容器**——一个类同时支持 **「直接继承」+「工厂链式」+「Builder build()」** 三种用法。业务可以直接 `extends VBoxAnt` 当作"页面骨架基类"，也可以走老式 `VBoxBuilder.create()...build()`，两条路并存零冲突。
+
+**8 个容器对照**：
+
+| 原生容器 | 继承式 *Ant | 何时用 |
+|---|---|---|
+| VBox | **VBoxAnt** | 垂直布局，最常用 |
+| HBox | **HBoxAnt** | 水平布局，最常用 |
+| BorderPane | **BorderPaneAnt** | 五区位骨架（top/right/bottom/left/center）|
+| StackPane | **StackPaneAnt** | 子节点叠层（徽标、loading 遮罩、浮层）|
+| GridPane | **GridPaneAnt** | 简单二维网格（注意：响应式 24 栅格用 `GridAnt`）|
+| FlowPane | **FlowPaneAnt** | 流式布局自动换行（标签云）|
+| ScrollPane | **ScrollPaneAnt** | 简单滚动（裸 ScrollPane 双工厂）|
+| SplitPane | **SplitPaneAnt** | 可拖拽分割窗格（IDE 风格分屏）|
+
+**为什么提供这个**：JavaFX 业界主流写法是 `extends VBox` 在构造函数里 build UI，跟 JFXium 的 *Ant 工厂风格本来分裂。这 8 个继承式容器把两种风格统一到一个类——业务自己挑用法。
+
+#### 三种用法
+
+```java
+// 用法 1：直接 new + 链式（最简）
+VBoxAnt root = new VBoxAnt().spacing(16).children(label, btn);
+
+// 用法 2：工厂 + 链式（跟 *Ant 风格统一，build() 可选）
+VBoxAnt root = VBoxAnt.create()
+    .spacing(16)
+    .background(Background.LAYOUT)
+    .children(label, btn);
+// 或显式 build：
+VBoxAnt root = VBoxAnt.create().spacing(16).children(label, btn).build();
+
+// 用法 3：业务继承（页面骨架基类，最常见的业务写法）
+public class HomeView extends VBoxAnt {
+    public HomeView(String currentUser) {
+        spacing(16);
+        padding(24);
+        background(Background.LAYOUT);
+        children(
+            new Label("欢迎，" + currentUser),
+            buildDashboard()
+        );
+    }
+
+    private Node buildDashboard() {
+        return DashboardTemplate.create()
+            .stat(IconAnt.Path.USERS, "总用户", "1,234", "↑ 12.5%", true)
+            .build();
+    }
+}
+
+// 业务侧使用：直接当 VBox 添加进容器
+container.getChildren().add(new HomeView("alice"));
+```
+
+#### 三类页面的标准写法
+
+不同生命周期的页面用不同骨架：
+
+```java
+// === 类型 1：路由内的页（首页/列表/详情）—— extends VBoxAnt / BorderPaneAnt ===
+public class HomeView extends VBoxAnt {
+    public HomeView(String currentUser) {
+        spacing(16).padding(24).background(Background.LAYOUT);
+        children(buildHeader(currentUser), buildContent());
+    }
+}
+
+// === 类型 2：登录窗口 / 配置窗口（独立 Stage）—— 持有 Stage 字段 ===
+public class LoginView {
+    private final Stage stage = new Stage();
+    private final Consumer<String> onLogin;
+
+    public LoginView(Consumer<String> onLogin) { this.onLogin = onLogin; }
+
+    public void show() {
+        // 复用 LoginTemplate 直接拿 BorderPane
+        BorderPane content = LoginTemplate.create()
+            .brandName("我的应用")
+            .onSubmit((u, p) -> onLogin.accept(u))
+            .build();
+
+        Scene scene = new Scene(content, 760, 520);
+        ThemeManager.getInstance().applyTheme(new LightTheme());
+        ThemeManager.getInstance().registerScene(scene);
+
+        stage.setScene(scene);
+        stage.setTitle("登录");
+        WindowManager.getDefault().register(stage);   // ← 自动加图标 + 关闭时清理
+        stage.show();
+    }
+
+    public void close() { stage.close(); }
+}
+
+// === 类型 3：第二窗口（配置 / 设置）—— extends BorderPaneAnt + 持有 Stage ===
+public class SettingsView extends BorderPaneAnt {
+    private final Stage stage = new Stage();
+
+    public SettingsView() {
+        // this 就是 BorderPaneAnt
+        center(buildSettingsForm());
+        bottom(buildFooter());
+        background(Background.LAYOUT);
+    }
+
+    public void show(Stage owner) {
+        Scene scene = new Scene(this, 600, 500);   // this 就是 BorderPaneAnt
+        ThemeManager.getInstance().registerScene(scene);
+
+        stage.setScene(scene);
+        stage.setTitle("设置");
+        stage.initOwner(owner);                    // 子窗口跟随主窗口
+        WindowManager.getDefault().register(stage);
+        stage.show();
+    }
+
+    private HBox buildFooter() {
+        Button cancel = ButtonAnt.create("取消").onClick(e -> stage.close()).build();
+        Button save = ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY)
+            .onClick(e -> { saveSettings(); stage.close(); }).build();
+        return SplitBarAnt.create().right(cancel, save).build();
+    }
+
+    private void saveSettings() {
+        // 用 EventBus 通知主窗口
+        EventBus.getDefault().publish(new SettingsChanged());
+    }
+}
+```
+
+#### 三类页面对照速查
+
+| 类型 | 写法 | 持有 Stage | 入口方法 | 何时用 |
+|---|---|---|---|---|
+| **路由内的页** | `extends VBoxAnt / BorderPaneAnt` | ❌ | 构造函数 | 首页 / 列表 / 表单 / 详情 |
+| **独立窗口** | 持有 Stage 字段，不继承容器 | ✅ | `show()` | 登录 / 注册 / 关于 |
+| **第二窗口** | `extends BorderPaneAnt` + 持有 Stage | ✅ | `show(owner)` | 配置 / 设置 / 用户编辑 |
+
+#### 跟现有 VBoxBuilder 的关系
+
+```java
+// 老式 VBoxBuilder（244 处调用兼容）
+VBox vbox = VBoxBuilder.create().spacing(16).children(a, b).build();
+
+// 新 VBoxAnt（推荐新代码用）
+VBoxAnt vbox = VBoxAnt.create().spacing(16).children(a, b);
+```
+
+**兼容性**：`VBoxBuilder.build()` 内部已升级为 `new VBoxAnt(...)`，业务侧拿到的 VBox 实际就是 VBoxAnt 实例。两种 API 共存零冲突，**不强制迁移老代码**。
+
+#### 设计要点
+
+- **流式 API 跟 VBoxBuilder 完全对齐**：`spacing / padding / align / children / styleClass / background / style`
+- **`build()` 可选**：返回 `this`，仅为兼容老式 Builder 风格
+- **配合 Background 体系**：`new VBoxAnt().background(Background.LAYOUT)` 等价于 `VBoxBuilder.background(Background.LAYOUT).build()`
+- **JFXium 不强制基类**：业务也可以直接 `extends VBox`（不继承 VBoxAnt），框架不参与「页面接口规范」
+
+#### 其他容器用法示例
+
+```java
+// === StackPaneAnt：徽标覆盖头像 ===
+StackPaneAnt avatar = StackPaneAnt.create()
+    .align(Pos.TOP_RIGHT)
+    .children(avatarImage, badge);
+
+// === FlowPaneAnt：标签云自动换行 ===
+FlowPaneAnt tagCloud = FlowPaneAnt.create()
+    .hgap(8).vgap(8)
+    .children(tag1, tag2, tag3, tag4);
+
+// === ScrollPaneAnt：长内容滚动 ===
+ScrollPaneAnt scroll = ScrollPaneAnt.create()
+    .content(longContent)
+    .fitToWidth(true)
+    .vbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+// === SplitPaneAnt：IDE 风格分屏 ===
+SplitPaneAnt ide = SplitPaneAnt.create()
+    .direction(SplitPaneAnt.Direction.HORIZONTAL)
+    .items(sidebar, editor)
+    .dividerPositions(0.25);
+
+// === GridPaneAnt：简单网格（用 cell/row/column 链式 API）===
+GridPaneAnt form = GridPaneAnt.create()
+    .hgap(12).vgap(12)
+    .cell(new Label("用户名"), 0, 0).cell(usernameField, 1, 0)
+    .cell(new Label("邮箱"),   0, 1).cell(emailField,    1, 1);
+```
+
+#### `GridPaneAnt` 命名说明
+
+JavaFX `GridPane.add() / addRow() / addColumn()` 是 `void` 方法不能改返回类型，所以 `GridPaneAnt` 用了语义化新名做链式：
+
+| GridPaneAnt 链式名 | 等价 GridPane 父方法 | 说明 |
+|---|---|---|
+| `cell(node, col, row)` | `add(node, col, row)` | 在指定位置放节点 |
+| `cell(node, col, row, colSpan, rowSpan)` | `add(node, col, row, colSpan, rowSpan)` | 跨行跨列 |
+| `row(rowIndex, ...nodes)` | `addRow(rowIndex, ...)` | 一行多节点 |
+| `column(colIndex, ...nodes)` | `addColumn(colIndex, ...)` | 一列多节点 |
+
+需要响应式 24 栅格用 **`GridAnt`**（带 xs/sm/md/lg 断点的独立组件，非 GridPaneAnt）。
+
+#### `ScrollPaneAnt` vs `ScrollContainerAnt`
+
+两者共存，按场景选：
+
+- **ScrollPaneAnt** —— 裸 ScrollPane 双工厂，可继承，内容直接放
+- **ScrollContainerAnt** —— Builder 模式，自动包 viewport 便于 padding 控制
+
+简单滚动用 `ScrollPaneAnt`；需要 viewport 内边距用 `ScrollContainerAnt`。
+
+---
+
+## 5 分钟快速入手示例
+
+> **目标读者**：刚拿到 JFXium，想快速做出"能跑的业务页"的开发者。
+>
+> 5 个示例覆盖业务最高频场景。**每个都是完整可运行的 Java 类**——拷进项目改改字段就能用。
+>
+> 阅读建议：先看完每个示例的「场景描述」+「完整代码」+「关键说明」，再回到上面章节深挖具体组件。
+
+---
+
+### 示例 1：登录页（图片 + 名字 / 输入区 / 按钮组）
+
+**场景描述**：标准应用登录页——顶部 logo + 应用名 + 副标题，中间用户名/密码表单，底部主登录按钮 + 「忘记密码」「立即注册」链接。
+
+**完整代码**：
+
+```java
+package com.myapp;
+
+import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import org.openkawu.jfxium.component.AvatarAnt;
+import org.openkawu.jfxium.component.ButtonAnt;
+import org.openkawu.jfxium.component.FormAnt;
+import org.openkawu.jfxium.component.InputAnt;
+import org.openkawu.jfxium.component.TypographyAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
+import org.openkawu.jfxium.component.layout.VBoxAnt;
+import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.theme.LightTheme;
+import org.openkawu.jfxium.core.theme.ThemeManager;
+import org.openkawu.jfxium.core.util.WindowManager;
+
+public class LoginDemo extends Application {
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.close();   // 不用 primary stage，登录用自己的
+
+        // === 1. 输入控件 ===
+        TextField user = InputAnt.create().placeholder("用户名").build();
+
+        PasswordField pwd = new PasswordField();
+        pwd.setPromptText("密码");
+        pwd.getStyleClass().add("text-field");      // 让 PasswordField 用项目主题样式
+
+        // === 2. 主登录按钮（占满宽度） ===
+        Button login = ButtonAnt.create("登 录")
+                .type(ButtonAnt.Type.PRIMARY)
+                .block()                            // ⭐ block 一行替代 setMaxWidth(MAX) + Hgrow
+                .onClick(e -> doLogin(user.getText(), pwd.getText()))
+                .build();
+
+        // === 3. 次操作链接（左右两端 —— HBoxAnt + Region spacer 拼） ===
+        Hyperlink forgot = new Hyperlink("忘记密码？");
+        Hyperlink register = new Hyperlink("立即注册");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        spacer.setMaxWidth(Double.MAX_VALUE);
+
+        HBoxAnt linkRow = HBoxAnt.create()
+                .align(Pos.CENTER_LEFT)
+                .children(forgot, spacer, register);
+
+        // === 4. 表单本体 ===
+        // 注意：FormAnt.footer 只接 1 个节点 + 写死 CENTER_RIGHT，
+        // 想要"主按钮 + 次操作两排"必须用 VBoxAnt 包一层
+        VBox form = FormAnt.create()
+                .layout(FormAnt.Layout.VERTICAL)
+                .item("用户名", user, true)
+                .item("密码", pwd, true)
+                .footer(VBoxAnt.create().spacing(12).children(login, linkRow))
+                .build();
+
+        // === 5. 顶部 banner（用 AvatarAnt 当 logo + TypographyAnt 出标题/副标题） ===
+        // ⭐ AvatarAnt + TypographyAnt 替代手写 StackPane + 4 行 setStyle
+        Region logo = AvatarAnt.create()
+                .icon("📊")                         // emoji 图标，或换 IconAnt.path(...)
+                .size(56)
+                .shape(AvatarAnt.Shape.SQUARE)      // 方形 + 圆角（圆角由主题 LESS 决定）
+                .build();
+
+        Label brand = TypographyAnt.title("My App", 3).build();    // h3 = 24px 粗体
+        Label subtitle = TypographyAnt.text("欢迎登录")
+                .type(TypographyAnt.Type.SECONDARY)                 // 次要文字色（自动跟随主题）
+                .build();
+
+        // === 6. 整体组装（VBoxAnt 一行链式） ===
+        VBoxAnt loginCard = VBoxAnt.create()
+                .spacing(20)
+                .padding(40, 32, 32, 32)
+                .align(Pos.CENTER)
+                .background(Background.DEFAULT)     // 白底卡片
+                .children(logo, brand, subtitle, form);
+
+        // === 7. Scene + 主题 + Stage ===
+        Stage stage = new Stage();
+        Scene scene = new Scene(loginCard, 400, 520);
+        ThemeManager.getInstance().applyTheme(new LightTheme());
+        ThemeManager.getInstance().registerScene(scene);
+
+        stage.setScene(scene);
+        stage.setTitle("登录");
+        stage.setResizable(false);
+        stage.centerOnScreen();
+        WindowManager.getDefault().register(stage);   // 自动加图标 + 关闭时清理
+        stage.show();
+    }
+
+    private void doLogin(String username, String password) {
+        // 业务实现：调用 auth 服务，成功后打开主窗口
+        System.out.println("登录: " + username);
+    }
+
+    public static void main(String[] args) { launch(args); }
+}
+```
+
+**关键说明**：
+
+| 设计点 | 说明 |
+|---|---|
+| `AvatarAnt.create().icon("📊").size(56).shape(SQUARE)` | ⭐ 1 行替代手写 StackPane + 4 行 setStyle 的"圆角 logo 盒" |
+| `TypographyAnt.title("My App", 3)` | ⭐ 1 行出 24px 粗体（替代 setStyle("-fx-font-size: 22px;...")）|
+| `TypographyAnt.text("欢迎登录").type(SECONDARY)` | ⭐ 副标题色自动跟随主题（替代 setStyle("-color-fg-muted")）|
+| `ButtonAnt.create(...).block()` | ⭐ block 替代 setMaxWidth(MAX) + Hgrow（占满父宽度）|
+| `VBoxAnt.create()...children(...)` | ⭐ 链式构建，没有任何 setStyle |
+| `pwd.getStyleClass().add("text-field")` | InputAnt 当前没有 password 模式开关，用 PasswordField + styleClass 让样式跟普通输入框一致 |
+| `WindowManager.getDefault().register(stage)` | 自动加应用图标 + 窗口关闭时清理引用 |
+
+
+---
+
+### 示例 2：admin 列表页（topbar 筛选 + Table + 底部分页）
+
+**场景描述**：admin 后台最常见的"用户管理 / 订单列表"页 —— 顶部搜索/筛选/操作按钮、中间表格、底部分页 + 总条数。
+
+**完整代码**：
+
+```java
+package com.myapp;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import org.openkawu.jfxium.component.*;
+import org.openkawu.jfxium.template.CrudTemplate;
+
+public class UserListView {
+
+    public record User(int id, String name, String email, String role) {}
+
+    public Node build() {
+        // === 1. 数据 ===
+        ObservableList<User> data = FXCollections.observableArrayList(
+                new User(1, "张三", "zhangsan@example.com", "管理员"),
+                new User(2, "李四", "lisi@example.com",     "用户"),
+                new User(3, "王五", "wangwu@example.com",   "用户")
+        );
+
+        // === 2. Table ===
+        TableView<User> table = TableAnt.<User>create()
+                .data(data)
+                .column("用户名", User::name)
+                .column("邮箱", User::email)
+                .column("角色", User::role)
+                .build();
+
+        // === 3. 顶部 topbar：左侧筛选 + 右侧操作 ===
+        TextField search = InputAnt.create().placeholder("搜索用户").build();
+
+        ComboBox<String> roleCombo = ComboBoxAnt.<String>create()
+                .options("全部", "管理员", "用户")
+                .build();
+
+        Button refreshBtn = ButtonAnt.create("刷新")
+                .onClick(e -> reloadData(data))
+                .build();
+
+        Button addBtn = ButtonAnt.create("新增")
+                .type(ButtonAnt.Type.PRIMARY)
+                .onClick(e -> openAddDialog())
+                .build();
+
+        // === 4. 底部分页 + 总条数 ===
+        Pagination pagination = PaginationAnt.create()
+                .total(57)
+                .pageSize(10)
+                .onChange(page -> loadPage(data, page))
+                .build();
+
+        Label totalLabel = new Label("共 " + data.size() + " 条");
+
+        // === 5. CrudTemplate 一行拼装 ===
+        return CrudTemplate.create()
+                .title("用户管理")
+                .topLeft(search, roleCombo)              // 左：筛选
+                .topRight(refreshBtn, addBtn)            // 右：操作
+                .body(table)                             // 中：表格
+                .bottomLeft(totalLabel)                  // 左：总条数
+                .bottomRight(pagination)                 // 右：分页
+                .build();
+    }
+
+    private void reloadData(ObservableList<User> data) { /* 刷新逻辑 */ }
+    private void openAddDialog() { /* 打开新增对话框 */ }
+    private void loadPage(ObservableList<User> data, int page) { /* 翻页 */ }
+}
+```
+
+**关键说明**：
+
+| 设计点 | 说明 |
+|---|---|
+| `CrudTemplate` | 适用 admin 后台 90% 的"上工具栏 + 中间内容 + 下分页"形态——不只是 CRUD，表单页/详情页也能用 |
+| `topLeft / topRight` 各接变长 Node | 任意数量节点都能放 |
+| `body(table)` | 中间区是 Node，可以是 Table / Form / Detail / 任何东西 |
+| `record User` | 用 Java 16+ record 做数据类，少写 getter/equals/hashCode |
+| `ComboBoxAnt.<String>create()` | 泛型容器组件用 `.<Type>create()` 写法 |
+
+---
+
+### 示例 3：表单提交（带校验 + Loading）
+
+**场景描述**：典型业务表单——用户编辑/创建场景。带必填校验、邮箱格式校验、提交时按钮变 Loading 状态。
+
+**完整代码**：
+
+```java
+package com.myapp;
+
+import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.component.*;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
+import org.openkawu.jfxium.core.form.FormContext;
+import org.openkawu.jfxium.core.form.Rule;
+
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+public class UserEditForm {
+
+    public Node build() {
+        // === 1. 输入控件 ===
+        TextField name = InputAnt.create().placeholder("姓名").build();
+        TextField email = InputAnt.create().placeholder("name@example.com").build();
+        ComboBox<String> role = ComboBoxAnt.<String>create()
+                .options("管理员", "用户", "访客")
+                .build();
+
+        // === 2. 操作按钮 ===
+        Button submit = ButtonAnt.create("提交")
+                .type(ButtonAnt.Type.PRIMARY)
+                .build();
+        Button cancel = ButtonAnt.create("取消").build();
+
+        // === 3. FormAnt 主体 + 校验规则 + footer 按钮组 ===
+        // buildResult() 返回 Result（含 FormContext 用于 validate / getValues）
+        FormAnt.Result result = FormAnt.create()
+                .layout(FormAnt.Layout.HORIZONTAL)
+                .item("姓名", name, "name")
+                    .required()
+                    .rule(Rule.minLength(2))
+                    .end()
+                .item("邮箱", email, "email")
+                    .required()
+                    .rule(Rule.email())
+                    .end()
+                .item("角色", role, "role")
+                    .required()
+                    .end()
+                .footer(HBoxAnt.create()
+                        .spacing(8)
+                        .align(Pos.CENTER_RIGHT)
+                        .children(cancel, submit))
+                .buildResult();
+
+        VBox form = result.getRoot();
+
+        // === 4. 提交逻辑 ===
+        submit.setOnAction(e -> {
+            if (!result.validate()) {
+                return;   // 校验失败 errorLabel 自动显示
+            }
+
+            Map<String, Object> values = result.getValues();
+
+            // 进入 Loading 状态
+            ButtonAnt.modify(submit).text("提交中...").disabled(true).apply();
+
+            // 异步保存
+            asyncSave(values).whenComplete((r, ex) -> Platform.runLater(() -> {
+                // 恢复按钮状态
+                ButtonAnt.modify(submit).text("提交").disabled(false).apply();
+
+                if (ex == null) {
+                    MessageAnt.success("保存成功");
+                } else {
+                    MessageAnt.error("保存失败：" + ex.getMessage());
+                }
+            }));
+        });
+
+        // === 5. 取消逻辑 ===
+        cancel.setOnAction(e -> {
+            result.context().clearErrors();   // 清空校验错误
+            // 实际场景关闭对话框 / 返回上一页
+        });
+
+        return form;
+    }
+
+    private CompletableFuture<Void> asyncSave(Map<String, Object> values) {
+        // 业务实现：调用后端 API
+        return CompletableFuture.completedFuture(null);
+    }
+}
+```
+
+**关键说明**：
+
+| 设计点 | 说明 |
+|---|---|
+| `.item("姓名", name, "name")` | 第三个参数是 field name（FormContext key），用于 validate / getValues |
+| `.required()` | 自动加 Rule.required() + 给 label 挂红 * |
+| `.rule(Rule.email())` | 链式加多个校验规则，错误消息自动显示在控件下方 |
+| `.end()` | 结束当前 item 配置，回到 Builder 链 |
+| `.buildResult()` | 返回 Result 而非 VBox——保留 FormContext 引用以便后续 validate / getValues |
+| `ButtonAnt.modify(submit).text(...).apply()` | 不重建按钮，直接改文字 + 禁用状态 |
+| `Platform.runLater(...)` | 异步任务回调在 worker 线程，UI 操作必须切回 FX Thread |
+
+---
+
+### 示例 4：业务页面继承式写法（extends VBoxAnt）
+
+**场景描述**：复杂业务页（首页 / 个人中心 / 数据概览）想做"页面骨架基类"，让 UI 构建写在构造函数里，跟 JavaFX 业界主流写法对齐。
+
+**完整代码**：
+
+```java
+package com.myapp.views;
+
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import org.openkawu.jfxium.component.IconAnt;
+import org.openkawu.jfxium.component.layout.VBoxAnt;
+import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.template.DashboardTemplate;
+import org.openkawu.jfxium.template.PageTemplate;
+
+/**
+ * 工作台首页 —— 直接 extends VBoxAnt 当作页面基类。
+ *
+ * <p>this 就是 VBoxAnt（继承自 VBox），可直接添加进任何容器：</p>
+ * <pre>{@code
+ *   container.getChildren().add(new HomeView("alice"));
+ * }</pre>
+ */
+public class HomeView extends VBoxAnt {
+
+    private final String currentUser;
+
+    public HomeView(String currentUser) {
+        this.currentUser = currentUser;
+
+        // 在构造函数里直接 build UI（this 就是 VBox）
+        spacing(0)
+                .background(Background.LAYOUT)
+                .children(
+                        PageTemplate.create()
+                                .title("欢迎回来，" + currentUser)
+                                .description("这里是你的工作台")
+                                .body(buildDashboard())
+                                .padding(24)
+                                .build()
+                );
+    }
+
+    private Node buildDashboard() {
+        return DashboardTemplate.create()
+                .stat(IconAnt.Path.USERS,    "总用户",   "1,234", "↑ 12.5%", true)
+                .stat(IconAnt.Path.FILE,     "今日订单", "89",    "↓ 3.2%",  false)
+                .stat(IconAnt.Path.CHART,    "月销售额", "¥125k", "↑ 8.4%",  true)
+                .stat(IconAnt.Path.DASHBOARD,"转化率",   "23.4%", "↑ 1.2%",  true)
+                .build();
+    }
+}
+```
+
+**用法**：
+
+```java
+// 在 AppShell content 区使用
+BorderPane mainShell = AppShellAnt.create()
+        .header(buildHeader())
+        .sider(buildSider())
+        .content(new HomeView(currentUser))   // ← 直接当 VBox 加
+        .build();
+```
+
+**关键说明**：
+
+| 设计点 | 说明 |
+|---|---|
+| `extends VBoxAnt` | this 就是 VBox，无需 `.getView()` 仪式 |
+| 构造函数里 build UI | JavaFX 业界主流写法，跟 *Ant 工厂风格统一 |
+| `spacing(0).background(...).children(...)` | 流式 API 可以在 this 上直接调用 |
+| **三类页面的边界**：| |
+| 路由内的页（首页/列表/详情）| `extends VBoxAnt / BorderPaneAnt` |
+| 独立窗口（登录/关于）| 不继承容器，持有 Stage 字段 |
+| 第二窗口（配置）| `extends BorderPaneAnt + 持有 Stage` |
+
+→ 详细规范见上面「[最佳实践 #6 页面骨架继承式写法](#6-页面骨架继承式写法m1936)」。
+
+---
+
+### 示例 5：跨窗口通信（EventBus）
+
+**场景描述**：登录窗口 → 主窗口 → 设置窗口的多 Stage 应用，需要让发布方/订阅方解耦——不直接互相调用，通过事件总线。
+
+**完整代码**：
+
+```java
+package com.myapp;
+
+import javafx.application.Platform;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+import org.openkawu.jfxium.core.util.EventBus;
+import org.openkawu.jfxium.core.util.EventBus.Subscription;
+
+import java.math.BigDecimal;
+
+// === 1. 定义事件（Java record，不要用基类） ===
+public class AppEvents {
+    public record UserLoggedIn(String username) {}
+    public record UserLoggedOut(String username) {}
+    public record SettingsChanged(String key, Object newValue) {}
+    public record OrderCreated(long orderId, BigDecimal amount) {}
+}
+
+// === 2. 主窗口订阅 ===
+public class MainShell {
+
+    private final Stage stage = new Stage();
+    private final Label welcomeLabel = new Label();
+
+    // 保存 Subscription 句柄用于关闭时取消
+    private Subscription loginSub;
+    private Subscription settingsSub;
+
+    public void show() {
+        // 订阅登录事件
+        loginSub = EventBus.getDefault().subscribe(
+                AppEvents.UserLoggedIn.class,
+                e -> Platform.runLater(() ->
+                        welcomeLabel.setText("欢迎，" + e.username()))
+        );
+
+        // 订阅设置变化
+        settingsSub = EventBus.getDefault().subscribe(
+                AppEvents.SettingsChanged.class,
+                e -> Platform.runLater(this::refreshTheme)
+        );
+
+        // 关闭时取消订阅，防内存泄漏
+        stage.setOnCloseRequest(e -> {
+            if (loginSub != null) loginSub.unsubscribe();
+            if (settingsSub != null) settingsSub.unsubscribe();
+        });
+
+        // ... 构建 UI 略 ...
+        stage.show();
+    }
+
+    private void refreshTheme() {
+        // 重新应用主题等
+    }
+}
+
+// === 3. 登录窗口发布 ===
+public class LoginView {
+    public void onLoginSuccess(String username) {
+        // 发布事件——发布方不知道有谁在订阅
+        EventBus.getDefault().publish(new AppEvents.UserLoggedIn(username));
+        // 关闭登录窗口、打开主窗口等
+    }
+}
+
+// === 4. 设置窗口发布 ===
+public class SettingsView {
+    public void onSave(String key, Object value) {
+        saveToFile(key, value);
+        EventBus.getDefault().publish(new AppEvents.SettingsChanged(key, value));
+    }
+
+    private void saveToFile(String key, Object value) { /* 保存到磁盘 */ }
+}
+
+// === 5. 后台任务（worker 线程也能 publish） ===
+public class OrderService {
+    public void createOrder(long orderId, BigDecimal amount) {
+        // 在 worker 线程
+        new Thread(() -> {
+            saveOrderToDb(orderId, amount);
+            // EventBus.publish 线程安全——任意线程都行
+            EventBus.getDefault().publish(new AppEvents.OrderCreated(orderId, amount));
+        }).start();
+    }
+
+    private void saveOrderToDb(long orderId, BigDecimal amount) { /* DB 写入 */ }
+}
+```
+
+**关键说明**：
+
+| 设计点 | 说明 |
+|---|---|
+| **用 record 定义事件** | 不可变 + 自动 equals/toString + 1 行定义；**框架不强制基类** |
+| `EventBus.getDefault()` | 默认全局实例；需要模块隔离时 `new EventBus()` |
+| `Subscription` 句柄 | 保存返回值用于后续 unsubscribe，否则 listener 持有外部引用导致 GC 失败 |
+| `Platform.runLater(...)` | EventBus 不自动派发到 FX Thread，UI listener 自己 runLater 切线程 |
+| 任意线程 `publish` | 内部用 ConcurrentHashMap + CopyOnWriteArrayList，线程安全 |
+| listener 异常隔离 | 单个 listener 抛错只记 WARNING，不影响其他订阅者派发 |
+
+**避免误用**：
+
+- ❌ 不要订阅父类期望收到所有子类事件 —— EventBus 是**精确类型匹配**
+- ❌ 不要忘记 unsubscribe —— listener 跟外部对象同生命周期会泄漏
+- ❌ 不要用 EventBus 做 RPC（请求-响应）—— 这是单向 PubSub，要请求-响应用 `CompletableFuture`
+
+详细设计契约见 `EventBus.java` 类 javadoc。
 
 ---
 

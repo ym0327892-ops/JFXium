@@ -62,8 +62,26 @@ public class SplitPaneBuilder {
         return this;
     }
 
+    /** 批量挂多个 styleClass（M19.35 新增变长重载，跟 *Ant 风格一致）。 */
+    public SplitPaneBuilder styleClass(String... classes) {
+        if (classes != null) {
+            for (String c : classes) {
+                if (c != null && !c.isEmpty()) this.styleClasses.add(c);
+            }
+        }
+        return this;
+    }
+
+    /** 设置背景层级（M19.35 集成 Background 体系）。 */
+    public SplitPaneBuilder background(org.openkawu.jfxium.core.css.Background bg) {
+        if (bg != null) this.styleClasses.add(bg.styleClass());
+        return this;
+    }
+
     public SplitPane build() {
-        SplitPane pane = new SplitPane();
+        // M19.36 委托 SplitPaneAnt（已重构为双工厂模式）
+        org.openkawu.jfxium.component.layout.SplitPaneAnt pane =
+                new org.openkawu.jfxium.component.layout.SplitPaneAnt();
         pane.setOrientation(orientation);
         pane.getItems().addAll(items);
         if (dividerPositions != null && dividerPositions.length > 0) {

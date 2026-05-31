@@ -42,6 +42,8 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
+
+
     </dependencies>
 
     <build>
@@ -164,6 +166,21 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>compile-less-themes-mui-dark</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npx</executable>
+                            <arguments>
+                                <argument>lessc</argument>
+                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-mui-dark.less</argument>
+                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-mui-dark.css</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>compile-less-themes-mui-dark-compact</id>
                         <phase>generate-resources</phase>
                         <goals>
@@ -175,6 +192,36 @@
                                 <argument>lessc</argument>
                                 <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-mui-dark-compact.less</argument>
                                 <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-mui-dark-compact.css</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-less-themes-light-compact</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npx</executable>
+                            <arguments>
+                                <argument>lessc</argument>
+                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-light-compact.less</argument>
+                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-light-compact.css</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-less-themes-dark-compact</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npx</executable>
+                            <arguments>
+                                <argument>lessc</argument>
+                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-dark-compact.less</argument>
+                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-dark-compact.css</argument>
                             </arguments>
                         </configuration>
                     </execution>

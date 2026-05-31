@@ -79,8 +79,26 @@ public class BorderPaneBuilder {
         return this;
     }
 
+    /** 批量挂多个 styleClass（M19.35 新增变长重载，跟 *Ant 风格一致）。 */
+    public BorderPaneBuilder styleClass(String... classes) {
+        if (classes != null) {
+            for (String c : classes) {
+                if (c != null && !c.isEmpty()) this.styleClasses.add(c);
+            }
+        }
+        return this;
+    }
+
+    /** 设置背景层级（M19.35 集成 Background 体系）。 */
+    public BorderPaneBuilder background(org.openkawu.jfxium.core.css.Background bg) {
+        if (bg != null) this.styleClasses.add(bg.styleClass());
+        return this;
+    }
+
     public BorderPane build() {
-        BorderPane pane = new BorderPane();
+        // M19.36 委托 BorderPaneAnt：共享创建逻辑 + 让旧 Builder 产物也是 BorderPaneAnt（向上兼容 BorderPane）
+        org.openkawu.jfxium.component.layout.BorderPaneAnt pane =
+                new org.openkawu.jfxium.component.layout.BorderPaneAnt();
         if (top != null) pane.setTop(top);
         if (right != null) pane.setRight(right);
         if (bottom != null) pane.setBottom(bottom);

@@ -64,6 +64,7 @@ public class DropdownAnt {
         private Node trigger;
         private List<MenuItem> items = new ArrayList<>();
         private Consumer<String> onSelect = null;
+        private Consumer<MenuItem> onSelectItem = null;
         private boolean disabled = false;
         private String placement = "bottomLeft";
 
@@ -99,6 +100,21 @@ public class DropdownAnt {
 
         public Builder onSelect(Consumer<String> onSelect) {
             this.onSelect = onSelect;
+            return this;
+        }
+
+        /**
+         * 选中回调（完整菜单项）。
+         *
+         * <p>修复 BUG #54：原 {@link #onSelect(Consumer)} 只回传 item 的 key，
+         * 调用方拿不到 label / icon，要显示「用户看得懂的文案」就得自己维护一份 key→label 映射。
+         * 本回调直接回传整个 {@link MenuItem} 对象，可同时取 {@code getKey()} / {@code getLabel()}，
+         * 与 TreeSelectAnt.onSelect(TreeNode) 的「回传完整对象」契约保持一致。</p>
+         *
+         * <p>两个回调可同时设置，点击时都会触发（onSelect 先、onSelectItem 后）。</p>
+         */
+        public Builder onSelectItem(Consumer<MenuItem> onSelectItem) {
+            this.onSelectItem = onSelectItem;
             return this;
         }
 
@@ -164,8 +180,12 @@ public class DropdownAnt {
                     // 点击回调；hover 视觉由 LESS .jfx-popup-menu-item:hover 控制
                     menuItem.setOnMouseClicked(e -> {
                         popup.hide();
+                        // 先回传 key（向下兼容），再回传完整 MenuItem（BUG #54：可取 label）
                         if (config.onSelect != null) {
                             config.onSelect.accept(item.getKey());
+                        }
+                        if (config.onSelectItem != null) {
+                            config.onSelectItem.accept(item);
                         }
                     });
                 }

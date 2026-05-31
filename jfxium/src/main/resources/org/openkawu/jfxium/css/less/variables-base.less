@@ -70,33 +70,55 @@
 // ============================================
 // Component Padding Variables
 // ============================================
-// 所有组件 padding 均使用以下变量，保持全局一致
-// 紧凑模式只需修改上方基础变量，此处自动生效
+// 控件内边距 = 显式值（对齐 Ant Design），与通用 @spacing-* 解耦。
+//
+// 为什么解耦？
+//   控件高度由 padding 决定（JavaFX 无 box-sizing，height = 2*padding-y + 文字高 + 2*border）。
+//   Ant Design 的控件 padding 不是简单跟随间距梯度，而是为了凑出 controlHeight（32/24/40）反推出来的。
+//   若用 @spacing-sm(8) 当 btn-padding-y，按钮会高达 ~37px（应为 32）。故此处用显式 Ant 值。
+//
+// 紧凑模式（theme-*-compact.less）覆盖下面这些 @ctrl-padding-* 即可，不动 @spacing-*。
+//
+// Ant Design 控件高度目标：default 32 / small 24 / large 40（compact: 28/20/36）
+// 推导（font 14, JavaFX 文字高 ~19, border 1×2）：padding-y ≈ (目标高 - 19 - 2) / 2
 // --------------------------------------------
 
-// Button Padding
+// 控件垂直/水平 padding（Button / Input / ComboBox / DatePicker 等共用基准）
+// default: 高 32 → y=6, x=15（JavaFX 14px 文字实测 ~18px 高，比 web 矮，padding 需补到 6 凑 32）
+@ctrl-padding-y: 6px;
+@ctrl-padding-x: 15px;
+// small: 高 24 → y=2, x=7
+@ctrl-padding-y-sm: 2px;
+@ctrl-padding-x-sm: 7px;
+// large: 高 40 → y=9, x=15（large 字号更大，靠字号撑高）
+@ctrl-padding-y-lg: 9px;
+@ctrl-padding-x-lg: 15px;
+
+// Button Padding（指向控件基准 padding）
 // 使用位置：.button（所有按钮）、.menu-button、.split-menu-button
 // 影响组件：ButtonAnt、MenuButton、SplitMenuButton
-@btn-padding-y: @spacing-sm;
-@btn-padding-x: @spacing-lg;
-@btn-padding-y-sm: @spacing-xs;
-@btn-padding-x-sm: @spacing-sm;
-@btn-padding-y-lg: @spacing-md;
-@btn-padding-x-lg: @spacing-xl;
+@btn-padding-y: @ctrl-padding-y;
+@btn-padding-x: @ctrl-padding-x;
+@btn-padding-y-sm: @ctrl-padding-y-sm;
+@btn-padding-x-sm: @ctrl-padding-x-sm;
+@btn-padding-y-lg: @ctrl-padding-y-lg;
+@btn-padding-x-lg: @ctrl-padding-x-lg;
 
-// Input Padding
+// Input Padding（指向控件基准 padding；Ant Input 水平 padding 比 Button 略小：11 vs 15）
 // 使用位置：.text-field、.text-area、.password-field、.combo-box、.date-picker、.color-picker、.choice-box、.spinner
 // 影响组件：InputAnt、TextAreaAnt、ComboBoxAnt、DatePickerAnt、ColorPickerAnt、ChoiceBoxAnt、SpinnerAnt
-@input-padding-y: @spacing-sm;
-@input-padding-x: @spacing-md;
-@input-padding-y-sm: @spacing-xs;
-@input-padding-x-sm: @spacing-sm;
-@input-padding-y-lg: @spacing-md;
-@input-padding-x-lg: @spacing-lg;
+@input-padding-y: @ctrl-padding-y;
+@input-padding-x: 11px;
+@input-padding-y-sm: @ctrl-padding-y-sm;
+@input-padding-x-sm: 7px;
+@input-padding-y-lg: @ctrl-padding-y-lg;
+@input-padding-x-lg: 11px;
 
 // Card Padding
 // 使用位置：.card
 // 影响组件：CardAnt
+// 注：Ant Design 官方 Card body padding 默认 24，但桌面 admin 信息密度高，
+//     本项目取 16（紧凑派生 8）——这是 Card 唯一偏离 Ant 标准的地方（用户拍板 M19.41）
 @card-padding: @spacing-lg;
 
 // Table Cell Padding
@@ -222,7 +244,7 @@
 // 使用位置：.button（所有按钮变体）
 .button-base() {
   -fx-background-radius: @border-radius-md;
-  -fx-text-fill: @color-fg-default;
+  -fx-text-fill: -color-fg-default;
   -fx-padding: @btn-padding-y @btn-padding-x;
   -fx-cursor: hand;
   -fx-font-weight: 500;

@@ -60,6 +60,31 @@ public class ToggleButtonAnt {
         return new Builder("");
     }
 
+    /**
+     * 创建一个「必选」互斥组（M19.42 #9）—— 至少有一个按钮保持选中，用户无法把当前选中项点成「全不选」。
+     *
+     * <p>JavaFX 原生 {@link ToggleGroup} 允许点击已选中项使其取消，导致「全不选」状态。
+     * admin 的视图切换器（列表/卡片/表格）等场景要求「永远选中一个」，本方法挂一个监听器：
+     * 当用户试图取消最后一个选中项时，自动把它选回去。</p>
+     *
+     * <pre>{@code
+     * ToggleGroup viewGroup = ToggleButtonAnt.mandatoryGroup();
+     * ToggleButtonAnt.create("列表").toggleGroup(viewGroup).selected(true).build();
+     * ToggleButtonAnt.create("卡片").toggleGroup(viewGroup).build();
+     * // 点击当前选中项不会取消，必须切到另一个
+     * }</pre>
+     */
+    public static ToggleGroup mandatoryGroup() {
+        ToggleGroup group = new ToggleGroup();
+        group.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            // newToggle == null 说明用户把唯一选中项点掉了 → 选回旧的，保证永远有一个选中
+            if (newToggle == null && oldToggle != null) {
+                javafx.application.Platform.runLater(() -> group.selectToggle(oldToggle));
+            }
+        });
+        return group;
+    }
+
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private final String text;
         private Size size = Size.DEFAULT;

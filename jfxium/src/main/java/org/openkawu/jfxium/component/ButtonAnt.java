@@ -10,9 +10,6 @@ import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * JFXium 按钮组件 - 对标 Ant Design Button
  *
@@ -47,6 +44,10 @@ import java.util.List;
  *     .type(ButtonAnt.Type.PRIMARY)
  *     .loading(true)
  *     .build();
+ *
+ * // 再编辑（响应式切换）
+ * Button save = ButtonAnt.create("保存").build();
+ * ButtonAnt.modify(save).type(Type.DANGER).shape(Shape.ROUNDED).ghost(true).apply();
  * }</pre>
  */
 public class ButtonAnt {
@@ -70,6 +71,21 @@ public class ButtonAnt {
         LARGE
     }
 
+    /**
+     * 按钮形状（M19.29 引入枚举，让 ModifyBuilder 也能用一个值切形状）。
+     *
+     * <p>Builder 仍然提供 {@code rounded() / square()} 流式糖（向后兼容），
+     * 内部都映射到此枚举。</p>
+     */
+    public enum Shape {
+        /** 默认形状（无 shape 类，跟随主题默认圆角）。 */
+        DEFAULT,
+        /** 全圆角（pill 形状）。 */
+        ROUNDED,
+        /** 直角方形。 */
+        SQUARE
+    }
+
     public static Builder create(String text) {
         return new Builder(text);
     }
@@ -79,38 +95,53 @@ public class ButtonAnt {
     }
 
     /**
-     * 运行时切换已构建按钮的 type（M19.26）。
+     * 再编辑已构建的 Button（M19.27 modify+apply 模式，M19.29 扩展 shape/ghost 暴露面）。
      *
-     * <p>注意：build() 之后 Builder 已不可达；想动态切色（比如「保存」按钮在「未修改/已修改」之间切换），
-     * 用此静态方法即可。内部清掉旧 type 的 styleClass 再挂新 type 的 styleClass。</p>
+     * <p>{@code create().build()} 之后 Builder 已不可达，但用户拿到的是原生 {@link Button}，
+     * 之后想动态切类型 / 尺寸 / 形状 / ghost / 文字 等都通过 {@code modify(btn).xxx(...).apply()} 完成。
+     * apply() 返回**原 Button**（不是新对象），便于链式继续用。</p>
      *
      * <pre>{@code
      * Button save = ButtonAnt.create("保存").type(Type.DEFAULT).build();
      *
-     * // 用户改了表单 → 保存按钮变主题色提醒
+     * // 表单 dirty → 切主题色提醒
      * editor.dirtyProperty().addListener((obs, ov, nv) ->
-     *     ButtonAnt.changeType(save, nv ? Type.PRIMARY : Type.DEFAULT));
+     *     ButtonAnt.modify(save).type(nv ? Type.PRIMARY : Type.DEFAULT).apply());
+     *
+     * // 异步加载 → 同时改文字 + 禁用
+     * ButtonAnt.modify(save).text("保存中...").disabled(true).apply();
+     *
+     * // 切形状 + ghost 风格
+     * ButtonAnt.modify(save).shape(Shape.ROUNDED).ghost(true).apply();
      * }</pre>
      *
-     * @param button 已通过 {@link #create()} 构建的按钮
-     * @param newType 目标类型；null 视为 {@link Type#DEFAULT}
+     * @param button 已通过 {@link #create()} 构建的按钮，不能为 null
+     * @return 用于链式修改的 ModifyBuilder
      */
-    public static void changeType(Button button, Type newType) {
-        if (button == null) return;
-        if (newType == null) newType = Type.DEFAULT;
-        // 清掉所有 type 相关 styleClass（保留 size / shape / ghost / 用户自定义类）
-        button.getStyleClass().removeAll(
-                CssClasses.BUTTON_DEFAULT,
-                CssClasses.BUTTON_PRIMARY,
-                CssClasses.BUTTON_ACCENT,
-                CssClasses.BUTTON_OUTLINED,
-                CssClasses.BUTTON_DASHED,
-                CssClasses.BUTTON_TEXT,
-                CssClasses.BUTTON_LINK,
-                "success", "warning", "danger"
-        );
-        // 重新挂上新 type 的 styleClass（与 Builder.build() 保持一致）
-        switch (newType) {
+    public static ModifyBuilder modify(Button button) {
+        if (button == null) {
+            throw new NullPointerException("button 不能为 null");
+        }
+        return new ModifyBuilder(button);
+    }
+
+    // ============================================================
+    // 共享渲染原语（M19.29 抽取）
+    // ============================================================
+    // 设计契约：
+    //   1. 每个方法做完整的「先清旧 + 按需挂新」，对全新 Button 而言 remove 是 no-op，无副作用
+    //   2. 命名统一 applyXxxStyleClasses(Button, Xxx)，Builder.build() 与 ModifyBuilder.apply() 共用
+    //   3. 内部不假设 button 的初始状态（可能是新建的、也可能挂着旧 styleClass）
+    // ============================================================
+
+    /**
+     * 应用 type 对应的 styleClass。
+     *
+     * <p>调用前内部已先清掉所有可能残留的 type styleClass，调用方无需自己 remove。</p>
+     */
+    static void applyTypeStyleClasses(Button button, Type type) {
+        removeTypeStyleClasses(button);
+        switch (type) {
             case PRIMARY, ACCENT -> button.getStyleClass().add(CssClasses.BUTTON_ACCENT);
             case SUCCESS -> button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "success");
             case WARNING -> button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "warning");
@@ -119,7 +150,54 @@ public class ButtonAnt {
             case DASHED -> button.getStyleClass().add(CssClasses.BUTTON_DASHED);
             case TEXT -> button.getStyleClass().add(CssClasses.BUTTON_TEXT);
             case LINK -> button.getStyleClass().add(CssClasses.BUTTON_LINK);
+            case DEFAULT -> button.getStyleClass().add(CssClasses.BUTTON_DEFAULT);
             default -> button.getStyleClass().add(CssClasses.BUTTON_DEFAULT);
+        }
+    }
+
+    /** 移除所有 type 相关 styleClass（保留 size / shape / ghost / 用户自定义类）。 */
+    static void removeTypeStyleClasses(Button button) {
+        button.getStyleClass().removeAll(
+                CssClasses.BUTTON_DEFAULT,
+                CssClasses.BUTTON_ACCENT,
+                CssClasses.BUTTON_OUTLINED,
+                CssClasses.BUTTON_DASHED,
+                CssClasses.BUTTON_TEXT,
+                CssClasses.BUTTON_LINK,
+                "success", "warning", "danger"
+        );
+    }
+
+    /** 应用 size styleClass：先清掉 small/large，再按需挂上（DEFAULT 仅清不挂）。 */
+    static void applySizeStyleClasses(Button button, Size size) {
+        button.getStyleClass().removeAll(CssClasses.SIZE_SMALL, CssClasses.SIZE_LARGE);
+        if (size == Size.SMALL) {
+            button.getStyleClass().add(CssClasses.SIZE_SMALL);
+        } else if (size == Size.LARGE) {
+            button.getStyleClass().add(CssClasses.SIZE_LARGE);
+        }
+        // Size.DEFAULT：仅清掉，不补任何 styleClass
+    }
+
+    /** 应用 shape styleClass：先清掉 rounded/square，再按需挂上（DEFAULT 仅清不挂）。 */
+    static void applyShapeStyleClasses(Button button, Shape shape) {
+        button.getStyleClass().removeAll(CssClasses.SHAPE_ROUNDED, CssClasses.SHAPE_SQUARE);
+        if (shape == Shape.ROUNDED) {
+            button.getStyleClass().add(CssClasses.SHAPE_ROUNDED);
+        } else if (shape == Shape.SQUARE) {
+            button.getStyleClass().add(CssClasses.SHAPE_SQUARE);
+        }
+        // Shape.DEFAULT：仅清掉，不补任何 styleClass
+    }
+
+    /** 应用 ghost styleClass：true 挂上、false 移除，幂等。 */
+    static void applyGhostStyleClass(Button button, boolean ghost) {
+        if (ghost) {
+            if (!button.getStyleClass().contains(CssClasses.BUTTON_GHOST)) {
+                button.getStyleClass().add(CssClasses.BUTTON_GHOST);
+            }
+        } else {
+            button.getStyleClass().remove(CssClasses.BUTTON_GHOST);
         }
     }
 
@@ -127,8 +205,7 @@ public class ButtonAnt {
         private final String text;
         private Type type = Type.DEFAULT;
         private Size size = Size.DEFAULT;
-        private boolean rounded = false;
-        private boolean square = false;
+        private Shape shape = Shape.DEFAULT;
         private boolean disabled = false;
         private boolean loading = false;
         private boolean ghost = false;
@@ -152,15 +229,19 @@ public class ButtonAnt {
             return this;
         }
 
+        /** 设置形状（M19.29 引入，与 {@link #rounded()} / {@link #square()} 三选一）。 */
+        public Builder shape(Shape shape) {
+            this.shape = shape;
+            return this;
+        }
+
         public Builder rounded() {
-            this.rounded = true;
-            this.square = false;
+            this.shape = Shape.ROUNDED;
             return this;
         }
 
         public Builder square() {
-            this.square = true;
-            this.rounded = false;
+            this.shape = Shape.SQUARE;
             return this;
         }
 
@@ -223,79 +304,20 @@ public class ButtonAnt {
         public Button build() {
             Button button = new Button(text);
 
-            // Button type
-            switch (type) {
-                case PRIMARY:
-                case ACCENT:
-                    button.getStyleClass().add(CssClasses.BUTTON_ACCENT);
-                    break;
-                case SUCCESS:
-                    button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "success");
-                    break;
-                case WARNING:
-                    button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "warning");
-                    break;
-                case DANGER:
-                    button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "danger");
-                    break;
-                case OUTLINED:
-                    button.getStyleClass().add(CssClasses.BUTTON_OUTLINED);
-                    break;
-                case DASHED:
-                    button.getStyleClass().add(CssClasses.BUTTON_DASHED);
-                    break;
-                case TEXT:
-                    button.getStyleClass().add(CssClasses.BUTTON_TEXT);
-                    break;
-                case LINK:
-                    button.getStyleClass().add(CssClasses.BUTTON_LINK);
-                    break;
-                case DEFAULT:
-                default:
-                    button.getStyleClass().add(CssClasses.BUTTON_DEFAULT);
-                    break;
-            }
+            // styleClass 渲染：100% 走共享原语，与 ModifyBuilder.apply() 完全同步
+            applyTypeStyleClasses(button, type);
+            applySizeStyleClasses(button, size);
+            applyShapeStyleClasses(button, shape);
+            applyGhostStyleClass(button, ghost);
 
-            // Button size
-            if (size == Size.SMALL) {
-                button.getStyleClass().add(CssClasses.SIZE_SMALL);
-            } else if (size == Size.LARGE) {
-                button.getStyleClass().add(CssClasses.SIZE_LARGE);
-            }
-
-            // Button shape
-            if (rounded) {
-                button.getStyleClass().add(CssClasses.SHAPE_ROUNDED);
-            } else if (square) {
-                button.getStyleClass().add(CssClasses.SHAPE_SQUARE);
-            }
-
-            // Ghost button - 背景透明，边框/文字使用主题色
-            if (ghost) {
-                button.getStyleClass().add("ghost");
-                String ghostStyle = "-fx-background-color: transparent; -fx-border-width: 1px;";
-                if (type == Type.PRIMARY || type == Type.ACCENT) {
-                    ghostStyle += " -fx-border-color: -color-accent-emphasis; -fx-text-fill: -color-accent-emphasis;";
-                } else if (type == Type.DANGER) {
-                    ghostStyle += " -fx-border-color: -color-danger-emphasis; -fx-text-fill: -color-danger-emphasis;";
-                } else if (type == Type.SUCCESS) {
-                    ghostStyle += " -fx-border-color: -color-success-emphasis; -fx-text-fill: -color-success-emphasis;";
-                } else if (type == Type.WARNING) {
-                    ghostStyle += " -fx-border-color: -color-warning-emphasis; -fx-text-fill: -color-warning-emphasis;";
-                } else {
-                    ghostStyle += " -fx-border-color: -color-fg-default; -fx-text-fill: -color-fg-default;";
-                }
-                button.setStyle(button.getStyle() != null ? button.getStyle() + ghostStyle : ghostStyle);
-            }
-
-            // Block button - 宽度占满父容器
+            // Block button - 宽度占满父容器（layout hint，非 styleClass）
             if (block) {
                 button.setMaxWidth(Double.MAX_VALUE);
                 HBox.setHgrow(button, Priority.ALWAYS);
             }
 
             // 用户 style/styleClass：通过 AbstractStyleBuilder 的 applyStyles 应用，
-            // 在内置 styleClass 和 ghost inline style 之后，便于用户覆盖
+            // 在内置 styleClass 之后，便于用户覆盖
             applyStyles(button);
 
             // Icon handling
@@ -323,6 +345,114 @@ public class ButtonAnt {
 
             // Note: Enter/Space key activation is handled by JavaFX Button natively
 
+            return button;
+        }
+    }
+
+    /**
+     * 已构建 Button 的再编辑入口（M19.27 引入，M19.29 扩展 shape/ghost 暴露面）。
+     *
+     * <p>设计原则：
+     * <ul>
+     *   <li>暴露「可逆 / 可重设」的属性：type / size / shape / ghost / text / disabled / loading；
+     *       不暴露 onClick / icon / block / loadingIcon 等"一次性配置"——那些用原生 setter 即可
+     *       （{@code btn.setOnAction(...)}），不需要框架包装。</li>
+     *   <li>{@link #apply()} 返回**原 Button 实例**（不是新对象），避免误用陷阱。</li>
+     *   <li>未调用的属性保持原值（不会清掉用户的 size/shape/ghost）—— sentinel 模式。</li>
+     *   <li>视觉渲染 100% 走与 {@link Builder#build()} 共享的 {@code applyXxxStyleClasses(...)} 方法，
+     *       保证两条路径输出完全一致。</li>
+     * </ul>
+     */
+    public static class ModifyBuilder {
+        private final Button button;
+        // sentinel 模式：null / xxxSet=false 表示"未调用 setter，不动该属性"
+        private Type type;
+        private boolean typeSet = false;
+        private Size size;
+        private boolean sizeSet = false;
+        private Shape shape;
+        private boolean shapeSet = false;
+        private String text;
+        private boolean textSet = false;
+        // boolean 用包装类做 sentinel：null = 未调用
+        private Boolean disabled;
+        private Boolean loading;
+        private Boolean ghost;
+
+        ModifyBuilder(Button button) {
+            this.button = button;
+        }
+
+        public ModifyBuilder type(Type type) {
+            this.type = type;
+            this.typeSet = true;
+            return this;
+        }
+
+        public ModifyBuilder size(Size size) {
+            this.size = size;
+            this.sizeSet = true;
+            return this;
+        }
+
+        public ModifyBuilder shape(Shape shape) {
+            this.shape = shape;
+            this.shapeSet = true;
+            return this;
+        }
+
+        public ModifyBuilder text(String text) {
+            this.text = text;
+            this.textSet = true;
+            return this;
+        }
+
+        public ModifyBuilder disabled(boolean disabled) {
+            this.disabled = disabled;
+            return this;
+        }
+
+        public ModifyBuilder loading(boolean loading) {
+            this.loading = loading;
+            return this;
+        }
+
+        public ModifyBuilder ghost(boolean ghost) {
+            this.ghost = ghost;
+            return this;
+        }
+
+        /**
+         * 应用所有修改到原 Button 上。
+         *
+         * @return 原 Button 实例（未克隆，便于继续链式使用）
+         */
+        public Button apply() {
+            // styleClass 类：仅在对应 setter 被调用过时，才走共享原语刷新
+            if (typeSet) {
+                applyTypeStyleClasses(button, type != null ? type : Type.DEFAULT);
+            }
+            if (sizeSet) {
+                applySizeStyleClasses(button, size != null ? size : Size.DEFAULT);
+            }
+            if (shapeSet) {
+                applyShapeStyleClasses(button, shape != null ? shape : Shape.DEFAULT);
+            }
+            if (ghost != null) {
+                applyGhostStyleClass(button, ghost);
+            }
+            // 非 styleClass 属性：直接走 JavaFX 原生 setter
+            if (textSet) {
+                button.setText(text);
+            }
+            if (disabled != null) {
+                button.setDisable(disabled);
+            }
+            // loading 简化版：只切 disabled，不动 graphic（用户的 loadingIcon 已在 build 时绑过）
+            // 框架不暴露动态切 graphic 的 API，避免和 onClick / icon 缠在一起
+            if (loading != null) {
+                button.setDisable(loading);
+            }
             return button;
         }
     }

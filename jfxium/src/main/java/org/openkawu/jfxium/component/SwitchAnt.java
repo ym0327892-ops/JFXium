@@ -135,8 +135,13 @@ public class SwitchAnt {
             switchPane.setPrefSize(44, 22);
             switchPane.getStyleClass().add(CssClasses.SWITCH);
 
+            // 用单元素数组持有可变的当前选中态——lambda 内可改（effectively final 限制）
+            final boolean[] currentSelected = {selected};
+
             if (selected) {
                 switchPane.getStyleClass().add(CssClasses.SWITCH_SELECTED);
+                // 关键：初始就选中时，thumb 要直接放到右侧（translateX=24），否则蓝轨道配左侧 thumb 视觉错乱
+                thumb.setTranslateX(24);
             }
             // 禁用态用 styleClass 切换，避免 inline setStyle 在动态场景下残留 cursor
             if (disabled) {
@@ -151,9 +156,11 @@ public class SwitchAnt {
 
             switchPane.setOnMouseClicked(e -> {
                 if (!disabled) {
-                    toggle(switchPane, thumb, !selected);
+                    boolean next = !currentSelected[0];
+                    currentSelected[0] = next;          // 关键：更新当前态，下次点击才会正确反转
+                    toggle(switchPane, thumb, next);
                     if (onChange != null) {
-                        onChange.accept(!selected);
+                        onChange.accept(next);
                     }
                 }
             });
@@ -182,14 +189,9 @@ public class SwitchAnt {
                 switchPane.getStyleClass().remove(CssClasses.SWITCH_SELECTED);
             }
 
+            // 从当前实际位置滑到目标位置（不写死 from，避免与初始 translateX 冲突）
             TranslateTransition slide = new TranslateTransition(Duration.millis(200), thumb);
-            if (isSelected) {
-                slide.setFromX(0);
-                slide.setToX(24);
-            } else {
-                slide.setFromX(24);
-                slide.setToX(0);
-            }
+            slide.setToX(isSelected ? 24 : 0);
             slide.play();
 
             // 通过 properties 标记定位状态文本，更新成新状态对应的文字

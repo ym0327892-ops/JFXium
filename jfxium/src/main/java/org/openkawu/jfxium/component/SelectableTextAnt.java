@@ -87,7 +87,7 @@ public class SelectableTextAnt {
         private double prefWidth = -1;
         private Type type = Type.DEFAULT;
         private boolean bordered = false;     // 默认关闭灰色边框（看起来像 Label）
-        private boolean focusHalo = true;     // 默认开启：用户拖选文字时显示蓝边+光晕，明确"已聚焦"
+        private boolean focusHalo = false;    // 默认关闭：单行展示型文本拖选时不弹蓝边（M19.42 改默认；避免被误认为"输入框边框"）
 
         private Builder(String text) {
             this.text = text != null ? text : "";

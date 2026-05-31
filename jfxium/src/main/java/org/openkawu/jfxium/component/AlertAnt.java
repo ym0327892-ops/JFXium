@@ -51,6 +51,11 @@ public class AlertAnt {
         SUCCESS, INFO, WARNING, ERROR
     }
 
+    /** Alert 内部子节点的 properties key（modify 时找回 message/title Label）。 */
+    private static final String KEY_TITLE_LABEL = "jfxium.alert.title-label";
+    private static final String KEY_MESSAGE_LABEL = "jfxium.alert.message-label";
+    private static final String KEY_TYPE = "jfxium.alert.type";
+
     public static Builder success(String message) {
         return new Builder(Type.SUCCESS, "Success", message);
     }
@@ -133,6 +138,7 @@ public class AlertAnt {
             alert.setAlignment(Pos.CENTER_LEFT);
             alert.getStyleClass().add(CssClasses.ALERT);
             alert.getStyleClass().add(typeClassFor(type));
+            alert.getProperties().put(KEY_TYPE, type);
 
             if (banner) {
                 alert.getStyleClass().add(CssClasses.ALERT_BANNER);
@@ -153,6 +159,8 @@ public class AlertAnt {
             Label titleLabel = new Label(title);
             titleLabel.getStyleClass().add(CssClasses.ALERT_TITLE);
             header.getChildren().add(titleLabel);
+            // 把标题 Label 挂到 properties，modify().title(...) 时能找回来
+            alert.getProperties().put(KEY_TITLE_LABEL, titleLabel);
 
             // action 节点（用户自定义按钮）放在标题之后，spacer 推到右侧
             if (action != null) {
@@ -187,6 +195,8 @@ public class AlertAnt {
                     messageLabel.setPadding(new Insets(0, 0, 0, 24));
                 }
                 alert.getChildren().add(messageLabel);
+                // 把消息 Label 挂到 properties，modify().message(...) 时能找回来
+                alert.getProperties().put(KEY_MESSAGE_LABEL, messageLabel);
             }
 
             // 用户 style/styleClass 在内置类后应用，便于覆盖
@@ -226,6 +236,124 @@ public class AlertAnt {
                 case WARNING -> "⚠";
                 case ERROR -> "✕";
             };
+        }
+    }
+
+    /**
+     * 再编辑已构建的 Alert（M19.27 modify+apply 模式）。
+     *
+     * <p>表单异步反馈是 Alert 最高频的业务场景：先弹 INFO「校验中…」→ 校验失败切 ERROR + 改文案，
+     * 校验通过又切 SUCCESS。{@code modify(alert).type(...).message(...).apply()} 一次搞定。</p>
+     *
+     * <p>能改：type / title / message。不能改：icon 形态（重建成本高）、closable（结构性变更）。</p>
+     *
+     * <pre>{@code
+     * VBox alert = AlertAnt.info("校验中", "正在检查邮箱可用性...").build();
+     * container.getChildren().add(alert);
+     *
+     * // 异步回调里切结果
+     * service.checkEmail(email).thenAccept(ok ->
+     *     Platform.runLater(() -> {
+     *         if (ok) AlertAnt.modify(alert).type(Type.SUCCESS).title("可用").message("此邮箱可注册").apply();
+     *         else    AlertAnt.modify(alert).type(Type.ERROR).title("已被占用").message("请换一个").apply();
+     *     }));
+     * }</pre>
+     *
+     * @param alert {@code Builder.build()} 返回的 VBox，不能为 null
+     */
+    public static ModifyBuilder modify(VBox alert) {
+        if (alert == null) {
+            throw new NullPointerException("alert 不能为 null");
+        }
+        return new ModifyBuilder(alert);
+    }
+
+    public static class ModifyBuilder {
+        private final VBox alert;
+        private Type type;
+        private boolean typeSet = false;
+        private String title;
+        private boolean titleSet = false;
+        private String message;
+        private boolean messageSet = false;
+
+        ModifyBuilder(VBox alert) {
+            this.alert = alert;
+        }
+
+        public ModifyBuilder type(Type type) {
+            this.type = type;
+            this.typeSet = true;
+            return this;
+        }
+
+        public ModifyBuilder title(String title) {
+            this.title = title;
+            this.titleSet = true;
+            return this;
+        }
+
+        public ModifyBuilder message(String message) {
+            this.message = message;
+            this.messageSet = true;
+            return this;
+        }
+
+        /** 应用所有修改到原 Alert 上。返回原 VBox 实例。 */
+        public VBox apply() {
+            if (typeSet) {
+                Type effType = type != null ? type : Type.INFO;
+                // 清掉旧 type 的 styleClass（4 个候选都试一遍）
+                alert.getStyleClass().removeAll(
+                        CssClasses.ALERT_SUCCESS, CssClasses.ALERT_INFO,
+                        CssClasses.ALERT_WARNING, CssClasses.ALERT_ERROR);
+                // 挂上新 type 的 styleClass
+                alert.getStyleClass().add(switch (effType) {
+                    case SUCCESS -> CssClasses.ALERT_SUCCESS;
+                    case INFO -> CssClasses.ALERT_INFO;
+                    case WARNING -> CssClasses.ALERT_WARNING;
+                    case ERROR -> CssClasses.ALERT_ERROR;
+                });
+                alert.getProperties().put(KEY_TYPE, effType);
+
+                // 同步 icon 文字（如果 build 时 showIcon=true，header 里第一个 .alert-icon 节点就是 icon Label）
+                Object headerNode = alert.getChildren().isEmpty() ? null : alert.getChildren().get(0);
+                if (headerNode instanceof HBox header) {
+                    for (var child : header.getChildren()) {
+                        if (child instanceof Label l && l.getStyleClass().contains(CssClasses.ALERT_ICON)) {
+                            l.setText(switch (effType) {
+                                case SUCCESS -> "✓";
+                                case INFO -> "ℹ";
+                                case WARNING -> "⚠";
+                                case ERROR -> "✕";
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (titleSet) {
+                Object titleLabel = alert.getProperties().get(KEY_TITLE_LABEL);
+                if (titleLabel instanceof Label l) {
+                    l.setText(title != null ? title : "");
+                }
+            }
+
+            if (messageSet) {
+                Object msgLabel = alert.getProperties().get(KEY_MESSAGE_LABEL);
+                if (msgLabel instanceof Label l) {
+                    l.setText(message != null ? message : "");
+                } else if (message != null && !message.isEmpty()) {
+                    // build 时没传 message → 现在补上：构造一个 message Label 加到 alert 末尾
+                    Label newMsg = new Label(message);
+                    newMsg.setWrapText(true);
+                    newMsg.getStyleClass().add(CssClasses.ALERT_MESSAGE);
+                    alert.getChildren().add(newMsg);
+                    alert.getProperties().put(KEY_MESSAGE_LABEL, newMsg);
+                }
+            }
+            return alert;
         }
     }
 }

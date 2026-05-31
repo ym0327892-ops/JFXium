@@ -242,6 +242,8 @@ public class DrawerAnt {
                 stage.setWidth(val.doubleValue());
                 if (config.placement == Placement.TOP || config.placement == Placement.BOTTOM) {
                     drawerPanel.setPrefWidth(val.doubleValue());
+                    // 保持 max size 约束
+                    drawerPanel.setMaxWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
                 }
             };
             javafx.beans.value.ChangeListener<Number> heightListener = (obs, old, val) -> {
@@ -249,6 +251,8 @@ public class DrawerAnt {
                 stage.setHeight(val.doubleValue());
                 if (config.placement == Placement.LEFT || config.placement == Placement.RIGHT) {
                     drawerPanel.setPrefHeight(val.doubleValue());
+                    // 保持 max size 约束
+                    drawerPanel.setMaxHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
                 }
             };
             javafx.beans.value.ChangeListener<Number> xListener = (obs, old, val) -> stage.setX(val.doubleValue());
@@ -373,10 +377,16 @@ public class DrawerAnt {
                 case LEFT, RIGHT -> {
                     drawerPanel.setPrefWidth(config.width);
                     drawerPanel.setPrefHeight(overlay.getPrefHeight());
+                    // 关键：防止 StackPane 拉伸（SKILL §20.1）
+                    drawerPanel.setMaxWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
+                    drawerPanel.setMaxHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
                 }
                 case TOP, BOTTOM -> {
                     drawerPanel.setPrefWidth(overlay.getPrefWidth());
                     drawerPanel.setPrefHeight(config.height);
+                    // 关键：防止 StackPane 拉伸（SKILL §20.1）
+                    drawerPanel.setMaxWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
+                    drawerPanel.setMaxHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
                 }
             }
         }

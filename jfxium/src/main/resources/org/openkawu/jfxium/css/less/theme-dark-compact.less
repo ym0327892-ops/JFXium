@@ -1,0 +1,150 @@
+// ============================================
+// JFXium Dark Compact Theme
+// ============================================
+// 紧凑模式 = Dark 配色 + Ant Design 官方 compact 尺寸算法
+// 尺寸算法说明见 theme-light-compact.less 顶部注释。
+// ============================================
+
+// Step 1: 导入基础尺寸 token
+@import "variables-base.less";
+
+// Step 2: 覆盖为 Ant Design compact 尺寸（与 light-compact 完全一致）
+// --------------------------------------------
+@spacing-xs: 4px;
+@spacing-sm: 8px;
+@spacing-md: 8px;
+@spacing-lg: 12px;
+@spacing-xl: 16px;
+
+@control-height: 28px;
+@control-height-sm: 20px;
+@control-height-lg: 36px;
+
+@ctrl-padding-y: 5px;
+@ctrl-padding-x: 11px;
+@ctrl-padding-y-sm: 1px;
+@ctrl-padding-x-sm: 7px;
+@ctrl-padding-y-lg: 7px;
+@ctrl-padding-x-lg: 11px;
+
+@btn-padding-y: @ctrl-padding-y;
+@btn-padding-x: @ctrl-padding-x;
+@btn-padding-y-sm: @ctrl-padding-y-sm;
+@btn-padding-x-sm: @ctrl-padding-x-sm;
+@btn-padding-y-lg: @ctrl-padding-y-lg;
+@btn-padding-x-lg: @ctrl-padding-x-lg;
+
+@input-padding-y: @ctrl-padding-y;
+@input-padding-x: 8px;
+@input-padding-y-sm: @ctrl-padding-y-sm;
+@input-padding-x-sm: 7px;
+@input-padding-y-lg: @ctrl-padding-y-lg;
+@input-padding-x-lg: 8px;
+
+@card-padding: 8px;
+@font-size-md: 13px;
+
+// Step 3: 内联 Dark 配色（与 variables-dark.less 一致，避免 @import 反向覆盖尺寸 token）
+// --------------------------------------------
+@color-base-0: #0d1117;
+@color-base-1: #161b22;
+@color-base-2: #21262d;
+@color-base-3: #30363d;
+@color-base-4: #484f58;
+@color-base-5: #6e7681;
+@color-base-6: #8b949e;
+@color-base-7: #b1bac4;
+@color-base-8: #c9d1d9;
+@color-base-9: #e1e4e8;
+@color-base-10: #f0f6fc;
+
+@color-accent-0: #111d2c;
+@color-accent-1: #112a45;
+@color-accent-2: #15325b;
+@color-accent-3: #15417e;
+@color-accent-4: #1554ad;
+@color-accent-5: #1668dc;
+@color-accent-6: #3c89e8;
+@color-accent-7: #65a9f3;
+@color-accent-8: #8ec5f8;
+@color-accent-9: #b7dcfa;
+
+@color-success-0: #162312;
+@color-success-1: #1e371b;
+@color-success-2: #274f25;
+@color-success-3: #306b30;
+@color-success-4: #3c863d;
+@color-success-5: #49aa19;
+@color-success-6: #6abe39;
+@color-success-7: #86d15a;
+@color-success-8: #a5e082;
+@color-success-9: #c6ebab;
+
+@color-warning-0: #2b1d11;
+@color-warning-1: #442a11;
+@color-warning-2: #593815;
+@color-warning-3: #7c4a15;
+@color-warning-4: #aa6215;
+@color-warning-5: #d87a16;
+@color-warning-6: #e89a3c;
+@color-warning-7: #f3b765;
+@color-warning-8: #f8cf8d;
+@color-warning-9: #fae3b7;
+
+@color-danger-0: #2b1211;
+@color-danger-1: #441e1c;
+@color-danger-2: #5b2522;
+@color-danger-3: #7a2e2b;
+@color-danger-4: #a83f3b;
+@color-danger-5: #d84a45;
+@color-danger-6: #e8706c;
+@color-danger-7: #f39593;
+@color-danger-8: #f8b8b6;
+@color-danger-9: #fad8d7;
+
+@color-fg-default: rgba(255, 255, 255, 0.85);
+@color-fg-muted: rgba(255, 255, 255, 0.65);
+@color-fg-subtle: rgba(255, 255, 255, 0.45);
+@color-fg-on-emphasis: #ffffff;
+
+@color-bg-default: #0d1117;
+@color-bg-overlay: #161b22;
+@color-bg-subtle: #161b22;
+@color-bg-inset: #010409;
+
+@color-border-default: #30363d;
+@color-border-muted: #21262d;
+@color-border-subtle: rgba(255, 255, 255, 0.1);
+
+@color-accent-emphasis: @color-accent-5;
+@color-accent-hover: @color-accent-0;
+@color-accent-active: @color-accent-6;
+@color-accent-muted: @color-accent-2;
+@color-accent-subtle: @color-accent-0;
+
+@color-success-emphasis: @color-success-5;
+@color-success-hover: @color-success-0;
+@color-success-active: @color-success-6;
+@color-success-muted: @color-success-2;
+@color-success-subtle: @color-success-0;
+
+@color-warning-emphasis: @color-warning-5;
+@color-warning-hover: @color-warning-0;
+@color-warning-active: @color-warning-6;
+@color-warning-muted: @color-warning-2;
+@color-warning-subtle: @color-warning-0;
+
+@color-danger-emphasis: @color-danger-5;
+@color-danger-hover: @color-danger-0;
+@color-danger-active: @color-danger-6;
+@color-danger-muted: @color-danger-2;
+@color-danger-subtle: @color-danger-0;
+
+@color-shadow-default: rgba(0, 0, 0, 0.4);
+
+@motion-duration-fast: 0.1s;
+@motion-duration-mid: 0.2s;
+@motion-duration-slow: 0.3s;
+
+// Step 4: 导入全部组件样式
+@import "theme-base.less";

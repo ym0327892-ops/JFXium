@@ -22,6 +22,29 @@ license: MIT
 
 ***
 
+## 密度定位约束（M19.41 用户拍板，强制）
+
+> **核心场景 = 桌面 admin（高信息密度）。默认尺寸（default）必须独立好看，是唯一的一等公民。**
+
+**强制约束：**
+
+1. **default 是验收基准**：任何组件的视觉验收、截图、demo 展示，**只看 default 尺寸**。default 不好看 = 不合格，不允许用「宽松模式好看」来搪塞。
+
+2. **default 面向桌面 admin 调优**：默认尺寸的留白、padding、行高，按「桌面信息密度高」的取向调，**不照搬 Ant Design Web 大屏的宽松留白**。
+   - 已落地案例：CardAnt body padding default `16`（非 Ant 的 24）/ compact `8`——全项目唯一主动偏离 Ant 的地方。
+   - 后续若再发现 default 某组件「占用大、不够 admin」，**优先收紧 default**，而不是叫用户切紧凑模式。
+
+3. **large（宽松）是弃用档**：
+   - 项目维护者**不看、不验收 large**。
+   - large 只保留 API 兼容（`size(LARGE)` 不报错），不投入视觉打磨成本。
+   - 新组件可以不实现 large 的精细适配，够用即可。
+
+4. **三档优先级**：`default（重点打磨）> compact（admin 紧凑场景，需可用）>> large（仅兼容，不打磨）`。
+
+**为什么**：JFXium 定位是 JavaFX 桌面 admin UI 库，不是 Web 响应式库。桌面 admin 屏幕大但信息密度要求高，default 就该是「紧凑而精致」，而不是 Web 那种大留白。large 在桌面 admin 几乎用不到。
+
+***
+
 # 参考文档
 
 ```markdown
@@ -569,6 +592,69 @@ scene.getRoot().setStyle("-color-accent-5: #ff5722;");
 
     **排查方法**：grep 编译产物 `target/classes/.../theme-*.css`，看节点上 `-fx-border-radius` / `-fx-border-color` / `-fx-border-width` 三个属性的实际值。
 
+22. **示例项目即回归测试：bug 报修双向溯源（M19.38 实证）**
+
+    **背景**：JFXium 是给业务用户用的 UI 库。`jfxium-demo`（ShowcaseDemo）不是单纯的展示页，**它本质上是 JFXium 的回归测试用例**——示例里出现任何「用着不顺手」，往往背后是 *Ant 组件 / 容器 / 工具类的 API 不到位或源头 bug。
+
+    **强约束**：
+    - **用户报「示例项目有问题」时，禁止只修示例**
+    - 必须**同时双向追问**：
+      1. 示例侧：当下怎么 workaround（让用户能继续用）
+      2. 源头侧：jfxium 框架里是不是有 API 缺失 / 默认行为不对 / 隐性约束 → **该补 API 就补 API，该改默认就改默认**
+    - 二者都要落到 BUG.md，源头修复优先级 ≥ 示例修复
+
+    **典型示例（M19.38 滚动条 reset bug）**：
+
+    | 现象 | 表层修法（仅 demo） | 源头修法（jfxium 框架） |
+    |---|---|---|
+    | 切菜单后侧栏滚动条跳回顶部 | demo 把 `ScrollPane` 提到字段级复用 ✅ | `MenuAnt` 不支持 runtime 切 `setSelectedKey(key)`，逼 demo 每次 rebuild 整个 menu —— **源头限制** |
+
+    上述 case 中 demo 的 workaround 修了表象，但根因是 MenuAnt 的 `selectedKey` 只在 `build()` 期间消费一次。**理想源头修法**：给 MenuAnt 加 `setSelectedKey(String)` runtime API，这样 demo 不需要 rebuild，滚动条 bug 自然消失。
+
+    **判断标准**（任意一条命中 → 必须修源头）：
+    - demo 代码里出现「为了绕开 *Ant 默认行为，自己手写一段 boilerplate」
+    - 修 demo 时发现「换一个用法就触发同样的 bug」
+    - 用户表达「这框架用着吃力 / 想老半天 / 不会用」
+    - demo 里反复 cast 类型（`(VBox) menu.build()`）说明 `build()` 返回类型不诚实
+    - demo 里硬编码 `setStyle("-fx-...: -color-...")` 拼字符串说明 *Ant 缺少对应 API
+
+    **执行节奏**：
+    1. 先表层修复让用户跑起来（不阻塞）
+    2. **同次响应**里立刻提出源头修法的初步方案 + 影响面评估
+    3. 用户拍板后再动框架；不拍板就立项进 BUG.md / PLAN.md
+
+    **反面教材**：M11 修对齐 bug 时只修 LESS 没补 SKILL #14（复合 vs 后代选择器），导致 M11.1 / M11.2 同根因再踩 5 次回归。
+
+23. **`@border-radius-full`(9999px) 只能用在「尺寸被硬钳制」的节点（M19.43 Slider track 实证）**
+
+    **背景**：项目里圆角 token `@border-radius-full = 9999px`，用于「胶囊/圆点」造型（Switch track、Badge dot、thumb 等）。但 **JavaFX 某些 Skin 在 layoutChildren 时不裁切节点的圆角**，于是 9999px 圆角会把节点的**视觉 bounds**向四周各撑出约 9999px——形成「一根线/一个块横穿整个窗口」的假溢出。
+
+    **M19.43 实证（范围 Slider 溢出）**：`.slider .track` 用了 `@border-radius-full`，探针实测 track 的视觉 bounds 宽达 **20144px**（布局盒其实正常 160px）。换了两轮 `maxWidth` 都没用，因为根因不是宽度约束，是圆角泄出。改成 `@border-radius-md` 后 track 恢复 158px。
+
+    **判断标准**：
+    - **安全**：节点 width/height 都被 min/max 钳死（thumb 14×14、badge-dot 8×8、radio dot 6×6）→ 9999 圆角被截住，泄不出来。
+    - **危险**：节点至少有一个轴「靠父布局拉伸、不固定」（track / 进度条 / 任何 `maxWidth=MAX` 的细条）→ 9999 圆角会泄成巨大 bounds。
+    - **要圆头不用 full**：圆角只要 ≥ 自身厚度一半即可完全圆头。track 4px 高 → `@border-radius-md` 就够，不需要 9999。
+
+    **排查方法**：症状是「细线/色块横穿窗口」或「莫名溢出」时，**先写探针 dump 节点 `getBoundsInLocal()`**（不要猜 maxWidth）。若某节点 bounds 宽/高异常巨大（>1500px）但布局位置正常，基本就是圆角泄出。grep 编译产物里该节点的 `-fx-background-radius`，看是不是 9999。
+
+    **附带教训**：单滑块同样的 track 也是 9999 圆角，但它外层包了 `StackPane + Rectangle clip` 把溢出裁掉了——**clip 会掩盖这类 bug**，让它只在没 clip 的兄弟组件上暴露。别被「这个能用那个不能用」误导成 StackPane 的锅，根因始终是「9999 圆角 + 尺寸未钳制」。
+
+24. **runtime 修改一律走 Controller 模式（M19.38 MenuAnt 首创，M19.42 推广到 Steps/Anchor）**
+
+    **背景**：Builder 模式的组件 `build()` 后就「定型」了。若组件需要在 build 之后再改状态（菜单切高亮、步骤条前进、锚点高亮跟随滚动），**不要逼调用方 rebuild 整个节点**（丢滚动位置/动画/焦点）。
+
+    **标准范式**：
+    - `build()` 时装配一个 `Controller`，把「状态相关的已渲染节点引用」存进去（如各 step 的 circle/title/line、各 anchor 的 label）。
+    - 暴露 `controller()`（必须 build 后调，否则抛 IllegalStateException）。
+    - Controller 的 setter 直接改这些节点的 styleClass / visibility，**不重建**。调用方持有的 Node 引用始终有效。
+
+    **已落地**：MenuAnt.Controller（setSelectedKey/expandKey）、StepsAnt.Controller（setCurrent/next/prev）、AnchorAnt.Controller（setActiveKey）。
+
+    **判断信号**（demo 里出现这些 = 该补 Controller，对应 SKILL #22）：demo 为了切状态每次 `rebuild()` 整个节点 / 反复 `setAll(renderXxx())` / 死回调（声明了 onXxx 但 build 没接线）。
+
+    **取值回调要回传完整对象**：数据输入控件（Dropdown/TreeSelect 等）的选中回调，优先回传**完整对象**（含 key+label+payload），别只回 key——否则调用方被迫自己维护 key→label 映射表（M19.42 DropdownAnt.onSelectItem 修复即此）。
+
 ***
 
 为什么这些很重要？
@@ -586,6 +672,8 @@ scene.getRoot().setStyle("-color-accent-5: #ff5722;");
 6\. **`.arrow` 没默认 shape 时只设颜色 = 看不见**：MenuButton/SplitMenuButton 的 `.arrow` 没有 modena 默认 shape，必须显式 `-fx-shape` + min/pref 尺寸；Chevron `M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z` 是 Ant Design 风格的标准答案。
 
 7\. **Builder 返回类型契约要诚实**：直接节点型（Button/Card 等）`build()` 返回真实容器；Result 包装型（Modal/Drawer/Dropdown 等）返回 Result 后还要 `.open()`。混用会写出能编译但 Modal 不弹出的隐性 bug。
+
+8\. **Demo 是免费的回归测试**：`jfxium-demo` 里写代码不顺手 = 框架 API 有缺口。看到 demo 里出现 `setStyle()` 拼字符串、反复 `(VBox) build()` cast、为绕开默认行为手写 boilerplate —— **去修源头，不要只修 demo**。M19.38 滚动条 bug 就是典型：表层 demo 复用 ScrollPane 解决了，根因 MenuAnt 缺 runtime `setSelectedKey()` 没修，下次再换一个用法仍会触发。
 
 ***
 

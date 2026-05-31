@@ -57,8 +57,9 @@
                 <configuration>
                     <!-- mainClass 候选（按需切换）：
                          - org.openkawu.jfxium.demo.admin.AdminDemo        Web Admin 后台 demo（M12 参考实现保留）
-                         - org.openkawu.jfxium.demo.showcase.ShowcaseDemo  控件 Showcase Demo（NEW，主入口）-->
-                    <mainClass>org.openkawu.jfxium.demo.showcase.ShowcaseDemo</mainClass>
+                         - org.openkawu.jfxium.demo.showcase.ShowcaseDemo  控件 Showcase Demo
+                         - org.openkawu.jfxium.jfxiumUiExample.JfxiumUiExampleApp  UI 示例项目（NEW，主入口） -->
+                    <mainClass>org.openkawu.jfxium.jfxiumUiExample.JfxiumUiExampleApp</mainClass>
                 </configuration>
                 <executions>
                     <execution>

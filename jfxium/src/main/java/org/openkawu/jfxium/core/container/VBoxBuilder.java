@@ -75,8 +75,26 @@ public class VBoxBuilder {
         return this;
     }
 
+    /** 批量挂多个 styleClass（M19.35 新增变长重载，跟 *Ant 风格一致）。 */
+    public VBoxBuilder styleClass(String... classes) {
+        if (classes != null) {
+            for (String c : classes) {
+                if (c != null && !c.isEmpty()) this.styleClasses.add(c);
+            }
+        }
+        return this;
+    }
+
+    /** 设置背景层级（M19.35 集成 Background 体系）。 */
+    public VBoxBuilder background(org.openkawu.jfxium.core.css.Background bg) {
+        if (bg != null) this.styleClasses.add(bg.styleClass());
+        return this;
+    }
+
     public VBox build() {
-        VBox vbox = new VBox(spacing);
+        // M19.36 委托 VBoxAnt：共享创建逻辑 + 让旧 Builder 产物也是 VBoxAnt（向上兼容 VBox）
+        org.openkawu.jfxium.component.layout.VBoxAnt vbox =
+                new org.openkawu.jfxium.component.layout.VBoxAnt(spacing);
         vbox.setPadding(padding);
         vbox.setAlignment(alignment);
         vbox.getChildren().addAll(children);

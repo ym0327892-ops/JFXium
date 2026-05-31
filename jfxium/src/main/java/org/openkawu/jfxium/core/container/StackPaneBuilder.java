@@ -67,8 +67,26 @@ public class StackPaneBuilder {
         return this;
     }
 
+    /** 批量挂多个 styleClass（M19.35 新增变长重载，跟 *Ant 风格一致）。 */
+    public StackPaneBuilder styleClass(String... classes) {
+        if (classes != null) {
+            for (String c : classes) {
+                if (c != null && !c.isEmpty()) this.styleClasses.add(c);
+            }
+        }
+        return this;
+    }
+
+    /** 设置背景层级（M19.35 集成 Background 体系）。 */
+    public StackPaneBuilder background(org.openkawu.jfxium.core.css.Background bg) {
+        if (bg != null) this.styleClasses.add(bg.styleClass());
+        return this;
+    }
+
     public StackPane build() {
-        StackPane pane = new StackPane();
+        // M19.36 委托 StackPaneAnt：共享创建逻辑（产物可被业务向下转型为 StackPaneAnt）
+        org.openkawu.jfxium.component.layout.StackPaneAnt pane =
+                new org.openkawu.jfxium.component.layout.StackPaneAnt();
         pane.setAlignment(alignment);
         pane.setPadding(padding);
         pane.getChildren().addAll(children);

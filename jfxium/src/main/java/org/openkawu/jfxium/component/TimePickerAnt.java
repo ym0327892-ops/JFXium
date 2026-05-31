@@ -71,16 +71,40 @@ public class TimePickerAnt {
             Spinner<Integer> hourSpinner = createTimeSpinner(0, 23, value.getHour());
             container.getChildren().add(hourSpinner);
 
+            Spinner<Integer> minuteSpinner = null;
             if (showMinutes) {
                 container.getChildren().add(makeSeparator());
-                Spinner<Integer> minuteSpinner = createTimeSpinner(0, 59, value.getMinute());
+                minuteSpinner = createTimeSpinner(0, 59, value.getMinute());
                 container.getChildren().add(minuteSpinner);
             }
 
+            Spinner<Integer> secondSpinner = null;
             if (showSeconds) {
                 container.getChildren().add(makeSeparator());
-                Spinner<Integer> secondSpinner = createTimeSpinner(0, 59, value.getSecond());
+                secondSpinner = createTimeSpinner(0, 59, value.getSecond());
                 container.getChildren().add(secondSpinner);
+            }
+
+            // M19.42 修复：原实现 onChange 字段从未被任何 spinner 触发（死回调），
+            // 导致调用方无法拿到用户选中的时间。这里把时/分/秒三个 spinner 的值变化
+            // 汇聚成 LocalTime 后回调，未显示的段（分/秒）按 0 计。
+            if (onChange != null) {
+                final Spinner<Integer> h = hourSpinner;
+                final Spinner<Integer> m = minuteSpinner;
+                final Spinner<Integer> s = secondSpinner;
+                Runnable notify = () -> {
+                    int hh = h.getValue();
+                    int mm = m != null ? m.getValue() : 0;
+                    int ss = s != null ? s.getValue() : 0;
+                    onChange.accept(LocalTime.of(hh, mm, ss));
+                };
+                hourSpinner.valueProperty().addListener((obs, ov, nv) -> notify.run());
+                if (minuteSpinner != null) {
+                    minuteSpinner.valueProperty().addListener((obs, ov, nv) -> notify.run());
+                }
+                if (secondSpinner != null) {
+                    secondSpinner.valueProperty().addListener((obs, ov, nv) -> notify.run());
+                }
             }
 
             applyStyles(container);

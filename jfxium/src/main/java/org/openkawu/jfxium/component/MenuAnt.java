@@ -105,6 +105,21 @@ public class MenuAnt {
         return new Builder();
     }
 
+    /**
+     * 从 build() 产物里取出关联的 Controller（兼容老代码：先 build() 再问要 controller）。
+     * 如果该 Pane 不是 MenuAnt 构造的，返回 null。
+     *
+     * @since M19.38
+     */
+    public static Controller controllerOf(Pane menuPane) {
+        if (menuPane == null) return null;
+        Object o = menuPane.getProperties().get(CONTROLLER_KEY);
+        return o instanceof Controller c ? c : null;
+    }
+
+    /** Controller 在 Pane.getProperties() 里的 key。 */
+    private static final String CONTROLLER_KEY = "jfxium.menu.controller";
+
     // ============================================================
     // Builder
     // ============================================================
@@ -121,6 +136,9 @@ public class MenuAnt {
         private ExpandMode expandMode = ExpandMode.MULTIPLE;
         private final java.util.Set<String> expandedKeys = new java.util.HashSet<>();
         private Consumer<java.util.Set<String>> onExpandChange;
+
+        // build() 后填充：让用户可以做 runtime 切高亮 / 切展开（M19.38）
+        private Controller controller;
 
         private Builder() {}
 
@@ -260,6 +278,7 @@ public class MenuAnt {
             BuildContext ctx = new BuildContext(mode, theme, effectiveCollapsed, selectedKey, onSelect,
                     expandMode, new java.util.HashSet<>(expandedKeys), onExpandChange);
 
+            Pane root;
             if (mode == Mode.HORIZONTAL) {
                 HBox menu = new HBox(0);
                 menu.getStyleClass().addAll(CssClasses.MENU, CssClasses.MENU_HORIZONTAL);
@@ -269,7 +288,7 @@ public class MenuAnt {
                     Node node = item.buildHorizontal(ctx);
                     if (node != null) menu.getChildren().add(node);
                 }
-                return menu;
+                root = menu;
             } else {
                 VBox menu = new VBox(0);
                 menu.getStyleClass().addAll(CssClasses.MENU, CssClasses.MENU_INLINE);
@@ -279,7 +298,116 @@ public class MenuAnt {
                     Node node = item.buildInline(ctx);
                     if (node != null) menu.getChildren().add(node);
                 }
-                return menu;
+                root = menu;
+            }
+
+            // 装 Controller：让 build() 之后还能 runtime 切高亮 / 展开（M19.38）
+            this.controller = new Controller(ctx);
+            root.getProperties().put(CONTROLLER_KEY, this.controller);
+            return root;
+        }
+
+        /**
+         * 拿到 runtime 控制器（必须在 {@link #build()} 之后调用）。
+         * <p>用例：路由切换后调 {@link Controller#setSelectedKey(String)} 刷新高亮，
+         * 不需要 rebuild 整棵菜单（保留滚动位置 / 动画状态 / 展开记忆）。
+         *
+         * @since M19.38
+         */
+        public Controller controller() {
+            if (controller == null) {
+                throw new IllegalStateException("controller() 必须在 build() 之后调用");
+            }
+            return controller;
+        }
+    }
+
+    // ============================================================
+    // Controller：build() 之后做 runtime 修改（M19.38）
+    // ============================================================
+    /**
+     * 菜单运行时控制器：在不重建节点的前提下修改选中态 / 展开态。
+     * <p>所有 setter 直接更新已渲染节点的 styleClass / visibility，调用方拿到的
+     * Pane 引用始终有效，滚动位置 / 焦点状态 / 子菜单动画都不丢。
+     *
+     * <pre>{@code
+     * MenuAnt.Builder b = MenuAnt.create()
+     *     .item("dashboard", "首页", () -> ...)
+     *     .selectedKey("dashboard");
+     * Pane menu = b.build();
+     * MenuAnt.Controller ctrl = b.controller();
+     *
+     * // 后期 runtime 切换（不重建）
+     * ctrl.setSelectedKey("user.list");
+     * ctrl.expandKey("system");
+     * }</pre>
+     */
+    public static class Controller {
+        private final BuildContext ctx;
+
+        Controller(BuildContext ctx) {
+            this.ctx = ctx;
+        }
+
+        /** 当前选中 key（可能为 null）。 */
+        public String getSelectedKey() {
+            return ctx.selectedKey;
+        }
+
+        /**
+         * 切换选中项：移除老节点的 selected styleClass，给新 key 对应的 row 挂上。
+         * 不触发 onSelect 回调（避免与点击触发的回调形成循环）。
+         */
+        public void setSelectedKey(String key) {
+            String old = ctx.selectedKey;
+            if (java.util.Objects.equals(old, key)) return;
+
+            // 取消老的高亮
+            if (old != null) {
+                HBox oldRow = ctx.itemRows.get(old);
+                if (oldRow != null) oldRow.getStyleClass().remove(CssClasses.MENU_ITEM_SELECTED);
+            }
+            // 挂新的
+            ctx.selectedKey = key;
+            if (key != null) {
+                HBox row = ctx.itemRows.get(key);
+                if (row != null && !row.getStyleClass().contains(CssClasses.MENU_ITEM_SELECTED)) {
+                    row.getStyleClass().add(CssClasses.MENU_ITEM_SELECTED);
+                }
+            }
+        }
+
+        /** 当前已展开的 subMenu key 集合（只读快照）。 */
+        public java.util.Set<String> getExpandedKeys() {
+            return java.util.Collections.unmodifiableSet(new java.util.HashSet<>(ctx.expandedKeys));
+        }
+
+        /** 展开指定 subMenu（如已展开则无操作）。 */
+        public void expandKey(String key) {
+            if (key == null) return;
+            ExpandHandle h = ctx.expandHandles.get(key);
+            if (h == null) return;
+            h.expand.run();
+        }
+
+        /** 收起指定 subMenu（如已收起则无操作）。 */
+        public void collapseKey(String key) {
+            if (key == null) return;
+            ExpandHandle h = ctx.expandHandles.get(key);
+            if (h == null) return;
+            h.collapse.run();
+        }
+
+        /** 批量设置展开状态：当前 expanded 集合替换为传入 keys（多余的会被收起）。 */
+        public void setExpandedKeys(java.util.Collection<String> keys) {
+            java.util.Set<String> target = keys == null ? java.util.Set.of() : new java.util.HashSet<>(keys);
+            // 1) 收起当前已展开但不在 target 里的
+            for (String k : new java.util.ArrayList<>(ctx.expandedKeys)) {
+                if (!target.contains(k)) collapseKey(k);
+            }
+            // 2) 展开 target 里还没展开的
+            for (String k : target) {
+                if (!ctx.expandedKeys.contains(k)) expandKey(k);
             }
         }
     }
@@ -292,7 +420,8 @@ public class MenuAnt {
         final Mode mode;
         final Theme theme;
         final boolean collapsed;
-        final String selectedKey;
+        // 注：selectedKey 在 Controller.setSelectedKey() 中可被改写，故非 final
+        String selectedKey;
         final Consumer<String> onSelect;
         // 展开状态共享（M19.19）
         final ExpandMode expandMode;
@@ -300,6 +429,10 @@ public class MenuAnt {
         final Consumer<java.util.Set<String>> onExpandChange;
         /** 顶级 subMenu 渲染产物收集（用于 EXCLUSIVE 模式下通知兄弟节点收起）。 */
         final java.util.List<SubMenuRenderInfo> topLevelSubMenus = new java.util.ArrayList<>();
+        /** 每个 item key → 渲染出的 row 节点索引（Controller runtime 切高亮用，M19.38）。 */
+        final java.util.Map<String, HBox> itemRows = new java.util.HashMap<>();
+        /** 每个 subMenu key → 展开/收起闭包（Controller runtime 切展开用，M19.38）。 */
+        final java.util.Map<String, ExpandHandle> expandHandles = new java.util.HashMap<>();
 
         BuildContext(Mode mode, Theme theme, boolean collapsed, String selectedKey, Consumer<String> onSelect,
                      ExpandMode expandMode, java.util.Set<String> expandedKeys,
@@ -326,6 +459,17 @@ public class MenuAnt {
             if (onExpandChange != null) {
                 onExpandChange.accept(new java.util.HashSet<>(expandedKeys));
             }
+        }
+    }
+
+    /** 每个可展开 subMenu 关联的「展开 / 收起」闭包对（M19.38 Controller 用）。 */
+    static class ExpandHandle {
+        final Runnable expand;
+        final Runnable collapse;
+
+        ExpandHandle(Runnable expand, Runnable collapse) {
+            this.expand = expand;
+            this.collapse = collapse;
         }
     }
 
@@ -468,35 +612,39 @@ public class MenuAnt {
                 r.play();
                 if (key != null) ctx.expandedKeys.remove(key);
             };
+            // 对应的 expand 闭包（M19.38 Controller.expandKey 用）
+            Runnable doExpand = () -> {
+                if (expanded[0]) return;
+                expanded[0] = true;
+                childrenContainer.setVisible(true);
+                childrenContainer.setManaged(true);
+                RotateTransition r = new RotateTransition(Duration.millis(200), arrow);
+                r.setToAngle(90);
+                r.play();
+                if (key != null) {
+                    // EXCLUSIVE：先把其他顶级 subMenu 收起来
+                    if (level == 0 && ctx.expandMode == ExpandMode.EXCLUSIVE) {
+                        for (SubMenuRenderInfo other : ctx.topLevelSubMenus) {
+                            if (!key.equals(other.key)) other.collapse.run();
+                        }
+                    }
+                    ctx.expandedKeys.add(key);
+                }
+            };
             // 仅顶级 subMenu（level==0）参与互斥；嵌套子菜单不互斥（用户多半希望保留父级展开）
             if (level == 0 && key != null) {
                 ctx.topLevelSubMenus.add(new SubMenuRenderInfo(key, doCollapse));
             }
+            // 注册到 ctx 索引（任意 level，Controller 都能控）
+            if (key != null) {
+                ctx.expandHandles.put(key, new ExpandHandle(doExpand, doCollapse));
+            }
 
             header.setOnMouseClicked(e -> {
-                expanded[0] = !expanded[0];
-                childrenContainer.setVisible(expanded[0]);
-                childrenContainer.setManaged(expanded[0]);
-                RotateTransition rotate = new RotateTransition(Duration.millis(200), arrow);
-                rotate.setToAngle(expanded[0] ? 90 : 0);
-                rotate.play();
-
-                if (key != null) {
-                    if (expanded[0]) {
-                        // EXCLUSIVE：先把其他顶级 subMenu 收起来
-                        if (level == 0 && ctx.expandMode == ExpandMode.EXCLUSIVE) {
-                            for (SubMenuRenderInfo other : ctx.topLevelSubMenus) {
-                                if (!key.equals(other.key)) {
-                                    other.collapse.run();
-                                }
-                            }
-                        }
-                        ctx.expandedKeys.add(key);
-                    } else {
-                        ctx.expandedKeys.remove(key);
-                    }
-                    ctx.fireExpandChange();
-                }
+                boolean willExpand = !expanded[0];
+                if (willExpand) doExpand.run();
+                else doCollapse.run();
+                if (key != null) ctx.fireExpandChange();
             });
             return container;
         }
@@ -692,8 +840,12 @@ public class MenuAnt {
         /** 挂 styleClass：基础 menu-item + 选中态。 */
         private void applyItemStyles(HBox row, BuildContext ctx) {
             row.getStyleClass().add(CssClasses.MENU_ITEM);
-            if (key != null && key.equals(ctx.selectedKey)) {
-                row.getStyleClass().add(CssClasses.MENU_ITEM_SELECTED);
+            if (key != null) {
+                // 注册到 ctx：让 Controller.setSelectedKey() 能找到该 row 改 styleClass（M19.38）
+                ctx.itemRows.put(key, row);
+                if (key.equals(ctx.selectedKey)) {
+                    row.getStyleClass().add(CssClasses.MENU_ITEM_SELECTED);
+                }
             }
         }
 

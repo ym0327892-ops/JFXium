@@ -55,6 +55,12 @@ public class NotificationAnt {
         final List<NotificationEntry> entries = new ArrayList<>();
         Window window;
 
+        /**
+         * 窗口位置 / 尺寸变化都重新定位 —— 让通知始终贴着对应角落。
+         * 用同一个 listener 实例挂到多个 property 上，便于统一拆除（避免泄漏）。
+         */
+        private final javafx.beans.InvalidationListener windowChangeListener = obs -> updatePosition();
+
         NotificationContainer(Placement placement) {
             this.placement = placement;
             this.container = new VBox(10);
@@ -65,11 +71,58 @@ public class NotificationAnt {
             this.popup.getContent().add(container);
             this.popup.setAutoHide(false);
             this.popup.setHideOnEscape(false);
+
+            // BOTTOM_* placement 的 y = 窗口底 - margin - container.height，
+            // addEntry 时容器还未 layout，getHeight() 仍是 0 会算出错位的 y。
+            // 监听 height 变化，layout 完成后自动 reposition。
+            // TOP_* 不需要：y 固定为 window.top + margin，与容器高度无关。
+            if (placement == Placement.BOTTOM_LEFT || placement == Placement.BOTTOM_RIGHT) {
+                this.container.heightProperty().addListener((obs, ov, nv) -> updatePosition());
+            }
+        }
+
+        /**
+         * 把 container 关联到 window —— 同时挂位置 / 尺寸 listener，
+         * 窗口被拖动 / 缩放时通知卡片自动跟随。
+         *
+         * <p>如果换了 window（多 Stage 应用），先拆旧的 listener 再装新的，避免泄漏。</p>
+         */
+        void attachWindow(Window newWindow) {
+            if (this.window == newWindow) return;
+            detachWindowListeners();
+            this.window = newWindow;
+            if (newWindow != null) {
+                newWindow.xProperty().addListener(windowChangeListener);
+                newWindow.yProperty().addListener(windowChangeListener);
+                newWindow.widthProperty().addListener(windowChangeListener);
+                newWindow.heightProperty().addListener(windowChangeListener);
+            }
+        }
+
+        private void detachWindowListeners() {
+            if (this.window != null) {
+                this.window.xProperty().removeListener(windowChangeListener);
+                this.window.yProperty().removeListener(windowChangeListener);
+                this.window.widthProperty().removeListener(windowChangeListener);
+                this.window.heightProperty().removeListener(windowChangeListener);
+            }
         }
 
         void addEntry(NotificationEntry entry) {
             entries.add(entry);
             container.getChildren().add(entry.box);
+
+            // 必须先把 popup show 出来，container 才进入 scene 树，
+            // 后面的 applyCss / layout 才有意义（否则 NotificationCard 的
+            // inline CSS "-fx-min-width: 384px" 不会被解析）。
+            if (!popup.isShowing() && window != null && window.isShowing()) {
+                popup.show(window);
+            }
+            // 强制同步 layout —— 让 container.height 立刻有真值，
+            // 避免 BOTTOM_* 在第一次添加时算出 height=0 的错位 y。
+            container.applyCss();
+            container.layout();
+
             updatePosition();
         }
 
@@ -222,7 +275,7 @@ public class NotificationAnt {
             if (window == null) return;
 
             NotificationContainer container = containers.get(config.placement);
-            container.window = window;
+            container.attachWindow(window);
 
             NotificationCard.Builder cardBuilder = new NotificationCard.Builder()
                 .title(config.title)

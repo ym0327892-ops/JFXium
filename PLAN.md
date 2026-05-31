@@ -1663,6 +1663,90 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 
 ---
 
+### 🎯 M19.38 双向溯源：MenuAnt 加 runtime Controller（2026-05-27）
+
+**动机**：用户报「ShowcaseDemo 切下方菜单项后侧栏滚动条跳回顶部」。最初当作 demo 局部 bug 处理（把 ScrollPane 字段化复用），但顺手按「示例项目即回归测试」的视角溯源——根因是 **MenuAnt 没 runtime API**，逼调用方 rebuild 整个 menu。
+
+**沉淀**：
+- 项目约束 SKILL.md 新增第 22 条「**示例项目即回归测试 / 双向溯源**」：用户报 demo 问题时禁止只修示例，必须同时追问源头是否有 API 缺失
+- 「为什么这些很重要」加第 8 条 demo 即免费回归测试
+
+**产出**：
+
+**子阶段 38.1：源头修复（jfxium）**
+- [x] `MenuAnt.Controller` 类：runtime 修改菜单状态的句柄
+- [x] `Builder.controller()` —— `build()` 后取控制器（推荐）
+- [x] `MenuAnt.controllerOf(Pane)` —— 从已构造产物里反查（兼容老代码）
+- [x] 控制器 API：`setSelectedKey / expandKey / collapseKey / setExpandedKeys / getSelectedKey / getExpandedKeys`
+- [x] `BuildContext` 扩展：`itemRows`（key→row 节点索引）+ `expandHandles`（key→展开/收起闭包对）
+- [x] `SubMenuBuilder.buildInline` 把 `doExpand` / `doCollapse` 闭包对登记到 ctx，互斥模式 / 嵌套子菜单都能控
+
+**子阶段 38.2：示例验证（jfxium-demo）**
+- [x] `ShowcaseFrame.navigateTo()` 用 `menuController.setSelectedKey()` + `expandKey()` 替代 `rebuildSider()`
+- [x] `rebuildSider()` 仅保留给 expandMode 切换（MULTIPLE/EXCLUSIVE 是 build-time 配置，必须重建）
+- [x] sider 外层 `ScrollPane siderScroll` 字段化复用，runtime 切菜单不动这一层
+
+**子阶段 38.3：文档同步**
+- [x] BUG.md #30 立项 + 修复说明
+- [x] SKILL.md §22 沉淀双向溯源原则
+
+**关键改动**：
+- `jfxium/component/MenuAnt.java`：~470 → ~570 行
+  - 加 Controller 类（~70 行）+ ExpandHandle 类
+  - BuildContext 加 itemRows / expandHandles 双索引
+  - SubMenuBuilder 拆出 doExpand 闭包（原本只有 doCollapse 给互斥用）
+  - applyItemStyles 把 row 注册进 itemRows
+  - selectedKey 从 final → 可写（Controller 修改）
+- `jfxium-demo/.../ShowcaseFrame.java`：navigateTo 改 controller API；rebuildSider 仅 expandMode 切换时调
+- `BUG.md`：新增 #30
+- `.kiro/steering/项目约束与计划/SKILL.md`：新增第 22 条 + 「为什么这些很重要」第 8 条
+
+**踩坑实证**：
+- 表层修法（demo 字段化 ScrollPane）虽然修了滚动条，但根因没动，**下次换一个用法（例如想要 runtime 切高亮 + 保留子菜单展开动画）仍会触发同根因 bug**
+- 真正的源头修法是给框架加缺失的 runtime API；表层修法是辅助保险
+
+**对齐原则**：JFXium 是 UI 库，`jfxium-demo` 是回归测试用例集；demo 里写代码不顺手 = 框架 API 有缺口
+
+---
+
+### 🎯 M19.42 数据输入控件取值 + runtime API 补齐（2026-05-31）
+
+**动机**：用户报 BUG #5——Dropdown/MenuButton/ComboBox/InputNumber/Cascader/TreeSelect/ColorPicker/TimePicker 一族「数据输入」控件「点了之后取不到选中的 value」（表面是 label，要的是底层 value）。先全控件审计再按 SKILL §22 双向修源头 + demo。
+
+**审计结论**：8 个控件里 6 个本来就能取到 value（ComboBox/InputNumber/ColorPicker/TimePicker/Cascader/MenuButton）。真正缺口只有 2 个：
+- **#54 DropdownAnt**：`onSelect(key)` 只回 key → 新增 `onSelectItem(Consumer<MenuItem>)` 回传完整对象（含 key+label）
+- **#53 TreeSelectAnt 多选**：`onMultipleSelect` 死回调 → 点击切换选中态 + 输入框回填 + 触发回调 + 选中行高亮（新增 `.tree-select-selected`）
+
+**顺带补齐 runtime API（仿 M19.38 MenuAnt.Controller 模式）**：
+- **#51 StepsAnt.Controller**：`setCurrent/next/prev`，不重建节点切步骤
+- **#52 AnchorAnt.Controller**：`setActiveKey`，点击锚点自动移高亮
+
+**沉淀**：项目约束 SKILL 新增 **#24「runtime 修改一律走 Controller 模式」**——build() 装配 Controller 持有已渲染节点引用，setter 直接改 styleClass 不重建。Menu/Steps/Anchor 三个组件已统一此范式。
+
+**关键改动**：`DropdownAnt` / `TreeSelectAnt` / `StepsAnt` / `AnchorAnt` + `CssClasses`（TREE_SELECT_SELECTED）+ `theme-base.less` + 4 个示例页删 workaround + BUG.md #51-54。
+
+---
+
+### 🎯 M19.43 范围 Slider 假溢出真因：9999px 圆角泄出（2026-05-31）
+
+**动机**：用户报 BUG #6 范围 Slider 溢出容器，连改两轮 `maxWidth` 都没用。
+
+**真因（探针实测，非猜）**：`.slider .track` 用了 `@border-radius-full`(9999px)，JavaFX SliderSkin 不裁切 track 圆角 → track **视觉 bounds** 宽达 20144px（布局盒其实正常 160px），形成「一根线横穿窗口」的假溢出。改 `@border-radius-md` 后 track 恢复 158px。
+
+**关键方法论**：写临时探针 dump `getBoundsInLocal()` 拿运行时真值，发现「布局盒正常但视觉 bounds 爆炸」，瞬间定位到圆角而非宽度。**「溢出」症状 ≠ 根因是「宽度约束」**。
+
+**全项目排查**：grep 出 13 处 `@border-radius-full`，写探针扫描所有可疑示例页（Progress/Switch/Badge/List/Slider），实测**只有 slider track 一处中招**——其余都因「尺寸被钳死」或「两轴都有约束」而安全。确认不是 StackPane 通病，是「9999 圆角 + 尺寸未钳制」的特定组合。
+
+**附带修复**：#57 DatePicker 基础用法日期文字显示不全 → `.date-picker` 加 `min-width:130 / pref-width:160`。
+
+**沉淀**：
+- 项目约束 SKILL **#23「@border-radius-full 只能用在尺寸被硬钳制的节点」**
+- 组件组合规范 SKILL **§4.12 反模式**（含探针排查法 + clip 会掩盖此类 bug）
+
+**关键改动**：`theme-base.less`（`.slider .track` / `.colored-track` / `.date-picker` 圆角与宽度）+ `SliderAnt.java`（范围模式 slider 限宽，虽非根因但顺手收敛布局）+ BUG.md #55-57。
+
+---
+
 ## 五、下一阶段计划
 
 ### 🔴 P0：本次重构遗留收尾（短期）
@@ -1670,6 +1754,25 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 - [x] 修 SpinAnt 硬编码主题色 TODO（用 Region 替代 Shape 或 Looked-up colors API）
 - [x] 决定 AlertBanner 孤儿类去留
 - [x] 补充 SceneLayout/OverlayManager 完整使用文档（README_CN.md）
+
+### 🆕 P0+：文档与 API 可用性收尾（M19.37 实战反馈）
+> **动机**：业务实测「用着吃力，写个东西想老半天」——补足新人配方手册 + 暴露当前 API 限制，避免业务侧撞墙。
+
+**文档侧**（已完成 M19.37）：
+- [x] README 顶部加「5 分钟配方手册」5 配方（登录页 / admin 列表 / 表单提交 / 继承式页面 / 跨窗口通信）
+- [x] README 加「按场景找组件」检索表（17 行映射表）
+- [x] README 加「已知限制 / 绕行方案」表（暴露 API 边界，避免撞墙）
+- [x] 目录扩充至 14 节，新人推荐阅读顺序
+
+**API 侧**（待办）：
+- [ ] **FormAnt 增强**（核心）—— 业务高频痛点
+  - `header(Node)` 顶部 banner 区
+  - `footer(Node...)` 变长重载，支持多按钮
+  - `footerAlign(Pos)` 对齐方式（默认 CENTER_RIGHT）
+  - `section(String)` 分段标题
+- [ ] InputAnt 加 `.password(boolean)` 模式开关
+- [ ] InputAnt 考虑加密码可见切换（参考 AtlantaFX PasswordTextFormatter）
+- [ ] IconAnt 加 `.color(Color)` 直接设图标颜色（避免 inline style）
 
 ### 🟠 P1：基础设施二期（中期）
 - [x] 抽公共 padding(Insets) Builder 钩子（5+ 组件重复）

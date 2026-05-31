@@ -1,6 +1,71 @@
 # 问题修复状态（2026-05-17 全部完成）
 
 > 模仿 Ant Design 组件，与 AtlantaFX（[GitHub](https://github.com/mkpaz/atlantafx)）做对照参考。
+## 在示例UI 展示中 存在的问题 
+1: SelectableTextAnt ，选择文字 ，又出现 什么文字模糊重叠一样化的样式， 
+为何 单行输入 就会出现 边框？
+SelectableTextAnt.create("zhangsan@example.com").build();
+SelectableTextAnt.create("订单号：JFX-2024-000123").build();
+他会出现 ；
+SelectableTextAnt.create(stackTrace)
+        .multiline(true)
+        .wrap(true)
+        .bordered(true)
+        .maxWidth(480)
+        .build();
+这个不会出现
+2: StackPane watermark = WatermarkAnt.create()
+        .content(myContent)
+        .text("机密文档")
+        .rotate(-45)
+        .opacity(0.08)
+        .fontSize(20)
+        .build();
+        缺少 如何具体在场景下使用
+这个如何 结合的使用 ？ 在比如示例 首页 写成 示例项目； 
+3: 会显现 四个边角 是空白， 边线 不连续？ 这是啥情况？
+SplitButtonAnt.create("保存")
+        .onClick(e -> save())
+        .item("保存并新建", e -> saveAndNew())
+        .item("保存并退出", e -> saveAndExit())
+        .build();
+4: Node steps = StepsAnt.create()
+        .step("登录", "填写账号密码")
+        .step("验证", "短信验证码")
+        .step("完成", "注册成功")
+        .current(1)
+        .build();
+这个，不知道具体作用， 点击 没看不出 作用 ，还有一个
+AnchorAnt.create()
+        .item("intro", "介绍", "#intro")
+        .item("install", "安装", "#install")
+        .item("usage", "用法", "#usage")
+        .activeKey("install")          // 高亮当前项
+        .onChange(key -> scrollTo(key))
+        .build();
+
+5: DropdownAnt ，MenuButtonAnt，ComboBoxAnt，InputNumberAnt.CascaderAnt，TreeSelectAnt，ColorPickerAnt.
+TimePickerAnt ， 缺少 你点了什么， 我要的是提取 目前的点的 数据， 表面可能是 vey ：value ， 你点的是key ，我要value 值； 你懂么？ 主要体现在 这个数据输入 的全部 控件中？
+6: SliderAnt 
+ 范围模式下：  示例 超出了 容器 宽度？
+ 7: DatePickerAnt.create()
+        .value(LocalDate.now())
+        .build();
+示例UI 中有问题 ，显示不全；  什么设计理念？
+为啥有 两个 边框 ，  点开里面按钮 不显示 全呢？
+![alt text](image-1.png)
+7：TransferAnt ，示例项目 只能看， 无法操作；
+8: ColorPickerAnt  ，
+写的很可笑，知道 ，如下图片； 那个 SliderAnt 超出了 容器 宽度， 是不是 SliderAnt 设计有问题， 怎么一直在超出呢
+![alt text](image-2.png)
+9： ToggleGroup viewGroup = new ToggleGroup();
+ToggleButtonAnt.create("列表").toggleGroup(viewGroup).selected(true).build();
+ToggleButtonAnt.create("卡片").toggleGroup(viewGroup).build();
+ToggleButtonAnt.create("表格").toggleGroup(viewGroup).build();
+
+应该有一个模式是 ，选一个， 并别 不能取消 全不选
+10: 
+
 
 ## 已修复问题
 
@@ -28,6 +93,155 @@
 | 21 | Table 行选中色与文字对比度差（怀疑 LESS 未编译） | ✅ 已修复 | 2026-05-17 |
 | 22 | MUI 主题输入框 Hover/Focus 时文字看不清 | ✅ 已修复 | 2026-05-17 |
 | 23 | 输入框获焦尺寸抖动复检（最终对齐 SKILL：边框变色 + 外阴影，无尺寸变化） | ✅ 已复检 | 2026-05-17 |
+| 24 | ButtonAnt ghost inline style 阴魂不散（modify type 切换后旧 type 颜色残留） | ✅ 已修复 | 2026-05-26 |
+| 25 | ButtonAnt removeTypeStyleClasses 中 `BUTTON_PRIMARY` 死代码（PRIMARY/ACCENT 共用 `accent` 类，primary 字符串从未挂上） | ✅ 已修复 | 2026-05-26 |
+| 26 | pom.xml 漏配 `theme-mui-dark.less` 的 lessc execution，导致主题改动后 css 产物不同步 | ✅ 已修复 | 2026-05-26 |
+| 27 | ButtonAnt `Builder.build()` 与 `ModifyBuilder.apply()` 的 styleClass 渲染逻辑各写一份，size/shape/ghost 段重复且不同步 | ✅ 已重构 | 2026-05-26 |
+| 28 | ButtonAnt.ModifyBuilder 暴露面太窄（缺 shape / ghost），动态切形状/幽灵风格只能走原生 setStyleClass 操作 | ✅ 已扩展 | 2026-05-26 |
+| 29 | InputAnt 输入限制需求需要业务自己写 TextFormatter + UnaryOperator&lt;Change&gt;，样板代码长且容易写错（admin 高频痛点） | ✅ 已沉淀 | 2026-05-26 |
+| 30 | MenuAnt 缺 runtime 修改 API（selectedKey/expandedKeys 仅 build-time 消费）→ ShowcaseFrame 切菜单时被迫整体 rebuild → 侧栏滚动条 vvalue 跳回顶部 | ✅ 已修复 | 2026-05-27 |
+| 31 | DrawerAnt `.width(int)` 不生效，所有抽屉都被拉伸到 owner 窗口宽度（VBox 在 StackPane 里默认 maxWidth=MAX_VALUE 撑满）| ✅ 已修复 | 2026-05-29 |
+| 32 | CodeBlockAnt 行号与代码错位（顶部出现 N 行空白行号）—— BorderPane.left/center 高度不一时默认 CENTER 对齐导致 ScrollPane 被垂直居中 | ✅ 已修复 | 2026-05-29 |
+| 33 | CodeBlockAnt 没有可见的复制入口（复制功能藏在右键菜单 + Ctrl+C，用户看不到；TextFlow 又不支持选中复制）—— LESS 早定义好 header/copy-btn 样式但 Java 端从未渲染 | ✅ 已修复 | 2026-05-29 |
+| 34 | CodeBlockAnt 不支持自由拖选 + 部分复制（TextFlow 为高亮牺牲了选区能力）—— 加 selectable(true) 走只读 TextArea | ✅ 已修复 | 2026-05-29 |
+| 35 | SwitchAnt 点击无法正常开关（点左跑右又回左）—— `selected` 字段点击后从不更新，每次都用同一个 `!selected`；初始 selected=true 时 thumb 没初始化到右侧 | ✅ 已修复 | 2026-05-30 |
+| 36 | SliderAnt 拖动手柄太小 —— `.slider .thumb` 未显式设尺寸，用了 modena 默认小尺寸 | ✅ 已修复 | 2026-05-30 |
+| 37 | TableAnt `striped(true)` 斑马纹不生效 —— Java 挂 `jfx-table-striped` 但 LESS 选择器写 `.table-view.striped`（差 jfx- 前缀），对不上 | ✅ 已修复 | 2026-05-30 |
+| 38 | 紧凑模式下 CardAnt 不紧凑 —— compact CSS 改外层 `.card` padding，但真实内边距在内部 `.card-body`/`.card-header`，选择器错位 | ✅ 已修复 | 2026-05-30 |
+| 39 | DatePicker 点击箭头无反应（看不到日历入口）—— `.date-picker .arrow` 只设颜色没设 shape，"有色无形"零尺寸不可点（SKILL §17） | ✅ 已修复 | 2026-05-30 |
+| 40 | 示例项目 Radio/Spinner 误用：Radio demo 用原生 RadioButton（丢了 RadioButtonAnt 的 shape）；"Spinner 数字步进"实为加载圈（与 SpinAnt 重复），真正的数字步进是 InputNumberAnt | ✅ 已修复 | 2026-05-30 |
+| 41 | SelectableTextAnt 单行拖选出现蓝边（被误认为输入框边框）+ 选区文字发虚 | ✅ 已修复 | 2026-05-30 |
+| 42 | SliderAnt 在不约束宽度的父容器里膨胀超出容器（单+范围模式）—— prefWidth 用 USE_COMPUTED_SIZE + maxWidth=MAX 导致无限撑大 | ✅ 已修复 | 2026-05-30 |
+| 43 | SplitButtonAnt 四角缺口/边线不连续 —— 圆角容器内的方角 label/arrow-button 背景盖住容器圆角 | ✅ 已修复 | 2026-05-30 |
+| 44 | DatePicker 双边框 —— 外层 .date-picker(input-base) 边框 + 内部 .text-field 默认边框叠加 | ✅ 已修复 | 2026-05-30 |
+| 45 | 数据输入控件示例只显示"点了"但看不到取到的 value（Dropdown/MenuButton/ComboBox/InputNumber/Cascader/TreeSelect/ColorPicker/TimePicker）| ✅ 已修复 | 2026-05-30 |
+| 46 | Steps/Anchor 示例看不出作用（纯静态展示，无交互反馈）| ✅ 已修复（demo 加交互）| 2026-05-30 |
+| 47 | Transfer 示例只能看不能操作（需先选列表项再点箭头，UX 不明显）| ✅ 已改善（加提示+结果栏）| 2026-05-30 |
+| 48 | ToggleButton 缺"必选一个、不可全不选"模式（admin 视图切换器场景）| ✅ 已修复（mandatoryGroup）| 2026-05-30 |
+| 49 | DatePicker 弹层月/年 spinner 左右箭头不可见（只剩空圆角按钮）—— `.left-arrow`/`.right-arrow` 没设 shape，0 尺寸（SKILL §17 有色无形）| ✅ 已修复 | 2026-05-30 |
+| 50 | TimePickerAnt.onChange 死回调（声明了但从未接线到 spinner，调用方拿不到选中时间）| ✅ 已修复 | 2026-05-30 |
+| 51 | StepsAnt 无 runtime setCurrent API（只能 build-time .current(int)，切步骤要重建整个节点）| ✅ 已修复 | 2026-05-31 |
+| 52 | AnchorAnt activeKey 仅 build-time 消费，无 runtime setActiveKey（点击高亮不移动）| ✅ 已修复 | 2026-05-31 |
+| 53 | TreeSelectAnt.onMultipleSelect 死回调（multiple(true) 下 build() 只接线了单选）| ✅ 已修复 | 2026-05-31 |
+| 54 | DropdownAnt.onSelect 只回传 key 不回传 label（调用方要自己维护 key→label 映射）| ✅ 已修复 | 2026-05-31 |
+| 55 | ColorPickerAnt 自定义颜色对话框（CustomColorDialog）内部 RGB/HSB 调节 slider 超出对话框宽度 + 排版不居中/边线杂乱 —— 项目完全没有 `.custom-color-dialog` 样式，settings-pane 行内微组件无显式宽度约束 | ✅ 已修复 | 2026-05-31 |
+| 56 | SliderAnt 范围模式仍溢出容器（#42 的回归）—— rangeBox `maxWidth=USE_PREF_SIZE` 把 HBox 钉死在 pref 宽（~520px），卡片比它窄时只能溢出 | ✅ 已修复 | 2026-05-31 |
+| 57 | DatePicker 基础用法日期文字显示不全 —— `.date-picker` 只继承 input-base 无宽度约束，modena pref 宽偏窄 + padding/箭头把日期裁掉 | ✅ 已修复 | 2026-05-31 |
+
+## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
+
+> 用户在 demo 验收时发现 9 个问题，按 SKILL §22「示例项目即回归测试」逐个追到框架源头修复。
+
+### #35 SwitchAnt 点击逻辑 bug（最严重）
+- **现象**：点击开关，thumb 从左跳到右又弹回左，无法稳定切换；颜色蓝↔灰是对的。
+- **根因**：`build()` 的点击 handler 里用 `!selected`，但 `selected` 是 builder 字段，**点击后从不更新**——所以每次点击都基于同一个初始值反转，状态机锁死。另外初始 `selected=true` 时 thumb 的 translateX 没初始化到 24（右侧），导致蓝轨道配左侧 thumb 视觉错乱。
+- **修复**：用 `final boolean[] currentSelected` 持有可变态，每次点击更新；初始 selected 时 `thumb.setTranslateX(24)`；toggle 动画改用 `setToX`（从当前位置滑过去，不写死 from）。
+- **复测**：模拟 3 次点击，onChange 序列 = `true,false,true` ✅。
+
+### #36 SliderAnt 手柄太小
+- **修复**：`.slider .thumb` 显式设 14×14（对齐 Ant Design），之前用 modena 默认偏小尺寸。
+
+### #37 TableAnt 斑马纹失效
+- **根因**：典型「styleClass 与选择器对不上」——TableAnt 挂 `jfx-table-striped`，LESS 却写 `.table-view.striped`。
+- **修复**：LESS 选择器改 `.table-view.jfx-table-striped`。
+- **沉淀**：再次印证 SKILL「LESS 有样式 ≠ 生效」，必须 grep 确认 Java 挂的 class 名与 LESS 选择器一致。
+
+### #38 紧凑模式 Card 不紧凑
+- **根因**：CardAnt 是「容器 `.card` + 内部 `.card-body`/`.card-header`」结构，padding 在内部节点上。compact 主题只改外层 `.card { padding }`（外层根本没 padding），内部纹丝不动。又一个「容器 vs 内部节点 padding 错位」案例（同 CodeBlock #32 / Drawer #31 family）。
+- **修复**：light-compact / dark-compact 两个 CSS 把 padding 下放到 `.card .card-body`（12px）和 `.card .card-header`（8px 12px）。
+- **关于默认尺寸**：默认 Card body padding=24px 是对的（对齐 Ant Design Card 默认 24px），不改。
+
+### #39 DatePicker 点击无反应
+- **根因**：`.date-picker .arrow` 只设 `-fx-background-color` 没设 `-fx-shape`——SKILL §17「有色无形」，节点 0 尺寸不可见也不可点，用户找不到日历入口。
+- **修复**：显式设日历图标 shape（Material calendar）+ 14×14 尺寸 + cursor:hand。
+
+### #40 示例误用（demo 侧）
+- **Radio**：demo 用原生 `new RadioButton()`，丢了 `RadioButtonAnt` 的 shape（圆/方/圆角）能力。改用 RadioButtonAnt + 新增「形状」section。
+- **Spinner**：`SpinnerAnt` 其实是加载圈（ProgressIndicator），与 `SpinAnt`（Spin 加载）功能重复，但 demo 标题写「数字步进」误导。真正的数字步进器是 `InputNumberAnt`。删掉误导的 SpinnerExamplePage，换成 InputNumberExamplePage（步进/范围/精度/前后缀 4 段）。
+
+### Transfer（#6 用户反馈）—— 非 bug
+- 排查：TransferAnt 的 `<`/`>` 按钮有完整 handler，逻辑正常。用户「点击不管用」是 UX 问题——需先点选列表项再点箭头。组件本身无 bug，暂不改。
+
+## 🎯 M19.41 密度系统对齐 Ant Design（2026-05-30）
+
+> 用户质疑「紧凑/默认/宽松的内边距是否按 Ant Design 标准」。诚实复检：**之前是拍脑袋写的，不符合标准**。本次系统性重构对齐 Ant Design 官方 token 算法。
+
+### 根因（3 个系统性问题）
+1. **Button/Input padding 用错 token**：`@btn-padding-y = @spacing-sm(8px)`，导致按钮高 ~37px（应为 32）。Ant Design 控件 padding 是为凑 controlHeight 反推的，不是简单跟随间距梯度。
+2. **Compact 不按官方算法**：light-compact / dark-compact 是**手写硬编码 CSS**（无 LESS 源），值还跟 mui-compact 不一致，两套标准打架。
+3. **手写 compact CSS 与 token 体系脱节**：改 base token 不会同步到 compact；且选择器错位（改外层 `.card` 而非内部 `.card-body`）。
+
+### Ant Design 官方标准（已查源码 `components/theme/themes`）
+- **seed**: `sizeUnit=4, sizeStep=4`；size 阶梯 `sizeUnit*(sizeStep+n)`：XXS=4 / XS=8 / SM=12 / size=16 / LG=24 / XL=32
+- **compact 算法**（`genCompactSizeMapToken`）：`compactSizeStep = sizeStep-2 = 2`；`controlHeight = 32-4 = 28`
+- **控件高度**：default 32 / small 24 / large 40（compact: 28/20/36）
+
+### 修复
+1. **padding token 与 spacing 解耦**（`variables-base.less`）：新增 `@ctrl-padding-*` 显式 Ant 值（default y=6 x=15 凑 32 高；JavaFX 14px 文字比 web 矮 ~3px，padding-y 比理论值 +1~2 补偿）。Button/Input padding 指向 `@ctrl-padding-*`，不再用 `@spacing-*`。
+2. **Card padding 走 token**：`.card-body` = `@card-padding`（默认 24=sizeXL），`.card-header` = `(card-padding*2/3) card-padding`，紧凑自动派生 16。
+3. **新建 `theme-light-compact.less` / `theme-dark-compact.less`**（替代手写 CSS）：覆盖 compact 尺寸 token（controlHeight 28、card-padding 16、ctrl-padding y=5 x=11）后 `@import theme-base.less`，全部组件 padding 按 compact token 自动重新生成。
+4. **pom 加 2 条 lessc execution**，把这两个 LESS 编译成 css（之前手写 CSS 被覆盖，从 ~310 行变 4781 行完整产物）。
+
+### 验证（runtime 实测控件高度）
+| 模式 | Button/Input 实测高 | Ant 目标 |
+|---|---|---|
+| default | 31px | 32 ✅（1px JavaFX 舍入误差） |
+| compact | 28px | 28 ✅ 精确 |
+
+- default button padding `5px 15px`→`6px 15px`、card-body 24px、card-header 16px 24px —— 对齐 Ant Design
+- compact button padding `3px 11px`→`5px 11px`、card-body 16px —— 对齐 Ant compact
+
+### 沉淀
+- **JavaFX 无 box-sizing/line-height 概念**：控件高度 = `2*padding-y + 文字实测高 + 2*border`。JavaFX 14px 文字实测约 18px 高（比 web 的 22px 行盒矮），所以 padding-y 要比「web 理论值」补 1~2px 才能凑到同样的 controlHeight。
+- **compact 主题必须有 LESS 源**：手写 CSS 会与 token 体系脱节、与其他主题打架。正确做法 = 覆盖尺寸 token + `@import theme-base`（同 mui-compact 已有模式）。
+- **padding token 别绑死到通用 spacing 梯度**：控件 padding 是为凑高度反推的，与「容器间距」是两套逻辑，必须解耦。
+
+### M19.41.1 补充：Card padding 偏离 Ant 标准（用户拍板）
+- 用户反馈 Card body 24px「占用大」。核实 Ant 官方确实是 24（`bodyPadding=paddingLG`），但桌面 admin 信息密度高，24 偏松。
+- **决策（方案 B）**：**仅 Card** 偏离 Ant 标准——default body `16`（@spacing-lg）、compact `8`；header 按 `card-padding*0.75` 派生（default `12 16` / compact `6 8`）。
+- 其它所有组件仍严格对齐 Ant（Button/Input 凑 32 高等）。这是全项目唯一一处主动偏离，已在 `variables-base.less` 注释标注。
+
+## 修复说明（2026-05-29 批次）
+
+### #31 DrawerAnt `.width(int)` 不生效（实际宽度 = owner 窗口宽度）
+- **现象**：`DrawerAnt.create().width(320).placement(RIGHT).build().open(node)` 期望 320px 窄抽屉，实际渲染成贴满窗口的全屏宽度面板。
+- **根因**：`positionPanel()` 仅 `setPrefWidth(config.width)` 但 `drawerPanel` 是 `VBox`——`VBox.maxWidth` 默认 `Double.MAX_VALUE`，进 StackPane 后被拉伸到撑满父容器，`prefWidth` 形同虚设。这是 SKILL 项目约束 §20.1 反复强调过的「HBox/VBox 在 StackPane 内默认 maxWidth=MAX」陷阱。
+- **修复**：`positionPanel()` 与 ownerWindow 跟随 listener 中，所有 `setPrefWidth/Height` 之后补一行 `setMaxWidth/Height(Region.USE_PREF_SIZE)`，强制收缩到 prefSize。
+- **复测**：写小程序 `DrawerAnt.create().width(320)...build().open(btn)` 在 1200×800 owner 上，实测 `drawerPanel.getWidth() == 320.0`（修复前 = 1200.0）。
+- **沉淀**：SKILL §20.1 已经记录过这条规则（M19.18 Carousel dotsBox），但 DrawerAnt 写早于 SKILL §20.1 时漏了。提醒：所有「StackPane + 子 VBox/HBox 用对齐定位」的浮层组件都要审查 maxWidth/maxHeight。
+
+### #32 CodeBlockAnt 行号与代码错位（顶部 N 行空白）
+- **现象**：复杂示例 section 里行号 1-15 是空白行号，到 16 才出现 `package org.example;`，整体上方留出大片空白。
+- **根因**：原实现 `BorderPane.setLeft(行号 VBox) + setCenter(ScrollPane(代码))`：行号 VBox 高度 = N × 行高（无 maxHeight），而 ScrollPane 设了 `maxHeight=400`。BorderPane 的 LEFT/CENTER 区在父高度大于自身 prefHeight 时**默认 CENTER 垂直对齐**——结果 maxHeight=400 的 ScrollPane 被居中下移，但行号 VBox 仍贴顶布局，视觉上代码往下飘了一截。
+- **修复**：行号 VBox 与代码 TextFlow 用 HBox 包成同一节点（`HBox(lineNumbers, codeDisplay)` + `Hgrow=ALWAYS` 给代码区），整个 HBox 塞进同一个 ScrollPane。两者共享滚动状态、自然顶部对齐，跟 IDE / GitHub 行号实现保持一致。
+- **复测**：`lineBox.height == flow.height == 166`（修复前两者高度不一致 + ScrollPane 居中导致顶端 firstLineLabel.layoutY 远 > 8.0），First line label `localY=8.0`（紧贴 padding 顶端）。
+- **沉淀**：BorderPane 的 5 区位独立布局——任何 left/right 高度 ≠ center 高度的场景都要警惕居中陷阱。**对于「行号 + 代码」「图标 + 文字」这类需要严格对齐的视觉单元，永远用同一个父容器（HBox/GridPane）包起来，不要用 BorderPane 区位拼接**。
+
+### #33 CodeBlockAnt 没有可见的复制入口
+- **现象**：示例项目的代码块，用户找不到复制按钮，鼠标也选不中文字（无法 Ctrl+C 选区复制）。
+- **根因**（SKILL §22 框架源头问题，非 demo 问题）：
+  1. `theme-base.less` 早就定义了 `.jfx-codeblock-header` / `.jfx-codeblock-lang` / `.jfx-codeblock-copy-btn` 完整样式，`CssClasses` 也有对应常量——但 `CodeBlockAnt.build()` **从来没渲染过 header 和复制按钮**，纯死样式。
+  2. 复制功能只藏在 `setupCopySupport()` 的右键菜单 + Ctrl+C 里，**没有可见入口**，用户根本不知道能复制。
+  3. 代码区用 `TextFlow`（为了语法高亮多色渲染），而 TextFlow **天生不支持文本选区**——所以也没法靠"选中拖拽"复制。
+- **修复**：给 `CodeBlockAnt.Builder` 加 `showCopyButton(boolean)`（默认 true）+ `title(String)`，`build()` 时渲染顶部 header（左侧语言/标题 + 右侧「复制」按钮）。点击一键复制全部代码，按钮短暂显示「已复制」再恢复（PauseTransition 1.2s）——对齐 GitHub / Ant Design 代码块交互。
+- **取舍说明**（Karpathy §1）：
+  - **保留 TextFlow + 复制按钮**，不改用 TextArea。理由：TextArea 支持选区但**会丢失语法高亮**（单色）。代码块的核心价值是高亮，复制需求用「一键复制按钮」覆盖即可（GitHub/MDN/Ant Design 全都是这个方案，不靠选区）。
+  - Ctrl+C / 右键菜单作为补充保留。
+- **复测**：runtime 验证 header 渲染（3 子节点：lang + spacer + copyBtn）、点击后文案变「已复制」、剪贴板内容 == 源码。
+- **沉淀**：LESS 有样式 ≠ 组件渲染了——`CssClasses` 里定义的类，要 grep 确认 Java 端真的 `getStyleClass().add(...)` 挂上了，否则就是"死样式"。这类「样式齐全但功能没接线」的坑，靠看 LESS 发现不了，得从用户视角走一遍交互。
+
+### #34 CodeBlockAnt 不支持自由拖选 + 部分复制（只能整体复制）
+- **现象**：#33 加了复制按钮后，用户进一步要求「能不能像普通文本一样拖选一段、只复制选中的部分」。当前 TextFlow 做不到。
+- **根因**（JavaFX 硬限制）：`TextFlow` 为了多色语法高亮，把代码拆成多个 `Text` 节点——而 **JavaFX 的 TextFlow 不支持跨节点文本选区**。要支持选区必须改用 `TextArea`，但 TextArea 只能单色渲染（不支持富文本多色）。**纯 JavaFX 下「高亮」和「选区」二选一**，想兼得需引入 RichTextFX 等第三方库，与 CodeBlockAnt「零依赖」原则冲突。
+- **修复**：给 `CodeBlockAnt.Builder` 加 `selectable(boolean)`（默认 false）：
+  - `false`（默认）→ TextFlow 高亮（不可选），行为不变，老用户无感知
+  - `true` → 只读 `TextArea` 单色渲染，原生支持拖选 + Ctrl+C + 部分复制（参考项目已有的 `SelectableTextAnt` M19.7 同款方案）
+  - selectable 模式下 TextArea 用 `setPrefRowCount(行数)` 自适应高度撑开，与行号 gutter 一起放进外层 ScrollPane 共享滚动——避免内部滚动条与外层打架，行号天然对齐
+  - 新增 LESS `.text-area.jfx-codeblock-textarea` 复合选择器去掉 TextArea 默认 chrome（背景/边框/焦点环），融入代码块容器
+- **demo 应用**：`Demos.buildCodeToggle`（代码示例区）开 `selectable(true)`——示例代码核心诉求是「选中抄走用」，选区比高亮重要。
+- **复测**：runtime 验证 selectable 模式 center 是 HBox(行号, TextArea)、TextArea editable=false、`selectRange(0,7)` 选中 `package`、`copy()` 后剪贴板 == `package`（部分复制成功）。
+- **沉淀**：JavaFX 文本组件能力矩阵——**高亮选 TextFlow，选区选 TextArea，两者不可兼得**（除非上 RichTextFX）。给「展示型」文本组件设计 API 时，把这个取舍显式暴露成开关（`selectable`），让调用方按场景选，而不是替用户拍板。
+
 
 ## 修复说明（2026-05-17 批次）
 
@@ -71,3 +285,103 @@
 - SpinAnt 的 `Color.web("#1677ff")` 硬编码（JavaFX Shape API 限制）
 - AlertBanner 孤儿类去留
 - AnchorAnt / StatisticAnt 的 `Color`-based API（保留兼容）
+
+---
+
+## 修复说明（2026-05-27 批次）
+
+### #30 MenuAnt 缺 runtime API + ShowcaseFrame 滚动条丢失（双向溯源实证）
+- **现象**：ShowcaseDemo 切下方菜单项后，侧栏滚动条跳回顶部。
+- **表层根因**：`ShowcaseFrame.rebuildSider()` 整体重建 sider，新建 `ScrollPane` 默认 `vvalue=0`。
+- **源头根因**：`MenuAnt` 的 `selectedKey / expandedKeys` 仅在 `build()` 时消费一次，**没有 runtime 修改 API**——逼调用方每次切菜单都重建整棵 menu。
+- **双向修复**（按 SKILL §22 双向溯源原则，源头与示例都修）：
+  1. **源头**（jfxium）：给 `MenuAnt` 加 `Controller`：
+     - `Builder.controller()` 在 `build()` 后返回控制器
+     - `MenuAnt.controllerOf(Pane)` 也能从已构造产物里反查
+     - 提供 `setSelectedKey(String)` / `expandKey(String)` / `collapseKey(String)` / `setExpandedKeys(Collection)`
+     - 内部用 `BuildContext.itemRows` + `expandHandles` 双索引，runtime 切换只改 styleClass / visibility，不重建节点
+  2. **示例**（jfxium-demo）：`ShowcaseFrame.navigateTo()` 用 controller 替代 rebuildSider，路由切换时菜单节点不动，滚动条 / 子菜单展开动画自然保留；rebuildSider 仅保留给 expandMode 切换（MULTIPLE/EXCLUSIVE 是 build-time 配置）
+- **效果**：滚动条不再 reset；同时给所有调用方（admin demo / 业务用户）提供了 runtime 控制能力。
+- **沉淀**：项目约束 SKILL.md 新增第 22 条「示例项目即回归测试 / 双向溯源」，规定后续 demo bug 必须同时追问源头是否有 API 缺失。
+
+### #55 ColorPicker 自定义颜色对话框 slider 超宽（2026-05-31）
+- **现象**：ColorPickerAnt 点「自定义颜色…」弹出的高级取色对话框里，RGB/HSB 数值调节的 slider 横向超出对话框宽度，整体排版不居中、边线杂乱难看（用户连续两轮反馈「一直在超出」）。
+- **误判排查**：一开始怀疑是 SliderAnt 组件本身有设计问题（一直撑大）。实际不是——这里的 slider 是 **JavaFX 原生 `CustomColorDialog` 内部的 `#settings-pane > .slider`**，跟 JFXium 的 SliderAnt 是两码事。
+- **根因**：项目 LESS 此前**完全没有 `.custom-color-dialog` 样式**，只写了 `.color-palette .slider`（那是色板弹层，不是自定义对话框）。`#settings-pane` 是 GridPane，每行 = `settings-label + slider + settings-unit + color-input-field`。slider 没有任何宽度约束时会按 `USE_COMPUTED_SIZE` 无限延展，把整行撑出对话框 → 溢出。
+- **修复**：照抄 AtlantaFX `_color-picker.scss` 的 `.custom-color-dialog` 规范（SKILL §15「复杂控件先扒 AtlantaFX」），em 值按项目根字号 14px 换算成 px，给 settings-pane 内每个微组件显式宽度：
+  - `#settings-pane > .slider { -fx-pref-width: 140px }`（10em，关键：固定宽不再撑爆整行）
+  - `> .settings-label { -fx-min-width: 80px }`（5.75em，R/G/B 标签列）
+  - `> .settings-unit { 21px }`（1.5em，% / ° 单位列）
+  - `> .color-input-field { 56px }`（4em，数值输入框）
+  - `> .web-field { 112px }`（8em，十六进制输入框）
+  - 外加 `.color-rect-pane`（左侧大色块 224px + 色带 24px）、`#buttons-hbox` 右对齐、对话框 padding/spacing/背景。
+- **验证**：`./mvnw -pl jfxium clean install` 通过，grep 编译产物确认 4 套主题（light/dark/light-compact/dark-compact）均生成 `.custom-color-dialog #settings-pane > .slider` 等选择器。
+- **沉淀**：又一例「组件看似有 bug，实为缺样式」——`.color-palette .slider`（色板弹层）≠ `.custom-color-dialog #settings-pane > .slider`（自定义对话框）是两个独立弹窗。复杂原生控件的内部子节点结构必须先扒 AtlantaFX，不能凭印象猜。
+
+## 数据输入控件「取选中 value」+ runtime API 补齐（2026-05-31 批次：BUG #5 / #51-54）
+
+> 用户反馈（BUG #5）：Dropdown/MenuButton/ComboBox/InputNumber/Cascader/TreeSelect/ColorPicker/TimePicker
+> 这一族「数据输入」控件「点了之后取不到选中的 value」——表面是 label（显示文案），用户要的是底层 value（编码值）。
+> 先做了一次全控件审计，再按 SKILL §22「示例项目即回归测试」同时修框架源头 + demo。
+
+### 审计结论：8 个控件里 6 个本来就能取到 value
+| 控件 | 取值回调 | 给的是 | 缺口 |
+|---|---|---|---|
+| ComboBoxAnt | `onChange(T)` | 完整对象 T | 无 |
+| InputNumberAnt | `onChange(Double)` | 数值 | 无 |
+| ColorPickerAnt | `onChange(Color)` | 颜色对象 | 无 |
+| TimePickerAnt | `onChange(LocalTime)` | 时间对象（#50 已修死回调） | 无 |
+| CascaderAnt | `onChange(List<String>)` | 各级 **value** 路径（非 label） | 无 |
+| MenuButtonAnt | 每项 `EventHandler` | 闭包内可取任意值 | 无 |
+| **DropdownAnt** | `onSelect(key)` | **只有 key，丢了 label** | #54 |
+| **TreeSelectAnt 多选** | `onMultipleSelect` | **死回调，从不触发** | #53 |
+
+→ 真正的框架缺口只有 Dropdown(#54) 和 TreeSelect 多选(#53)。另外用户要求「接着补 runtime API」对应 #51/#52。
+
+### #54 DropdownAnt 新增 onSelectItem（回传完整 MenuItem）
+- **根因**：`onSelect(Consumer<String>)` 只给 item 的 key。要显示「编辑」就得调用方自己维护 key→label 映射（demo 里真的写了个 `labelOf(key)` switch，典型 SKILL §22「demo 手写 boilerplate = 框架缺口」信号）。
+- **修复**：新增 `onSelectItem(Consumer<MenuItem>)`，直接回传整个 MenuItem（可取 `getKey()`/`getLabel()`/`getIcon()`）。与 TreeSelectAnt.onSelect(TreeNode) 的「回传完整对象」契约一致。两个回调可并存（onSelect 先、onSelectItem 后），向下兼容。
+- **demo**：删掉 `labelOf(key)` 映射，改用 `onSelectItem(item -> ...item.getLabel()...)`。
+
+### #53 TreeSelectAnt 多选回调接线
+- **根因**：`onMultipleSelect` 字段声明了但 `build()` 的点击 handler 只走单选分支，多选回调从未触发（死回调），且没有多选选中态。
+- **修复**：点击 handler 按 `multiple` 分支——多选时 `toggleMultiSelect(node)` 切换选中集合、输入框回填所有已选 label（"、"拼接）、触发 `onMultipleSelect(已选节点列表)`、不关闭弹层（连续勾选）、刷新行高亮。新增 `.tree-select-selected` 修饰类（浅蓝底 + 主色文字，对齐 Ant），LESS + CssClasses 同步。
+- **demo**：多选 section 加结果 Label 显示「已选 N 项：xxx、yyy」。
+
+### #51 StepsAnt 运行时 Controller（setCurrent/next/prev）
+- **根因**：只有 build-time `.current(int)`，交互式步进（上一步/下一步）demo 只能每次点击 **重建整个 steps 节点**（SKILL §22 信号）。
+- **修复**：仿 MenuAnt.Controller 模式——`build()` 装配 `Controller`，把每步的 circle/number/title/line 节点引用存入 `StepNodes`。`controller()` 拿到后调 `setCurrent(int)`/`next()`/`prev()` 直接重算状态修饰类（finished/current/wait）+ 连接线高亮，**不重建节点**。
+- **demo**：交互式步进改用 `builder.build()` + `builder.controller()`，点击调 `ctrl.next()/prev()`，删掉 `renderSteps()` 重建法。
+
+### #52 AnchorAnt 运行时 Controller（setActiveKey）+ 点击自动移高亮
+- **根因**：activeKey 只在 build-time `.activeKey(...)` 生效，点击锚点只回调 onChange、**高亮条不动**。
+- **修复**：仿 MenuAnt.Controller——`build()` 装配 `Controller`，注册 key→label 引用。点击锚点自动调 `controller.setActiveKey(key)` 移高亮（移除老 active 类、挂新 active 类，不重建）；业务滚动定位时也可主动调 `controller().setActiveKey(key)` 同步。
+- **demo**：active section 默认 `activeKey("intro")`，点击其它锚点高亮条自动移动。
+
+### 沉淀
+- **runtime 修改一律走 Controller 模式**（M19.38 MenuAnt 首创）：`build()` 装配 Controller 持有已渲染节点引用 → setter 直接改 styleClass，不重建。已成为项目「需要 build 后再改状态」类组件的标准范式（Menu/Steps/Anchor 三个）。
+- **「取不到 value」常常是回调契约问题**：回传 key 还是完整对象，决定调用方要不要自己维护映射表。新组件回调优先回传**完整对象**（含 key+label+payload），让调用方自由取。
+- **demo 里出现手写映射表 / 重建节点 / 死回调，都是框架缺口的信号**（SKILL §22 再次验证）。
+
+## SliderAnt 范围模式溢出 + DatePicker 显示不全（2026-05-31：BUG #6 / #7 复发修复）
+
+> 用户复验时 #6（范围 slider 溢出）、#7（DatePicker 显示不全）仍在。重新定位根因——上一轮（#42/#44）只修了一半。
+
+### #56 SliderAnt 范围模式溢出（#42 的回归）
+- **现象**：`SliderAnt.create().range()...build()` 范围滑块横向铺满整个窗口，轨道是「一根线横穿整屏」，"20" 标签被挤到角落。
+- **三次定位 + 真正根因（探针实测）**：
+  1. v1：怀疑是宽度约束，给 rangeBox + slider 都 `maxWidth=MAX + Hgrow`。→ 没用（甚至更糟）。
+  2. v2：改 slider `maxWidth=160`（有界）。→ 布局盒确实 160 了，但用户仍看到溢出。
+  3. **写探针测量运行时真值**（不再猜）：发现 slider 的**布局盒**正确（160px、thumb 位置正确），但内部 `.track` StackPane 的**视觉边界宽达 20144px**（`[-9910, 10234]`）——track 向左右各撑出 ~9999px。
+  - **真正根因**：`.slider .track` 的 `-fx-background-radius: @border-radius-full`（=**9999px**）。JavaFX 的 SliderSkin 布局时**不裁切 track 的圆角**，9999px 圆角直接膨胀了 track 的视觉 bounds，形成「线横穿整屏」的假溢出。thumb 也用了 9999 圆角但因为 width/height 被硬钉死 14px 所以没事；track 没有宽度钳制，圆角就泄出来了。
+- **修复**：`.slider .track` 和 `.slider .colored-track` 的 `-fx-background-radius` 从 `@border-radius-full`(9999) 改为 `@border-radius-md`。track 只有 4px 高，小圆角即可完全圆头。对齐 AtlantaFX `_slider.scss`（track-radius = 普通 border-radius，从不用 full）。修复后探针实测 track=158px、整组 [57,943] 在 952px 卡片内，不溢出。
+- **为何单滑块没暴露**：单滑块外层包了 `StackPane + Rectangle clip`，把 track 溢出部分裁掉了；范围滑块没有 clip，9999px 圆角直接露出来。
+- **沉淀**：
+  - **`@border-radius-full`(9999px) 只能用在「尺寸被硬钳制」的节点**（如固定 14px 的 thumb、固定高度的 badge/pill）。给「宽度不固定、靠父布局拉伸」的节点（track/进度条等）用 9999 圆角，会让圆角泄成巨大视觉 bounds。要圆头用「等于自身高度一半」的小值即可。
+  - **症状是「溢出」不代表根因是「宽度约束」**——布局盒和视觉 bounds 是两回事。猜了两轮 maxWidth 都没中，写探针 5 分钟拿到真值。**遇到反复修不好的布局问题，先测量再动手**（SKILL §4 目标导向验证）。
+
+### #57 DatePicker 基础用法日期文字显示不全（#44 之外的新问题）
+- **现象**：`DatePickerAnt.create().value(LocalDate.now()).build()` 输入框里日期文字被裁切，显示不全。
+- **根因**：`.date-picker` 只 `.input-base()`（无任何宽度约束）。native DatePicker 算的 pref 宽偏紧，配上我们 15px 横向 padding + 右侧箭头按钮，留给日期文字的宽度不够 → 文字被截。#44 只修了「双边框」，没碰宽度。
+- **修复**：`.date-picker` 加 `-fx-min-width: 130px; -fx-pref-width: 160px;`（能容纳「2026/05/31 + 箭头」）。
+- **沉淀**：input-base 家族里 DatePicker 是唯一「内部还有箭头按钮抢宽度」的，不能像 TextField 那样靠默认 pref 宽，必须显式给 min/pref width。

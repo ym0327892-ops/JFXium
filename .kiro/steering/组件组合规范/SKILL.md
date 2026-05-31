@@ -492,6 +492,29 @@ String desc = "数据为空时的占位 —— 比\"白屏\"友好";  // 转义
 
 > 📝 **历史教训**：Showcase Section 的 description 里多次踩到（M19.7 SelectableText / M19.10 Descriptions 等）；Java 不识别中文场景下的"花引号"是字符串边界。
 
+### 4.12 给「尺寸未钳制」的节点用 `@border-radius-full`(9999px)（M19.43 Slider track 实证）
+
+❌ **错误**：在宽/高靠父布局拉伸、没有 min/max 钳死的节点上用 9999px 圆角。
+```less
+.slider .track {
+  -fx-background-radius: @border-radius-full;   /* 9999px */
+  -fx-pref-height: 4px;                          /* 高固定，但宽不固定 */
+}
+```
+JavaFX 的 SliderSkin 不裁切 track 圆角 → 9999px 圆角把 track 视觉 bounds 向左右各撑出 ~9999px（探针实测 track 宽 20144px），形成「一根线横穿整个窗口」的假溢出。
+
+✅ **正确**：圆头只要 ≥ 自身厚度一半即可；细条用普通 radius。
+```less
+.slider .track {
+  -fx-background-radius: @border-radius-md;   /* track 4px 高，小圆角就完全圆头 */
+  -fx-pref-height: 4px;
+}
+```
+
+**判断**：9999px 圆角只能用在 width/height **都被钳死**的节点（thumb 14×14、badge-dot 8×8）。详见项目约束 SKILL #23。
+
+> 📝 **历史教训**：范围 Slider 溢出，连改两轮 `maxWidth` 都没中（根因不是宽度约束，是圆角泄出）。**「溢出」症状 ≠ 根因是「宽度」**——反复修不好就写探针 dump `getBoundsInLocal()`，别猜。clip 会掩盖这类 bug（单滑块有 clip 没暴露，范围滑块没 clip 才暴露）。
+
 ---
 
 ## 五、写新复杂组件的检查清单

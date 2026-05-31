@@ -9,17 +9,28 @@ public final class CssClasses {
     private CssClasses() {}
 
     /* ============================================
+       通用背景层级（M19.35）— 容器组件用 Background 枚举挑层级，挂对应 styleClass
+       ============================================ */
+    public static final String BG_DEFAULT     = "jfx-bg-default";
+    public static final String BG_SUBTLE      = "jfx-bg-subtle";
+    public static final String BG_LAYOUT      = "jfx-bg-layout";
+    public static final String BG_INSET       = "jfx-bg-inset";
+    public static final String BG_TRANSPARENT = "jfx-bg-transparent";
+
+    /* ============================================
        Button Classes
        ============================================ */
 
     /** Button variants */
     public static final String BUTTON_DEFAULT = "default";
-    public static final String BUTTON_PRIMARY = "primary";
+    /** Accent / Primary 视觉变体（PRIMARY 与 ACCENT 共用此类，LESS 中 .button.accent 即可命中）。 */
     public static final String BUTTON_ACCENT = "accent";
     public static final String BUTTON_OUTLINED = "outlined";
     public static final String BUTTON_DASHED = "dashed";
     public static final String BUTTON_TEXT = "text";
     public static final String BUTTON_LINK = "link";
+    /** Ghost 修饰类：透明背景 + 反色边框/文字，与 type 类组合使用（M19.28 改用 styleClass 取代 inline style）。 */
+    public static final String BUTTON_GHOST = "ghost";
 
     /** Button sizes */
     public static final String SIZE_SMALL = "small";
@@ -133,6 +144,8 @@ public final class CssClasses {
     public static final String FORM_HELP_WARNING = "form-help-warning";
     public static final String FORM_HELP_SUCCESS = "form-help-success";
     public static final String FORM_FOOTER = "form-footer";
+    public static final String FORM_HEADER = "form-header";
+    public static final String FORM_SECTION_TITLE = "form-section-title";
 
     /** TableAnt 表格附加常量（jfx-table 等已直接以字符串使用，此处补充） */
     public static final String TABLE = "jfx-table";
@@ -348,6 +361,7 @@ public final class CssClasses {
     public static final String TREE_SELECT_ARROW = "tree-select-arrow";
     public static final String TREE_SELECT_LABEL = "tree-select-label";
     public static final String TREE_SELECT_DISABLED = "tree-select-disabled";
+    public static final String TREE_SELECT_SELECTED = "tree-select-selected";
 
     /** SegmentedAnt */
     public static final String SEGMENTED = "segmented";
@@ -540,6 +554,16 @@ public final class CssClasses {
     public static final String CRUD_TEMPLATE_BOTTOMBAR = "crud-template-bottombar";
 
     /* ============================================
+       PageTemplate（M19.33）— 通用展示页骨架
+       「大标题 + 描述 + 内容区」最简结构，覆盖 ShowcasePage / 文档页 / 设置页等场景。
+       ============================================ */
+    public static final String PAGE_TEMPLATE         = "page-template";
+    public static final String PAGE_TEMPLATE_TITLE   = "page-template-title";
+    public static final String PAGE_TEMPLATE_DESC    = "page-template-desc";
+    public static final String PAGE_TEMPLATE_HEADER  = "page-template-header";
+    public static final String PAGE_TEMPLATE_BODY    = "page-template-body";
+
+    /* ============================================
        SplitBarAnt（M19）— 横向左/中/右三段式布局
        ============================================ */
     public static final String SPLIT_BAR        = "split-bar";
@@ -555,4 +579,26 @@ public final class CssClasses {
     public static final String SELECTABLE_TEXT_SUCCESS   = "jfx-selectable-text-success";
     public static final String SELECTABLE_TEXT_WARNING   = "jfx-selectable-text-warning";
     public static final String SELECTABLE_TEXT_ERROR     = "jfx-selectable-text-error";
+
+    /* ============================================
+       LoginTemplate（M19.16，M19.39 LESS 化）
+       ============================================ */
+    public static final String LOGIN_ROOT            = "login-template";
+    public static final String LOGIN_BANNER          = "login-template-banner";
+    public static final String LOGIN_BANNER_LOGO_BOX = "login-template-banner-logo";
+    public static final String LOGIN_BANNER_BRAND    = "login-template-banner-brand";
+    public static final String LOGIN_BANNER_TAGLINE  = "login-template-banner-tagline";
+    public static final String LOGIN_BANNER_FEATURE_CHECK = "login-template-banner-feature-check";
+    public static final String LOGIN_BANNER_FEATURE_TEXT  = "login-template-banner-feature-text";
+    public static final String LOGIN_BANNER_COPYRIGHT     = "login-template-banner-copyright";
+    public static final String LOGIN_FORM            = "login-template-form";
+    public static final String LOGIN_FORM_TITLE      = "login-template-form-title";
+    public static final String LOGIN_FORM_SUBTITLE   = "login-template-form-subtitle";
+    public static final String LOGIN_FORM_ERROR      = "login-template-form-error";
+    public static final String LOGIN_FORM_INPUT_ROW  = "login-template-input-row";
+    public static final String LOGIN_FORM_INPUT_FIELD = "login-template-input-field";
+    public static final String LOGIN_FORM_REMEMBER   = "login-template-remember";
+    public static final String LOGIN_FORM_LINK_SMALL = "login-template-link-small";
+    public static final String LOGIN_FORM_SUBMIT     = "login-template-submit";
+    public static final String LOGIN_FORM_NO_ACCOUNT = "login-template-no-account";
 }

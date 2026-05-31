@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -189,10 +188,12 @@ public class SliderAnt {
                 slider.setOnMouseReleased(e -> onChangeComplete.accept(slider.getValue()));
             }
 
-            // 宽度约束：水平方向至少 200px、可拉伸；垂直方向固定高度 200
+            // 宽度约束：水平方向默认 240px、可在能拉伸的父容器里拉伸；垂直方向固定高度 200
+            // 注：prefWidth 给定值（非 USE_COMPUTED_SIZE）——否则在不约束宽度的父容器（如居左 HBox）里
+            //     maxWidth=MAX 会让 slider 无限膨胀撑破容器（M19.42 修 #6/#8）
             if (!vertical) {
-                slider.setPrefWidth(Region.USE_COMPUTED_SIZE);
-                slider.setMinWidth(200);
+                slider.setPrefWidth(240);
+                slider.setMinWidth(120);
                 slider.setMaxWidth(Double.MAX_VALUE);
                 HBox.setHgrow(slider, Priority.ALWAYS);
             } else {
@@ -253,6 +254,9 @@ public class SliderAnt {
             HBox rangeBox = new HBox(8);
             rangeBox.setAlignment(Pos.CENTER_LEFT);
             rangeBox.getStyleClass().add(CssClasses.SLIDER_RANGE);
+            // rangeBox 填充父容器宽度（maxWidth=MAX）但内部 slider 各自限宽 160，
+            //   所以整组内容靠左、宽卡片右侧留白，窄卡片里 HBox 自动收缩 slider，不溢出。
+            rangeBox.setMaxWidth(Double.MAX_VALUE);
 
             double startVal = rangeValue != null && rangeValue.length >= 2 ? rangeValue[0] : min;
             double endVal = rangeValue != null && rangeValue.length >= 2 ? rangeValue[1] : max;
@@ -270,10 +274,14 @@ public class SliderAnt {
                 if (disabled) {
                     slider.getStyleClass().add(CssClasses.SLIDER_DISABLED);
                 }
-                slider.setPrefWidth(Region.USE_COMPUTED_SIZE);
-                slider.setMinWidth(100);
-                slider.setMaxWidth(Double.MAX_VALUE);
-                HBox.setHgrow(slider, Priority.ALWAYS);
+                // M19.43.1 #6 二次修复：maxWidth 钉在 pref(160) 而非 MAX。
+                //   上一版 maxWidth=MAX + Hgrow 让两个 slider 在宽卡片里无限拉伸、铺满整行
+                //   （截图：轨道顶到卡片左右边、"20" 标签被挤到角落）。
+                //   改成 maxWidth=160：宽卡片里每个 slider 最多 160，整组 ~520px 居左、留白正常；
+                //   窄卡片里 HBox 仍会把 slider 收缩到 minWidth(60)（收缩不需要 Hgrow），不溢出。
+                slider.setPrefWidth(160);
+                slider.setMinWidth(60);
+                slider.setMaxWidth(160);
             }
 
             Label startLabel = new Label(String.valueOf((int) startVal));
