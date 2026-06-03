@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.core.css.Background;
 
 /**
@@ -98,6 +99,54 @@ public class HBoxAnt extends HBox {
                 if (n != null) getChildren().add(n);
             }
         }
+        return this;
+    }
+
+    /** HBox 是否让子节点垂直撑满（默认 true）。 */
+    public HBoxAnt fillHeight(boolean fill) {
+        setFillHeight(fill);
+        return this;
+    }
+
+    /** 给指定子节点设置水平拉伸优先级。 */
+    public HBoxAnt hgrow(Node child, Priority priority) {
+        HBox.setHgrow(child, priority);
+        return this;
+    }
+
+    /** 给指定子节点设置外边距。 */
+    public HBoxAnt margin(Node child, Insets margin) {
+        HBox.setMargin(child, margin);
+        return this;
+    }
+
+    public HBoxAnt maxW(double width) {
+        setMaxWidth(width);
+        return this;
+    }
+
+    public HBoxAnt maxH(double height) {
+        setMaxHeight(height);
+        return this;
+    }
+
+    public HBoxAnt minW(double width) {
+        setMinWidth(width);
+        return this;
+    }
+
+    public HBoxAnt minH(double height) {
+        setMinHeight(height);
+        return this;
+    }
+
+    public HBoxAnt prefW(double width) {
+        setPrefWidth(width);
+        return this;
+    }
+
+    public HBoxAnt prefH(double height) {
+        setPrefHeight(height);
         return this;
     }
 

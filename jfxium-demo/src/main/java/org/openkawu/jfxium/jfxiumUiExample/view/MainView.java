@@ -4,19 +4,18 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import org.openkawu.jfxium.component.AvatarAnt;
-import org.openkawu.jfxium.component.ButtonAnt;
-import org.openkawu.jfxium.component.IconAnt;
-import org.openkawu.jfxium.component.MenuAnt;
-import org.openkawu.jfxium.component.SplitBarAnt;
-import org.openkawu.jfxium.component.TypographyAnt;
+
+
+
 import org.openkawu.jfxium.component.layout.ScrollContainerAnt;
 import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.theme.ThemeColor;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.jfxiumUiExample.pages.HomePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.AvatarBadgeExamplePage;
@@ -68,15 +67,16 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.TooltipExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.ButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.CodeBlockExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.IconExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.general.LabelExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.MenuButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SegmentedExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SelectableTextExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SplitButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.TypographyExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.WatermarkExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.BarExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.FlexExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.GridExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.layout.SplitBarExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.AnchorExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.BreadcrumbExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.DropdownExamplePage;
@@ -89,6 +89,13 @@ import org.openkawu.jfxium.layout.AppShellAnt;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.control.IconAnt;
+import org.openkawu.jfxium.component.control.ComboBoxAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.composite.MenuAnt;
+import org.openkawu.jfxium.component.composite.BarAnt;
+import org.openkawu.jfxium.component.composite.AvatarAnt;
 
 /**
  * 主窗口 —— admin 风格三段式：顶栏 + 左侧菜单 + 中间内容区。
@@ -152,6 +159,8 @@ public class MainView {
         // ============ 通用（General）============
         registry.register("general.button", "Button 按钮",
                 PageRegistry.Category.GENERAL, ButtonExamplePage::new);
+        registry.register("general.label", "Label 文本",
+                PageRegistry.Category.GENERAL, LabelExamplePage::new);
         registry.register("general.codeblock", "CodeBlock 代码块",
                 PageRegistry.Category.GENERAL, CodeBlockExamplePage::new);
         registry.register("general.typography", "Typography 排版",
@@ -174,8 +183,8 @@ public class MainView {
                 PageRegistry.Category.LAYOUT, GridExamplePage::new);
         registry.register("layout.flex", "Flex 弹性布局",
                 PageRegistry.Category.LAYOUT, FlexExamplePage::new);
-        registry.register("layout.splitbar", "SplitBar 三段式",
-                PageRegistry.Category.LAYOUT, SplitBarExamplePage::new);
+        registry.register("layout.bar", "Bar 横向栏",
+                PageRegistry.Category.LAYOUT, BarExamplePage::new);
 
         // ============ 导航（Navigation）============
         registry.register("navigation.menu", "Menu 菜单",
@@ -200,7 +209,7 @@ public class MainView {
                 PageRegistry.Category.DATA_ENTRY, InputExamplePage::new);
         registry.register("dataentry.switch", "Switch 开关",
                 PageRegistry.Category.DATA_ENTRY, SwitchExamplePage::new);
-        registry.register("dataentry.select", "Select 选择器",
+        registry.register("dataentry.select", "ComboBox 下拉框",
                 PageRegistry.Category.DATA_ENTRY, SelectExamplePage::new);
         registry.register("dataentry.checkbox", "Checkbox 复选框",
                 PageRegistry.Category.DATA_ENTRY, CheckboxExamplePage::new);
@@ -321,18 +330,54 @@ public class MainView {
         HBox brandBox = new HBox(10, logo, brand);
         brandBox.setAlignment(Pos.CENTER_LEFT);
 
-        Button toggleTheme = ButtonAnt.create("亮 / 暗")
-                .onClick(e -> ThemeManager.getInstance().toggleTheme()).build();
+        ThemeManager tm = ThemeManager.getInstance();
+
+        // 主题风格选择（设计语言：Ant Design / MUI）
+        ComboBox<ThemeManager.Family> styleSelect = ComboBoxAnt.<ThemeManager.Family>create()
+                .items(ThemeManager.Family.values())
+                .value(tm.getCurrentFamily())
+                .size(ComboBoxAnt.Size.SMALL)
+                .onChange(family -> { if (family != null) tm.setFamily(family); })
+                .build();
+        // 下拉显示中文名而非枚举名
+        styleSelect.setConverter(new javafx.util.StringConverter<>() {
+            @Override public String toString(ThemeManager.Family f) { return f == null ? "" : f.getDisplayName(); }
+            @Override public ThemeManager.Family fromString(String s) { return null; }
+        });
+
+        // 明暗选择（亮色 / 暗色）
+        ComboBox<String> modeSelect = ComboBoxAnt.<String>create()
+                .items("亮色", "暗色")
+                .value(tm.isDark() ? "暗色" : "亮色")
+                .size(ComboBoxAnt.Size.SMALL)
+                .onChange(mode -> tm.setDark("暗色".equals(mode)))
+                .build();
+
+        // 紧凑密度切换
         Button toggleCompact = ButtonAnt.create("紧凑")
-                .onClick(e -> ThemeManager.getInstance().toggleCompact()).build();
+                .size(ButtonAnt.Size.SMALL)
+                .onClick(e -> tm.toggleCompact()).build();
+
+        // 主题色选择（11 个 Ant Design 预设色）
+        ComboBox<ThemeColor.Preset> colorSelect = ComboBoxAnt.<ThemeColor.Preset>create()
+                .items(ThemeColor.Preset.values())
+                .value(ThemeColor.Preset.BLUE)
+                .size(ComboBoxAnt.Size.SMALL)
+                .onChange(preset -> { if (preset != null) tm.setPrimaryColor(preset); })
+                .build();
+        colorSelect.setConverter(new javafx.util.StringConverter<>() {
+            @Override public String toString(ThemeColor.Preset p) { return p == null ? "" : p.getDisplayName(); }
+            @Override public ThemeColor.Preset fromString(String s) { return null; }
+        });
+
         Label userLabel = TypographyAnt.text("👤 " + currentUser)
                 .type(TypographyAnt.Type.SECONDARY).build();
         Button logout = ButtonAnt.create("退出")
                 .type(ButtonAnt.Type.LINK).onClick(e -> doLogout()).build();
 
-        HBox header = SplitBarAnt.create()
+        HBox header = BarAnt.create()
                 .left(brandBox)
-                .right(toggleTheme, toggleCompact, userLabel, logout)
+                .right(styleSelect, modeSelect, toggleCompact, colorSelect, userLabel, logout)
                 .gap(12).build();
         // 背景色 + 底边框由 AppShellAnt 给 header 挂的 .app-shell-header styleClass 控制；
         // 这里只补 padding（结构性属性），不挂 Background.DEFAULT —— 避免覆盖 LESS 的容器色阶。

@@ -4,10 +4,11 @@ import java.util.List;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.openkawu.jfxium.component.TreeSelectAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.TreeSelectAnt;
 
 /**
  * TreeSelect 树选择 —— 基础 / 多选。

@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.TextAreaAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.TextAreaAnt;
 
 /**
  * TextArea 多行输入 —— 基础 / 行数 / 禁用与只读。

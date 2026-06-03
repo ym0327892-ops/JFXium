@@ -10,8 +10,9 @@
 
 // Step 2: 覆盖为 Ant Design compact 尺寸（与 light-compact 完全一致）
 // --------------------------------------------
-@spacing-xs: 4px;
-@spacing-sm: 8px;
+// M19.45 修正：xs/sm 对齐 mui-compact，让走 spacing 的组件紧凑模式真正收紧。
+@spacing-xs: 2px;
+@spacing-sm: 6px;
 @spacing-md: 8px;
 @spacing-lg: 12px;
 @spacing-xl: 16px;
@@ -19,6 +20,10 @@
 @control-height: 28px;
 @control-height-sm: 20px;
 @control-height-lg: 36px;
+
+// Table 表头高 / 行高（M19.45）：紧凑模式收紧 48 → 36
+@table-header-height: 36px;
+@table-row-height: 36px;
 
 @ctrl-padding-y: 5px;
 @ctrl-padding-x: 11px;

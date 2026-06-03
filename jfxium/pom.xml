@@ -56,173 +56,68 @@
                     <target>21</target>
                 </configuration>
             </plugin>
+            <!-- ============================================
+                 LESS → CSS 编译（纯 Java，不依赖 Node.js）
+                 使用 jlessc（de.inetsoftware:jlessc:1.16）纯 Java LESS 编译器。
+                 M19.46：从 exec-maven-plugin(npx lessc) 迁移而来，新机器无需安装 Node。
+                 ============================================ -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.1.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>de.inetsoftware</groupId>
+                        <artifactId>jlessc</artifactId>
+                        <version>1.16</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>compile-less-themes</id>
                         <phase>generate-resources</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-light.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-light.css</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-less-themes-dark</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-dark.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-dark.css</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-less-themes-mui</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-mui.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-mui.css</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-less-themes-shadcn</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-shadcn.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-shadcn.css</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-less-themes-cyberpunk</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-cyberpunk.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-cyberpunk.css</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-less-themes-custom</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-custom.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-custom.css</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-less-themes-mui-compact</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-mui-compact.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-mui-compact.css</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-less-themes-mui-dark</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-mui-dark.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-mui-dark.css</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-less-themes-mui-dark-compact</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-mui-dark-compact.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-mui-dark-compact.css</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-less-themes-light-compact</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-light-compact.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-light-compact.css</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-less-themes-dark-compact</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>npx</executable>
-                            <arguments>
-                                <argument>lessc</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/less/theme-dark-compact.less</argument>
-                                <argument>${project.basedir}/src/main/resources/org/openkawu/jfxium/css/theme-dark-compact.css</argument>
-                            </arguments>
+                            <source>
+                                import com.inet.lib.less.Less
+
+                                def lessDir = new File(project.basedir, 'src/main/resources/org/openkawu/jfxium/css/less')
+                                def cssDir  = new File(project.basedir, 'src/main/resources/org/openkawu/jfxium/css')
+
+                                def themes = [
+                                    'theme-light', 'theme-dark',
+                                    'theme-mui', 'theme-mui-compact', 'theme-mui-dark', 'theme-mui-dark-compact',
+                                    'theme-shadcn', 'theme-cyberpunk', 'theme-custom',
+                                    'theme-light-compact', 'theme-dark-compact'
+                                ]
+
+                                themes.each { name -&gt;
+                                    def input  = new File(lessDir, name + '.less')
+                                    def output = new File(cssDir,  name + '.css')
+                                    if (!input.exists()) {
+                                        log.warn('LESS source not found, skipping: ' + input)
+                                        return
+                                    }
+                                    def css = Less.compile(input, false)
+                                    if (css == null || css.length() == 0) {
+                                        throw new RuntimeException('jlessc produced empty CSS for ' + name)
+                                    }
+                                    // 用 FileWriter 显式写入 + flush + close，避免某些 classloader 下
+                                    // Files.writeString / File.text 静默失败（M19.50 实证：会假成功不落盘）
+                                    def writer = new java.io.OutputStreamWriter(
+                                            new java.io.FileOutputStream(output), 'UTF-8')
+                                    try {
+                                        writer.write(css)
+                                        writer.flush()
+                                    } finally {
+                                        writer.close()
+                                    }
+                                    log.info('Compiled LESS: ' + name + '.css (' + css.length() + ' chars)')
+                                }
+                                log.info('All ' + themes.size() + ' themes compiled successfully (jlessc, no Node.js required)')
+                            </source>
                         </configuration>
                     </execution>
                 </executions>

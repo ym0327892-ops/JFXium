@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.TagAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.TagAnt;
 
 /**
  * Tag 标签 —— 类型 / 尺寸 / 形状 / 可关闭。

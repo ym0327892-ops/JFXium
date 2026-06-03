@@ -3,10 +3,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
-import org.openkawu.jfxium.component.ColorPickerAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.ColorPickerAnt;
 
 /**
  * ColorPicker 颜色选择 —— 基础 / 带默认值。

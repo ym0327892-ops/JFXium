@@ -421,6 +421,7 @@
    Button Component
    ============================================ */
 .button {
+  -fx-background-radius: 4px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 4px 12px;
   -fx-cursor: hand;
@@ -539,7 +540,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
+  -fx-padding: 4px 8px;
   -fx-text-fill: rgba(33, 33, 33, 0.87);
 }
 .text-field:hover {
@@ -558,7 +559,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
+  -fx-padding: 4px 8px;
   -fx-text-fill: rgba(33, 33, 33, 0.87);
 }
 .text-area:hover {
@@ -582,7 +583,7 @@
   -fx-background-color: #ffffff;
   -fx-background-radius: 6px;
   -fx-border-radius: 6px;
-  -fx-padding: 12px;
+  -fx-padding: 8px;
 }
 .card.bordered {
   -fx-border-color: -color-border-default;
@@ -616,13 +617,13 @@
 }
 /* 卡片 Header */
 .card .card-header {
-  -fx-padding: 9px 12px;
+  -fx-padding: 6px 8px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
 /* 卡片 Body */
 .card .card-body {
-  -fx-padding: 12px;
+  -fx-padding: 8px;
 }
 .card.card-small .card-body {
   -fx-padding: 8px;
@@ -923,6 +924,8 @@
 .check-box {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
+  -fx-label-padding: 0 0 0 6px;
+  /* 框与文字间距，对齐 AtlantaFX $graphic-gap: 6px */
 }
 .check-box .box {
   -fx-background-color: -color-bg-default;
@@ -935,7 +938,8 @@
   -fx-alignment: CENTER;
 }
 .check-box .box .mark {
-  /* mark 是中间的 ✓ —— 默认 modena 已有 shape，这里保证尺寸一致 */
+  /* mark 是中间的 ✓ —— 显式设 shape 保证勾形不被覆盖丢失 */
+  -fx-shape: "M-0.25,6.083c0.843-0.758,4.583,4.833,5.75,4.833S14.5-1.5,15.917-0.917c1.292,0.532-8.75,17.083-10.5,17.083C3,16.167-1.083,6.833-0.25,6.083z";
   -fx-min-width: 8px;
   -fx-max-width: 8px;
   -fx-min-height: 8px;
@@ -974,6 +978,8 @@
 .radio-button {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
+  -fx-label-padding: 0 0 0 6px;
+  /* 框与文字间距 6px（对齐 AtlantaFX $graphic-gap） */
 }
 .radio-button .radio {
   -fx-background-color: -color-bg-default;
@@ -1022,7 +1028,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
+  -fx-padding: 4px 8px;
   -fx-text-fill: rgba(33, 33, 33, 0.87);
 }
 .combo-box:hover {
@@ -1290,7 +1296,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
+  -fx-padding: 4px 8px;
   -fx-text-fill: rgba(33, 33, 33, 0.87);
   /* M19.43 #7：modena 算的 pref 宽偏窄，配上我们的 padding + 箭头按钮会把日期文字裁掉「显示不全」。
      给一个能容纳「2026/05/31 + 箭头」的最小宽度，文字不再被截断。 */
@@ -1472,7 +1478,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
+  -fx-padding: 4px 8px;
   -fx-text-fill: rgba(33, 33, 33, 0.87);
   -fx-min-width: 60px;
   -fx-pref-width: 80px;
@@ -2065,7 +2071,7 @@
   -fx-text-fill: -color-fg-default;
   -fx-alignment: CENTER;
   -fx-content-display: LEFT;
-  -fx-padding: 2px 11px;
+  -fx-padding: 2px 8px;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
@@ -2082,7 +2088,7 @@
 }
 .choice-box .open-button {
   -fx-background-color: transparent;
-  -fx-padding: 6px 11px;
+  -fx-padding: 4px 8px;
 }
 .choice-box .open-button .arrow {
   -fx-background-color: -color-fg-muted;
@@ -2096,7 +2102,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
+  -fx-padding: 4px 8px;
   -fx-text-fill: rgba(33, 33, 33, 0.87);
   -fx-padding: 0;
   -fx-focus-color: transparent;
@@ -2110,7 +2116,7 @@
 .spinner .text-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
-  -fx-padding: 6px 11px;
+  -fx-padding: 4px 8px;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -2599,6 +2605,17 @@
 /* IconAnt SVG path 模式：用 -fx-background-color 给 Region 上色（配合 -fx-shape） */
 .jfx-icon-path {
   -fx-background-color: -color-fg-default;
+}
+/* 当 icon 在可交互父容器中（button/menu-item/等）时，hover 自动变主题色 */
+.button:hover .jfx-icon-path,
+.menu-item:hover .jfx-icon-path,
+.toggle-button:hover .jfx-icon-path {
+  -fx-background-color: -color-accent-emphasis;
+}
+/* 选中态 */
+.button:armed .jfx-icon-path,
+.toggle-button:selected .jfx-icon-path {
+  -fx-background-color: -color-accent-emphasis;
 }
 /* 主题色变体：用户挂额外 styleClass 即可切色 */
 .jfx-icon-path.icon-muted {
@@ -3942,11 +3959,11 @@
    Input Sizes
    ============================================ */
 .text-field.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 2px 6px;
   -fx-font-size: 12px;
 }
 .text-field.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 6px 8px;
   -fx-font-size: 16px;
 }
 /* ============================================
@@ -4116,7 +4133,9 @@
    ============================================ */
 .toggle-button {
   -fx-background-radius: 4px;
+  -fx-text-fill: -color-fg-default;
   -fx-padding: 4px 12px;
+  -fx-cursor: hand;
   -fx-font-weight: 500;
   -fx-alignment: center;
   -fx-background-color: -color-bg-default;
@@ -4198,7 +4217,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
+  -fx-padding: 4px 8px;
   -fx-text-fill: rgba(33, 33, 33, 0.87);
 }
 .password-field:hover {
@@ -4209,11 +4228,11 @@
   -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
 }
 .password-field.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 2px 6px;
   -fx-font-size: 12px;
 }
 .password-field.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 6px 8px;
   -fx-font-size: 16px;
 }
 /* ============================================
@@ -4744,49 +4763,49 @@
 .text-field.small,
 .text-area.small,
 .password-field.small {
-  -fx-padding: 2px 11px;
+  -fx-padding: 2px 8px;
   -fx-font-size: 12px;
 }
 .text-field.large,
 .text-area.large,
 .password-field.large {
-  -fx-padding: 6px 11px;
+  -fx-padding: 6px 8px;
   -fx-font-size: 13px;
 }
 /* ComboBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
 .combo-box.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 2px 6px;
   -fx-font-size: 12px;
 }
 .combo-box.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 6px 8px;
   -fx-font-size: 16px;
 }
 /* ChoiceBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
 .choice-box.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 2px 6px;
   -fx-font-size: 12px;
 }
 .choice-box.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 6px 8px;
   -fx-font-size: 16px;
 }
 /* DatePicker sizes — 与 input-base 家族其他成员一致（M19.5 新增） */
 .date-picker.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 2px 6px;
   -fx-font-size: 12px;
 }
 .date-picker.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 6px 8px;
   -fx-font-size: 16px;
 }
 /* ColorPicker sizes — 与 input-base 家族其他成员一致（M19.5 新增） */
 .color-picker.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 2px 6px;
   -fx-font-size: 12px;
 }
 .color-picker.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 6px 8px;
   -fx-font-size: 16px;
 }
 /* Tag sizes */

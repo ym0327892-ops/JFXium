@@ -4,10 +4,11 @@ import java.time.LocalTime;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.openkawu.jfxium.component.TimePickerAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.TimePickerAnt;
 
 /**
  * TimePicker 时间选择 —— 基础 / 时分格式 / 默认值。

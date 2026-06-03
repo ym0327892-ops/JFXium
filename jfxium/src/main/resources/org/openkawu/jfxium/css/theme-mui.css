@@ -421,6 +421,7 @@
    Button Component
    ============================================ */
 .button {
+  -fx-background-radius: 4px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 6px 16px;
   -fx-cursor: hand;
@@ -582,7 +583,7 @@
   -fx-background-color: #ffffff;
   -fx-background-radius: 6px;
   -fx-border-radius: 6px;
-  -fx-padding: 16px;
+  -fx-padding: 12px;
 }
 .card.bordered {
   -fx-border-color: -color-border-default;
@@ -616,13 +617,13 @@
 }
 /* 卡片 Header */
 .card .card-header {
-  -fx-padding: 12px 16px;
+  -fx-padding: 9px 12px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
 /* 卡片 Body */
 .card .card-body {
-  -fx-padding: 16px;
+  -fx-padding: 12px;
 }
 .card.card-small .card-body {
   -fx-padding: 12px;
@@ -923,6 +924,8 @@
 .check-box {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
+  -fx-label-padding: 0 0 0 6px;
+  /* 框与文字间距，对齐 AtlantaFX $graphic-gap: 6px */
 }
 .check-box .box {
   -fx-background-color: -color-bg-default;
@@ -935,7 +938,8 @@
   -fx-alignment: CENTER;
 }
 .check-box .box .mark {
-  /* mark 是中间的 ✓ —— 默认 modena 已有 shape，这里保证尺寸一致 */
+  /* mark 是中间的 ✓ —— 显式设 shape 保证勾形不被覆盖丢失 */
+  -fx-shape: "M-0.25,6.083c0.843-0.758,4.583,4.833,5.75,4.833S14.5-1.5,15.917-0.917c1.292,0.532-8.75,17.083-10.5,17.083C3,16.167-1.083,6.833-0.25,6.083z";
   -fx-min-width: 8px;
   -fx-max-width: 8px;
   -fx-min-height: 8px;
@@ -974,6 +978,8 @@
 .radio-button {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
+  -fx-label-padding: 0 0 0 6px;
+  /* 框与文字间距 6px（对齐 AtlantaFX $graphic-gap） */
 }
 .radio-button .radio {
   -fx-background-color: -color-bg-default;
@@ -2600,6 +2606,17 @@
 .jfx-icon-path {
   -fx-background-color: -color-fg-default;
 }
+/* 当 icon 在可交互父容器中（button/menu-item/等）时，hover 自动变主题色 */
+.button:hover .jfx-icon-path,
+.menu-item:hover .jfx-icon-path,
+.toggle-button:hover .jfx-icon-path {
+  -fx-background-color: -color-accent-emphasis;
+}
+/* 选中态 */
+.button:armed .jfx-icon-path,
+.toggle-button:selected .jfx-icon-path {
+  -fx-background-color: -color-accent-emphasis;
+}
 /* 主题色变体：用户挂额外 styleClass 即可切色 */
 .jfx-icon-path.icon-muted {
   -fx-background-color: -color-fg-muted;
@@ -4116,7 +4133,9 @@
    ============================================ */
 .toggle-button {
   -fx-background-radius: 4px;
+  -fx-text-fill: -color-fg-default;
   -fx-padding: 6px 16px;
+  -fx-cursor: hand;
   -fx-font-weight: 500;
   -fx-alignment: center;
   -fx-background-color: -color-bg-default;

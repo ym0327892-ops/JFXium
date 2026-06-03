@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
-import org.openkawu.jfxium.component.ButtonAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 
 public class PopconfirmPanel {
 

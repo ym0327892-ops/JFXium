@@ -99,6 +99,46 @@ public class SplitPaneAnt extends SplitPane {
         return this;
     }
 
+    public SplitPaneAnt padding(double padding) {
+        setPadding(new javafx.geometry.Insets(padding));
+        return this;
+    }
+
+    public SplitPaneAnt padding(double top, double right, double bottom, double left) {
+        setPadding(new javafx.geometry.Insets(top, right, bottom, left));
+        return this;
+    }
+
+    public SplitPaneAnt maxW(double width) {
+        setMaxWidth(width);
+        return this;
+    }
+
+    public SplitPaneAnt maxH(double height) {
+        setMaxHeight(height);
+        return this;
+    }
+
+    public SplitPaneAnt minW(double width) {
+        setMinWidth(width);
+        return this;
+    }
+
+    public SplitPaneAnt minH(double height) {
+        setMinHeight(height);
+        return this;
+    }
+
+    public SplitPaneAnt prefW(double width) {
+        setPrefWidth(width);
+        return this;
+    }
+
+    public SplitPaneAnt prefH(double height) {
+        setPrefHeight(height);
+        return this;
+    }
+
     // ============================================================
     // 视觉钩子
     // ============================================================

@@ -154,7 +154,7 @@ public class MyAdmin extends Application {
         // 4. 用 CrudTemplate 拼整页
         BorderPane page = CrudTemplate.create()
             .title("用户管理")
-            .topRight(SplitBarAnt.create().left(search).right(addBtn).build())
+            .topRight(BarAnt.create().left(search).right(addBtn).build())
             .body(table)
             .bottomRight(pager)
             .build();
@@ -205,7 +205,7 @@ public class MyAdmin extends Application {
 | **简单二维网格** | GridPaneAnt（cell/row/column 链式 API）|
 | **垂直滚动长内容** | ScrollPaneAnt 或 ScrollContainerAnt |
 | **拖拽分屏 IDE 风格** | SplitPaneAnt |
-| **顶部三段式工具栏**（左/中/右）| SplitBarAnt |
+| **顶部三段式工具栏**（左/中/右）| BarAnt |
 | **背景色分层**（容器 vs 内容）| Background.LAYOUT / SUBTLE / DEFAULT |
 | **输入限制**（数字/手机号/邮箱）| TextFormatters.integerOnly() 等 12 种 |
 | **跨平台 OS 判断** | PlatformUtils.isMac() / isWindows() |
@@ -1013,7 +1013,7 @@ OverlayManager.getInstance().clearAll();
 | **CrudTemplate** | 业务模板（M18 新增）| `BorderPane` > 顶工具栏 + body + 底工具栏 | `CrudTemplate.create().title("用户管理").topRight(addBtn).body(table).bottomRight(pagination).build()` |
 | **SurfaceAnt** | 内容承载面 | `VBox` > 标题区 + 白色内容面板 | `SurfaceAnt.create().title("筛选条件").content(form).build()` |
 | **AppShellAnt** | 应用骨架 | `BorderPane` > Header/Sider/Content/Footer | `AppShellAnt.create().header(h).sider(s).content(page).build()` |
-| **SplitBarAnt** | 三段式横向布局（M19）| `HBox` 左 + spacer + 中 + spacer + 右（center 可选，省略即退化为二段，覆盖 ActionBar/Header 全部场景）| `SplitBarAnt.create().left(back).center(title).right(save,cancel).build()` |
+| **BarAnt** | 三段式横向布局（M19）| `HBox` 左 + spacer + 中 + spacer + 右（center 可选，省略即退化为二段，覆盖 ActionBar/Header 全部场景）| `BarAnt.create().left(back).center(title).right(save,cancel).build()` |
 | **SplitPaneAnt** | 分割面板 | `SplitPane` 水平/垂直分栏 | `SplitPaneAnt.create().items(left,right).dividerPositions(0.3).build()` |
 | **ResizablePanelAnt** | 可调整尺寸面板 | `StackPane` + 拖拽手柄 | `ResizablePanelAnt.create().content(details).prefWidth(320).build()` |
 | **ScrollContainerAnt** | 滚动容器 | `ScrollPane` + 统一视口背景 | `ScrollContainerAnt.create().content(page).fitToWidth(true).build()` |
@@ -1074,7 +1074,7 @@ BorderPane shell4 = result.getRoot();
 - `.buildResult()` 返回 `Result`，含 `toggle()` / `setCollapsed(b)` / `collapsedProperty()` 用于外部控制
 - `breakpoint` 复用 GridAnt.Breakpoint 枚举（XS/SM/MD/LG/XL/XXL）—— 共用一套标准
 - 折叠时 sider 节点自动挂 `.app-shell-sider-collapsed` styleClass，业务方可在 LESS 里自定义"折叠时隐藏文字只剩图标"等细节
-- Header / Footer 区域是任意 Node —— 通常用 SplitBarAnt 拼三段式（左 logo + 中间空 + 右用户菜单）
+- Header / Footer 区域是任意 Node —— 通常用 BarAnt 拼三段式（左 logo + 中间空 + 右用户菜单）
 
 ---
 
@@ -2805,7 +2805,7 @@ public class SettingsView extends BorderPaneAnt {
         Button cancel = ButtonAnt.create("取消").onClick(e -> stage.close()).build();
         Button save = ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY)
             .onClick(e -> { saveSettings(); stage.close(); }).build();
-        return SplitBarAnt.create().right(cancel, save).build();
+        return BarAnt.create().right(cancel, save).build();
     }
 
     private void saveSettings() {

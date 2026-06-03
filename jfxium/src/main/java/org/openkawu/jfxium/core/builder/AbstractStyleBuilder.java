@@ -7,6 +7,10 @@ import javafx.scene.layout.Region;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.composite.SurfaceAnt;
+import org.openkawu.jfxium.component.composite.ResizablePanelAnt;
+import org.openkawu.jfxium.component.composite.CardAnt;
 
 /**
  * JFXium 组件 Builder 公共基类：承载 {@code style}、{@code styleClass} 和 {@code padding} 的公共字段和方法。
@@ -64,6 +68,24 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
     /** 用户通过 {@link #padding(Insets)} 或 {@link #padding(double)} 设置的内边距。null 表示未设置。*/
     protected Insets padding = null;
 
+    /** 用户通过 {@link #maxWidth(double)} 设置的最大宽度。NaN 表示未设置。 */
+    protected double maxWidth = Double.NaN;
+
+    /** 用户通过 {@link #minWidth(double)} 设置的最小宽度。NaN 表示未设置。 */
+    protected double minWidth = Double.NaN;
+
+    /** 用户通过 {@link #prefWidth(double)} 设置的首选宽度。NaN 表示未设置。 */
+    protected double prefWidth = Double.NaN;
+
+    /** 用户通过 {@link #maxHeight(double)} 设置的最大高度。NaN 表示未设置。 */
+    protected double maxHeight = Double.NaN;
+
+    /** 用户通过 {@link #minHeight(double)} 设置的最小高度。NaN 表示未设置。 */
+    protected double minHeight = Double.NaN;
+
+    /** 用户通过 {@link #prefHeight(double)} 设置的首选高度。NaN 表示未设置。 */
+    protected double prefHeight = Double.NaN;
+
     /**
      * 设置 inline 样式。慎用，建议优先使用 {@link #styleClass(String)} + LESS。
      * 多次调用会覆盖前一次（与 setter 一贯语义保持一致）。
@@ -113,6 +135,48 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
         return (SELF) this;
     }
 
+    /** 设置最大宽度。 */
+    @SuppressWarnings("unchecked")
+    public SELF maxWidth(double maxWidth) {
+        this.maxWidth = maxWidth;
+        return (SELF) this;
+    }
+
+    /** 设置最小宽度。 */
+    @SuppressWarnings("unchecked")
+    public SELF minWidth(double minWidth) {
+        this.minWidth = minWidth;
+        return (SELF) this;
+    }
+
+    /** 设置首选宽度。 */
+    @SuppressWarnings("unchecked")
+    public SELF prefWidth(double prefWidth) {
+        this.prefWidth = prefWidth;
+        return (SELF) this;
+    }
+
+    /** 设置最大高度。 */
+    @SuppressWarnings("unchecked")
+    public SELF maxHeight(double maxHeight) {
+        this.maxHeight = maxHeight;
+        return (SELF) this;
+    }
+
+    /** 设置最小高度。 */
+    @SuppressWarnings("unchecked")
+    public SELF minHeight(double minHeight) {
+        this.minHeight = minHeight;
+        return (SELF) this;
+    }
+
+    /** 设置首选高度。 */
+    @SuppressWarnings("unchecked")
+    public SELF prefHeight(double prefHeight) {
+        this.prefHeight = prefHeight;
+        return (SELF) this;
+    }
+
     /**
      * 在 build() 末尾调用，把累积的 extraStyleClasses、inline style 和 padding 应用到目标 Node。
      * 子类负责确保此方法在所有内置 styleClass 添加之后调用，
@@ -124,8 +188,14 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
         if (!style.isEmpty()) {
             node.setStyle(style);
         }
-        if (padding != null && node instanceof Region region) {
-            region.setPadding(padding);
+        if (node instanceof Region region) {
+            if (padding != null) region.setPadding(padding);
+            if (!Double.isNaN(maxWidth)) region.setMaxWidth(maxWidth);
+            if (!Double.isNaN(minWidth)) region.setMinWidth(minWidth);
+            if (!Double.isNaN(prefWidth)) region.setPrefWidth(prefWidth);
+            if (!Double.isNaN(maxHeight)) region.setMaxHeight(maxHeight);
+            if (!Double.isNaN(minHeight)) region.setMinHeight(minHeight);
+            if (!Double.isNaN(prefHeight)) region.setPrefHeight(prefHeight);
         }
     }
 

@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.openkawu.jfxium.component.ComboBoxAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.ComboBoxAnt;
 
 /**
  * Select 选择器 —— 基础 / 可编辑 / 禁用+尺寸。
@@ -14,8 +15,8 @@ public class SelectExamplePage extends VBoxAnt {
 
     public SelectExamplePage() {
         spacing(0).children(PageTemplate.create()
-                .title("Select 选择器")
-                .description("下拉选择组件，支持搜索、多种尺寸。")
+                .title("ComboBox 下拉框")
+                .description("下拉选择组件（ComboBoxAnt），支持搜索、多种尺寸。与 Button/Input 等高对齐。")
                 .sections(
                         basicSection(),
                         editableSection(),

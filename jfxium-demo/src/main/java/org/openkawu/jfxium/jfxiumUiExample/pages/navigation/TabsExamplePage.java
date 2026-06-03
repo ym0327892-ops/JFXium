@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.navigation;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.openkawu.jfxium.component.TabsAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.TabsAnt;
 
 /**
  * Tabs 标签页 —— 基础线条 / 卡片类型 / 位置。

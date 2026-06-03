@@ -3,10 +3,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.ProgressAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.ProgressAnt;
 
 /**
  * Progress 进度条 —— 基础百分比 / 状态色 / 圆形。

@@ -163,7 +163,7 @@
   -fx-background-color: transparent;
 }
 .page-template-header {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .page-template-title {
   -fx-font-size: 28px;
@@ -293,7 +293,7 @@
   -fx-border-radius: 6px;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 6px;
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 8px;
 }
 .text-field.jfx-selectable-text.jfx-selectable-text-bordered:focused,
 .text-area.jfx-selectable-text.jfx-selectable-text-bordered:focused {
@@ -421,6 +421,7 @@
    Button Component
    ============================================ */
 .button {
+  -fx-background-radius: 6px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 5px 11px;
   -fx-cursor: hand;
@@ -923,6 +924,8 @@
 .check-box {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
+  -fx-label-padding: 0 0 0 6px;
+  /* 框与文字间距，对齐 AtlantaFX $graphic-gap: 6px */
 }
 .check-box .box {
   -fx-background-color: -color-bg-default;
@@ -935,7 +938,8 @@
   -fx-alignment: CENTER;
 }
 .check-box .box .mark {
-  /* mark 是中间的 ✓ —— 默认 modena 已有 shape，这里保证尺寸一致 */
+  /* mark 是中间的 ✓ —— 显式设 shape 保证勾形不被覆盖丢失 */
+  -fx-shape: "M-0.25,6.083c0.843-0.758,4.583,4.833,5.75,4.833S14.5-1.5,15.917-0.917c1.292,0.532-8.75,17.083-10.5,17.083C3,16.167-1.083,6.833-0.25,6.083z";
   -fx-min-width: 8px;
   -fx-max-width: 8px;
   -fx-min-height: 8px;
@@ -974,6 +978,8 @@
 .radio-button {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
+  -fx-label-padding: 0 0 0 6px;
+  /* 框与文字间距 6px（对齐 AtlantaFX $graphic-gap） */
 }
 .radio-button .radio {
   -fx-background-color: -color-bg-default;
@@ -1050,7 +1056,7 @@
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
 }
 .combo-box-popup .list-cell {
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 8px;
   -fx-text-fill: -color-fg-default;
 }
 .combo-box-popup .list-cell:hover {
@@ -1074,7 +1080,7 @@
   -fx-background-radius: 8px;
 }
 .list-view .list-cell {
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 8px;
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
 }
@@ -1249,7 +1255,7 @@
   -fx-background-color: -color-danger-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
   -fx-background-radius: 9999px;
-  -fx-padding: 0 4px;
+  -fx-padding: 0 2px;
   -fx-font-size: 10px;
   -fx-font-weight: 600;
 }
@@ -1669,7 +1675,7 @@
   -fx-background-color: -color-bg-overlay;
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 12px;
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 8px;
   -fx-background-radius: 6px;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -1692,7 +1698,7 @@
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
   -fx-text-fill: -color-fg-default;
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 6px;
   -fx-cursor: hand;
 }
 .pagination .pagination-control .button:hover {
@@ -1715,7 +1721,7 @@
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
   -fx-text-fill: -color-fg-default;
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 6px;
   -fx-cursor: hand;
 }
 .pagination .pagination-control .toggle-button:hover {
@@ -1769,11 +1775,11 @@
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
-  -fx-padding: 4px 0;
+  -fx-padding: 2px 0;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
 }
 .context-menu .menu-item {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 12px;
 }
 .context-menu .menu-item:hover,
 .context-menu .menu-item:focused {
@@ -1789,13 +1795,13 @@
 .context-menu .separator-menu-item .line {
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px 0 0 0;
-  -fx-padding: 4px 0;
+  -fx-padding: 2px 0;
 }
 /* ============================================
    MenuItem within MenuBar
    ============================================ */
 .menu-bar > .container > .menu {
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 8px;
 }
 .menu-bar > .container > .menu > .label {
   -fx-text-fill: -color-fg-default;
@@ -1810,7 +1816,7 @@
   -fx-background-color: -color-accent-active;
 }
 .menu-item {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 12px;
 }
 .menu-item:hover,
 .menu-item:focused {
@@ -2041,8 +2047,8 @@
   -fx-background-color: -color-border-muted, -color-bg-subtle;
   -fx-background-insets: 0, 0 0 1px 0;
   -fx-border-color: transparent;
-  -fx-padding: 8px 8px;
-  -fx-spacing: 4px;
+  -fx-padding: 6px 8px;
+  -fx-spacing: 2px;
   -fx-alignment: CENTER_LEFT;
 }
 .tool-bar > .container > .button,
@@ -2065,7 +2071,7 @@
   -fx-text-fill: -color-fg-default;
   -fx-alignment: CENTER;
   -fx-content-display: LEFT;
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 8px;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
@@ -2187,7 +2193,7 @@
   -fx-background-color: -color-accent-muted;
 }
 .table-cell {
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 8px;
   -fx-text-fill: -color-fg-default;
   /* 默认垂直居中（水平由 align-* 复合类控制；不设的话默认 center-left）*/
   -fx-alignment: center-left;
@@ -2316,7 +2322,7 @@
    ============================================ */
 .tab-pane .tab {
   -fx-background-color: transparent;
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 8px;
 }
 .tab-pane .tab:hover {
   -fx-background-color: -color-bg-subtle;
@@ -2357,7 +2363,7 @@
    Tree Cell Enhancements
    ============================================ */
 .tree-cell {
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 8px;
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
 }
@@ -2599,6 +2605,17 @@
 /* IconAnt SVG path 模式：用 -fx-background-color 给 Region 上色（配合 -fx-shape） */
 .jfx-icon-path {
   -fx-background-color: -color-fg-default;
+}
+/* 当 icon 在可交互父容器中（button/menu-item/等）时，hover 自动变主题色 */
+.button:hover .jfx-icon-path,
+.menu-item:hover .jfx-icon-path,
+.toggle-button:hover .jfx-icon-path {
+  -fx-background-color: -color-accent-emphasis;
+}
+/* 选中态 */
+.button:armed .jfx-icon-path,
+.toggle-button:selected .jfx-icon-path {
+  -fx-background-color: -color-accent-emphasis;
 }
 /* 主题色变体：用户挂额外 styleClass 即可切色 */
 .jfx-icon-path.icon-muted {
@@ -3862,7 +3879,7 @@
   -fx-font-size: 16px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
-  -fx-padding: 12px 0 8px 0;
+  -fx-padding: 12px 0 6px 0;
 }
 /* Form 尺寸调节：仅控制字号与控件最小高度，间距由 Java 侧 VBox.spacing 负责 */
 .form-size-small {
@@ -3996,7 +4013,7 @@
 .menu-button > .arrow-button {
   /* 上下 padding 与 label 一致；水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），
      避免箭头区过宽显得不协调 */
-  -fx-padding: 5px 8px 5px 0;
+  -fx-padding: 5px 6px 5px 0;
   -fx-background-color: transparent;
 }
 .menu-button > .arrow-button > .arrow {
@@ -4033,7 +4050,7 @@
 }
 /* MenuButton Popup */
 .menu-button .menu-item {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 12px;
 }
 .menu-button .menu-item:hover,
 .menu-button .menu-item:focused {
@@ -4074,7 +4091,7 @@
 }
 .split-menu-button > .arrow-button {
   /* 水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），避免箭头区过宽 */
-  -fx-padding: 5px 8px 5px 8px;
+  -fx-padding: 5px 6px 5px 6px;
   -fx-background-color: -color-bg-default;
   -fx-border-color: transparent transparent transparent -color-border-muted;
   -fx-border-width: 0 0 0 1px;
@@ -4116,7 +4133,9 @@
    ============================================ */
 .toggle-button {
   -fx-background-radius: 6px;
+  -fx-text-fill: -color-fg-default;
   -fx-padding: 5px 11px;
+  -fx-cursor: hand;
   -fx-font-weight: 500;
   -fx-alignment: center;
   -fx-background-color: -color-bg-default;
@@ -4164,7 +4183,7 @@
 }
 .menu-button.small > .arrow-button {
   /* 水平 padding 减半，对齐 AtlantaFX */
-  -fx-padding: 1px 4px 1px 0;
+  -fx-padding: 1px 2px 1px 0;
 }
 .menu-button.large > .label {
   -fx-padding: 7px 11px 7px 11px;
@@ -4180,7 +4199,7 @@
 }
 .split-menu-button.small > .arrow-button {
   /* 水平 padding 减半，对齐 AtlantaFX */
-  -fx-padding: 1px 4px 1px 4px;
+  -fx-padding: 1px 2px 1px 2px;
 }
 .split-menu-button.large > .label {
   -fx-padding: 7px 11px 7px 11px;
@@ -4262,7 +4281,7 @@
   -fx-background-color: -color-accent-muted;
 }
 .tree-table-cell {
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 8px;
   -fx-text-fill: -color-fg-default;
 }
 .tree-table-view .tree-disclosure-node .arrow {
@@ -4733,24 +4752,24 @@
    ============================================ */
 /* Button sizes */
 .button.small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 6px;
   -fx-font-size: 12px;
 }
 .button.large {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 12px;
   -fx-font-size: 13px;
 }
 /* Input/TextField sizes */
 .text-field.small,
 .text-area.small,
 .password-field.small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 8px;
   -fx-font-size: 12px;
 }
 .text-field.large,
 .text-area.large,
 .password-field.large {
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 8px;
   -fx-font-size: 13px;
 }
 /* ComboBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
@@ -4791,11 +4810,11 @@
 }
 /* Tag sizes */
 .tag.small {
-  -fx-padding: 0 4px;
+  -fx-padding: 0 2px;
   -fx-font-size: 10px;
 }
 .tag.large {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 6px;
   -fx-font-size: 12px;
 }
 /* Badge sizes */

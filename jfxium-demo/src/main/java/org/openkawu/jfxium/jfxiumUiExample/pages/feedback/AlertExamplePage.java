@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.AlertAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.AlertAnt;
 
 /**
  * Alert 警告提示 —— 4 种类型 + 可关闭 + Banner 模式。

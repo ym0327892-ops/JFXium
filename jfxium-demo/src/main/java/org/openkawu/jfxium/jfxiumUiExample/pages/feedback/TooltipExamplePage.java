@@ -3,11 +3,13 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.util.Duration;
-import org.openkawu.jfxium.component.ButtonAnt;
-import org.openkawu.jfxium.component.TooltipAnt;
+
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.TooltipAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
  * Tooltip 文字提示 —— 基础 / 延迟 / 长文本。

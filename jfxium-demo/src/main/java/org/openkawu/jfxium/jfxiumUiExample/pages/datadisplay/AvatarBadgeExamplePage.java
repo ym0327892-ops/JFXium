@@ -3,11 +3,12 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import org.openkawu.jfxium.component.AvatarAnt;
-import org.openkawu.jfxium.component.BadgeAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.BadgeAnt;
+import org.openkawu.jfxium.component.composite.AvatarAnt;
 
 /**
  * Avatar 头像 + Badge 徽标 —— 形状尺寸 / 文字图标 / 徽标 / 组合。

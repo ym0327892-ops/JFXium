@@ -1,11 +1,13 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.StatisticAnt;
-import org.openkawu.jfxium.component.TypographyAnt;
+
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.composite.StatisticAnt;
 
 /**
  * Statistic 统计数值 —— 基础数值 / 前后缀 / 趋势。

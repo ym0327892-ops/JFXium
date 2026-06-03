@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.openkawu.jfxium.component.InputNumberAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.InputNumberAnt;
 
 /**
  * InputNumber 数字输入框 —— 步进 / 范围 / 精度 / 前后缀。

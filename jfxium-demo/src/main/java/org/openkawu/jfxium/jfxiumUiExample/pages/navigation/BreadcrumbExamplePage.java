@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.navigation;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.BreadcrumbAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.BreadcrumbAnt;
 
 /**
  * Breadcrumb 面包屑 —— 基础 / 分隔符 / 可点击。

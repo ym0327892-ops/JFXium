@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import org.openkawu.jfxium.component.composite.MenuAnt;
 
 /**
  * 极简路由注册表 —— key → 懒加载页面工厂。

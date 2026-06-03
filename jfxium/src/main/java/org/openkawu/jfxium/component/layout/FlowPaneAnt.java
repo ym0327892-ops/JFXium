@@ -75,6 +75,13 @@ public class FlowPaneAnt extends FlowPane {
         return this;
     }
 
+    /** 间距（等同 gap，与 HBoxAnt/VBoxAnt 命名统一）。 */
+    public FlowPaneAnt spacing(double spacing) {
+        setHgap(spacing);
+        setVgap(spacing);
+        return this;
+    }
+
     public FlowPaneAnt orientation(Orientation orientation) {
         setOrientation(orientation);
         return this;
@@ -101,6 +108,60 @@ public class FlowPaneAnt extends FlowPane {
                 if (n != null) getChildren().add(n);
             }
         }
+        return this;
+    }
+
+    /** 触发换行的首选宽度（水平方向时）或高度（垂直方向时）。 */
+    public FlowPaneAnt prefWrapLength(double length) {
+        setPrefWrapLength(length);
+        return this;
+    }
+
+    /** 行内节点的垂直对齐方式（水平方向时生效）。 */
+    public FlowPaneAnt rowValignment(javafx.geometry.VPos vpos) {
+        setRowValignment(vpos);
+        return this;
+    }
+
+    /** 列内节点的水平对齐方式（垂直方向时生效）。 */
+    public FlowPaneAnt columnHalignment(javafx.geometry.HPos hpos) {
+        setColumnHalignment(hpos);
+        return this;
+    }
+
+    public FlowPaneAnt maxW(double width) {
+        setMaxWidth(width);
+        return this;
+    }
+
+    public FlowPaneAnt maxH(double height) {
+        setMaxHeight(height);
+        return this;
+    }
+
+    public FlowPaneAnt minW(double width) {
+        setMinWidth(width);
+        return this;
+    }
+
+    public FlowPaneAnt minH(double height) {
+        setMinHeight(height);
+        return this;
+    }
+
+    public FlowPaneAnt prefW(double width) {
+        setPrefWidth(width);
+        return this;
+    }
+
+    public FlowPaneAnt prefH(double height) {
+        setPrefHeight(height);
+        return this;
+    }
+
+    /** 给指定子节点设置外边距。 */
+    public FlowPaneAnt margin(Node child, Insets margin) {
+        FlowPane.setMargin(child, margin);
         return this;
     }
 

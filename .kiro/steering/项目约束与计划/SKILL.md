@@ -31,7 +31,7 @@ license: MIT
 1. **default 是验收基准**：任何组件的视觉验收、截图、demo 展示，**只看 default 尺寸**。default 不好看 = 不合格，不允许用「宽松模式好看」来搪塞。
 
 2. **default 面向桌面 admin 调优**：默认尺寸的留白、padding、行高，按「桌面信息密度高」的取向调，**不照搬 Ant Design Web 大屏的宽松留白**。
-   - 已落地案例：CardAnt body padding default `16`（非 Ant 的 24）/ compact `8`——全项目唯一主动偏离 Ant 的地方。
+   - 已落地案例：CardAnt body padding default `12`（M19.51 从 16 再收紧；非 Ant 的 24）/ compact `8`。
    - 后续若再发现 default 某组件「占用大、不够 admin」，**优先收紧 default**，而不是叫用户切紧凑模式。
 
 3. **large（宽松）是弃用档**：
@@ -42,6 +42,54 @@ license: MIT
 4. **三档优先级**：`default（重点打磨）> compact（admin 紧凑场景，需可用）>> large（仅兼容，不打磨）`。
 
 **为什么**：JFXium 定位是 JavaFX 桌面 admin UI 库，不是 Web 响应式库。桌面 admin 屏幕大但信息密度要求高，default 就该是「紧凑而精致」，而不是 Web 那种大留白。large 在桌面 admin 几乎用不到。
+
+***
+
+## PC UI 实现标准（M19.52 固化，强制）
+
+> **JFXium 是桌面 admin UI 库，一切按 PC 思维实现，不用 Web 思维。**
+> Web 为「大屏少信息 + 触摸友好」设计（大留白 / 44px 点击区 / 大阴影）；
+> PC admin 为「定屏多信息 + 鼠标精确」设计（紧凑 / 高密度 / 信息优先）。
+> 参照 JetBrains IDE、VS Code、Element Plus 桌面档，不照搬 Ant Design Web 大屏。
+
+### A. 尺寸基准（强制按 PC 档取值）
+
+| 维度 | ❌ Web 习惯 | ✅ PC admin 标准 | 项目落地 |
+|---|---|---|---|
+| 控件高度 | 40-48px | **28-32px** | default 32 / compact 28 / small 24 |
+| 行高（表格/列表） | 54-64px | **32-40px** | Table default 48→收，compact 36 |
+| 卡片 padding | 24px | **12-16px** | Card body 12（M19.51）|
+| 字号正文 | 16px | **13-14px** | @font-size-md 14 / compact 13 |
+| 间距梯度 | 8/16/24/32 | **4/8/12/16** | @spacing-xs/sm/md/lg |
+| 图标 | 24px | **16px** | IconAnt 默认 16 |
+| 圆角 | 8-12px | **4-6px** | @border-radius-md 6 |
+
+### B. 布局准则
+
+1. **信息密度优先**：一屏尽量多内容，少滚动。
+2. **三段式无处不在**：header / toolbar / footer 都是「左信息 + 弹性 spacer + 右操作」——统一底层用 **BarAnt**（项目核心布局原子，必须足够强大覆盖所有三段式场景）。
+3. **组合容器只做壳**：Card / Modal / Drawer / Form 的 header/footer slot **CSS padding=0**，高度由传入的 BarAnt 自身 `.padding(...)` 自控（M19.51 落地）。容器只负责「外壳（圆角/阴影/背景）+ 分隔线」。
+4. **最小组件组合、自下而上撑**：尺寸由叶子节点撑，不由外壳 CSS 钳死。新组件凡 padding / pref/min-height 一律走 token 或由传入节点自控，禁止硬编码 px（紧凑模式才能联动，见 SKILL #23）。
+5. **固定 + 弹性混合**：sider 固定宽、content 弹性（AppShellAnt 已是）。
+
+### C. 交互准则（鼠标 + 键盘，非触摸）
+
+1. **hover 态必须有**（Web 移动端没有，PC 必须）——所有可交互组件定义 `:hover`。
+2. **右键菜单 / 双击 / 键盘快捷键**是一等公民（不是附加）。
+3. **焦点环清晰**：Tab 导航可见焦点（边框变色 + 外阴影，见 SKILL §2.2）。
+4. **不实现触摸特性**：手势 / 下拉刷新 / 触摸滑动一律不做。
+
+### D. 视觉准则
+
+1. **分隔线 > 留白**：密集界面靠 1px 线划分区域（`-color-border-muted`），不靠大空白。
+2. **阴影克制**：桌面用边框分隔多于阴影；阴影仅用于真正的浮层（Modal/Dropdown/Popover）。
+3. **圆角小**：4-6px，不用 Web 的 8-12px 大圆角。
+
+### E. 检查信号（出现即按 PC 标准收紧）
+
+- 组件 default 看起来「占地大、留白多、像 Web 落地页」→ 收紧到 PC 档。
+- 一屏显示的信息行数明显少于同类桌面软件（IDEA/VS Code）→ 行高/padding 偏大。
+- 为了好看在 header/footer 硬钳 padding → 改成 slot padding=0 + 传入 BarAnt 自控。
 
 ***
 

@@ -2,12 +2,14 @@ package org.openkawu.jfxium.jfxiumUiExample.pages;
 
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.IconAnt;
-import org.openkawu.jfxium.component.TypographyAnt;
+
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.DashboardTemplate;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.control.IconAnt;
 
 /**
  * 首页 —— 欢迎 + 4 张统计卡概览。

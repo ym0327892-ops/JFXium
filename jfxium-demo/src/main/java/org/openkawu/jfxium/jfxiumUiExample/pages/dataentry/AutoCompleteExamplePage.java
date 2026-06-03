@@ -3,10 +3,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 import java.util.List;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.AutoCompleteAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.AutoCompleteAnt;
 
 /**
  * AutoComplete 自动完成 —— 基础 / 自定义选项。

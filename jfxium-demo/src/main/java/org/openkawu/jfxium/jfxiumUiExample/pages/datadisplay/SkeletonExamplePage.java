@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.SkeletonAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.SkeletonAnt;
 
 /**
  * Skeleton 骨架屏 —— 基础形状 / 段落 / 头像 + 文本。

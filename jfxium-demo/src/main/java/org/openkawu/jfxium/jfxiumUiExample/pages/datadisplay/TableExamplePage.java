@@ -1,12 +1,13 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.TableAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 
 import java.util.List;
+import org.openkawu.jfxium.component.control.TableAnt;
 
 /**
  * Table 表格 —— 基础 / 斑马纹+边框 / 尺寸 / 排序。
@@ -62,7 +63,7 @@ public class TableExamplePage extends VBoxAnt {
                 .column("邮箱", Person::email).end()
                 .data(SAMPLE_DATA)
                 .striped(true)
-                .bordered(true)
+                .borders(TableAnt.Border.BOTH)
                 .build();
         String code = """
                 TableAnt.<Person>create()
@@ -71,11 +72,11 @@ public class TableExamplePage extends VBoxAnt {
                         .column("邮箱", Person::email).end()
                         .data(dataList)
                         .striped(true)
-                        .bordered(true)
+                        .borders(TableAnt.Border.BOTH)
                         .build();
                 """;
         return Demos.sectionWithCode("2. 斑马纹 + 边框",
-                "striped(true) 隔行变色；bordered(true) 显示完整边框。",
+                "striped(true) 隔行变色；borders(BOTH) 显示完整边框。",
                 code, demo);
     }
 

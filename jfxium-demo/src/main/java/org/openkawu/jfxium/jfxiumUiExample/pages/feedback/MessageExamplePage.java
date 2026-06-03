@@ -1,11 +1,12 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.ButtonAnt;
-import org.openkawu.jfxium.component.MessageAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
  * Message 全局消息 —— 4 种类型、3 个位置、loading 持久 + 手动关闭。

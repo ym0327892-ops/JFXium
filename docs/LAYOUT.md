@@ -10,13 +10,13 @@ JFXium 提供了一套流式 API 用于创建常见布局，简化 JavaFX 布局
 
 - `CrudTemplate`（M18 新增，业务模板）：admin 90% 业务页通用三段式骨架（顶工具栏 + body + 底工具栏）。
 - `SurfaceAnt`：使用 `color-bg-container`，用于表单、列表、详情等内容面板。
-- `SplitBarAnt`（M19，取代 ActionBarAnt + Headers 工厂）：横向 左/中/右 三段式工具栏；center 不传即退化为二段。
+- `BarAnt`（M19，取代 ActionBarAnt + Headers 工厂）：横向 左/中/右 三段式工具栏；center 不传即退化为二段。
 - `AppShellAnt`：用于 Header / Sider / Content / Footer 应用骨架。
 
-> 老 `PageAnt` / `ActionBarAnt` / `Headers` 工厂已删除（M18+M19）。三段式工具栏统一改用 SplitBarAnt。
+> 老 `PageAnt` / `ActionBarAnt` / `Headers` 工厂已删除（M18+M19）。三段式工具栏统一改用 BarAnt。
 
 ```java
-HBox actions = SplitBarAnt.create()
+HBox actions = BarAnt.create()
     .left(ButtonAnt.create("刷新").build())
     .right(ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY).build())
     .build();

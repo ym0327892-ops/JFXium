@@ -14,9 +14,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.ButtonAnt;
-import org.openkawu.jfxium.component.IconAnt;
-import org.openkawu.jfxium.component.InputAnt;
+
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 import org.openkawu.jfxium.core.i18n.Messages;
@@ -24,6 +22,9 @@ import org.openkawu.jfxium.core.i18n.Messages;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import org.openkawu.jfxium.component.control.InputAnt;
+import org.openkawu.jfxium.component.control.IconAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
  * LoginTemplate - 双栏 banner 登录页模板（M19.16，M19.39 LESS 化）。

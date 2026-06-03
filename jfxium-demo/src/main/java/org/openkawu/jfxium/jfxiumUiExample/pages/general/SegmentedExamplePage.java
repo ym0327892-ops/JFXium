@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
-import org.openkawu.jfxium.component.SegmentedAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.SegmentedAnt;
 
 /**
  * Segmented 分段器 —— 基础 / 禁用 / 块级模式。

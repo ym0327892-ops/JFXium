@@ -99,7 +99,7 @@ NotificationAnt.info("Notification", "This is a notification message");
 | **CrudTemplate** | Business template (M18) | `CrudTemplate.create().title("Users").topRight(addBtn).body(table).bottomRight(pagination).build()` |
 | **SurfaceAnt** | Content surface | `SurfaceAnt.create().title("Filters").content(form).build()` |
 | **AppShellAnt** | App shell | `AppShellAnt.create().header(h).sider(s).content(page).build()` |
-| **SplitBarAnt** | Three-section bar (M19) | `SplitBarAnt.create().left(back).center(title).right(save, cancel).build()` |
+| **BarAnt** | Three-section bar (M19) | `BarAnt.create().left(back).center(title).right(save, cancel).build()` |
 | **SplitPaneAnt** | Split panel | `SplitPaneAnt.create().items(left, right).dividerPositions(0.3).build()` |
 | **ResizablePanelAnt** | Resizable panel | `ResizablePanelAnt.create().content(details).prefWidth(320).build()` |
 | **ScrollContainerAnt** | Scroll container | `ScrollContainerAnt.create().content(page).fitToWidth(true).build()` |

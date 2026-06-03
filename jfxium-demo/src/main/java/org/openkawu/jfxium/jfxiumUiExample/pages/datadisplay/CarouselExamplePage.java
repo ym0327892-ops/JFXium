@@ -3,10 +3,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import org.openkawu.jfxium.component.CarouselAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.CarouselAnt;
 
 /**
  * Carousel 走马灯 —— 自动播放 / 手动导航 / 自定义内容。

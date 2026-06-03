@@ -6,6 +6,7 @@ import javafx.util.converter.IntegerStringConverter;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+import org.openkawu.jfxium.component.control.InputAnt;
 
 /**
  * 输入限制工厂（M19.30 引入）。

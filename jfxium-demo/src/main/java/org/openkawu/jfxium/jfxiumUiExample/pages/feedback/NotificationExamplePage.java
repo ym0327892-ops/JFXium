@@ -1,11 +1,13 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.ButtonAnt;
-import org.openkawu.jfxium.component.NotificationAnt;
+
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.overlay.NotificationAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
  * Notification 通知提醒 —— 4 种类型 + 4 个角落位置。

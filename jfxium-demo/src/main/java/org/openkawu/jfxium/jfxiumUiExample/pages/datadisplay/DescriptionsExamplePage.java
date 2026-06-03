@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.DescriptionsAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.DescriptionsAnt;
 
 /**
  * Descriptions 描述列表 —— 基础 / 带边框 / 多列。

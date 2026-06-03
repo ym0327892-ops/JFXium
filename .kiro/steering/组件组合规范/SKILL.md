@@ -557,48 +557,81 @@ JavaFX 的 SliderSkin 不裁切 track 圆角 → 9999px 圆角把 track 视觉 b
 
 ---
 
-## 七、包结构归约（M18 + M19 沉淀）
+## 七、包结构归约（M18 + M19 + M19.53 沉淀）
 
 > **核心问题**：项目早期所有组件都堆在 `jfxium/component/`，规模化后命名空间紊乱——
 > 「原子控件」（ButtonAnt）和「业务模板」（CrudTemplate）混在同一个包里，用户分不清粒度。
+> M19.53 进一步发现：`component/` 顶层 73 个 *Ant 平铺，原子型 / 组合型 / 浮层型混在一起，
+> 用户分不清哪个是「薄封装原生控件」哪个是「微组件拼装的容器」。
 >
-> **决策（M18 落地）**：按粒度分三层包，命名后缀强制对应。
+> **决策**：① 按粒度分三层包（M18）；② component 内再按类型分三子包（M19.53）。
 
-### 7.1 三层包结构
+### 7.1 顶层三层包结构（按粒度）
 
 | 包路径 | 命名后缀 | 定位 | 粒度 | 示例 |
 |---|---|---|---|---|
-| `jfxium/component/` | `*Ant` | **原子控件 + 装饰容器 + 浮层** | 小（独立可用，组合自由） | ButtonAnt / CardAnt / DrawerAnt / SplitBarAnt |
-| `jfxium/template/` | `*Template` | **业务模板**（针对场景的整页骨架） | 中（耦合多个原子控件） | **CrudTemplate**（M18 首个） |
-| `jfxium/layout/` | `*Layout`（预留） | **应用骨架**（跨页面架构） | 大（仅 1 个应用 1 个） | 未来：SidebarLayout / DashboardLayout |
+| `jfxium/component/` | `*Ant` | **原子控件 + 组合容器 + 浮层** | 小（独立可用，组合自由） | ButtonAnt / CardAnt / ModalAnt |
+| `jfxium/template/` | `*Template`（+ 历史 `*Ant`） | **业务模板**（针对场景的整页骨架/工具栏） | 中（耦合多个原子控件） | CrudTemplate / LoginTemplate / FilterBarAnt |
+| `jfxium/layout/` | `*Ant` / `*Layout` | **应用骨架**（跨页面架构） | 大（仅 1 个应用 1 个） | AppShellAnt / LayoutAnt |
 
-### 7.2 写新组件前问自己
+### 7.2 component 内三子包结构（按类型，M19.53）
+
+> **判定标准**：看 `build()` 返回类型——返回原生控件 = 原子；返回容器（VBox/HBox/StackPane/Pane）= 组合；返回 Result 包装 = 浮层。
+
+| 子包 | 类型 | 判定 | 数量 | 示例 |
+|---|---|---|---|---|
+| `component/control/` | **原子型** | build() 返回原生 JavaFX 控件（Button/TextField/ComboBox/TableView…）薄封装 | 23 | ButtonAnt / InputAnt / ComboBoxAnt / TableAnt / TreeAnt / CheckBoxAnt / LabelAnt / IconAnt |
+| `component/composite/` | **组合型** | build() 返回容器，由微组件拼装而成 | 42 | BarAnt / CardAnt / FormAnt / SurfaceAnt / AlertAnt / AvatarAnt / BadgeAnt / SwitchAnt / TabsAnt |
+| `component/overlay/` | **浮层型** | build() 返回 Result 包装，需 `.open()`/`.show()` 触发 | 7 | ModalAnt / DrawerAnt / DropdownAnt / MessageAnt / NotificationAnt / PopconfirmAnt / PopoverAnt |
+| `component/layout/` | **布局容器** | 容器原子（VBox/HBox/Grid 等封装） | 13 | VBoxAnt / HBoxAnt / FlowPaneAnt / GridAnt / SplitPaneAnt |
+| `component/base/` | **内部基类** | 非公开 API，复杂组件的内部零件 | 9 | CloseButton / Overlay / PanelHeader / PopoverPanel |
+
+### 7.3 写新组件前问自己
 
 ```
-1. 这玩意儿是「原子控件 / 装饰容器 / 浮层」？
-   → component/，加 *Ant 后缀
+1. 这玩意儿是「薄封装某个 JavaFX 原生控件」（build 返回原生控件）？
+   → component/control/，加 *Ant 后缀
 
-2. 这玩意儿是「针对业务场景的整页骨架」？
-   → template/，加 *Template 后缀
+2. 这玩意儿是「微组件拼装的容器」（build 返回 VBox/HBox/StackPane/Pane）？
+   → component/composite/，加 *Ant 后缀
 
-3. 这玩意儿是「应用级跨页面架构」？
-   → layout/，加 *Layout 后缀（暂未启用）
+3. 这玩意儿是「按需弹出的浮层」（build 返回 Result，需 .open()/.show()）？
+   → component/overlay/，加 *Ant 后缀
+
+4. 这玩意儿是「容器布局原子」（VBox/Grid 等封装）？
+   → component/layout/，加 *Ant 后缀
+
+5. 这玩意儿是「针对业务场景的整页骨架/工具栏」？
+   → template/，加 *Template 后缀（FilterBarAnt 是历史遗留例外）
+
+6. 这玩意儿是「应用级跨页面架构」？
+   → layout/
 ```
 
-### 7.3 关键判别
+### 7.4 关键判别
+
+**原子 vs 组合 vs 浮层**（看 build() 返回类型，最客观）：
+- 原子：`Button build()` / `TextField build()` / `ComboBox<T> build()`——返回原生控件
+- 组合：`VBox build()` / `HBox build()` / `StackPane build()` / `Pane build()`——返回容器
+- 浮层：`ModalResult build()` / `DrawerResult build()`——返回 Result，需 `.open()`
 
 **`*Ant` vs `*Template`**：
 - `*Ant` 应该可以**单独使用、自由组合**——比如 `ButtonAnt` 哪里都能塞
 - `*Template` 应该是**整页/整段骨架**——比如 `CrudTemplate` 是一个「topbar + body + bottombar」的页骨架，里头要装 TableAnt / FormAnt / CardAnt 等原子控件
 
-**反例（历史债）**：
-- `FilterBarAnt` 实际上是「业务工具栏模板」，应该叫 `FilterBarTemplate` 放 `template/`——但因为已发布给 admin demo 用了，**暂不迁移避免连带打破调用方**。下次重构时同步修。
+**历史遗留**：
+- `FilterBarAnt` 是「业务工具栏」，M19.53 已迁到 `template/`（但保留 `*Ant` 后缀避免破坏调用方 import 之外的认知）。
 
-### 7.4 与其他规范的衔接
+### 7.5 与其他规范的衔接
 
 - 第二章「微组件清单」里 **2.A**（JavaFX 原生）+ **2.B**（项目内辅助）—— 都是粒度更小的「砖块层」
-- 本节的 component / template / layout —— 是「砖块组装出来的成品层」
-- 三者一起构成：**微组件 → 原子控件（component/）→ 业务模板（template/）→ 应用骨架（layout/）** 四层依赖单向递增
+- 本节的 component（control/composite/overlay/layout）/ template / layout —— 是「砖块组装出来的成品层」
+- 整体依赖单向递增：**微组件 → control（原子控件）→ composite（组合容器）→ overlay（浮层）→ template（业务模板）→ layout（应用骨架）**
+
+### 7.6 跨子包引用注意
+
+- 分子包后，组件间互相引用需要 `import`（同包不需要）。例如 composite 的 CardAnt 用 control 的 ButtonAnt，要 `import org.openkawu.jfxium.component.control.ButtonAnt;`。
+- `module-info.java` 必须 `exports` 全部子包（control/composite/overlay/layout/base）。新增子包记得同步加 exports。
 
 ---
 
@@ -611,7 +644,7 @@ JavaFX 的 SliderSkin 不裁切 track 圆角 → 9999px 圆角把 track 视觉 b
 - 新踩坑 → 更新第四章反模式
 - 新模式抽象 → 更新第三章标准模式
 - 检查清单不完备 → 更新第五章
-- **新建组件时违反包归约 → 更新第七章**
+- **新建组件时违反包归约 → 更新第七章**（注意按 7.2 选对 control/composite/overlay 子包）
 
 维护责任：
 - 任何 PR 涉及新增 *Ant 组件 / 修复反模式 bug，必须同步更新本文档对应章节。
@@ -619,6 +652,7 @@ JavaFX 的 SliderSkin 不裁切 track 圆角 → 9999px 圆角把 track 视觉 b
 
 ---
 
-*版本: 1.1*
+*版本: 1.2*
 *创建日期: 2026-05-19*
 *M18 更新（2026-05-24）：新增第七章「包结构归约」*
+*M19.53 更新（2026-06-03）：第七章新增 component 三子包（control/composite/overlay）按类型归约*

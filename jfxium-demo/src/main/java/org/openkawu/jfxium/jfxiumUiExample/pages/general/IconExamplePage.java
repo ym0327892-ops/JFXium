@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
-import org.openkawu.jfxium.component.IconAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.IconAnt;
 
 /**
  * Icon 图标 —— Symbol 字符图标 / Path SVG 图标。

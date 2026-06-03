@@ -4,12 +4,13 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.CardAnt;
-import org.openkawu.jfxium.component.CodeBlockAnt;
-import org.openkawu.jfxium.component.TypographyAnt;
+
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.composite.CodeBlockAnt;
+import org.openkawu.jfxium.component.composite.CardAnt;
 
 /**
  * 示例页面用的小工具集合 —— 把"一段说明 + 一组控件演示"封装成统一外观，

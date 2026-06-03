@@ -1,11 +1,12 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.QRCodeAnt;
-import org.openkawu.jfxium.component.TypographyAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.composite.QRCodeAnt;
 
 /**
  * QRCode 二维码 —— 基础 / 尺寸与说明文字。

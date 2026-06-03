@@ -3,6 +3,7 @@ package org.openkawu.jfxium.core.form;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import org.openkawu.jfxium.component.composite.FormAnt;
 
 /**
  * 表单校验规则（M19.23）。

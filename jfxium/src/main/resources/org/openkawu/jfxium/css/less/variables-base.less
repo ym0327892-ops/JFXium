@@ -117,9 +117,11 @@
 // Card Padding
 // 使用位置：.card
 // 影响组件：CardAnt
-// 注：Ant Design 官方 Card body padding 默认 24，但桌面 admin 信息密度高，
-//     本项目取 16（紧凑派生 8）——这是 Card 唯一偏离 Ant 标准的地方（用户拍板 M19.41）
-@card-padding: @spacing-lg;
+// 注：Ant Design 官方 Card body padding 默认 24，桌面 admin 信息密度高。
+//     M19.41 取 16 → M19.51 再收紧到 12（admin「小卡片配置面板」是核心场景，
+//     16 的留白在桌面 admin 里显大，用户实测反馈"那个大的在哪用"）。
+//     紧凑模式派生 8（已有 compact 覆盖）。
+@card-padding: @spacing-md;
 
 // Table Cell Padding
 // 使用位置：.table-view .column-header、.table-cell、.tree-table-view .column-header、.tree-table-cell
@@ -128,6 +130,17 @@
 @table-cell-padding-x: @spacing-md;
 @table-header-padding-y: @spacing-lg;
 @table-header-padding-x: @spacing-lg;
+
+// ============================================
+// 行高 / 表头高 Token（M19.45 新增）
+// ============================================
+// 背景：Table 的表头高/行高过去在 theme-base.less 里硬编码 px，紧凑模式覆盖 token 时管不到，
+//   导致紧凑模式下「字变小了但行高没收紧」。抽成 token 后紧凑主题覆盖即可联动收紧。
+// 注意：表头用 -fx-pref-height，数据行用 -fx-min-height（自适应但有下限，不裁切高内容）。
+// 说明：List / Tree / TreeTable 的行高靠 cell padding 撑（走 @spacing-*），紧凑模式下随
+//   spacing 收紧即可，无需独立高度 token。
+@table-header-height: 48px;   // 表头容器高（.column-header-background）
+@table-row-height: 48px;      // 数据行高下限（.table-row-cell）
 
 // Menu / MenuItem Padding
 // 使用位置：.menu-bar > .container > .menu、.menu-item、.context-menu .menu-item

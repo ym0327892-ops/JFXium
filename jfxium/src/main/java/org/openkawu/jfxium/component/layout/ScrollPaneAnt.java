@@ -97,6 +97,60 @@ public class ScrollPaneAnt extends ScrollPane {
         return this;
     }
 
+    /** 设置视口首选宽度。 */
+    public ScrollPaneAnt prefViewportWidth(double width) {
+        setPrefViewportWidth(width);
+        return this;
+    }
+
+    /** 设置视口首选高度。 */
+    public ScrollPaneAnt prefViewportHeight(double height) {
+        setPrefViewportHeight(height);
+        return this;
+    }
+
+    /** 设置视口最小宽度。 */
+    public ScrollPaneAnt minViewportWidth(double width) {
+        setMinViewportWidth(width);
+        return this;
+    }
+
+    /** 设置视口最小高度。 */
+    public ScrollPaneAnt minViewportHeight(double height) {
+        setMinViewportHeight(height);
+        return this;
+    }
+
+    public ScrollPaneAnt maxW(double width) {
+        setMaxWidth(width);
+        return this;
+    }
+
+    public ScrollPaneAnt maxH(double height) {
+        setMaxHeight(height);
+        return this;
+    }
+
+    public ScrollPaneAnt minW(double width) {
+        setMinWidth(width);
+        return this;
+    }
+
+    public ScrollPaneAnt minH(double height) {
+        setMinHeight(height);
+        return this;
+    }
+
+    public ScrollPaneAnt prefW(double width) {
+        setPrefWidth(width);
+        return this;
+    }
+
+    public ScrollPaneAnt prefH(double height) {
+        setPrefHeight(height);
+        return this;
+    }
+
     // ============================================================
     // 视觉钩子
     // ============================================================

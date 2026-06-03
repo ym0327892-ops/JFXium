@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import org.openkawu.jfxium.core.css.Background;
@@ -102,6 +103,48 @@ public class BorderPaneAnt extends BorderPane {
 
     public BorderPaneAnt padding(double top, double right, double bottom, double left) {
         setPadding(new Insets(top, right, bottom, left));
+        return this;
+    }
+
+    /** 设置指定区域节点的对齐方式。 */
+    public BorderPaneAnt childAlign(Node child, Pos alignment) {
+        BorderPane.setAlignment(child, alignment);
+        return this;
+    }
+
+    /** 给指定区域节点设置外边距。 */
+    public BorderPaneAnt margin(Node child, Insets margin) {
+        BorderPane.setMargin(child, margin);
+        return this;
+    }
+
+    public BorderPaneAnt maxW(double width) {
+        setMaxWidth(width);
+        return this;
+    }
+
+    public BorderPaneAnt maxH(double height) {
+        setMaxHeight(height);
+        return this;
+    }
+
+    public BorderPaneAnt minW(double width) {
+        setMinWidth(width);
+        return this;
+    }
+
+    public BorderPaneAnt minH(double height) {
+        setMinHeight(height);
+        return this;
+    }
+
+    public BorderPaneAnt prefW(double width) {
+        setPrefWidth(width);
+        return this;
+    }
+
+    public BorderPaneAnt prefH(double height) {
+        setPrefHeight(height);
         return this;
     }
 

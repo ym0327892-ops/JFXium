@@ -2,15 +2,16 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.openkawu.jfxium.component.AlertAnt;
-import org.openkawu.jfxium.component.ButtonAnt;
-import org.openkawu.jfxium.component.FormAnt;
-import org.openkawu.jfxium.component.InputAnt;
-import org.openkawu.jfxium.component.MessageAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.form.Rule;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
+import org.openkawu.jfxium.component.control.InputAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.composite.FormAnt;
+import org.openkawu.jfxium.component.composite.AlertAnt;
 
 /**
  * Form 表单 —— 布局 / 校验 / 联动 / header / footer / section 分段。

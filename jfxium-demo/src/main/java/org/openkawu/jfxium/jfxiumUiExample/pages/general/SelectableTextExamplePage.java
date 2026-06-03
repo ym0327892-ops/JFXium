@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.SelectableTextAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.SelectableTextAnt;
 
 /**
  * SelectableText 可选文本 —— 基础 / 多行折行 / 语义类型。

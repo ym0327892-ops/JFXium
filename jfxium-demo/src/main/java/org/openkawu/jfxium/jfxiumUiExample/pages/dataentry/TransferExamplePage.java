@@ -3,12 +3,13 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import org.openkawu.jfxium.component.TransferAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 
 import java.util.List;
+import org.openkawu.jfxium.component.composite.TransferAnt;
 
 /**
  * Transfer 穿梭框 —— 基础 / 带搜索。

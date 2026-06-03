@@ -7,12 +7,16 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.SplitBarAnt;
+
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.openkawu.jfxium.component.control.TableAnt;
+import org.openkawu.jfxium.component.control.PaginationAnt;
+import org.openkawu.jfxium.component.composite.FormAnt;
+import org.openkawu.jfxium.component.composite.BarAnt;
 
 /**
  * CrudTemplate - 通用三段式业务页骨架（M18 新增）。
@@ -241,10 +245,10 @@ public class CrudTemplate {
 
         /**
          * 构建一行二段式工具栏：[ left... ]  spacer  [ right... ]
-         * <p>M19 重构：复用 SplitBarAnt 组件（消除内部 buildBar 重复实现）。</p>
+         * <p>M19 重构：复用 BarAnt 组件（消除内部 buildBar 重复实现）。</p>
          */
         private HBox buildBar(List<Node> left, List<Node> right, double spacing) {
-            return SplitBarAnt.create()
+            return BarAnt.create()
                     .left(left.toArray(new Node[0]))
                     .right(right.toArray(new Node[0]))
                     .gap(spacing)

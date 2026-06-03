@@ -118,6 +118,84 @@ public class GridPaneAnt extends GridPane {
         return this;
     }
 
+    /** 添加列约束。 */
+    public GridPaneAnt columnConstraints(javafx.scene.layout.ColumnConstraints... constraints) {
+        if (constraints != null) getColumnConstraints().addAll(constraints);
+        return this;
+    }
+
+    /** 添加行约束。 */
+    public GridPaneAnt rowConstraints(javafx.scene.layout.RowConstraints... constraints) {
+        if (constraints != null) getRowConstraints().addAll(constraints);
+        return this;
+    }
+
+    /** 设置是否显示网格线（调试用）。 */
+    public GridPaneAnt gridLinesVisible(boolean visible) {
+        setGridLinesVisible(visible);
+        return this;
+    }
+
+    /** 给指定子节点设置水平对齐。 */
+    public GridPaneAnt halignment(Node child, javafx.geometry.HPos hpos) {
+        GridPane.setHalignment(child, hpos);
+        return this;
+    }
+
+    /** 给指定子节点设置垂直对齐。 */
+    public GridPaneAnt valignment(Node child, javafx.geometry.VPos vpos) {
+        GridPane.setValignment(child, vpos);
+        return this;
+    }
+
+    /** 给指定子节点设置水平拉伸优先级。 */
+    public GridPaneAnt hgrow(Node child, javafx.scene.layout.Priority priority) {
+        GridPane.setHgrow(child, priority);
+        return this;
+    }
+
+    /** 给指定子节点设置垂直拉伸优先级。 */
+    public GridPaneAnt vgrow(Node child, javafx.scene.layout.Priority priority) {
+        GridPane.setVgrow(child, priority);
+        return this;
+    }
+
+    /** 给指定子节点设置外边距。 */
+    public GridPaneAnt margin(Node child, Insets margin) {
+        GridPane.setMargin(child, margin);
+        return this;
+    }
+
+    public GridPaneAnt maxW(double width) {
+        setMaxWidth(width);
+        return this;
+    }
+
+    public GridPaneAnt maxH(double height) {
+        setMaxHeight(height);
+        return this;
+    }
+
+    public GridPaneAnt minW(double width) {
+        setMinWidth(width);
+        return this;
+    }
+
+    public GridPaneAnt minH(double height) {
+        setMinHeight(height);
+        return this;
+    }
+
+    public GridPaneAnt prefW(double width) {
+        setPrefWidth(width);
+        return this;
+    }
+
+    public GridPaneAnt prefH(double height) {
+        setPrefHeight(height);
+        return this;
+    }
+
     // ============================================================
     // 视觉钩子
     // ============================================================

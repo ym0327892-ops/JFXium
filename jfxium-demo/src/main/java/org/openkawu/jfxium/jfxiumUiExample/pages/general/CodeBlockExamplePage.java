@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.CodeBlockAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.CodeBlockAnt;
 
 /**
  * CodeBlockAnt 示例页面 - 展示代码高亮显示组件。
@@ -49,10 +50,10 @@ public class CodeBlockExamplePage extends VBoxAnt {
             """;
 
         Node codeBlock = CodeBlockAnt.create()
-                .language(org.openkawu.jfxium.component.CodeBlockAnt.Language.JAVA)
+                .language(org.openkawu.jfxium.component.composite.CodeBlockAnt.Language.JAVA)
                 .code(simpleCode)
                 .showLineNumbers(false)
-                .theme(org.openkawu.jfxium.component.CodeBlockAnt.Theme.LIGHT)
+                .theme(org.openkawu.jfxium.component.composite.CodeBlockAnt.Theme.LIGHT)
                 .maxHeight(200)
                 .build();
 
@@ -94,10 +95,10 @@ public class CodeBlockExamplePage extends VBoxAnt {
             """;
 
         Node codeBlock = CodeBlockAnt.create()
-                .language(org.openkawu.jfxium.component.CodeBlockAnt.Language.JAVA)
+                .language(org.openkawu.jfxium.component.composite.CodeBlockAnt.Language.JAVA)
                 .code(codeWithNumbers)
                 .showLineNumbers(true)
-                .theme(org.openkawu.jfxium.component.CodeBlockAnt.Theme.LIGHT)
+                .theme(org.openkawu.jfxium.component.composite.CodeBlockAnt.Theme.LIGHT)
                 .maxHeight(300)
                 .build();
 
@@ -139,10 +140,10 @@ public class CodeBlockExamplePage extends VBoxAnt {
             """;
 
         Node codeBlock = CodeBlockAnt.create()
-                .language(org.openkawu.jfxium.component.CodeBlockAnt.Language.JAVA)
+                .language(org.openkawu.jfxium.component.composite.CodeBlockAnt.Language.JAVA)
                 .code(darkThemeCode)
                 .showLineNumbers(true)
-                .theme(org.openkawu.jfxium.component.CodeBlockAnt.Theme.DARK)
+                .theme(org.openkawu.jfxium.component.composite.CodeBlockAnt.Theme.DARK)
                 .maxHeight(250)
                 .build();
 
@@ -220,10 +221,10 @@ public class CodeBlockExamplePage extends VBoxAnt {
             """;
 
         Node codeBlock = CodeBlockAnt.create()
-                .language(org.openkawu.jfxium.component.CodeBlockAnt.Language.JAVA)
+                .language(org.openkawu.jfxium.component.composite.CodeBlockAnt.Language.JAVA)
                 .code(complexCode)
                 .showLineNumbers(true)
-                .theme(org.openkawu.jfxium.component.CodeBlockAnt.Theme.LIGHT)
+                .theme(org.openkawu.jfxium.component.composite.CodeBlockAnt.Theme.LIGHT)
                 .maxHeight(400)
                 .build();
 

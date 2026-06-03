@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.SliderAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.SliderAnt;
 
 /**
  * Slider 滑块 —— 基础 / 范围 / 禁用。

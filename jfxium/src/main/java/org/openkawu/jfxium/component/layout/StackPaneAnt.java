@@ -82,6 +82,55 @@ public class StackPaneAnt extends StackPane {
         return this;
     }
 
+    /** 设置指定子节点在 StackPane 内的对齐方式（覆盖容器级 align）。 */
+    public StackPaneAnt childAlign(Node child, Pos alignment) {
+        StackPane.setAlignment(child, alignment);
+        return this;
+    }
+
+    /** 给指定子节点设置外边距。 */
+    public StackPaneAnt margin(Node child, Insets margin) {
+        StackPane.setMargin(child, margin);
+        return this;
+    }
+
+    public StackPaneAnt maxW(double width) {
+        setMaxWidth(width);
+        return this;
+    }
+
+    public StackPaneAnt maxH(double height) {
+        setMaxHeight(height);
+        return this;
+    }
+
+    /** 同时设置 maxWidth 和 maxHeight（常用于 USE_PREF_SIZE 收缩，见 SKILL §20.1）。 */
+    public StackPaneAnt maxSize(double width, double height) {
+        setMaxWidth(width);
+        setMaxHeight(height);
+        return this;
+    }
+
+    public StackPaneAnt minW(double width) {
+        setMinWidth(width);
+        return this;
+    }
+
+    public StackPaneAnt minH(double height) {
+        setMinHeight(height);
+        return this;
+    }
+
+    public StackPaneAnt prefW(double width) {
+        setPrefWidth(width);
+        return this;
+    }
+
+    public StackPaneAnt prefH(double height) {
+        setPrefHeight(height);
+        return this;
+    }
+
     // ============================================================
     // 视觉钩子
     // ============================================================

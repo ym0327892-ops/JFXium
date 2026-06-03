@@ -1,11 +1,12 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.ButtonAnt;
-import org.openkawu.jfxium.component.MessageAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
  * Button 按钮 —— 类型 / 尺寸 / 形状 / 状态 / 块级。

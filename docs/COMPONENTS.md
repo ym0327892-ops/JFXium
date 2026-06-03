@@ -65,25 +65,25 @@ BorderPane shell = AppShellAnt.create()
     .build();
 ```
 
-### SplitBarAnt（M19，横向 左/中/右 三段式）
+### BarAnt（M19，横向 左/中/右 三段式）
 
-> `SplitBarAnt` 取代了原 `ActionBarAnt` 与 `Headers` 工厂——一个组件同时覆盖
+> `BarAnt` 取代了原 `ActionBarAnt` 与 `Headers` 工厂——一个组件同时覆盖
 > "左+右"、"左+中+右"两种 hbox 布局，center 不传即自动退化为二段。
 
 ```java
-HBox actions = SplitBarAnt.create()
+HBox actions = BarAnt.create()
     .left(ButtonAnt.create("刷新").build())
     .right(ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY).build())
     .build();
 
-HBox header = SplitBarAnt.create()
+HBox header = BarAnt.create()
     .left(closeBtn)
     .center(titleLabel)         // 三段式：center 真正居中
     .right(saveBtn, cancelBtn)
     .build();
 ```
 
-> 老 `ActionBarAnt` 已在 M19 删除，请用 SplitBarAnt 替代。
+> 老 `ActionBarAnt` 已在 M19 删除，请用 BarAnt 替代。
 
 ### SplitPaneAnt / ResizablePanelAnt / ScrollContainerAnt
 
@@ -105,7 +105,7 @@ ScrollPane scroll = ScrollContainerAnt.create()
     .build();
 ```
 
-> 不新增 `ToolbarAnt`，页面和面板操作区统一使用 `SplitBarAnt`（M19 之前为 `ActionBarAnt`，已删除）。
+> 不新增 `ToolbarAnt`，页面和面板操作区统一使用 `BarAnt`（M19 之前为 `ActionBarAnt`，已删除）。
 
 ---
 

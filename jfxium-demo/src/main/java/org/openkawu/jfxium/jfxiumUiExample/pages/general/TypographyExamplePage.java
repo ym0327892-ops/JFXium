@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.openkawu.jfxium.component.TypographyAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 
 /**
  * Typography 排版 —— 标题 / 段落 / 文本类型。

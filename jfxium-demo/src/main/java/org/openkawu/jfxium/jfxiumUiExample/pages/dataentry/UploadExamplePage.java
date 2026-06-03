@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.UploadAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.UploadAnt;
 
 /**
  * Upload 上传 —— 按钮上传 / 拖拽上传。

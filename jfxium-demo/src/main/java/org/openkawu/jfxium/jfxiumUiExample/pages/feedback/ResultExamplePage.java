@@ -3,11 +3,13 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.ButtonAnt;
-import org.openkawu.jfxium.component.ResultAnt;
+
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.composite.ResultAnt;
 
 /**
  * Result 结果页 —— 成功 / 错误警告 / 带额外内容。

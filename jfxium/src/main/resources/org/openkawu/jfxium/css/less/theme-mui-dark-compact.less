@@ -19,6 +19,10 @@
 @control-height-sm: 20px;
 @control-height-lg: 36px;
 
+// Table 表头高 / 行高（M19.45）：紧凑模式收紧 48 → 36
+@table-header-height: 36px;
+@table-row-height: 36px;
+
 // ============================================
 // MUI Dark Color Palette
 // ============================================
@@ -214,6 +218,23 @@
 @btn-padding-x-sm: 6px;
 @btn-padding-y-lg: 6px;
 @btn-padding-x-lg: 16px;
+
+// Input/ComboBox/DatePicker Padding - 必须与 Button 对齐（M19.46 修复）
+@ctrl-padding-y: 4px;
+@ctrl-padding-x: 12px;
+@ctrl-padding-y-sm: 2px;
+@ctrl-padding-x-sm: 6px;
+@ctrl-padding-y-lg: 6px;
+@ctrl-padding-x-lg: 16px;
+
+@input-padding-y: @ctrl-padding-y;
+@input-padding-x: 8px;
+@input-padding-y-sm: @ctrl-padding-y-sm;
+@input-padding-x-sm: 6px;
+@input-padding-y-lg: @ctrl-padding-y-lg;
+@input-padding-x-lg: 8px;
+
+@card-padding: 8px;
 
 // Input 边框颜色
 @input-border-color: rgba(255, 255, 255, 0.23);

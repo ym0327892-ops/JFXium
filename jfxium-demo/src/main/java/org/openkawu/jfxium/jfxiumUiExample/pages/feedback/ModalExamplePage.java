@@ -5,13 +5,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.ButtonAnt;
-import org.openkawu.jfxium.component.InputAnt;
-import org.openkawu.jfxium.component.MessageAnt;
-import org.openkawu.jfxium.component.ModalAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.overlay.ModalAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
+import org.openkawu.jfxium.component.control.InputAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
  * Modal 模态对话框 —— 基础信息 / 确认 / 自定义内容 / 自定义宽度。

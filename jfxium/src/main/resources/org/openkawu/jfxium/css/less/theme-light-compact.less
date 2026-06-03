@@ -20,8 +20,10 @@
 // Step 2: 覆盖为 Ant Design compact 尺寸
 // --------------------------------------------
 // Spacing（对齐 compact size 阶梯）
-@spacing-xs: 4px;   // sizeXXS/XS = 4
-@spacing-sm: 8px;   // sizeSM/size = 8
+// M19.45 修正：原 xs=4/sm=8 与默认值相同 → 走 @spacing-sm 的组件（Table cell / Menu /
+//   Tab / List / Tree / Tooltip / Form 等）紧凑模式根本没收紧。现对齐 mui-compact 真正收窄。
+@spacing-xs: 2px;   // 4 → 2（与 mui-compact 对齐）
+@spacing-sm: 6px;   // 8 → 6（与 mui-compact 对齐，让走 spacing-sm 的组件真紧凑）
 @spacing-md: 8px;   // size = 8（紧凑下 md 收到 8）
 @spacing-lg: 12px;  // 介于 size(8) 与 sizeLG(16)，admin 实战取 12 更平衡
 @spacing-xl: 16px;  // sizeLG = 16
@@ -30,6 +32,10 @@
 @control-height: 28px;     // 32 - 4
 @control-height-sm: 20px;  // 24 - 4
 @control-height-lg: 36px;  // 40 - 4
+
+// Table 表头高 / 行高（M19.45）：紧凑模式收紧（48 → 36，对齐 size(SMALL) mini 表格档）
+@table-header-height: 36px;
+@table-row-height: 36px;
 
 // 控件 padding 反推（高 28 → y=5；高 20 → y=1；高 36 → y=7）
 @ctrl-padding-y: 5px;

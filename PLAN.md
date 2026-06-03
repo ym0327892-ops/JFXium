@@ -31,7 +31,7 @@ Button btn = ButtonAnt.create("点击我")
     .onClick(e -> System.out.println("点击"))
     .build();
 
-HBox actions = SplitBarAnt.create()
+HBox actions = BarAnt.create()
     .left(ButtonAnt.create("取消").build())
     .right(ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY).build())
     .build();
@@ -207,7 +207,7 @@ HBox actions = SplitBarAnt.create()
 
 ### 📊 整体量化成果（M1-M19 累计）
 
-- 已重构 *Ant 组件：**54 个**（M11 重写 TableAnt / M15 重写 MenuAnt / M16 重写 WatermarkAnt / M18 删 PageAnt 加 CrudTemplate / M19 加 SplitBarAnt **+ 同时删除 ActionBarAnt + Headers 工厂** / M19.6 加 ToggleButtonAnt + MenuButtonAnt + SplitButtonAnt / M19.7 加 SelectableTextAnt）
+- 已重构 *Ant 组件：**54 个**（M11 重写 TableAnt / M15 重写 MenuAnt / M16 重写 WatermarkAnt / M18 删 PageAnt 加 CrudTemplate / M19 加 BarAnt **+ 同时删除 ActionBarAnt + Headers 工厂** / M19.6 加 ToggleButtonAnt + MenuButtonAnt + SplitButtonAnt / M19.7 加 SelectableTextAnt）
 - **业务模板（template/）**：**3 个**（CrudTemplate @ M18 / LoginTemplate @ M19.16 / DashboardTemplate @ M19.16）
 - 总组件量：82 \*Ant + 3 \*Template = **85 个**
 - 接入 AbstractStyleBuilder：**32 个**（M19.6 新增 3 个）
@@ -220,7 +220,7 @@ HBox actions = SplitBarAnt.create()
 - 编译诊断：**全部 0 报错**
 - 顺手修复的隐性 bug：**4 处**
 - 影响文件总数：**100+ 个**
-- 新增组件：**7 个**（WatermarkAnt / FilterBarAnt / CrudTemplate / SplitBarAnt / **ToggleButtonAnt** / **MenuButtonAnt** / **SplitButtonAnt**）
+- 新增组件：**7 个**（WatermarkAnt / FilterBarAnt / CrudTemplate / BarAnt / **ToggleButtonAnt** / **MenuButtonAnt** / **SplitButtonAnt**）
 - 删除组件 / 工具类：**3 个**（PageAnt @ M18 / ActionBarAnt @ M19 / Headers @ M19）
 - 增强组件：**5 个**
   - CardAnt：9 功能（M10）
@@ -248,9 +248,9 @@ HBox actions = SplitBarAnt.create()
   - AtlantaFX：TableView 表头/箭头/分割线（M11.2）+ ComboBox/DatePicker/ColorPicker padding（M19.5）
   - Element Plus：Watermark Canvas snapshot + REPEAT 平铺（M16）
 - **包结构演化（M18）**：`jfxium/component/` + `jfxium/template/`（新增）+ `jfxium/layout/`（预留）
-- **Bar 类组件唯一真相源（M19）**：项目内布局原子层只剩 `SplitBarAnt`，业务模板层 `FilterBarAnt`；ActionBarAnt + Headers 已删除，三段式重复实现 N→1
+- **Bar 类组件唯一真相源（M19）**：项目内布局原子层只剩 `BarAnt`，业务模板层 `FilterBarAnt`；ActionBarAnt + Headers 已删除，三段式重复实现 N→1
 - **按钮族 API 全对齐（M19.6）**：Button / Toggle / Menu / Split / Radio / CheckBox 全部支持 Size 三态，与 InputAnt/ButtonAnt 视觉一致
-- **内部消重（M19）**：CrudTemplate / CardAnt / SurfaceAnt 三处私有 / 工厂式 hbox 实现，全部统一到 SplitBarAnt
+- **内部消重（M19）**：CrudTemplate / CardAnt / SurfaceAnt 三处私有 / 工厂式 hbox 实现，全部统一到 BarAnt
 
 ---
 
@@ -899,7 +899,7 @@ HBox actions = SplitBarAnt.create()
 
 **API 一致性**（提醒）：CrudTemplate `build()` 返回直接节点（BorderPane），不是 Result 包装型——延续 ButtonAnt / TableAnt 的"直接节点型"契约，与 ModalAnt / DrawerAnt 的"Result 包装型"做语义区分。
 
-### 🎯 M19 SplitBarAnt 三段式横向布局沉淀（2026-05-24）
+### 🎯 M19 BarAnt 三段式横向布局沉淀（2026-05-24）
 
 **动机**：M18 落地 CrudTemplate 后，用户提出真实痛点——
 
@@ -917,14 +917,14 @@ HBox actions = SplitBarAnt.create()
 **结论**：是个"已识别为高频模式、却没抽出可复用组件"的真空区。SKILL 已经把它定为标准 pattern，CrudTemplate 已复刻了一遍，到了正式抽出来的时机。
 
 **讨论决策**（按用户选择）：
-- **A 方案**：新建独立组件 `SplitBarAnt`（推荐方案）
+- **A 方案**：新建独立组件 `BarAnt`（推荐方案）
 - center 用 **多节点 Node...**，与 CrudTemplate 的 topLeft/topRight 一致
 - center **真正居中**（左 + spacer + 中 + spacer + 右），受挤压时自然偏移——flex 标准行为
 
 **产出**：
 
 **子阶段 19.1：核心组件实现**
-- [x] 新建 `component/SplitBarAnt.java`（~180 行 + AbstractStyleBuilder 继承）
+- [x] 新建 `component/BarAnt.java`（~180 行 + AbstractStyleBuilder 继承）
 - [x] API：`.left(Node...)` / `.center(Node...)` / `.right(Node...)` / `.gap(double)` / `.alignment(Pos)`
 - [x] **center 自动退化**：不调用或传空数组 → 二段（左 + spacer + 右）；非空 → 三段（左 + spacer + 中 + spacer + 右）
 - [x] 每段允许多节点累加（多次调用 `.left(a).left(b)` 累加，不覆盖）
@@ -933,7 +933,7 @@ HBox actions = SplitBarAnt.create()
 - [x] LESS 新增 `.split-bar / .split-bar-spacer`（自身仅承担布局，无视觉装饰，spacer 透明）
 
 **子阶段 19.2：消除内部重复（精准动刀）**
-- [x] CrudTemplate 内部私有 `buildBar(left, right, spacing)` 方法**改为复用 SplitBarAnt**
+- [x] CrudTemplate 内部私有 `buildBar(left, right, spacing)` 方法**改为复用 BarAnt**
 - [x] 删除 CrudTemplate 中 import `Priority` / `Region`（不再直接拼 spacer）
 - [x] CrudTemplate 公开 API 完全不变，调用方零感知
 
@@ -948,14 +948,14 @@ HBox actions = SplitBarAnt.create()
 
 **子阶段 19.4：彻底删除 ActionBarAnt + Headers（一次性清干净）**
 - [x] 全项目 grep 调用方：CardAnt / SurfaceAnt 各 1 处使用 `Headers.create()`，ActionBarAnt 在源码与 demo 内**零调用**
-- [x] CardAnt.buildHeader：`Headers.create()...build()` → `SplitBarAnt.create().left(titleLabel).right(extra).build()`
-- [x] SurfaceAnt.build：`Headers.create()...build()` → `SplitBarAnt.create().left(titleLabel).right(extra).build()`，header styleClass 在 build 后挂回
+- [x] CardAnt.buildHeader：`Headers.create()...build()` → `BarAnt.create().left(titleLabel).right(extra).build()`
+- [x] SurfaceAnt.build：`Headers.create()...build()` → `BarAnt.create().left(titleLabel).right(extra).build()`，header styleClass 在 build 后挂回
 - [x] 删除 `component/ActionBarAnt.java`
 - [x] 删除 `core/util/Headers.java`
 - [x] 删除 CssClasses 中 `ACTION_BAR / ACTION_BAR_SPACER` 2 个常量
 - [x] 删除 `theme-base.less` 中 `.action-bar { ... }` 选择器（spacer 选择器从未单独使用，一并清掉）
 - [x] 8 套主题 CSS 重新生成，确认无残留
-- [x] 文档同步：README_CN.md / README.md / docs/COMPONENTS.md / docs/LAYOUT.md / PLAN.md（"二、Builder 命名约定"示例）所有 ActionBarAnt 调用替换为 SplitBarAnt
+- [x] 文档同步：README_CN.md / README.md / docs/COMPONENTS.md / docs/LAYOUT.md / PLAN.md（"二、Builder 命名约定"示例）所有 ActionBarAnt 调用替换为 BarAnt
 
 **子阶段 19.5：input-base 家族高度对齐 + Size API 补齐（CrudTemplate 验收触发）**
 
@@ -1147,12 +1147,12 @@ HBox actions = SplitBarAnt.create()
 
 
 **关键改动**：
-- `component/SplitBarAnt.java`（新建）
+- `component/BarAnt.java`（新建）
 - `core/css/CssClasses.java`（加 2 个 SPLIT_BAR_* 常量；删除 ACTION_BAR / ACTION_BAR_SPACER 2 个常量）
 - `css/less/theme-base.less`（加 `.split-bar / .split-bar-spacer` 选择器；删除 `.action-bar` 选择器）
-- `template/CrudTemplate.java`（私有 buildBar 改用 SplitBarAnt，删 spacer 自拼代码）
-- `component/CardAnt.java`（buildHeader 内部从 Headers 工厂迁到 SplitBarAnt）
-- `component/SurfaceAnt.java`（build 内部从 Headers 工厂迁到 SplitBarAnt）
+- `template/CrudTemplate.java`（私有 buildBar 改用 BarAnt，删 spacer 自拼代码）
+- `component/CardAnt.java`（buildHeader 内部从 Headers 工厂迁到 BarAnt）
+- `component/SurfaceAnt.java`（build 内部从 Headers 工厂迁到 BarAnt）
 - **删除** `component/ActionBarAnt.java`（M19 子阶段 19.4）
 - **删除** `core/util/Headers.java`（M19 子阶段 19.4）
 - `jfxium-demo/.../showcase/pages/SplitBarPage.java`（新建，5 Section）
@@ -1163,11 +1163,11 @@ HBox actions = SplitBarAnt.create()
 
 | 场景 | 选谁 | 理由 |
 |---|---|---|
-| 简单顺序排列（仅"左+右"或"左+中+右"） | **`SplitBarAnt`** | 唯一布局原子，已覆盖 ActionBar/Header 全部场景 |
-| 仅 title + extra 的 Header | **`SplitBarAnt`**（二段模式） | 老 Headers 工厂已删除 |
-| 真三段（左+中+右） | **`SplitBarAnt`** | 语义明确 |
-| admin 列表页带 search/filter/action 业务 API | `FilterBarAnt` | L2 业务模板，内部用 SplitBarAnt 二段 |
-| 整页业务骨架 | `CrudTemplate`（内部已用 SplitBarAnt） | 三段工具栏是 CrudTemplate 的子能力 |
+| 简单顺序排列（仅"左+右"或"左+中+右"） | **`BarAnt`** | 唯一布局原子，已覆盖 ActionBar/Header 全部场景 |
+| 仅 title + extra 的 Header | **`BarAnt`**（二段模式） | 老 Headers 工厂已删除 |
+| 真三段（左+中+右） | **`BarAnt`** | 语义明确 |
+| admin 列表页带 search/filter/action 业务 API | `FilterBarAnt` | L2 业务模板，内部用 BarAnt 二段 |
+| 整页业务骨架 | `CrudTemplate`（内部已用 BarAnt） | 三段工具栏是 CrudTemplate 的子能力 |
 
 **设计要点**：
 - **center 真正居中**：不是"靠左+紧跟"，而是左/右两侧用独立 spacer 撑开做对称分配——admin 顶部栏的"中间标题"是高频诉求
@@ -1177,7 +1177,7 @@ HBox actions = SplitBarAnt.create()
 **踩坑实证**：
 - M18 写 CrudTemplate 时 buildBar 是私有方法，本质上已经写过一遍三段式逻辑——M19 之前是"项目内重复实现 N 次"的反例
 - SKILL 3.1 一直把三段式列为"标准模式"但只给用户示范代码，没抽成组件——M19 才补全这个标准模式的"组件层"
-- 单元测试性优势：以前每次用户手写 `[left, spacer, right]` 都得重新检查 spacer 是否设了 `Hgrow + maxWidth`，现在只需要相信 SplitBarAnt 即可
+- 单元测试性优势：以前每次用户手写 `[left, spacer, right]` 都得重新检查 spacer 是否设了 `Hgrow + maxWidth`，现在只需要相信 BarAnt 即可
 
 **Showcase 总览更新**：
 ```
@@ -1286,7 +1286,7 @@ HBox actions = SplitBarAnt.create()
 - [x] ShowcasePage 新增 `Category.TEMPLATE("业务模板")` 枚举
 - [x] CrudTemplatePage 从 LAYOUT → TEMPLATE 分类
 - [x] LoginDashboardTemplatePage 注册到 TEMPLATE
-- [x] SplitBarPage 保留在 LAYOUT（SplitBarAnt 是布局原子，不是业务模板）
+- [x] SplitBarPage 保留在 LAYOUT（BarAnt 是布局原子，不是业务模板）
 - [x] 左侧菜单底部新增「业务模板」独立分组
 
 **关键改动**：
@@ -1747,6 +1747,85 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 
 ---
 
+### 🎯 M19.44 验收准备：文档账面对齐 + 验收清单（2026-06-01）
+
+**动机**：进度走到 M19.43、BUG 表 #1–#57 全闭环、双模块编译零报错，进入「可验收」节点。但有两处账面与实际对不上，先抹平再验收。
+
+**产出**：
+- [x] **BUG.md 顶部清理**：把置顶的未编号原始反馈（第 1–9 条）折叠成「已归档对照表」，逐条标注对应修复编号（#41–#57），并修正自相矛盾的标题日期（原「2026-05-17 全部完成」）。
+- [x] **form-ant-enhance spec 收尾**：该 spec 此前只有 requirements.md，但 4 个新 API（header/footer 变长/footerAlign/section）+ FormExamplePage 实际已在 M19.39 落地。补回 `design.md`（实现实况）+ `acceptance.md`（验收清单），机器可验证项 9 条全部实测通过。
+- [x] **新增 `ACCEPTANCE.md`**（项目根）：全局人工验收清单——11 套主题 + 重点回归页（对应 #41–#57）+ 66 个示例页逐分类勾选，验收基准锁定 default 尺寸（SKILL 密度约束）。
+
+**实测核对**（机器项）：
+- FormAnt / FormExamplePage `grep setStyle("-fx-` 均 0 命中
+- CssClasses 3 常量（FORM_HEADER/FORM_SECTION_TITLE/FORM_FOOTER）+ theme-base.less 3 选择器齐全
+- `./mvnw install -pl jfxium` + `compile -pl jfxium-demo` 双零报错
+
+**待办（移交人工）**：UI 层验收按 `ACCEPTANCE.md` 跑 `./mvnw javafx:run -pl jfxium-demo` 逐项勾选；新发现问题从 BUG #58 续编号，按 SKILL §22 双向溯源。
+
+---
+
+### 🎯 M19.45 紧凑模式尺寸体系修复（2026-06-01）
+
+**动机**：用户验收紧凑模式时发现 Table「只字变小、行距没收紧」。
+
+**根因（两层系统性缺陷）**：
+1. **高度硬编码**：`.column-header-background`/`.table-row-cell` 的 48px 写死，不走 token。紧凑模式靠「覆盖 token 重新生成」工作，硬编码值它管不到。
+2. **compact spacing 没真收窄**：light/dark-compact 的 `@spacing-xs/sm` 还是默认 4/8（只有 mui-compact 改对成 2/6），导致走 `@spacing-sm` 的组件（Table cell / List / Menu / Tab 等）紧凑 padding 没变。
+
+**修复**：
+- `variables-base.less` 新增 `@table-header-height` / `@table-row-height` 高度 token
+- `theme-base.less` Table 默认表头高/行高改引用 token（SMALL/LARGE 显式档不动）
+- light/dark-compact 修 `@spacing-xs:2 / @spacing-sm:6` + 覆盖 table 高度 token 48→36
+- mui-compact/mui-dark-compact 补覆盖 table 高度 token 48→36
+
+**验证（grep 4 套 compact CSS）**：default 48px → compact 36px；cell padding 8×12 → 6×8。连带 List/Menu/Tab/Tree/Tooltip/Form 紧凑也真生效。
+
+**沉淀**：紧凑模式只对「引用了 compact 覆盖的 token」的属性生效，硬编码 px 一律失效。新组件 pref/min-height、padding 一律走 token，不写死 px。详见 BUG #58。
+
+---
+
+### 🎯 M19.46-M19.50 主题系统 + 构建链 + 控件高度（2026-06-02）
+
+> demo 验收主题/紧凑时一路双向溯源，揪出 6 个框架 bug + 补 1 组件 + 加主题选择器。详见 BUG #59-#64。
+
+**M19.46 去 Node 依赖**：LESS 编译 `exec-maven-plugin(npx lessc)` → `groovy-maven-plugin + jlessc 1.16`（纯 Java）。新机器只需 JDK。
+
+**M19.47 主题选择器 + ThemeManager 三维状态机**：重构成 Family × dark × compact 正交组合，新增 `setFamily/setDark/setCompactDensity` + 切换后自动重应用 accent。demo 顶栏加「风格 / 明暗 / 紧凑 / 主题色」4 控件。
+
+**M19.48 LabelAnt**：补最基础的 Label 封装（继承式 + 链式，仿 VBoxAnt 双工厂）。demo 加 LabelExamplePage。
+
+**M19.49 ThemeManager inline style bug**：主题色注入误用 `.root{}` 选择器塞 setStyle → ClassCastException + 切换丢色。去选择器 + applyTheme 后自动重应用。
+
+**M19.50 控件全家族高度对齐 + 构建假成功 bug**：
+- Button/ComboBox/Input/Select/DatePicker 在 small/large 下高度不齐 → 统一 padding token + 补 min-height 钳到 controlHeight。探针实测 default 31 / small 24 / large 40 全对齐。
+- 揪出 groovy-maven-plugin 下 `Files.writeString`/`File.text` 静默不落盘的「假成功」bug → 改 `OutputStreamWriter`+flush+写入校验。
+- 顺手清理 4 处无效 `-fx-transition`；demo 菜单「Select 选择器」→「ComboBox 下拉框」。
+
+**沉淀**：
+- 构建期写文件别用 `Files.writeString`/`File.text`（某些插件 classloader 静默失败），用显式 stream+flush+写入校验。
+- 控件跨族等高：光对齐 padding 不够（skin 盒模型差异），需 min-height 钳到 controlHeight。
+- `Node.setStyle()` 只接受属性声明，禁止带选择器。
+
+---
+
+### 🎯 M19.51-M19.53 PC UI 标准固化 + Bar 改名 + 组件分包（2026-06-03）
+
+**M19.51 组合容器壳化**：Card/Modal/Drawer/Form 的 header/footer slot CSS padding 归零，高度由传入的 BarAnt 自身 `.padding()` 自控。容器只做「壳 + 分隔线」。Card body padding 16→12（再收紧）。SplitBarAnt 增强：padding/borderBottom/borderTop/minHeight/prefHeight/maxWidth。布局类全家族补齐原生属性（maxW/minW/prefW/fill/grow/margin 等 ~80 方法）。
+
+**M19.52 PC UI 标准固化**：项目约束 SKILL 新增「PC UI 实现标准（强制）」——尺寸基准（控件 28-32 / 卡片 12-16 / 字号 13-14 / 间距 4/8/12/16 / 图标 16 / 圆角 4-6）+ 布局/交互/视觉准则。明确「桌面 admin 思维，不用 Web 思维」。SplitBarAnt → **BarAnt** 改名（Split 与 SplitPane 语义冲突）。
+
+**M19.53 组件按类型分包**：`component/` 顶层 73 个 *Ant 平铺 → 按 build() 返回类型分三子包：
+- `component/control/`（23）原子型——薄封装原生控件
+- `component/composite/`（42）组合型——微组件拼装容器
+- `component/overlay/`（7）浮层型——Result 包装
+- `component/layout/`（13）/ `base/`（9）原有不动
+- FilterBarAnt 迁入 `template/`
+
+映射表脚本一次性完成：移文件 + 改 package + 全局修 import + module-info exports。jfxium + demo 编译通过、demo 运行时干净、clean install BUILD SUCCESS。组件组合规范 SKILL 第七章同步更新（新增 7.2 三子包按类型归约）。
+
+---
+
 ## 五、下一阶段计划
 
 ### 🔴 P0：本次重构遗留收尾（短期）
@@ -1852,6 +1931,7 @@ ShowcaseDemo
 - [x] GridAnt 二期：xs/sm/md/lg/xl/xxl 响应式断点（M19.21 完成）
 - [x] AppShellAnt 增强：Sider 折叠 / breakpoint（M19.22 完成）
 - [ ] FormAnt 增强：校验规则、字段联动、嵌套表单
+- [ ] **bindValue API（声明式数据绑定）**：所有数据输入控件（InputAnt / CheckBoxAnt / ComboBoxAnt / DatePickerAnt / RadioButtonAnt 等）新增 `bindValue(Property)` 方法，build 时自动双向绑定（`bindBidirectional`）。用户声明 Property 即可取值/监听，无需持有控件引用。只读场景通过 `.disabled(true)` 控制，不引入 BindMode 枚举。后续考虑 FormModel（表单级数据容器）做批量取值/重置/回填。
 - [x] CardAnt 缺失 props（M10 完成）
 
 #### P2.4 元工具（次优先级）

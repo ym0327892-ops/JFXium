@@ -3,10 +3,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import org.openkawu.jfxium.component.WatermarkAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.WatermarkAnt;
 
 /**
  * Watermark 水印 —— 基础文字水印 / 自定义旋转与透明度。

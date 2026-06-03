@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.navigation;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.MenuAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.MenuAnt;
 
 /**
  * Menu 菜单 —— 内联 / 水平 / 暗色主题。

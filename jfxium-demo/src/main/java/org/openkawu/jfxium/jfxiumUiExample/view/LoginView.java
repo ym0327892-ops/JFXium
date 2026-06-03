@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.view;
 
 import javafx.scene.layout.BorderPane;
-import org.openkawu.jfxium.component.MessageAnt;
+
 import org.openkawu.jfxium.template.LoginTemplate;
 
 import java.util.function.Consumer;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * 登录视图 —— 只负责构建登录页 UI，不碰 Stage / Scene。

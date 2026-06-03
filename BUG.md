@@ -1,71 +1,24 @@
-# 问题修复状态（2026-05-17 全部完成）
+# 问题修复状态
 
 > 模仿 Ant Design 组件，与 AtlantaFX（[GitHub](https://github.com/mkpaz/atlantafx)）做对照参考。
-## 在示例UI 展示中 存在的问题 
-1: SelectableTextAnt ，选择文字 ，又出现 什么文字模糊重叠一样化的样式， 
-为何 单行输入 就会出现 边框？
-SelectableTextAnt.create("zhangsan@example.com").build();
-SelectableTextAnt.create("订单号：JFX-2024-000123").build();
-他会出现 ；
-SelectableTextAnt.create(stackTrace)
-        .multiline(true)
-        .wrap(true)
-        .bordered(true)
-        .maxWidth(480)
-        .build();
-这个不会出现
-2: StackPane watermark = WatermarkAnt.create()
-        .content(myContent)
-        .text("机密文档")
-        .rotate(-45)
-        .opacity(0.08)
-        .fontSize(20)
-        .build();
-        缺少 如何具体在场景下使用
-这个如何 结合的使用 ？ 在比如示例 首页 写成 示例项目； 
-3: 会显现 四个边角 是空白， 边线 不连续？ 这是啥情况？
-SplitButtonAnt.create("保存")
-        .onClick(e -> save())
-        .item("保存并新建", e -> saveAndNew())
-        .item("保存并退出", e -> saveAndExit())
-        .build();
-4: Node steps = StepsAnt.create()
-        .step("登录", "填写账号密码")
-        .step("验证", "短信验证码")
-        .step("完成", "注册成功")
-        .current(1)
-        .build();
-这个，不知道具体作用， 点击 没看不出 作用 ，还有一个
-AnchorAnt.create()
-        .item("intro", "介绍", "#intro")
-        .item("install", "安装", "#install")
-        .item("usage", "用法", "#usage")
-        .activeKey("install")          // 高亮当前项
-        .onChange(key -> scrollTo(key))
-        .build();
 
-5: DropdownAnt ，MenuButtonAnt，ComboBoxAnt，InputNumberAnt.CascaderAnt，TreeSelectAnt，ColorPickerAnt.
-TimePickerAnt ， 缺少 你点了什么， 我要的是提取 目前的点的 数据， 表面可能是 vey ：value ， 你点的是key ，我要value 值； 你懂么？ 主要体现在 这个数据输入 的全部 控件中？
-6: SliderAnt 
- 范围模式下：  示例 超出了 容器 宽度？
- 7: DatePickerAnt.create()
-        .value(LocalDate.now())
-        .build();
-示例UI 中有问题 ，显示不全；  什么设计理念？
-为啥有 两个 边框 ，  点开里面按钮 不显示 全呢？
-![alt text](image-1.png)
-7：TransferAnt ，示例项目 只能看， 无法操作；
-8: ColorPickerAnt  ，
-写的很可笑，知道 ，如下图片； 那个 SliderAnt 超出了 容器 宽度， 是不是 SliderAnt 设计有问题， 怎么一直在超出呢
-![alt text](image-2.png)
-9： ToggleGroup viewGroup = new ToggleGroup();
-ToggleButtonAnt.create("列表").toggleGroup(viewGroup).selected(true).build();
-ToggleButtonAnt.create("卡片").toggleGroup(viewGroup).build();
-ToggleButtonAnt.create("表格").toggleGroup(viewGroup).build();
+## 已归档：示例 UI 验收反馈（第 1–9 条，均已闭环）
 
-应该有一个模式是 ，选一个， 并别 不能取消 全不选
-10: 
+> 这批是用户在 demo 验收时手写的原始反馈（曾置顶未编号），现已全部修复并落到下方「已修复问题」表。
+> 保留对照表便于溯源；原始详细描述见 git 历史。
 
+| 原始反馈 | 组件 | 对应修复编号 | 状态 |
+|---|---|---|---|
+| 1 SelectableText 单行拖选出现蓝边 + 选区文字发虚 | SelectableTextAnt | #41 | ✅ |
+| 2 Watermark 缺「场景下如何结合使用」的示例 | WatermarkAnt | `WatermarkExamplePage`（基础 + 机密文档 demo） | ✅ |
+| 3 四角空白 / 边线不连续 | SplitButtonAnt | #43 | ✅ |
+| 4 Steps/Anchor 点击看不出作用 | StepsAnt / AnchorAnt | #46 + #51 + #52 | ✅ |
+| 5 数据输入控件「取不到选中 value」（要 value 不要 key） | Dropdown/MenuButton/ComboBox/InputNumber/Cascader/TreeSelect/ColorPicker/TimePicker | #45 + #53 + #54 | ✅ |
+| 6 范围模式溢出容器宽度 | SliderAnt | #42 → #56（真因 9999px 圆角泄出，SKILL §23） | ✅ |
+| 7 显示不全 / 双边框 / 弹层按钮不全 | DatePickerAnt | #44 + #57 + #39 + #49 | ✅ |
+| 7(重号) 只能看不能操作 | TransferAnt | #47（加提示 + 结果栏） | ✅ |
+| 8 自定义颜色对话框 slider 超宽 / 排版乱 | ColorPickerAnt | #55（对齐 AtlantaFX `.custom-color-dialog`） | ✅ |
+| 9 缺「必选一个、不可全不选」模式 | ToggleButtonAnt | #48（mandatoryGroup） | ✅ |
 
 ## 已修复问题
 
@@ -127,6 +80,13 @@ ToggleButtonAnt.create("表格").toggleGroup(viewGroup).build();
 | 55 | ColorPickerAnt 自定义颜色对话框（CustomColorDialog）内部 RGB/HSB 调节 slider 超出对话框宽度 + 排版不居中/边线杂乱 —— 项目完全没有 `.custom-color-dialog` 样式，settings-pane 行内微组件无显式宽度约束 | ✅ 已修复 | 2026-05-31 |
 | 56 | SliderAnt 范围模式仍溢出容器（#42 的回归）—— rangeBox `maxWidth=USE_PREF_SIZE` 把 HBox 钉死在 pref 宽（~520px），卡片比它窄时只能溢出 | ✅ 已修复 | 2026-05-31 |
 | 57 | DatePicker 基础用法日期文字显示不全 —— `.date-picker` 只继承 input-base 无宽度约束，modena pref 宽偏窄 + padding/箭头把日期裁掉 | ✅ 已修复 | 2026-05-31 |
+| 58 | 紧凑模式下 Table 行高/表头高不收紧（只字变小）；且 light/dark-compact 的 `@spacing-sm/xs` 未真正收窄，导致一票走 spacing 的组件紧凑模式集体失效 | ✅ 已修复 | 2026-06-01 |
+| 59 | LESS 编译强依赖 Node.js（npx lessc），新机器需先装 Node 才能构建 —— 迁移到纯 Java 编译器 jlessc | ✅ 已修复 | 2026-06-02 |
+| 60 | 编译产物含 4 处 `-fx-transition`（JavaFX 不支持，运行时静默失败）—— 清理动画工具类的无效 transition | ✅ 已修复 | 2026-06-02 |
+| 61 | MUI 紧凑主题下拉/输入框高度 > 按钮（mui-compact 漏覆盖 `@ctrl-padding-*`/`@input-padding-*`，只改了 btn-padding）| ✅ 已修复 | 2026-06-02 |
+| 62 | ThemeManager 主题色注入 inline style 带 `.root{}` 选择器（非法）→ 运行时 ClassCastException 警告（`-fx-border-color`）；切主题色/明暗后主题色丢失 | ✅ 已修复 | 2026-06-02 |
+| 63 | Button 与 ComboBox/Input/Select/DatePicker 在 small/large 下高度不一致（size variant padding 体系分裂 + 无 min-height 钳制）| ✅ 已修复 | 2026-06-02 |
+| 64 | Maven LESS 编译「假成功」—— groovy-maven-plugin 下 `Files.writeString`/`File.text` 静默不落盘，日志报成功但 CSS 没更新（改 LESS 不生效）| ✅ 已修复 | 2026-06-02 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 
@@ -385,3 +345,94 @@ ToggleButtonAnt.create("表格").toggleGroup(viewGroup).build();
 - **根因**：`.date-picker` 只 `.input-base()`（无任何宽度约束）。native DatePicker 算的 pref 宽偏紧，配上我们 15px 横向 padding + 右侧箭头按钮，留给日期文字的宽度不够 → 文字被截。#44 只修了「双边框」，没碰宽度。
 - **修复**：`.date-picker` 加 `-fx-min-width: 130px; -fx-pref-width: 160px;`（能容纳「2026/05/31 + 箭头」）。
 - **沉淀**：input-base 家族里 DatePicker 是唯一「内部还有箭头按钮抢宽度」的，不能像 TextField 那样靠默认 pref 宽，必须显式给 min/pref width。
+
+## 紧凑模式尺寸体系修复（2026-06-01：BUG #58）
+
+> 用户验收紧凑模式时反馈：「Table 表格在紧凑模式下只是字体小了一号，行距/边距没变」。追根发现是紧凑模式尺寸体系的两层系统性缺陷。
+
+### #58 紧凑模式 Table 不收紧 + spacing token 未真正收窄
+- **现象**：顶栏切「紧凑」后，Table 行高、表头高纹丝不动，只有字体从 14px 变 13px。其它走 `@spacing-sm` 的组件（List/Menu/Tab 等）紧凑度也不明显。
+- **根因（两层）**：
+  1. **行高/表头高硬编码**：`theme-base.less` 里 `.column-header-background` 的 `-fx-pref-height: 48px`、`.table-row-cell` 的 `-fx-min-height: 48px` 是写死的 px。紧凑模式的工作原理是「覆盖尺寸 token → @import theme-base 重新生成」，硬编码值不读 token → 紧凑模式完全管不到。
+  2. **light/dark-compact 的 spacing 没真收窄**：这两个 compact 主题里 `@spacing-xs` 还是 4px、`@spacing-sm` 还是 8px，与默认值**完全相同**（只有 mui-compact 改对成了 2/6）。而 `@table-cell-padding-y = @spacing-sm`，所以 cell 垂直 padding 在紧凑下根本没变。字号变小是因为 `@font-size-md` 被全局覆盖成 13px——这就是「只有字变小」的来源。
+- **修复**（系统性，全走 token，无硬编码）：
+  1. `variables-base.less` 新增高度 token：`@table-header-height: 48px` / `@table-row-height: 48px`（集中管理被钳死的「高度」尺寸，附注释说明 List/Tree 行高靠 padding 撑、无需独立 token）。
+  2. `theme-base.less`：`.column-header-background` 与 `.table-row-cell` 默认值改为引用这两个 token（SMALL/LARGE 显式档保留原值，不跟紧凑联动）。
+  3. `theme-light-compact.less` / `theme-dark-compact.less`：① 修正 `@spacing-xs: 4→2`、`@spacing-sm: 8→6`（对齐 mui-compact，让走 spacing 的组件紧凑真生效）；② 覆盖 `@table-header-height/@table-row-height: 48→36`。
+  4. `theme-mui-compact.less` / `theme-mui-dark-compact.less`：补覆盖 table 高度 token 48→36（spacing 本就是 2/6 不动）。
+- **验证（grep 编译产物 4 套 compact CSS + default）**：
+  | | default | compact |
+  |---|---|---|
+  | Table 表头高（`.column-header-background` pref-height） | 48px | 36px ✅ |
+  | Table 行高（`.table-row-cell` min-height） | 48px | 36px ✅ |
+  | cell padding | 8×12 | 6×8 ✅ |
+  | list-cell padding | 8×12 | 6×8 ✅ |
+- **连带收益**：不止 Table——List/Menu/Tab/Tree/Tooltip/Form 等走 `@spacing-sm` 的组件，紧凑模式现在都真正收紧了。
+- **未动（符合 SKILL §23）**：固定造型件（Switch 轨道 44×22 / Slider thumb 14×14 / Badge dot 8×8 / 勾选框 14px / 各箭头 shape）保持不变——紧凑模式本就不该动「尺寸被钳死」的节点。
+- **沉淀**：紧凑模式失效的通用根因 = ①「高度类尺寸硬编码 px 没走 token」②「compact 主题漏改某些 spacing token」。排查口诀：紧凑模式只对「引用了被 compact 覆盖的 token」的属性生效，硬编码 px 一律失效。新组件凡是 `pref/min-height`、padding 都应走 token，不写死 px。
+
+## 主题系统 + 构建链 + 控件高度批次（2026-06-02：BUG #59-#64 + LabelAnt + 主题选择器）
+
+> 本批起于「demo 验收主题/紧凑」，按 SKILL §22 双向溯源，一路揪出 6 个框架源头 bug + 补 1 个组件 + 加主题选择器。
+
+### #59 去除 Node.js 构建依赖（npx lessc → jlessc）
+- **现象**：新机器 `mvn compile` 在 generate-resources 阶段失败，因为没装 Node.js/npm。
+- **修复**：`exec-maven-plugin(npx lessc)` 11 个 execution → 1 个 `groovy-maven-plugin` execution，用纯 Java 编译器 `de.inetsoftware:jlessc:1.16` 批量编译 11 套主题。只需 JDK，零 Node 依赖。
+- **验证**：产物行数/选择器与 npx lessc 一致；`clean install` 通过。
+
+### #60 清理无效 -fx-transition
+- **现象**：4 处 `-fx-transition`（动画工具类 .fade-in/.slide-up/.scale-in/.shake），JavaFX CSS 不支持该属性，运行时静默忽略（SKILL §3.1 / 强约束 #6）。
+- **修复**：删除 4 行 transition，保留各动画类的初始/终态属性（opacity/translate/scale，由 Java Timeline 驱动）。
+
+### #61 MUI 紧凑下拉/输入框高度 > 按钮
+- **根因**：`theme-mui-compact.less`/`theme-mui-dark-compact.less` 只覆盖了 `@btn-padding-*`（按钮变矮 28px），漏覆盖 `@ctrl-padding-*`/`@input-padding-*`/`@card-padding` → ComboBox/DatePicker/Select 还是默认 padding（32px 高）。
+- **修复**：两个 mui-compact 主题补齐 input 家族 padding token 覆盖，与 btn-padding 对齐。
+
+### #62 ThemeManager 主题色注入非法 inline style
+- **根因**：`applyPrimaryColorToAll()` 把 `.root { -color-accent-X: ...; }`（带选择器）整段塞给 `Node.setStyle()`。但 setStyle 只接受「属性声明列表」，不接受选择器包裹 → JavaFX CSS 解析器错乱，把 `.root {` 当属性乱解析，连累节点 `-fx-border-color` 抛 ClassCastException。
+- **附带**：`applyTheme()` 切主题后不重应用主题色 → 切风格/明暗后 accent 色丢失。
+- **修复**：① 去掉 `.root {}` 包裹，只拼属性声明；② `applyTheme()` 末尾自动 `applyPrimaryColorToAll()`。
+- **暴露契机**：之前 demo 没有主题色选择器，这段代码从没被触发；加了主题色选择器才暴露这个潜伏 bug（SKILL §22）。
+
+### #63 Button 与数据输入控件 small/large 高度不一致
+- **根因**：size variant 区 `.button.small` 用 `@spacing-xs/sm`（padding-y=4），input 家族用 `@input-padding-*-sm`（padding-y=2），两套 padding 体系分裂；且 JavaFX 不同控件 skin 盒模型渲染高度有差异，光对齐 padding 仍差几 px（探针实测 button.small=25 vs combo.small=21）。
+- **修复**：① 统一 button/input 家族 small/large 走同源 `@btn-padding-*`/`@input-padding-*` token；② 给两族 small/large 补 `-fx-min-height: @control-height-sm/-lg` 强制钳到同一目标高度；③ 删除 614 行与 5456 行重复的 `.button.small` 死代码。
+- **探针实测（修复后）**：
+
+  | 尺寸 | Button | ComboBox | Input | DatePicker |
+  |---|---|---|---|---|
+  | default | 31 | 31 | 31 | 31 |
+  | small | 24 | 24 | 24 | — |
+  | large | 40 | 40 | 40 | — |
+
+  全家族完全对齐 Ant controlHeight（32/24/40，default 31 是 JavaFX 1px 舍入）。
+
+### #64 Maven LESS 编译「假成功」（最隐蔽）
+- **现象**：改了 LESS 源 + `mvn clean install`，日志显示「11 themes compiled successfully」，但 CSS 产物根本没更新——导致前几次改 LESS 都在用旧 CSS，反复「修了没生效」。
+- **根因**：groovy-maven-plugin 2.1.1 的执行环境下，`java.nio.file.Files.writeString` 和 Groovy `File.text =` 都**静默失败**（不抛异常但不落盘）。
+- **定位手段**：故意把 theme-light.css 写成 `MARKER_TEST`，跑 generate-resources，发现 groovy 报成功但文件还是 MARKER_TEST → 坐实没写入。
+- **修复**：改用 `OutputStreamWriter(FileOutputStream)` + 显式 `flush()`/`close()`，并加「空 CSS 抛异常」校验防再次假成功。验证：污染文件后构建能正确覆写。
+- **沉淀**：构建期写文件别依赖 `Files.writeString`/`File.text`（某些插件 classloader 下静默失败），用显式 stream + flush；且关键产物要加「写入后校验」，不轻信「成功」日志。
+
+### 新增 LabelAnt 组件（用户反馈「最简单的 Label 没封装」）
+- 继承式 + 链式（仿 VBoxAnt 双工厂模式）：`extends Label`，支持 `.text()/.type()/.secondary()/.success()/.wrap()/.graphic()/.contentDisplay()/.align()/.build()`。
+- 文字色全走 styleClass（复用 typography 系列 LESS），零硬编码。
+- demo 新增 LabelExamplePage（通用分类，4 section）。
+
+### demo 主题选择器（用户反馈「无法切换主题模式」）
+- ThemeManager 重构成三维正交状态机（Family × dark × compact），新增 `Family` 枚举 + `setFamily/setDark/setCompactDensity` + 切换后自动重应用主题色。
+- demo 顶栏：主题风格下拉（Ant/MUI）+ 明暗下拉 + 紧凑 toggle + 主题色下拉（11 预设）。
+
+### demo 菜单改名
+- 「Select 选择器」→「ComboBox 下拉框」（底层是 ComboBoxAnt，原名让用户认不出是下拉框，SKILL §22 命名信号）。
+
+## 修复说明（2026-06-03：BUG #65 CheckBox/RadioButton 图标与文字间距太近）
+
+### #65 CheckBox/RadioButton 图标与文字间距太近（用户反馈）
+- **现象**：用户反馈「多选与单选，文字与框里的太近了几乎贴着了」
+- **根因**：CheckBox 和 RadioButton 的样式中缺少 `-fx-graphic-text-gap` 属性设置，使用 JavaFX 默认值（约 4px），导致图标与文字标签之间间距过小，视觉上「贴在一起」
+- **修复**：
+  1. 在 `theme-base.less` 的 `.check-box` 和 `.radio-button` 选择器中添加 `-fx-graphic-text-gap: @spacing-sm;`（默认 8px）
+  2. 在紧凑模式中自动派生为 6px（`@spacing-sm` 在紧凑主题中为 6px）
+- **效果**：所有主题（light/dark/mui/cyberpunk 等 11 套）的 CheckBox 和 RadioButton 图标与文字间距统一为 8px（紧凑模式 6px），符合 Ant Design 间距规范，视觉上不再「贴在一起」
+- **沉淀**：JavaFX 中 CheckBox/RadioButton 等带图标的控件需显式设置 `-fx-graphic-text-gap` 控制图标与文字间距，默认值偏小不符合桌面 admin 高信息密度下的视觉舒适度。本项目所有间距都应走 token 体系（`@spacing-*`），确保紧凑模式能自动联动收紧。

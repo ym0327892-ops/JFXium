@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.navigation;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.PaginationAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.PaginationAnt;
 
 /**
  * Pagination 分页 —— 基础 / 当前页 / 翻页回调。

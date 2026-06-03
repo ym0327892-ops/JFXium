@@ -3,6 +3,7 @@ package org.openkawu.jfxium.component.layout;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.css.Background;
 
@@ -131,6 +132,54 @@ public class VBoxAnt extends VBox {
                 if (n != null) getChildren().add(n);
             }
         }
+        return this;
+    }
+
+    /** VBox 是否让子节点水平撑满（默认 true）。 */
+    public VBoxAnt fillWidth(boolean fill) {
+        setFillWidth(fill);
+        return this;
+    }
+
+    /** 给指定子节点设置垂直拉伸优先级。 */
+    public VBoxAnt vgrow(Node child, Priority priority) {
+        VBox.setVgrow(child, priority);
+        return this;
+    }
+
+    /** 给指定子节点设置外边距。 */
+    public VBoxAnt margin(Node child, Insets margin) {
+        VBox.setMargin(child, margin);
+        return this;
+    }
+
+    public VBoxAnt maxW(double width) {
+        setMaxWidth(width);
+        return this;
+    }
+
+    public VBoxAnt maxH(double height) {
+        setMaxHeight(height);
+        return this;
+    }
+
+    public VBoxAnt minW(double width) {
+        setMinWidth(width);
+        return this;
+    }
+
+    public VBoxAnt minH(double height) {
+        setMinHeight(height);
+        return this;
+    }
+
+    public VBoxAnt prefW(double width) {
+        setPrefWidth(width);
+        return this;
+    }
+
+    public VBoxAnt prefH(double height) {
+        setPrefHeight(height);
         return this;
     }
 

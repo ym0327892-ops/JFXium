@@ -3,10 +3,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.CollapseAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.composite.CollapseAnt;
 
 /**
  * Collapse 折叠面板 —— 基础 / 手风琴 / 禁用面板。

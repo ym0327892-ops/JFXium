@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.InputAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.InputAnt;
 
 /**
  * Input 输入框 —— 基础 / 尺寸 / 状态 / 占位符。

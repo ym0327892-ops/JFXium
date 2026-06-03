@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
-import org.openkawu.jfxium.component.CheckBoxAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.CheckBoxAnt;
 
 /**
  * Checkbox 复选框 —— 基础 / 禁用 / 形状。

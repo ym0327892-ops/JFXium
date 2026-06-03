@@ -1,10 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.component.SplitButtonAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.SplitButtonAnt;
 
 /**
  * SplitButton 分裂按钮 —— 基础（主操作 + 备选）/ 带菜单项。

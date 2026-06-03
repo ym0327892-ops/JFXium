@@ -3,10 +3,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
-import org.openkawu.jfxium.component.ToggleButtonAnt;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.ToggleButtonAnt;
 
 /**
  * ToggleButton 切换按钮 —— 基础 / 互斥组。
