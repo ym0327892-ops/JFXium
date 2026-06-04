@@ -3,7 +3,6 @@ package org.openkawu.jfxium.component.base;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
-import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
  * 面板底部基础组件

@@ -10,7 +10,6 @@ import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.openkawu.jfxium.component.control.LabelAnt;
 
 /**
  * BarAnt - 横向栏布局原子（左 / 中 / 右 三段式）。

@@ -1,13 +1,12 @@
 package org.openkawu.jfxium.component.composite;
 
-import javafx.application.Platform;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.util.ArrayList;

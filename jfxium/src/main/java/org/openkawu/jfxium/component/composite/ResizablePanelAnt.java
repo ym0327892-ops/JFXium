@@ -1,6 +1,5 @@
 package org.openkawu.jfxium.component.composite;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -11,9 +10,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * JFXium 可调整尺寸面板组件。

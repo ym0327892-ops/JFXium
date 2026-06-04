@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.component.control;
 
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 
 import java.util.function.Consumer;
 

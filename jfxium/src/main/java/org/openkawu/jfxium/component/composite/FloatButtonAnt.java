@@ -4,8 +4,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 /**
  * JFXium 悬浮按钮组件 - 对标 Ant Design FloatButton

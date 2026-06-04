@@ -2,19 +2,11 @@ package org.openkawu.jfxium.template;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.IconAnt;
+import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 import org.openkawu.jfxium.core.i18n.Messages;
@@ -22,9 +14,6 @@ import org.openkawu.jfxium.core.i18n.Messages;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import org.openkawu.jfxium.component.control.InputAnt;
-import org.openkawu.jfxium.component.control.IconAnt;
-import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
  * LoginTemplate - 双栏 banner 登录页模板（M19.16，M19.39 LESS 化）。

@@ -9,20 +9,16 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.function.Consumer;
-import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
  * Modal 对话框组件 - 对齐 Ant Design 6.x 规范

@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.component.base;
 
 import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 
 /**
  * 可复用的关闭按钮组件

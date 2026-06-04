@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.component.base;
 
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 
 /**

@@ -1,7 +1,9 @@
 package org.openkawu.jfxium.core.accessibility;
 
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.ButtonBase;
+import javafx.scene.control.Labeled;
+import javafx.scene.control.TextInputControl;
 
 /**
  * Accessibility utilities for JFXium components.

@@ -5,8 +5,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
-import org.openkawu.jfxium.component.control.TextAreaAnt;
-import org.openkawu.jfxium.component.control.InputAnt;
 
 /**
  * SelectableTextAnt（M19.7）— 只读、可选、可复制的文本组件。

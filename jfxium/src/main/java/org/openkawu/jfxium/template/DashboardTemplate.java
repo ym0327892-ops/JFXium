@@ -4,21 +4,14 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-
+import javafx.scene.layout.*;
+import org.openkawu.jfxium.component.composite.CardAnt;
+import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.openkawu.jfxium.component.control.IconAnt;
-import org.openkawu.jfxium.component.composite.CardAnt;
 
 /**
  * DashboardTemplate - admin Dashboard 概览页骨架（M19.16）。

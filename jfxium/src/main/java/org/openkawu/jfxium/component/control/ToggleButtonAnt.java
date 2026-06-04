@@ -7,9 +7,9 @@ import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import org.openkawu.jfxium.component.composite.SwitchAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
-import org.openkawu.jfxium.component.composite.SwitchAnt;
 
 /**
  * JFXium 切换按钮组件（M19.6）— 包装 JavaFX {@link ToggleButton}。
