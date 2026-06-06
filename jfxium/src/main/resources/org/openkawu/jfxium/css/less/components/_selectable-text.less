@@ -112,19 +112,19 @@
   -fx-text-fill: -color-danger-emphasis;
 }
 
-.app-shell,
+.jfx-app-shell,
 .layout {
   -fx-background-color: -color-bg-layout;
 }
 
-.app-shell-header,
+.jfx-app-shell-header,
 .layout-header {
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
 
-.app-shell-sider,
+.jfx-app-shell-sider,
 .layout-sider {
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent -color-border-muted transparent transparent;
@@ -132,10 +132,10 @@
 }
 
 /* M19.22 sider 折叠态钩子（宽度由 Java 端控制，这里仅留 styleClass 占位以便业务自定义） */
-.app-shell-sider-collapsed { /* 折叠时的样式钩子 */ }
+.jfx-app-shell-sider-collapsed { /* 折叠时的样式钩子 */ }
 
 /* sider 底部折叠触发按钮（M19.22） */
-.button.app-shell-sider-trigger {
+.button.jfx-app-shell-sider-trigger {
   -fx-background-color: -color-bg-container;
   -fx-text-fill: -color-fg-muted;
   -fx-border-color: -color-border-muted transparent transparent transparent;
@@ -146,46 +146,46 @@
   -fx-cursor: hand;
 }
 
-.button.app-shell-sider-trigger:hover {
+.button.jfx-app-shell-sider-trigger:hover {
   -fx-background-color: -color-bg-subtle;
   -fx-text-fill: -color-accent-emphasis;
   -fx-border-color: -color-border-muted transparent transparent transparent;
 }
 
-.button.app-shell-sider-trigger:armed,
-.button.app-shell-sider-trigger:pressed {
+.button.jfx-app-shell-sider-trigger:armed,
+.button.jfx-app-shell-sider-trigger:pressed {
   -fx-background-color: -color-accent-subtle;
   -fx-border-color: -color-border-muted transparent transparent transparent;
 }
 
-.app-shell-content,
+.jfx-app-shell-content,
 .layout-content {
   -fx-background-color: -color-bg-layout;
 }
 
-.app-shell-footer,
+.jfx-app-shell-footer,
 .layout-footer {
   -fx-background-color: -color-bg-container;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
 }
 
-.split-pane-ant {
+.jfx-split-pane-ant {
   -fx-background-color: -color-bg-layout;
   -fx-background-insets: 0;
   -fx-padding: 0;
 }
 
-.split-pane-ant > .split-pane-divider {
+.jfx-split-pane-ant > .split-pane-divider {
   -fx-background-color: -color-border-muted;
   -fx-padding: @split-divider-padding;
 }
 
-.split-pane-ant > .split-pane-divider:hover {
+.jfx-split-pane-ant > .split-pane-divider:hover {
   -fx-background-color: -color-border-default;
 }
 
-.resizable-panel {
+.jfx-resizable-panel {
   -fx-background-color: -color-bg-container;
   -fx-background-radius: @border-radius-lg;
   -fx-border-color: -color-border-muted;
@@ -193,38 +193,38 @@
   -fx-border-radius: @border-radius-lg;
 }
 
-.resizable-panel-content {
+.jfx-resizable-panel-content {
   -fx-background-color: transparent;
 }
 
-.resizable-panel-handle {
+.jfx-resizable-panel-handle {
   -fx-background-color: transparent;
 }
 
-.resizable-panel-handle:hover {
+.jfx-resizable-panel-handle:hover {
   -fx-background-color: -color-accent-subtle;
 }
 
-.resizable-panel-handle.both {
+.jfx-resizable-panel-handle.both {
   -fx-background-color: -color-border-muted;
   -fx-background-radius: @border-radius-sm 0 @border-radius-lg 0;
 }
 
-.resizable-panel-handle.both:hover {
+.jfx-resizable-panel-handle.both:hover {
   -fx-background-color: -color-accent-muted;
 }
 
-.scroll-container {
+.jfx-scroll-container {
   -fx-background-color: -color-bg-layout;
   -fx-background-insets: 0;
   -fx-padding: 0;
 }
 
-.scroll-container > .viewport {
+.jfx-scroll-container > .viewport {
   -fx-background-color: -color-bg-layout;
 }
 
-.scroll-container-viewport {
+.jfx-scroll-container-viewport {
   -fx-background-color: -color-bg-layout;
 }
 

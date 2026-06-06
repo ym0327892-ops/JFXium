@@ -2,73 +2,73 @@
    LoginTemplate（M19.39 LESS 化）
    双栏 banner 登录页所有视觉规则集中在此
    ============================================================ */
-.login-template {
+.jfx-login-template {
   -fx-background-color: -color-bg-default;
 }
 
 /* ----- 左 Banner（渐变背景 + 卖点） ----- */
-.login-template-banner {
+.jfx-login-template-banner {
   -fx-background-color: linear-gradient(to bottom right,
       -color-accent-4, -color-accent-emphasis 60%, -color-accent-7);
 }
 
 /* Banner 内部所有文字默认白色（半透明分级） */
-.login-template-banner-brand {
+.jfx-login-template-banner-brand {
   -fx-font-size: 22px;
   -fx-font-weight: 700;
   -fx-text-fill: white;
 }
 
-.login-template-banner-tagline {
+.jfx-login-template-banner-tagline {
   -fx-font-size: 14px;
   -fx-text-fill: rgba(255, 255, 255, 0.85);
 }
 
-.login-template-banner-feature-check {
+.jfx-login-template-banner-feature-check {
   -fx-text-fill: rgba(255, 255, 255, 0.95);
   -fx-font-size: 14px;
   -fx-font-weight: 700;
 }
 
-.login-template-banner-feature-text {
+.jfx-login-template-banner-feature-text {
   -fx-text-fill: rgba(255, 255, 255, 0.9);
   -fx-font-size: 13px;
 }
 
-.login-template-banner-copyright {
+.jfx-login-template-banner-copyright {
   -fx-font-size: 11px;
   -fx-text-fill: rgba(255, 255, 255, 0.6);
 }
 
 /* Logo 盒：半透明白底 + 圆角 */
-.login-template-banner-logo {
+.jfx-login-template-banner-logo {
   -fx-background-color: rgba(255, 255, 255, 0.18);
   -fx-background-radius: 8;
 }
 
 /* Logo 盒内部图标统一白色（IconAnt 的 .jfx-icon-path） */
-.login-template-banner-logo .jfx-icon-path {
+.jfx-login-template-banner-logo .jfx-icon-path {
   -fx-background-color: white;
 }
 
 /* ----- 右 表单 ----- */
-.login-template-form-title {
+.jfx-login-template-form-title {
   -fx-font-size: 22px;
   -fx-font-weight: 700;
 }
 
-.login-template-form-subtitle {
+.jfx-login-template-form-subtitle {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
 
-.login-template-form-error {
+.jfx-login-template-form-error {
   -fx-text-fill: -color-danger-emphasis;
   -fx-font-size: 12px;
 }
 
 /* 复合输入行：HBox 自拼边框（左前置图标 + 右文本框） */
-.login-template-input-row {
+.jfx-login-template-input-row {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1;
@@ -77,35 +77,35 @@
 }
 
 /* 行内文本框：抹掉默认边框/背景，让它视觉融入外层 row 边框 */
-.login-template-input-field {
+.jfx-login-template-input-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-padding: 8 12 8 0;
   -fx-background-insets: 0;
 }
 
-.login-template-input-field:focused {
+.jfx-login-template-input-field:focused {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-effect: null;
 }
 
 /* 记住我 + 链接小字 */
-.login-template-remember {
+.jfx-login-template-remember {
   -fx-font-size: 13px;
 }
 
-.login-template-link-small {
+.jfx-login-template-link-small {
   -fx-font-size: 13px;
 }
 
 /* 登录按钮：稍大字号 + 提高 height */
-.login-template-submit {
+.jfx-login-template-submit {
   -fx-font-size: 14px;
 }
 
 /* 底部"还没账号？" 提示 */
-.login-template-no-account {
+.jfx-login-template-no-account {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 13px;
 }
@@ -113,14 +113,14 @@
 /* ============================================================
    DashboardTemplate
    ============================================================ */
-.dashboard-root { -fx-background-color: -color-bg-layout; }
-.dashboard-stat-icon-box {
+.jfx-dashboard-root { -fx-background-color: -color-bg-layout; }
+.jfx-dashboard-stat-icon-box {
   -fx-background-radius: 8;
   -fx-background-color: -color-bg-subtle;
 }
-.dashboard-stat-title   { -fx-font-size: 13px; -fx-text-fill: -color-fg-muted; }
-.dashboard-stat-trend-up   { -fx-font-size: 12px; -fx-text-fill: -color-success-emphasis; }
-.dashboard-stat-trend-down { -fx-font-size: 12px; -fx-text-fill: -color-danger-emphasis; }
-.dashboard-stat-trend-hint { -fx-font-size: 12px; -fx-text-fill: -color-fg-muted; }
-.dashboard-welcome     { -fx-font-size: 22px; -fx-font-weight: 700; }
-.dashboard-stat-value  { -fx-font-size: 28px; -fx-font-weight: 700; }
+.jfx-dashboard-stat-title   { -fx-font-size: 13px; -fx-text-fill: -color-fg-muted; }
+.jfx-dashboard-stat-trend-up   { -fx-font-size: 12px; -fx-text-fill: -color-success-emphasis; }
+.jfx-dashboard-stat-trend-down { -fx-font-size: 12px; -fx-text-fill: -color-danger-emphasis; }
+.jfx-dashboard-stat-trend-hint { -fx-font-size: 12px; -fx-text-fill: -color-fg-muted; }
+.jfx-dashboard-welcome     { -fx-font-size: 22px; -fx-font-weight: 700; }
+.jfx-dashboard-stat-value  { -fx-font-size: 28px; -fx-font-weight: 700; }

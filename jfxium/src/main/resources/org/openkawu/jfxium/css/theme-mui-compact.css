@@ -134,81 +134,81 @@
    ============================================ */
 /* 老 PageAnt 已删除（M18），相关 .page / .page-header / .page-title 等样式同步移除 */
 /* CrudTemplate（业务模板，M18 新增）：通用三段式骨架 */
-.crud-template {
+.jfx-crud-template {
   -fx-background-color: -color-bg-default;
   -fx-padding: 16px;
 }
-.crud-template.bordered {
+.jfx-crud-template.bordered {
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
 }
-.crud-template-title {
+.jfx-crud-template-title {
   -fx-font-size: 20px;
   -fx-font-weight: 700;
   -fx-text-fill: -color-fg-default;
 }
-.crud-template-topbar {
+.jfx-crud-template-topbar {
   -fx-background-color: transparent;
 }
-.crud-template-body {
+.jfx-crud-template-body {
   -fx-background-color: transparent;
 }
-.crud-template-bottombar {
+.jfx-crud-template-bottombar {
   -fx-background-color: transparent;
 }
 /* PageTemplate（M19.33 新增）：通用展示页骨架「大标题 + 描述 + 内容区」 */
-.page-template {
+.jfx-page-template {
   -fx-background-color: transparent;
 }
-.page-template-header {
+.jfx-page-template-header {
   -fx-spacing: 6px;
 }
-.page-template-title {
+.jfx-page-template-title {
   -fx-font-size: 28px;
   -fx-font-weight: 700;
   -fx-text-fill: -color-fg-default;
 }
-.page-template-desc {
+.jfx-page-template-desc {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
   -fx-wrap-text: true;
 }
-.page-template-body {
+.jfx-page-template-body {
   -fx-background-color: transparent;
 }
-.surface {
+.jfx-surface {
   -fx-background-color: -color-bg-container;
   -fx-background-radius: 6px;
   -fx-border-radius: 6px;
   -fx-padding: 12px;
 }
-.surface.bordered {
+.jfx-surface.bordered {
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
 }
-.surface.shadow-sm {
+.jfx-surface.shadow-sm {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 1);
 }
-.surface.shadow-md {
+.jfx-surface.shadow-md {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 2);
 }
-.surface.shadow-lg {
+.jfx-surface.shadow-lg {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 16, 0, 0, 4);
 }
-.surface-header {
+.jfx-surface-header {
   -fx-background-color: transparent;
   -fx-padding: 0 0 8px 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
-.surface-title {
+.jfx-surface-title {
   -fx-font-size: 13px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
-.surface-content {
+.jfx-surface-content {
   -fx-background-color: transparent;
 }
 /* SplitBarAnt（M19）：横向左/中/右三段式
@@ -216,10 +216,10 @@
    - spacer 是结构性弹性占位，无外观属性
    - 用户需要装饰（边框/背景）请挂自己的 styleClass
    - M19 之后：取代了老 .action-bar（ActionBarAnt 已删除） */
-.split-bar {
+.jfx-split-bar {
   -fx-background-color: transparent;
 }
-.split-bar-spacer {
+.jfx-split-bar-spacer {
   -fx-background-color: transparent;
 }
 /* ============================================
@@ -323,28 +323,28 @@
 .jfx-selectable-text-error {
   -fx-text-fill: -color-danger-emphasis;
 }
-.app-shell,
+.jfx-app-shell,
 .layout {
   -fx-background-color: -color-bg-layout;
 }
-.app-shell-header,
+.jfx-app-shell-header,
 .layout-header {
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
-.app-shell-sider,
+.jfx-app-shell-sider,
 .layout-sider {
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent -color-border-muted transparent transparent;
   -fx-border-width: 0 1px 0 0;
 }
 /* M19.22 sider 折叠态钩子（宽度由 Java 端控制，这里仅留 styleClass 占位以便业务自定义） */
-.app-shell-sider-collapsed {
+.jfx-app-shell-sider-collapsed {
   /* 折叠时的样式钩子 */
 }
 /* sider 底部折叠触发按钮（M19.22） */
-.button.app-shell-sider-trigger {
+.button.jfx-app-shell-sider-trigger {
   -fx-background-color: -color-bg-container;
   -fx-text-fill: -color-fg-muted;
   -fx-border-color: -color-border-muted transparent transparent transparent;
@@ -354,70 +354,70 @@
   -fx-font-size: 18px;
   -fx-cursor: hand;
 }
-.button.app-shell-sider-trigger:hover {
+.button.jfx-app-shell-sider-trigger:hover {
   -fx-background-color: -color-bg-subtle;
   -fx-text-fill: -color-accent-emphasis;
   -fx-border-color: -color-border-muted transparent transparent transparent;
 }
-.button.app-shell-sider-trigger:armed,
-.button.app-shell-sider-trigger:pressed {
+.button.jfx-app-shell-sider-trigger:armed,
+.button.jfx-app-shell-sider-trigger:pressed {
   -fx-background-color: -color-accent-subtle;
   -fx-border-color: -color-border-muted transparent transparent transparent;
 }
-.app-shell-content,
+.jfx-app-shell-content,
 .layout-content {
   -fx-background-color: -color-bg-layout;
 }
-.app-shell-footer,
+.jfx-app-shell-footer,
 .layout-footer {
   -fx-background-color: -color-bg-container;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
 }
-.split-pane-ant {
+.jfx-split-pane-ant {
   -fx-background-color: -color-bg-layout;
   -fx-background-insets: 0;
   -fx-padding: 0;
 }
-.split-pane-ant > .split-pane-divider {
+.jfx-split-pane-ant > .split-pane-divider {
   -fx-background-color: -color-border-muted;
   -fx-padding: 2px;
 }
-.split-pane-ant > .split-pane-divider:hover {
+.jfx-split-pane-ant > .split-pane-divider:hover {
   -fx-background-color: -color-border-default;
 }
-.resizable-panel {
+.jfx-resizable-panel {
   -fx-background-color: -color-bg-container;
   -fx-background-radius: 6px;
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
 }
-.resizable-panel-content {
+.jfx-resizable-panel-content {
   -fx-background-color: transparent;
 }
-.resizable-panel-handle {
+.jfx-resizable-panel-handle {
   -fx-background-color: transparent;
 }
-.resizable-panel-handle:hover {
+.jfx-resizable-panel-handle:hover {
   -fx-background-color: -color-accent-subtle;
 }
-.resizable-panel-handle.both {
+.jfx-resizable-panel-handle.both {
   -fx-background-color: -color-border-muted;
   -fx-background-radius: 2px 0 6px 0;
 }
-.resizable-panel-handle.both:hover {
+.jfx-resizable-panel-handle.both:hover {
   -fx-background-color: -color-accent-muted;
 }
-.scroll-container {
+.jfx-scroll-container {
   -fx-background-color: -color-bg-layout;
   -fx-background-insets: 0;
   -fx-padding: 0;
 }
-.scroll-container > .viewport {
+.jfx-scroll-container > .viewport {
   -fx-background-color: -color-bg-layout;
 }
-.scroll-container-viewport {
+.jfx-scroll-container-viewport {
   -fx-background-color: -color-bg-layout;
 }
 /* ============================================
@@ -582,113 +582,113 @@
 /* ============================================
    Card Component
    ============================================ */
-.card {
+.jfx-card {
   -fx-background-color: #ffffff;
   -fx-background-radius: 6px;
   -fx-border-radius: 6px;
   -fx-padding: 8px;
 }
-.card.bordered {
+.jfx-card.bordered {
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
 }
-.card.shadow-sm {
+.jfx-card.shadow-sm {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 1);
 }
-.card.shadow-md {
+.jfx-card.shadow-md {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 2);
 }
-.card.shadow-lg {
+.jfx-card.shadow-lg {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 16, 0, 0, 4);
 }
 /* M10 新增：Card 增强功能 */
 /* 小尺寸卡片 */
-.card.card-small {
+.jfx-card.jfx-card-small {
   -fx-font-size: 14px;
 }
-.card.card-small .card-header {
+.jfx-card.jfx-card-small .jfx-card-header {
   -fx-padding: 8px 8px;
 }
-.card.card-small .card-body {
+.jfx-card.jfx-card-small .jfx-card-body {
   -fx-padding: 8px;
 }
 /* 内嵌卡片 */
-.card.card-inner {
+.jfx-card.jfx-card-inner {
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
 }
 /* 卡片 Header */
-.card .card-header {
+.jfx-card .jfx-card-header {
   -fx-padding: 6px 8px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
 /* 卡片 Body */
-.card .card-body {
+.jfx-card .jfx-card-body {
   -fx-padding: 8px;
 }
-.card.card-small .card-body {
+.jfx-card.jfx-card-small .jfx-card-body {
   -fx-padding: 8px;
 }
 /* 卡片封面 */
-.card .card-cover {
+.jfx-card .jfx-card-cover {
   -fx-background-color: -color-bg-subtle;
   -fx-min-height: 200px;
 }
-.card .card-cover .image-view {
+.jfx-card .jfx-card-cover .image-view {
   -fx-fit-width: stretch;
   -fx-preserve-ratio: true;
 }
 /* 卡片 Footer（操作区） */
-.card .card-actions {
+.jfx-card .jfx-card-actions {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
   -fx-padding: 12px 0;
 }
-.card .card-action-item {
+.jfx-card .jfx-card-action-item {
   -fx-padding: 12px 16px;
   -fx-cursor: hand;
 }
-.card .card-action-item:hover {
+.jfx-card .jfx-card-action-item:hover {
   -fx-background-color: -color-bg-subtle;
 }
 /* 卡片标签页 */
-.card .card-tab-bar {
+.jfx-card .jfx-card-tab-bar {
   -fx-padding: 0 24px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
   -fx-alignment: center-left;
 }
-.card.card-small .card-tab-bar {
+.jfx-card.jfx-card-small .jfx-card-tab-bar {
   -fx-padding: 0 12px;
 }
-.card .card-tab-list {
+.jfx-card .jfx-card-tab-list {
   -fx-spacing: 0;
   -fx-alignment: center-left;
 }
-.card .card-tab-item {
+.jfx-card .jfx-card-tab-item {
   -fx-padding: 12px 16px;
   -fx-text-fill: -color-fg-muted;
   -fx-cursor: hand;
   -fx-border-color: transparent;
   -fx-border-width: 0 0 2px 0;
 }
-.card .card-tab-item:hover {
+.jfx-card .jfx-card-tab-item:hover {
   -fx-text-fill: -color-accent-emphasis;
 }
-.card .card-tab-item.active {
+.jfx-card .jfx-card-tab-item.active {
   -fx-text-fill: -color-accent-emphasis;
   -fx-border-color: -color-accent-emphasis;
   -fx-border-width: 0 0 2px 0;
 }
-.card .card-title {
+.jfx-card .jfx-card-title {
   -fx-font-size: 16px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
-.card.card-small .card-title {
+.jfx-card.jfx-card-small .jfx-card-title {
   -fx-font-size: 14px;
 }
 /* ============================================
@@ -908,10 +908,10 @@
   -fx-border-width: 0 0 2px 0;
 }
 /* TabsAnt indicator */
-.tabs-indicator-pane {
+.jfx-tabs-indicator-pane {
   -fx-background-color: -color-border-muted;
 }
-.tabs-indicator-bar {
+.jfx-tabs-indicator-bar {
   -fx-background-color: -color-accent-emphasis;
   -fx-background-radius: 2px;
 }
@@ -2472,7 +2472,7 @@
   -fx-text-fill: -color-fg-muted;
 }
 /* 禁用状态：通过 styleClass 切换，不再 inline 拼 -fx-opacity */
-.jfx-slider.slider-disabled {
+.jfx-slider.jfx-slider-disabled {
   -fx-opacity: 0.5;
 }
 /* ============================================
@@ -2682,7 +2682,7 @@
   -fx-background-color: transparent;
 }
 /* fullscreen 模式：半透明白色背景遮罩 */
-.jfx-spin.spin-fullscreen {
+.jfx-spin.jfx-spin-fullscreen {
   -fx-background-color: rgba(255, 255, 255, 0.7);
 }
 .jfx-spin-tip {
@@ -2765,19 +2765,19 @@
    Batch 1 Tier 2 组件
    ============================================ */
 /* AnchorAnt 锚点导航 */
-.anchor {
+.jfx-anchor {
   -fx-padding: 8 12 8 0;
 }
-.anchor-link {
+.jfx-anchor-link {
   -fx-font-size: 13px;
   -fx-cursor: hand;
   -fx-padding: 4 8 4 8;
   -fx-text-fill: -color-fg-muted;
 }
-.anchor-link:hover {
+.jfx-anchor-link:hover {
   -fx-text-fill: -color-fg-default;
 }
-.anchor-link.anchor-link-active {
+.jfx-anchor-link.jfx-anchor-link-active {
   -fx-text-fill: -color-accent-emphasis;
   -fx-font-weight: 600;
   -fx-border-color: transparent transparent transparent -color-accent-emphasis;
@@ -2845,10 +2845,10 @@
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
-.jfx-statistic.statistic-small .jfx-statistic-title {
+.jfx-statistic.jfx-statistic-small .jfx-statistic-title {
   -fx-font-size: 12px;
 }
-.jfx-statistic.statistic-large .jfx-statistic-title {
+.jfx-statistic.jfx-statistic-large .jfx-statistic-title {
   -fx-font-size: 16px;
 }
 .jfx-statistic-value {
@@ -2856,10 +2856,10 @@
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
-.jfx-statistic.statistic-small .jfx-statistic-value {
+.jfx-statistic.jfx-statistic-small .jfx-statistic-value {
   -fx-font-size: 20px;
 }
-.jfx-statistic.statistic-large .jfx-statistic-value {
+.jfx-statistic.jfx-statistic-large .jfx-statistic-value {
   -fx-font-size: 36px;
 }
 .jfx-statistic-prefix,
@@ -2867,12 +2867,12 @@
   -fx-font-size: 20px;
   -fx-text-fill: -color-fg-muted;
 }
-.jfx-statistic.statistic-small .jfx-statistic-prefix,
-.jfx-statistic.statistic-small .jfx-statistic-suffix {
+.jfx-statistic.jfx-statistic-small .jfx-statistic-prefix,
+.jfx-statistic.jfx-statistic-small .jfx-statistic-suffix {
   -fx-font-size: 16px;
 }
-.jfx-statistic.statistic-large .jfx-statistic-prefix,
-.jfx-statistic.statistic-large .jfx-statistic-suffix {
+.jfx-statistic.jfx-statistic-large .jfx-statistic-prefix,
+.jfx-statistic.jfx-statistic-large .jfx-statistic-suffix {
   -fx-font-size: 32px;
 }
 /* ============================================
@@ -2880,52 +2880,52 @@
                      SegmentedAnt / InputNumberAnt / CarouselAnt
    ============================================ */
 /* TypographyAnt */
-.typography-title {
+.jfx-typography-title {
   -fx-text-fill: -color-fg-default;
 }
-.typography-paragraph {
+.jfx-typography-paragraph {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
 }
-.typography-text {
+.jfx-typography-text {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
 }
 /* Type 修饰类（Primary 已是默认） */
-.typography-text.typography-secondary {
+.jfx-typography-text.jfx-typography-secondary {
   -fx-text-fill: -color-fg-muted;
 }
-.typography-text.typography-success {
+.jfx-typography-text.jfx-typography-success {
   -fx-text-fill: -color-success-emphasis;
 }
-.typography-text.typography-warning {
+.jfx-typography-text.jfx-typography-warning {
   -fx-text-fill: -color-warning-emphasis;
 }
-.typography-text.typography-danger {
+.jfx-typography-text.jfx-typography-danger {
   -fx-text-fill: -color-danger-emphasis;
 }
-.typography-text.typography-disabled {
+.jfx-typography-text.jfx-typography-disabled {
   -fx-text-fill: -color-fg-subtle;
 }
 /* 修饰行为：italic / underline / delete / mark / code，
    通过 styleClass 切换 fontStyle/装饰，避免 inline 拼字符串 */
-.typography-text.typography-italic {
+.jfx-typography-text.jfx-typography-italic {
   -fx-font-style: italic;
 }
-.typography-text.typography-underline {
+.jfx-typography-text.jfx-typography-underline {
   -fx-underline: true;
 }
-.typography-text.typography-delete {
+.jfx-typography-text.jfx-typography-delete {
   -fx-strikethrough: true;
 }
-.typography-text.typography-copyable {
+.jfx-typography-text.jfx-typography-copyable {
   -fx-cursor: hand;
 }
-.typography-text.typography-mark {
+.jfx-typography-text.jfx-typography-mark {
   -fx-background-color: -color-warning-subtle;
   -fx-padding: 0 4 0 4;
 }
-.typography-text.typography-code {
+.jfx-typography-text.jfx-typography-code {
   -fx-font-family: "SFMono-Regular", "Consolas", monospace;
   -fx-background-color: -color-bg-subtle;
   -fx-padding: 2 6 2 6;
@@ -2934,52 +2934,52 @@
   -fx-border-radius: 2px;
 }
 /* CollapseAnt */
-.collapse {
+.jfx-collapse {
   -fx-background-color: -color-bg-default;
   -fx-background-radius: 4px;
   -fx-border-color: -color-border-default;
   -fx-border-radius: 4px;
 }
-.collapse-panel {
+.jfx-collapse-panel {
   -fx-background-color: transparent;
 }
-.collapse-header {
+.jfx-collapse-header {
   -fx-padding: 12 16 12 16;
   -fx-cursor: hand;
 }
-.collapse-header.collapse-disabled {
+.jfx-collapse-header.jfx-collapse-disabled {
   -fx-cursor: default;
 }
-.collapse-header-label {
+.jfx-collapse-header-label {
   -fx-font-size: 13px;
   -fx-font-weight: 500;
   -fx-text-fill: -color-fg-default;
 }
-.collapse-header.collapse-disabled .collapse-header-label {
+.jfx-collapse-header.jfx-collapse-disabled .jfx-collapse-header-label {
   -fx-text-fill: -color-fg-subtle;
 }
-.collapse-arrow {
+.jfx-collapse-arrow {
   -fx-stroke: -color-fg-muted;
   -fx-stroke-width: 2;
   -fx-fill: none;
 }
-.collapse-content {
+.jfx-collapse-content {
   -fx-background-color: -color-bg-default;
   -fx-padding: 0 16 16 40;
 }
-.collapse-divider {
+.jfx-collapse-divider {
   -fx-background-color: -color-border-default;
   -fx-min-height: 1;
   -fx-pref-height: 1;
 }
 /* TreeSelectAnt */
-.tree-select {
+.jfx-tree-select {
   -fx-background-color: transparent;
 }
-.tree-select:disabled {
+.jfx-tree-select:disabled {
   -fx-opacity: 0.6;
 }
-.tree-select-field {
+.jfx-tree-select-field {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-radius: 4px;
@@ -2988,130 +2988,130 @@
   -fx-text-fill: -color-fg-default;
   -fx-padding: 8 32 8 12;
 }
-.tree-select-row {
+.jfx-tree-select-row {
   -fx-cursor: hand;
   -fx-background-color: transparent;
   -fx-padding: 6 12 6 12;
 }
-.tree-select-row:hover {
+.jfx-tree-select-row:hover {
   -fx-background-color: -color-bg-subtle;
 }
-.tree-select-row.tree-select-disabled {
+.jfx-tree-select-row.jfx-tree-select-disabled {
   -fx-cursor: default;
 }
-.tree-select-arrow {
+.jfx-tree-select-arrow {
   -fx-font-size: 8px;
   -fx-text-fill: -color-fg-muted;
 }
-.tree-select-label {
+.jfx-tree-select-label {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
 }
-.tree-select-row.tree-select-disabled .tree-select-label {
+.jfx-tree-select-row.jfx-tree-select-disabled .jfx-tree-select-label {
   -fx-text-fill: -color-fg-subtle;
 }
 /* 多选模式：选中行高亮（BUG #53，对齐 Ant Design TreeSelect 选中项浅蓝底 + 主色文字） */
-.tree-select-row.tree-select-selected {
+.jfx-tree-select-row.jfx-tree-select-selected {
   -fx-background-color: -color-accent-subtle;
 }
-.tree-select-row.tree-select-selected .tree-select-label {
+.jfx-tree-select-row.jfx-tree-select-selected .jfx-tree-select-label {
   -fx-text-fill: -color-accent-emphasis;
   -fx-font-weight: 600;
 }
 /* SegmentedAnt */
-.segmented {
+.jfx-segmented {
   -fx-background-color: -color-bg-subtle;
   -fx-padding: 2;
   -fx-background-radius: 4px;
 }
-.segmented.segmented-disabled {
+.jfx-segmented.jfx-segmented-disabled {
   -fx-opacity: 0.6;
 }
-.segmented-item {
+.jfx-segmented-item {
   -fx-background-color: transparent;
   -fx-background-radius: 2px;
   -fx-cursor: hand;
 }
-.segmented-item:hover {
+.jfx-segmented-item:hover {
   -fx-background-color: -color-bg-overlay;
 }
-.segmented-item.segmented-item-selected {
+.jfx-segmented-item.jfx-segmented-item-selected {
   -fx-background-color: -color-bg-default;
 }
-.segmented-item.segmented-item-selected:hover {
+.jfx-segmented-item.jfx-segmented-item-selected:hover {
   -fx-background-color: -color-bg-default;
 }
-.segmented-item-label {
+.jfx-segmented-item-label {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
-.segmented-item.segmented-item-selected .segmented-item-label {
+.jfx-segmented-item.jfx-segmented-item-selected .jfx-segmented-item-label {
   -fx-text-fill: -color-fg-default;
   -fx-font-weight: 500;
 }
 /* SegmentedAnt 尺寸 */
-.segmented.segmented-small .segmented-item-label {
+.jfx-segmented.jfx-segmented-small .jfx-segmented-item-label {
   -fx-font-size: 12px;
 }
-.segmented.segmented-large .segmented-item-label {
+.jfx-segmented.jfx-segmented-large .jfx-segmented-item-label {
   -fx-font-size: 16px;
 }
 /* InputNumberAnt */
-.input-number {
+.jfx-input-number {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
 }
-.input-number.input-number-disabled {
+.jfx-input-number.jfx-input-number-disabled {
   -fx-opacity: 0.6;
 }
-.input-number-prefix,
-.input-number-suffix {
+.jfx-input-number-prefix,
+.jfx-input-number-suffix {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
-.input-number-prefix {
+.jfx-input-number-prefix {
   -fx-padding: 0 4 0 8;
 }
-.input-number-suffix {
+.jfx-input-number-suffix {
   -fx-padding: 0 8 0 4;
 }
-.input-number-field {
+.jfx-input-number-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 8 4 8 4;
 }
-.input-number-btn {
+.jfx-input-number-btn {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-cursor: hand;
   -fx-padding: 4;
 }
-.input-number-btn:hover,
-.input-number-btn:armed,
-.input-number-btn:pressed {
+.jfx-input-number-btn:hover,
+.jfx-input-number-btn:armed,
+.jfx-input-number-btn:pressed {
   -fx-background-color: -color-bg-subtle;
 }
-.input-number-arrow {
+.jfx-input-number-arrow {
   -fx-stroke: -color-fg-muted;
   -fx-stroke-width: 1.5;
   -fx-fill: none;
 }
 /* CarouselAnt */
-.carousel {
+.jfx-carousel {
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 4px;
 }
-.carousel-content {
+.jfx-carousel-content {
   -fx-background-radius: 4px;
 }
 /* 箭头按钮：Ant 风格圆形浮层（半透明黑底 + 白字 + 阴影 + hover 加深）
-   注意：用 .button.carousel-arrow-btn 复合选择器提优先级，
+   注意：用 .button.jfx-carousel-arrow-btn 复合选择器提优先级，
    否则会被 .button / .button:hover / .button:armed 等通用规则覆盖 */
-.button.carousel-arrow-btn {
+.button.jfx-carousel-arrow-btn {
   -fx-background-color: rgba(0, 0, 0, 0.4);
   -fx-background-radius: 9999;
   -fx-border-color: transparent;
@@ -3130,30 +3130,30 @@
   -fx-cursor: hand;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.18), 6, 0, 0, 2);
 }
-.button.carousel-arrow-btn:hover {
+.button.jfx-carousel-arrow-btn:hover {
   -fx-background-color: rgba(0, 0, 0, 0.6);
   -fx-border-color: transparent;
   -fx-text-fill: white;
 }
-.button.carousel-arrow-btn:armed,
-.button.carousel-arrow-btn:pressed {
+.button.jfx-carousel-arrow-btn:armed,
+.button.jfx-carousel-arrow-btn:pressed {
   -fx-background-color: rgba(0, 0, 0, 0.75);
   -fx-border-color: transparent;
   -fx-text-fill: white;
 }
 /* dots 容器：透明背景，仅做布局；干净浮在 slide 之上不喧宾夺主（Ant Design 风格） */
-.carousel-dots {
+.jfx-carousel-dots {
   -fx-padding: 0;
   -fx-background-color: transparent;
   -fx-spacing: 8;
 }
 /* dot 用 styleClass 切换 fill；尺寸由 Java 端 setRadius 控制 */
-.carousel-dot {
+.jfx-carousel-dot {
   -fx-fill: rgba(255, 255, 255, 0.55);
   -fx-cursor: hand;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 4, 0, 0, 1);
 }
-.carousel-dot.carousel-dot-active {
+.jfx-carousel-dot.jfx-carousel-dot-active {
   -fx-fill: white;
 }
 /* ============================================
@@ -3221,13 +3221,13 @@
   -fx-border-width: 1 0 0 0;
 }
 /* CascaderAnt */
-.cascader {
+.jfx-cascader {
   -fx-background-color: transparent;
 }
-.cascader:disabled {
+.jfx-cascader:disabled {
   -fx-opacity: 0.6;
 }
-.cascader-field {
+.jfx-cascader-field {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-radius: 4px;
@@ -3236,124 +3236,124 @@
   -fx-text-fill: -color-fg-default;
   -fx-padding: 8 12 8 12;
 }
-.cascader-column {
+.jfx-cascader-column {
   -fx-min-width: 160;
   -fx-padding: 4 0 4 0;
 }
-.cascader-item {
+.jfx-cascader-item {
   -fx-padding: 8 12 8 12;
   -fx-background-color: transparent;
   -fx-cursor: hand;
 }
-.cascader-item:hover {
+.jfx-cascader-item:hover {
   -fx-background-color: -color-bg-subtle;
 }
-.cascader-item.cascader-item-disabled {
+.jfx-cascader-item.jfx-cascader-item-disabled {
   -fx-cursor: default;
 }
-.cascader-item.cascader-item-disabled:hover {
+.jfx-cascader-item.jfx-cascader-item-disabled:hover {
   -fx-background-color: transparent;
 }
-.cascader-item-label {
+.jfx-cascader-item-label {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
 }
-.cascader-item.cascader-item-disabled .cascader-item-label {
+.jfx-cascader-item.jfx-cascader-item-disabled .jfx-cascader-item-label {
   -fx-text-fill: -color-fg-subtle;
 }
-.cascader-arrow {
+.jfx-cascader-arrow {
   -fx-stroke: -color-fg-muted;
   -fx-stroke-width: 1.5;
   -fx-fill: none;
 }
-.cascader-divider {
+.jfx-cascader-divider {
   -fx-background-color: -color-border-default;
   -fx-min-width: 1;
   -fx-pref-width: 1;
 }
 /* TimelineAnt */
-.timeline {
+.jfx-timeline {
   -fx-padding: 16;
 }
-.timeline-item {
+.jfx-timeline-item {
   -fx-padding: 0 0 16 0;
 }
-.timeline-label {
+.jfx-timeline-label {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
 }
-.timeline-content {
+.jfx-timeline-content {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
 }
-.timeline-line {
+.jfx-timeline-line {
   -fx-stroke: -color-border-muted;
   -fx-stroke-width: 2;
 }
 /* dot 颜色：基础类 + 颜色修饰类，避免 Java 拼字符串 */
-.timeline-dot {
+.jfx-timeline-dot {
   -fx-fill: -color-accent-emphasis;
 }
-.timeline-dot.timeline-dot-blue {
+.jfx-timeline-dot.jfx-timeline-dot-blue {
   -fx-fill: -color-accent-emphasis;
 }
-.timeline-dot.timeline-dot-red {
+.jfx-timeline-dot.jfx-timeline-dot-red {
   -fx-fill: -color-danger-emphasis;
 }
-.timeline-dot.timeline-dot-green {
+.jfx-timeline-dot.jfx-timeline-dot-green {
   -fx-fill: -color-success-emphasis;
 }
-.timeline-dot.timeline-dot-gray {
+.jfx-timeline-dot.jfx-timeline-dot-gray {
   -fx-fill: -color-fg-muted;
 }
 /* pending 状态：空心圆 */
-.timeline-dot.timeline-dot-pending {
+.jfx-timeline-dot.jfx-timeline-dot-pending {
   -fx-fill: transparent;
   -fx-stroke: -color-border-default;
   -fx-stroke-width: 2;
 }
-.timeline-pending-text {
+.jfx-timeline-pending-text {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 13px;
 }
 /* TransferAnt */
-.transfer {
+.jfx-transfer {
   -fx-background-color: transparent;
 }
-.transfer-list {
+.jfx-transfer-list {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
 }
-.transfer-list-header {
+.jfx-transfer-list-header {
   -fx-padding: 8 12 8 12;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
-.transfer-list-title {
+.jfx-transfer-list-title {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
   -fx-font-weight: 500;
 }
-.transfer-list-count {
+.jfx-transfer-list-count {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
 }
-.transfer-list-search-wrapper {
+.jfx-transfer-list-search-wrapper {
   -fx-padding: 8 12 8 12;
 }
-.transfer-list-search {
+.jfx-transfer-list-search {
   -fx-padding: 4 8 4 8;
   -fx-font-size: 12px;
 }
-.transfer-list-view {
+.jfx-transfer-list-view {
   -fx-background-color: transparent;
   -fx-border-width: 0;
 }
 /* Transfer 中间方向按钮（hover 变主题色） */
-.transfer-arrow-btn {
+.jfx-transfer-arrow-btn {
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -3365,7 +3365,7 @@
   -fx-font-weight: bold;
   -fx-cursor: hand;
 }
-.transfer-arrow-btn:hover {
+.jfx-transfer-arrow-btn:hover {
   -fx-background-color: -color-accent-emphasis;
   -fx-border-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
@@ -3375,197 +3375,197 @@
                      StepsAnt / BreadcrumbAnt
    ============================================ */
 /* ListAnt */
-.list {
+.jfx-list {
   -fx-background-color: -color-bg-default;
 }
-.list.list-bordered {
+.jfx-list.jfx-list-bordered {
   -fx-border-color: -color-border-default;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
 }
-.list.list-loading {
+.jfx-list.jfx-list-loading {
   -fx-opacity: 0.6;
 }
-.list-header {
+.jfx-list-header {
   -fx-font-size: 16px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 12 24 12 24;
 }
-.list-footer {
+.jfx-list-footer {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
   -fx-padding: 12 24 12 24;
 }
-.list-item {
+.jfx-list-item {
   -fx-background-color: transparent;
   -fx-padding: 12 24 12 24;
 }
-.list-item.list-item-clickable {
+.jfx-list-item.jfx-list-item-clickable {
   -fx-cursor: hand;
 }
-.list-item.list-item-clickable:hover {
+.jfx-list-item.jfx-list-item-clickable:hover {
   -fx-background-color: -color-bg-subtle;
 }
-.list-item-title {
+.jfx-list-item-title {
   -fx-font-size: 13px;
   -fx-font-weight: 500;
   -fx-text-fill: -color-fg-default;
 }
-.list-item-description {
+.jfx-list-item-description {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
-.list-divider {
+.jfx-list-divider {
   -fx-background-color: -color-border-default;
   -fx-min-height: 1;
   -fx-pref-height: 1;
 }
 /* MenuAnt */
-.menu {
+.jfx-menu {
   -fx-background-color: -color-bg-default;
 }
 /* INLINE 模式：默认竖向，右侧给一条边框线（admin 侧栏典型） */
-.menu.menu-inline {
+.jfx-menu.jfx-menu-inline {
   -fx-border-color: transparent -color-border-default transparent transparent;
   -fx-border-width: 0 1 0 0;
 }
 /* HORIZONTAL 模式：横向顶导航，底部给一条边框线 */
-.menu.menu-horizontal {
+.jfx-menu.jfx-menu-horizontal {
   -fx-border-color: transparent transparent -color-border-default transparent;
   -fx-border-width: 0 0 1 0;
   -fx-background-color: -color-bg-default;
 }
-.menu-item {
+.jfx-menu-item {
   -fx-background-color: transparent;
   -fx-cursor: hand;
 }
-.menu-item:hover {
+.jfx-menu-item:hover {
   -fx-background-color: -color-accent-subtle;
 }
 /* 选中态：背景 + 文字主题色。INLINE 时再加左侧 3px 主题色竖线，HORIZONTAL 加底部 3px 横线 */
-.menu-inline .menu-item-selected,
-.menu-inline .menu-submenu-header.menu-item-selected {
+.jfx-menu-inline .jfx-menu-item-selected,
+.jfx-menu-inline .jfx-menu-submenu-header.jfx-menu-item-selected {
   -fx-background-color: -color-accent-subtle;
   -fx-border-color: -color-accent-emphasis transparent transparent transparent;
   -fx-border-width: 0 0 0 3;
 }
-.menu-inline .menu-item-selected .menu-item-label {
+.jfx-menu-inline .jfx-menu-item-selected .jfx-menu-item-label {
   -fx-text-fill: -color-accent-emphasis;
   -fx-font-weight: 600;
 }
-.menu-horizontal .menu-item-selected,
-.menu-horizontal .menu-submenu-header.menu-item-selected {
+.jfx-menu-horizontal .jfx-menu-item-selected,
+.jfx-menu-horizontal .jfx-menu-submenu-header.jfx-menu-item-selected {
   -fx-background-color: transparent;
   -fx-border-color: transparent transparent -color-accent-emphasis transparent;
   -fx-border-width: 0 0 3 0;
 }
-.menu-horizontal .menu-item-selected .menu-item-label {
+.jfx-menu-horizontal .jfx-menu-item-selected .jfx-menu-item-label {
   -fx-text-fill: -color-accent-emphasis;
   -fx-font-weight: 600;
 }
 /* HORIZONTAL 顶级 item hover 视觉：底部细线，仿 Ant Design horizontal Menu */
-.menu-horizontal .menu-item:hover,
-.menu-horizontal .menu-submenu-header:hover {
+.jfx-menu-horizontal .jfx-menu-item:hover,
+.jfx-menu-horizontal .jfx-menu-submenu-header:hover {
   -fx-background-color: transparent;
   -fx-border-color: transparent transparent -color-accent-muted transparent;
   -fx-border-width: 0 0 3 0;
 }
-.menu-item-label {
+.jfx-menu-item-label {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
 }
-.menu-submenu-header {
+.jfx-menu-submenu-header {
   -fx-background-color: transparent;
   -fx-cursor: hand;
 }
-.menu-submenu-header:hover {
+.jfx-menu-submenu-header:hover {
   -fx-background-color: -color-bg-subtle;
 }
-.menu-submenu-body {
+.jfx-menu-submenu-body {
   -fx-background-color: -color-bg-subtle;
 }
-.menu-submenu-arrow {
+.jfx-menu-submenu-arrow {
   -fx-fill: -color-fg-muted;
 }
-.menu-submenu-arrow-box {
+.jfx-menu-submenu-arrow-box {
   -fx-padding: 0 0 0 8;
 }
-.menu-group-label {
+.jfx-menu-group-label {
   -fx-font-size: 12px;
   -fx-text-fill: -color-fg-muted;
   -fx-font-weight: 600;
 }
-.menu-divider {
+.jfx-menu-divider {
   -fx-background-color: -color-border-muted;
   -fx-min-height: 1;
   -fx-pref-height: 1;
   -fx-max-height: 1;
 }
 /* M14.3 DARK 主题：深色侧栏（admin 经典暗色风格） */
-.menu.menu-dark {
+.jfx-menu.jfx-menu-dark {
   -fx-background-color: #001529;
   /* Ant Design 默认侧栏深色 */
   -fx-border-color: transparent;
 }
-.menu-dark .menu-item-label,
-.menu-dark .menu-submenu-header .menu-item-label {
+.jfx-menu-dark .jfx-menu-item-label,
+.jfx-menu-dark .jfx-menu-submenu-header .jfx-menu-item-label {
   -fx-text-fill: rgba(255, 255, 255, 0.85);
 }
-.menu-dark .menu-item:hover,
-.menu-dark .menu-submenu-header:hover {
+.jfx-menu-dark .jfx-menu-item:hover,
+.jfx-menu-dark .jfx-menu-submenu-header:hover {
   -fx-background-color: rgba(255, 255, 255, 0.08);
 }
-.menu-dark .menu-item-selected,
-.menu-dark .menu-submenu-header.menu-item-selected {
+.jfx-menu-dark .jfx-menu-item-selected,
+.jfx-menu-dark .jfx-menu-submenu-header.jfx-menu-item-selected {
   -fx-background-color: -color-accent-emphasis;
   -fx-border-color: transparent;
 }
-.menu-dark .menu-item-selected .menu-item-label,
-.menu-dark .menu-submenu-header.menu-item-selected .menu-item-label {
+.jfx-menu-dark .jfx-menu-item-selected .jfx-menu-item-label,
+.jfx-menu-dark .jfx-menu-submenu-header.jfx-menu-item-selected .jfx-menu-item-label {
   -fx-text-fill: white;
   -fx-font-weight: 600;
 }
-.menu-dark .menu-submenu-body {
+.jfx-menu-dark .jfx-menu-submenu-body {
   -fx-background-color: #000c17;
   /* 比 menu 更深一档 */
 }
-.menu-dark .menu-submenu-arrow {
+.jfx-menu-dark .jfx-menu-submenu-arrow {
   -fx-fill: rgba(255, 255, 255, 0.65);
 }
-.menu-dark .menu-group-label {
+.jfx-menu-dark .jfx-menu-group-label {
   -fx-text-fill: rgba(255, 255, 255, 0.45);
 }
-.menu-dark .menu-divider {
+.jfx-menu-dark .jfx-menu-divider {
   -fx-background-color: rgba(255, 255, 255, 0.12);
 }
-.menu-dark .jfx-icon-path {
+.jfx-menu-dark .jfx-icon-path {
   -fx-background-color: rgba(255, 255, 255, 0.85);
 }
-.menu-dark .menu-item-selected .jfx-icon-path {
+.jfx-menu-dark .jfx-menu-item-selected .jfx-icon-path {
   -fx-background-color: white;
 }
 /* M14.4 折叠模式（仅 INLINE 有效）：宽度收窄，仅显示图标 */
-.menu.menu-collapsed {
+.jfx-menu.jfx-menu-collapsed {
   -fx-pref-width: 64;
   -fx-min-width: 64;
   -fx-max-width: 64;
 }
-.menu-collapsed .menu-item,
-.menu-collapsed .menu-submenu-header {
+.jfx-menu-collapsed .jfx-menu-item,
+.jfx-menu-collapsed .jfx-menu-submenu-header {
   -fx-padding: 0;
 }
 /* 折叠 + 选中态：左侧主题色竖线（保留 INLINE 视觉）*/
-.menu-collapsed .menu-item-selected,
-.menu-collapsed .menu-submenu-header.menu-item-selected {
+.jfx-menu-collapsed .jfx-menu-item-selected,
+.jfx-menu-collapsed .jfx-menu-submenu-header.jfx-menu-item-selected {
   -fx-border-color: -color-accent-emphasis transparent transparent transparent;
   -fx-border-width: 0 0 0 3;
 }
 /* UploadAnt */
-.upload {
+.jfx-upload {
   -fx-background-color: transparent;
 }
-.upload-drag {
+.jfx-upload-drag {
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -3577,129 +3577,129 @@
   -fx-cursor: hand;
 }
 /* drag 激活态：拖拽进入时切换主题色边框 */
-.upload-drag.upload-drag-active {
+.jfx-upload-drag.jfx-upload-drag-active {
   -fx-background-color: -color-accent-subtle;
   -fx-border-color: -color-accent-emphasis;
   -fx-border-width: 2px;
 }
-.upload-drag-icon {
+.jfx-upload-drag-icon {
   -fx-fill: -color-accent-emphasis;
 }
-.upload-drag-text {
+.jfx-upload-drag-text {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 16px;
 }
-.upload-hint-text {
+.jfx-upload-hint-text {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
 }
-.upload-list {
+.jfx-upload-list {
   -fx-padding: 8 0 8 0;
   -fx-background-color: transparent;
 }
-.upload-file-item {
+.jfx-upload-file-item {
   -fx-padding: 8;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 2px;
 }
-.upload-file-name {
+.jfx-upload-file-name {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
 }
-.upload-file-error {
+.jfx-upload-file-error {
   -fx-text-fill: -color-danger-emphasis;
   -fx-font-size: 12px;
 }
-.upload-remove-btn {
+.jfx-upload-remove-btn {
   -fx-background-color: transparent;
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 16px;
   -fx-cursor: hand;
 }
-.upload-remove-btn:hover {
+.jfx-upload-remove-btn:hover {
   -fx-text-fill: -color-fg-default;
 }
 /* StepsAnt */
-.steps {
+.jfx-steps {
   -fx-padding: 16 0 16 0;
 }
-.steps-vertical {
+.jfx-steps-vertical {
   -fx-padding: 16;
 }
-.steps-item {
+.jfx-steps-item {
   -fx-padding: 8 0 8 0;
 }
 /* steps 圆圈 + 数字 + 标题 + 描述 + 连线，状态用修饰类切换 */
-.steps-circle {
+.jfx-steps-circle {
   -fx-fill: -color-bg-default;
   -fx-stroke: -color-border-default;
   -fx-stroke-width: 1px;
 }
-.steps-circle.steps-finished {
+.jfx-steps-circle.jfx-steps-finished {
   -fx-fill: -color-accent-emphasis;
   -fx-stroke: -color-accent-emphasis;
 }
-.steps-circle.steps-current {
+.jfx-steps-circle.jfx-steps-current {
   -fx-stroke: -color-accent-emphasis;
 }
-.steps-number {
+.jfx-steps-number {
   -fx-text-fill: -color-fg-subtle;
   -fx-font-weight: 600;
 }
-.steps-number.steps-finished {
+.jfx-steps-number.jfx-steps-finished {
   -fx-text-fill: -color-fg-on-emphasis;
 }
-.steps-number.steps-current {
+.jfx-steps-number.jfx-steps-current {
   -fx-text-fill: -color-accent-emphasis;
 }
-.steps-title {
+.jfx-steps-title {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
   -fx-font-weight: 400;
 }
-.steps-title.steps-current {
+.jfx-steps-title.jfx-steps-current {
   -fx-font-weight: 600;
 }
-.steps-title.steps-wait {
+.jfx-steps-title.jfx-steps-wait {
   -fx-text-fill: -color-fg-subtle;
 }
-.steps-description {
+.jfx-steps-description {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
 }
-.steps-line {
+.jfx-steps-line {
   -fx-stroke: -color-border-muted;
   -fx-stroke-width: 1px;
 }
-.steps-line.steps-finished {
+.jfx-steps-line.jfx-steps-finished {
   -fx-stroke: -color-accent-emphasis;
 }
 /* BreadcrumbAnt */
-.breadcrumb {
+.jfx-breadcrumb {
   -fx-padding: 8 0 8 0;
 }
-.breadcrumb-item {
+.jfx-breadcrumb-item {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 13px;
   -fx-padding: 0 4 0 4;
 }
 /* 最后一项：高亮显示当前位置 */
-.breadcrumb-item.breadcrumb-last {
+.jfx-breadcrumb-item.jfx-breadcrumb-last {
   -fx-text-fill: -color-fg-default;
   -fx-padding: 0;
 }
-.breadcrumb-link {
+.jfx-breadcrumb-link {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 13px;
   -fx-padding: 0 4 0 4;
   -fx-border-color: transparent;
 }
-.breadcrumb-link:hover {
+.jfx-breadcrumb-link:hover {
   -fx-text-fill: -color-fg-default;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 2px;
 }
-.breadcrumb-separator {
+.jfx-breadcrumb-separator {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 13px;
   -fx-padding: 0 4 0 4;
@@ -3712,69 +3712,69 @@
    Batch 5 Tier 4：DescriptionsAnt / CalendarAnt
    ============================================ */
 /* DescriptionsAnt */
-.descriptions {
+.jfx-descriptions {
   -fx-background-color: transparent;
 }
-.descriptions-title {
+.jfx-descriptions-title {
   -fx-font-size: 16px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 0 0 16 0;
 }
-.descriptions-label {
+.jfx-descriptions-label {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 13px;
   -fx-padding: 8 16 8 16;
   -fx-font-weight: 400;
 }
-.descriptions-content {
+.jfx-descriptions-content {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
   -fx-padding: 8 16 8 16;
   -fx-font-weight: 500;
 }
 /* 尺寸修饰类切换字号与 padding */
-.descriptions.descriptions-small .descriptions-label,
-.descriptions.descriptions-small .descriptions-content {
+.jfx-descriptions.jfx-descriptions-small .jfx-descriptions-label,
+.jfx-descriptions.jfx-descriptions-small .jfx-descriptions-content {
   -fx-font-size: 10px;
   -fx-padding: 4 8 4 8;
 }
-.descriptions.descriptions-middle .descriptions-label,
-.descriptions.descriptions-middle .descriptions-content {
+.jfx-descriptions.jfx-descriptions-middle .jfx-descriptions-label,
+.jfx-descriptions.jfx-descriptions-middle .jfx-descriptions-content {
   -fx-font-size: 12px;
   -fx-padding: 8 12 8 12;
 }
-.descriptions.descriptions-large .descriptions-label,
-.descriptions.descriptions-large .descriptions-content {
+.jfx-descriptions.jfx-descriptions-large .jfx-descriptions-label,
+.jfx-descriptions.jfx-descriptions-large .jfx-descriptions-content {
   -fx-font-size: 16px;
   -fx-padding: 16 24 16 24;
 }
 /* bordered 模式：每个 label/content 都有 1px 边框 */
-.descriptions.descriptions-bordered .descriptions-label,
-.descriptions.descriptions-bordered .descriptions-content {
+.jfx-descriptions.jfx-descriptions-bordered .jfx-descriptions-label,
+.jfx-descriptions.jfx-descriptions-bordered .jfx-descriptions-content {
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
 }
 /* CalendarAnt */
-.calendar {
+.jfx-calendar {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
 }
-.calendar-header {
+.jfx-calendar-header {
   -fx-padding: 12 16 12 16;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
-.calendar-header-label {
+.jfx-calendar-header-label {
   -fx-font-size: 16px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
 /* 导航按钮（上一月/下一月），hover 浅色背景 */
-.calendar-nav-btn {
+.jfx-calendar-nav-btn {
   -fx-background-color: transparent;
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
@@ -3782,13 +3782,13 @@
   -fx-cursor: hand;
   -fx-background-radius: 2px;
 }
-.calendar-nav-btn:hover {
+.jfx-calendar-nav-btn:hover {
   -fx-background-color: -color-bg-subtle;
 }
-.calendar-grid {
+.jfx-calendar-grid {
   -fx-padding: 8;
 }
-.calendar-day-header {
+.jfx-calendar-day-header {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
   -fx-font-weight: 500;
@@ -3796,55 +3796,55 @@
   -fx-alignment: center;
 }
 /* 日期单元格：默认透明，hover 浅色，selected 主题色，today 主题色 subtle */
-.calendar-cell {
+.jfx-calendar-cell {
   -fx-background-color: transparent;
   -fx-background-radius: 2px;
   -fx-cursor: hand;
 }
-.calendar-cell:hover {
+.jfx-calendar-cell:hover {
   -fx-background-color: -color-bg-subtle;
 }
-.calendar-cell.calendar-cell-today {
+.jfx-calendar-cell.jfx-calendar-cell-today {
   -fx-background-color: -color-accent-subtle;
 }
-.calendar-cell.calendar-cell-today:hover {
+.jfx-calendar-cell.jfx-calendar-cell-today:hover {
   -fx-background-color: -color-accent-subtle;
 }
-.calendar-cell.calendar-cell-selected,
-.calendar-cell.calendar-cell-selected:hover {
+.jfx-calendar-cell.jfx-calendar-cell-selected,
+.jfx-calendar-cell.jfx-calendar-cell-selected:hover {
   -fx-background-color: -color-accent-emphasis;
 }
 /* 日期文本颜色：默认前景色，selected 反白，today 主题色，other-month 模糊色 */
-.calendar-day-label {
+.jfx-calendar-day-label {
   -fx-font-size: 13px;
   -fx-padding: 4;
   -fx-text-fill: -color-fg-default;
 }
-.calendar-cell.calendar-cell-other-month .calendar-day-label {
+.jfx-calendar-cell.jfx-calendar-cell-other-month .jfx-calendar-day-label {
   -fx-text-fill: -color-fg-subtle;
 }
-.calendar-cell.calendar-cell-today .calendar-day-label {
+.jfx-calendar-cell.jfx-calendar-cell-today .jfx-calendar-day-label {
   -fx-text-fill: -color-accent-emphasis;
 }
-.calendar-cell.calendar-cell-selected .calendar-day-label {
+.jfx-calendar-cell.jfx-calendar-cell-selected .jfx-calendar-day-label {
   -fx-text-fill: -color-fg-on-emphasis;
 }
 /* Year View */
-.calendar-year-view {
+.jfx-calendar-year-view {
   -fx-padding: 16;
 }
-.calendar-month-btn {
+.jfx-calendar-month-btn {
   -fx-background-color: transparent;
   -fx-text-fill: -color-fg-default;
   -fx-background-radius: 2px;
   -fx-font-size: 13px;
   -fx-cursor: hand;
 }
-.calendar-month-btn:hover {
+.jfx-calendar-month-btn:hover {
   -fx-background-color: -color-bg-subtle;
 }
-.calendar-month-btn.calendar-month-btn-current,
-.calendar-month-btn.calendar-month-btn-current:hover {
+.jfx-calendar-month-btn.jfx-calendar-month-btn-current,
+.jfx-calendar-month-btn.jfx-calendar-month-btn-current:hover {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
 }
@@ -3860,51 +3860,51 @@
 /* ============================================
    Form Layout Helpers
    ============================================ */
-.form-label {
+.jfx-form-label {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
   -fx-font-weight: 500;
 }
-.form-label-required::after {
+.jfx-form-label-required::after {
   -fx-content: " *";
   -fx-text-fill: -color-danger-emphasis;
 }
-.form-help-text {
+.jfx-form-help-text {
   -fx-text-fill: -color-fg-subtle;
   -fx-font-size: 12px;
 }
 /* 校验状态色：通过修饰类切换 helpText 颜色，避免在 Java 端拼 inline style */
-.form-help-text.form-help-error {
+.jfx-form-help-text.jfx-form-help-error {
   -fx-text-fill: -color-danger-emphasis;
 }
-.form-help-text.form-help-warning {
+.jfx-form-help-text.jfx-form-help-warning {
   -fx-text-fill: -color-warning-emphasis;
 }
-.form-help-text.form-help-success {
+.jfx-form-help-text.jfx-form-help-success {
   -fx-text-fill: -color-success-emphasis;
 }
 /* Form footer：padding 通过 LESS 控制，对齐"组件不在 Java 注入样式"原则 */
-.form-footer {
+.jfx-form-footer {
   -fx-padding: 16 0 0 0;
 }
 /* Form header 区（M19.39）：顶部 banner 区，底部加分隔线与表单体拉开 */
-.form-header {
+.jfx-form-header {
   -fx-padding: 0 0 8px 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
 /* Form section 分段标题（M19.39）：长表单分组标题，上方留间距与前一组拉开 */
-.form-section-title {
+.jfx-form-section-title {
   -fx-font-size: 16px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 12px 0 6px 0;
 }
 /* Form 尺寸调节：仅控制字号与控件最小高度，间距由 Java 侧 VBox.spacing 负责 */
-.form-size-small {
+.jfx-form-size-small {
   -fx-font-size: 12px;
 }
-.form-size-large {
+.jfx-form-size-large {
   -fx-font-size: 16px;
 }
 /* ============================================
@@ -3913,42 +3913,42 @@
    当前仅作为外部主题/扩展的样式锚点，本基础主题不为它们注入特殊样式，
    保持"布局原语保持原生 JavaFX 行为"的原则。
    ============================================ */
-.flex,
-.flex-horizontal,
-.flex-vertical,
-.flex-wrap {
+.jfx-flex,
+.jfx-flex-horizontal,
+.jfx-flex-vertical,
+.jfx-flex-wrap {
   -fx-background-color: transparent;
 }
-.grid,
-.grid-row,
-.grid-col {
+.jfx-grid,
+.jfx-grid-row,
+.jfx-grid-col {
   -fx-background-color: transparent;
 }
-.space,
-.space-horizontal,
-.space-vertical {
+.jfx-space,
+.jfx-space-horizontal,
+.jfx-space-vertical {
   -fx-background-color: transparent;
 }
 /* DividerAnt 文本与线条样式 */
-.divider {
+.jfx-divider {
   -fx-background-color: transparent;
 }
-.divider-text {
+.jfx-divider-text {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
   -fx-padding: 0 12 0 12;
 }
-.divider-line {
+.jfx-divider-line {
   /* 让带文本的 Divider 中线段保持与单独 Separator 一致的视觉粗细 */
   -fx-pref-height: 1px;
 }
 /* ============================================
    Modal / Dialog Backdrop
    ============================================ */
-.modal-overlay {
+.jfx-modal-overlay {
   -fx-background-color: rgba(0, 0, 0, 0.45);
 }
-.modal-content {
+.jfx-modal-content {
   -fx-background-color: -color-bg-overlay;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -3957,12 +3957,12 @@
   -fx-padding: 12px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 16, 0, 0, 4);
 }
-.modal-header {
+.jfx-modal-header {
   -fx-padding: 0 0 8px 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
-.modal-footer {
+.jfx-modal-footer {
   -fx-padding: 8px 0 0 0;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
@@ -3970,7 +3970,7 @@
 /* ============================================
    Card Hover Effect
    ============================================ */
-.card.hoverable:hover {
+.jfx-card.hoverable:hover {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 12, 0, 0, 3);
   -fx-translate-y: -2px;
 }
@@ -4540,7 +4540,7 @@
 /* ============================================
    Badge Enhancements
    ============================================ */
-.badge-count {
+.jfx-badge-count {
   -fx-background-color: -color-danger-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
   -fx-background-radius: 9999px;
@@ -4551,16 +4551,16 @@
   -fx-min-height: 18px;
   -fx-alignment: center;
 }
-.badge-count.success {
+.jfx-badge-count.success {
   -fx-background-color: -color-success-emphasis;
 }
-.badge-count.warning {
+.jfx-badge-count.warning {
   -fx-background-color: -color-warning-emphasis;
 }
-.badge-count.error {
+.jfx-badge-count.error {
   -fx-background-color: -color-danger-emphasis;
 }
-.badge-count.info {
+.jfx-badge-count.info {
   -fx-background-color: -color-accent-emphasis;
 }
 /* ============================================
@@ -4569,20 +4569,20 @@
    颜色由 styleClass 切换，避免在 Java 端拼 -fx-background-color。
    尺寸（8x8）与圆角由 Java 端 setPrefSize / setStyle 配合 LESS 共同控制。
    ============================================ */
-.badge-status {
+.jfx-badge-status {
   -fx-background-radius: 9999px;
   -fx-background-color: -color-fg-muted;
 }
-.badge-status.badge-status-success {
+.jfx-badge-status.jfx-badge-status-success {
   -fx-background-color: -color-success-emphasis;
 }
-.badge-status.badge-status-warning {
+.jfx-badge-status.jfx-badge-status-warning {
   -fx-background-color: -color-warning-emphasis;
 }
-.badge-status.badge-status-error {
+.jfx-badge-status.jfx-badge-status-error {
   -fx-background-color: -color-danger-emphasis;
 }
-.badge-status.badge-status-default {
+.jfx-badge-status.jfx-badge-status-default {
   -fx-background-color: -color-fg-muted;
 }
 /* Badge with text */
@@ -4642,23 +4642,23 @@
   -fx-background-color: -color-danger-subtle;
   -fx-border-color: -color-danger-muted;
 }
-.alert-icon {
+.jfx-alert-icon {
   -fx-font-size: 20px;
   -fx-font-weight: bold;
 }
-.alert-icon.success {
+.jfx-alert-icon.success {
   -fx-text-fill: -color-success-emphasis;
 }
-.alert-icon.info {
+.jfx-alert-icon.info {
   -fx-text-fill: -color-accent-emphasis;
 }
-.alert-icon.warning {
+.jfx-alert-icon.warning {
   -fx-text-fill: -color-warning-emphasis;
 }
-.alert-icon.error {
+.jfx-alert-icon.error {
   -fx-text-fill: -color-danger-emphasis;
 }
-.alert-title {
+.jfx-alert-title {
   -fx-font-size: 13px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
@@ -4681,50 +4681,50 @@
   -fx-border-width: 1px;
 }
 /* banner 形态：无圆角、无边框，整条横幅 */
-.jfx-alert.alert-banner {
+.jfx-alert.jfx-alert-banner {
   -fx-background-radius: 0;
   -fx-border-radius: 0;
   -fx-border-width: 0;
 }
 /* Alert 标题 + 各 type 文字色 */
-.jfx-alert .alert-title {
+.jfx-alert .jfx-alert-title {
   -fx-font-size: 13px;
   -fx-font-weight: 600;
 }
-.jfx-alert.alert-success .alert-title {
+.jfx-alert.jfx-alert-success .jfx-alert-title {
   -fx-text-fill: -color-success-emphasis;
 }
-.jfx-alert.alert-info .alert-title {
+.jfx-alert.jfx-alert-info .jfx-alert-title {
   -fx-text-fill: -color-accent-emphasis;
 }
-.jfx-alert.alert-warning .alert-title {
+.jfx-alert.jfx-alert-warning .jfx-alert-title {
   -fx-text-fill: -color-warning-emphasis;
 }
-.jfx-alert.alert-error .alert-title {
+.jfx-alert.jfx-alert-error .jfx-alert-title {
   -fx-text-fill: -color-danger-emphasis;
 }
 /* Alert 描述/正文 */
-.jfx-alert .alert-message {
+.jfx-alert .jfx-alert-message {
   -fx-font-size: 12px;
 }
-.jfx-alert.alert-success .alert-message {
+.jfx-alert.jfx-alert-success .jfx-alert-message {
   -fx-text-fill: -color-success-emphasis;
 }
-.jfx-alert.alert-info .alert-message {
+.jfx-alert.jfx-alert-info .jfx-alert-message {
   -fx-text-fill: -color-accent-emphasis;
 }
-.jfx-alert.alert-warning .alert-message {
+.jfx-alert.jfx-alert-warning .jfx-alert-message {
   -fx-text-fill: -color-warning-emphasis;
 }
-.jfx-alert.alert-error .alert-message {
+.jfx-alert.jfx-alert-error .jfx-alert-message {
   -fx-text-fill: -color-danger-emphasis;
 }
 /* Alert 状态图标（容器内）字号 */
-.jfx-alert .alert-icon {
+.jfx-alert .jfx-alert-icon {
   -fx-font-size: 16px;
 }
 /* Alert 关闭按钮：透明背景，文字色随 type，hover 浅化通过 opacity 控制 */
-.jfx-alert .alert-close-btn {
+.jfx-alert .jfx-alert-close-btn {
   -fx-background-color: transparent;
   -fx-font-size: 12px;
   -fx-padding: 0;
@@ -4732,19 +4732,19 @@
   -fx-min-height: 20px;
   -fx-cursor: hand;
 }
-.jfx-alert.alert-success .alert-close-btn {
+.jfx-alert.jfx-alert-success .jfx-alert-close-btn {
   -fx-text-fill: -color-success-emphasis;
 }
-.jfx-alert.alert-info .alert-close-btn {
+.jfx-alert.jfx-alert-info .jfx-alert-close-btn {
   -fx-text-fill: -color-accent-emphasis;
 }
-.jfx-alert.alert-warning .alert-close-btn {
+.jfx-alert.jfx-alert-warning .jfx-alert-close-btn {
   -fx-text-fill: -color-warning-emphasis;
 }
-.jfx-alert.alert-error .alert-close-btn {
+.jfx-alert.jfx-alert-error .jfx-alert-close-btn {
   -fx-text-fill: -color-danger-emphasis;
 }
-.jfx-alert .alert-close-btn:hover {
+.jfx-alert .jfx-alert-close-btn:hover {
   -fx-opacity: 0.7;
 }
 /* ============================================
@@ -4752,7 +4752,7 @@
    Overlay card surface + text styles shared by base/ components
    ============================================ */
 /* Popconfirm */
-.popconfirm-panel {
+.jfx-popconfirm-panel {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 12px 16px;
   -fx-background-radius: 8px;
@@ -4761,20 +4761,20 @@
   -fx-border-width: 1px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
-.popconfirm-icon {
+.jfx-popconfirm-icon {
   -fx-fill: -color-warning-emphasis;
 }
-.popconfirm-title {
+.jfx-popconfirm-title {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
   -fx-font-weight: 500;
 }
-.popconfirm-desc {
+.jfx-popconfirm-desc {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
 }
 /* Message */
-.message-card {
+.jfx-message-card {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 10px 16px;
   -fx-background-radius: 8px;
@@ -4783,12 +4783,12 @@
   -fx-border-width: 1px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
-.message-card-content {
+.jfx-message-card-content {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
 }
 /* Notification */
-.notification-card {
+.jfx-notification-card {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 16px 24px;
   -fx-background-radius: 8px;
@@ -4797,27 +4797,27 @@
   -fx-border-width: 1px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
-.notification-card-title {
+.jfx-notification-card-title {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 16px;
   -fx-font-weight: 600;
 }
-.notification-card-desc {
+.jfx-notification-card-desc {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 14px;
 }
 /* Result */
-.result-title {
+.jfx-result-title {
   -fx-font-size: 24px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
-.result-subtitle {
+.jfx-result-subtitle {
   -fx-font-size: 14px;
   -fx-text-fill: -color-fg-muted;
 }
 /* FilterBar label */
-.filter-bar-label {
+.jfx-filter-bar-label {
   -fx-text-fill: -color-fg-muted;
 }
 /* TableAnt danger action button */
@@ -4847,26 +4847,26 @@
 /* ============================================================
    Universal directional borders — 任意 Node 可用
    ============================================================ */
-.border-top {
+.jfx-border-top {
   -fx-border-color: -color-border-default transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
 }
-.border-bottom {
+.jfx-border-bottom {
   -fx-border-color: transparent transparent -color-border-default transparent;
   -fx-border-width: 0 0 1px 0;
 }
-.border-left {
+.jfx-border-left {
   -fx-border-color: transparent transparent transparent -color-border-default;
   -fx-border-width: 0 0 0 1px;
 }
-.border-right {
+.jfx-border-right {
   -fx-border-color: transparent -color-border-default transparent transparent;
   -fx-border-width: 0 1px 0 0;
 }
 /* ============================================
    Popover Component
    ============================================ */
-.popover-panel {
+.jfx-popover-panel {
   -fx-background-color: -color-bg-overlay;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
@@ -4874,12 +4874,12 @@
   -fx-border-width: 1px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
-.popover-title-box {
+.jfx-popover-title-box {
   -fx-padding: 12px 16px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
-.popover-title-label {
+.jfx-popover-title-label {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
   -fx-font-weight: 600;
@@ -5031,60 +5031,60 @@
    LoginTemplate（M19.39 LESS 化）
    双栏 banner 登录页所有视觉规则集中在此
    ============================================================ */
-.login-template {
+.jfx-login-template {
   -fx-background-color: -color-bg-default;
 }
 /* ----- 左 Banner（渐变背景 + 卖点） ----- */
-.login-template-banner {
+.jfx-login-template-banner {
   -fx-background-color: linear-gradient(to bottom right, -color-accent-4, -color-accent-emphasis 60%, -color-accent-7);
 }
 /* Banner 内部所有文字默认白色（半透明分级） */
-.login-template-banner-brand {
+.jfx-login-template-banner-brand {
   -fx-font-size: 22px;
   -fx-font-weight: 700;
   -fx-text-fill: white;
 }
-.login-template-banner-tagline {
+.jfx-login-template-banner-tagline {
   -fx-font-size: 14px;
   -fx-text-fill: rgba(255, 255, 255, 0.85);
 }
-.login-template-banner-feature-check {
+.jfx-login-template-banner-feature-check {
   -fx-text-fill: rgba(255, 255, 255, 0.95);
   -fx-font-size: 14px;
   -fx-font-weight: 700;
 }
-.login-template-banner-feature-text {
+.jfx-login-template-banner-feature-text {
   -fx-text-fill: rgba(255, 255, 255, 0.9);
   -fx-font-size: 13px;
 }
-.login-template-banner-copyright {
+.jfx-login-template-banner-copyright {
   -fx-font-size: 11px;
   -fx-text-fill: rgba(255, 255, 255, 0.6);
 }
 /* Logo 盒：半透明白底 + 圆角 */
-.login-template-banner-logo {
+.jfx-login-template-banner-logo {
   -fx-background-color: rgba(255, 255, 255, 0.18);
   -fx-background-radius: 8;
 }
 /* Logo 盒内部图标统一白色（IconAnt 的 .jfx-icon-path） */
-.login-template-banner-logo .jfx-icon-path {
+.jfx-login-template-banner-logo .jfx-icon-path {
   -fx-background-color: white;
 }
 /* ----- 右 表单 ----- */
-.login-template-form-title {
+.jfx-login-template-form-title {
   -fx-font-size: 22px;
   -fx-font-weight: 700;
 }
-.login-template-form-subtitle {
+.jfx-login-template-form-subtitle {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
-.login-template-form-error {
+.jfx-login-template-form-error {
   -fx-text-fill: -color-danger-emphasis;
   -fx-font-size: 12px;
 }
 /* 复合输入行：HBox 自拼边框（左前置图标 + 右文本框） */
-.login-template-input-row {
+.jfx-login-template-input-row {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1;
@@ -5092,64 +5092,64 @@
   -fx-background-radius: 6;
 }
 /* 行内文本框：抹掉默认边框/背景，让它视觉融入外层 row 边框 */
-.login-template-input-field {
+.jfx-login-template-input-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-padding: 8 12 8 0;
   -fx-background-insets: 0;
 }
-.login-template-input-field:focused {
+.jfx-login-template-input-field:focused {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-effect: null;
 }
 /* 记住我 + 链接小字 */
-.login-template-remember {
+.jfx-login-template-remember {
   -fx-font-size: 13px;
 }
-.login-template-link-small {
+.jfx-login-template-link-small {
   -fx-font-size: 13px;
 }
 /* 登录按钮：稍大字号 + 提高 height */
-.login-template-submit {
+.jfx-login-template-submit {
   -fx-font-size: 14px;
 }
 /* 底部"还没账号？" 提示 */
-.login-template-no-account {
+.jfx-login-template-no-account {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 13px;
 }
 /* ============================================================
    DashboardTemplate
    ============================================================ */
-.dashboard-root {
+.jfx-dashboard-root {
   -fx-background-color: -color-bg-layout;
 }
-.dashboard-stat-icon-box {
+.jfx-dashboard-stat-icon-box {
   -fx-background-radius: 8;
   -fx-background-color: -color-bg-subtle;
 }
-.dashboard-stat-title {
+.jfx-dashboard-stat-title {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
-.dashboard-stat-trend-up {
+.jfx-dashboard-stat-trend-up {
   -fx-font-size: 12px;
   -fx-text-fill: -color-success-emphasis;
 }
-.dashboard-stat-trend-down {
+.jfx-dashboard-stat-trend-down {
   -fx-font-size: 12px;
   -fx-text-fill: -color-danger-emphasis;
 }
-.dashboard-stat-trend-hint {
+.jfx-dashboard-stat-trend-hint {
   -fx-font-size: 12px;
   -fx-text-fill: -color-fg-muted;
 }
-.dashboard-welcome {
+.jfx-dashboard-welcome {
   -fx-font-size: 22px;
   -fx-font-weight: 700;
 }
-.dashboard-stat-value {
+.jfx-dashboard-stat-value {
   -fx-font-size: 28px;
   -fx-font-weight: 700;
 }
@@ -5172,7 +5172,7 @@
 /* -------------------------------------------
    QRCodeAnt
    ------------------------------------------- */
-.qr-code-bordered {
+.jfx-qr-code-bordered {
   -fx-border-color: -color-border-default;
   -fx-border-radius: 8px;
   -fx-background-radius: 8px;
@@ -5457,20 +5457,20 @@
   -fx-background-radius: 4px;
 }
 /* Card - MUI Elevation */
-.card {
+.jfx-card {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 1, 0, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 1, 0, 0, 3);
   -fx-background-radius: 4px;
 }
-.card:hover {
+.jfx-card:hover {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 2), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 3, 0, 0, 3), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 1, 0, 0, 8);
 }
-.card.shadow-sm {
+.jfx-card.shadow-sm {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 1, 0, 0, 1), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 1, 0, 0, 3);
 }
-.card.shadow-md {
+.jfx-card.shadow-md {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 3), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 8, 0, 0, 4), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 3, 0, 0, 10);
 }
-.card.shadow-lg {
+.jfx-card.shadow-lg {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 14, 0, 0, 6), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 14, 0, 0, 7), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 5, 0, 0, 18);
 }
 /* Dialog / Modal - MUI Elevation */
@@ -5478,11 +5478,11 @@
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 10, 0, 0, 5), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 4, 0, 0, 14);
   -fx-background-radius: 6px;
 }
-.modal-content {
+.jfx-modal-content {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 10, 0, 0, 5), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 4, 0, 0, 14);
   -fx-background-radius: 6px;
 }
-.modal-overlay {
+.jfx-modal-overlay {
   -fx-background-color: rgba(33, 33, 33, 0.5);
 }
 /* Menu / ContextMenu - MUI Menu */
@@ -5598,7 +5598,7 @@
   -fx-background-radius: 4px 4px 0 0;
 }
 /* Drawer - MUI Style */
-.drawer-panel {
+.jfx-drawer-panel {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 14, 0, 0, 6), dropshadow(gaussian, rgba(0, 0, 0, 0.14), 14, 0, 0, 7), dropshadow(gaussian, rgba(0, 0, 0, 0.12), 5, 0, 0, 18);
 }
 /* Floating Action Button (FAB) - MUI Style */

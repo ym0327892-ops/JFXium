@@ -68,57 +68,57 @@ public final class JfxStyles {
        Card 卡片
        ============================================ */
 
-    public static final String CARD = "card";
+    public static final String CARD = "jfx-card";
     public static final String CARD_BORDERED = "bordered";
     public static final String CARD_HOVERABLE = "hoverable";
     public static final String CARD_SHADOW_SM = "shadow-sm";
     public static final String CARD_SHADOW_MD = "shadow-md";
     public static final String CARD_SHADOW_LG = "shadow-lg";
-    public static final String CARD_TITLE = "card-title";
-    public static final String CARD_CONTENT = "card-content";
+    public static final String CARD_TITLE = "jfx-card-title";
+    public static final String CARD_CONTENT = "jfx-card-content";
     
     // M10 新增：Card 增强功能
-    public static final String CARD_SMALL = "card-small";
-    public static final String CARD_INNER = "card-inner";
-    public static final String CARD_HEADER = "card-header";
-    public static final String CARD_BODY = "card-body";
-    public static final String CARD_COVER = "card-cover";
-    public static final String CARD_ACTIONS = "card-actions";
-    public static final String CARD_ACTION_ITEM = "card-action-item";
-    public static final String CARD_TAB_BAR = "card-tab-bar";
-    public static final String CARD_TAB_LIST = "card-tab-list";
-    public static final String CARD_TAB_ITEM = "card-tab-item";
+    public static final String CARD_SMALL = "jfx-card-small";
+    public static final String CARD_INNER = "jfx-card-inner";
+    public static final String CARD_HEADER = "jfx-card-header";
+    public static final String CARD_BODY = "jfx-card-body";
+    public static final String CARD_COVER = "jfx-card-cover";
+    public static final String CARD_ACTIONS = "jfx-card-actions";
+    public static final String CARD_ACTION_ITEM = "jfx-card-action-item";
+    public static final String CARD_TAB_BAR = "jfx-card-tab-bar";
+    public static final String CARD_TAB_LIST = "jfx-card-tab-list";
+    public static final String CARD_TAB_ITEM = "jfx-card-tab-item";
     public static final String CARD_TAB_ITEM_ACTIVE = "active";
 
     /* ============================================
        Page / Layout 页面布局
        ============================================ */
 
-    public static final String SURFACE = "surface";
-    public static final String SURFACE_HEADER = "surface-header";
-    public static final String SURFACE_TITLE = "surface-title";
-    public static final String SURFACE_CONTENT = "surface-content";
+    public static final String SURFACE = "jfx-surface";
+    public static final String SURFACE_HEADER = "jfx-surface-header";
+    public static final String SURFACE_TITLE = "jfx-surface-title";
+    public static final String SURFACE_CONTENT = "jfx-surface-content";
 
     /** FilterBarAnt 通用筛选+操作工具条（admin 列表页上栏标配） */
-    public static final String FILTER_BAR = "filter-bar";
+    public static final String FILTER_BAR = "jfx-filter-bar";
 
-    public static final String APP_SHELL = "app-shell";
-    public static final String APP_SHELL_HEADER = "app-shell-header";
-    public static final String APP_SHELL_SIDER = "app-shell-sider";
-    public static final String APP_SHELL_CONTENT = "app-shell-content";
-    public static final String APP_SHELL_FOOTER = "app-shell-footer";
+    public static final String APP_SHELL = "jfx-app-shell";
+    public static final String APP_SHELL_HEADER = "jfx-app-shell-header";
+    public static final String APP_SHELL_SIDER = "jfx-app-shell-sider";
+    public static final String APP_SHELL_CONTENT = "jfx-app-shell-content";
+    public static final String APP_SHELL_FOOTER = "jfx-app-shell-footer";
 
-    public static final String SPLIT_PANE = "split-pane-ant";
+    public static final String SPLIT_PANE = "jfx-split-pane-ant";
 
-    public static final String RESIZABLE_PANEL = "resizable-panel";
-    public static final String RESIZABLE_PANEL_CONTENT = "resizable-panel-content";
-    public static final String RESIZABLE_PANEL_HANDLE = "resizable-panel-handle";
+    public static final String RESIZABLE_PANEL = "jfx-resizable-panel";
+    public static final String RESIZABLE_PANEL_CONTENT = "jfx-resizable-panel-content";
+    public static final String RESIZABLE_PANEL_HANDLE = "jfx-resizable-panel-handle";
     public static final String RESIZABLE_PANEL_HANDLE_HORIZONTAL = "horizontal";
     public static final String RESIZABLE_PANEL_HANDLE_VERTICAL = "vertical";
     public static final String RESIZABLE_PANEL_HANDLE_BOTH = "both";
 
-    public static final String SCROLL_CONTAINER = "scroll-container";
-    public static final String SCROLL_CONTAINER_VIEWPORT = "scroll-container-viewport";
+    public static final String SCROLL_CONTAINER = "jfx-scroll-container";
+    public static final String SCROLL_CONTAINER_VIEWPORT = "jfx-scroll-container-viewport";
 
     /* ============================================
        布局原语（FlexAnt / GridAnt / SpaceAnt / DividerAnt）
@@ -126,44 +126,44 @@ public final class JfxStyles {
        ============================================ */
 
     /** FlexAnt 弹性布局容器 */
-    public static final String FLEX = "flex";
-    public static final String FLEX_HORIZONTAL = "flex-horizontal";
-    public static final String FLEX_VERTICAL = "flex-vertical";
-    public static final String FLEX_WRAP = "flex-wrap";
+    public static final String FLEX = "jfx-flex";
+    public static final String FLEX_HORIZONTAL = "jfx-flex-horizontal";
+    public static final String FLEX_VERTICAL = "jfx-flex-vertical";
+    public static final String FLEX_WRAP = "jfx-flex-wrap";
 
     /** GridAnt 24 栅格容器 */
-    public static final String GRID = "grid";
-    public static final String GRID_ROW = "grid-row";
-    public static final String GRID_COL = "grid-col";
+    public static final String GRID = "jfx-grid";
+    public static final String GRID_ROW = "jfx-grid-row";
+    public static final String GRID_COL = "jfx-grid-col";
 
     /** SpaceAnt 间距容器 */
-    public static final String SPACE = "space";
-    public static final String SPACE_HORIZONTAL = "space-horizontal";
-    public static final String SPACE_VERTICAL = "space-vertical";
-    public static final String SPACE_SPLIT = "space-split";
+    public static final String SPACE = "jfx-space";
+    public static final String SPACE_HORIZONTAL = "jfx-space-horizontal";
+    public static final String SPACE_VERTICAL = "jfx-space-vertical";
+    public static final String SPACE_SPLIT = "jfx-space-split";
 
     /** DividerAnt 分割线 */
-    public static final String DIVIDER = "divider";
-    public static final String DIVIDER_HORIZONTAL = "divider-horizontal";
-    public static final String DIVIDER_VERTICAL = "divider-vertical";
-    public static final String DIVIDER_TEXT = "divider-text";
-    public static final String DIVIDER_LINE = "divider-line";
+    public static final String DIVIDER = "jfx-divider";
+    public static final String DIVIDER_HORIZONTAL = "jfx-divider-horizontal";
+    public static final String DIVIDER_VERTICAL = "jfx-divider-vertical";
+    public static final String DIVIDER_TEXT = "jfx-divider-text";
+    public static final String DIVIDER_LINE = "jfx-divider-line";
 
     /** FormAnt 表单 */
-    public static final String FORM = "form";
-    public static final String FORM_HORIZONTAL = "form-horizontal";
-    public static final String FORM_VERTICAL = "form-vertical";
-    public static final String FORM_INLINE = "form-inline";
-    public static final String FORM_LABEL = "form-label";
-    public static final String FORM_LABEL_REQUIRED = "form-label-required";
-    public static final String FORM_ITEM_WRAPPER = "form-item-wrapper";
-    public static final String FORM_HELP_TEXT = "form-help-text";
-    public static final String FORM_HELP_ERROR = "form-help-error";
-    public static final String FORM_HELP_WARNING = "form-help-warning";
-    public static final String FORM_HELP_SUCCESS = "form-help-success";
-    public static final String FORM_FOOTER = "form-footer";
-    public static final String FORM_HEADER = "form-header";
-    public static final String FORM_SECTION_TITLE = "form-section-title";
+    public static final String FORM = "jfx-form";
+    public static final String FORM_HORIZONTAL = "jfx-form-horizontal";
+    public static final String FORM_VERTICAL = "jfx-form-vertical";
+    public static final String FORM_INLINE = "jfx-form-inline";
+    public static final String FORM_LABEL = "jfx-form-label";
+    public static final String FORM_LABEL_REQUIRED = "jfx-form-label-required";
+    public static final String FORM_ITEM_WRAPPER = "jfx-form-item-wrapper";
+    public static final String FORM_HELP_TEXT = "jfx-form-help-text";
+    public static final String FORM_HELP_ERROR = "jfx-form-help-error";
+    public static final String FORM_HELP_WARNING = "jfx-form-help-warning";
+    public static final String FORM_HELP_SUCCESS = "jfx-form-help-success";
+    public static final String FORM_FOOTER = "jfx-form-footer";
+    public static final String FORM_HEADER = "jfx-form-header";
+    public static final String FORM_SECTION_TITLE = "jfx-form-section-title";
 
     /** TableAnt 表格 */
     public static final String TABLE = "jfx-table";
@@ -202,30 +202,30 @@ public final class JfxStyles {
     public static final String BADGE = "jfx-badge";
     public static final String BADGE_INDICATOR = "jfx-badge-indicator";
     /** count 形态：圆角矩形 + 数字文本 */
-    public static final String BADGE_COUNT = "badge-count";
+    public static final String BADGE_COUNT = "jfx-badge-count";
     /** dot 形态：纯小圆点（默认 danger 色）*/
-    public static final String BADGE_DOT = "badge-dot";
+    public static final String BADGE_DOT = "jfx-badge-dot";
     /** status 形态：小圆点 + 状态色，配合 BADGE_STATUS_* 修饰类使用 */
-    public static final String BADGE_STATUS = "badge-status";
-    public static final String BADGE_STATUS_SUCCESS = "badge-status-success";
-    public static final String BADGE_STATUS_WARNING = "badge-status-warning";
-    public static final String BADGE_STATUS_ERROR = "badge-status-error";
-    public static final String BADGE_STATUS_DEFAULT = "badge-status-default";
+    public static final String BADGE_STATUS = "jfx-badge-status";
+    public static final String BADGE_STATUS_SUCCESS = "jfx-badge-status-success";
+    public static final String BADGE_STATUS_WARNING = "jfx-badge-status-warning";
+    public static final String BADGE_STATUS_ERROR = "jfx-badge-status-error";
+    public static final String BADGE_STATUS_DEFAULT = "jfx-badge-status-default";
 
     /* ============================================
        AlertAnt 警告提示
        ============================================ */
     public static final String ALERT = "jfx-alert";
-    public static final String ALERT_SUCCESS = "alert-success";
-    public static final String ALERT_INFO = "alert-info";
-    public static final String ALERT_WARNING = "alert-warning";
-    public static final String ALERT_ERROR = "alert-error";
+    public static final String ALERT_SUCCESS = "jfx-alert-success";
+    public static final String ALERT_INFO = "jfx-alert-info";
+    public static final String ALERT_WARNING = "jfx-alert-warning";
+    public static final String ALERT_ERROR = "jfx-alert-error";
     /** banner 形态：占满宽度、无圆角 */
-    public static final String ALERT_BANNER = "alert-banner";
-    public static final String ALERT_TITLE = "alert-title";
-    public static final String ALERT_MESSAGE = "alert-message";
-    public static final String ALERT_ICON = "alert-icon";
-    public static final String ALERT_CLOSE_BTN = "alert-close-btn";
+    public static final String ALERT_BANNER = "jfx-alert-banner";
+    public static final String ALERT_TITLE = "jfx-alert-title";
+    public static final String ALERT_MESSAGE = "jfx-alert-message";
+    public static final String ALERT_ICON = "jfx-alert-icon";
+    public static final String ALERT_CLOSE_BTN = "jfx-alert-close-btn";
 
     /* ============================================
        ProgressAnt 进度条
@@ -250,7 +250,7 @@ public final class JfxStyles {
     public static final String SLIDER_RANGE_SEPARATOR = "jfx-slider-range-separator";
     public static final String SLIDER_MARKS = "jfx-slider-marks";
     public static final String SLIDER_MARK_LABEL = "jfx-slider-mark-label";
-    public static final String SLIDER_DISABLED = "slider-disabled";
+    public static final String SLIDER_DISABLED = "jfx-slider-disabled";
 
     /* ============================================
        CodeBlockAnt 代码块
@@ -284,7 +284,7 @@ public final class JfxStyles {
 
     /** SpinAnt 加载中 */
     public static final String SPIN = "jfx-spin";
-    public static final String SPIN_FULLSCREEN = "spin-fullscreen";
+    public static final String SPIN_FULLSCREEN = "jfx-spin-fullscreen";
     public static final String SPIN_TIP = "jfx-spin-tip";
     public static final String SPIN_INDICATOR_SPINNER = "jfx-spin-indicator-spinner";
     public static final String SPIN_INDICATOR_DOT = "jfx-spin-indicator-dot";
@@ -310,11 +310,11 @@ public final class JfxStyles {
        ============================================ */
     public static final String DROPDOWN_TRIGGER = "jfx-dropdown-trigger";
 
-    public static final String ANCHOR = "anchor";
-    public static final String ANCHOR_HORIZONTAL = "anchor-horizontal";
-    public static final String ANCHOR_VERTICAL = "anchor-vertical";
-    public static final String ANCHOR_LINK = "anchor-link";
-    public static final String ANCHOR_LINK_ACTIVE = "anchor-link-active";
+    public static final String ANCHOR = "jfx-anchor";
+    public static final String ANCHOR_HORIZONTAL = "jfx-anchor-horizontal";
+    public static final String ANCHOR_VERTICAL = "jfx-anchor-vertical";
+    public static final String ANCHOR_LINK = "jfx-anchor-link";
+    public static final String ANCHOR_LINK_ACTIVE = "jfx-anchor-link-active";
 
     public static final String AUTO_COMPLETE = "jfx-auto-complete";
     public static final String AUTO_COMPLETE_FIELD = "jfx-auto-complete-field";
@@ -337,73 +337,73 @@ public final class JfxStyles {
     public static final String STATISTIC_PREFIX = "jfx-statistic-prefix";
     public static final String STATISTIC_SUFFIX = "jfx-statistic-suffix";
     /** Statistic 尺寸修饰类 */
-    public static final String STATISTIC_SMALL = "statistic-small";
-    public static final String STATISTIC_LARGE = "statistic-large";
+    public static final String STATISTIC_SMALL = "jfx-statistic-small";
+    public static final String STATISTIC_LARGE = "jfx-statistic-large";
 
     /* ============================================
        TypographyAnt / CollapseAnt / TreeSelectAnt / SegmentedAnt / InputNumberAnt / CarouselAnt
        ============================================ */
 
     /** TypographyAnt 排版 */
-    public static final String TYPOGRAPHY_TITLE = "typography-title";
-    public static final String TYPOGRAPHY_PARAGRAPH = "typography-paragraph";
-    public static final String TYPOGRAPHY_TEXT = "typography-text";
-    public static final String TYPOGRAPHY_SECONDARY = "typography-secondary";
-    public static final String TYPOGRAPHY_SUCCESS = "typography-success";
-    public static final String TYPOGRAPHY_WARNING = "typography-warning";
-    public static final String TYPOGRAPHY_DANGER = "typography-danger";
-    public static final String TYPOGRAPHY_DISABLED = "typography-disabled";
-    public static final String TYPOGRAPHY_ITALIC = "typography-italic";
-    public static final String TYPOGRAPHY_UNDERLINE = "typography-underline";
-    public static final String TYPOGRAPHY_DELETE = "typography-delete";
-    public static final String TYPOGRAPHY_CODE = "typography-code";
-    public static final String TYPOGRAPHY_MARK = "typography-mark";
-    public static final String TYPOGRAPHY_COPYABLE = "typography-copyable";
+    public static final String TYPOGRAPHY_TITLE = "jfx-typography-title";
+    public static final String TYPOGRAPHY_PARAGRAPH = "jfx-typography-paragraph";
+    public static final String TYPOGRAPHY_TEXT = "jfx-typography-text";
+    public static final String TYPOGRAPHY_SECONDARY = "jfx-typography-secondary";
+    public static final String TYPOGRAPHY_SUCCESS = "jfx-typography-success";
+    public static final String TYPOGRAPHY_WARNING = "jfx-typography-warning";
+    public static final String TYPOGRAPHY_DANGER = "jfx-typography-danger";
+    public static final String TYPOGRAPHY_DISABLED = "jfx-typography-disabled";
+    public static final String TYPOGRAPHY_ITALIC = "jfx-typography-italic";
+    public static final String TYPOGRAPHY_UNDERLINE = "jfx-typography-underline";
+    public static final String TYPOGRAPHY_DELETE = "jfx-typography-delete";
+    public static final String TYPOGRAPHY_CODE = "jfx-typography-code";
+    public static final String TYPOGRAPHY_MARK = "jfx-typography-mark";
+    public static final String TYPOGRAPHY_COPYABLE = "jfx-typography-copyable";
 
     /** CollapseAnt 折叠面板 */
-    public static final String COLLAPSE = "collapse";
-    public static final String COLLAPSE_PANEL = "collapse-panel";
-    public static final String COLLAPSE_HEADER = "collapse-header";
-    public static final String COLLAPSE_HEADER_LABEL = "collapse-header-label";
-    public static final String COLLAPSE_ARROW = "collapse-arrow";
-    public static final String COLLAPSE_CONTENT = "collapse-content";
-    public static final String COLLAPSE_DIVIDER = "collapse-divider";
-    public static final String COLLAPSE_DISABLED = "collapse-disabled";
+    public static final String COLLAPSE = "jfx-collapse";
+    public static final String COLLAPSE_PANEL = "jfx-collapse-panel";
+    public static final String COLLAPSE_HEADER = "jfx-collapse-header";
+    public static final String COLLAPSE_HEADER_LABEL = "jfx-collapse-header-label";
+    public static final String COLLAPSE_ARROW = "jfx-collapse-arrow";
+    public static final String COLLAPSE_CONTENT = "jfx-collapse-content";
+    public static final String COLLAPSE_DIVIDER = "jfx-collapse-divider";
+    public static final String COLLAPSE_DISABLED = "jfx-collapse-disabled";
 
     /** TreeSelectAnt 树选择 */
-    public static final String TREE_SELECT = "tree-select";
-    public static final String TREE_SELECT_FIELD = "tree-select-field";
-    public static final String TREE_SELECT_ROW = "tree-select-row";
-    public static final String TREE_SELECT_ARROW = "tree-select-arrow";
-    public static final String TREE_SELECT_LABEL = "tree-select-label";
-    public static final String TREE_SELECT_DISABLED = "tree-select-disabled";
-    public static final String TREE_SELECT_SELECTED = "tree-select-selected";
+    public static final String TREE_SELECT = "jfx-tree-select";
+    public static final String TREE_SELECT_FIELD = "jfx-tree-select-field";
+    public static final String TREE_SELECT_ROW = "jfx-tree-select-row";
+    public static final String TREE_SELECT_ARROW = "jfx-tree-select-arrow";
+    public static final String TREE_SELECT_LABEL = "jfx-tree-select-label";
+    public static final String TREE_SELECT_DISABLED = "jfx-tree-select-disabled";
+    public static final String TREE_SELECT_SELECTED = "jfx-tree-select-selected";
 
     /** SegmentedAnt 分段控件 */
-    public static final String SEGMENTED = "segmented";
-    public static final String SEGMENTED_DISABLED = "segmented-disabled";
-    public static final String SEGMENTED_SMALL = "segmented-small";
-    public static final String SEGMENTED_LARGE = "segmented-large";
-    public static final String SEGMENTED_ITEM = "segmented-item";
-    public static final String SEGMENTED_ITEM_SELECTED = "segmented-item-selected";
-    public static final String SEGMENTED_ITEM_LABEL = "segmented-item-label";
+    public static final String SEGMENTED = "jfx-segmented";
+    public static final String SEGMENTED_DISABLED = "jfx-segmented-disabled";
+    public static final String SEGMENTED_SMALL = "jfx-segmented-small";
+    public static final String SEGMENTED_LARGE = "jfx-segmented-large";
+    public static final String SEGMENTED_ITEM = "jfx-segmented-item";
+    public static final String SEGMENTED_ITEM_SELECTED = "jfx-segmented-item-selected";
+    public static final String SEGMENTED_ITEM_LABEL = "jfx-segmented-item-label";
 
     /** InputNumberAnt 数字输入框 */
-    public static final String INPUT_NUMBER = "input-number";
-    public static final String INPUT_NUMBER_DISABLED = "input-number-disabled";
-    public static final String INPUT_NUMBER_PREFIX = "input-number-prefix";
-    public static final String INPUT_NUMBER_SUFFIX = "input-number-suffix";
-    public static final String INPUT_NUMBER_FIELD = "input-number-field";
-    public static final String INPUT_NUMBER_BTN = "input-number-btn";
-    public static final String INPUT_NUMBER_ARROW = "input-number-arrow";
+    public static final String INPUT_NUMBER = "jfx-input-number";
+    public static final String INPUT_NUMBER_DISABLED = "jfx-input-number-disabled";
+    public static final String INPUT_NUMBER_PREFIX = "jfx-input-number-prefix";
+    public static final String INPUT_NUMBER_SUFFIX = "jfx-input-number-suffix";
+    public static final String INPUT_NUMBER_FIELD = "jfx-input-number-field";
+    public static final String INPUT_NUMBER_BTN = "jfx-input-number-btn";
+    public static final String INPUT_NUMBER_ARROW = "jfx-input-number-arrow";
 
     /** CarouselAnt 走马灯 */
-    public static final String CAROUSEL = "carousel";
-    public static final String CAROUSEL_CONTENT = "carousel-content";
-    public static final String CAROUSEL_ARROW_BTN = "carousel-arrow-btn";
-    public static final String CAROUSEL_DOTS = "carousel-dots";
-    public static final String CAROUSEL_DOT = "carousel-dot";
-    public static final String CAROUSEL_DOT_ACTIVE = "carousel-dot-active";
+    public static final String CAROUSEL = "jfx-carousel";
+    public static final String CAROUSEL_CONTENT = "jfx-carousel-content";
+    public static final String CAROUSEL_ARROW_BTN = "jfx-carousel-arrow-btn";
+    public static final String CAROUSEL_DOTS = "jfx-carousel-dots";
+    public static final String CAROUSEL_DOT = "jfx-carousel-dot";
+    public static final String CAROUSEL_DOT_ACTIVE = "jfx-carousel-dot-active";
 
     /* ============================================
        DrawerAnt / ModalAnt / CascaderAnt / TimelineAnt / TransferAnt
@@ -420,167 +420,167 @@ public final class JfxStyles {
     public static final String OVERLAY_FOOTER = "jfx-overlay-footer";
 
     /** DrawerAnt / ModalAnt 自身命名（用于差异化扩展） */
-    public static final String DRAWER = "drawer";
-    public static final String MODAL = "modal";
+    public static final String DRAWER = "jfx-drawer";
+    public static final String MODAL = "jfx-modal";
 
     /** CascaderAnt 级联选择 */
-    public static final String CASCADER = "cascader";
-    public static final String CASCADER_FIELD = "cascader-field";
-    public static final String CASCADER_COLUMN = "cascader-column";
-    public static final String CASCADER_ITEM = "cascader-item";
-    public static final String CASCADER_ITEM_DISABLED = "cascader-item-disabled";
-    public static final String CASCADER_ITEM_LABEL = "cascader-item-label";
-    public static final String CASCADER_ARROW = "cascader-arrow";
-    public static final String CASCADER_DIVIDER = "cascader-divider";
+    public static final String CASCADER = "jfx-cascader";
+    public static final String CASCADER_FIELD = "jfx-cascader-field";
+    public static final String CASCADER_COLUMN = "jfx-cascader-column";
+    public static final String CASCADER_ITEM = "jfx-cascader-item";
+    public static final String CASCADER_ITEM_DISABLED = "jfx-cascader-item-disabled";
+    public static final String CASCADER_ITEM_LABEL = "jfx-cascader-item-label";
+    public static final String CASCADER_ARROW = "jfx-cascader-arrow";
+    public static final String CASCADER_DIVIDER = "jfx-cascader-divider";
 
     /** TimelineAnt 时间轴 */
-    public static final String TIMELINE = "timeline";
-    public static final String TIMELINE_ITEM = "timeline-item";
-    public static final String TIMELINE_LABEL = "timeline-label";
-    public static final String TIMELINE_CONTENT = "timeline-content";
-    public static final String TIMELINE_LINE = "timeline-line";
-    public static final String TIMELINE_DOT = "timeline-dot";
-    public static final String TIMELINE_DOT_BLUE = "timeline-dot-blue";
-    public static final String TIMELINE_DOT_RED = "timeline-dot-red";
-    public static final String TIMELINE_DOT_GREEN = "timeline-dot-green";
-    public static final String TIMELINE_DOT_GRAY = "timeline-dot-gray";
-    public static final String TIMELINE_DOT_PENDING = "timeline-dot-pending";
-    public static final String TIMELINE_PENDING_TEXT = "timeline-pending-text";
+    public static final String TIMELINE = "jfx-timeline";
+    public static final String TIMELINE_ITEM = "jfx-timeline-item";
+    public static final String TIMELINE_LABEL = "jfx-timeline-label";
+    public static final String TIMELINE_CONTENT = "jfx-timeline-content";
+    public static final String TIMELINE_LINE = "jfx-timeline-line";
+    public static final String TIMELINE_DOT = "jfx-timeline-dot";
+    public static final String TIMELINE_DOT_BLUE = "jfx-timeline-dot-blue";
+    public static final String TIMELINE_DOT_RED = "jfx-timeline-dot-red";
+    public static final String TIMELINE_DOT_GREEN = "jfx-timeline-dot-green";
+    public static final String TIMELINE_DOT_GRAY = "jfx-timeline-dot-gray";
+    public static final String TIMELINE_DOT_PENDING = "jfx-timeline-dot-pending";
+    public static final String TIMELINE_PENDING_TEXT = "jfx-timeline-pending-text";
 
     /** TransferAnt 穿梭框 */
-    public static final String TRANSFER = "transfer";
-    public static final String TRANSFER_LIST = "transfer-list";
-    public static final String TRANSFER_LIST_HEADER = "transfer-list-header";
-    public static final String TRANSFER_LIST_TITLE = "transfer-list-title";
-    public static final String TRANSFER_LIST_COUNT = "transfer-list-count";
-    public static final String TRANSFER_LIST_SEARCH_WRAPPER = "transfer-list-search-wrapper";
-    public static final String TRANSFER_LIST_SEARCH = "transfer-list-search";
-    public static final String TRANSFER_LIST_VIEW = "transfer-list-view";
-    public static final String TRANSFER_ARROW_BTN = "transfer-arrow-btn";
+    public static final String TRANSFER = "jfx-transfer";
+    public static final String TRANSFER_LIST = "jfx-transfer-list";
+    public static final String TRANSFER_LIST_HEADER = "jfx-transfer-list-header";
+    public static final String TRANSFER_LIST_TITLE = "jfx-transfer-list-title";
+    public static final String TRANSFER_LIST_COUNT = "jfx-transfer-list-count";
+    public static final String TRANSFER_LIST_SEARCH_WRAPPER = "jfx-transfer-list-search-wrapper";
+    public static final String TRANSFER_LIST_SEARCH = "jfx-transfer-list-search";
+    public static final String TRANSFER_LIST_VIEW = "jfx-transfer-list-view";
+    public static final String TRANSFER_ARROW_BTN = "jfx-transfer-arrow-btn";
 
     /* ============================================
        ListAnt / MenuAnt / UploadAnt / StepsAnt / BreadcrumbAnt
        ============================================ */
 
     /** ListAnt 列表 */
-    public static final String LIST = "list";
-    public static final String LIST_BORDERED = "list-bordered";
-    public static final String LIST_LOADING = "list-loading";
-    public static final String LIST_HEADER = "list-header";
-    public static final String LIST_FOOTER = "list-footer";
-    public static final String LIST_ITEM = "list-item";
-    public static final String LIST_ITEM_CLICKABLE = "list-item-clickable";
-    public static final String LIST_ITEM_TITLE = "list-item-title";
-    public static final String LIST_ITEM_DESCRIPTION = "list-item-description";
-    public static final String LIST_DIVIDER = "list-divider";
+    public static final String LIST = "jfx-list";
+    public static final String LIST_BORDERED = "jfx-list-bordered";
+    public static final String LIST_LOADING = "jfx-list-loading";
+    public static final String LIST_HEADER = "jfx-list-header";
+    public static final String LIST_FOOTER = "jfx-list-footer";
+    public static final String LIST_ITEM = "jfx-list-item";
+    public static final String LIST_ITEM_CLICKABLE = "jfx-list-item-clickable";
+    public static final String LIST_ITEM_TITLE = "jfx-list-item-title";
+    public static final String LIST_ITEM_DESCRIPTION = "jfx-list-item-description";
+    public static final String LIST_DIVIDER = "jfx-list-divider";
 
     /** MenuAnt 菜单 */
-    public static final String MENU = "menu";
-    public static final String MENU_ITEM = "menu-item";
-    public static final String MENU_ITEM_LABEL = "menu-item-label";
-    public static final String MENU_SUBMENU_HEADER = "menu-submenu-header";
-    public static final String MENU_SUBMENU_BODY = "menu-submenu-body";
-    public static final String MENU_SUBMENU_ARROW = "menu-submenu-arrow";
-    public static final String MENU_GROUP_LABEL = "menu-group-label";
-    public static final String MENU_DIVIDER = "menu-divider";
+    public static final String MENU = "jfx-menu";
+    public static final String MENU_ITEM = "jfx-menu-item";
+    public static final String MENU_ITEM_LABEL = "jfx-menu-item-label";
+    public static final String MENU_SUBMENU_HEADER = "jfx-menu-submenu-header";
+    public static final String MENU_SUBMENU_BODY = "jfx-menu-submenu-body";
+    public static final String MENU_SUBMENU_ARROW = "jfx-menu-submenu-arrow";
+    public static final String MENU_GROUP_LABEL = "jfx-menu-group-label";
+    public static final String MENU_DIVIDER = "jfx-menu-divider";
 
     /** MenuAnt M14 增强：模式 + 选中态 + 主题 + 折叠 */
-    public static final String MENU_INLINE        = "menu-inline";
-    public static final String MENU_HORIZONTAL    = "menu-horizontal";
-    public static final String MENU_DARK          = "menu-dark";
-    public static final String MENU_COLLAPSED     = "menu-collapsed";
-    public static final String MENU_ITEM_SELECTED = "menu-item-selected";
-    public static final String MENU_SUBMENU_ARROW_BOX = "menu-submenu-arrow-box";
+    public static final String MENU_INLINE        = "jfx-menu-inline";
+    public static final String MENU_HORIZONTAL    = "jfx-menu-horizontal";
+    public static final String MENU_DARK          = "jfx-menu-dark";
+    public static final String MENU_COLLAPSED     = "jfx-menu-collapsed";
+    public static final String MENU_ITEM_SELECTED = "jfx-menu-item-selected";
+    public static final String MENU_SUBMENU_ARROW_BOX = "jfx-menu-submenu-arrow-box";
 
     /** UploadAnt 上传 */
-    public static final String UPLOAD = "upload";
-    public static final String UPLOAD_DRAG = "upload-drag";
-    public static final String UPLOAD_DRAG_ACTIVE = "upload-drag-active";
-    public static final String UPLOAD_DRAG_ICON = "upload-drag-icon";
-    public static final String UPLOAD_DRAG_TEXT = "upload-drag-text";
-    public static final String UPLOAD_HINT_TEXT = "upload-hint-text";
-    public static final String UPLOAD_LIST = "upload-list";
-    public static final String UPLOAD_FILE_ITEM = "upload-file-item";
-    public static final String UPLOAD_FILE_NAME = "upload-file-name";
-    public static final String UPLOAD_FILE_ERROR = "upload-file-error";
-    public static final String UPLOAD_REMOVE_BTN = "upload-remove-btn";
+    public static final String UPLOAD = "jfx-upload";
+    public static final String UPLOAD_DRAG = "jfx-upload-drag";
+    public static final String UPLOAD_DRAG_ACTIVE = "jfx-upload-drag-active";
+    public static final String UPLOAD_DRAG_ICON = "jfx-upload-drag-icon";
+    public static final String UPLOAD_DRAG_TEXT = "jfx-upload-drag-text";
+    public static final String UPLOAD_HINT_TEXT = "jfx-upload-hint-text";
+    public static final String UPLOAD_LIST = "jfx-upload-list";
+    public static final String UPLOAD_FILE_ITEM = "jfx-upload-file-item";
+    public static final String UPLOAD_FILE_NAME = "jfx-upload-file-name";
+    public static final String UPLOAD_FILE_ERROR = "jfx-upload-file-error";
+    public static final String UPLOAD_REMOVE_BTN = "jfx-upload-remove-btn";
 
     /** StepsAnt 步骤条 */
-    public static final String STEPS = "steps";
-    public static final String STEPS_VERTICAL = "steps-vertical";
-    public static final String STEPS_ITEM = "steps-item";
-    public static final String STEPS_CIRCLE = "steps-circle";
-    public static final String STEPS_NUMBER = "steps-number";
-    public static final String STEPS_TITLE = "steps-title";
-    public static final String STEPS_DESCRIPTION = "steps-description";
-    public static final String STEPS_LINE = "steps-line";
+    public static final String STEPS = "jfx-steps";
+    public static final String STEPS_VERTICAL = "jfx-steps-vertical";
+    public static final String STEPS_ITEM = "jfx-steps-item";
+    public static final String STEPS_CIRCLE = "jfx-steps-circle";
+    public static final String STEPS_NUMBER = "jfx-steps-number";
+    public static final String STEPS_TITLE = "jfx-steps-title";
+    public static final String STEPS_DESCRIPTION = "jfx-steps-description";
+    public static final String STEPS_LINE = "jfx-steps-line";
     /** Steps 状态修饰类 */
-    public static final String STEPS_STATE_FINISHED = "steps-finished";
-    public static final String STEPS_STATE_CURRENT = "steps-current";
-    public static final String STEPS_STATE_WAIT = "steps-wait";
+    public static final String STEPS_STATE_FINISHED = "jfx-steps-finished";
+    public static final String STEPS_STATE_CURRENT = "jfx-steps-current";
+    public static final String STEPS_STATE_WAIT = "jfx-steps-wait";
 
     /** BreadcrumbAnt 面包屑 */
-    public static final String BREADCRUMB = "breadcrumb";
-    public static final String BREADCRUMB_ITEM = "breadcrumb-item";
-    public static final String BREADCRUMB_LINK = "breadcrumb-link";
-    public static final String BREADCRUMB_LAST = "breadcrumb-last";
-    public static final String BREADCRUMB_SEPARATOR = "breadcrumb-separator";
+    public static final String BREADCRUMB = "jfx-breadcrumb";
+    public static final String BREADCRUMB_ITEM = "jfx-breadcrumb-item";
+    public static final String BREADCRUMB_LINK = "jfx-breadcrumb-link";
+    public static final String BREADCRUMB_LAST = "jfx-breadcrumb-last";
+    public static final String BREADCRUMB_SEPARATOR = "jfx-breadcrumb-separator";
 
     /* ============================================
        DescriptionsAnt / CalendarAnt
        ============================================ */
 
     /** DescriptionsAnt 描述列表 */
-    public static final String DESCRIPTIONS = "descriptions";
-    public static final String DESCRIPTIONS_VERTICAL = "descriptions-vertical";
-    public static final String DESCRIPTIONS_GRID = "descriptions-grid";
-    public static final String DESCRIPTIONS_TITLE = "descriptions-title";
-    public static final String DESCRIPTIONS_LABEL = "descriptions-label";
-    public static final String DESCRIPTIONS_CONTENT = "descriptions-content";
-    public static final String DESCRIPTIONS_BORDERED = "descriptions-bordered";
-    public static final String DESCRIPTIONS_SIZE_SMALL = "descriptions-small";
-    public static final String DESCRIPTIONS_SIZE_MIDDLE = "descriptions-middle";
-    public static final String DESCRIPTIONS_SIZE_LARGE = "descriptions-large";
+    public static final String DESCRIPTIONS = "jfx-descriptions";
+    public static final String DESCRIPTIONS_VERTICAL = "jfx-descriptions-vertical";
+    public static final String DESCRIPTIONS_GRID = "jfx-descriptions-grid";
+    public static final String DESCRIPTIONS_TITLE = "jfx-descriptions-title";
+    public static final String DESCRIPTIONS_LABEL = "jfx-descriptions-label";
+    public static final String DESCRIPTIONS_CONTENT = "jfx-descriptions-content";
+    public static final String DESCRIPTIONS_BORDERED = "jfx-descriptions-bordered";
+    public static final String DESCRIPTIONS_SIZE_SMALL = "jfx-descriptions-small";
+    public static final String DESCRIPTIONS_SIZE_MIDDLE = "jfx-descriptions-middle";
+    public static final String DESCRIPTIONS_SIZE_LARGE = "jfx-descriptions-large";
 
     /** CalendarAnt 日历 */
-    public static final String CALENDAR = "calendar";
-    public static final String CALENDAR_HEADER = "calendar-header";
-    public static final String CALENDAR_HEADER_LABEL = "calendar-header-label";
-    public static final String CALENDAR_NAV_BTN = "calendar-nav-btn";
-    public static final String CALENDAR_GRID = "calendar-grid";
-    public static final String CALENDAR_DAY_HEADER = "calendar-day-header";
-    public static final String CALENDAR_CELL = "calendar-cell";
-    public static final String CALENDAR_CELL_TODAY = "calendar-cell-today";
-    public static final String CALENDAR_CELL_SELECTED = "calendar-cell-selected";
-    public static final String CALENDAR_CELL_OTHER_MONTH = "calendar-cell-other-month";
-    public static final String CALENDAR_DAY_LABEL = "calendar-day-label";
-    public static final String CALENDAR_YEAR_VIEW = "calendar-year-view";
-    public static final String CALENDAR_MONTH_BTN = "calendar-month-btn";
-    public static final String CALENDAR_MONTH_BTN_CURRENT = "calendar-month-btn-current";
+    public static final String CALENDAR = "jfx-calendar";
+    public static final String CALENDAR_HEADER = "jfx-calendar-header";
+    public static final String CALENDAR_HEADER_LABEL = "jfx-calendar-header-label";
+    public static final String CALENDAR_NAV_BTN = "jfx-calendar-nav-btn";
+    public static final String CALENDAR_GRID = "jfx-calendar-grid";
+    public static final String CALENDAR_DAY_HEADER = "jfx-calendar-day-header";
+    public static final String CALENDAR_CELL = "jfx-calendar-cell";
+    public static final String CALENDAR_CELL_TODAY = "jfx-calendar-cell-today";
+    public static final String CALENDAR_CELL_SELECTED = "jfx-calendar-cell-selected";
+    public static final String CALENDAR_CELL_OTHER_MONTH = "jfx-calendar-cell-other-month";
+    public static final String CALENDAR_DAY_LABEL = "jfx-calendar-day-label";
+    public static final String CALENDAR_YEAR_VIEW = "jfx-calendar-year-view";
+    public static final String CALENDAR_MONTH_BTN = "jfx-calendar-month-btn";
+    public static final String CALENDAR_MONTH_BTN_CURRENT = "jfx-calendar-month-btn-current";
 
     /* ============================================
        业务模板（template/）— M18 通用 CRUD 三段式骨架
        ============================================ */
-    public static final String CRUD_TEMPLATE         = "crud-template";
-    public static final String CRUD_TEMPLATE_TITLE   = "crud-template-title";
-    public static final String CRUD_TEMPLATE_TOPBAR  = "crud-template-topbar";
-    public static final String CRUD_TEMPLATE_BODY    = "crud-template-body";
-    public static final String CRUD_TEMPLATE_BOTTOMBAR = "crud-template-bottombar";
+    public static final String CRUD_TEMPLATE         = "jfx-crud-template";
+    public static final String CRUD_TEMPLATE_TITLE   = "jfx-crud-template-title";
+    public static final String CRUD_TEMPLATE_TOPBAR  = "jfx-crud-template-topbar";
+    public static final String CRUD_TEMPLATE_BODY    = "jfx-crud-template-body";
+    public static final String CRUD_TEMPLATE_BOTTOMBAR = "jfx-crud-template-bottombar";
 
     /* ============================================
        PageTemplate（M19.33）— 通用展示页骨架
        ============================================ */
-    public static final String PAGE_TEMPLATE         = "page-template";
-    public static final String PAGE_TEMPLATE_TITLE   = "page-template-title";
-    public static final String PAGE_TEMPLATE_DESC    = "page-template-desc";
-    public static final String PAGE_TEMPLATE_HEADER  = "page-template-header";
-    public static final String PAGE_TEMPLATE_BODY    = "page-template-body";
+    public static final String PAGE_TEMPLATE         = "jfx-page-template";
+    public static final String PAGE_TEMPLATE_TITLE   = "jfx-page-template-title";
+    public static final String PAGE_TEMPLATE_DESC    = "jfx-page-template-desc";
+    public static final String PAGE_TEMPLATE_HEADER  = "jfx-page-template-header";
+    public static final String PAGE_TEMPLATE_BODY    = "jfx-page-template-body";
 
     /* ============================================
        BarAnt（M19）— 横向左/中/右三段式布局
        ============================================ */
-    public static final String SPLIT_BAR        = "split-bar";
-    public static final String SPLIT_BAR_SPACER = "split-bar-spacer";
+    public static final String SPLIT_BAR        = "jfx-split-bar";
+    public static final String SPLIT_BAR_SPACER = "jfx-split-bar-spacer";
 
     /* ============================================
        MenuBarAnt（PC 软件刚需）— 系统菜单栏
@@ -677,24 +677,24 @@ public final class JfxStyles {
     /* ============================================
        LoginTemplate（M19.16，M19.39 LESS 化）— 登录页模板
        ============================================ */
-    public static final String LOGIN_ROOT            = "login-template";
-    public static final String LOGIN_BANNER          = "login-template-banner";
-    public static final String LOGIN_BANNER_LOGO_BOX = "login-template-banner-logo";
-    public static final String LOGIN_BANNER_BRAND    = "login-template-banner-brand";
-    public static final String LOGIN_BANNER_TAGLINE  = "login-template-banner-tagline";
-    public static final String LOGIN_BANNER_FEATURE_CHECK = "login-template-banner-feature-check";
-    public static final String LOGIN_BANNER_FEATURE_TEXT  = "login-template-banner-feature-text";
-    public static final String LOGIN_BANNER_COPYRIGHT     = "login-template-banner-copyright";
-    public static final String LOGIN_FORM            = "login-template-form";
-    public static final String LOGIN_FORM_TITLE      = "login-template-form-title";
-    public static final String LOGIN_FORM_SUBTITLE   = "login-template-form-subtitle";
-    public static final String LOGIN_FORM_ERROR      = "login-template-form-error";
-    public static final String LOGIN_FORM_INPUT_ROW  = "login-template-input-row";
-    public static final String LOGIN_FORM_INPUT_FIELD = "login-template-input-field";
-    public static final String LOGIN_FORM_REMEMBER   = "login-template-remember";
-    public static final String LOGIN_FORM_LINK_SMALL = "login-template-link-small";
-    public static final String LOGIN_FORM_SUBMIT     = "login-template-submit";
-    public static final String LOGIN_FORM_NO_ACCOUNT = "login-template-no-account";
+    public static final String LOGIN_ROOT            = "jfx-login-template";
+    public static final String LOGIN_BANNER          = "jfx-login-template-banner";
+    public static final String LOGIN_BANNER_LOGO_BOX = "jfx-login-template-banner-logo";
+    public static final String LOGIN_BANNER_BRAND    = "jfx-login-template-banner-brand";
+    public static final String LOGIN_BANNER_TAGLINE  = "jfx-login-template-banner-tagline";
+    public static final String LOGIN_BANNER_FEATURE_CHECK = "jfx-login-template-banner-feature-check";
+    public static final String LOGIN_BANNER_FEATURE_TEXT  = "jfx-login-template-banner-feature-text";
+    public static final String LOGIN_BANNER_COPYRIGHT     = "jfx-login-template-banner-copyright";
+    public static final String LOGIN_FORM            = "jfx-login-template-form";
+    public static final String LOGIN_FORM_TITLE      = "jfx-login-template-form-title";
+    public static final String LOGIN_FORM_SUBTITLE   = "jfx-login-template-form-subtitle";
+    public static final String LOGIN_FORM_ERROR      = "jfx-login-template-form-error";
+    public static final String LOGIN_FORM_INPUT_ROW  = "jfx-login-template-input-row";
+    public static final String LOGIN_FORM_INPUT_FIELD = "jfx-login-template-input-field";
+    public static final String LOGIN_FORM_REMEMBER   = "jfx-login-template-remember";
+    public static final String LOGIN_FORM_LINK_SMALL = "jfx-login-template-link-small";
+    public static final String LOGIN_FORM_SUBMIT     = "jfx-login-template-submit";
+    public static final String LOGIN_FORM_NO_ACCOUNT = "jfx-login-template-no-account";
 
     /* ============================================
        TabsAnt — 标签页
@@ -708,8 +708,8 @@ public final class JfxStyles {
     public static final String TABS_DISABLED    = "jfx-tabs-disabled";
     public static final String TABS_LABEL_LARGE = "jfx-tabs-large";
     public static final String TABS_LABEL_SMALL = "jfx-tabs-small";
-    public static final String TABS_INDICATOR_PANE = "tabs-indicator-pane";
-    public static final String TABS_INDICATOR_BAR  = "tabs-indicator-bar";
+    public static final String TABS_INDICATOR_PANE = "jfx-tabs-indicator-pane";
+    public static final String TABS_INDICATOR_BAR = "jfx-tabs-indicator-bar";
 
     /* ============================================
        PanelFooter — 面板底部
@@ -720,13 +720,13 @@ public final class JfxStyles {
     /* ============================================
        QRCodeAnt — 二维码
        ============================================ */
-    public static final String QR_CODE           = "qr-code";
-    public static final String QR_CODE_BORDERED  = "qr-code-bordered";
+    public static final String QR_CODE           = "jfx-qr-code";
+    public static final String QR_CODE_BORDERED  = "jfx-qr-code-bordered";
 
     /* ============================================
        RateAnt — 评分
        ============================================ */
-    public static final String RATE          = "rate";
+    public static final String RATE = "jfx-rate";
     public static final String RATE_STAR     = "jfx-rate-star";
     public static final String RATE_ACTIVE   = "jfx-rate-active";
     public static final String RATE_INACTIVE = "jfx-rate-inactive";
@@ -734,20 +734,20 @@ public final class JfxStyles {
     /* ============================================
        FloatButtonAnt — 浮动按钮
        ============================================ */
-    public static final String FLOAT_BUTTON          = "float-button";
+    public static final String FLOAT_BUTTON = "jfx-float-button";
     public static final String FLOAT_BUTTON_PRIMARY  = "jfx-float-button-primary";
     public static final String FLOAT_BUTTON_DEFAULT  = "jfx-float-button-default";
 
     /* ============================================
        SkeletonAnt — 骨架屏
        ============================================ */
-    public static final String SKELETON      = "skeleton";
+    public static final String SKELETON = "jfx-skeleton";
     public static final String SKELETON_RECT = "jfx-skeleton-rect";
 
     /* ============================================
        AvatarAnt — 头像
        ============================================ */
-    public static final String AVATAR            = "avatar";
+    public static final String AVATAR = "jfx-avatar";
     public static final String AVATAR_BG_DEFAULT = "jfx-avatar-bg-default";
     public static final String AVATAR_FG_DEFAULT = "jfx-avatar-fg-default";
 
@@ -763,48 +763,48 @@ public final class JfxStyles {
     /* ============================================
        PopoverPanel / PopoverAnt — 气泡卡片
        ============================================ */
-    public static final String POPOVER_PANEL      = "popover-panel";
-    public static final String POPOVER_TITLE_BOX  = "popover-title-box";
-    public static final String POPOVER_TITLE_LABEL = "popover-title-label";
+    public static final String POPOVER_PANEL      = "jfx-popover-panel";
+    public static final String POPOVER_TITLE_BOX  = "jfx-popover-title-box";
+    public static final String POPOVER_TITLE_LABEL = "jfx-popover-title-label";
 
     /* ============================================
        Popconfirm / Message / Notification / Result 基础卡片
        ============================================ */
-    public static final String POPCONFIRM_PANEL = "popconfirm-panel";
-    public static final String POPCONFIRM_ICON  = "popconfirm-icon";
-    public static final String POPCONFIRM_TITLE = "popconfirm-title";
-    public static final String POPCONFIRM_DESC  = "popconfirm-desc";
-    public static final String MESSAGE_CARD         = "message-card";
-    public static final String MESSAGE_CARD_CONTENT = "message-card-content";
-    public static final String NOTIFICATION_CARD       = "notification-card";
-    public static final String NOTIFICATION_CARD_TITLE = "notification-card-title";
-    public static final String NOTIFICATION_CARD_DESC  = "notification-card-desc";
-    public static final String RESULT_TITLE    = "result-title";
-    public static final String RESULT_SUBTITLE = "result-subtitle";
+    public static final String POPCONFIRM_PANEL = "jfx-popconfirm-panel";
+    public static final String POPCONFIRM_ICON  = "jfx-popconfirm-icon";
+    public static final String POPCONFIRM_TITLE = "jfx-popconfirm-title";
+    public static final String POPCONFIRM_DESC  = "jfx-popconfirm-desc";
+    public static final String MESSAGE_CARD         = "jfx-message-card";
+    public static final String MESSAGE_CARD_CONTENT = "jfx-message-card-content";
+    public static final String NOTIFICATION_CARD       = "jfx-notification-card";
+    public static final String NOTIFICATION_CARD_TITLE = "jfx-notification-card-title";
+    public static final String NOTIFICATION_CARD_DESC  = "jfx-notification-card-desc";
+    public static final String RESULT_TITLE    = "jfx-result-title";
+    public static final String RESULT_SUBTITLE = "jfx-result-subtitle";
 
     /* ============================================
        模板 / 工具类组件
        ============================================ */
-    public static final String FILTER_BAR_LABEL       = "filter-bar-label";
-    public static final String DASHBOARD_ROOT         = "dashboard-root";
-    public static final String DASHBOARD_STAT_ICON_BOX = "dashboard-stat-icon-box";
-    public static final String DASHBOARD_STAT_TITLE   = "dashboard-stat-title";
-    public static final String DASHBOARD_STAT_TREND_UP   = "dashboard-stat-trend-up";
-    public static final String DASHBOARD_STAT_TREND_DOWN = "dashboard-stat-trend-down";
-    public static final String DASHBOARD_STAT_TREND_HINT = "dashboard-stat-trend-hint";
-    public static final String DASHBOARD_WELCOME    = "dashboard-welcome";
-    public static final String DASHBOARD_STAT_VALUE = "dashboard-stat-value";
-    public static final String BAR_BORDER_BOTTOM = "bar-border-bottom";
-    public static final String BAR_BORDER_TOP    = "bar-border-top";
+    public static final String FILTER_BAR_LABEL = "jfx-filter-bar-label";
+    public static final String DASHBOARD_ROOT         = "jfx-dashboard-root";
+    public static final String DASHBOARD_STAT_ICON_BOX = "jfx-dashboard-stat-icon-box";
+    public static final String DASHBOARD_STAT_TITLE   = "jfx-dashboard-stat-title";
+    public static final String DASHBOARD_STAT_TREND_UP   = "jfx-dashboard-stat-trend-up";
+    public static final String DASHBOARD_STAT_TREND_DOWN = "jfx-dashboard-stat-trend-down";
+    public static final String DASHBOARD_STAT_TREND_HINT = "jfx-dashboard-stat-trend-hint";
+    public static final String DASHBOARD_WELCOME    = "jfx-dashboard-welcome";
+    public static final String DASHBOARD_STAT_VALUE = "jfx-dashboard-stat-value";
+    public static final String BAR_BORDER_BOTTOM = "jfx-bar-border-bottom";
+    public static final String BAR_BORDER_TOP    = "jfx-bar-border-top";
 
     /* ============================================
        通用四向边框 — 任意组件可用
        ============================================ */
-    public static final String BORDER_TOP    = "border-top";
-    public static final String BORDER_BOTTOM = "border-bottom";
-    public static final String BORDER_LEFT   = "border-left";
-    public static final String BORDER_RIGHT  = "border-right";
+    public static final String BORDER_TOP    = "jfx-border-top";
+    public static final String BORDER_BOTTOM = "jfx-border-bottom";
+    public static final String BORDER_LEFT   = "jfx-border-left";
+    public static final String BORDER_RIGHT  = "jfx-border-right";
 
-    public static final String FOCUS_VISIBLE      = "focus-visible";
-    public static final String CODEBLOCK_HIGHLIGHT = "codeblock-highlight";
+    public static final String FOCUS_VISIBLE      = "jfx-focus-visible";
+    public static final String CODEBLOCK_HIGHLIGHT = "jfx-codeblock-highlight";
 }

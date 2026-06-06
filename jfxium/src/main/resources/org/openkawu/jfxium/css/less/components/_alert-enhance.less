@@ -28,28 +28,28 @@
   -fx-border-color: -color-danger-muted;
 }
 
-.alert-icon {
+.jfx-alert-icon {
   -fx-font-size: 20px;
   -fx-font-weight: bold;
 }
 
-.alert-icon.success {
+.jfx-alert-icon.success {
   -fx-text-fill: -color-success-emphasis;
 }
 
-.alert-icon.info {
+.jfx-alert-icon.info {
   -fx-text-fill: -color-accent-emphasis;
 }
 
-.alert-icon.warning {
+.jfx-alert-icon.warning {
   -fx-text-fill: -color-warning-emphasis;
 }
 
-.alert-icon.error {
+.jfx-alert-icon.error {
   -fx-text-fill: -color-danger-emphasis;
 }
 
-.alert-title {
+.jfx-alert-title {
   -fx-font-size: @font-size-md;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
@@ -75,40 +75,40 @@
 }
 
 /* banner 形态：无圆角、无边框，整条横幅 */
-.jfx-alert.alert-banner {
+.jfx-alert.jfx-alert-banner {
   -fx-background-radius: 0;
   -fx-border-radius: 0;
   -fx-border-width: 0;
 }
 
 /* Alert 标题 + 各 type 文字色 */
-.jfx-alert .alert-title {
+.jfx-alert .jfx-alert-title {
   -fx-font-size: @font-size-md;
   -fx-font-weight: 600;
 }
 
-.jfx-alert.alert-success .alert-title { -fx-text-fill: -color-success-emphasis; }
-.jfx-alert.alert-info .alert-title    { -fx-text-fill: -color-accent-emphasis;  }
-.jfx-alert.alert-warning .alert-title { -fx-text-fill: -color-warning-emphasis; }
-.jfx-alert.alert-error .alert-title   { -fx-text-fill: -color-danger-emphasis;  }
+.jfx-alert.jfx-alert-success .jfx-alert-title { -fx-text-fill: -color-success-emphasis; }
+.jfx-alert.jfx-alert-info .jfx-alert-title    { -fx-text-fill: -color-accent-emphasis;  }
+.jfx-alert.jfx-alert-warning .jfx-alert-title { -fx-text-fill: -color-warning-emphasis; }
+.jfx-alert.jfx-alert-error .jfx-alert-title   { -fx-text-fill: -color-danger-emphasis;  }
 
 /* Alert 描述/正文 */
-.jfx-alert .alert-message {
+.jfx-alert .jfx-alert-message {
   -fx-font-size: @font-size-sm;
 }
 
-.jfx-alert.alert-success .alert-message { -fx-text-fill: -color-success-emphasis; }
-.jfx-alert.alert-info .alert-message    { -fx-text-fill: -color-accent-emphasis;  }
-.jfx-alert.alert-warning .alert-message { -fx-text-fill: -color-warning-emphasis; }
-.jfx-alert.alert-error .alert-message   { -fx-text-fill: -color-danger-emphasis;  }
+.jfx-alert.jfx-alert-success .jfx-alert-message { -fx-text-fill: -color-success-emphasis; }
+.jfx-alert.jfx-alert-info .jfx-alert-message    { -fx-text-fill: -color-accent-emphasis;  }
+.jfx-alert.jfx-alert-warning .jfx-alert-message { -fx-text-fill: -color-warning-emphasis; }
+.jfx-alert.jfx-alert-error .jfx-alert-message   { -fx-text-fill: -color-danger-emphasis;  }
 
 /* Alert 状态图标（容器内）字号 */
-.jfx-alert .alert-icon {
+.jfx-alert .jfx-alert-icon {
   -fx-font-size: 16px;
 }
 
 /* Alert 关闭按钮：透明背景，文字色随 type，hover 浅化通过 opacity 控制 */
-.jfx-alert .alert-close-btn {
+.jfx-alert .jfx-alert-close-btn {
   -fx-background-color: transparent;
   -fx-font-size: @font-size-sm;
   -fx-padding: 0;
@@ -117,12 +117,12 @@
   -fx-cursor: hand;
 }
 
-.jfx-alert.alert-success .alert-close-btn { -fx-text-fill: -color-success-emphasis; }
-.jfx-alert.alert-info .alert-close-btn    { -fx-text-fill: -color-accent-emphasis;  }
-.jfx-alert.alert-warning .alert-close-btn { -fx-text-fill: -color-warning-emphasis; }
-.jfx-alert.alert-error .alert-close-btn   { -fx-text-fill: -color-danger-emphasis;  }
+.jfx-alert.jfx-alert-success .jfx-alert-close-btn { -fx-text-fill: -color-success-emphasis; }
+.jfx-alert.jfx-alert-info .jfx-alert-close-btn    { -fx-text-fill: -color-accent-emphasis;  }
+.jfx-alert.jfx-alert-warning .jfx-alert-close-btn { -fx-text-fill: -color-warning-emphasis; }
+.jfx-alert.jfx-alert-error .jfx-alert-close-btn   { -fx-text-fill: -color-danger-emphasis;  }
 
-.jfx-alert .alert-close-btn:hover {
+.jfx-alert .jfx-alert-close-btn:hover {
   -fx-opacity: 0.7;
 }
 

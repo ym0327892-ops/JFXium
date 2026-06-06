@@ -3,25 +3,25 @@
    ============================================ */
 
 /* DescriptionsAnt */
-.descriptions {
+.jfx-descriptions {
   -fx-background-color: transparent;
 }
 
-.descriptions-title {
+.jfx-descriptions-title {
   -fx-font-size: @font-size-lg;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 0 0 16 0;
 }
 
-.descriptions-label {
+.jfx-descriptions-label {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: @font-size-md;
   -fx-padding: 8 16 8 16;
   -fx-font-weight: 400;
 }
 
-.descriptions-content {
+.jfx-descriptions-content {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: @font-size-md;
   -fx-padding: 8 16 8 16;
@@ -29,33 +29,33 @@
 }
 
 /* 尺寸修饰类切换字号与 padding */
-.descriptions.descriptions-small .descriptions-label,
-.descriptions.descriptions-small .descriptions-content {
+.jfx-descriptions.jfx-descriptions-small .jfx-descriptions-label,
+.jfx-descriptions.jfx-descriptions-small .jfx-descriptions-content {
   -fx-font-size: @font-size-xs;
   -fx-padding: 4 8 4 8;
 }
 
-.descriptions.descriptions-middle .descriptions-label,
-.descriptions.descriptions-middle .descriptions-content {
+.jfx-descriptions.jfx-descriptions-middle .jfx-descriptions-label,
+.jfx-descriptions.jfx-descriptions-middle .jfx-descriptions-content {
   -fx-font-size: @font-size-sm;
   -fx-padding: 8 12 8 12;
 }
 
-.descriptions.descriptions-large .descriptions-label,
-.descriptions.descriptions-large .descriptions-content {
+.jfx-descriptions.jfx-descriptions-large .jfx-descriptions-label,
+.jfx-descriptions.jfx-descriptions-large .jfx-descriptions-content {
   -fx-font-size: @font-size-lg;
   -fx-padding: 16 24 16 24;
 }
 
 /* bordered 模式：每个 label/content 都有 1px 边框 */
-.descriptions.descriptions-bordered .descriptions-label,
-.descriptions.descriptions-bordered .descriptions-content {
+.jfx-descriptions.jfx-descriptions-bordered .jfx-descriptions-label,
+.jfx-descriptions.jfx-descriptions-bordered .jfx-descriptions-content {
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
 }
 
 /* CalendarAnt */
-.calendar {
+.jfx-calendar {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -63,20 +63,20 @@
   -fx-background-radius: @border-radius-md;
 }
 
-.calendar-header {
+.jfx-calendar-header {
   -fx-padding: 12 16 12 16;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
 
-.calendar-header-label {
+.jfx-calendar-header-label {
   -fx-font-size: @font-size-lg;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
 
 /* 导航按钮（上一月/下一月），hover 浅色背景 */
-.calendar-nav-btn {
+.jfx-calendar-nav-btn {
   -fx-background-color: transparent;
   -fx-text-fill: -color-fg-default;
   -fx-font-size: @font-size-md;
@@ -85,15 +85,15 @@
   -fx-background-radius: @border-radius-sm;
 }
 
-.calendar-nav-btn:hover {
+.jfx-calendar-nav-btn:hover {
   -fx-background-color: -color-bg-subtle;
 }
 
-.calendar-grid {
+.jfx-calendar-grid {
   -fx-padding: 8;
 }
 
-.calendar-day-header {
+.jfx-calendar-day-header {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: @font-size-sm;
   -fx-font-weight: 500;
@@ -102,54 +102,54 @@
 }
 
 /* 日期单元格：默认透明，hover 浅色，selected 主题色，today 主题色 subtle */
-.calendar-cell {
+.jfx-calendar-cell {
   -fx-background-color: transparent;
   -fx-background-radius: @border-radius-sm;
   -fx-cursor: hand;
 }
 
-.calendar-cell:hover {
+.jfx-calendar-cell:hover {
   -fx-background-color: -color-bg-subtle;
 }
 
-.calendar-cell.calendar-cell-today {
+.jfx-calendar-cell.jfx-calendar-cell-today {
   -fx-background-color: -color-accent-subtle;
 }
 
-.calendar-cell.calendar-cell-today:hover {
+.jfx-calendar-cell.jfx-calendar-cell-today:hover {
   -fx-background-color: -color-accent-subtle;
 }
 
-.calendar-cell.calendar-cell-selected,
-.calendar-cell.calendar-cell-selected:hover {
+.jfx-calendar-cell.jfx-calendar-cell-selected,
+.jfx-calendar-cell.jfx-calendar-cell-selected:hover {
   -fx-background-color: -color-accent-emphasis;
 }
 
 /* 日期文本颜色：默认前景色，selected 反白，today 主题色，other-month 模糊色 */
-.calendar-day-label {
+.jfx-calendar-day-label {
   -fx-font-size: @font-size-md;
   -fx-padding: 4;
   -fx-text-fill: -color-fg-default;
 }
 
-.calendar-cell.calendar-cell-other-month .calendar-day-label {
+.jfx-calendar-cell.jfx-calendar-cell-other-month .jfx-calendar-day-label {
   -fx-text-fill: -color-fg-subtle;
 }
 
-.calendar-cell.calendar-cell-today .calendar-day-label {
+.jfx-calendar-cell.jfx-calendar-cell-today .jfx-calendar-day-label {
   -fx-text-fill: -color-accent-emphasis;
 }
 
-.calendar-cell.calendar-cell-selected .calendar-day-label {
+.jfx-calendar-cell.jfx-calendar-cell-selected .jfx-calendar-day-label {
   -fx-text-fill: -color-fg-on-emphasis;
 }
 
 /* Year View */
-.calendar-year-view {
+.jfx-calendar-year-view {
   -fx-padding: 16;
 }
 
-.calendar-month-btn {
+.jfx-calendar-month-btn {
   -fx-background-color: transparent;
   -fx-text-fill: -color-fg-default;
   -fx-background-radius: @border-radius-sm;
@@ -157,12 +157,12 @@
   -fx-cursor: hand;
 }
 
-.calendar-month-btn:hover {
+.jfx-calendar-month-btn:hover {
   -fx-background-color: -color-bg-subtle;
 }
 
-.calendar-month-btn.calendar-month-btn-current,
-.calendar-month-btn.calendar-month-btn-current:hover {
+.jfx-calendar-month-btn.jfx-calendar-month-btn-current,
+.jfx-calendar-month-btn.jfx-calendar-month-btn-current:hover {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
 }

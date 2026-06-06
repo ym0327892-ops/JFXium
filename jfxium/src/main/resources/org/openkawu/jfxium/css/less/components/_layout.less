@@ -4,99 +4,99 @@
 /* 老 PageAnt 已删除（M18），相关 .page / .page-header / .page-title 等样式同步移除 */
 
 /* CrudTemplate（业务模板，M18 新增）：通用三段式骨架 */
-.crud-template {
+.jfx-crud-template {
   -fx-background-color: -color-bg-default;
   -fx-padding: @spacing-xl;
 }
 
-.crud-template.bordered {
+.jfx-crud-template.bordered {
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
   -fx-border-radius: @border-radius-lg;
   -fx-background-radius: @border-radius-lg;
 }
 
-.crud-template-title {
+.jfx-crud-template-title {
   -fx-font-size: @font-size-xl;
   -fx-font-weight: 700;
   -fx-text-fill: -color-fg-default;
 }
 
-.crud-template-topbar {
+.jfx-crud-template-topbar {
   -fx-background-color: transparent;
 }
 
-.crud-template-body {
+.jfx-crud-template-body {
   -fx-background-color: transparent;
 }
 
-.crud-template-bottombar {
+.jfx-crud-template-bottombar {
   -fx-background-color: transparent;
 }
 
 /* PageTemplate（M19.33 新增）：通用展示页骨架「大标题 + 描述 + 内容区」 */
-.page-template {
+.jfx-page-template {
   -fx-background-color: transparent;
 }
 
-.page-template-header {
+.jfx-page-template-header {
   -fx-spacing: @spacing-sm;
 }
 
-.page-template-title {
+.jfx-page-template-title {
   -fx-font-size: 28px;
   -fx-font-weight: 700;
   -fx-text-fill: -color-fg-default;
 }
 
-.page-template-desc {
+.jfx-page-template-desc {
   -fx-font-size: @font-size-md;
   -fx-text-fill: -color-fg-muted;
   -fx-wrap-text: true;
 }
 
-.page-template-body {
+.jfx-page-template-body {
   -fx-background-color: transparent;
 }
 
-.surface {
+.jfx-surface {
   -fx-background-color: -color-bg-container;
   -fx-background-radius: @border-radius-lg;
   -fx-border-radius: @border-radius-lg;
   -fx-padding: @spacing-lg;
 }
 
-.surface.bordered {
+.jfx-surface.bordered {
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
 }
 
-.surface.shadow-sm {
+.jfx-surface.shadow-sm {
   .shadow-sm();
 }
 
-.surface.shadow-md {
+.jfx-surface.shadow-md {
   .shadow-md();
 }
 
-.surface.shadow-lg {
+.jfx-surface.shadow-lg {
   .shadow-lg();
 }
 
-.surface-header {
+.jfx-surface-header {
   -fx-background-color: transparent;
   -fx-padding: 0 0 @spacing-md 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
 
-.surface-title {
+.jfx-surface-title {
   -fx-font-size: @font-size-md;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
 
-.surface-content {
+.jfx-surface-content {
   -fx-background-color: transparent;
 }
 
@@ -105,11 +105,11 @@
    - spacer 是结构性弹性占位，无外观属性
    - 用户需要装饰（边框/背景）请挂自己的 styleClass
    - M19 之后：取代了老 .action-bar（ActionBarAnt 已删除） */
-.split-bar {
+.jfx-split-bar {
   -fx-background-color: transparent;
 }
 
-.split-bar-spacer {
+.jfx-split-bar-spacer {
   -fx-background-color: transparent;
 }
 

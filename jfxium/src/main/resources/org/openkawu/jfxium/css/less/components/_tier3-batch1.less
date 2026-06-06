@@ -74,15 +74,15 @@
 }
 
 /* CascaderAnt */
-.cascader {
+.jfx-cascader {
   -fx-background-color: transparent;
 }
 
-.cascader:disabled {
+.jfx-cascader:disabled {
   -fx-opacity: 0.6;
 }
 
-.cascader-field {
+.jfx-cascader-field {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-radius: @border-radius-md;
@@ -92,102 +92,102 @@
   -fx-padding: 8 12 8 12;
 }
 
-.cascader-column {
+.jfx-cascader-column {
   -fx-min-width: 160;
   -fx-padding: 4 0 4 0;
 }
 
-.cascader-item {
+.jfx-cascader-item {
   -fx-padding: 8 12 8 12;
   -fx-background-color: transparent;
   -fx-cursor: hand;
 }
 
-.cascader-item:hover {
+.jfx-cascader-item:hover {
   -fx-background-color: -color-bg-subtle;
 }
 
-.cascader-item.cascader-item-disabled {
+.jfx-cascader-item.jfx-cascader-item-disabled {
   -fx-cursor: default;
 }
 
-.cascader-item.cascader-item-disabled:hover {
+.jfx-cascader-item.jfx-cascader-item-disabled:hover {
   -fx-background-color: transparent;
 }
 
-.cascader-item-label {
+.jfx-cascader-item-label {
   -fx-font-size: @font-size-md;
   -fx-text-fill: -color-fg-default;
 }
 
-.cascader-item.cascader-item-disabled .cascader-item-label {
+.jfx-cascader-item.jfx-cascader-item-disabled .jfx-cascader-item-label {
   -fx-text-fill: -color-fg-subtle;
 }
 
-.cascader-arrow {
+.jfx-cascader-arrow {
   -fx-stroke: -color-fg-muted;
   -fx-stroke-width: 1.5;
   -fx-fill: none;
 }
 
-.cascader-divider {
+.jfx-cascader-divider {
   -fx-background-color: -color-border-default;
   -fx-min-width: 1;
   -fx-pref-width: 1;
 }
 
 /* TimelineAnt */
-.timeline {
+.jfx-timeline {
   -fx-padding: 16;
 }
 
-.timeline-item {
+.jfx-timeline-item {
   -fx-padding: 0 0 16 0;
 }
 
-.timeline-label {
+.jfx-timeline-label {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: @font-size-sm;
 }
 
-.timeline-content {
+.jfx-timeline-content {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: @font-size-md;
 }
 
-.timeline-line {
+.jfx-timeline-line {
   -fx-stroke: -color-border-muted;
   -fx-stroke-width: 2;
 }
 
 /* dot 颜色：基础类 + 颜色修饰类，避免 Java 拼字符串 */
-.timeline-dot {
+.jfx-timeline-dot {
   -fx-fill: -color-accent-emphasis;
 }
 
-.timeline-dot.timeline-dot-blue   { -fx-fill: -color-accent-emphasis; }
-.timeline-dot.timeline-dot-red    { -fx-fill: -color-danger-emphasis; }
-.timeline-dot.timeline-dot-green  { -fx-fill: -color-success-emphasis; }
-.timeline-dot.timeline-dot-gray   { -fx-fill: -color-fg-muted; }
+.jfx-timeline-dot.jfx-timeline-dot-blue   { -fx-fill: -color-accent-emphasis; }
+.jfx-timeline-dot.jfx-timeline-dot-red    { -fx-fill: -color-danger-emphasis; }
+.jfx-timeline-dot.jfx-timeline-dot-green  { -fx-fill: -color-success-emphasis; }
+.jfx-timeline-dot.jfx-timeline-dot-gray   { -fx-fill: -color-fg-muted; }
 
 /* pending 状态：空心圆 */
-.timeline-dot.timeline-dot-pending {
+.jfx-timeline-dot.jfx-timeline-dot-pending {
   -fx-fill: transparent;
   -fx-stroke: -color-border-default;
   -fx-stroke-width: 2;
 }
 
-.timeline-pending-text {
+.jfx-timeline-pending-text {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: @font-size-md;
 }
 
 /* TransferAnt */
-.transfer {
+.jfx-transfer {
   -fx-background-color: transparent;
 }
 
-.transfer-list {
+.jfx-transfer-list {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -195,39 +195,39 @@
   -fx-background-radius: @border-radius-md;
 }
 
-.transfer-list-header {
+.jfx-transfer-list-header {
   -fx-padding: 8 12 8 12;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
 
-.transfer-list-title {
+.jfx-transfer-list-title {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: @font-size-md;
   -fx-font-weight: 500;
 }
 
-.transfer-list-count {
+.jfx-transfer-list-count {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: @font-size-sm;
 }
 
-.transfer-list-search-wrapper {
+.jfx-transfer-list-search-wrapper {
   -fx-padding: 8 12 8 12;
 }
 
-.transfer-list-search {
+.jfx-transfer-list-search {
   -fx-padding: 4 8 4 8;
   -fx-font-size: @font-size-sm;
 }
 
-.transfer-list-view {
+.jfx-transfer-list-view {
   -fx-background-color: transparent;
   -fx-border-width: 0;
 }
 
 /* Transfer 中间方向按钮（hover 变主题色） */
-.transfer-arrow-btn {
+.jfx-transfer-arrow-btn {
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -240,7 +240,7 @@
   -fx-cursor: hand;
 }
 
-.transfer-arrow-btn:hover {
+.jfx-transfer-arrow-btn:hover {
   -fx-background-color: -color-accent-emphasis;
   -fx-border-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;

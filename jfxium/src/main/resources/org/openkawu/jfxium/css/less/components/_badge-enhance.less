@@ -1,7 +1,7 @@
 /* ============================================
    Badge Enhancements
    ============================================ */
-.badge-count {
+.jfx-badge-count {
   -fx-background-color: -color-danger-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
   -fx-background-radius: @border-radius-full;
@@ -13,19 +13,19 @@
   -fx-alignment: center;
 }
 
-.badge-count.success {
+.jfx-badge-count.success {
   -fx-background-color: -color-success-emphasis;
 }
 
-.badge-count.warning {
+.jfx-badge-count.warning {
   -fx-background-color: -color-warning-emphasis;
 }
 
-.badge-count.error {
+.jfx-badge-count.error {
   -fx-background-color: -color-danger-emphasis;
 }
 
-.badge-count.info {
+.jfx-badge-count.info {
   -fx-background-color: -color-accent-emphasis;
 }
 
@@ -35,24 +35,24 @@
    颜色由 styleClass 切换，避免在 Java 端拼 -fx-background-color。
    尺寸（8x8）与圆角由 Java 端 setPrefSize / setStyle 配合 LESS 共同控制。
    ============================================ */
-.badge-status {
+.jfx-badge-status {
   -fx-background-radius: @border-radius-full;
   -fx-background-color: -color-fg-muted;
 }
 
-.badge-status.badge-status-success {
+.jfx-badge-status.jfx-badge-status-success {
   -fx-background-color: -color-success-emphasis;
 }
 
-.badge-status.badge-status-warning {
+.jfx-badge-status.jfx-badge-status-warning {
   -fx-background-color: -color-warning-emphasis;
 }
 
-.badge-status.badge-status-error {
+.jfx-badge-status.jfx-badge-status-error {
   -fx-background-color: -color-danger-emphasis;
 }
 
-.badge-status.badge-status-default {
+.jfx-badge-status.jfx-badge-status-default {
   -fx-background-color: -color-fg-muted;
 }
 
