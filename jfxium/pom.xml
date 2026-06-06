@@ -7,13 +7,14 @@
     <parent>
         <groupId>org.openkawu</groupId>
         <artifactId>jfxium-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0-RC1</version>
     </parent>
 
     <artifactId>jfxium</artifactId>
     <packaging>jar</packaging>
     <name>JFXium Core</name>
     <description>Core UI components for JFXium</description>
+    <version>1.0.0-RC1</version>
 
     <dependencies>
         <dependency>
