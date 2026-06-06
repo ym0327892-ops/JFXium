@@ -9,7 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.core.command.Command;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 按钮组件 - 对标 Ant Design Button（继承式，M19.50 重构）。
@@ -138,11 +138,11 @@ public class ButtonAnt extends Button {
      * DEFAULT 仅清不挂。
      */
     public ButtonAnt size(Size size) {
-        getStyleClass().removeAll(CssClasses.SIZE_SMALL, CssClasses.SIZE_LARGE);
+        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
         if (size == Size.SMALL) {
-            getStyleClass().add(CssClasses.SIZE_SMALL);
+            getStyleClass().add(JfxStyles.SIZE_SMALL);
         } else if (size == Size.LARGE) {
-            getStyleClass().add(CssClasses.SIZE_LARGE);
+            getStyleClass().add(JfxStyles.SIZE_LARGE);
         }
         return this;
     }
@@ -152,11 +152,11 @@ public class ButtonAnt extends Button {
      * DEFAULT 仅清不挂。
      */
     public ButtonAnt shape(Shape shape) {
-        getStyleClass().removeAll(CssClasses.SHAPE_ROUNDED, CssClasses.SHAPE_SQUARE);
+        getStyleClass().removeAll(JfxStyles.SHAPE_ROUNDED, JfxStyles.SHAPE_SQUARE);
         if (shape == Shape.ROUNDED) {
-            getStyleClass().add(CssClasses.SHAPE_ROUNDED);
+            getStyleClass().add(JfxStyles.SHAPE_ROUNDED);
         } else if (shape == Shape.SQUARE) {
-            getStyleClass().add(CssClasses.SHAPE_SQUARE);
+            getStyleClass().add(JfxStyles.SHAPE_SQUARE);
         }
         return this;
     }
@@ -193,11 +193,11 @@ public class ButtonAnt extends Button {
     /** 幽灵按钮 - 背景透明，边框/文字反色。 */
     public ButtonAnt ghost(boolean ghost) {
         if (ghost) {
-            if (!getStyleClass().contains(CssClasses.BUTTON_GHOST)) {
-                getStyleClass().add(CssClasses.BUTTON_GHOST);
+            if (!getStyleClass().contains(JfxStyles.BUTTON_GHOST)) {
+                getStyleClass().add(JfxStyles.BUTTON_GHOST);
             }
         } else {
-            getStyleClass().remove(CssClasses.BUTTON_GHOST);
+            getStyleClass().remove(JfxStyles.BUTTON_GHOST);
         }
         return this;
     }
@@ -302,22 +302,22 @@ public class ButtonAnt extends Button {
     /** 应用 type 对应的 styleClass。 */
     private void applyTypeStyleClasses(Type type) {
         getStyleClass().removeAll(
-                CssClasses.BUTTON_DEFAULT, CssClasses.BUTTON_ACCENT,
-                CssClasses.BUTTON_OUTLINED, CssClasses.BUTTON_DASHED,
-                CssClasses.BUTTON_TEXT, CssClasses.BUTTON_LINK,
+                JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_ACCENT,
+                JfxStyles.BUTTON_OUTLINED, JfxStyles.BUTTON_DASHED,
+                JfxStyles.BUTTON_TEXT, JfxStyles.BUTTON_LINK,
                 "success", "warning", "danger"
         );
         switch (type) {
-            case PRIMARY, ACCENT -> getStyleClass().add(CssClasses.BUTTON_ACCENT);
-            case SUCCESS -> getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "success");
-            case WARNING -> getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "warning");
-            case DANGER -> getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "danger");
-            case OUTLINED -> getStyleClass().add(CssClasses.BUTTON_OUTLINED);
-            case DASHED -> getStyleClass().add(CssClasses.BUTTON_DASHED);
-            case TEXT -> getStyleClass().add(CssClasses.BUTTON_TEXT);
-            case LINK -> getStyleClass().add(CssClasses.BUTTON_LINK);
-            case DEFAULT -> getStyleClass().add(CssClasses.BUTTON_DEFAULT);
-            default -> getStyleClass().add(CssClasses.BUTTON_DEFAULT);
+            case PRIMARY, ACCENT -> getStyleClass().add(JfxStyles.BUTTON_ACCENT);
+            case SUCCESS -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "success");
+            case WARNING -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "warning");
+            case DANGER -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "danger");
+            case OUTLINED -> getStyleClass().add(JfxStyles.BUTTON_OUTLINED);
+            case DASHED -> getStyleClass().add(JfxStyles.BUTTON_DASHED);
+            case TEXT -> getStyleClass().add(JfxStyles.BUTTON_TEXT);
+            case LINK -> getStyleClass().add(JfxStyles.BUTTON_LINK);
+            case DEFAULT -> getStyleClass().add(JfxStyles.BUTTON_DEFAULT);
+            default -> getStyleClass().add(JfxStyles.BUTTON_DEFAULT);
         }
     }
 
@@ -330,23 +330,23 @@ public class ButtonAnt extends Button {
      */
     static void applyTypeStyleClasses(Button button, Type type) {
         button.getStyleClass().removeAll(
-                CssClasses.BUTTON_DEFAULT, CssClasses.BUTTON_ACCENT,
-                CssClasses.BUTTON_OUTLINED, CssClasses.BUTTON_DASHED,
-                CssClasses.BUTTON_TEXT, CssClasses.BUTTON_LINK,
+                JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_ACCENT,
+                JfxStyles.BUTTON_OUTLINED, JfxStyles.BUTTON_DASHED,
+                JfxStyles.BUTTON_TEXT, JfxStyles.BUTTON_LINK,
                 "success", "warning", "danger"
         );
         Type t = type != null ? type : Type.DEFAULT;
         switch (t) {
-            case PRIMARY, ACCENT -> button.getStyleClass().add(CssClasses.BUTTON_ACCENT);
-            case SUCCESS -> button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "success");
-            case WARNING -> button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "warning");
-            case DANGER -> button.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT, "danger");
-            case OUTLINED -> button.getStyleClass().add(CssClasses.BUTTON_OUTLINED);
-            case DASHED -> button.getStyleClass().add(CssClasses.BUTTON_DASHED);
-            case TEXT -> button.getStyleClass().add(CssClasses.BUTTON_TEXT);
-            case LINK -> button.getStyleClass().add(CssClasses.BUTTON_LINK);
-            case DEFAULT -> button.getStyleClass().add(CssClasses.BUTTON_DEFAULT);
-            default -> button.getStyleClass().add(CssClasses.BUTTON_DEFAULT);
+            case PRIMARY, ACCENT -> button.getStyleClass().add(JfxStyles.BUTTON_ACCENT);
+            case SUCCESS -> button.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "success");
+            case WARNING -> button.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "warning");
+            case DANGER -> button.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "danger");
+            case OUTLINED -> button.getStyleClass().add(JfxStyles.BUTTON_OUTLINED);
+            case DASHED -> button.getStyleClass().add(JfxStyles.BUTTON_DASHED);
+            case TEXT -> button.getStyleClass().add(JfxStyles.BUTTON_TEXT);
+            case LINK -> button.getStyleClass().add(JfxStyles.BUTTON_LINK);
+            case DEFAULT -> button.getStyleClass().add(JfxStyles.BUTTON_DEFAULT);
+            default -> button.getStyleClass().add(JfxStyles.BUTTON_DEFAULT);
         }
     }
 }

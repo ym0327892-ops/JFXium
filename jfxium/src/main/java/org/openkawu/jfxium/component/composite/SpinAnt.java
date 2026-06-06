@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 加载中组件 - 对标 Ant Design Spin。
@@ -90,10 +90,10 @@ public class SpinAnt {
         public VBox build() {
             VBox spin = new VBox(8);
             spin.setAlignment(Pos.CENTER);
-            spin.getStyleClass().add(CssClasses.SPIN);
+            spin.getStyleClass().add(JfxStyles.SPIN);
 
             if (fullscreen) {
-                spin.getStyleClass().add(CssClasses.SPIN_FULLSCREEN);
+                spin.getStyleClass().add(JfxStyles.SPIN_FULLSCREEN);
             }
 
             double scale = size == Size.SMALL ? 0.6 : size == Size.LARGE ? 1.4 : 1.0;
@@ -101,7 +101,7 @@ public class SpinAnt {
 
             if (tip != null && !tip.isEmpty()) {
                 Label tipLabel = new Label(tip);
-                tipLabel.getStyleClass().add(CssClasses.SPIN_TIP);
+                tipLabel.getStyleClass().add(JfxStyles.SPIN_TIP);
                 spin.getChildren().add(tipLabel);
             }
 
@@ -126,7 +126,7 @@ public class SpinAnt {
             arc.setPrefSize(28 * scale, 28 * scale);
             arc.setMaxSize(28 * scale, 28 * scale);
             arc.setMinSize(28 * scale, 28 * scale);
-            arc.getStyleClass().add(CssClasses.SPIN_INDICATOR_SPINNER);
+            arc.getStyleClass().add(JfxStyles.SPIN_INDICATOR_SPINNER);
 
             Rotate rotate = new Rotate(0, 14 * scale, 14 * scale);
             arc.getTransforms().add(rotate);
@@ -153,7 +153,7 @@ public class SpinAnt {
                 dot.setPrefSize(dotSize, dotSize);
                 dot.setMaxSize(dotSize, dotSize);
                 dot.setMinSize(dotSize, dotSize);
-                dot.getStyleClass().add(CssClasses.SPIN_INDICATOR_DOT);
+                dot.getStyleClass().add(JfxStyles.SPIN_INDICATOR_DOT);
                 dot.setOpacity(0.3);
 
                 Timeline timeline = new Timeline();
@@ -183,7 +183,7 @@ public class SpinAnt {
                 bar.setPrefSize(barWidth, 16 * scale);
                 bar.setMaxSize(barWidth, 16 * scale);
                 bar.setMinSize(barWidth, 16 * scale);
-                bar.getStyleClass().add(CssClasses.SPIN_INDICATOR_BAR);
+                bar.getStyleClass().add(JfxStyles.SPIN_INDICATOR_BAR);
                 bar.setOpacity(0.3);
 
                 Timeline timeline = new Timeline();

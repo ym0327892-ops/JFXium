@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,33 +88,33 @@ public class CollapseAnt {
 
         public VBox build() {
             VBox collapse = new VBox(0);
-            collapse.getStyleClass().add(CssClasses.COLLAPSE);
+            collapse.getStyleClass().add(JfxStyles.COLLAPSE);
 
             for (int i = 0; i < panels.size(); i++) {
                 Panel panel = panels.get(i);
                 boolean isActive = activeKeys.contains(panel.getKey());
 
                 VBox panelBox = new VBox(0);
-                panelBox.getStyleClass().add(CssClasses.COLLAPSE_PANEL);
+                panelBox.getStyleClass().add(JfxStyles.COLLAPSE_PANEL);
 
                 HBox header = new HBox(8);
                 header.setAlignment(Pos.CENTER_LEFT);
-                header.getStyleClass().add(CssClasses.COLLAPSE_HEADER);
+                header.getStyleClass().add(JfxStyles.COLLAPSE_HEADER);
                 if (panel.isDisabled()) {
-                    header.getStyleClass().add(CssClasses.COLLAPSE_DISABLED);
+                    header.getStyleClass().add(JfxStyles.COLLAPSE_DISABLED);
                 }
 
                 SVGPath arrow = new SVGPath();
                 arrow.setContent("M4 6L8 10L12 6");
-                arrow.getStyleClass().add(CssClasses.COLLAPSE_ARROW);
+                arrow.getStyleClass().add(JfxStyles.COLLAPSE_ARROW);
                 if (isActive) arrow.setRotate(180);
 
                 Label headerLabel = new Label(panel.getHeader());
-                headerLabel.getStyleClass().add(CssClasses.COLLAPSE_HEADER_LABEL);
+                headerLabel.getStyleClass().add(JfxStyles.COLLAPSE_HEADER_LABEL);
                 header.getChildren().addAll(arrow, headerLabel);
 
                 VBox contentBox = new VBox(0);
-                contentBox.getStyleClass().add(CssClasses.COLLAPSE_CONTENT);
+                contentBox.getStyleClass().add(JfxStyles.COLLAPSE_CONTENT);
                 if (panel.getContent() != null) {
                     contentBox.getChildren().add(panel.getContent());
                 }
@@ -155,7 +155,7 @@ public class CollapseAnt {
 
                 if (i < panels.size() - 1) {
                     Region divider = new Region();
-                    divider.getStyleClass().add(CssClasses.COLLAPSE_DIVIDER);
+                    divider.getStyleClass().add(JfxStyles.COLLAPSE_DIVIDER);
                     panelBox.getChildren().add(divider);
                 }
 

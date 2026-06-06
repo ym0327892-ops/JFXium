@@ -8,7 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  *   <li>候选项配置（value + label）</li>
  *   <li>选中回调（{@code onSelect}）+ 文本变化回调（{@code onChange}）</li>
  *   <li>自定义占位文本 + 行数</li>
- *   <li>所有视觉样式走 LESS（{@link CssClasses#MENTIONS} + {@link CssClasses#POPUP_MENU}）</li>
+ *   <li>所有视觉样式走 LESS（{@link JfxStyles#MENTIONS} + {@link JfxStyles#POPUP_MENU}）</li>
  * </ul>
  *
  * <h2>典型场景</h2>
@@ -83,7 +83,7 @@ public class MentionsAnt {
 
         public TextArea build() {
             TextArea textArea = new TextArea();
-            textArea.getStyleClass().addAll(CssClasses.MENTIONS, CssClasses.MENTIONS_AREA);
+            textArea.getStyleClass().addAll(JfxStyles.MENTIONS, JfxStyles.MENTIONS_AREA);
             textArea.setPromptText(placeholder);
             textArea.setPrefRowCount(rows);
 
@@ -91,7 +91,7 @@ public class MentionsAnt {
             popup.setAutoHide(true);
 
             VBox optionsPanel = new VBox(0);
-            optionsPanel.getStyleClass().add(CssClasses.POPUP_MENU);
+            optionsPanel.getStyleClass().add(JfxStyles.POPUP_MENU);
             optionsPanel.setPrefWidth(200);
             popup.getContent().add(optionsPanel);
 
@@ -103,7 +103,7 @@ public class MentionsAnt {
                     for (Option option : options) {
                         HBox row = new HBox(8);
                         row.setAlignment(Pos.CENTER_LEFT);
-                        row.getStyleClass().add(CssClasses.POPUP_MENU_ITEM);
+                        row.getStyleClass().add(JfxStyles.POPUP_MENU_ITEM);
                         Label label = new Label(option.getLabel());
                         row.getChildren().add(label);
                         // hover 由 LESS 控制

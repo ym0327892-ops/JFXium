@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 /**
@@ -65,7 +65,7 @@ public class EmptyAnt {
         public VBox build() {
             VBox empty = new VBox(16);
             empty.setAlignment(Pos.CENTER);
-            empty.getStyleClass().add(CssClasses.EMPTY);
+            empty.getStyleClass().add(JfxStyles.EMPTY);
 
             // SVG 图标：颜色由 LESS 控制
             SVGPath icon = new SVGPath();
@@ -73,7 +73,7 @@ public class EmptyAnt {
             // scale 是结构性属性，保留在 Java
             icon.setScaleX(2);
             icon.setScaleY(2);
-            icon.getStyleClass().add(CssClasses.EMPTY_ICON);
+            icon.getStyleClass().add(JfxStyles.EMPTY_ICON);
             empty.getChildren().add(icon);
 
             // 描述文字：颜色与字号由 LESS 控制；文案走 i18n（未显式指定时）
@@ -81,7 +81,7 @@ public class EmptyAnt {
                     ? description
                     : Messages.get("empty.description");
             Label descLabel = new Label(effectiveDescription);
-            descLabel.getStyleClass().add(CssClasses.EMPTY_DESCRIPTION);
+            descLabel.getStyleClass().add(JfxStyles.EMPTY_DESCRIPTION);
             // 仅当未显式指定 description 时订阅 locale 变化
             if (description == null) {
                 Messages.localeProperty().addListener((obs, ov, nv) ->

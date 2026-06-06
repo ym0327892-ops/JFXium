@@ -8,7 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium Progress 进度组件 - 对标 Ant Design Progress。
@@ -99,7 +99,7 @@ public class ProgressAnt {
             container.setAlignment(Pos.CENTER_LEFT);
 
             ProgressBar progressBar = new ProgressBar(progress);
-            progressBar.getStyleClass().add(CssClasses.PROGRESS_BAR);
+            progressBar.getStyleClass().add(JfxStyles.PROGRESS_BAR);
             // status 通过 styleClass 触发 LESS 端 .progress-bar.success/warning/error 选择器
             String statusClass = statusClassFor(status);
             if (statusClass != null) {
@@ -120,7 +120,7 @@ public class ProgressAnt {
             // 百分比 Label：颜色由 LESS .jfx-progress-info.{success/warning/error} 切换
             if (showInfo) {
                 Label infoLabel = new Label(String.format("%.0f%%", progress * 100));
-                infoLabel.getStyleClass().add(CssClasses.PROGRESS_INFO);
+                infoLabel.getStyleClass().add(JfxStyles.PROGRESS_INFO);
                 if (statusClass != null) {
                     infoLabel.getStyleClass().add(statusClass);
                 }
@@ -166,7 +166,7 @@ public class ProgressAnt {
             container.setAlignment(Pos.CENTER);
 
             ProgressIndicator indicator = new ProgressIndicator(progress);
-            indicator.getStyleClass().add(CssClasses.PROGRESS_CIRCLE);
+            indicator.getStyleClass().add(JfxStyles.PROGRESS_CIRCLE);
             // 利用 LESS .progress-indicator.success/warning/error 切换 -fx-progress-color
             String statusClass = statusClassFor(status);
             if (statusClass != null) {
@@ -178,7 +178,7 @@ public class ProgressAnt {
 
             if (showInfo) {
                 Label infoLabel = new Label(String.format("%.0f%%", progress * 100));
-                infoLabel.getStyleClass().add(CssClasses.PROGRESS_INFO);
+                infoLabel.getStyleClass().add(JfxStyles.PROGRESS_INFO);
                 if (statusClass != null) {
                     infoLabel.getStyleClass().add(statusClass);
                 }
@@ -194,9 +194,9 @@ public class ProgressAnt {
     private static String statusClassFor(Status status) {
         if (status == null) return null;
         return switch (status) {
-            case SUCCESS -> CssClasses.PROGRESS_SUCCESS;
-            case WARNING -> CssClasses.PROGRESS_WARNING;
-            case ERROR -> CssClasses.PROGRESS_ERROR;
+            case SUCCESS -> JfxStyles.PROGRESS_SUCCESS;
+            case WARNING -> JfxStyles.PROGRESS_WARNING;
+            case ERROR -> JfxStyles.PROGRESS_ERROR;
             case NORMAL -> null;
         };
     }

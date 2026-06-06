@@ -8,8 +8,21 @@ This file provides guidance to Qoder (qoder.com) when working with code in this 
 
 JFXium is a JavaFX UI framework inspired by Ant Design 6.x. It wraps and enhances JavaFX native controls with a Builder-pattern API, LESS-based theming (11 built-in themes), and over 94 components covering controls, composites, overlays, layouts, and business templates. Zero FXML — all UI is constructed in pure Java code.
 
-- **Java 21+, JavaFX 21.0.6, Maven 3.8+**
+- **Java 21** (pom.xml `<java.version>21</java.version>`), JavaFX 21.0.6, Maven 3.8+
+  - Note: README.md mentions Java 17+ but the actual build requires Java 21.
 - **GroupId**: `org.openkawu`, **ArtifactId**: `jfxium`, **Version**: `1.0-SNAPSHOT`
+
+---
+
+## Key Reference Documents
+
+| Document | Purpose |
+|----------|---------|
+| [docs/SKILL.md](docs/SKILL.md) | **Primary development specification** — color derivation, LESS rules, JavaFX CSS constraints, component design patterns |
+| [PLAN.md](PLAN.md) | Development plan and progress tracking |
+| [BUG.md](BUG.md) | Bug tracker and fix history (sequentially numbered, currently at #65) |
+| [ACCEPTANCE.md](ACCEPTANCE.md) | QA acceptance checklist for manual UI verification |
+| [.kiro/steering/](.kiro/steering/) | Steering files with additional design constraints (component composition rules, PC UI standards) |
 
 ---
 
@@ -22,8 +35,14 @@ JFXium is a JavaFX UI framework inspired by Ant Design 6.x. It wraps and enhance
 # Run the Showcase Demo (automatically builds both modules)
 ./mvnw javafx:run -pl jfxium-demo
 
-# Run tests
+# Run all tests
 ./mvnw test -pl jfxium
+
+# Run a single test class
+./mvnw test -pl jfxium -Dtest=ClassName
+
+# Run a specific test method
+./mvnw test -pl jfxium -Dtest=ClassName#methodName
 
 # Full clean build
 ./mvnw clean install -DskipTests
@@ -46,8 +65,7 @@ JFXium/
 │       │   ├── core/                # Foundation layer
 │       │   │   ├── token/           # Design tokens (ColorToken, SpacingToken, etc.)
 │       │   │   ├── theme/           # ThemeManager, Theme interface, ThemeColor
-│       │   │   ├── css/             # CssClasses, CssStyles, Background
-│       │   │   ├── animation/       # AnimationAnt (fade, slide, scale)
+│       │   │   ├── css/             # JfxStyles, Background
 │       │   │   ├── builder/         # AbstractStyleBuilder<SELF> — shared Builder base
 │       │   │   ├── i18n/            # Messages (ResourceBundle, default zh_CN)
 │       │   │   ├── form/            # FormContext, FormModel, Rule (validation)
@@ -96,7 +114,6 @@ module org.openkawu.jfxium {
     exports org.openkawu.jfxium.core.token;
     exports org.openkawu.jfxium.core.theme;
     exports org.openkawu.jfxium.core.css;
-    exports org.openkawu.jfxium.core.animation;
     exports org.openkawu.jfxium.core.layout;
     exports org.openkawu.jfxium.core.i18n;
     exports org.openkawu.jfxium.core.command;
@@ -111,6 +128,8 @@ module org.openkawu.jfxium {
     exports org.openkawu.jfxium.template;
 }
 ```
+
+**⚠️ When adding new public classes**: You MUST sync the `exports` declarations here. A `public` class in a non-exported package will be invisible to `jfxium-demo` and downstream consumers. If adding new `requires` dependencies, also sync `jfxium/pom.xml`.
 
 ---
 
@@ -158,12 +177,40 @@ ctrl.setSelectedKey("file");
 
 This avoids rebuilding the entire component tree. **Always add a Controller** when a component's state needs to change after `build()`. Existing Controllers: `MenuAnt.Controller`, `StepsAnt.Controller`, `AnchorAnt.Controller`.
 
+### Builder return type contract
+
+`build()` returns one of two types. Mixing them up produces subtle bugs (e.g., Modal that compiles but never appears).
+
+| Type | Examples | `build()` returns | Usage |
+|------|----------|-------------------|-------|
+| **Direct node** | ButtonAnt, CardAnt, TableAnt, FormAnt | Direct Node (Button, VBox, BorderPane, etc.) | Add to container tree directly |
+| **Result wrapper** | ModalAnt, DrawerAnt, DropdownAnt, MessageAnt, NotificationAnt | XxxResult object | Must call `.open(owner)` / `.show()` to display |
+
+**Rule of thumb**: "persistently displayed in container tree" → direct node. "On-demand popup/overlay" → Result wrapper.
+
 ### Component design rules
 
 1. **final JavaFX controls** (Button, CheckBox, etc.) must be composed, not extended. Use the composite pattern: wrap them as a field inside a container.
 2. **Form components** (InputAnt, CheckBoxAnt, etc.) use an inheritance-based design (`extends` the native control).
 3. **All colors/styles go through styleClass → LESS**, never inline `setStyle()` with hardcoded color values.
-4. **New control** must: (a) add CssClasses constants in `CssClasses.java`, (b) add LESS styles in `components/_xxx.less`, (c) register in `components/_index.less`.
+4. **New control** must: (a) add JfxStyles constants in `JfxStyles.java`, (b) add LESS styles in `components/_xxx.less`, (c) register in `components/_index.less`.
+
+### JfxStyles naming convention
+
+All styleClass constants go in [`JfxStyles.java`](jfxium/src/main/java/org/openkawu/jfxium/core/css/JfxStyles.java). **For new components, always use the `jfx-` prefix** to avoid clashes with modena built-in selectors (`.button`, `.label`, `.card`, etc.):
+
+```java
+// ✅ Correct: jfx- prefix avoids modena clash
+public static final String MY_COMPONENT = "jfx-my-component";
+public static final String MY_COMPONENT_HEADER = "jfx-my-component-header";
+
+// ❌ Wrong: bare name may clash with modena or other CSS
+public static final String MY_COMPONENT = "my-component";
+```
+
+**Existing inconsistency**: older components use bare names (`card`, `menu`, `form`, `steps`). These are legacy and should not be replicated in new code. The rule is: **new = `jfx-` prefix, always**.
+
+**⚠️ `CssStyles.java` has been deleted** — it was dead code using old `-jfx-*` variable names incompatible with the current LESS `-color-*` token system. The only CSS constants file is `JfxStyles.java`.
 
 ---
 
@@ -174,6 +221,8 @@ This avoids rebuilding the entire component tree. **Always add a Controller** wh
 LESS source files are compiled to CSS by **jlessc** (pure Java, no Node.js required) via `groovy-maven-plugin` during the `generate-resources` phase. This runs automatically with `mvn compile` or `mvn install`.
 
 **Themes compiled**: theme-light, theme-dark, theme-light-compact, theme-dark-compact, theme-mui, theme-mui-compact, theme-mui-dark, theme-mui-dark-compact, theme-shadcn, theme-cyberpunk, theme-custom (11 total).
+
+**⚠️ Build pitfall (BUG #64)**: If changes to `.less` files don't appear in compiled CSS, suspect the groovy-maven-plugin "fake success" issue — logs say "compiled successfully" but `Files.writeString` / Groovy `File.text` silently fail to write. Verify by adding a marker string to a CSS output file, re-running `mvn generate-resources -pl jfxium`, and checking if the marker was overwritten.
 
 ### Theme architecture
 
@@ -239,7 +288,14 @@ ThemeManager maintains a three-axis state machine: **Family** (Ant/MUI/Shadcn/Cy
 
 ## When Fixing Bugs
 
-Follow the **dual traceability principle** (SKILL §22): when a demo bug is found, always investigate whether the root cause is in the framework (jfxium), not just the demo. If a demo has boilerplate like manual key→label maps or node-rebuilding for state changes, that signals a framework API gap.
+Follow the **dual traceability principle** (SKILL §22): when a demo bug is found, always investigate whether the root cause is in the framework (jfxium), not just the demo. **Never fix only the demo side.**
+
+**`jfxium-demo` is the regression test suite.** These signals in demo code indicate a framework API gap that must be fixed at the source:
+- Manual `key→label` mapping tables (→ callback should return the full object, not just key)
+- Rebuilding entire component trees for state changes (→ needs a Controller)
+- Inline `setStyle("-fx-...: -color-...")` string concatenation (→ missing Builder API)
+- Callbacks declared but never wired in `build()` (→ dead callback bug)
+- Repeated casts like `(VBox) component.build()` (→ `build()` return type not honest)
 
 The bug tracker is `BUG.md` (currently at #65). New issues are numbered sequentially. The acceptance checklist is `ACCEPTANCE.md`.
 

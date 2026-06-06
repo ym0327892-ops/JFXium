@@ -8,7 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +20,7 @@ import java.util.List;
  * <h2>修复说明</h2>
  * 原实现存在 3 个问题：
  * <ul>
- *   <li>styleClass 硬编码字符串 {@code "space"}，未接入 {@link CssClasses}</li>
+ *   <li>styleClass 硬编码字符串 {@code "space"}，未接入 {@link JfxStyles}</li>
  *   <li>VBox 分支用 {@code Pos.BASELINE_LEFT}，VBox 无 baseline 概念，会回退为 TOP_LEFT，
  *       与用户预期不符</li>
  *   <li>{@code split(true)} 但未提供 splitNode 时啥也不显示，是隐性 bug</li>
@@ -28,7 +28,7 @@ import java.util.List;
  *
  * <h2>本次改动</h2>
  * <ul>
- *   <li>所有 styleClass 改用 {@link CssClasses} 常量</li>
+ *   <li>所有 styleClass 改用 {@link JfxStyles} 常量</li>
  *   <li>VBox 不支持 BASELINE，遇到时降级为 START 并打印告警</li>
  *   <li>{@code split(true)} 但 splitNode 为 null 时，自动渲染一根原生 {@link Separator} 作为分隔</li>
  *   <li>{@code build()} 返回类型从 {@code Node} 改为 {@link Pane}（更具体）</li>
@@ -126,7 +126,7 @@ public class SpaceAnt {
 
         private HBox buildHBox() {
             HBox container = new HBox();
-            container.getStyleClass().addAll(CssClasses.SPACE, CssClasses.SPACE_HORIZONTAL);
+            container.getStyleClass().addAll(JfxStyles.SPACE, JfxStyles.SPACE_HORIZONTAL);
             container.setSpacing(size);
             container.setAlignment(toHBoxPos(align));
             applyChildrenWithOptionalSplit(container, Direction.HORIZONTAL);
@@ -136,7 +136,7 @@ public class SpaceAnt {
 
         private VBox buildVBox() {
             VBox container = new VBox();
-            container.getStyleClass().addAll(CssClasses.SPACE, CssClasses.SPACE_VERTICAL);
+            container.getStyleClass().addAll(JfxStyles.SPACE, JfxStyles.SPACE_VERTICAL);
             container.setSpacing(size);
             container.setAlignment(toVBoxPos(align));
             applyChildrenWithOptionalSplit(container, Direction.VERTICAL);
@@ -165,7 +165,7 @@ public class SpaceAnt {
             // 默认分隔：与容器方向垂直的 Separator（水平容器配垂直分隔线，反之亦然）
             Separator sep = new Separator(
                     containerDir == Direction.HORIZONTAL ? Orientation.VERTICAL : Orientation.HORIZONTAL);
-            sep.getStyleClass().add(CssClasses.SPACE_SPLIT);
+            sep.getStyleClass().add(JfxStyles.SPACE_SPLIT);
             return sep;
         }
 

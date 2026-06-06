@@ -7,7 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * 内部基础组件：通知卡片（图标 + 标题 + 描述 + 关闭按钮）。
@@ -73,7 +73,7 @@ public class NotificationCard {
         public VBox build() {
             VBox card = new VBox(12);
             card.setAlignment(Pos.TOP_LEFT);
-            card.getStyleClass().add(CssClasses.NOTIFICATION_CARD);
+            card.getStyleClass().add(JfxStyles.NOTIFICATION_CARD);
             card.setStyle("-fx-min-width: " + width + ";-fx-max-width: " + width + ";");
 
             HBox headerBox = new HBox(12);
@@ -82,7 +82,7 @@ public class NotificationCard {
 
             SVGPath icon = new SVGPath();
             icon.setContent(getIconPath(type));
-            icon.setStyle("-fx-fill: " + getIconColor(type) + ";");
+            icon.getStyleClass().add(getIconStyleClass(type));
             icon.setTranslateY(2);
             headerBox.getChildren().add(icon);
 
@@ -91,13 +91,13 @@ public class NotificationCard {
 
             if (!title.isEmpty()) {
                 Label titleLabel = new Label(title);
-                titleLabel.getStyleClass().add(CssClasses.NOTIFICATION_CARD_TITLE);
+                titleLabel.getStyleClass().add(JfxStyles.NOTIFICATION_CARD_TITLE);
                 contentBox.getChildren().add(titleLabel);
             }
 
             if (!description.isEmpty()) {
                 Label descLabel = new Label(description);
-                descLabel.getStyleClass().add(CssClasses.NOTIFICATION_CARD_DESC);
+                descLabel.getStyleClass().add(JfxStyles.NOTIFICATION_CARD_DESC);
                 descLabel.setWrapText(true);
                 contentBox.getChildren().add(descLabel);
             }
@@ -127,12 +127,12 @@ public class NotificationCard {
             };
         }
 
-        private String getIconColor(Type type) {
+        private String getIconStyleClass(Type type) {
             return switch (type) {
-                case SUCCESS -> "-color-success-emphasis";
-                case ERROR -> "-color-danger-emphasis";
-                case WARNING -> "-color-warning-emphasis";
-                case INFO -> "-color-accent-emphasis";
+                case SUCCESS -> JfxStyles.ICON_SUCCESS;
+                case ERROR -> JfxStyles.ICON_DANGER;
+                case WARNING -> JfxStyles.ICON_WARNING;
+                case INFO -> JfxStyles.ICON_INFO;
             };
         }
     }

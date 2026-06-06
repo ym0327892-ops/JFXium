@@ -9,6 +9,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 头像组件 - 对标 Ant Design Avatar。
@@ -126,9 +127,13 @@ public class AvatarAnt {
             avatar.setMinSize(s, s);
             avatar.setMaxSize(s, s);
 
-            // Background
-            String bg = backgroundColor != null ? backgroundColor : "-color-accent-emphasis";
-            avatar.setStyle("-fx-background-color: " + bg + ";");
+            // Background：CSS 变量走 styleClass，用户自定义颜色走 setStyle
+            String bg = backgroundColor != null ? backgroundColor : null;
+            if (bg == null || isCssVar(bg)) {
+                avatar.getStyleClass().add(JfxStyles.AVATAR_BG_DEFAULT);
+            } else {
+                avatar.setStyle("-fx-background-color: " + bg + ";");
+            }
 
             // Clip shape
             if (shape == Shape.CIRCLE) {
@@ -153,12 +158,23 @@ public class AvatarAnt {
             } else if (text != null && !text.isEmpty()) {
                 String displayText = text.length() > 2 ? text.substring(0, 2) : text;
                 Label label = new Label(displayText);
-                label.setStyle("-fx-text-fill: " + textColor + "; -fx-font-size: " + (s * 0.4) + "px; -fx-font-weight: 600;");
+                // 文字颜色：CSS 变量走 styleClass，用户自定义颜色走 setStyle
+                if (isCssVar(textColor)) {
+                    label.getStyleClass().add(JfxStyles.AVATAR_FG_DEFAULT);
+                    label.setStyle("-fx-font-size: " + (s * 0.4) + "px; -fx-font-weight: 600;");
+                } else {
+                    label.setStyle("-fx-text-fill: " + textColor + "; -fx-font-size: " + (s * 0.4) + "px; -fx-font-weight: 600;");
+                }
                 avatar.getChildren().add(label);
             }
 
             avatar.setAlignment(Pos.CENTER);
             return avatar;
+        }
+
+        /** 判断颜色是否为 CSS 变量（以 "-" 开头） */
+        private static boolean isCssVar(String color) {
+            return color != null && color.startsWith("-");
         }
     }
 

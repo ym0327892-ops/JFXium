@@ -6,7 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 统计数值组件 - 对标 Ant Design Statistic（组合式，Builder 模式）。
@@ -63,14 +63,14 @@ public class StatisticAnt {
         public VBox build() {
             VBox statistic = new VBox(4);
             statistic.setAlignment(Pos.CENTER_LEFT);
-            statistic.getStyleClass().add(CssClasses.STATISTIC);
+            statistic.getStyleClass().add(JfxStyles.STATISTIC);
             // 尺寸通过修饰类切换字号
-            if (size == Size.SMALL) statistic.getStyleClass().add(CssClasses.STATISTIC_SMALL);
-            else if (size == Size.LARGE) statistic.getStyleClass().add(CssClasses.STATISTIC_LARGE);
+            if (size == Size.SMALL) statistic.getStyleClass().add(JfxStyles.STATISTIC_SMALL);
+            else if (size == Size.LARGE) statistic.getStyleClass().add(JfxStyles.STATISTIC_LARGE);
 
             if (!title.isEmpty()) {
                 Label titleLabel = new Label(title);
-                titleLabel.getStyleClass().add(CssClasses.STATISTIC_TITLE);
+                titleLabel.getStyleClass().add(JfxStyles.STATISTIC_TITLE);
                 statistic.getChildren().add(titleLabel);
             }
 
@@ -81,19 +81,19 @@ public class StatisticAnt {
                 valueRow.getChildren().add(prefixNode);
             } else if (prefix != null && !prefix.isEmpty()) {
                 Label prefixLabel = new Label(prefix);
-                prefixLabel.getStyleClass().add(CssClasses.STATISTIC_PREFIX);
+                prefixLabel.getStyleClass().add(JfxStyles.STATISTIC_PREFIX);
                 valueRow.getChildren().add(prefixLabel);
             }
 
             Label valueLabel = new Label(value);
-            valueLabel.getStyleClass().add(CssClasses.STATISTIC_VALUE);
+            valueLabel.getStyleClass().add(JfxStyles.STATISTIC_VALUE);
             valueRow.getChildren().add(valueLabel);
 
             if (suffixNode != null) {
                 valueRow.getChildren().add(suffixNode);
             } else if (suffix != null && !suffix.isEmpty()) {
                 Label suffixLabel = new Label(suffix);
-                suffixLabel.getStyleClass().add(CssClasses.STATISTIC_SUFFIX);
+                suffixLabel.getStyleClass().add(JfxStyles.STATISTIC_SUFFIX);
                 valueRow.getChildren().add(suffixLabel);
             }
 

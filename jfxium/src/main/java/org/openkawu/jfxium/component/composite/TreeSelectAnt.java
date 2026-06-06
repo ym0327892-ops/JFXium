@@ -9,7 +9,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.ArrayList;
@@ -94,7 +94,7 @@ public class TreeSelectAnt {
 
         public HBox build() {
             HBox container = new HBox(0);
-            container.getStyleClass().add(CssClasses.TREE_SELECT);
+            container.getStyleClass().add(JfxStyles.TREE_SELECT);
 
             TextField field = new TextField();
             // placeholder 走 Messages 默认；调用方 .placeholder("...") 覆盖时使用其值
@@ -108,7 +108,7 @@ public class TreeSelectAnt {
                         field.setPromptText(Messages.get("treeselect.placeholder")));
             }
             field.setEditable(false);
-            field.getStyleClass().add(CssClasses.TREE_SELECT_FIELD);
+            field.getStyleClass().add(JfxStyles.TREE_SELECT_FIELD);
             HBox.setHgrow(field, Priority.ALWAYS);
 
             Popup popup = new Popup();
@@ -117,7 +117,7 @@ public class TreeSelectAnt {
 
             VBox treePanel = new VBox(0);
             // 复用通用 popup-menu 视觉
-            treePanel.getStyleClass().add(CssClasses.POPUP_MENU);
+            treePanel.getStyleClass().add(JfxStyles.POPUP_MENU);
             treePanel.setPrefWidth(240);
 
             if (root != null) {
@@ -154,18 +154,18 @@ public class TreeSelectAnt {
             row.setAlignment(Pos.CENTER_LEFT);
             // depth 缩进通过 padding-left 动态控制（结构性属性，inline 在此可接受）
             row.setStyle("-fx-padding: 6 12 6 " + (12 + depth * 16) + ";");
-            row.getStyleClass().add(CssClasses.TREE_SELECT_ROW);
+            row.getStyleClass().add(JfxStyles.TREE_SELECT_ROW);
             if (node.isDisabled()) {
-                row.getStyleClass().add(CssClasses.TREE_SELECT_DISABLED);
+                row.getStyleClass().add(JfxStyles.TREE_SELECT_DISABLED);
             }
             // 多选模式：已选中的行加高亮修饰类（BUG #53）
             if (multiple && selectedNodes.contains(node)) {
-                row.getStyleClass().add(CssClasses.TREE_SELECT_SELECTED);
+                row.getStyleClass().add(JfxStyles.TREE_SELECT_SELECTED);
             }
 
             if (node.hasChildren()) {
                 Label arrow = new Label(node.isExpanded() ? "\u25bc" : "\u25b6");
-                arrow.getStyleClass().add(CssClasses.TREE_SELECT_ARROW);
+                arrow.getStyleClass().add(JfxStyles.TREE_SELECT_ARROW);
                 row.getChildren().add(arrow);
 
                 arrow.setOnMouseClicked(e -> {
@@ -179,7 +179,7 @@ public class TreeSelectAnt {
             }
 
             Label label = new Label(node.getLabel());
-            label.getStyleClass().add(CssClasses.TREE_SELECT_LABEL);
+            label.getStyleClass().add(JfxStyles.TREE_SELECT_LABEL);
             row.getChildren().add(label);
 
             if (!node.isDisabled()) {

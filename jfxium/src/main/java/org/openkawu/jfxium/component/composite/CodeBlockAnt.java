@@ -9,7 +9,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,7 +155,7 @@ public class CodeBlockAnt {
          */
         public BorderPane build() {
             BorderPane root = new BorderPane();
-            root.getStyleClass().add(CssClasses.CODEBLOCK);
+            root.getStyleClass().add(JfxStyles.CODEBLOCK);
             root.getStyleClass().add("code-theme-" + theme.name().toLowerCase());
 
             // 内容区：selectable 决定用「可选区单色 TextArea」还是「高亮 TextFlow」
@@ -178,7 +178,7 @@ public class CodeBlockAnt {
         private Node buildHighlightedCenter() {
             List<CodeFragment> fragments = parseCode(code, language);
             TextFlow codeDisplay = createHighlightedDisplay(fragments);
-            codeDisplay.getStyleClass().add(CssClasses.CODEBLOCK_CONTENT);
+            codeDisplay.getStyleClass().add(JfxStyles.CODEBLOCK_CONTENT);
             // Ctrl+C + 右键菜单，作为复制按钮之外的补充（TextFlow 无选区，复制整体）
             setupCopySupport(codeDisplay, code);
 
@@ -196,7 +196,7 @@ public class CodeBlockAnt {
             scrollPane.setFitToWidth(true);
             scrollPane.setPrefViewportHeight(maxHeight);
             scrollPane.setMaxHeight(maxHeight);
-            scrollPane.getStyleClass().add(CssClasses.CODEBLOCK_SCROLL);
+            scrollPane.getStyleClass().add(JfxStyles.CODEBLOCK_SCROLL);
             return scrollPane;
         }
 
@@ -212,7 +212,7 @@ public class CodeBlockAnt {
             javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(code);
             textArea.setEditable(false);
             textArea.setWrapText(false); // 代码不折行，超宽横向滚动
-            textArea.getStyleClass().addAll(CssClasses.CODEBLOCK_CONTENT, "jfx-codeblock-textarea");
+            textArea.getStyleClass().addAll(JfxStyles.CODEBLOCK_CONTENT, "jfx-codeblock-textarea");
             // 自适应行数：让 TextArea 撑到全部内容高度，避免内部滚动条与外层 ScrollPane 打架
             int rows = countLines(code);
             textArea.setPrefRowCount(rows);
@@ -232,7 +232,7 @@ public class CodeBlockAnt {
             scrollPane.setFitToWidth(true);
             scrollPane.setPrefViewportHeight(maxHeight);
             scrollPane.setMaxHeight(maxHeight);
-            scrollPane.getStyleClass().add(CssClasses.CODEBLOCK_SCROLL);
+            scrollPane.getStyleClass().add(JfxStyles.CODEBLOCK_SCROLL);
             return scrollPane;
         }
 
@@ -245,11 +245,11 @@ public class CodeBlockAnt {
         private HBox createHeader() {
             HBox header = new HBox(8);
             header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-            header.getStyleClass().add(CssClasses.CODEBLOCK_HEADER);
+            header.getStyleClass().add(JfxStyles.CODEBLOCK_HEADER);
 
             // 左侧：语言/标题标签
             Label langLabel = new Label(title != null ? title : language.name());
-            langLabel.getStyleClass().add(CssClasses.CODEBLOCK_LANG);
+            langLabel.getStyleClass().add(JfxStyles.CODEBLOCK_LANG);
             header.getChildren().add(langLabel);
 
             // 弹性 spacer：把复制按钮推到最右（独立 Region，遵循 SKILL §4.1）
@@ -260,7 +260,7 @@ public class CodeBlockAnt {
 
             // 右侧：复制按钮
             javafx.scene.control.Button copyBtn = new javafx.scene.control.Button("复制");
-            copyBtn.getStyleClass().add(CssClasses.CODEBLOCK_COPY_BTN);
+            copyBtn.getStyleClass().add(JfxStyles.CODEBLOCK_COPY_BTN);
             copyBtn.setOnAction(e -> {
                 copyToClipboard(code);
                 // 「已复制」短暂反馈，再恢复成「复制」
@@ -442,10 +442,10 @@ public class CodeBlockAnt {
             node.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() >= 2) {
                     // TextFlow 没有选中概念，这里给视觉反馈
-                    node.getStyleClass().add(CssClasses.CODEBLOCK_HIGHLIGHT);
+                    node.getStyleClass().add(JfxStyles.CODEBLOCK_HIGHLIGHT);
                     javafx.animation.PauseTransition pause = 
                         new javafx.animation.PauseTransition(javafx.util.Duration.millis(200));
-                    pause.setOnFinished(ev -> node.getStyleClass().remove(CssClasses.CODEBLOCK_HIGHLIGHT));
+                    pause.setOnFinished(ev -> node.getStyleClass().remove(JfxStyles.CODEBLOCK_HIGHLIGHT));
                     pause.play();
                 }
             });

@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 极简内置图标。两种渲染模式：
@@ -37,7 +37,7 @@ import org.openkawu.jfxium.core.css.CssClasses;
  *
  * <h2>修复说明</h2>
  * 原实现 {@code label.setStyle("-fx-text-fill: -color-fg-default;")} 在 Java 端拼字符串。
- * 改为挂 {@link CssClasses#ICON} styleClass，颜色由 LESS 的 {@code .jfx-icon} 选择器统一控制。
+ * 改为挂 {@link JfxStyles#ICON} styleClass，颜色由 LESS 的 {@code .jfx-icon} 选择器统一控制。
  */
 public class IconAnt {
 
@@ -134,7 +134,7 @@ public class IconAnt {
         Label label = new Label(symbol.getChar());
         // Font 是结构性属性（字体族 + 字号），保留在 Java；颜色走 LESS
         label.setFont(Font.font("Segoe UI Symbol", size));
-        label.getStyleClass().add(CssClasses.ICON);
+        label.getStyleClass().add(JfxStyles.ICON);
         StackPane pane = new StackPane(label);
         pane.setPrefSize(size, size);
         return pane;
@@ -155,7 +155,7 @@ public class IconAnt {
      */
     public static Region path(Path icon, int size) {
         Region node = new Region();
-        node.getStyleClass().add(CssClasses.ICON_PATH);
+        node.getStyleClass().add(JfxStyles.ICON_PATH);
         // -fx-shape 是结构性属性（图形定义），不是颜色，可以走 inline
         node.setStyle("-fx-shape: \"" + icon.getPath() + "\";");
         node.setPrefSize(size, size);

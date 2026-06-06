@@ -10,6 +10,7 @@ import javafx.scene.layout.*;
 import javafx.util.Duration;
 
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +131,10 @@ public class TabsAnt {
             // 标签栏容器
             HBox tabBar = new HBox(0);
             tabBar.setAlignment(centered ? Pos.CENTER : Pos.TOP_LEFT);
-            tabBar.setStyle(getTabBarStyle());
+            tabBar.getStyleClass().addAll(JfxStyles.TABS_BAR);
+            if (type == Type.CARD) {
+                tabBar.getStyleClass().add(JfxStyles.TABS_BAR_CARD);
+            }
 
             // 左侧附加内容
             if (extraLeft != null) {
@@ -168,7 +172,7 @@ public class TabsAnt {
                 indicatorPane.setPrefHeight(3);
                 indicatorPane.setMinHeight(3);
                 indicatorPane.setMaxHeight(3);
-                indicatorPane.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.TABS_INDICATOR_PANE);
+                indicatorPane.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.TABS_INDICATOR_PANE);
 
                 // 创建指示条
                 Region indicator = new Region();
@@ -176,7 +180,7 @@ public class TabsAnt {
                 indicator.setMinHeight(3);
                 indicator.setMaxHeight(3);
                 indicator.setPrefWidth(100); // 初始宽度
-                indicator.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.TABS_INDICATOR_BAR);
+                indicator.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.TABS_INDICATOR_BAR);
                 indicatorPane.getChildren().add(indicator);
 
                 wrapper.getChildren().add(indicatorPane);
@@ -286,80 +290,37 @@ public class TabsAnt {
         private Label createTabLabel(TabItem item, boolean isActive) {
             Label label = new Label(item.label);
             label.setPadding(getTabPadding());
-            label.setStyle(getTabStyle(item, isActive));
+
+            // 基础 styleClass
+            label.getStyleClass().add(JfxStyles.TABS_LABEL);
+            label.getStyleClass().add(type == Type.CARD ? JfxStyles.TABS_LABEL_CARD : JfxStyles.TABS_LABEL_LINE);
+            // 尺寸 styleClass
+            if (size == Size.LARGE) {
+                label.getStyleClass().add(JfxStyles.TABS_LABEL_LARGE);
+            } else if (size == Size.SMALL) {
+                label.getStyleClass().add(JfxStyles.TABS_LABEL_SMALL);
+            }
+            // 激活态 styleClass
+            if (isActive) {
+                label.getStyleClass().add(JfxStyles.TABS_ACTIVE);
+            }
 
             if (item.disabled) {
                 label.setDisable(true);
-                label.setOpacity(0.5);
+                label.getStyleClass().add(JfxStyles.TABS_DISABLED);
             }
 
             return label;
         }
 
         private void updateTabStyle(Label label, TabItem item, boolean isActive) {
-            label.setStyle(getTabStyle(item, isActive));
-        }
-
-        private String getTabBarStyle() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("-fx-background-color: transparent;");
-
-            if (type == Type.CARD) {
-                sb.append("-fx-background-color: -color-bg-subtle;");
-                sb.append("-fx-border-color: transparent transparent -color-border-muted transparent;");
-                sb.append("-fx-border-width: 0 0 1px 0;");
-            }
-
-            return sb.toString();
-        }
-
-        private String getTabStyle(TabItem item, boolean isActive) {
-            StringBuilder sb = new StringBuilder();
-
-            // 字体大小
-            int fontSize = size == Size.LARGE ? 16 : (size == Size.SMALL ? 12 : 14);
-            sb.append("-fx-font-size: ").append(fontSize).append("px;");
-
-            if (type == Type.LINE) {
-                sb.append("-fx-background-color: transparent;");
-                sb.append("-fx-cursor: hand;");
-
-                int paddingV = size == Size.LARGE ? 16 : (size == Size.SMALL ? 8 : 12);
-                int paddingH = size == Size.LARGE ? 20 : (size == Size.SMALL ? 12 : 16);
-                sb.append("-fx-padding: ").append(paddingV).append("px ").append(paddingH).append("px;");
-
-                if (isActive) {
-                    sb.append("-fx-text-fill: -color-accent-emphasis;");
-                    sb.append("-fx-font-weight: 600;");
-                } else {
-                    sb.append("-fx-text-fill: -color-fg-default;");
+            if (isActive) {
+                if (!label.getStyleClass().contains(JfxStyles.TABS_ACTIVE)) {
+                    label.getStyleClass().add(JfxStyles.TABS_ACTIVE);
                 }
-            } else if (type == Type.CARD) {
-                sb.append("-fx-cursor: hand;");
-
-                int paddingV = size == Size.LARGE ? 11 : (size == Size.SMALL ? 4 : 8);
-                int paddingH = size == Size.LARGE ? 16 : (size == Size.SMALL ? 8 : 16);
-                sb.append("-fx-padding: ").append(paddingV).append("px ").append(paddingH).append("px;");
-
-                if (isActive) {
-                    sb.append("-fx-background-color: -color-bg-default;");
-                    sb.append("-fx-text-fill: -color-accent-emphasis;");
-                    sb.append("-fx-border-color: -color-border-muted -color-border-muted transparent -color-border-muted;");
-                    sb.append("-fx-border-width: 1px 1px 0 1px;");
-                    sb.append("-fx-background-radius: 8px 8px 0 0;");
-                    sb.append("-fx-border-radius: 8px 8px 0 0;");
-                } else {
-                    sb.append("-fx-background-color: transparent;");
-                    sb.append("-fx-text-fill: -color-fg-default;");
-                }
+            } else {
+                label.getStyleClass().remove(JfxStyles.TABS_ACTIVE);
             }
-
-            if (item.disabled) {
-                sb.append("-fx-opacity: 0.5;");
-                sb.append("-fx-cursor: default;");
-            }
-
-            return sb.toString();
         }
 
         private Insets getTabPadding() {

@@ -9,7 +9,7 @@ import javafx.scene.layout.*;
 import org.openkawu.jfxium.component.layout.GridAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -205,16 +205,16 @@ public class AppShellAnt {
          */
         public Result buildResult() {
             BorderPane shell = new BorderPane();
-            shell.getStyleClass().add(CssClasses.APP_SHELL);
+            shell.getStyleClass().add(JfxStyles.APP_SHELL);
 
             if (header != null) {
-                header.getStyleClass().add(CssClasses.APP_SHELL_HEADER);
+                header.getStyleClass().add(JfxStyles.APP_SHELL_HEADER);
                 applyBackgroundClass(header, headerBackground);
                 shell.setTop(header);
             }
 
             if (footer != null) {
-                footer.getStyleClass().add(CssClasses.APP_SHELL_FOOTER);
+                footer.getStyleClass().add(JfxStyles.APP_SHELL_FOOTER);
                 applyBackgroundClass(footer, footerBackground);
                 shell.setBottom(footer);
             }
@@ -227,13 +227,13 @@ public class AppShellAnt {
             Region siderRegion = null;
 
             if (sider != null) {
-                sider.getStyleClass().add(CssClasses.APP_SHELL_SIDER);
+                sider.getStyleClass().add(JfxStyles.APP_SHELL_SIDER);
                 applyBackgroundClass(sider, siderBackground);
 
                 if (collapsible) {
                     // 折叠模式：用 VBox wrapper 把 sider 内容 + trigger 按钮垂直排好
                     siderWrapper = new VBox();
-                    siderWrapper.getStyleClass().add(CssClasses.APP_SHELL_SIDER);
+                    siderWrapper.getStyleClass().add(JfxStyles.APP_SHELL_SIDER);
                     // 让 wrapper 也跟着 sider 用同一 background，避免 trigger 按钮区出现裸色
                     applyBackgroundClass(siderWrapper, siderBackground);
                     // 让 sider 内容占据剩余高度，trigger 钉在底部
@@ -260,10 +260,10 @@ public class AppShellAnt {
                 collapsedProp.addListener((obs, oldVal, newVal) -> {
                     applyWidth(finalSiderRegion, newVal ? collapsedWidth : siderWidth);
                     // 在 sider 节点和 wrapper 上挂 collapsed styleClass，方便 LESS 切换内部细节
-                    toggleStyleClass(finalSider, CssClasses.APP_SHELL_SIDER + "-collapsed", newVal);
+                    toggleStyleClass(finalSider, JfxStyles.APP_SHELL_SIDER + "-collapsed", newVal);
                     if (finalSiderRegion != null && finalSiderRegion != finalSider) {
                         toggleStyleClass(finalSiderRegion,
-                                CssClasses.APP_SHELL_SIDER + "-collapsed", newVal);
+                                JfxStyles.APP_SHELL_SIDER + "-collapsed", newVal);
                     }
                     if (onCollapseChange != null) {
                         onCollapseChange.accept(newVal);
@@ -271,23 +271,23 @@ public class AppShellAnt {
                 });
                 // 初始 collapsed 也要挂上 styleClass
                 if (collapsedProp.get()) {
-                    toggleStyleClass(sider, CssClasses.APP_SHELL_SIDER + "-collapsed", true);
+                    toggleStyleClass(sider, JfxStyles.APP_SHELL_SIDER + "-collapsed", true);
                     if (siderRegion != null && siderRegion != sider) {
-                        toggleStyleClass(siderRegion, CssClasses.APP_SHELL_SIDER + "-collapsed", true);
+                        toggleStyleClass(siderRegion, JfxStyles.APP_SHELL_SIDER + "-collapsed", true);
                     }
                 }
 
                 center = new HBox();
                 center.getChildren().add(siderRegion != null ? siderRegion : sider);
                 if (content != null) {
-                    content.getStyleClass().add(CssClasses.APP_SHELL_CONTENT);
+                    content.getStyleClass().add(JfxStyles.APP_SHELL_CONTENT);
                     applyBackgroundClass(content, contentBackground);
                     center.getChildren().add(content);
                     HBox.setHgrow(content, Priority.ALWAYS);
                 }
                 shell.setCenter(center);
             } else if (content != null) {
-                content.getStyleClass().add(CssClasses.APP_SHELL_CONTENT);
+                content.getStyleClass().add(JfxStyles.APP_SHELL_CONTENT);
                 applyBackgroundClass(content, contentBackground);
                 shell.setCenter(content);
             }
@@ -304,7 +304,7 @@ public class AppShellAnt {
         /** 内置触发按钮：折叠时显示 ›, 展开时显示 ‹。 */
         private Button createTriggerButton(BooleanProperty collapsedProp) {
             Button btn = new Button(collapsedProp.get() ? "›" : "‹");
-            btn.getStyleClass().addAll(CssClasses.APP_SHELL_SIDER + "-trigger", "button");
+            btn.getStyleClass().addAll(JfxStyles.APP_SHELL_SIDER + "-trigger", "button");
             btn.setMaxWidth(Double.MAX_VALUE);
             btn.setOnAction(e -> collapsedProp.set(!collapsedProp.get()));
             // 同步按钮文字与折叠状态

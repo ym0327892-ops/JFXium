@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.openkawu.jfxium.component.control.InputAnt;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
  *   <li><b>占位符</b>：placeholder(String) 输入框占位提示</li>
  *   <li><b>回调</b>：onConfirm(String) / onCancel() 确认/取消回调</li>
  *   <li><b>按钮文字</b>：okText(String) / cancelText(String) 自定义按钮文案</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#PROMPT_DIALOG} LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#PROMPT_DIALOG} LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -134,18 +134,18 @@ public class PromptDialogAnt {
         VBox content = new VBox(12);
         content.setPadding(new Insets(20));
         content.setAlignment(Pos.CENTER_LEFT);
-        content.getStyleClass().add(CssClasses.PROMPT_DIALOG);
+        content.getStyleClass().add(JfxStyles.PROMPT_DIALOG);
 
         // 消息文本
         if (message != null && !message.isEmpty()) {
             Label msgLabel = new Label(message);
-            msgLabel.getStyleClass().add(CssClasses.PROMPT_DIALOG_MESSAGE);
+            msgLabel.getStyleClass().add(JfxStyles.PROMPT_DIALOG_MESSAGE);
             content.getChildren().add(msgLabel);
         }
 
         // 输入框
         TextField input = new TextField(defaultValue);
-        input.getStyleClass().add(CssClasses.PROMPT_DIALOG_INPUT);
+        input.getStyleClass().add(JfxStyles.PROMPT_DIALOG_INPUT);
         if (placeholder != null) {
             input.setPromptText(placeholder);
         }
@@ -154,17 +154,17 @@ public class PromptDialogAnt {
         // 按钮区
         HBox buttons = new HBox(10);
         buttons.setAlignment(Pos.CENTER_RIGHT);
-        buttons.getStyleClass().add(CssClasses.PROMPT_DIALOG_FOOTER);
+        buttons.getStyleClass().add(JfxStyles.PROMPT_DIALOG_FOOTER);
 
         Button cancelBtn = new Button(cancelText);
-        cancelBtn.getStyleClass().addAll(CssClasses.BUTTON_DEFAULT);
+        cancelBtn.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT);
         cancelBtn.setOnAction(e -> {
             if (onCancel != null) onCancel.run();
             close();
         });
 
         Button okBtn = new Button(okText);
-        okBtn.getStyleClass().addAll(CssClasses.BUTTON_ACCENT);
+        okBtn.getStyleClass().addAll(JfxStyles.BUTTON_ACCENT);
         okBtn.setOnAction(e -> {
             if (onConfirm != null) onConfirm.accept(input.getText());
             close();

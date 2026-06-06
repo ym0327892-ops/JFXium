@@ -14,7 +14,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.FileChooser;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.io.File;
@@ -101,7 +101,7 @@ public class UploadAnt {
 
         public VBox build() {
             VBox upload = new VBox(8);
-            upload.getStyleClass().add(CssClasses.UPLOAD);
+            upload.getStyleClass().add(JfxStyles.UPLOAD);
 
             if (type == Type.SELECT) {
                 upload.getChildren().add(buildSelectUpload());
@@ -146,7 +146,7 @@ public class UploadAnt {
 
         private StackPane buildDragUpload() {
             StackPane dragArea = new StackPane();
-            dragArea.getStyleClass().add(CssClasses.UPLOAD_DRAG);
+            dragArea.getStyleClass().add(JfxStyles.UPLOAD_DRAG);
 
             VBox content = new VBox(12);
             content.setAlignment(Pos.CENTER);
@@ -155,12 +155,12 @@ public class UploadAnt {
             icon.setContent("M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z");
             icon.setScaleX(2);
             icon.setScaleY(2);
-            icon.getStyleClass().add(CssClasses.UPLOAD_DRAG_ICON);
+            icon.getStyleClass().add(JfxStyles.UPLOAD_DRAG_ICON);
 
             Label dragLabel = new Label(dragText != null ? dragText : Messages.get("upload.drag"));
-            dragLabel.getStyleClass().add(CssClasses.UPLOAD_DRAG_TEXT);
+            dragLabel.getStyleClass().add(JfxStyles.UPLOAD_DRAG_TEXT);
             Label hintLabel = new Label(hintText != null ? hintText : Messages.get("upload.hint"));
-            hintLabel.getStyleClass().add(CssClasses.UPLOAD_HINT_TEXT);
+            hintLabel.getStyleClass().add(JfxStyles.UPLOAD_HINT_TEXT);
 
             content.getChildren().addAll(icon, dragLabel, hintLabel);
             dragArea.getChildren().add(content);
@@ -169,18 +169,18 @@ public class UploadAnt {
             dragArea.setOnDragOver(e -> {
                 if (e.getGestureSource() != dragArea && e.getDragboard().hasFiles()) {
                     e.acceptTransferModes(TransferMode.COPY);
-                    if (!dragArea.getStyleClass().contains(CssClasses.UPLOAD_DRAG_ACTIVE)) {
-                        dragArea.getStyleClass().add(CssClasses.UPLOAD_DRAG_ACTIVE);
+                    if (!dragArea.getStyleClass().contains(JfxStyles.UPLOAD_DRAG_ACTIVE)) {
+                        dragArea.getStyleClass().add(JfxStyles.UPLOAD_DRAG_ACTIVE);
                     }
                 }
                 e.consume();
             });
-            dragArea.setOnDragExited(e -> dragArea.getStyleClass().remove(CssClasses.UPLOAD_DRAG_ACTIVE));
+            dragArea.setOnDragExited(e -> dragArea.getStyleClass().remove(JfxStyles.UPLOAD_DRAG_ACTIVE));
             dragArea.setOnDragDropped(e -> {
                 Dragboard db = e.getDragboard();
                 if (db.hasFiles()) handleFiles(db.getFiles());
                 e.setDropCompleted(db.hasFiles());
-                dragArea.getStyleClass().remove(CssClasses.UPLOAD_DRAG_ACTIVE);
+                dragArea.getStyleClass().remove(JfxStyles.UPLOAD_DRAG_ACTIVE);
                 e.consume();
             });
 
@@ -206,15 +206,15 @@ public class UploadAnt {
 
         private VBox buildFileList() {
             VBox list = new VBox(4);
-            list.getStyleClass().add(CssClasses.UPLOAD_LIST);
+            list.getStyleClass().add(JfxStyles.UPLOAD_LIST);
 
             for (UploadFile file : fileList) {
                 HBox fileItem = new HBox(8);
                 fileItem.setAlignment(Pos.CENTER_LEFT);
-                fileItem.getStyleClass().add(CssClasses.UPLOAD_FILE_ITEM);
+                fileItem.getStyleClass().add(JfxStyles.UPLOAD_FILE_ITEM);
 
                 Label nameLabel = new Label(file.name);
-                nameLabel.getStyleClass().add(CssClasses.UPLOAD_FILE_NAME);
+                nameLabel.getStyleClass().add(JfxStyles.UPLOAD_FILE_NAME);
                 HBox.setHgrow(nameLabel, Priority.ALWAYS);
                 fileItem.getChildren().add(nameLabel);
 
@@ -224,12 +224,12 @@ public class UploadAnt {
                     fileItem.getChildren().add(progressBar);
                 } else if (file.status.equals("error")) {
                     Label errorLabel = new Label(Messages.get("upload.error"));
-                    errorLabel.getStyleClass().add(CssClasses.UPLOAD_FILE_ERROR);
+                    errorLabel.getStyleClass().add(JfxStyles.UPLOAD_FILE_ERROR);
                     fileItem.getChildren().add(errorLabel);
                 }
 
                 Button removeBtn = new Button("×");
-                removeBtn.getStyleClass().add(CssClasses.UPLOAD_REMOVE_BTN);
+                removeBtn.getStyleClass().add(JfxStyles.UPLOAD_REMOVE_BTN);
                 removeBtn.setOnAction(e -> {
                     fileList.remove(file);
                     if (onRemove != null) onRemove.accept(new File(file.name));

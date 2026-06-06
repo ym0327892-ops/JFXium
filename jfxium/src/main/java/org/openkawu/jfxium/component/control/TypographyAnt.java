@@ -5,7 +5,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 排版组件 - 对标 Ant Design Typography（组合式，Builder 模式）。
@@ -76,7 +76,7 @@ public class TypographyAnt {
 
         public Label build() {
             Label label = new Label(text);
-            label.getStyleClass().add(CssClasses.TYPOGRAPHY_TITLE);
+            label.getStyleClass().add(JfxStyles.TYPOGRAPHY_TITLE);
             // Title 字号是 level 的函数，结构性属性留 Java；颜色由 LESS 控制
             double fontSize = switch (level) {
                 case 1 -> 38;
@@ -102,7 +102,7 @@ public class TypographyAnt {
 
         public Label build() {
             Label label = new Label(text);
-            label.getStyleClass().add(CssClasses.TYPOGRAPHY_PARAGRAPH);
+            label.getStyleClass().add(JfxStyles.TYPOGRAPHY_PARAGRAPH);
             label.setWrapText(true);
             label.setFont(Font.font("System", 14));
             if (ellipsis && rows > 0) {
@@ -143,15 +143,15 @@ public class TypographyAnt {
 
         public Label build() {
             Label label = new Label(text);
-            label.getStyleClass().add(CssClasses.TYPOGRAPHY_TEXT);
+            label.getStyleClass().add(JfxStyles.TYPOGRAPHY_TEXT);
 
             // type 走修饰类（PRIMARY 是默认无需追加）
             switch (type) {
-                case SECONDARY -> label.getStyleClass().add(CssClasses.TYPOGRAPHY_SECONDARY);
-                case SUCCESS -> label.getStyleClass().add(CssClasses.TYPOGRAPHY_SUCCESS);
-                case WARNING -> label.getStyleClass().add(CssClasses.TYPOGRAPHY_WARNING);
-                case DANGER -> label.getStyleClass().add(CssClasses.TYPOGRAPHY_DANGER);
-                case DISABLED -> label.getStyleClass().add(CssClasses.TYPOGRAPHY_DISABLED);
+                case SECONDARY -> label.getStyleClass().add(JfxStyles.TYPOGRAPHY_SECONDARY);
+                case SUCCESS -> label.getStyleClass().add(JfxStyles.TYPOGRAPHY_SUCCESS);
+                case WARNING -> label.getStyleClass().add(JfxStyles.TYPOGRAPHY_WARNING);
+                case DANGER -> label.getStyleClass().add(JfxStyles.TYPOGRAPHY_DANGER);
+                case DISABLED -> label.getStyleClass().add(JfxStyles.TYPOGRAPHY_DISABLED);
                 default -> { /* PRIMARY 无修饰 */ }
             }
 
@@ -161,14 +161,14 @@ public class TypographyAnt {
             } else {
                 label.setFont(Font.font("System", 14));
             }
-            if (italic)    label.getStyleClass().add(CssClasses.TYPOGRAPHY_ITALIC);
-            if (underline) label.getStyleClass().add(CssClasses.TYPOGRAPHY_UNDERLINE);
-            if (delete)    label.getStyleClass().add(CssClasses.TYPOGRAPHY_DELETE);
-            if (code)      label.getStyleClass().add(CssClasses.TYPOGRAPHY_CODE);
-            if (mark)      label.getStyleClass().add(CssClasses.TYPOGRAPHY_MARK);
+            if (italic)    label.getStyleClass().add(JfxStyles.TYPOGRAPHY_ITALIC);
+            if (underline) label.getStyleClass().add(JfxStyles.TYPOGRAPHY_UNDERLINE);
+            if (delete)    label.getStyleClass().add(JfxStyles.TYPOGRAPHY_DELETE);
+            if (code)      label.getStyleClass().add(JfxStyles.TYPOGRAPHY_CODE);
+            if (mark)      label.getStyleClass().add(JfxStyles.TYPOGRAPHY_MARK);
 
             if (copyable) {
-                label.getStyleClass().add(CssClasses.TYPOGRAPHY_COPYABLE);
+                label.getStyleClass().add(JfxStyles.TYPOGRAPHY_COPYABLE);
                 label.setOnMouseClicked(e -> {
                     Clipboard clipboard = Clipboard.getSystemClipboard();
                     ClipboardContent content = new ClipboardContent();

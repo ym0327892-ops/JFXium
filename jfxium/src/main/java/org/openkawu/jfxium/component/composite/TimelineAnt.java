@@ -9,7 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +100,7 @@ public class TimelineAnt {
 
         public VBox build() {
             VBox timeline = new VBox(0);
-            timeline.getStyleClass().add(CssClasses.TIMELINE);
+            timeline.getStyleClass().add(JfxStyles.TIMELINE);
 
             for (int i = 0; i < items.size(); i++) {
                 TimelineItem item = items.get(i);
@@ -117,7 +117,7 @@ public class TimelineAnt {
         private HBox buildItem(TimelineItem item, boolean isLast) {
             HBox row = new HBox(0);
             row.setAlignment(Pos.TOP_LEFT);
-            row.getStyleClass().add(CssClasses.TIMELINE_ITEM);
+            row.getStyleClass().add(JfxStyles.TIMELINE_ITEM);
 
             // 左侧 label（alternate / right 模式）
             if (mode == Mode.ALTERNATE || mode == Mode.RIGHT) {
@@ -127,7 +127,7 @@ public class TimelineAnt {
                 leftBox.setPadding(new javafx.geometry.Insets(0, 16, 0, 0));
                 if (item.label != null) {
                     Label label = new Label(item.label);
-                    label.getStyleClass().add(CssClasses.TIMELINE_LABEL);
+                    label.getStyleClass().add(JfxStyles.TIMELINE_LABEL);
                     leftBox.getChildren().add(label);
                 }
                 row.getChildren().add(leftBox);
@@ -143,7 +143,7 @@ public class TimelineAnt {
                 dot = item.dot;
             } else {
                 Circle circle = new Circle(6);
-                circle.getStyleClass().add(CssClasses.TIMELINE_DOT);
+                circle.getStyleClass().add(JfxStyles.TIMELINE_DOT);
                 circle.getStyleClass().add(dotColorClassFor(item.dotColor));
                 dot = circle;
             }
@@ -151,7 +151,7 @@ public class TimelineAnt {
 
             if (!isLast) {
                 Line line = new Line(0, 0, 0, 40);
-                line.getStyleClass().add(CssClasses.TIMELINE_LINE);
+                line.getStyleClass().add(JfxStyles.TIMELINE_LINE);
                 centerBox.getChildren().add(line);
             }
             row.getChildren().add(centerBox);
@@ -163,13 +163,13 @@ public class TimelineAnt {
             rightBox.setPadding(new javafx.geometry.Insets(0, 0, 0, 16));
 
             Label contentLabel = new Label(item.content);
-            contentLabel.getStyleClass().add(CssClasses.TIMELINE_CONTENT);
+            contentLabel.getStyleClass().add(JfxStyles.TIMELINE_CONTENT);
             contentLabel.setWrapText(true);
             rightBox.getChildren().add(contentLabel);
 
             if (mode == Mode.LEFT && item.label != null) {
                 Label label = new Label(item.label);
-                label.getStyleClass().add(CssClasses.TIMELINE_LABEL);
+                label.getStyleClass().add(JfxStyles.TIMELINE_LABEL);
                 rightBox.getChildren().add(label);
             }
             row.getChildren().add(rightBox);
@@ -191,15 +191,15 @@ public class TimelineAnt {
             centerBox.setPrefWidth(24);
 
             Circle circle = new Circle(6);
-            circle.getStyleClass().add(CssClasses.TIMELINE_DOT);
-            circle.getStyleClass().add(CssClasses.TIMELINE_DOT_PENDING);
+            circle.getStyleClass().add(JfxStyles.TIMELINE_DOT);
+            circle.getStyleClass().add(JfxStyles.TIMELINE_DOT_PENDING);
             centerBox.getChildren().add(circle);
             row.getChildren().add(centerBox);
 
             VBox rightBox = new VBox();
             rightBox.setPadding(new javafx.geometry.Insets(0, 0, 0, 16));
             Label contentLabel = new Label(pendingText);
-            contentLabel.getStyleClass().add(CssClasses.TIMELINE_PENDING_TEXT);
+            contentLabel.getStyleClass().add(JfxStyles.TIMELINE_PENDING_TEXT);
             rightBox.getChildren().add(contentLabel);
             row.getChildren().add(rightBox);
             return row;
@@ -207,10 +207,10 @@ public class TimelineAnt {
 
         private static String dotColorClassFor(DotColor color) {
             return switch (color) {
-                case BLUE -> CssClasses.TIMELINE_DOT_BLUE;
-                case RED -> CssClasses.TIMELINE_DOT_RED;
-                case GREEN -> CssClasses.TIMELINE_DOT_GREEN;
-                case GRAY -> CssClasses.TIMELINE_DOT_GRAY;
+                case BLUE -> JfxStyles.TIMELINE_DOT_BLUE;
+                case RED -> JfxStyles.TIMELINE_DOT_RED;
+                case GREEN -> JfxStyles.TIMELINE_DOT_GREEN;
+                case GRAY -> JfxStyles.TIMELINE_DOT_GRAY;
             };
         }
     }

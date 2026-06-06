@@ -7,7 +7,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 底部状态栏组件 - 对标 VS Code / IDEA 底栏。
@@ -22,7 +22,7 @@ import org.openkawu.jfxium.core.css.CssClasses;
  *   <li><b>进度条</b>：progress(value) 中间进度显示（0.0~1.0）</li>
  *   <li><b>状态文本</b>：status(text) 右侧状态标签</li>
  *   <li><b>自定义节点</b>：left(Node) / center(Node) / right(Node) 可放任意节点</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#STATUS_BAR} 系列 LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#STATUS_BAR} 系列 LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -72,24 +72,24 @@ public class StatusBarAnt extends HBox {
     public StatusBarAnt() {
         super(8);
         setAlignment(Pos.CENTER_LEFT);
-        getStyleClass().add(CssClasses.STATUS_BAR);
+        getStyleClass().add(JfxStyles.STATUS_BAR);
 
         // 左栏
         leftBox = new HBox(8);
         leftBox.setAlignment(Pos.CENTER_LEFT);
-        leftBox.getStyleClass().add(CssClasses.STATUS_BAR_LEFT);
+        leftBox.getStyleClass().add(JfxStyles.STATUS_BAR_LEFT);
         HBox.setHgrow(leftBox, Priority.SOMETIMES);
 
         // 中栏
         centerBox = new HBox(8);
         centerBox.setAlignment(Pos.CENTER);
-        centerBox.getStyleClass().add(CssClasses.STATUS_BAR_CENTER);
+        centerBox.getStyleClass().add(JfxStyles.STATUS_BAR_CENTER);
         HBox.setHgrow(centerBox, Priority.ALWAYS);
 
         // 右栏
         rightBox = new HBox(8);
         rightBox.setAlignment(Pos.CENTER_RIGHT);
-        rightBox.getStyleClass().add(CssClasses.STATUS_BAR_RIGHT);
+        rightBox.getStyleClass().add(JfxStyles.STATUS_BAR_RIGHT);
         HBox.setHgrow(rightBox, Priority.SOMETIMES);
 
         getChildren().addAll(leftBox, centerBox, rightBox);

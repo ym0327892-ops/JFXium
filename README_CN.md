@@ -232,7 +232,7 @@ public class MyAdmin extends Application {
 
 ## 主题系统
 
-JFXium 使用 LESS 预处理器管理主题，**内置 8 套主题**，覆盖亮/暗、Material、shadcn、cyberpunk 等多种风格。
+JFXium 使用 LESS 预处理器管理主题，**内置 11 套主题**，覆盖亮/暗、Material、shadcn、cyberpunk 等多种风格。
 
 ### 主题文件位置
 
@@ -252,10 +252,10 @@ src/main/resources/org/openkawu/jfxium/css/
 │   ├── theme-shadcn.less          # shadcn/ui 风格
 │   ├── theme-cyberpunk.less       # 赛博朋克风格
 │   └── theme-custom.less          # 自定义主题示例
-└── theme-*.css                    # 编译产物（generate-resources 阶段由 npx lessc 生成）
+└── theme-*.css                    # 编译产物（generate-resources 阶段由 jlessc 纯 Java 编译生成，无需 Node.js）
 ```
 
-> **构建依赖**：LESS 编译用 `npx lessc`，需要宿主机有 Node.js。新机器先确认 `node -v && npx -v` 可用。
+> **构建依赖**：LESS 编译使用 **jlessc**（纯 Java LESS 编译器），通过 `groovy-maven-plugin` 在 `generate-resources` 阶段自动执行，**无需 Node.js**。运行 `mvn compile` 或 `mvn install` 即可自动编译。
 
 ### 内置主题清单
 
@@ -270,7 +270,9 @@ src/main/resources/org/openkawu/jfxium/css/
 | **mui-compact** | `MuiCompactTheme` | Material UI 紧凑亮色 |
 | **mui-dark-compact** | `MuiDarkCompactTheme` | Material UI 紧凑暗色 |
 
-> **注意**：shadcn 和 cyberpunk 主题的 CSS 文件已生成，但对应的 Java Theme 类尚未实现。如需使用，可通过 `Application.setUserAgentStylesheet()` 手动加载 CSS。
+| **shadcn** | `—`（CSS 可用，Java Theme 类待实现）| shadcn/ui 极简风 |
+| **cyberpunk** | `—`（CSS 可用，Java Theme 类待实现）| 赛博朋克霓虹暗色 |
+| **custom** | `—`（CSS 可用，Java Theme 类待实现）| 自定义主题模板 |
 
 ### 切换主题
 
@@ -315,7 +317,7 @@ themeManager.setPrimaryColor(ThemeColor.Preset.PURPLE);     // 预设颜色
 
 ## 组件分类
 
-> 共 **82 个 \*Ant 组件**（`component/`）+ **3 个 \*Template 业务模板**（`template/`）= **85 个组件**，参考 Ant Design 设计
+> 共 **97 个 \*Ant 组件**（`component/`）+ **4 个 \*Template 业务模板** + **1 个 FilterBarAnt**（`template/`）= **102 个组件**，参考 Ant Design 设计
 
 ### 通用组件 (General)
 
@@ -688,6 +690,32 @@ Region spacer = Spacers.spacer(100, 20);
 
 ---
 
+#### layout 包 *Ant 继承式容器总览
+
+`component/layout/` 包含 **15 个**继承式布局容器，同时支持 **直接继承**、**工厂链式** 和 **Builder build()** 三种用法。
+
+| 原生容器 | *Ant 封装 | 用途 | 核心链式 API |
+|---|---|---|---|
+| `VBox` | **VBoxAnt** | 垂直布局 | `spacing / padding / align / children / background` |
+| `HBox` | **HBoxAnt** | 水平布局 | `spacing / padding / align / children / background` |
+| `BorderPane` | **BorderPaneAnt** | 五区位骨架 | `top / right / bottom / left / center / background` |
+| `StackPane` | **StackPaneAnt** | 叠层布局 | `align / children / background` |
+| `GridPane` | **GridPaneAnt** | 二维网格 | `hgap / vgap / cell / row / column` |
+| `FlowPane` | **FlowPaneAnt** | 流式自动换行 | `hgap / vgap / orientation / children` |
+| `ScrollPane` | **ScrollPaneAnt** | 滚动容器 | `content / fitToWidth / vbarPolicy / hbarPolicy` |
+| `SplitPane` | **SplitPaneAnt** | 可拖拽分屏 | `direction / items / dividerPositions` |
+| `TilePane` | **TilePaneAnt** | 平铺网格 | `prefColumns / prefRows / gap / orientation / children` |
+| `AnchorPane` | **AnchorPaneAnt** | 绝对定位 | `anchor / topAnchor / center / fill / children` |
+| — | `DividerAnt` | 分割线 | `text / vertical / orientation` |
+| — | `FlexAnt` | CSS Flexbox 弹性布局 | `direction / justify / align / gap / children` |
+| — | `GridAnt` | 24 列栅格系统 | `row / col / responsive breakpoint` |
+| — | `ScrollContainerAnt` | 统一滚动容器 | `content / fitToWidth / padding` |
+| — | `SpaceAnt` | 间距组件 | `size / direction / children / divider` |
+
+> **推荐新代码使用 *Ant 继承式容器**（如 `VBoxAnt.create()`），老代码 `VBoxBuilder` 继续兼容。
+
+---
+
 ### 全局布局管理
 
 JFXium 提供 **SceneLayout** 和 **OverlayManager** 两个核心类，用于管理应用的根布局和浮层系统。
@@ -1020,6 +1048,8 @@ OverlayManager.getInstance().clearAll();
 | **FlexAnt** | 弹性布局 | `Pane`（HBox/VBox/FlowPane 之一） | `FlexAnt.create().gap(16).children(a, b, c).build()` |
 | **GridAnt** | 24 栅格系统 | `VBox` > GridPane（24 列 percentWidth）| `GridAnt.create().row(GridAnt.row().col(12, a).col(12, b)).build()` |
 | **SpaceAnt** | 间距组件 | `HBox/VBox` + spacer 间隔 | `SpaceAnt.create().size(16).children(ns).build()` |
+| **AnchorPaneAnt** | 绝对定位布局 | `AnchorPane` + 四边锚定/居中/全填充 | `AnchorPaneAnt.create().children(overlay, popup).fill(overlay).center(popup).build()` |
+| **TilePaneAnt** | 平铺布局（缩略图网格）| `TilePane` + 行列数/间距/方向 | `TilePaneAnt.create().prefColumns(4).gap(10).children(thumbs).build()` |
 
 #### AppShellAnt 详细说明（M19.22 Sider 折叠 + breakpoint）
 
@@ -1781,12 +1811,13 @@ StackPane watermarked = WatermarkAnt.create()
 
 | 模板 | 说明 | 抽象自 | 示例 |
 |------|------|--------|------|
+| **FilterBarAnt** | admin 列表页顶部筛选工具条（搜索 + 筛选 + 操作按钮，M19）| CrudTemplate 顶部 topLeft+topRight 的标准化拼装 | `FilterBarAnt.create().search("搜索").filter(roleCombo).right(addBtn).build()` |
 | **PageTemplate** | 通用展示页骨架（大标题 + 描述 + 内容区，M19.33）| Showcase 20+ 个 page 共同的样板代码 | `PageTemplate.create().title("Button 按钮").description("...").sections(s1, s2, s3).build()` |
 | **CrudTemplate** | 通用三段式业务页（顶工具栏 + body + 底工具栏，M18）| admin demo 列表页/表单页/详情页/仪表盘的共同骨架 | `CrudTemplate.create().title("用户管理").topRight(addBtn).body(table).bottomRight(pagination).build()` |
 | **LoginTemplate** | 双栏 banner 登录页（M19.16）| admin demo LoginStage —— 行业标准 760×520 双栏布局 | `LoginTemplate.create().brandName("My Admin").features("...").onSubmit((u,p)->auth(u,p)).build()` |
 | **DashboardTemplate** | 概览首页骨架（欢迎 + N 列统计卡 + 双栏底部，M19.16）| admin demo DashboardPage 的标准结构 | `DashboardTemplate.create().welcome("...").stat(...).bottomLeft(...).bottomRight(...).build()` |
 
-### 4 个模板边界对照
+### 5 个模板边界对照
 
 | 想做的页面 | 用哪个 |
 |---|---|
@@ -1794,6 +1825,7 @@ StackPane watermarked = WatermarkAnt.create()
 | 列表 / 表单 / 详情 / 仪表盘（带工具栏） | **CrudTemplate** |
 | 数据概览首页（统计卡 + 多区） | **DashboardTemplate** |
 | 登录 / 注册（双栏 banner）| **LoginTemplate** |
+| admin 列表页顶部筛选工具条 | **FilterBarAnt**（搜索 + 筛选 + 操作按钮标准化拼装） |
 
 ### PageTemplate 详细说明
 
@@ -1907,7 +1939,7 @@ BorderPane dash = CrudTemplate.create()
 BorderPane login = LoginTemplate.create()
     .brandName("My Admin")
     .tagline("企业管理系统")
-    .features("60+ 内置组件", "8 套主题", "Builder API")
+    .features("97+ 内置组件", "11 套主题", "Builder API")
     .copyright("© 2026 · MIT License")
     .formTitle("欢迎回来")
     .submitText("立即登录")
@@ -2057,30 +2089,24 @@ cp css/less/theme-custom.less css/less/theme-mytheme.less
 
 #### 第 3 步：编译生成 CSS
 
-**手动编译：**
+**手动编译（使用 jlessc）：**
 ```bash
-npx lessc css/less/theme-mytheme.less css/theme-mytheme.css
+# jlessc 通过 Maven 插件自动执行，无需手动调用
+# 如需单独编译某个主题，可通过 mvn compile 触发
+mvn compile -pl jfxium
 ```
 
 **自动编译（推荐）：**
-编辑 `pom.xml`，取消注释自定义主题编译配置：
+编辑 `jfxium/pom.xml`，在 groovy-maven-plugin 的 `themes` 列表中添加你的主题名：
 
-```xml
-<execution>
-    <id>compile-less-themes-custom</id>
-    <phase>generate-resources</phase>
-    <goals>
-        <goal>exec</goal>
-    </goals>
-    <configuration>
-        <executable>npx</executable>
-        <arguments>
-            <argument>lessc</argument>
-            <argument>src/main/resources/org/openkawu/jfxium/css/less/theme-mytheme.less</argument>
-            <argument>src/main/resources/org/openkawu/jfxium/css/theme-mytheme.css</argument>
-        </arguments>
-    </configuration>
-</execution>
+```groovy
+def themes = [
+    'theme-light', 'theme-dark',
+    'theme-mui', 'theme-mui-compact', 'theme-mui-dark', 'theme-mui-dark-compact',
+    'theme-shadcn', 'theme-cyberpunk', 'theme-custom',
+    'theme-light-compact', 'theme-dark-compact',
+    'theme-mytheme'   // ← 新增你的主题
+]
 ```
 
 然后运行：
@@ -2279,7 +2305,7 @@ JFXium 组件的状态都通过修饰类暴露。你可以用 LESS 覆盖：
 | `<size>` | 尺寸修饰类 | `.size-small`、`.size-large` |
 | `:hover` / `:focused` / `:armed` / `:pressed` | JavaFX 伪类 | `.button:hover` |
 
-完整常量定义见 `org.openkawu.jfxium.core.css.CssClasses`。
+完整常量定义见 `org.openkawu.jfxium.core.css.JfxStyles`。
 
 ---
 
@@ -2297,7 +2323,7 @@ package org.openkawu.jfxium.component;
 
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 public class MyPanelAnt {
 
@@ -2685,9 +2711,9 @@ sub.unsubscribe();
 
 ### 6. 页面骨架继承式写法（M19.36）
 
-> JFXium 在 `component/layout/` 下提供 **8 个继承式容器**——一个类同时支持 **「直接继承」+「工厂链式」+「Builder build()」** 三种用法。业务可以直接 `extends VBoxAnt` 当作"页面骨架基类"，也可以走老式 `VBoxBuilder.create()...build()`，两条路并存零冲突。
+> JFXium 在 `component/layout/` 下提供 **15 个继承式布局容器**（10 个原生容器封装 + 5 个增强型组件）——一个类同时支持 **「直接继承」+「工厂链式」+「Builder build()」** 三种用法。业务可以直接 `extends VBoxAnt` 当作“页面骨架基类”，也可以走老式 `VBoxBuilder.create()...build()`，两条路并存零冲突。
 
-**8 个容器对照**：
+**10 个原生容器对照**：
 
 | 原生容器 | 继承式 *Ant | 何时用 |
 |---|---|---|
@@ -2699,8 +2725,10 @@ sub.unsubscribe();
 | FlowPane | **FlowPaneAnt** | 流式布局自动换行（标签云）|
 | ScrollPane | **ScrollPaneAnt** | 简单滚动（裸 ScrollPane 双工厂）|
 | SplitPane | **SplitPaneAnt** | 可拖拽分割窗格（IDE 风格分屏）|
+| TilePane | **TilePaneAnt** | 平铺网格（缩略图/图标面板）|
+| AnchorPane | **AnchorPaneAnt** | 绝对定位（弹窗覆盖/仪表盘）|
 
-**为什么提供这个**：JavaFX 业界主流写法是 `extends VBox` 在构造函数里 build UI，跟 JFXium 的 *Ant 工厂风格本来分裂。这 8 个继承式容器把两种风格统一到一个类——业务自己挑用法。
+**为什么提供这个**：JavaFX 业界主流写法是 `extends VBox` 在构造函数里 build UI，跟 JFXium 的 *Ant 工厂风格本来分裂。这 15 个继承式容器把两种风格统一到一个类——业务自己挑用法。
 
 #### 三种用法
 
@@ -2872,6 +2900,31 @@ GridPaneAnt form = GridPaneAnt.create()
     .hgap(12).vgap(12)
     .cell(new Label("用户名"), 0, 0).cell(usernameField, 1, 0)
     .cell(new Label("邮箱"),   0, 1).cell(emailField,    1, 1);
+
+// === AnchorPaneAnt：绝对定位（弹窗覆盖 / 仪表盘定位）===
+AnchorPaneAnt dialog = AnchorPaneAnt.create()
+    .children(overlay, popup)
+    .fill(overlay)          // overlay 填满容器
+    .center(popup);         // popup 居中
+
+AnchorPaneAnt dashboard = AnchorPaneAnt.create()
+    .children(header, sidebar, content)
+    .topAnchor(header, 0.0)
+    .leftAnchor(sidebar, 0.0).bottomAnchor(sidebar, 0.0)
+    .anchor(content, 60.0, 0.0, 0.0, 200.0);  // top, right, bottom, left
+
+// === TilePaneAnt：缩略图网格 / 图标面板 ===
+TilePaneAnt thumbs = TilePaneAnt.create()
+    .prefColumns(4)
+    .gap(10)
+    .alignment(Pos.CENTER)
+    .children(thumb1, thumb2, thumb3, thumb4);
+
+TilePaneAnt icons = TilePaneAnt.create()
+    .orientation(Orientation.VERTICAL)
+    .prefRows(3)
+    .hgap(8).vgap(8)
+    .children(icon1, icon2, icon3);
 ```
 
 #### `GridPaneAnt` 命名说明
@@ -3462,7 +3515,7 @@ ThemeManager.getInstance().setPrimaryColor(ThemeColor.Preset.PURPLE);
 
 ### Q: 支持 JavaFX 哪些版本？
 
-A: 支持 JavaFX 17+，推荐 JavaFX 21。
+A: 支持 JavaFX 21+（项目使用 JavaFX 21.0.6）。
 
 ### Q: 如何添加自定义样式类？
 
@@ -3482,22 +3535,14 @@ A: 继承 `AbstractStyleBuilder<SELF>` 即可，详见 [自定义组件](#自定
 
 ### Q: 组件是否支持响应式布局？
 
-A: 所有组件都基于 JavaFX 布局系统，可与 VBox、HBox、GridPane 等标准布局容器配合使用。GridAnt 24 栅格目前不带断点，xs/sm/md/lg/xl/xxl 响应式断点在 [PLAN.md](PLAN.md) P2 计划中。
+A: 所有组件都基于 JavaFX 布局系统，可与 VBox、HBox、GridPane 等标准布局容器配合使用。GridAnt 24 栅格已支持响应式断点（xs/sm/md/lg/xl/xxl），详见 GridAnt 章节。
 
-### Q: 构建报错说找不到 `npx` 怎么办？
+### Q: 构建报错找不到 LESS 编译产物怎么办？
 
-A: LESS 编译用 `npx lessc`，需要宿主机有 Node.js。安装方法：
-
-```bash
-# macOS（Homebrew）
-brew install node
-
-# 验证
-node -v && npx -v
-```
+A: LESS 编译使用 jlessc（纯 Java），通过 Maven 插件自动执行，无需 Node.js。如遇构建问题请运行 `mvn clean install -pl jfxium -DskipTests`。
 
 ---
 
-*文档版本: 1.1*
-*更新日期: 2026-05-17*
-*重大更新：styleClass 体系、AbstractStyleBuilder 公共基类、8 套主题清单同步*
+*文档版本: 1.2*
+*更新日期: 2026-06-06*
+*重大更新：组件数量更新至 97+5=102、11 套主题、jlessc 纯 Java 构建、Java 21+*

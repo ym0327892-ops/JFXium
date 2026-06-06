@@ -6,7 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.form.FormContext;
 import org.openkawu.jfxium.core.form.Rule;
 
@@ -305,13 +305,13 @@ public class FormAnt {
             FormContext ctx = new FormContext();
 
             VBox form = new VBox(0);
-            form.getStyleClass().add(CssClasses.FORM);
+            form.getStyleClass().add(JfxStyles.FORM);
             form.getStyleClass().add("form-size-" + size.name().toLowerCase());
 
             // header 区（M19.39）：位于全部内容之上
             if (header != null) {
                 VBox headerBox = new VBox(header);
-                headerBox.getStyleClass().add(CssClasses.FORM_HEADER);
+                headerBox.getStyleClass().add(JfxStyles.FORM_HEADER);
                 form.getChildren().add(headerBox);
             }
 
@@ -327,7 +327,7 @@ public class FormAnt {
             if (!footerNodes.isEmpty()) {
                 HBox footerBox = new HBox(8);
                 footerBox.setAlignment(footerAlign);
-                footerBox.getStyleClass().add(CssClasses.FORM_FOOTER);
+                footerBox.getStyleClass().add(JfxStyles.FORM_FOOTER);
                 footerBox.getChildren().addAll(footerNodes);
                 form.getChildren().add(footerBox);
             }
@@ -341,7 +341,7 @@ public class FormAnt {
 
         private GridPane buildHorizontalForm(FormContext ctx) {
             GridPane grid = new GridPane();
-            grid.getStyleClass().add(CssClasses.FORM_HORIZONTAL);
+            grid.getStyleClass().add(JfxStyles.FORM_HORIZONTAL);
             grid.setHgap(16);
             grid.setVgap(getVerticalGap());
             grid.setAlignment(Pos.TOP_LEFT);
@@ -351,7 +351,7 @@ public class FormAnt {
                 if (entry instanceof SectionMarker sm) {
                     // section 标题占满两列（M19.39）
                     Label sectionLabel = new Label(sm.title());
-                    sectionLabel.getStyleClass().add(CssClasses.FORM_SECTION_TITLE);
+                    sectionLabel.getStyleClass().add(JfxStyles.FORM_SECTION_TITLE);
                     grid.add(sectionLabel, 0, row, 2, 1); // colspan=2
                     row++;
                 } else if (entry instanceof FormItem item) {
@@ -375,11 +375,11 @@ public class FormAnt {
 
         private VBox buildVerticalForm(FormContext ctx) {
             VBox container = new VBox(getVerticalGap());
-            container.getStyleClass().add(CssClasses.FORM_VERTICAL);
+            container.getStyleClass().add(JfxStyles.FORM_VERTICAL);
             for (Object entry : entries) {
                 if (entry instanceof SectionMarker sm) {
                     Label sectionLabel = new Label(sm.title());
-                    sectionLabel.getStyleClass().add(CssClasses.FORM_SECTION_TITLE);
+                    sectionLabel.getStyleClass().add(JfxStyles.FORM_SECTION_TITLE);
                     container.getChildren().add(sectionLabel);
                 } else if (entry instanceof FormItem item) {
                     VBox itemBox = new VBox(4);
@@ -393,7 +393,7 @@ public class FormAnt {
 
         private HBox buildInlineForm(FormContext ctx) {
             HBox container = new HBox(16);
-            container.getStyleClass().add(CssClasses.FORM_INLINE);
+            container.getStyleClass().add(JfxStyles.FORM_INLINE);
             container.setAlignment(Pos.CENTER_LEFT);
             // INLINE 模式忽略 section markers（spec Req 4 AC 6）
             for (Object entry : entries) {
@@ -423,9 +423,9 @@ public class FormAnt {
                 labelText += ":";
             }
             Label label = new Label(labelText);
-            label.getStyleClass().add(CssClasses.FORM_LABEL);
+            label.getStyleClass().add(JfxStyles.FORM_LABEL);
             if (item.required) {
-                label.getStyleClass().add(CssClasses.FORM_LABEL_REQUIRED);
+                label.getStyleClass().add(JfxStyles.FORM_LABEL_REQUIRED);
             }
             return label;
         }
@@ -435,13 +435,13 @@ public class FormAnt {
          */
         private VBox createWrapper(FormItem item, FormContext ctx) {
             VBox wrapper = new VBox(4);
-            wrapper.getStyleClass().add(CssClasses.FORM_ITEM_WRAPPER);
+            wrapper.getStyleClass().add(JfxStyles.FORM_ITEM_WRAPPER);
             wrapper.getChildren().add(item.control);
 
             // 静态 helpText（不变）
             if (!item.helpText.isEmpty()) {
                 Label helpLabel = new Label(item.helpText);
-                helpLabel.getStyleClass().add(CssClasses.FORM_HELP_TEXT);
+                helpLabel.getStyleClass().add(JfxStyles.FORM_HELP_TEXT);
                 String stateClass = stateClassFor(item.validateStatus);
                 if (stateClass != null) helpLabel.getStyleClass().add(stateClass);
                 wrapper.getChildren().add(helpLabel);
@@ -452,7 +452,7 @@ public class FormAnt {
                 ctx.registerField(item.name, item.control, item.rules);
                 Label errorLabel = new Label();
                 errorLabel.getStyleClass().addAll(
-                        CssClasses.FORM_HELP_TEXT, CssClasses.FORM_HELP_ERROR);
+                        JfxStyles.FORM_HELP_TEXT, JfxStyles.FORM_HELP_ERROR);
                 errorLabel.setVisible(false);
                 errorLabel.setManaged(false);
                 ctx.errorProperty(item.name).addListener((obs, ov, nv) -> {
@@ -468,9 +468,9 @@ public class FormAnt {
 
         private static String stateClassFor(ValidateStatus status) {
             return switch (status) {
-                case ERROR -> CssClasses.FORM_HELP_ERROR;
-                case WARNING -> CssClasses.FORM_HELP_WARNING;
-                case SUCCESS -> CssClasses.FORM_HELP_SUCCESS;
+                case ERROR -> JfxStyles.FORM_HELP_ERROR;
+                case WARNING -> JfxStyles.FORM_HELP_WARNING;
+                case SUCCESS -> JfxStyles.FORM_HELP_SUCCESS;
                 default -> null;
             };
         }

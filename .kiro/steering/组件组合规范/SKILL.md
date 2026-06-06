@@ -207,7 +207,7 @@ inclusion: always
 | `Layouts.spacer(w, h)` | 同上 | 一行创建固定尺寸 `Region` |
 | `Layouts.hbox/vbox/grid()` | 同上 | 带默认间距/对齐的容器工厂 |
 | `AbstractStyleBuilder<SELF>` | `core/builder/` | 所有 *Ant Builder 父类，统一 `style()` / `styleClass()` |
-| `CssClasses` | `core/css/CssClasses.java` | 集中管理所有 styleClass 字符串常量 |
+| `JfxStyles` | `core/css/JfxStyles.java` | 集中管理所有 styleClass 字符串常量 |
 
 #### 2.B.3 通用 styleClass 命名空间
 
@@ -238,7 +238,7 @@ if (leftSlot != null) {
 
 // 2. 标题文本（默认占自己宽度，不抢空间）
 Label titleLabel = new Label(title);
-titleLabel.getStyleClass().add(CssClasses.OVERLAY_TITLE);
+titleLabel.getStyleClass().add(JfxStyles.OVERLAY_TITLE);
 header.getChildren().add(titleLabel);
 
 // 3. 弹性填充（关键：把右侧推到最右）
@@ -269,7 +269,7 @@ if (rightSlot != null) {
 ```java
 HBox footer = new HBox(8);
 footer.setAlignment(Pos.CENTER_RIGHT);   // 整体右对齐
-footer.getStyleClass().add(CssClasses.OVERLAY_FOOTER);
+footer.getStyleClass().add(JfxStyles.OVERLAY_FOOTER);
 footer.getChildren().addAll(cancelBtn, okBtn);
 ```
 
@@ -282,11 +282,11 @@ footer.getChildren().addAll(cancelBtn, okBtn);
 
 ```java
 // Java 端：挂语义类，不写颜色
-node.getStyleClass().add(CssClasses.PROGRESS_BAR);
+node.getStyleClass().add(JfxStyles.PROGRESS_BAR);
 node.getStyleClass().add(switch (status) {
-    case SUCCESS -> CssClasses.PROGRESS_SUCCESS;
-    case WARNING -> CssClasses.PROGRESS_WARNING;
-    case ERROR   -> CssClasses.PROGRESS_ERROR;
+    case SUCCESS -> JfxStyles.PROGRESS_SUCCESS;
+    case WARNING -> JfxStyles.PROGRESS_WARNING;
+    case ERROR   -> JfxStyles.PROGRESS_ERROR;
     case NORMAL  -> null;
 });
 ```
@@ -304,17 +304,17 @@ node.getStyleClass().add(switch (status) {
 
 ### 3.4 弹窗 popup-menu（dropdown 风格）
 
-> 已有：`CssClasses.POPUP_MENU` + `POPUP_MENU_ITEM` + `POPUP_MENU_DIVIDER` + `POPUP_MENU_ITEM_DISABLED`
+> 已有：`JfxStyles.POPUP_MENU` + `POPUP_MENU_ITEM` + `POPUP_MENU_DIVIDER` + `POPUP_MENU_ITEM_DISABLED`
 
 ```java
 VBox panel = new VBox(0);
-panel.getStyleClass().add(CssClasses.POPUP_MENU);
+panel.getStyleClass().add(JfxStyles.POPUP_MENU);
 
 for (Item item : items) {
     HBox row = new HBox(8);
-    row.getStyleClass().add(CssClasses.POPUP_MENU_ITEM);
+    row.getStyleClass().add(JfxStyles.POPUP_MENU_ITEM);
     if (item.isDisabled()) {
-        row.getStyleClass().add(CssClasses.POPUP_MENU_ITEM_DISABLED);
+        row.getStyleClass().add(JfxStyles.POPUP_MENU_ITEM_DISABLED);
     }
     // ... 内容
     panel.getChildren().add(row);

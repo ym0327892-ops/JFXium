@@ -3,13 +3,15 @@ package org.openkawu.jfxium.core.theme;
 import javafx.scene.paint.Color;
 
 /**
- * Theme Color utility for dynamic color changes.
- * Allows runtime modification of the primary accent color.
+ * 主题色工具 —— 支持运行时动态更换主色。
+ *
+ * <p>提供 11 个预设色板（对齐 Ant Design 色彩体系），并可根据任意 hex 颜色
+ * 自动生成 0-9 色阶（亮色 / 暗色各一套）。</p>
  */
 public class ThemeColor {
 
     /**
-     * Predefined color presets inspired by popular design systems.
+     * 预设色板 —— 对齐 Ant Design 色彩体系。
      */
     public enum Preset {
         BLUE("#1677ff", "Ant Design Blue"),
@@ -60,7 +62,7 @@ public class ThemeColor {
     }
 
     /**
-     * Generate a color scale (0-9) from a base color.
+     * 从主色生成 0-9 亮色色阶。
      * <p>
      * 色阶规则（对齐 Ant Design）：
      * <ul>
@@ -100,7 +102,7 @@ public class ThemeColor {
     }
 
     /**
-     * Generate a color scale suitable for dark themes.
+     * 从主色生成 0-9 暗色色阶。
      * <p>
      * 暗色主题色阶规则：
      * <ul>

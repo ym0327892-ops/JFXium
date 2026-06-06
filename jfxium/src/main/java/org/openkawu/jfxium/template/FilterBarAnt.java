@@ -11,7 +11,7 @@ import javafx.scene.layout.Region;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +101,7 @@ public class FilterBarAnt {
             group.setAlignment(Pos.CENTER_LEFT);
             if (label != null && !label.isEmpty()) {
                 Label l = new Label(label + ":");
-                l.getStyleClass().add(CssClasses.FILTER_BAR_LABEL);
+                l.getStyleClass().add(JfxStyles.FILTER_BAR_LABEL);
                 group.getChildren().add(l);
             }
             group.getChildren().add(control);
@@ -149,7 +149,7 @@ public class FilterBarAnt {
 
         public HBox build() {
             HBox bar = new HBox(spacing);
-            bar.getStyleClass().add(CssClasses.FILTER_BAR);
+            bar.getStyleClass().add(JfxStyles.FILTER_BAR);
             bar.setAlignment(Pos.CENTER_LEFT);
             if (padding > 0) {
                 bar.setPadding(new javafx.geometry.Insets(padding));

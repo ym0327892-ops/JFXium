@@ -3,7 +3,7 @@ package org.openkawu.jfxium.component.layout;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 绝对定位布局组件 - 对标 CSS position: absolute。
@@ -19,7 +19,7 @@ import org.openkawu.jfxium.core.css.CssClasses;
  *   <li><b>居中</b>：center(node) 子节点居中</li>
  *   <li><b>全填充</b>：fill(node) 子节点填满容器</li>
  *   <li><b>子节点</b>：children(Node...) 批量添加</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#ANCHOR_PANE} LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#ANCHOR_PANE} LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -57,7 +57,7 @@ public class AnchorPaneAnt extends AnchorPane {
 
     public AnchorPaneAnt() {
         super();
-        getStyleClass().add(CssClasses.ANCHOR_PANE);
+        getStyleClass().add(JfxStyles.ANCHOR_PANE);
     }
 
     // ============================================================

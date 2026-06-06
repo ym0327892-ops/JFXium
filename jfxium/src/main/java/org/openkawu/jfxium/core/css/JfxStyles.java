@@ -1,12 +1,29 @@
 package org.openkawu.jfxium.core.css;
 
 /**
- * JFXium CSS Class Constants
- * Inspired by AtlantaFX
+ * JFXium 样式类名常量。
+ *
+ * <p>所有组件的 styleClass 名称集中定义在此处，与 LESS（{@code components/_index.less}）中的选择器一一对应。
+ * Java 端通过 {@code node.getStyleClass().add(JfxStyles.XXX)} 挂载，LESS 端通过同名选择器控制视觉。</p>
+ *
+ * <h2>命名规范</h2>
+ * <ul>
+ *   <li><b>强制 {@code jfx-} 前缀</b>：所有新组件必须使用 {@code jfx-} 前缀，避免与 JavaFX modena 内置选择器冲突</li>
+ *   <li><b>常量名 = CSS 类名的大写下划线形式</b>：{@code jfx-my-component} → {@code MY_COMPONENT}</li>
+ *   <li><b>修饰类不加前缀</b>：状态修饰类（{@code small}、{@code active}、{@code selected}）不加 jfx- 前缀，
+ *       因为它们总是伴随父选择器使用（{@code .jfx-button.small}）</li>
+ * </ul>
+ *
+ * <h2>三步接线（新组件开发必经流程）</h2>
+ * <ol>
+ *   <li>在此处添加 {@code public static final String} 常量</li>
+ *   <li>在 {@code components/_xxx.less} 中编写同名选择器的样式</li>
+ *   <li>在 {@code components/_index.less} 中 {@code @import} 注册</li>
+ * </ol>
  */
-public final class CssClasses {
+public final class JfxStyles {
 
-    private CssClasses() {}
+    private JfxStyles() {}
 
     /* ============================================
        PanelHeader（base/）— 面板头部基础组件
@@ -25,10 +42,10 @@ public final class CssClasses {
     public static final String BG_TRANSPARENT = "jfx-bg-transparent";
 
     /* ============================================
-       Button Classes
+       Button 按钮
        ============================================ */
 
-    /** Button variants */
+    /** 按钮变体 */
     public static final String BUTTON_DEFAULT = "default";
     /** Accent / Primary 视觉变体（PRIMARY 与 ACCENT 共用此类，LESS 中 .button.accent 即可命中）。 */
     public static final String BUTTON_ACCENT = "accent";
@@ -39,22 +56,16 @@ public final class CssClasses {
     /** Ghost 修饰类：透明背景 + 反色边框/文字，与 type 类组合使用（M19.28 改用 styleClass 取代 inline style）。 */
     public static final String BUTTON_GHOST = "ghost";
 
-    /** Button sizes */
+    /** 按钮尺寸 */
     public static final String SIZE_SMALL = "small";
     public static final String SIZE_LARGE = "large";
 
-    /** Button shapes */
+    /** 按钮形状 */
     public static final String SHAPE_ROUNDED = "rounded";
     public static final String SHAPE_SQUARE = "square";
 
     /* ============================================
-       Text Field Classes
-       ============================================ */
-
-    /* Use the same SIZE_* constants */
-
-    /* ============================================
-       Card Classes
+       Card 卡片
        ============================================ */
 
     public static final String CARD = "card";
@@ -80,7 +91,7 @@ public final class CssClasses {
     public static final String CARD_TAB_ITEM_ACTIVE = "active";
 
     /* ============================================
-       Page / Layout Classes
+       Page / Layout 页面布局
        ============================================ */
 
     public static final String SURFACE = "surface";
@@ -110,8 +121,8 @@ public final class CssClasses {
     public static final String SCROLL_CONTAINER_VIEWPORT = "scroll-container-viewport";
 
     /* ============================================
-       Layout Primitive Classes (FlexAnt / GridAnt / SpaceAnt / DividerAnt)
-       这些是布局原语类，对标 Ant Design 的 Flex/Row/Col/Space/Divider
+       布局原语（FlexAnt / GridAnt / SpaceAnt / DividerAnt）
+       对标 Ant Design 的 Flex/Row/Col/Space/Divider
        ============================================ */
 
     /** FlexAnt 弹性布局容器 */
@@ -154,7 +165,7 @@ public final class CssClasses {
     public static final String FORM_HEADER = "form-header";
     public static final String FORM_SECTION_TITLE = "form-section-title";
 
-    /** TableAnt 表格附加常量（jfx-table 等已直接以字符串使用，此处补充） */
+    /** TableAnt 表格 */
     public static final String TABLE = "jfx-table";
     public static final String TABLE_STRIPED = "jfx-table-striped";
     public static final String TABLE_BORDERED = "jfx-table-bordered";
@@ -175,7 +186,7 @@ public final class CssClasses {
     public static final String TABLE_SIZE_LARGE  = "jfx-table-large";
 
     /* ============================================
-       SwitchAnt
+       SwitchAnt 开关
        ============================================ */
     public static final String SWITCH = "jfx-switch";
     public static final String SWITCH_CONTAINER = "jfx-switch-container";
@@ -186,7 +197,7 @@ public final class CssClasses {
     public static final String SWITCH_STATUS_LABEL = "jfx-switch-status-label";
 
     /* ============================================
-       BadgeAnt
+       BadgeAnt 徽标
        ============================================ */
     public static final String BADGE = "jfx-badge";
     public static final String BADGE_INDICATOR = "jfx-badge-indicator";
@@ -202,7 +213,7 @@ public final class CssClasses {
     public static final String BADGE_STATUS_DEFAULT = "badge-status-default";
 
     /* ============================================
-       AlertAnt
+       AlertAnt 警告提示
        ============================================ */
     public static final String ALERT = "jfx-alert";
     public static final String ALERT_SUCCESS = "alert-success";
@@ -217,7 +228,7 @@ public final class CssClasses {
     public static final String ALERT_CLOSE_BTN = "alert-close-btn";
 
     /* ============================================
-       ProgressAnt
+       ProgressAnt 进度条
        ============================================ */
     public static final String PROGRESS_BAR = "jfx-progress-bar";
     public static final String PROGRESS_CIRCLE = "jfx-progress-circle";
@@ -229,7 +240,7 @@ public final class CssClasses {
     public static final String PROGRESS_ERROR = "error";
 
     /* ============================================
-       SliderAnt
+       SliderAnt 滑动输入条
        ============================================ */
     public static final String SLIDER = "jfx-slider";
     public static final String SLIDER_WRAPPER = "jfx-slider-wrapper";
@@ -242,7 +253,7 @@ public final class CssClasses {
     public static final String SLIDER_DISABLED = "slider-disabled";
 
     /* ============================================
-       CodeBlockAnt
+       CodeBlockAnt 代码块
        ============================================ */
     public static final String CODEBLOCK = "jfx-codeblock";
     public static final String CODEBLOCK_HEADER = "jfx-codeblock-header";
@@ -253,7 +264,7 @@ public final class CssClasses {
     public static final String CODEBLOCK_CONTENT = "jfx-codeblock-content";
 
     /* ============================================
-       Tier 1 简单组件：IconAnt / EmptyAnt / BackTopAnt / SpinAnt / TimePickerAnt
+       IconAnt / EmptyAnt / BackTopAnt / SpinAnt / TimePickerAnt
        ============================================ */
 
     /** IconAnt 内置极简符号图标 */
@@ -295,8 +306,7 @@ public final class CssClasses {
     public static final String POPUP_MENU_DIVIDER = "jfx-popup-menu-divider";
 
     /* ============================================
-       Batch 1 Tier 2：DropdownAnt / AnchorAnt / AutoCompleteAnt /
-                       ImageAnt / MentionsAnt / StatisticAnt
+       DropdownAnt / AnchorAnt / AutoCompleteAnt / ImageAnt / MentionsAnt / StatisticAnt
        ============================================ */
     public static final String DROPDOWN_TRIGGER = "jfx-dropdown-trigger";
 
@@ -331,11 +341,10 @@ public final class CssClasses {
     public static final String STATISTIC_LARGE = "statistic-large";
 
     /* ============================================
-       Batch 2 Tier 2/3：TypographyAnt / CollapseAnt / TreeSelectAnt /
-                         SegmentedAnt / InputNumberAnt / CarouselAnt
+       TypographyAnt / CollapseAnt / TreeSelectAnt / SegmentedAnt / InputNumberAnt / CarouselAnt
        ============================================ */
 
-    /** TypographyAnt */
+    /** TypographyAnt 排版 */
     public static final String TYPOGRAPHY_TITLE = "typography-title";
     public static final String TYPOGRAPHY_PARAGRAPH = "typography-paragraph";
     public static final String TYPOGRAPHY_TEXT = "typography-text";
@@ -351,7 +360,7 @@ public final class CssClasses {
     public static final String TYPOGRAPHY_MARK = "typography-mark";
     public static final String TYPOGRAPHY_COPYABLE = "typography-copyable";
 
-    /** CollapseAnt */
+    /** CollapseAnt 折叠面板 */
     public static final String COLLAPSE = "collapse";
     public static final String COLLAPSE_PANEL = "collapse-panel";
     public static final String COLLAPSE_HEADER = "collapse-header";
@@ -361,7 +370,7 @@ public final class CssClasses {
     public static final String COLLAPSE_DIVIDER = "collapse-divider";
     public static final String COLLAPSE_DISABLED = "collapse-disabled";
 
-    /** TreeSelectAnt */
+    /** TreeSelectAnt 树选择 */
     public static final String TREE_SELECT = "tree-select";
     public static final String TREE_SELECT_FIELD = "tree-select-field";
     public static final String TREE_SELECT_ROW = "tree-select-row";
@@ -370,7 +379,7 @@ public final class CssClasses {
     public static final String TREE_SELECT_DISABLED = "tree-select-disabled";
     public static final String TREE_SELECT_SELECTED = "tree-select-selected";
 
-    /** SegmentedAnt */
+    /** SegmentedAnt 分段控件 */
     public static final String SEGMENTED = "segmented";
     public static final String SEGMENTED_DISABLED = "segmented-disabled";
     public static final String SEGMENTED_SMALL = "segmented-small";
@@ -379,7 +388,7 @@ public final class CssClasses {
     public static final String SEGMENTED_ITEM_SELECTED = "segmented-item-selected";
     public static final String SEGMENTED_ITEM_LABEL = "segmented-item-label";
 
-    /** InputNumberAnt */
+    /** InputNumberAnt 数字输入框 */
     public static final String INPUT_NUMBER = "input-number";
     public static final String INPUT_NUMBER_DISABLED = "input-number-disabled";
     public static final String INPUT_NUMBER_PREFIX = "input-number-prefix";
@@ -388,7 +397,7 @@ public final class CssClasses {
     public static final String INPUT_NUMBER_BTN = "input-number-btn";
     public static final String INPUT_NUMBER_ARROW = "input-number-arrow";
 
-    /** CarouselAnt */
+    /** CarouselAnt 走马灯 */
     public static final String CAROUSEL = "carousel";
     public static final String CAROUSEL_CONTENT = "carousel-content";
     public static final String CAROUSEL_ARROW_BTN = "carousel-arrow-btn";
@@ -397,8 +406,7 @@ public final class CssClasses {
     public static final String CAROUSEL_DOT_ACTIVE = "carousel-dot-active";
 
     /* ============================================
-       Batch 3 Tier 3：DrawerAnt / ModalAnt / CascaderAnt /
-                       TimelineAnt / TransferAnt
+       DrawerAnt / ModalAnt / CascaderAnt / TimelineAnt / TransferAnt
        ============================================ */
 
     /** 通用 overlay 遮罩 + 面板：DrawerAnt / ModalAnt 复用 */
@@ -415,7 +423,7 @@ public final class CssClasses {
     public static final String DRAWER = "drawer";
     public static final String MODAL = "modal";
 
-    /** CascaderAnt */
+    /** CascaderAnt 级联选择 */
     public static final String CASCADER = "cascader";
     public static final String CASCADER_FIELD = "cascader-field";
     public static final String CASCADER_COLUMN = "cascader-column";
@@ -425,7 +433,7 @@ public final class CssClasses {
     public static final String CASCADER_ARROW = "cascader-arrow";
     public static final String CASCADER_DIVIDER = "cascader-divider";
 
-    /** TimelineAnt */
+    /** TimelineAnt 时间轴 */
     public static final String TIMELINE = "timeline";
     public static final String TIMELINE_ITEM = "timeline-item";
     public static final String TIMELINE_LABEL = "timeline-label";
@@ -439,7 +447,7 @@ public final class CssClasses {
     public static final String TIMELINE_DOT_PENDING = "timeline-dot-pending";
     public static final String TIMELINE_PENDING_TEXT = "timeline-pending-text";
 
-    /** TransferAnt */
+    /** TransferAnt 穿梭框 */
     public static final String TRANSFER = "transfer";
     public static final String TRANSFER_LIST = "transfer-list";
     public static final String TRANSFER_LIST_HEADER = "transfer-list-header";
@@ -451,11 +459,10 @@ public final class CssClasses {
     public static final String TRANSFER_ARROW_BTN = "transfer-arrow-btn";
 
     /* ============================================
-       Batch 4 Tier 3/4：ListAnt / MenuAnt / UploadAnt /
-                         StepsAnt / BreadcrumbAnt
+       ListAnt / MenuAnt / UploadAnt / StepsAnt / BreadcrumbAnt
        ============================================ */
 
-    /** ListAnt */
+    /** ListAnt 列表 */
     public static final String LIST = "list";
     public static final String LIST_BORDERED = "list-bordered";
     public static final String LIST_LOADING = "list-loading";
@@ -467,7 +474,7 @@ public final class CssClasses {
     public static final String LIST_ITEM_DESCRIPTION = "list-item-description";
     public static final String LIST_DIVIDER = "list-divider";
 
-    /** MenuAnt */
+    /** MenuAnt 菜单 */
     public static final String MENU = "menu";
     public static final String MENU_ITEM = "menu-item";
     public static final String MENU_ITEM_LABEL = "menu-item-label";
@@ -485,7 +492,7 @@ public final class CssClasses {
     public static final String MENU_ITEM_SELECTED = "menu-item-selected";
     public static final String MENU_SUBMENU_ARROW_BOX = "menu-submenu-arrow-box";
 
-    /** UploadAnt */
+    /** UploadAnt 上传 */
     public static final String UPLOAD = "upload";
     public static final String UPLOAD_DRAG = "upload-drag";
     public static final String UPLOAD_DRAG_ACTIVE = "upload-drag-active";
@@ -498,7 +505,7 @@ public final class CssClasses {
     public static final String UPLOAD_FILE_ERROR = "upload-file-error";
     public static final String UPLOAD_REMOVE_BTN = "upload-remove-btn";
 
-    /** StepsAnt */
+    /** StepsAnt 步骤条 */
     public static final String STEPS = "steps";
     public static final String STEPS_VERTICAL = "steps-vertical";
     public static final String STEPS_ITEM = "steps-item";
@@ -512,7 +519,7 @@ public final class CssClasses {
     public static final String STEPS_STATE_CURRENT = "steps-current";
     public static final String STEPS_STATE_WAIT = "steps-wait";
 
-    /** BreadcrumbAnt */
+    /** BreadcrumbAnt 面包屑 */
     public static final String BREADCRUMB = "breadcrumb";
     public static final String BREADCRUMB_ITEM = "breadcrumb-item";
     public static final String BREADCRUMB_LINK = "breadcrumb-link";
@@ -520,10 +527,10 @@ public final class CssClasses {
     public static final String BREADCRUMB_SEPARATOR = "breadcrumb-separator";
 
     /* ============================================
-       Batch 5 Tier 4：DescriptionsAnt / CalendarAnt
+       DescriptionsAnt / CalendarAnt
        ============================================ */
 
-    /** DescriptionsAnt */
+    /** DescriptionsAnt 描述列表 */
     public static final String DESCRIPTIONS = "descriptions";
     public static final String DESCRIPTIONS_VERTICAL = "descriptions-vertical";
     public static final String DESCRIPTIONS_GRID = "descriptions-grid";
@@ -535,7 +542,7 @@ public final class CssClasses {
     public static final String DESCRIPTIONS_SIZE_MIDDLE = "descriptions-middle";
     public static final String DESCRIPTIONS_SIZE_LARGE = "descriptions-large";
 
-    /** CalendarAnt */
+    /** CalendarAnt 日历 */
     public static final String CALENDAR = "calendar";
     public static final String CALENDAR_HEADER = "calendar-header";
     public static final String CALENDAR_HEADER_LABEL = "calendar-header-label";
@@ -562,7 +569,6 @@ public final class CssClasses {
 
     /* ============================================
        PageTemplate（M19.33）— 通用展示页骨架
-       「大标题 + 描述 + 内容区」最简结构，覆盖 ShowcasePage / 文档页 / 设置页等场景。
        ============================================ */
     public static final String PAGE_TEMPLATE         = "page-template";
     public static final String PAGE_TEMPLATE_TITLE   = "page-template-title";
@@ -669,7 +675,7 @@ public final class CssClasses {
     public static final String SELECTABLE_TEXT_ERROR     = "jfx-selectable-text-error";
 
     /* ============================================
-       LoginTemplate（M19.16，M19.39 LESS 化）
+       LoginTemplate（M19.16，M19.39 LESS 化）— 登录页模板
        ============================================ */
     public static final String LOGIN_ROOT            = "login-template";
     public static final String LOGIN_BANNER          = "login-template-banner";
@@ -691,20 +697,78 @@ public final class CssClasses {
     public static final String LOGIN_FORM_NO_ACCOUNT = "login-template-no-account";
 
     /* ============================================
-       TabsAnt
+       TabsAnt — 标签页
        ============================================ */
+    public static final String TABS_BAR         = "jfx-tabs-bar";
+    public static final String TABS_BAR_CARD    = "jfx-tabs-bar-card";
+    public static final String TABS_LABEL       = "jfx-tabs-label";
+    public static final String TABS_LABEL_LINE  = "jfx-tabs-label-line";
+    public static final String TABS_LABEL_CARD  = "jfx-tabs-label-card";
+    public static final String TABS_ACTIVE      = "jfx-tabs-active";
+    public static final String TABS_DISABLED    = "jfx-tabs-disabled";
+    public static final String TABS_LABEL_LARGE = "jfx-tabs-large";
+    public static final String TABS_LABEL_SMALL = "jfx-tabs-small";
     public static final String TABS_INDICATOR_PANE = "tabs-indicator-pane";
     public static final String TABS_INDICATOR_BAR  = "tabs-indicator-bar";
 
     /* ============================================
-       PopoverPanel / PopoverAnt
+       PanelFooter — 面板底部
+       ============================================ */
+    public static final String PANEL_FOOTER          = "jfx-panel-footer";
+    public static final String PANEL_FOOTER_BORDERED = "jfx-panel-footer-bordered";
+
+    /* ============================================
+       QRCodeAnt — 二维码
+       ============================================ */
+    public static final String QR_CODE           = "qr-code";
+    public static final String QR_CODE_BORDERED  = "qr-code-bordered";
+
+    /* ============================================
+       RateAnt — 评分
+       ============================================ */
+    public static final String RATE          = "rate";
+    public static final String RATE_STAR     = "jfx-rate-star";
+    public static final String RATE_ACTIVE   = "jfx-rate-active";
+    public static final String RATE_INACTIVE = "jfx-rate-inactive";
+
+    /* ============================================
+       FloatButtonAnt — 浮动按钮
+       ============================================ */
+    public static final String FLOAT_BUTTON          = "float-button";
+    public static final String FLOAT_BUTTON_PRIMARY  = "jfx-float-button-primary";
+    public static final String FLOAT_BUTTON_DEFAULT  = "jfx-float-button-default";
+
+    /* ============================================
+       SkeletonAnt — 骨架屏
+       ============================================ */
+    public static final String SKELETON      = "skeleton";
+    public static final String SKELETON_RECT = "jfx-skeleton-rect";
+
+    /* ============================================
+       AvatarAnt — 头像
+       ============================================ */
+    public static final String AVATAR            = "avatar";
+    public static final String AVATAR_BG_DEFAULT = "jfx-avatar-bg-default";
+    public static final String AVATAR_FG_DEFAULT = "jfx-avatar-fg-default";
+
+    /* ============================================
+       共享图标颜色 — 消息/通知/结果页通用
+       ============================================ */
+    public static final String ICON_SUCCESS = "jfx-icon-success";
+    public static final String ICON_DANGER  = "jfx-icon-danger";
+    public static final String ICON_WARNING = "jfx-icon-warning";
+    public static final String ICON_INFO    = "jfx-icon-info";
+    public static final String ICON_MUTED   = "jfx-icon-muted";
+
+    /* ============================================
+       PopoverPanel / PopoverAnt — 气泡卡片
        ============================================ */
     public static final String POPOVER_PANEL      = "popover-panel";
     public static final String POPOVER_TITLE_BOX  = "popover-title-box";
     public static final String POPOVER_TITLE_LABEL = "popover-title-label";
 
     /* ============================================
-       Base Cards — Popconfirm / Message / Notification / Result
+       Popconfirm / Message / Notification / Result 基础卡片
        ============================================ */
     public static final String POPCONFIRM_PANEL = "popconfirm-panel";
     public static final String POPCONFIRM_ICON  = "popconfirm-icon";
@@ -719,7 +783,7 @@ public final class CssClasses {
     public static final String RESULT_SUBTITLE = "result-subtitle";
 
     /* ============================================
-       Template / Utility Components
+       模板 / 工具类组件
        ============================================ */
     public static final String FILTER_BAR_LABEL       = "filter-bar-label";
     public static final String DASHBOARD_ROOT         = "dashboard-root";
@@ -734,7 +798,7 @@ public final class CssClasses {
     public static final String BAR_BORDER_TOP    = "bar-border-top";
 
     /* ============================================
-       Universal directional borders — 任意组件可用
+       通用四向边框 — 任意组件可用
        ============================================ */
     public static final String BORDER_TOP    = "border-top";
     public static final String BORDER_BOTTOM = "border-bottom";

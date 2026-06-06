@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 统一滚动容器组件。
@@ -65,7 +65,7 @@ public class ScrollContainerAnt {
 
         public ScrollPane build() {
             ScrollPane scrollPane = new ScrollPane();
-            scrollPane.getStyleClass().add(CssClasses.SCROLL_CONTAINER);
+            scrollPane.getStyleClass().add(JfxStyles.SCROLL_CONTAINER);
             scrollPane.setFitToWidth(fitToWidth);
             scrollPane.setFitToHeight(fitToHeight);
             scrollPane.setPannable(pannable);
@@ -74,7 +74,7 @@ public class ScrollContainerAnt {
 
             if (content != null) {
                 StackPane viewport = new StackPane(content);
-                viewport.getStyleClass().add(CssClasses.SCROLL_CONTAINER_VIEWPORT);
+                viewport.getStyleClass().add(JfxStyles.SCROLL_CONTAINER_VIEWPORT);
                 // padding 应用到 viewport（通过父类 applyStyles）
                 if (padding != null) {
                     viewport.setPadding(padding);

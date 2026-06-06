@@ -6,7 +6,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -122,11 +122,11 @@ public class InputAnt extends TextField {
      * DEFAULT 仅清不挂（与 ButtonAnt 行为一致）。
      */
     public InputAnt size(Size size) {
-        getStyleClass().removeAll(CssClasses.SIZE_SMALL, CssClasses.SIZE_LARGE);
+        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
         if (size == Size.SMALL) {
-            getStyleClass().add(CssClasses.SIZE_SMALL);
+            getStyleClass().add(JfxStyles.SIZE_SMALL);
         } else if (size == Size.LARGE) {
-            getStyleClass().add(CssClasses.SIZE_LARGE);
+            getStyleClass().add(JfxStyles.SIZE_LARGE);
         }
         return this;
     }
@@ -235,15 +235,15 @@ public class InputAnt extends TextField {
 
         public HBox build() {
             HBox container = new HBox(0);
-            container.getStyleClass().add(CssClasses.INPUT_PASSWORD);
+            container.getStyleClass().add(JfxStyles.INPUT_PASSWORD);
             container.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
             PasswordField pwdField = new PasswordField();
             pwdField.getStyleClass().add("text-input");
             if (size == Size.SMALL) {
-                pwdField.getStyleClass().add(CssClasses.SIZE_SMALL);
+                pwdField.getStyleClass().add(JfxStyles.SIZE_SMALL);
             } else if (size == Size.LARGE) {
-                pwdField.getStyleClass().add(CssClasses.SIZE_LARGE);
+                pwdField.getStyleClass().add(JfxStyles.SIZE_LARGE);
             }
             pwdField.setPromptText(placeholder);
             pwdField.setDisable(disabled);
@@ -251,7 +251,7 @@ public class InputAnt extends TextField {
 
             // 可见切换按钮
             ToggleButton eyeBtn = new ToggleButton();
-            eyeBtn.getStyleClass().add(CssClasses.INPUT_PASSWORD_EYE);
+            eyeBtn.getStyleClass().add(JfxStyles.INPUT_PASSWORD_EYE);
             eyeBtn.setText("👁");
             eyeBtn.setSelected(false);
 
@@ -261,14 +261,14 @@ public class InputAnt extends TextField {
                     pwdField.setPromptText(placeholder);
                     // PasswordField 不能直接设 echo char，需要替换为 TextField
                     // 简化实现：通过 CSS 控制显示
-                    pwdField.getStyleClass().remove(CssClasses.INPUT_PASSWORD_MASKED);
-                    pwdField.getStyleClass().add(CssClasses.INPUT_PASSWORD_VISIBLE);
+                    pwdField.getStyleClass().remove(JfxStyles.INPUT_PASSWORD_MASKED);
+                    pwdField.getStyleClass().add(JfxStyles.INPUT_PASSWORD_VISIBLE);
                 } else {
-                    pwdField.getStyleClass().remove(CssClasses.INPUT_PASSWORD_VISIBLE);
-                    pwdField.getStyleClass().add(CssClasses.INPUT_PASSWORD_MASKED);
+                    pwdField.getStyleClass().remove(JfxStyles.INPUT_PASSWORD_VISIBLE);
+                    pwdField.getStyleClass().add(JfxStyles.INPUT_PASSWORD_MASKED);
                 }
             });
-            pwdField.getStyleClass().add(CssClasses.INPUT_PASSWORD_MASKED);
+            pwdField.getStyleClass().add(JfxStyles.INPUT_PASSWORD_MASKED);
 
             // 回调
             if (onChange != null) {

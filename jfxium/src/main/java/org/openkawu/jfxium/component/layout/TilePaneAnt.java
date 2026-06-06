@@ -4,7 +4,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 平铺布局组件 - 对标 Ant Design 的平铺/缩略图网格。
@@ -19,7 +19,7 @@ import org.openkawu.jfxium.core.css.CssClasses;
  *   <li><b>间距</b>：hgap(vgap) / vgap(vgap) 行列间距</li>
  *   <li><b>对齐</b>：alignment(Pos) 整体对齐方式</li>
  *   <li><b>子节点</b>：children(Node...) 批量添加子节点</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#TILE_PANE} LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#TILE_PANE} LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -57,7 +57,7 @@ public class TilePaneAnt extends TilePane {
 
     public TilePaneAnt() {
         super();
-        getStyleClass().add(CssClasses.TILE_PANE);
+        getStyleClass().add(JfxStyles.TILE_PANE);
     }
 
     // ============================================================

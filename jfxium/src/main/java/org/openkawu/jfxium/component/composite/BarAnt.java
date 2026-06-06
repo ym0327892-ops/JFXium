@@ -6,7 +6,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -194,7 +194,7 @@ public class BarAnt {
 
         public HBox build() {
             HBox bar = new HBox(gap);
-            bar.getStyleClass().add(CssClasses.SPLIT_BAR);
+            bar.getStyleClass().add(JfxStyles.SPLIT_BAR);
             bar.setAlignment(alignment);
 
             // 1. 左段
@@ -237,7 +237,7 @@ public class BarAnt {
          */
         private static Region makeSpacer() {
             Region spacer = new Region();
-            spacer.getStyleClass().add(CssClasses.SPLIT_BAR_SPACER);
+            spacer.getStyleClass().add(JfxStyles.SPLIT_BAR_SPACER);
             HBox.setHgrow(spacer, Priority.ALWAYS);
             spacer.setMaxWidth(Double.MAX_VALUE);
             return spacer;

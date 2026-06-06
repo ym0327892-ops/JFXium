@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ import java.util.List;
  * <h2>设计取舍</h2>
  * <ul>
  *   <li>底层 VBox（不是 BorderPane）—— 标题/描述/body 按顺序竖排，high 自适应</li>
- *   <li>所有视觉样式走 styleClass + LESS（{@link CssClasses#PAGE_TEMPLATE_TITLE} / {@code _DESC}），
+ *   <li>所有视觉样式走 styleClass + LESS（{@link JfxStyles#PAGE_TEMPLATE_TITLE} / {@code _DESC}），
  *       <b>禁止 inline setStyle</b>——遵循项目 SKILL #1 强约束</li>
  *   <li>title 可选；description 可选；body 也可选——三者都不设就是个空 VBox</li>
  *   <li>{@link #section(Node)} 是 {@link #body(Node)} 的多节点版本，适合 showcase 多 Section 场景</li>
@@ -197,7 +197,7 @@ public class PageTemplate {
 
         public VBox build() {
             VBox root = new VBox();
-            root.getStyleClass().add(CssClasses.PAGE_TEMPLATE);
+            root.getStyleClass().add(JfxStyles.PAGE_TEMPLATE);
             if (padding > 0) {
                 root.setPadding(new Insets(padding));
             }
@@ -218,8 +218,8 @@ public class PageTemplate {
             //   .body(form).section(footerNotes)  也合法（虽然不常用）
             if (body != null) {
                 Node b = body;
-                if (!b.getStyleClass().contains(CssClasses.PAGE_TEMPLATE_BODY)) {
-                    b.getStyleClass().add(CssClasses.PAGE_TEMPLATE_BODY);
+                if (!b.getStyleClass().contains(JfxStyles.PAGE_TEMPLATE_BODY)) {
+                    b.getStyleClass().add(JfxStyles.PAGE_TEMPLATE_BODY);
                 }
                 root.getChildren().add(b);
             }
@@ -249,16 +249,16 @@ public class PageTemplate {
             }
             VBox header = new VBox(headerGap);
             header.setAlignment(Pos.TOP_LEFT);
-            header.getStyleClass().add(CssClasses.PAGE_TEMPLATE_HEADER);
+            header.getStyleClass().add(JfxStyles.PAGE_TEMPLATE_HEADER);
 
             if (title != null && !title.isEmpty()) {
                 Label titleLabel = new Label(title);
-                titleLabel.getStyleClass().add(CssClasses.PAGE_TEMPLATE_TITLE);
+                titleLabel.getStyleClass().add(JfxStyles.PAGE_TEMPLATE_TITLE);
                 header.getChildren().add(titleLabel);
             }
             if (description != null && !description.isEmpty()) {
                 Label descLabel = new Label(description);
-                descLabel.getStyleClass().add(CssClasses.PAGE_TEMPLATE_DESC);
+                descLabel.getStyleClass().add(JfxStyles.PAGE_TEMPLATE_DESC);
                 descLabel.setWrapText(true);
                 header.getChildren().add(descLabel);
             }

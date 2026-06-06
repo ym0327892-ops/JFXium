@@ -9,7 +9,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 回到顶部组件 - 对标 Ant Design BackTop（组合式，Builder 模式）。
@@ -71,7 +71,7 @@ public class BackTopAnt {
 
         public StackPane build() {
             StackPane backTop = new StackPane();
-            backTop.getStyleClass().add(CssClasses.BACK_TOP);
+            backTop.getStyleClass().add(JfxStyles.BACK_TOP);
             backTop.setPrefSize(44, 44);
             backTop.setMaxSize(44, 44);
             backTop.setVisible(false);
@@ -83,7 +83,7 @@ public class BackTopAnt {
             arrow.setContent("M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z");
             arrow.setScaleX(1.5);
             arrow.setScaleY(1.5);
-            arrow.getStyleClass().add(CssClasses.BACK_TOP_ARROW);
+            arrow.getStyleClass().add(JfxStyles.BACK_TOP_ARROW);
             backTop.getChildren().add(arrow);
 
             // hover 由 LESS .jfx-back-top:hover 控制，不再通过 Java 事件回调

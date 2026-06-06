@@ -11,7 +11,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -277,8 +277,8 @@ public class MenuAnt {
             Pane root;
             if (mode == Mode.HORIZONTAL) {
                 HBox menu = new HBox(0);
-                menu.getStyleClass().addAll(CssClasses.MENU, CssClasses.MENU_HORIZONTAL);
-                if (theme == Theme.DARK) menu.getStyleClass().add(CssClasses.MENU_DARK);
+                menu.getStyleClass().addAll(JfxStyles.MENU, JfxStyles.MENU_HORIZONTAL);
+                if (theme == Theme.DARK) menu.getStyleClass().add(JfxStyles.MENU_DARK);
                 menu.setAlignment(Pos.CENTER_LEFT);
                 for (MenuItem item : items) {
                     Node node = item.buildHorizontal(ctx);
@@ -287,9 +287,9 @@ public class MenuAnt {
                 root = menu;
             } else {
                 VBox menu = new VBox(0);
-                menu.getStyleClass().addAll(CssClasses.MENU, CssClasses.MENU_INLINE);
-                if (theme == Theme.DARK)         menu.getStyleClass().add(CssClasses.MENU_DARK);
-                if (effectiveCollapsed)          menu.getStyleClass().add(CssClasses.MENU_COLLAPSED);
+                menu.getStyleClass().addAll(JfxStyles.MENU, JfxStyles.MENU_INLINE);
+                if (theme == Theme.DARK)         menu.getStyleClass().add(JfxStyles.MENU_DARK);
+                if (effectiveCollapsed)          menu.getStyleClass().add(JfxStyles.MENU_COLLAPSED);
                 for (MenuItem item : items) {
                     Node node = item.buildInline(ctx);
                     if (node != null) menu.getChildren().add(node);
@@ -361,14 +361,14 @@ public class MenuAnt {
             // 取消老的高亮
             if (old != null) {
                 HBox oldRow = ctx.itemRows.get(old);
-                if (oldRow != null) oldRow.getStyleClass().remove(CssClasses.MENU_ITEM_SELECTED);
+                if (oldRow != null) oldRow.getStyleClass().remove(JfxStyles.MENU_ITEM_SELECTED);
             }
             // 挂新的
             ctx.selectedKey = key;
             if (key != null) {
                 HBox row = ctx.itemRows.get(key);
-                if (row != null && !row.getStyleClass().contains(CssClasses.MENU_ITEM_SELECTED)) {
-                    row.getStyleClass().add(CssClasses.MENU_ITEM_SELECTED);
+                if (row != null && !row.getStyleClass().contains(JfxStyles.MENU_ITEM_SELECTED)) {
+                    row.getStyleClass().add(JfxStyles.MENU_ITEM_SELECTED);
                 }
             }
         }
@@ -565,7 +565,7 @@ public class MenuAnt {
             container.getChildren().add(header);
 
             VBox childrenContainer = new VBox(0);
-            childrenContainer.getStyleClass().add(CssClasses.MENU_SUBMENU_BODY);
+            childrenContainer.getStyleClass().add(JfxStyles.MENU_SUBMENU_BODY);
             for (MenuItem child : children) {
                 Node node = child.buildInline(ctx);
                 if (node != null) childrenContainer.getChildren().add(node);
@@ -578,7 +578,7 @@ public class MenuAnt {
             SVGPath arrow = createArrow();
             HBox arrowContainer = new HBox(arrow);
             arrowContainer.setAlignment(Pos.CENTER_RIGHT);
-            arrowContainer.getStyleClass().add(CssClasses.MENU_SUBMENU_ARROW_BOX);
+            arrowContainer.getStyleClass().add(JfxStyles.MENU_SUBMENU_ARROW_BOX);
             HBox.setHgrow(arrowContainer, Priority.NEVER);
             header.getChildren().add(arrowContainer);
 
@@ -661,7 +661,7 @@ public class MenuAnt {
             header.setAlignment(Pos.CENTER);
             header.setMinHeight(40);
             header.setPrefHeight(40);
-            header.getStyleClass().add(CssClasses.MENU_SUBMENU_HEADER);
+            header.getStyleClass().add(JfxStyles.MENU_SUBMENU_HEADER);
             header.setStyle("-fx-cursor: hand;");
 
             // 仅显示图标（如果有）；没有图标时显示 text 首字符
@@ -669,14 +669,14 @@ public class MenuAnt {
                 header.getChildren().add(icon);
             } else if (text != null && !text.isEmpty()) {
                 Label fallback = new Label(text.substring(0, 1));
-                fallback.getStyleClass().add(CssClasses.MENU_ITEM_LABEL);
+                fallback.getStyleClass().add(JfxStyles.MENU_ITEM_LABEL);
                 header.getChildren().add(fallback);
             }
 
             // Popup 弹层（从右侧弹出）
             Popup popup = new Popup();
             VBox popupBody = new VBox(0);
-            popupBody.getStyleClass().addAll(CssClasses.MENU, CssClasses.POPUP_MENU);
+            popupBody.getStyleClass().addAll(JfxStyles.MENU, JfxStyles.POPUP_MENU);
             // 子菜单内部用非 collapsed 上下文渲染（弹层里要显示完整文字）
             BuildContext expandCtx = new BuildContext(ctx.mode, ctx.theme, false, ctx.selectedKey, ctx.onSelect,
                     ExpandMode.MULTIPLE, new java.util.HashSet<>(), null);
@@ -704,11 +704,11 @@ public class MenuAnt {
             HBox row = new HBox(12);
             row.setAlignment(Pos.CENTER_LEFT);
             row.setPadding(new Insets(10, 16, 10, 16 + level * 16));
-            row.getStyleClass().add(CssClasses.MENU_SUBMENU_HEADER);
+            row.getStyleClass().add(JfxStyles.MENU_SUBMENU_HEADER);
 
             if (icon != null) row.getChildren().add(icon);
             Label label = new Label(text);
-            label.getStyleClass().add(CssClasses.MENU_ITEM_LABEL);
+            label.getStyleClass().add(JfxStyles.MENU_ITEM_LABEL);
             row.getChildren().add(label);
             // 用独立 Region spacer 把右侧箭头推到最右（Label 默认 maxWidth=USE_PREF_SIZE
             // 给它设 Hgrow=ALWAYS 不会拉伸；详见 SKILL §4.1 / §20.1）
@@ -727,24 +727,24 @@ public class MenuAnt {
             header.setPadding(new Insets(0, 16, 0, 16));
             header.setMinHeight(48);
             header.setPrefHeight(48);
-            header.getStyleClass().add(CssClasses.MENU_SUBMENU_HEADER);
+            header.getStyleClass().add(JfxStyles.MENU_SUBMENU_HEADER);
             header.setStyle("-fx-cursor: hand;");
 
             if (icon != null) header.getChildren().add(icon);
             Label label = new Label(text);
-            label.getStyleClass().add(CssClasses.MENU_ITEM_LABEL);
+            label.getStyleClass().add(JfxStyles.MENU_ITEM_LABEL);
             header.getChildren().add(label);
 
             // 下拉箭头：与 INLINE 共用一个 shape，但默认旋转 90° 朝下
             SVGPath arrow = createArrow();
             arrow.setRotate(90);
-            arrow.getStyleClass().add(CssClasses.MENU_SUBMENU_ARROW);
+            arrow.getStyleClass().add(JfxStyles.MENU_SUBMENU_ARROW);
             header.getChildren().add(arrow);
 
             // Popup 弹层（点击切换显隐；INLINE 模式中是行内展开，这里改 popup）
             Popup popup = new Popup();
             VBox popupBody = new VBox(0);
-            popupBody.getStyleClass().addAll(CssClasses.MENU, CssClasses.POPUP_MENU);
+            popupBody.getStyleClass().addAll(JfxStyles.MENU, JfxStyles.POPUP_MENU);
             for (MenuItem child : children) {
                 // 子菜单内部走 INLINE 渲染（VBox 一列）
                 Node node = child.buildInline(ctx);
@@ -801,14 +801,14 @@ public class MenuAnt {
                 } else if (text != null && !text.isEmpty()) {
                     // 兜底：显示文字首字符（如果该 item 没图标）
                     Label fallback = new Label(text.substring(0, 1));
-                    fallback.getStyleClass().add(CssClasses.MENU_ITEM_LABEL);
+                    fallback.getStyleClass().add(JfxStyles.MENU_ITEM_LABEL);
                     row.getChildren().add(fallback);
                 }
             } else {
                 row.setAlignment(Pos.CENTER_LEFT);
                 if (icon != null) row.getChildren().add(icon);
                 Label label = new Label(text);
-                label.getStyleClass().add(CssClasses.MENU_ITEM_LABEL);
+                label.getStyleClass().add(JfxStyles.MENU_ITEM_LABEL);
                 row.getChildren().add(label);
             }
 
@@ -826,7 +826,7 @@ public class MenuAnt {
 
             if (icon != null) row.getChildren().add(icon);
             Label label = new Label(text);
-            label.getStyleClass().add(CssClasses.MENU_ITEM_LABEL);
+            label.getStyleClass().add(JfxStyles.MENU_ITEM_LABEL);
             row.getChildren().add(label);
 
             attachClick(row, ctx);
@@ -835,12 +835,12 @@ public class MenuAnt {
 
         /** 挂 styleClass：基础 menu-item + 选中态。 */
         private void applyItemStyles(HBox row, BuildContext ctx) {
-            row.getStyleClass().add(CssClasses.MENU_ITEM);
+            row.getStyleClass().add(JfxStyles.MENU_ITEM);
             if (key != null) {
                 // 注册到 ctx：让 Controller.setSelectedKey() 能找到该 row 改 styleClass（M19.38）
                 ctx.itemRows.put(key, row);
                 if (key.equals(ctx.selectedKey)) {
-                    row.getStyleClass().add(CssClasses.MENU_ITEM_SELECTED);
+                    row.getStyleClass().add(JfxStyles.MENU_ITEM_SELECTED);
                 }
             }
         }
@@ -868,7 +868,7 @@ public class MenuAnt {
             if (ctx.collapsed) return null;
 
             Label label = new Label(text);
-            label.getStyleClass().add(CssClasses.MENU_GROUP_LABEL);
+            label.getStyleClass().add(JfxStyles.MENU_GROUP_LABEL);
             label.setPadding(new Insets(16, 16, 8, 16 + level * 16));
             return label;
         }
@@ -889,7 +889,7 @@ public class MenuAnt {
         @Override
         Node buildInline(BuildContext ctx) {
             Region line = new Region();
-            line.getStyleClass().add(CssClasses.MENU_DIVIDER);
+            line.getStyleClass().add(JfxStyles.MENU_DIVIDER);
             // 折叠模式：分割线左右无 padding 偏移
             if (ctx.collapsed) {
                 line.setPadding(new Insets(8, 0, 8, 0));
@@ -911,7 +911,7 @@ public class MenuAnt {
     private static SVGPath createArrow() {
         SVGPath arrow = new SVGPath();
         arrow.setContent(ARROW_RIGHT);
-        arrow.getStyleClass().add(CssClasses.MENU_SUBMENU_ARROW);
+        arrow.getStyleClass().add(JfxStyles.MENU_SUBMENU_ARROW);
         arrow.setScaleX(0.8);
         arrow.setScaleY(0.8);
         return arrow;

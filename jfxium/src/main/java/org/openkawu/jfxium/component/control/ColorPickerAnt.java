@@ -2,7 +2,7 @@ package org.openkawu.jfxium.component.control;
 
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  *   <li><b>回调</b>：onChange(Color) 颜色变化时触发</li>
  *   <li><b>禁用</b>：disabled(true)</li>
  *   <li><b>尺寸</b>：size(Size.SMALL/DEFAULT/LARGE)</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#COLOR_PICKER} LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#COLOR_PICKER} LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -61,12 +61,12 @@ public class ColorPickerAnt extends ColorPicker {
 
     public ColorPickerAnt() {
         super();
-        getStyleClass().add(CssClasses.COLOR_PICKER);
+        getStyleClass().add(JfxStyles.COLOR_PICKER);
     }
 
     public ColorPickerAnt(Color value) {
         super(value);
-        getStyleClass().add(CssClasses.COLOR_PICKER);
+        getStyleClass().add(JfxStyles.COLOR_PICKER);
     }
 
     // ============================================================
@@ -88,11 +88,11 @@ public class ColorPickerAnt extends ColorPicker {
     }
 
     public ColorPickerAnt size(Size size) {
-        getStyleClass().removeAll(CssClasses.SIZE_SMALL, CssClasses.SIZE_LARGE);
+        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
         if (size == Size.SMALL) {
-            getStyleClass().add(CssClasses.SIZE_SMALL);
+            getStyleClass().add(JfxStyles.SIZE_SMALL);
         } else if (size == Size.LARGE) {
-            getStyleClass().add(CssClasses.SIZE_LARGE);
+            getStyleClass().add(JfxStyles.SIZE_LARGE);
         }
         return this;
     }

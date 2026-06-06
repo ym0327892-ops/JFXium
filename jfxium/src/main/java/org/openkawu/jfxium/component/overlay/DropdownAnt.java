@@ -9,7 +9,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  *   <li><b>回调</b>：onSelect(key) + onSelectItem(MenuItem) 双回调（BUG #54）</li>
  *   <li><b>位置</b>：bottomLeft（默认）/ bottomRight / topLeft / topRight</li>
  *   <li><b>禁用</b>：disabled(true) 禁用整个下拉</li>
- *   <li><b>视觉</b>：走 CssClasses.POPUP_MENU 系列，hover/disabled 由 LESS 伪类控制</li>
+ *   <li><b>视觉</b>：走 JfxStyles.POPUP_MENU 系列，hover/disabled 由 LESS 伪类控制</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -188,21 +188,21 @@ public class DropdownAnt {
         private VBox createMenu() {
             VBox menuBox = new VBox(0);
             // 走通用 popup-menu 样式（背景/边框/阴影/padding/min-width 全在 LESS）
-            menuBox.getStyleClass().add(CssClasses.POPUP_MENU);
+            menuBox.getStyleClass().add(JfxStyles.POPUP_MENU);
 
             for (MenuItem item : config.items) {
                 if (item.isDivider()) {
                     Region div = new Region();
-                    div.getStyleClass().add(CssClasses.POPUP_MENU_DIVIDER);
+                    div.getStyleClass().add(JfxStyles.POPUP_MENU_DIVIDER);
                     menuBox.getChildren().add(div);
                     continue;
                 }
 
                 HBox menuItem = new HBox(8);
                 menuItem.setAlignment(Pos.CENTER_LEFT);
-                menuItem.getStyleClass().add(CssClasses.POPUP_MENU_ITEM);
+                menuItem.getStyleClass().add(JfxStyles.POPUP_MENU_ITEM);
                 if (item.isDisabled()) {
-                    menuItem.getStyleClass().add(CssClasses.POPUP_MENU_ITEM_DISABLED);
+                    menuItem.getStyleClass().add(JfxStyles.POPUP_MENU_ITEM_DISABLED);
                 }
 
                 if (item.getIcon() != null) {

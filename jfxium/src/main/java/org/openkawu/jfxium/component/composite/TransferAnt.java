@@ -8,7 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class TransferAnt<T> {
 
         public HBox build() {
             HBox transfer = new HBox(12);
-            transfer.getStyleClass().add(CssClasses.TRANSFER);
+            transfer.getStyleClass().add(JfxStyles.TRANSFER);
             transfer.setAlignment(Pos.CENTER);
 
             String[] titleArr = titles != null ? titles.split(";", 2) : new String[0];
@@ -105,18 +105,18 @@ public class TransferAnt<T> {
 
         private VBox buildListBox(String title, List<T> items, boolean isSource) {
             VBox box = new VBox(0);
-            box.getStyleClass().add(CssClasses.TRANSFER_LIST);
+            box.getStyleClass().add(JfxStyles.TRANSFER_LIST);
             box.setPrefWidth(200);
             box.setPrefHeight(300);
 
             HBox header = new HBox(8);
             header.setAlignment(Pos.CENTER_LEFT);
-            header.getStyleClass().add(CssClasses.TRANSFER_LIST_HEADER);
+            header.getStyleClass().add(JfxStyles.TRANSFER_LIST_HEADER);
 
             Label titleLabel = new Label(title);
-            titleLabel.getStyleClass().add(CssClasses.TRANSFER_LIST_TITLE);
+            titleLabel.getStyleClass().add(JfxStyles.TRANSFER_LIST_TITLE);
             Label countLabel = new Label(Messages.get("transfer.items", items.size()));
-            countLabel.getStyleClass().add(CssClasses.TRANSFER_LIST_COUNT);
+            countLabel.getStyleClass().add(JfxStyles.TRANSFER_LIST_COUNT);
 
             header.getChildren().addAll(titleLabel, countLabel);
             box.getChildren().add(header);
@@ -124,9 +124,9 @@ public class TransferAnt<T> {
             if (showSearch) {
                 TextField searchField = new TextField();
                 searchField.setPromptText(Messages.get("transfer.search"));
-                searchField.getStyleClass().add(CssClasses.TRANSFER_LIST_SEARCH);
+                searchField.getStyleClass().add(JfxStyles.TRANSFER_LIST_SEARCH);
                 VBox searchBox = new VBox(searchField);
-                searchBox.getStyleClass().add(CssClasses.TRANSFER_LIST_SEARCH_WRAPPER);
+                searchBox.getStyleClass().add(JfxStyles.TRANSFER_LIST_SEARCH_WRAPPER);
                 box.getChildren().add(searchBox);
             }
 
@@ -136,7 +136,7 @@ public class TransferAnt<T> {
             }
 
             ListView<String> listView = new ListView<>(displayItems);
-            listView.getStyleClass().add(CssClasses.TRANSFER_LIST_VIEW);
+            listView.getStyleClass().add(JfxStyles.TRANSFER_LIST_VIEW);
             listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             VBox.setVgrow(listView, Priority.ALWAYS);
 
@@ -193,7 +193,7 @@ public class TransferAnt<T> {
         /** Transfer 方向按钮：视觉与 hover 由 LESS 控制 */
         private Button createTransferButton(String text) {
             Button btn = new Button(text);
-            btn.getStyleClass().add(CssClasses.TRANSFER_ARROW_BTN);
+            btn.getStyleClass().add(JfxStyles.TRANSFER_ARROW_BTN);
             return btn;
         }
     }

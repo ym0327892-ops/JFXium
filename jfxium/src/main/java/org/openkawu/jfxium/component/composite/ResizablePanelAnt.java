@@ -9,7 +9,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 可调整尺寸面板组件（组合式，Builder 模式）。
@@ -126,7 +126,7 @@ public class ResizablePanelAnt {
 
         public StackPane build() {
             StackPane panel = new StackPane();
-            panel.getStyleClass().add(CssClasses.RESIZABLE_PANEL);
+            panel.getStyleClass().add(JfxStyles.RESIZABLE_PANEL);
             panel.setMinSize(minWidth, minHeight);
             panel.setMaxSize(maxWidth, maxHeight);
             if (prefWidth >= 0) {
@@ -143,7 +143,7 @@ public class ResizablePanelAnt {
             }
 
             if (content != null) {
-                content.getStyleClass().add(CssClasses.RESIZABLE_PANEL_CONTENT);
+                content.getStyleClass().add(JfxStyles.RESIZABLE_PANEL_CONTENT);
                 panel.getChildren().add(content);
             }
 
@@ -158,11 +158,11 @@ public class ResizablePanelAnt {
 
         private Node createHandle(StackPane panel) {
             StackPane handle = new StackPane();
-            handle.getStyleClass().add(CssClasses.RESIZABLE_PANEL_HANDLE);
+            handle.getStyleClass().add(JfxStyles.RESIZABLE_PANEL_HANDLE);
 
             switch (mode) {
                 case HORIZONTAL -> {
-                    handle.getStyleClass().add(CssClasses.RESIZABLE_PANEL_HANDLE_HORIZONTAL);
+                    handle.getStyleClass().add(JfxStyles.RESIZABLE_PANEL_HANDLE_HORIZONTAL);
                     handle.setMinWidth(6);
                     handle.setPrefWidth(6);
                     handle.setMaxWidth(6);
@@ -171,7 +171,7 @@ public class ResizablePanelAnt {
                     StackPane.setAlignment(handle, Pos.CENTER_RIGHT);
                 }
                 case VERTICAL -> {
-                    handle.getStyleClass().add(CssClasses.RESIZABLE_PANEL_HANDLE_VERTICAL);
+                    handle.getStyleClass().add(JfxStyles.RESIZABLE_PANEL_HANDLE_VERTICAL);
                     handle.setMinHeight(6);
                     handle.setPrefHeight(6);
                     handle.setMaxHeight(6);
@@ -180,7 +180,7 @@ public class ResizablePanelAnt {
                     StackPane.setAlignment(handle, Pos.BOTTOM_CENTER);
                 }
                 case BOTH -> {
-                    handle.getStyleClass().add(CssClasses.RESIZABLE_PANEL_HANDLE_BOTH);
+                    handle.getStyleClass().add(JfxStyles.RESIZABLE_PANEL_HANDLE_BOTH);
                     handle.setMinSize(12, 12);
                     handle.setPrefSize(12, 12);
                     handle.setMaxSize(12, 12);

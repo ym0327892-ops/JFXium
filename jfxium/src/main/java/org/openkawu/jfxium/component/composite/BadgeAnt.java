@@ -5,7 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium Badge Component - 对标 Ant Design Badge。
@@ -85,7 +85,7 @@ public class BadgeAnt {
 
         public StackPane build() {
             StackPane badge = new StackPane();
-            badge.getStyleClass().add(CssClasses.BADGE);
+            badge.getStyleClass().add(JfxStyles.BADGE);
 
             if (content != null) {
                 badge.getChildren().add(content);
@@ -95,22 +95,22 @@ public class BadgeAnt {
             if (count > 0 || dot || status != null) {
                 Label indicator = new Label();
                 indicator.setAlignment(Pos.CENTER);
-                indicator.getStyleClass().add(CssClasses.BADGE_INDICATOR);
+                indicator.getStyleClass().add(JfxStyles.BADGE_INDICATOR);
 
                 if (count > 0) {
                     // count 形态：右上角小圆角矩形 + 数字文本
                     indicator.setText(String.valueOf(count));
-                    indicator.getStyleClass().add(CssClasses.BADGE_COUNT);
+                    indicator.getStyleClass().add(JfxStyles.BADGE_COUNT);
                     StackPane.setAlignment(indicator, Pos.TOP_RIGHT);
                 } else if (dot) {
                     // dot 形态：右上角红色小圆点（默认 danger 色）
                     indicator.setPrefSize(8, 8);
-                    indicator.getStyleClass().add(CssClasses.BADGE_DOT);
+                    indicator.getStyleClass().add(JfxStyles.BADGE_DOT);
                     StackPane.setAlignment(indicator, Pos.TOP_RIGHT);
                 } else {
                     // status 形态：左侧偏移的小圆点 + 状态色
                     indicator.setPrefSize(8, 8);
-                    indicator.getStyleClass().add(CssClasses.BADGE_STATUS);
+                    indicator.getStyleClass().add(JfxStyles.BADGE_STATUS);
                     indicator.getStyleClass().add(statusClassFor(status));
                     StackPane.setAlignment(indicator, Pos.CENTER_LEFT);
                     indicator.setTranslateX(-12);
@@ -126,12 +126,12 @@ public class BadgeAnt {
 
         /** 状态枚举到 styleClass 修饰类的映射 */
         private static String statusClassFor(Status status) {
-            if (status == null) return CssClasses.BADGE_STATUS_DEFAULT;
+            if (status == null) return JfxStyles.BADGE_STATUS_DEFAULT;
             return switch (status) {
-                case SUCCESS -> CssClasses.BADGE_STATUS_SUCCESS;
-                case WARNING -> CssClasses.BADGE_STATUS_WARNING;
-                case ERROR -> CssClasses.BADGE_STATUS_ERROR;
-                case DEFAULT -> CssClasses.BADGE_STATUS_DEFAULT;
+                case SUCCESS -> JfxStyles.BADGE_STATUS_SUCCESS;
+                case WARNING -> JfxStyles.BADGE_STATUS_WARNING;
+                case ERROR -> JfxStyles.BADGE_STATUS_ERROR;
+                case DEFAULT -> JfxStyles.BADGE_STATUS_DEFAULT;
             };
         }
     }

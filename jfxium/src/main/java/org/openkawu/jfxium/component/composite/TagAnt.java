@@ -216,8 +216,8 @@ public class TagAnt {
      * 应用 Tag 的 type / size / shape / bordered 完整视觉状态。
      *
      * <p>步骤：清掉所有可能的状态 styleClass → 重新挂上当前状态的 styleClass → 重写 inline style。
-     * inline style 仍然保留（颜色/padding/radius/font-size 都靠它，TagAnt 早期就是这种实现），
-     * 因为完全 LESS 化要新增 ~12 个选择器组合（type×bordered×size），ROI 不高。</p>
+     * 颜色三元组通过 styleClass + LESS 定义（避免 setStyle 中 CSS 变量导致 ClassCastException），
+     * inline style 只负责 padding/radius/font-size/border-width 等布局属性。</p>
      */
     private static void applyVisualState(HBox tag, Type type, Size size, Shape shape, boolean bordered) {
         // 1. 清掉所有可能残留的状态类（保留 "tag" 基础类与用户自定义类）
@@ -232,37 +232,9 @@ public class TagAnt {
         if (shape != Shape.DEFAULT) tag.getStyleClass().add(shape.name().toLowerCase());
         if (!bordered) tag.getStyleClass().add("no-border");
 
-        // 3. 颜色三元组（按 type）
-        String bgColor, textColor, borderColor;
-        switch (type) {
-            case PRIMARY, PROCESSING -> {
-                bgColor = "-color-accent-subtle";
-                textColor = "-color-accent-emphasis";
-                borderColor = "-color-accent-muted";
-            }
-            case SUCCESS -> {
-                bgColor = "-color-success-subtle";
-                textColor = "-color-success-emphasis";
-                borderColor = "-color-success-muted";
-            }
-            case WARNING -> {
-                bgColor = "-color-warning-subtle";
-                textColor = "-color-warning-emphasis";
-                borderColor = "-color-warning-muted";
-            }
-            case ERROR -> {
-                bgColor = "-color-danger-subtle";
-                textColor = "-color-danger-emphasis";
-                borderColor = "-color-danger-muted";
-            }
-            default -> {
-                bgColor = "-color-bg-subtle";
-                textColor = "-color-fg-default";
-                borderColor = "-color-border-default";
-            }
-        }
+        // 3. 颜色由 LESS 中的 .tag.primary / .tag.success 等复合选择器提供，无需在此拼接
 
-        // 4. 拼 inline style
+        // 4. 拼 inline style（仅布局属性，无 CSS 变量）
         String padding = switch (size) {
             case SMALL -> "0 6px";
             case LARGE -> "4px 12px";
@@ -280,11 +252,8 @@ public class TagAnt {
         };
 
         StringBuilder style = new StringBuilder();
-        style.append("-fx-background-color: ").append(bgColor).append(";");
-        style.append(" -fx-text-fill: ").append(textColor).append(";");
         if (bordered) {
-            style.append(" -fx-border-color: ").append(borderColor).append(";");
-            style.append(" -fx-border-width: 1px;");
+            style.append("-fx-border-width: 1px;");
         }
         style.append(" -fx-padding: ").append(padding).append(";");
         style.append(" -fx-background-radius: ").append(radius).append(";");

@@ -11,7 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,11 +85,11 @@ public class CarouselAnt {
             }
 
             StackPane carousel = new StackPane();
-            carousel.getStyleClass().add(CssClasses.CAROUSEL);
+            carousel.getStyleClass().add(JfxStyles.CAROUSEL);
             carousel.setPrefHeight(300);
 
             StackPane contentPane = new StackPane();
-            contentPane.getStyleClass().add(CssClasses.CAROUSEL_CONTENT);
+            contentPane.getStyleClass().add(JfxStyles.CAROUSEL_CONTENT);
             // 关键：裁剪到自身边界，否则 SCROLL 动画时滑出/滑入的 slide 会越界
             javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle();
             clip.widthProperty().bind(contentPane.widthProperty());
@@ -136,7 +136,7 @@ public class CarouselAnt {
             if (dots && items.size() > 1) {
                 HBox dotsBox = new HBox(8);
                 dotsBox.setAlignment(Pos.CENTER);
-                dotsBox.getStyleClass().add(CssClasses.CAROUSEL_DOTS);
+                dotsBox.getStyleClass().add(JfxStyles.CAROUSEL_DOTS);
                 // 根据 dotPosition 决定对齐方式与边距（与箭头按钮的 viewOrder 相同，浮在 slide 之上）
                 Pos align;
                 Insets margin;
@@ -157,7 +157,7 @@ public class CarouselAnt {
                 List<Circle> dotCircles = new ArrayList<>();
                 for (int i = 0; i < items.size(); i++) {
                     Circle dot = new Circle(4);
-                    dot.getStyleClass().add(CssClasses.CAROUSEL_DOT);
+                    dot.getStyleClass().add(JfxStyles.CAROUSEL_DOT);
                     final int index = i;
                     dot.setOnMouseClicked(e -> {
                         // dot 跳转方向 = 目标索引相对当前索引（>0 从右滑入，<0 从左滑入）
@@ -192,7 +192,7 @@ public class CarouselAnt {
         /** 箭头按钮：视觉样式（背景、圆角、字色、cursor）由 LESS .carousel-arrow-btn 控制，包含 hover */
         private Button createArrowButton(String text) {
             Button btn = new Button(text);
-            btn.getStyleClass().add(CssClasses.CAROUSEL_ARROW_BTN);
+            btn.getStyleClass().add(JfxStyles.CAROUSEL_ARROW_BTN);
             return btn;
         }
 
@@ -274,12 +274,12 @@ public class CarouselAnt {
             for (int i = 0; i < dots.size(); i++) {
                 Circle dot = dots.get(i);
                 if (i == activeIndex) {
-                    if (!dot.getStyleClass().contains(CssClasses.CAROUSEL_DOT_ACTIVE)) {
-                        dot.getStyleClass().add(CssClasses.CAROUSEL_DOT_ACTIVE);
+                    if (!dot.getStyleClass().contains(JfxStyles.CAROUSEL_DOT_ACTIVE)) {
+                        dot.getStyleClass().add(JfxStyles.CAROUSEL_DOT_ACTIVE);
                     }
                     dot.setRadius(5);
                 } else {
-                    dot.getStyleClass().remove(CssClasses.CAROUSEL_DOT_ACTIVE);
+                    dot.getStyleClass().remove(JfxStyles.CAROUSEL_DOT_ACTIVE);
                     dot.setRadius(4);
                 }
             }

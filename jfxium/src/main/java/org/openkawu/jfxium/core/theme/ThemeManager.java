@@ -8,8 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JFXium Theme Manager
- * Inspired by AtlantaFX and Ant Design
+ * JFXium 主题管理器 —— 负责全局主题切换、主题色注入和 Scene/Region 注册。
+ *
+ * <p>核心能力：</p>
+ * <ul>
+ *   <li>二维主题切换：家族（Ant/MUI）× 明暗（light/dark）× 密度（default/compact）</li>
+ *   <li>运行时动态改主色（accent color），支持预设色板或任意 hex 颜色</li>
+ *   <li>Scene / Region 注册机制 —— 主题切换时自动刷新所有已注册节点</li>
+ * </ul>
+ *
+ * <p>设计参考 <a href="https://github.com/mkpaz/atlantafx">AtlantaFX</a> 和 Ant Design。</p>
  */
 public class ThemeManager {
 
@@ -51,23 +59,19 @@ public class ThemeManager {
         return instance;
     }
 
-    /**
-     * Get the current theme
-     */
+    /** 获取当前主题。 */
     public Theme getCurrentTheme() {
         return currentTheme;
     }
 
-    /**
-     * Get the current theme color
-     */
+    /** 获取当前主题色。 */
     public ThemeColor getCurrentThemeColor() {
         return currentThemeColor;
     }
 
     /**
-     * Register a scene for dynamic theme color updates.
-     * Call this after setting the scene on the stage.
+     * 注册 Scene —— 主题切换 / 主色更改时自动刷新。
+     * 在 {@code stage.setScene(scene)} 之后调用。
      */
     public void registerScene(Scene scene) {
         if (!registeredScenes.contains(scene)) {
@@ -75,9 +79,7 @@ public class ThemeManager {
         }
     }
 
-    /**
-     * Register a region for dynamic theme color updates.
-     */
+    /** 注册 Region —— 主题切换 / 主色更改时自动刷新（用于非 Scene 管理的独立节点）。 */
     public void registerRegion(Region region) {
         if (!registeredRegions.contains(region)) {
             registeredRegions.add(region);
@@ -85,7 +87,7 @@ public class ThemeManager {
     }
 
     /**
-     * Apply a theme globally using Application.setUserAgentStylesheet().
+     * 全局应用主题 —— 调用 {@link javafx.application.Application#setUserAgentStylesheet(String)}。
      * <p>切换主题后会自动重新应用当前主题色（accent），避免「换风格 / 换明暗后主题色丢失」。</p>
      */
     public void applyTheme(Theme theme) {
@@ -140,26 +142,22 @@ public class ThemeManager {
     public boolean isDark() { return dark; }
 
     /**
-     * Change the primary accent color dynamically.
-     * This updates CSS variables on all registered scenes and regions.
+     * 运行时动态更换主色（accent）。
+     * 以 data-URI 方式注入 CSS 变量到所有已注册 Scene 的样式表中。
      *
-     * @param color Hex color string (e.g., "#1677ff", "#722ed1")
+     * @param color 十六进制颜色字符串（如 "#1677ff"、"#722ed1"）
      */
     public void setPrimaryColor(String color) {
         this.currentThemeColor.setHexColor(color);
         applyPrimaryColorToAll();
     }
 
-    /**
-     * Change the primary accent color using a preset.
-     */
+    /** 按预设色板更换主色（accent）。 */
     public void setPrimaryColor(ThemeColor.Preset preset) {
         setPrimaryColor(preset.getHexColor());
     }
 
-    /**
-     * Apply the current primary color to all registered scenes and regions.
-     */
+    /** 将当前主色应用到所有已注册的 Scene 和 Region。 */
     private void applyPrimaryColorToAll() {
         String[] lightScale = currentThemeColor.generateColorScale();
         String[] darkScale = currentThemeColor.generateDarkColorScale();
@@ -207,48 +205,36 @@ public class ThemeManager {
     /** 上一次注入的 accent data-URI stylesheet，用于切换时移除旧的。 */
     private String accentStylesheet;
 
-    /**
-     * Toggle between light and dark themes（保持家族 / 密度 / 主题色不变）。
-     */
+    /** 切换亮色 / 暗色主题（保持家族 / 密度 / 主题色不变）。 */
     public void toggleTheme() {
         setDark(!dark);
     }
 
-    /**
-     * Toggle between default and compact density（保持家族 / 明暗 / 主题色不变）。
-     */
+    /** 切换默认 / 紧凑密度（保持家族 / 明暗 / 主题色不变）。 */
     public void toggleCompact() {
         setCompactDensity(!compact);
     }
 
-    /**
-     * Check if the current theme is compact density.
-     */
+    /** 当前是否为紧凑密度。 */
     public boolean isCompact() {
         return compact;
     }
 
-    /**
-     * Switch to MUI theme family (Light).
-     */
+    /** 切换到 MUI 亮色主题家族。 */
     public void switchToMui() {
         this.currentFamily = Family.MUI;
         this.dark = false;
         applyComposite();
     }
 
-    /**
-     * Switch to MUI Dark theme family.
-     */
+    /** 切换到 MUI 暗色主题家族。 */
     public void switchToMuiDark() {
         this.currentFamily = Family.MUI;
         this.dark = true;
         applyComposite();
     }
 
-    /**
-     * Get the current theme family name.
-     */
+    /** 获取当前主题家族名称。 */
     public String getCurrentThemeFamily() {
         return currentFamily.getDisplayName();
     }

@@ -10,7 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,11 +69,11 @@ public class AutoCompleteAnt {
         public HBox build() {
             HBox container = new HBox(0);
             container.setAlignment(Pos.CENTER_LEFT);
-            container.getStyleClass().add(CssClasses.AUTO_COMPLETE);
+            container.getStyleClass().add(JfxStyles.AUTO_COMPLETE);
 
             TextField field = new TextField(value);
             field.setPromptText(placeholder);
-            field.getStyleClass().add(CssClasses.AUTO_COMPLETE_FIELD);
+            field.getStyleClass().add(JfxStyles.AUTO_COMPLETE_FIELD);
             HBox.setHgrow(field, Priority.ALWAYS);
 
             Popup popup = new Popup();
@@ -81,7 +81,7 @@ public class AutoCompleteAnt {
             popup.setHideOnEscape(true);
 
             VBox suggestionsBox = new VBox(0);
-            suggestionsBox.getStyleClass().add(CssClasses.POPUP_MENU);
+            suggestionsBox.getStyleClass().add(JfxStyles.POPUP_MENU);
             suggestionsBox.setPrefWidth(200);
             popup.getContent().add(suggestionsBox);
 
@@ -137,7 +137,7 @@ public class AutoCompleteAnt {
             for (T option : filtered) {
                 String text = optionToString.apply(option);
                 Label label = new Label(text);
-                label.getStyleClass().add(CssClasses.POPUP_MENU_ITEM);
+                label.getStyleClass().add(JfxStyles.POPUP_MENU_ITEM);
                 label.setMaxWidth(Double.MAX_VALUE);
                 // hover 由 LESS .jfx-popup-menu-item:hover 控制
                 label.setOnMouseClicked(e -> {

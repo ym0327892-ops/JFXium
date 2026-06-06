@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 二维码组件 - 对标 Ant Design QRCode
@@ -75,10 +76,7 @@ public class QRCodeAnt {
             StringBuilder containerStyle = new StringBuilder();
             containerStyle.append("-fx-background-color: ").append(toHex(bgColor)).append(";");
             if (bordered) {
-                containerStyle.append("-fx-border-color: -color-border-default;");
-                containerStyle.append("-fx-border-radius: 8px;");
-                containerStyle.append("-fx-background-radius: 8px;");
-                containerStyle.append("-fx-padding: 12px;");
+                container.getStyleClass().add(JfxStyles.QR_CODE_BORDERED);
             }
             container.setStyle(containerStyle.toString());
 

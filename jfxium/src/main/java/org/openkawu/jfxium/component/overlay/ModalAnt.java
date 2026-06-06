@@ -231,7 +231,7 @@ public class ModalAnt {
 
             // 遮罩层覆盖整个屏幕
             overlay = new StackPane();
-            overlay.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.OVERLAY_MASK);
+            overlay.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_MASK);
             overlay.setPrefSize(ownerWindow.getWidth(), ownerWindow.getHeight());
 
             // 创建 Modal 面板
@@ -333,9 +333,9 @@ public class ModalAnt {
             VBox panel = new VBox(0);
             // Modal 用圆角面板（Drawer 不带圆角）
             panel.getStyleClass().addAll(
-                    org.openkawu.jfxium.core.css.CssClasses.MODAL,
-                    org.openkawu.jfxium.core.css.CssClasses.OVERLAY_PANEL,
-                    org.openkawu.jfxium.core.css.CssClasses.OVERLAY_PANEL_ROUNDED
+                    org.openkawu.jfxium.core.css.JfxStyles.MODAL,
+                    org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_PANEL,
+                    org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_PANEL_ROUNDED
             );
 
             // Header
@@ -347,7 +347,7 @@ public class ModalAnt {
             // Body
             if (config.content != null) {
                 VBox body = new VBox(config.content);
-                body.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.OVERLAY_BODY);
+                body.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_BODY);
                 VBox.setVgrow(body, Priority.ALWAYS);
                 panel.getChildren().add(body);
             }
@@ -367,7 +367,7 @@ public class ModalAnt {
         private HBox createHeader() {
             HBox header = new HBox(8);
             header.setAlignment(Pos.CENTER_LEFT);
-            header.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.OVERLAY_HEADER);
+            header.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_HEADER);
 
             // 关闭按钮：根据 closePlacement 决定渲染位置
             // - LEFT: 在 title 之前
@@ -376,7 +376,7 @@ public class ModalAnt {
             javafx.scene.control.Button closeBtn = null;
             if (config.closePlacement != ClosePlacement.NONE) {
                 closeBtn = new javafx.scene.control.Button("×");
-                closeBtn.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.OVERLAY_CLOSE_BTN);
+                closeBtn.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_CLOSE_BTN);
                 closeBtn.setOnAction(e -> close());
             }
 
@@ -387,7 +387,7 @@ public class ModalAnt {
 
             // 2. 标题文本（默认占自己宽度，不抢空间）
             Label titleLabel = new Label(config.title);
-            titleLabel.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.OVERLAY_TITLE);
+            titleLabel.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_TITLE);
             header.getChildren().add(titleLabel);
 
             // 3. 弹性填充（关键：把右侧推到最右）
@@ -436,14 +436,14 @@ public class ModalAnt {
 
             HBox footer = new HBox(8, cancelBtn, okBtn);
             footer.setAlignment(Pos.CENTER_RIGHT);
-            footer.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.OVERLAY_FOOTER);
+            footer.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_FOOTER);
             return footer;
         }
 
         private HBox createCustomFooter(Node footerContent) {
             HBox footer = new HBox(footerContent);
             footer.setAlignment(Pos.CENTER_RIGHT);
-            footer.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.OVERLAY_FOOTER);
+            footer.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_FOOTER);
             return footer;
         }
 

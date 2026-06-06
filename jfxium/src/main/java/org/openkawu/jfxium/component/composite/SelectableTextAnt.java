@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * SelectableTextAnt（M19.7）— 只读、可选、可复制的文本组件。
@@ -152,9 +152,9 @@ public class SelectableTextAnt {
         private TextField buildTextField() {
             TextField tf = new TextField(text);
             tf.setEditable(false);
-            tf.getStyleClass().add(CssClasses.SELECTABLE_TEXT);
-            if (bordered) tf.getStyleClass().add(CssClasses.SELECTABLE_TEXT_BORDERED);
-            if (focusHalo) tf.getStyleClass().add(CssClasses.SELECTABLE_TEXT_FOCUS_HALO);
+            tf.getStyleClass().add(JfxStyles.SELECTABLE_TEXT);
+            if (bordered) tf.getStyleClass().add(JfxStyles.SELECTABLE_TEXT_BORDERED);
+            if (focusHalo) tf.getStyleClass().add(JfxStyles.SELECTABLE_TEXT_FOCUS_HALO);
             applyTypeClass(tf.getStyleClass());
             if (prefWidth > 0) tf.setPrefWidth(prefWidth);
             if (maxWidth > 0) tf.setMaxWidth(maxWidth);
@@ -166,9 +166,9 @@ public class SelectableTextAnt {
             TextArea ta = new TextArea(text);
             ta.setEditable(false);
             ta.setWrapText(wrap);
-            ta.getStyleClass().add(CssClasses.SELECTABLE_TEXT);
-            if (bordered) ta.getStyleClass().add(CssClasses.SELECTABLE_TEXT_BORDERED);
-            if (focusHalo) ta.getStyleClass().add(CssClasses.SELECTABLE_TEXT_FOCUS_HALO);
+            ta.getStyleClass().add(JfxStyles.SELECTABLE_TEXT);
+            if (bordered) ta.getStyleClass().add(JfxStyles.SELECTABLE_TEXT_BORDERED);
+            if (focusHalo) ta.getStyleClass().add(JfxStyles.SELECTABLE_TEXT_FOCUS_HALO);
             applyTypeClass(ta.getStyleClass());
 
             if (prefWidth > 0) ta.setPrefWidth(prefWidth);
@@ -220,10 +220,10 @@ public class SelectableTextAnt {
 
         private void applyTypeClass(javafx.collections.ObservableList<String> styleClass) {
             switch (type) {
-                case SECONDARY -> styleClass.add(CssClasses.SELECTABLE_TEXT_SECONDARY);
-                case SUCCESS   -> styleClass.add(CssClasses.SELECTABLE_TEXT_SUCCESS);
-                case WARNING   -> styleClass.add(CssClasses.SELECTABLE_TEXT_WARNING);
-                case ERROR     -> styleClass.add(CssClasses.SELECTABLE_TEXT_ERROR);
+                case SECONDARY -> styleClass.add(JfxStyles.SELECTABLE_TEXT_SECONDARY);
+                case SUCCESS   -> styleClass.add(JfxStyles.SELECTABLE_TEXT_SUCCESS);
+                case WARNING   -> styleClass.add(JfxStyles.SELECTABLE_TEXT_WARNING);
+                case ERROR     -> styleClass.add(JfxStyles.SELECTABLE_TEXT_ERROR);
                 case DEFAULT   -> { /* 无修饰类 */ }
             }
         }

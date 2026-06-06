@@ -13,7 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -180,10 +180,10 @@ public class SliderAnt {
             slider.setShowTickLabels(marks != null);
             slider.setOrientation(vertical ? Orientation.VERTICAL : Orientation.HORIZONTAL);
             slider.setDisable(disabled);
-            slider.getStyleClass().add(CssClasses.SLIDER);
+            slider.getStyleClass().add(JfxStyles.SLIDER);
             // disabled 通过 styleClass 切换 opacity，不再 inline
             if (disabled) {
-                slider.getStyleClass().add(CssClasses.SLIDER_DISABLED);
+                slider.getStyleClass().add(JfxStyles.SLIDER_DISABLED);
             }
 
             // 刻度标记：让 Slider 知道总刻度数（视觉刻度由 createMarksRow 自定义渲染）
@@ -230,7 +230,7 @@ public class SliderAnt {
 
             HBox wrapper = new HBox();
             wrapper.setAlignment(Pos.CENTER);
-            wrapper.getStyleClass().add(CssClasses.SLIDER_WRAPPER);
+            wrapper.getStyleClass().add(JfxStyles.SLIDER_WRAPPER);
             wrapper.getChildren().add(clipContainer);
 
             // 自定义刻度标签行（接管 Slider 默认刻度标签的渲染）
@@ -241,7 +241,7 @@ public class SliderAnt {
             // 提示文字 Label（始终显示或带 formatter 时）
             if (tipFormatter != null || tooltipVisible) {
                 Label tipLabel = new Label();
-                tipLabel.getStyleClass().add(CssClasses.SLIDER_TIP);
+                tipLabel.getStyleClass().add(JfxStyles.SLIDER_TIP);
                 tipLabel.textProperty().bind(
                         Bindings.createStringBinding(
                                 () -> {
@@ -265,7 +265,7 @@ public class SliderAnt {
         private Node buildRangeSlider() {
             HBox rangeBox = new HBox(8);
             rangeBox.setAlignment(Pos.CENTER_LEFT);
-            rangeBox.getStyleClass().add(CssClasses.SLIDER_RANGE);
+            rangeBox.getStyleClass().add(JfxStyles.SLIDER_RANGE);
             // rangeBox 填充父容器宽度（maxWidth=MAX）但内部 slider 各自限宽 160，
             //   所以整组内容靠左、宽卡片右侧留白，窄卡片里 HBox 自动收缩 slider，不溢出。
             rangeBox.setMaxWidth(Double.MAX_VALUE);
@@ -282,9 +282,9 @@ public class SliderAnt {
                 slider.setShowTickMarks(false);
                 slider.setShowTickLabels(false);
                 slider.setDisable(disabled);
-                slider.getStyleClass().add(CssClasses.SLIDER);
+                slider.getStyleClass().add(JfxStyles.SLIDER);
                 if (disabled) {
-                    slider.getStyleClass().add(CssClasses.SLIDER_DISABLED);
+                    slider.getStyleClass().add(JfxStyles.SLIDER_DISABLED);
                 }
                 // M19.43.1 #6 二次修复：maxWidth 钉在 pref(160) 而非 MAX。
                 //   上一版 maxWidth=MAX + Hgrow 让两个 slider 在宽卡片里无限拉伸、铺满整行
@@ -300,9 +300,9 @@ public class SliderAnt {
             Label endLabel = new Label(String.valueOf((int) endVal));
             Label separator = new Label("~");
 
-            startLabel.getStyleClass().add(CssClasses.SLIDER_RANGE_LABEL);
-            endLabel.getStyleClass().add(CssClasses.SLIDER_RANGE_LABEL);
-            separator.getStyleClass().add(CssClasses.SLIDER_RANGE_SEPARATOR);
+            startLabel.getStyleClass().add(JfxStyles.SLIDER_RANGE_LABEL);
+            endLabel.getStyleClass().add(JfxStyles.SLIDER_RANGE_LABEL);
+            separator.getStyleClass().add(JfxStyles.SLIDER_RANGE_SEPARATOR);
 
             // 双滑块联动：start 不能超过 end，end 不能小于 start
             startSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -339,11 +339,11 @@ public class SliderAnt {
         private Node createMarksRow() {
             HBox marksRow = new HBox(0);
             marksRow.setAlignment(Pos.CENTER);
-            marksRow.getStyleClass().add(CssClasses.SLIDER_MARKS);
+            marksRow.getStyleClass().add(JfxStyles.SLIDER_MARKS);
 
             for (Map.Entry<Double, String> entry : marks.entrySet()) {
                 Label markLabel = new Label(entry.getValue());
-                markLabel.getStyleClass().add(CssClasses.SLIDER_MARK_LABEL);
+                markLabel.getStyleClass().add(JfxStyles.SLIDER_MARK_LABEL);
                 marksRow.getChildren().add(markLabel);
                 HBox.setHgrow(markLabel, Priority.ALWAYS);
             }

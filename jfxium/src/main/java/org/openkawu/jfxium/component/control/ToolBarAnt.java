@@ -9,7 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.List;
  *   <li><b>弹性填充</b>：spacer() 将右侧内容推到最右</li>
  *   <li><b>溢出菜单</b>：overflow(true) 空间不足时自动折叠到"更多"菜单</li>
  *   <li><b>方向</b>：HORIZONTAL（默认）/ VERTICAL</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#TOOL_BAR} 系列 LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#TOOL_BAR} 系列 LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -71,7 +71,7 @@ public class ToolBarAnt extends ToolBar {
 
     public ToolBarAnt() {
         super();
-        getStyleClass().add(CssClasses.TOOL_BAR);
+        getStyleClass().add(JfxStyles.TOOL_BAR);
     }
 
     // ============================================================
@@ -91,7 +91,7 @@ public class ToolBarAnt extends ToolBar {
     public ToolBarAnt button(Node icon, String tooltip, Runnable action) {
         Button btn = new Button();
         btn.setGraphic(icon);
-        btn.getStyleClass().add(CssClasses.TOOL_BAR_ITEM);
+        btn.getStyleClass().add(JfxStyles.TOOL_BAR_ITEM);
         if (tooltip != null && !tooltip.isEmpty()) {
             btn.setTooltip(new javafx.scene.control.Tooltip(tooltip));
         }
@@ -108,7 +108,7 @@ public class ToolBarAnt extends ToolBar {
         if (icon != null) {
             btn.setGraphic(icon);
         }
-        btn.getStyleClass().add(CssClasses.TOOL_BAR_ITEM);
+        btn.getStyleClass().add(JfxStyles.TOOL_BAR_ITEM);
         if (tooltip != null && !tooltip.isEmpty()) {
             btn.setTooltip(new javafx.scene.control.Tooltip(tooltip));
         }
@@ -128,7 +128,7 @@ public class ToolBarAnt extends ToolBar {
     /** 插入竖向分隔线。 */
     public ToolBarAnt divider() {
         Region div = new Region();
-        div.getStyleClass().add(CssClasses.TOOL_BAR_ITEM);
+        div.getStyleClass().add(JfxStyles.TOOL_BAR_ITEM);
         if (getOrientation() == Orientation.VERTICAL) {
             div.setPrefSize(24, 1);
         } else {

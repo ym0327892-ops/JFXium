@@ -6,6 +6,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -66,6 +67,12 @@ public class RateAnt {
         private Size size = Size.DEFAULT;
         private String activeColor = "-color-warning-emphasis";
         private String inactiveColor = "-color-border-default";
+
+        /** 判断颜色是否为 CSS 变量（以 "-" 开头） */
+        private static boolean isCssVar(String color) {
+            return color != null && color.startsWith("-");
+        }
+
         private Consumer<Double> onChange = null;
         private Consumer<Double> onHoverChange = null;
         private DoubleProperty bindProperty = null;
@@ -129,7 +136,7 @@ public class RateAnt {
         public HBox build() {
             HBox rateBox = new HBox(4);
             rateBox.setAlignment(Pos.CENTER_LEFT);
-            rateBox.getStyleClass().add("rate");
+            rateBox.getStyleClass().add(JfxStyles.RATE);
 
             if (disabled) {
                 rateBox.setOpacity(0.6);
@@ -194,17 +201,24 @@ public class RateAnt {
             star.setContent("M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z");
             star.setScaleX(size / 24.0);
             star.setScaleY(size / 24.0);
-            star.setStyle("-fx-cursor: hand;");
+            star.getStyleClass().add(JfxStyles.RATE_STAR);
             return star;
         }
 
-        private void updateStarColor(SVGPath star, int starIndex, double currentValue, String inactiveColor, String activeColor) {
-            if (starIndex <= currentValue) {
-                star.setStyle("-fx-fill: " + activeColor + "; -fx-cursor: hand;");
-            } else if (starIndex - 0.5 <= currentValue && allowHalf) {
-                star.setStyle("-fx-fill: " + activeColor + "; -fx-cursor: hand;");
+        private void updateStarColor(SVGPath star, int starIndex, double currentValue,
+                                      String inactiveColor, String activeColor) {
+            boolean isActive = starIndex <= currentValue
+                    || (allowHalf && starIndex - 0.5 <= currentValue);
+
+            if (isCssVar(activeColor) && isCssVar(inactiveColor)) {
+                // 主题色：通过 styleClass 切换，避免 setStyle 无法解析 CSS 变量
+                star.getStyleClass().removeAll(JfxStyles.RATE_ACTIVE, JfxStyles.RATE_INACTIVE);
+                star.getStyleClass().add(isActive ? JfxStyles.RATE_ACTIVE : JfxStyles.RATE_INACTIVE);
+                star.setStyle("-fx-cursor: hand;");
             } else {
-                star.setStyle("-fx-fill: " + inactiveColor + "; -fx-cursor: hand;");
+                // 用户自定义颜色（hex）：直接使用 setStyle
+                String fill = isActive ? activeColor : inactiveColor;
+                star.setStyle("-fx-fill: " + fill + "; -fx-cursor: hand;");
             }
         }
 

@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,10 +92,10 @@ public class SegmentedAnt {
         public HBox build() {
             HBox segmented = new HBox(2);
             segmented.setAlignment(Pos.CENTER);
-            segmented.getStyleClass().add(CssClasses.SEGMENTED);
-            if (disabled) segmented.getStyleClass().add(CssClasses.SEGMENTED_DISABLED);
-            if (size == Size.SMALL) segmented.getStyleClass().add(CssClasses.SEGMENTED_SMALL);
-            else if (size == Size.LARGE) segmented.getStyleClass().add(CssClasses.SEGMENTED_LARGE);
+            segmented.getStyleClass().add(JfxStyles.SEGMENTED);
+            if (disabled) segmented.getStyleClass().add(JfxStyles.SEGMENTED_DISABLED);
+            if (size == Size.SMALL) segmented.getStyleClass().add(JfxStyles.SEGMENTED_SMALL);
+            else if (size == Size.LARGE) segmented.getStyleClass().add(JfxStyles.SEGMENTED_LARGE);
             if (block) segmented.setMaxWidth(Double.MAX_VALUE);
 
             // padding 仍由 size 决定（结构性 inset）
@@ -106,9 +106,9 @@ public class SegmentedAnt {
 
                 StackPane optionPane = new StackPane();
                 optionPane.setAlignment(Pos.CENTER);
-                optionPane.getStyleClass().add(CssClasses.SEGMENTED_ITEM);
+                optionPane.getStyleClass().add(JfxStyles.SEGMENTED_ITEM);
                 if (isSelected) {
-                    optionPane.getStyleClass().add(CssClasses.SEGMENTED_ITEM_SELECTED);
+                    optionPane.getStyleClass().add(JfxStyles.SEGMENTED_ITEM_SELECTED);
                 }
 
                 HBox content = new HBox(4);
@@ -118,7 +118,7 @@ public class SegmentedAnt {
                     content.getChildren().add(option.getIcon());
                 }
                 Label label = new Label(option.getLabel());
-                label.getStyleClass().add(CssClasses.SEGMENTED_ITEM_LABEL);
+                label.getStyleClass().add(JfxStyles.SEGMENTED_ITEM_LABEL);
                 content.getChildren().add(label);
 
                 optionPane.getChildren().add(content);

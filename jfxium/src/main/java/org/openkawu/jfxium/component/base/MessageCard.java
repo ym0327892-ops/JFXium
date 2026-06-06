@@ -4,7 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.SVGPath;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * 内部基础组件：消息提示卡片（图标 + 文本）。
@@ -47,17 +47,17 @@ public class MessageCard {
         public HBox build() {
             HBox card = new HBox(8);
             card.setAlignment(Pos.CENTER);
-            card.getStyleClass().add(CssClasses.MESSAGE_CARD);
+            card.getStyleClass().add(JfxStyles.MESSAGE_CARD);
 
             if (type != Type.LOADING) {
                 SVGPath icon = new SVGPath();
                 icon.setContent(getIconPath(type));
-                icon.setStyle("-fx-fill: " + getIconColor(type) + ";");
+                icon.getStyleClass().add(getIconStyleClass(type));
                 card.getChildren().add(icon);
             }
 
             Label contentLabel = new Label(content);
-            contentLabel.getStyleClass().add(CssClasses.MESSAGE_CARD_CONTENT);
+            contentLabel.getStyleClass().add(JfxStyles.MESSAGE_CARD_CONTENT);
             card.getChildren().add(contentLabel);
 
             if (closable && onClose != null) {
@@ -78,13 +78,12 @@ public class MessageCard {
             };
         }
 
-        private String getIconColor(Type type) {
+        private String getIconStyleClass(Type type) {
             return switch (type) {
-                case SUCCESS -> "-color-success-emphasis";
-                case ERROR -> "-color-danger-emphasis";
-                case WARNING -> "-color-warning-emphasis";
-                case INFO -> "-color-accent-emphasis";
-                case LOADING -> "-color-accent-emphasis";
+                case SUCCESS -> JfxStyles.ICON_SUCCESS;
+                case ERROR -> JfxStyles.ICON_DANGER;
+                case WARNING -> JfxStyles.ICON_WARNING;
+                case INFO, LOADING -> JfxStyles.ICON_INFO;
             };
         }
     }

@@ -3,7 +3,7 @@ package org.openkawu.jfxium.component.control;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -121,11 +121,11 @@ public class RadioButtonAnt extends RadioButton {
      * DEFAULT 仅清不挂。
      */
     public RadioButtonAnt size(Size size) {
-        getStyleClass().removeAll(CssClasses.SIZE_SMALL, CssClasses.SIZE_LARGE);
+        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
         if (size == Size.SMALL) {
-            getStyleClass().add(CssClasses.SIZE_SMALL);
+            getStyleClass().add(JfxStyles.SIZE_SMALL);
         } else if (size == Size.LARGE) {
-            getStyleClass().add(CssClasses.SIZE_LARGE);
+            getStyleClass().add(JfxStyles.SIZE_LARGE);
         }
         return this;
     }

@@ -110,6 +110,7 @@
 | — | `TreeSelectAnt` | 树选择器 | 多级嵌套、搜索、回调 |
 | — | `UploadAnt` | 文件上传 | 拖拽上传、多选、进度、回调 |
 | — | `WatermarkAnt` | 水印 | 文字/图片、密度、旋转、透明度 |
+| — | `SliderAnt` | 滑块（复合增强版） | 范围选择、步进点、刻度、双滑块模式 |
 | — | `BreadcrumbAnt` | 面包屑 | 路径导航、分隔符、点击回调 |
 
 ---
@@ -126,6 +127,7 @@
 | `Popup` | `PopoverAnt` | 气泡卡片 | CLICK/HOVER 触发、位置、自定义内容 |
 | `Popup` | `PopconfirmAnt` | 气泡确认框 | 标题+描述+确认/取消、回调、轻量确认 |
 | `ContextMenu` | `ContextMenuAnt` | 右键菜单 | 分组、图标、快捷键提示、回调 |
+| `Popup` | `PromptDialogAnt` | 快速输入弹框 | 确认输入、轻量弹窗、回调 |
 
 ---
 
@@ -167,7 +169,6 @@
 | `SpaceAnt` | 间距 | 元素间距控制 |
 | `SpinAnt` | 加载中 | 数据加载、提交等待 |
 | `StatisticAnt` | 统计数值 | Dashboard 数据展示 |
-| `StatusBarAnt` | 状态栏 | 底部状态栏，多区域文本/进度显示 |
 | `StepsAnt` | 步骤条 | 注册流程、订单状态 |
 | `SurfaceAnt` | 表面容器 | 卡片背景、面板背景 |
 | `SwitchAnt` | 开关 | 功能开关、状态切换 |
@@ -179,8 +180,7 @@
 | `TreeSelectAnt` | 树选择器 | 组织架构选择 |
 | `UploadAnt` | 文件上传 | 头像上传、附件上传 |
 | `WatermarkAnt` | 水印 | 敏感信息防泄露 |
-| `CanvasAnt` | 自绘图形 | 图表、游戏、自定义绘制 |
-| `PromptDialogAnt` | 快速输入弹框 | 确认输入、轻量弹窗 |
+| `FilterBarAnt` | 筛选工具条 | admin 列表页顶部搜索 + 筛选 + 操作按钮 |
 
 ---
 
@@ -188,9 +188,9 @@
 
 | 维度 | JavaFX 原生 | JFXium |
 |---|---|---|
-| **控件数量** | ~30 个基础控件 | **94+** 个组件（含布局/复合/浮层）|
+| **控件数量** | ~30 个基础控件 | **102** 个组件（97 *Ant + 4 *Template + 1 FilterBarAnt）|
 | **API 风格** | 命令式 / 属性绑定 | Builder 流式链式 API |
-| **主题系统** | 需手动写 CSS | LESS + CSS 变量 + 主题切换 |
+| **主题系统** | 需手动写 CSS | LESS + CSS 变量 + 11 套内置主题 + 运行时切换 |
 | **响应式** | 无 | GridAnt 24 列栅格 + 断点系统 |
 | **国际化** | 需自行实现 | 内置 i18n 框架 |
 | **动画** | 需手动实现 | 内置 Fade/Slide/Scale 动画 |

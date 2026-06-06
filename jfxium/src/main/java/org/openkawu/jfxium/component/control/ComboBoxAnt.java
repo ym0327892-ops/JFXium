@@ -4,7 +4,7 @@ import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -124,11 +124,11 @@ public class ComboBoxAnt<T> extends ComboBox<T> {
      * DEFAULT 仅清不挂（与 ButtonAnt 行为一致）。
      */
     public ComboBoxAnt<T> size(Size size) {
-        getStyleClass().removeAll(CssClasses.SIZE_SMALL, CssClasses.SIZE_LARGE);
+        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
         if (size == Size.SMALL) {
-            getStyleClass().add(CssClasses.SIZE_SMALL);
+            getStyleClass().add(JfxStyles.SIZE_SMALL);
         } else if (size == Size.LARGE) {
-            getStyleClass().add(CssClasses.SIZE_LARGE);
+            getStyleClass().add(JfxStyles.SIZE_LARGE);
         }
         return this;
     }

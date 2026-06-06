@@ -48,19 +48,19 @@ package org.openkawu.jfxium.core.css;
 public enum Background {
 
     /** 主内容白底（{@code -color-bg-default}）。 */
-    DEFAULT(CssClasses.BG_DEFAULT),
+    DEFAULT(JfxStyles.BG_DEFAULT),
 
     /** 次要区浅灰（{@code -color-bg-subtle}）—— 表头 / Sider / Card 头部。 */
-    SUBTLE(CssClasses.BG_SUBTLE),
+    SUBTLE(JfxStyles.BG_SUBTLE),
 
     /** 页面外缘灰（{@code -color-bg-layout}）—— AppShell 外围。 */
-    LAYOUT(CssClasses.BG_LAYOUT),
+    LAYOUT(JfxStyles.BG_LAYOUT),
 
     /** 凹陷深灰（{@code -color-bg-inset}）—— 代码块 / 嵌入预览。 */
-    INSET(CssClasses.BG_INSET),
+    INSET(JfxStyles.BG_INSET),
 
     /** 透明（让父容器决定背景）。 */
-    TRANSPARENT(CssClasses.BG_TRANSPARENT);
+    TRANSPARENT(JfxStyles.BG_TRANSPARENT);
 
     private final String styleClass;
 

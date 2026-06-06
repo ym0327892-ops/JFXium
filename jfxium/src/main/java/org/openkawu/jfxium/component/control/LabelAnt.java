@@ -4,7 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * LabelAnt - 继承式原生 Label 封装（M19.48 引入）。
@@ -77,17 +77,17 @@ public class LabelAnt extends Label {
 
     public LabelAnt() {
         super();
-        getStyleClass().add(CssClasses.TYPOGRAPHY_TEXT);
+        getStyleClass().add(JfxStyles.TYPOGRAPHY_TEXT);
     }
 
     public LabelAnt(String text) {
         super(text);
-        getStyleClass().add(CssClasses.TYPOGRAPHY_TEXT);
+        getStyleClass().add(JfxStyles.TYPOGRAPHY_TEXT);
     }
 
     public LabelAnt(String text, Node graphic) {
         super(text, graphic);
-        getStyleClass().add(CssClasses.TYPOGRAPHY_TEXT);
+        getStyleClass().add(JfxStyles.TYPOGRAPHY_TEXT);
     }
 
     // ============================================================
@@ -104,15 +104,15 @@ public class LabelAnt extends Label {
     public LabelAnt type(Type type) {
         // 先清掉可能已挂的语义色修饰类，避免多次调用叠加
         getStyleClass().removeAll(
-                CssClasses.TYPOGRAPHY_SECONDARY, CssClasses.TYPOGRAPHY_SUCCESS,
-                CssClasses.TYPOGRAPHY_WARNING, CssClasses.TYPOGRAPHY_DANGER,
-                CssClasses.TYPOGRAPHY_DISABLED);
+                JfxStyles.TYPOGRAPHY_SECONDARY, JfxStyles.TYPOGRAPHY_SUCCESS,
+                JfxStyles.TYPOGRAPHY_WARNING, JfxStyles.TYPOGRAPHY_DANGER,
+                JfxStyles.TYPOGRAPHY_DISABLED);
         switch (type) {
-            case SECONDARY -> getStyleClass().add(CssClasses.TYPOGRAPHY_SECONDARY);
-            case SUCCESS -> getStyleClass().add(CssClasses.TYPOGRAPHY_SUCCESS);
-            case WARNING -> getStyleClass().add(CssClasses.TYPOGRAPHY_WARNING);
-            case DANGER -> getStyleClass().add(CssClasses.TYPOGRAPHY_DANGER);
-            case DISABLED -> getStyleClass().add(CssClasses.TYPOGRAPHY_DISABLED);
+            case SECONDARY -> getStyleClass().add(JfxStyles.TYPOGRAPHY_SECONDARY);
+            case SUCCESS -> getStyleClass().add(JfxStyles.TYPOGRAPHY_SUCCESS);
+            case WARNING -> getStyleClass().add(JfxStyles.TYPOGRAPHY_WARNING);
+            case DANGER -> getStyleClass().add(JfxStyles.TYPOGRAPHY_DANGER);
+            case DISABLED -> getStyleClass().add(JfxStyles.TYPOGRAPHY_DISABLED);
             default -> { /* PRIMARY 无修饰 */ }
         }
         return this;

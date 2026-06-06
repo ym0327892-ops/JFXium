@@ -9,7 +9,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import org.openkawu.jfxium.component.composite.SwitchAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 切换按钮组件（M19.6）— 包装 JavaFX {@link ToggleButton}。
@@ -170,16 +170,16 @@ public class ToggleButtonAnt {
 
             // Size
             if (size == Size.SMALL) {
-                btn.getStyleClass().add(CssClasses.SIZE_SMALL);
+                btn.getStyleClass().add(JfxStyles.SIZE_SMALL);
             } else if (size == Size.LARGE) {
-                btn.getStyleClass().add(CssClasses.SIZE_LARGE);
+                btn.getStyleClass().add(JfxStyles.SIZE_LARGE);
             }
 
             // Shape
             if (rounded) {
-                btn.getStyleClass().add(CssClasses.SHAPE_ROUNDED);
+                btn.getStyleClass().add(JfxStyles.SHAPE_ROUNDED);
             } else if (square) {
-                btn.getStyleClass().add(CssClasses.SHAPE_SQUARE);
+                btn.getStyleClass().add(JfxStyles.SHAPE_SQUARE);
             }
 
             // Icon

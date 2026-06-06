@@ -5,7 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * 内部基础组件：结果页显示面板（状态图标 + 标题 + 副标题 + 操作区）。
@@ -60,7 +60,7 @@ public class ResultDisplay {
             icon.setContent(getIconPath(status));
             icon.setScaleX(iconScale);
             icon.setScaleY(iconScale);
-            icon.setStyle("-fx-fill: " + getIconColor(status) + ";");
+            icon.getStyleClass().add(getIconStyleClass(status));
 
             VBox iconBox = new VBox(icon);
             iconBox.setAlignment(Pos.CENTER);
@@ -69,13 +69,13 @@ public class ResultDisplay {
 
             if (!title.isEmpty()) {
                 Label titleLabel = new Label(title);
-                titleLabel.getStyleClass().add(CssClasses.RESULT_TITLE);
+                titleLabel.getStyleClass().add(JfxStyles.RESULT_TITLE);
                 result.getChildren().add(titleLabel);
             }
 
             if (!subTitle.isEmpty()) {
                 Label subTitleLabel = new Label(subTitle);
-                subTitleLabel.getStyleClass().add(CssClasses.RESULT_SUBTITLE);
+                subTitleLabel.getStyleClass().add(JfxStyles.RESULT_SUBTITLE);
                 subTitleLabel.setWrapText(true);
                 subTitleLabel.setAlignment(Pos.CENTER);
                 result.getChildren().add(subTitleLabel);
@@ -103,13 +103,13 @@ public class ResultDisplay {
             };
         }
 
-        private String getIconColor(Status status) {
+        private String getIconStyleClass(Status status) {
             return switch (status) {
-                case SUCCESS -> "-color-success-emphasis";
-                case ERROR, INTERNAL_ERROR -> "-color-danger-emphasis";
-                case WARNING -> "-color-warning-emphasis";
-                case INFO -> "-color-accent-emphasis";
-                case NOT_FOUND, FORBIDDEN -> "-color-fg-muted";
+                case SUCCESS -> JfxStyles.ICON_SUCCESS;
+                case ERROR, INTERNAL_ERROR -> JfxStyles.ICON_DANGER;
+                case WARNING -> JfxStyles.ICON_WARNING;
+                case INFO -> JfxStyles.ICON_INFO;
+                case NOT_FOUND, FORBIDDEN -> JfxStyles.ICON_MUTED;
             };
         }
     }

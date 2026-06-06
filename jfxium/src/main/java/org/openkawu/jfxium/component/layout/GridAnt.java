@@ -7,7 +7,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -299,7 +299,7 @@ public class GridAnt {
 
         public VBox build() {
             VBox container = new VBox();
-            container.getStyleClass().add(CssClasses.GRID);
+            container.getStyleClass().add(JfxStyles.GRID);
             container.setSpacing(effectiveRowGutter());
 
             // 用 Breakpoint 一致地构建：非响应式时固定 XXL（确保所有断点配置都被回退到默认 span）
@@ -365,7 +365,7 @@ public class GridAnt {
          */
         private GridPane buildRow(Row row, Breakpoint bp) {
             GridPane grid = new GridPane();
-            grid.getStyleClass().add(CssClasses.GRID_ROW);
+            grid.getStyleClass().add(JfxStyles.GRID_ROW);
             grid.setHgap(effectiveColumnGutter());
             grid.setAlignment(row.getAlignment());
             if (row.getHeight() > 0) {
@@ -410,8 +410,8 @@ public class GridAnt {
         private void placeNode(GridPane grid, Node node, int startCol, int span, Row row) {
             if (node == null) return;
             // 确保不会重复挂 styleClass（rebuild 场景下同一节点会被多次挂）
-            if (!node.getStyleClass().contains(CssClasses.GRID_COL)) {
-                node.getStyleClass().add(CssClasses.GRID_COL);
+            if (!node.getStyleClass().contains(JfxStyles.GRID_COL)) {
+                node.getStyleClass().add(JfxStyles.GRID_COL);
             }
             GridPane.setColumnIndex(node, startCol);
             GridPane.setRowIndex(node, 0);

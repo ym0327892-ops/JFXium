@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 图片组件 - 对标 Ant Design Image。
@@ -62,7 +62,7 @@ public class ImageAnt {
         public StackPane build() {
             StackPane container = new StackPane();
             container.setAlignment(Pos.CENTER);
-            container.getStyleClass().add(CssClasses.IMAGE);
+            container.getStyleClass().add(JfxStyles.IMAGE);
 
             if (width > 0) {
                 container.setPrefWidth(width);
@@ -123,14 +123,14 @@ public class ImageAnt {
         private void showFallback(StackPane container) {
             Label label = new Label(fallback != null ? fallback
                     : (alt.isEmpty() ? "Image Error" : alt));
-            label.getStyleClass().add(CssClasses.IMAGE_FALLBACK);
+            label.getStyleClass().add(JfxStyles.IMAGE_FALLBACK);
             container.getChildren().add(label);
         }
 
         private void showPlaceholder(StackPane container) {
             Label label = new Label(placeholder != null ? placeholder
                     : (alt.isEmpty() ? "No Image" : alt));
-            label.getStyleClass().add(CssClasses.IMAGE_FALLBACK);
+            label.getStyleClass().add(JfxStyles.IMAGE_FALLBACK);
             container.getChildren().add(label);
         }
     }

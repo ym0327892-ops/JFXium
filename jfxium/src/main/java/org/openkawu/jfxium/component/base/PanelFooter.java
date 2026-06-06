@@ -4,6 +4,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 
+import org.openkawu.jfxium.core.css.JfxStyles;
+
 /**
  * 面板底部基础组件
  * 微型化设计：只负责底部布局（左内容 + 右按钮组）
@@ -59,14 +61,11 @@ public class PanelFooter {
         public HBox build() {
             HBox footer = new HBox(8);
             footer.setAlignment(alignment);
-            
-            StringBuilder style = new StringBuilder();
-            style.append("-fx-padding: ").append(padding).append("; ");
+            footer.getStyleClass().add(JfxStyles.PANEL_FOOTER);
             if (hasBorder) {
-                style.append("-fx-border-color: -color-border-muted transparent transparent transparent; ");
-                style.append("-fx-border-width: 1px 0 0 0; ");
+                footer.getStyleClass().add(JfxStyles.PANEL_FOOTER_BORDERED);
             }
-            footer.setStyle(style.toString());
+            footer.setStyle("-fx-padding: " + padding + ";");
 
             if (left != null) {
                 HBox leftBox = new HBox(left);

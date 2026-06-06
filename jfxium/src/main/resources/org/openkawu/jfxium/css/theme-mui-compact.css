@@ -5153,6 +5153,214 @@
   -fx-font-size: 28px;
   -fx-font-weight: 700;
 }
+/* ============================================
+   Component Auxiliary Styles
+   Fix: CSS variables must live in external stylesheets,
+   NOT in Java setStyle() inline styles.
+   ============================================ */
+/* -------------------------------------------
+   PanelFooter
+   ------------------------------------------- */
+.jfx-panel-footer {
+  -fx-alignment: center-right;
+  -fx-spacing: 8px;
+}
+.jfx-panel-footer-bordered {
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+}
+/* -------------------------------------------
+   QRCodeAnt
+   ------------------------------------------- */
+.qr-code-bordered {
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-padding: 12px;
+}
+/* -------------------------------------------
+   TabsAnt — tab bar
+   ------------------------------------------- */
+.jfx-tabs-bar {
+  -fx-background-color: transparent;
+}
+.jfx-tabs-bar-card {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+/* -------------------------------------------
+   TabsAnt — tab labels (shared)
+   ------------------------------------------- */
+.jfx-tabs-label {
+  -fx-cursor: hand;
+}
+/* LINE variant */
+.jfx-tabs-label-line {
+  -fx-background-color: transparent;
+}
+.jfx-tabs-label-line.jfx-tabs-active {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+}
+.jfx-tabs-label-line:not(.jfx-tabs-active) {
+  -fx-text-fill: -color-fg-default;
+}
+/* CARD variant */
+.jfx-tabs-label-card.jfx-tabs-active {
+  -fx-background-color: -color-bg-default;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: -color-border-muted -color-border-muted transparent -color-border-muted;
+  -fx-border-width: 1px 1px 0 1px;
+  -fx-background-radius: 8px 8px 0 0;
+  -fx-border-radius: 8px 8px 0 0;
+}
+.jfx-tabs-label-card:not(.jfx-tabs-active) {
+  -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-default;
+}
+/* Size variants */
+.jfx-tabs-label.jfx-tabs-large {
+  -fx-font-size: 16px;
+}
+.jfx-tabs-label.jfx-tabs-small {
+  -fx-font-size: 12px;
+}
+.jfx-tabs-label:not(.jfx-tabs-large):not(.jfx-tabs-small) {
+  -fx-font-size: 14px;
+}
+/* LINE padding */
+.jfx-tabs-label-line.jfx-tabs-large {
+  -fx-padding: 16px 20px;
+}
+.jfx-tabs-label-line.jfx-tabs-small {
+  -fx-padding: 8px 12px;
+}
+.jfx-tabs-label-line:not(.jfx-tabs-large):not(.jfx-tabs-small) {
+  -fx-padding: 12px 16px;
+}
+/* CARD padding */
+.jfx-tabs-label-card.jfx-tabs-large {
+  -fx-padding: 11px 16px;
+}
+.jfx-tabs-label-card.jfx-tabs-small {
+  -fx-padding: 4px 8px;
+}
+.jfx-tabs-label-card:not(.jfx-tabs-large):not(.jfx-tabs-small) {
+  -fx-padding: 8px 16px;
+}
+/* Disabled */
+.jfx-tabs-label.jfx-tabs-disabled {
+  -fx-opacity: 0.5;
+  -fx-cursor: default;
+}
+/* -------------------------------------------
+   RateAnt — star fill colors
+   ------------------------------------------- */
+.jfx-rate-star {
+  -fx-cursor: hand;
+}
+.jfx-rate-active {
+  -fx-fill: -color-warning-emphasis;
+  -fx-cursor: hand;
+}
+.jfx-rate-inactive {
+  -fx-fill: -color-border-default;
+  -fx-cursor: hand;
+}
+/* -------------------------------------------
+   FloatButtonAnt
+   ------------------------------------------- */
+.jfx-float-button-primary {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-border-color: transparent;
+  -fx-border-width: 1px;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0, 0, 2);
+}
+.jfx-float-button-primary:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0, 0, 4);
+}
+.jfx-float-button-default {
+  -fx-background-color: -color-bg-default;
+  -fx-text-fill: -color-fg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0, 0, 2);
+}
+.jfx-float-button-default:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0, 0, 4);
+}
+/* -------------------------------------------
+   SkeletonAnt — rect fill
+   ------------------------------------------- */
+.jfx-skeleton-rect {
+  -fx-fill: -color-bg-subtle;
+}
+/* -------------------------------------------
+   TagAnt — type colors via compound selector
+   ------------------------------------------- */
+.tag.primary,
+.tag.processing {
+  -fx-background-color: -color-accent-subtle;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: -color-accent-muted;
+}
+.tag.success {
+  -fx-background-color: -color-success-subtle;
+  -fx-text-fill: -color-success-emphasis;
+  -fx-border-color: -color-success-muted;
+}
+.tag.warning {
+  -fx-background-color: -color-warning-subtle;
+  -fx-text-fill: -color-warning-emphasis;
+  -fx-border-color: -color-warning-muted;
+}
+.tag.error {
+  -fx-background-color: -color-danger-subtle;
+  -fx-text-fill: -color-danger-emphasis;
+  -fx-border-color: -color-danger-muted;
+}
+/* Tag default type (no specific type class added) */
+.tag.default {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-fg-default;
+  -fx-border-color: -color-border-default;
+}
+/* Tag no-border override */
+.tag.no-border {
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+/* -------------------------------------------
+   AvatarAnt — default theme colors
+   ------------------------------------------- */
+.jfx-avatar-bg-default {
+  -fx-background-color: -color-accent-emphasis;
+}
+.jfx-avatar-fg-default {
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+/* -------------------------------------------
+   Shared Icon Type Colors — 消息/通知/结果页通用
+   ------------------------------------------- */
+.jfx-icon-success {
+  -fx-fill: -color-success-emphasis;
+}
+.jfx-icon-danger {
+  -fx-fill: -color-danger-emphasis;
+}
+.jfx-icon-warning {
+  -fx-fill: -color-warning-emphasis;
+}
+.jfx-icon-info {
+  -fx-fill: -color-accent-emphasis;
+}
+.jfx-icon-muted {
+  -fx-fill: -color-fg-muted;
+}
 /* Button - MUI Elevated Style */
 /* Base Button - MUI Style */
 .button {

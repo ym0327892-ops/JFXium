@@ -9,7 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 警告提示组件 - 对标 Ant Design Alert（组合式，Builder 模式）。
@@ -143,12 +143,12 @@ public class AlertAnt {
         public VBox build() {
             VBox alert = new VBox(4);
             alert.setAlignment(Pos.CENTER_LEFT);
-            alert.getStyleClass().add(CssClasses.ALERT);
+            alert.getStyleClass().add(JfxStyles.ALERT);
             alert.getStyleClass().add(typeClassFor(type));
             alert.getProperties().put(KEY_TYPE, type);
 
             if (banner) {
-                alert.getStyleClass().add(CssClasses.ALERT_BANNER);
+                alert.getStyleClass().add(JfxStyles.ALERT_BANNER);
                 HBox.setHgrow(alert, Priority.ALWAYS);
             }
 
@@ -158,13 +158,13 @@ public class AlertAnt {
             // 图标 Label：通过 styleClass 控制字号与文字色（LESS 端按 type 切换文字色）
             if (showIcon) {
                 Label iconLabel = new Label(iconFor(type));
-                iconLabel.getStyleClass().add(CssClasses.ALERT_ICON);
+                iconLabel.getStyleClass().add(JfxStyles.ALERT_ICON);
                 header.getChildren().add(iconLabel);
             }
 
             // 标题 Label：styleClass 控制字号/字重/文字色
             Label titleLabel = new Label(title);
-            titleLabel.getStyleClass().add(CssClasses.ALERT_TITLE);
+            titleLabel.getStyleClass().add(JfxStyles.ALERT_TITLE);
             header.getChildren().add(titleLabel);
             // 把标题 Label 挂到 properties，modify().title(...) 时能找回来
             alert.getProperties().put(KEY_TITLE_LABEL, titleLabel);
@@ -185,7 +185,7 @@ public class AlertAnt {
                 }
 
                 Button closeBtn = new Button("✕");
-                closeBtn.getStyleClass().add(CssClasses.ALERT_CLOSE_BTN);
+                closeBtn.getStyleClass().add(JfxStyles.ALERT_CLOSE_BTN);
                 closeBtn.setOnAction(e -> closeWithFade(alert));
                 header.getChildren().add(closeBtn);
             }
@@ -196,7 +196,7 @@ public class AlertAnt {
             if (message != null && !message.isEmpty()) {
                 Label messageLabel = new Label(message);
                 messageLabel.setWrapText(true);
-                messageLabel.getStyleClass().add(CssClasses.ALERT_MESSAGE);
+                messageLabel.getStyleClass().add(JfxStyles.ALERT_MESSAGE);
                 if (showIcon) {
                     // 描述左侧缩进对齐图标后内容（图标 16 + spacing 8 = 24，仅作为视觉细节保留）
                     messageLabel.setPadding(new Insets(0, 0, 0, 24));
@@ -229,10 +229,10 @@ public class AlertAnt {
 
         private static String typeClassFor(Type type) {
             return switch (type) {
-                case SUCCESS -> CssClasses.ALERT_SUCCESS;
-                case INFO -> CssClasses.ALERT_INFO;
-                case WARNING -> CssClasses.ALERT_WARNING;
-                case ERROR -> CssClasses.ALERT_ERROR;
+                case SUCCESS -> JfxStyles.ALERT_SUCCESS;
+                case INFO -> JfxStyles.ALERT_INFO;
+                case WARNING -> JfxStyles.ALERT_WARNING;
+                case ERROR -> JfxStyles.ALERT_ERROR;
             };
         }
 
@@ -312,14 +312,14 @@ public class AlertAnt {
                 Type effType = type != null ? type : Type.INFO;
                 // 清掉旧 type 的 styleClass（4 个候选都试一遍）
                 alert.getStyleClass().removeAll(
-                        CssClasses.ALERT_SUCCESS, CssClasses.ALERT_INFO,
-                        CssClasses.ALERT_WARNING, CssClasses.ALERT_ERROR);
+                        JfxStyles.ALERT_SUCCESS, JfxStyles.ALERT_INFO,
+                        JfxStyles.ALERT_WARNING, JfxStyles.ALERT_ERROR);
                 // 挂上新 type 的 styleClass
                 alert.getStyleClass().add(switch (effType) {
-                    case SUCCESS -> CssClasses.ALERT_SUCCESS;
-                    case INFO -> CssClasses.ALERT_INFO;
-                    case WARNING -> CssClasses.ALERT_WARNING;
-                    case ERROR -> CssClasses.ALERT_ERROR;
+                    case SUCCESS -> JfxStyles.ALERT_SUCCESS;
+                    case INFO -> JfxStyles.ALERT_INFO;
+                    case WARNING -> JfxStyles.ALERT_WARNING;
+                    case ERROR -> JfxStyles.ALERT_ERROR;
                 });
                 alert.getProperties().put(KEY_TYPE, effType);
 
@@ -327,7 +327,7 @@ public class AlertAnt {
                 Object headerNode = alert.getChildren().isEmpty() ? null : alert.getChildren().get(0);
                 if (headerNode instanceof HBox header) {
                     for (var child : header.getChildren()) {
-                        if (child instanceof Label l && l.getStyleClass().contains(CssClasses.ALERT_ICON)) {
+                        if (child instanceof Label l && l.getStyleClass().contains(JfxStyles.ALERT_ICON)) {
                             l.setText(switch (effType) {
                                 case SUCCESS -> "✓";
                                 case INFO -> "ℹ";
@@ -355,7 +355,7 @@ public class AlertAnt {
                     // build 时没传 message → 现在补上：构造一个 message Label 加到 alert 末尾
                     Label newMsg = new Label(message);
                     newMsg.setWrapText(true);
-                    newMsg.getStyleClass().add(CssClasses.ALERT_MESSAGE);
+                    newMsg.getStyleClass().add(JfxStyles.ALERT_MESSAGE);
                     alert.getChildren().add(newMsg);
                     alert.getProperties().put(KEY_MESSAGE_LABEL, newMsg);
                 }

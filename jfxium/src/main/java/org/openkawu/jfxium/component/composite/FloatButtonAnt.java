@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 悬浮按钮组件 - 对标 Ant Design FloatButton
@@ -68,45 +69,29 @@ public class FloatButtonAnt {
         public StackPane build() {
             StackPane container = new StackPane();
             container.setAlignment(Pos.CENTER);
-            container.getStyleClass().add("float-button");
+            container.getStyleClass().add(JfxStyles.FLOAT_BUTTON);
 
             Button button = new Button();
             button.setPrefSize(size, size);
             button.setMinSize(size, size);
             button.setMaxSize(size, size);
 
-            String bgColor = type == Type.PRIMARY ? "-color-accent-emphasis" : "-color-bg-default";
-            String textColor = type == Type.PRIMARY ? "-color-fg-on-emphasis" : "-color-fg-default";
-            String borderColor = type == Type.PRIMARY ? "transparent" : "-color-border-default";
+            // 类型样式：通过 styleClass 应用 CSS 变量（避免 setStyle 中 CSS 变量导致 ClassCastException）
+            button.getStyleClass().add(
+                type == Type.PRIMARY ? JfxStyles.FLOAT_BUTTON_PRIMARY : JfxStyles.FLOAT_BUTTON_DEFAULT
+            );
 
+            // 尺寸依赖的圆角（必须在 setStyle 中使用计算值，因为 LESS 无法知道运行时 size）
             button.setStyle(
-                "-fx-background-color: " + bgColor + ";" +
-                "-fx-text-fill: " + textColor + ";" +
-                "-fx-border-color: " + borderColor + ";" +
-                "-fx-border-width: 1px;" +
                 "-fx-background-radius: " + (size / 2) + "px;" +
-                "-fx-border-radius: " + (size / 2) + "px;" +
-                "-fx-cursor: hand;" +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);"
+                "-fx-border-radius: " + (size / 2) + "px;"
             );
 
             if (icon != null) {
                 button.setGraphic(icon);
             }
 
-            button.setOnMouseEntered(e -> {
-                button.setStyle(button.getStyle().replace(
-                    "dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2)",
-                    "dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0, 0, 4)"
-                ));
-            });
-
-            button.setOnMouseExited(e -> {
-                button.setStyle(button.getStyle().replace(
-                    "dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0, 0, 4)",
-                    "dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2)"
-                ));
-            });
+            // hover 效果已在 LESS :hover 伪类中定义，无需手动处理
 
             if (onClick != null) {
                 button.setOnAction(e -> onClick.run());

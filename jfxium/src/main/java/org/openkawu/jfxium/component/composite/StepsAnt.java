@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +102,7 @@ public class StepsAnt {
         private HBox buildHorizontal() {
             HBox container = new HBox(0);
             container.setAlignment(Pos.TOP_CENTER);
-            container.getStyleClass().add(CssClasses.STEPS);
+            container.getStyleClass().add(JfxStyles.STEPS);
 
             int stepSize = size == Size.SMALL ? 24 : 32;
 
@@ -114,7 +114,7 @@ public class StepsAnt {
                 VBox stepBox = new VBox(8);
                 stepBox.setAlignment(Pos.CENTER);
                 stepBox.setPrefWidth(200);
-                stepBox.getStyleClass().add(CssClasses.STEPS_ITEM);
+                stepBox.getStyleClass().add(JfxStyles.STEPS_ITEM);
                 HBox.setHgrow(stepBox, Priority.ALWAYS);
 
                 HBox iconBox = new HBox(0);
@@ -123,9 +123,9 @@ public class StepsAnt {
 
                 if (i < steps.size() - 1) {
                     Line line = new Line(0, 0, 60, 0);
-                    line.getStyleClass().add(CssClasses.STEPS_LINE);
+                    line.getStyleClass().add(JfxStyles.STEPS_LINE);
                     if (state == State.FINISHED) {
-                        line.getStyleClass().add(CssClasses.STEPS_STATE_FINISHED);
+                        line.getStyleClass().add(JfxStyles.STEPS_STATE_FINISHED);
                     }
                     sn.line = line;
                     iconBox.getChildren().add(line);
@@ -135,7 +135,7 @@ public class StepsAnt {
                 stepBox.getChildren().add(makeTitle(step.title, state, sn));
                 if (step.description != null) {
                     Label descLabel = new Label(step.description);
-                    descLabel.getStyleClass().add(CssClasses.STEPS_DESCRIPTION);
+                    descLabel.getStyleClass().add(JfxStyles.STEPS_DESCRIPTION);
                     stepBox.getChildren().add(descLabel);
                 }
                 container.getChildren().add(stepBox);
@@ -146,7 +146,7 @@ public class StepsAnt {
         private VBox buildVertical() {
             VBox container = new VBox(0);
             container.setAlignment(Pos.TOP_LEFT);
-            container.getStyleClass().add(CssClasses.STEPS_VERTICAL);
+            container.getStyleClass().add(JfxStyles.STEPS_VERTICAL);
 
             int stepSize = size == Size.SMALL ? 24 : 32;
 
@@ -157,7 +157,7 @@ public class StepsAnt {
 
                 HBox stepBox = new HBox(12);
                 stepBox.setAlignment(Pos.TOP_LEFT);
-                stepBox.getStyleClass().add(CssClasses.STEPS_ITEM);
+                stepBox.getStyleClass().add(JfxStyles.STEPS_ITEM);
 
                 VBox leftBox = new VBox(0);
                 leftBox.setAlignment(Pos.TOP_CENTER);
@@ -166,9 +166,9 @@ public class StepsAnt {
 
                 if (i < steps.size() - 1) {
                     Line line = new Line(0, 0, 0, 40);
-                    line.getStyleClass().add(CssClasses.STEPS_LINE);
+                    line.getStyleClass().add(JfxStyles.STEPS_LINE);
                     if (state == State.FINISHED) {
-                        line.getStyleClass().add(CssClasses.STEPS_STATE_FINISHED);
+                        line.getStyleClass().add(JfxStyles.STEPS_STATE_FINISHED);
                     }
                     sn.line = line;
                     leftBox.getChildren().add(line);
@@ -180,7 +180,7 @@ public class StepsAnt {
                 contentBox.getChildren().add(makeTitle(step.title, state, sn));
                 if (step.description != null) {
                     Label descLabel = new Label(step.description);
-                    descLabel.getStyleClass().add(CssClasses.STEPS_DESCRIPTION);
+                    descLabel.getStyleClass().add(JfxStyles.STEPS_DESCRIPTION);
                     contentBox.getChildren().add(descLabel);
                 }
                 stepBox.getChildren().add(contentBox);
@@ -192,11 +192,11 @@ public class StepsAnt {
         /** 生成圆圈 + 数字（颜色由 LESS 状态修饰类切换；引用存入 sn 供 runtime 切换）*/
         private StackPane makeStepIcon(int stepSize, State state, int number, StepNodes sn) {
             Circle circle = new Circle(stepSize / 2.0);
-            circle.getStyleClass().add(CssClasses.STEPS_CIRCLE);
+            circle.getStyleClass().add(JfxStyles.STEPS_CIRCLE);
             circle.getStyleClass().add(stateClass(state));
 
             Label numberLabel = new Label(String.valueOf(number));
-            numberLabel.getStyleClass().add(CssClasses.STEPS_NUMBER);
+            numberLabel.getStyleClass().add(JfxStyles.STEPS_NUMBER);
             numberLabel.getStyleClass().add(stateClass(state));
             // font-size 与 stepSize 联动（动态属性，留 inline）
             numberLabel.setStyle("-fx-font-size: " + (stepSize * 0.4) + "px;");
@@ -211,7 +211,7 @@ public class StepsAnt {
 
         private Label makeTitle(String text, State state, StepNodes sn) {
             Label titleLabel = new Label(text);
-            titleLabel.getStyleClass().add(CssClasses.STEPS_TITLE);
+            titleLabel.getStyleClass().add(JfxStyles.STEPS_TITLE);
             titleLabel.getStyleClass().add(stateClass(state));
             sn.title = titleLabel;
             return titleLabel;
@@ -225,9 +225,9 @@ public class StepsAnt {
 
         private static String stateClass(State state) {
             return switch (state) {
-                case FINISHED -> CssClasses.STEPS_STATE_FINISHED;
-                case CURRENT -> CssClasses.STEPS_STATE_CURRENT;
-                case WAIT -> CssClasses.STEPS_STATE_WAIT;
+                case FINISHED -> JfxStyles.STEPS_STATE_FINISHED;
+                case CURRENT -> JfxStyles.STEPS_STATE_CURRENT;
+                case WAIT -> JfxStyles.STEPS_STATE_WAIT;
             };
         }
     }
@@ -293,9 +293,9 @@ public class StepsAnt {
                 applyState(sn.title, state);
                 // 连接线：仅当本步骤已完成时高亮
                 if (sn.line != null) {
-                    sn.line.getStyleClass().remove(CssClasses.STEPS_STATE_FINISHED);
+                    sn.line.getStyleClass().remove(JfxStyles.STEPS_STATE_FINISHED);
                     if (state == State.FINISHED) {
-                        sn.line.getStyleClass().add(CssClasses.STEPS_STATE_FINISHED);
+                        sn.line.getStyleClass().add(JfxStyles.STEPS_STATE_FINISHED);
                     }
                 }
             }
@@ -321,13 +321,13 @@ public class StepsAnt {
         private static void applyState(Node node, State state) {
             if (node == null) return;
             node.getStyleClass().removeAll(
-                    CssClasses.STEPS_STATE_FINISHED,
-                    CssClasses.STEPS_STATE_CURRENT,
-                    CssClasses.STEPS_STATE_WAIT);
+                    JfxStyles.STEPS_STATE_FINISHED,
+                    JfxStyles.STEPS_STATE_CURRENT,
+                    JfxStyles.STEPS_STATE_WAIT);
             node.getStyleClass().add(switch (state) {
-                case FINISHED -> CssClasses.STEPS_STATE_FINISHED;
-                case CURRENT -> CssClasses.STEPS_STATE_CURRENT;
-                case WAIT -> CssClasses.STEPS_STATE_WAIT;
+                case FINISHED -> JfxStyles.STEPS_STATE_FINISHED;
+                case CURRENT -> JfxStyles.STEPS_STATE_CURRENT;
+                case WAIT -> JfxStyles.STEPS_STATE_WAIT;
             });
         }
     }

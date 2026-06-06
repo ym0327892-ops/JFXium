@@ -6,7 +6,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.KeyCombination;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  *   <li><b>快捷键</b>：accelerator(KeyCombination) 绑定键盘快捷键（如 Ctrl+S）</li>
  *   <li><b>分隔线</b>：divider() 插入分组分隔线</li>
  *   <li><b>禁用</b>：disabled(true) 禁用整个菜单栏 / 单项禁用</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#MENU_BAR} 系列 LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#MENU_BAR} 系列 LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -80,7 +80,7 @@ public class MenuBarAnt extends MenuBar {
 
     public MenuBarAnt() {
         super();
-        getStyleClass().add(CssClasses.MENU_BAR);
+        getStyleClass().add(JfxStyles.MENU_BAR);
     }
 
     // ============================================================
@@ -125,14 +125,14 @@ public class MenuBarAnt extends MenuBar {
         MenuBuilder(MenuBarAnt menuBar, String title) {
             this.menuBar = menuBar;
             this.menu = new Menu(title);
-            this.menu.getStyleClass().add(CssClasses.MENU_BAR_MENU);
+            this.menu.getStyleClass().add(JfxStyles.MENU_BAR_MENU);
         }
 
         // --- 菜单项 ---
 
         public MenuBuilder item(String label, Runnable action) {
             MenuItem item = new MenuItem(label);
-            item.getStyleClass().add(CssClasses.MENU_BAR_ITEM);
+            item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
             if (action != null) {
                 item.setOnAction(e -> action.run());
             }
@@ -143,7 +143,7 @@ public class MenuBarAnt extends MenuBar {
 
         public MenuBuilder item(String label, Node icon, Runnable action) {
             MenuItem item = new MenuItem(label, icon);
-            item.getStyleClass().add(CssClasses.MENU_BAR_ITEM);
+            item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
             if (action != null) {
                 item.setOnAction(e -> action.run());
             }
@@ -154,7 +154,7 @@ public class MenuBarAnt extends MenuBar {
 
         public MenuBuilder item(String label, Consumer<MenuItem> action) {
             MenuItem item = new MenuItem(label);
-            item.getStyleClass().add(CssClasses.MENU_BAR_ITEM);
+            item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
             if (action != null) {
                 item.setOnAction(e -> action.accept(item));
             }
@@ -192,7 +192,7 @@ public class MenuBarAnt extends MenuBar {
 
         public MenuBuilder divider() {
             SeparatorMenuItem sep = new SeparatorMenuItem();
-            sep.getStyleClass().add(CssClasses.MENU_BAR_DIVIDER);
+            sep.getStyleClass().add(JfxStyles.MENU_BAR_DIVIDER);
             menu.getItems().add(sep);
             return this;
         }
@@ -228,12 +228,12 @@ public class MenuBarAnt extends MenuBar {
         SubMenuBuilder(MenuBuilder parent, String label) {
             this.parent = parent;
             this.subMenu = new Menu(label);
-            this.subMenu.getStyleClass().add(CssClasses.MENU_BAR_SUBMENU);
+            this.subMenu.getStyleClass().add(JfxStyles.MENU_BAR_SUBMENU);
         }
 
         public SubMenuBuilder item(String label, Runnable action) {
             MenuItem item = new MenuItem(label);
-            item.getStyleClass().add(CssClasses.MENU_BAR_ITEM);
+            item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
             if (action != null) {
                 item.setOnAction(e -> action.run());
             }
@@ -244,7 +244,7 @@ public class MenuBarAnt extends MenuBar {
 
         public SubMenuBuilder item(String label, Node icon, Runnable action) {
             MenuItem item = new MenuItem(label, icon);
-            item.getStyleClass().add(CssClasses.MENU_BAR_ITEM);
+            item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
             if (action != null) {
                 item.setOnAction(e -> action.run());
             }
@@ -276,7 +276,7 @@ public class MenuBarAnt extends MenuBar {
 
         public SubMenuBuilder divider() {
             SeparatorMenuItem sep = new SeparatorMenuItem();
-            sep.getStyleClass().add(CssClasses.MENU_BAR_DIVIDER);
+            sep.getStyleClass().add(JfxStyles.MENU_BAR_DIVIDER);
             subMenu.getItems().add(sep);
             return this;
         }

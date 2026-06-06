@@ -144,11 +144,11 @@ public class CustomTheme implements Theme {
 
 ## CSS 类名常量
 
-使用 `CssClasses` 集中管理 CSS 类名，避免拼写错误。
+使用 `JfxStyles` 集中管理 CSS 类名，避免拼写错误。
 
 ```java
 // 使用常量
-button.getStyleClass().add(CssClasses.BUTTON_PRIMARY);
+button.getStyleClass().add(JfxStyles.BUTTON_PRIMARY);
 
 // 而不是硬编码字符串
 button.getStyleClass().add("primary");  // 不推荐

@@ -10,7 +10,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.function.Consumer;
  *   <li><b>分隔线</b>：divider() 插入分组分隔线</li>
  *   <li><b>禁用</b>：disabled(true) 禁用单项</li>
  *   <li><b>回调</b>：onSelect(key) / onSelectItem(MenuItem)</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#CONTEXT_MENU} 系列 LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#CONTEXT_MENU} 系列 LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -192,21 +192,21 @@ public class ContextMenuAnt {
 
         private VBox createMenu() {
             VBox box = new VBox(0);
-            box.getStyleClass().add(CssClasses.CONTEXT_MENU);
+            box.getStyleClass().add(JfxStyles.CONTEXT_MENU);
 
             for (MenuItem item : config.items) {
                 if (item.isDivider()) {
                     Region div = new Region();
-                    div.getStyleClass().add(CssClasses.CONTEXT_MENU_DIVIDER);
+                    div.getStyleClass().add(JfxStyles.CONTEXT_MENU_DIVIDER);
                     box.getChildren().add(div);
                     continue;
                 }
 
                 HBox row = new HBox(8);
                 row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-                row.getStyleClass().add(CssClasses.CONTEXT_MENU_ITEM);
+                row.getStyleClass().add(JfxStyles.CONTEXT_MENU_ITEM);
                 if (item.isDisabled()) {
-                    row.getStyleClass().add(CssClasses.CONTEXT_MENU_ITEM_DISABLED);
+                    row.getStyleClass().add(JfxStyles.CONTEXT_MENU_ITEM_DISABLED);
                 }
 
                 // Icon

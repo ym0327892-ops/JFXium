@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -67,7 +67,7 @@ public class CalendarAnt {
 
         public VBox build() {
             VBox calendar = new VBox(0);
-            calendar.getStyleClass().add(CssClasses.CALENDAR);
+            calendar.getStyleClass().add(JfxStyles.CALENDAR);
 
             if (fullscreen) {
                 HBox.setHgrow(calendar, Priority.ALWAYS);
@@ -87,7 +87,7 @@ public class CalendarAnt {
         private HBox buildHeader() {
             HBox header = new HBox(8);
             header.setAlignment(Pos.CENTER);
-            header.getStyleClass().add(CssClasses.CALENDAR_HEADER);
+            header.getStyleClass().add(JfxStyles.CALENDAR_HEADER);
             HBox.setHgrow(header, Priority.ALWAYS);
 
             Button prevBtn = createNavButton("<");
@@ -106,7 +106,7 @@ public class CalendarAnt {
                     ? value.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault()))
                     : String.valueOf(value.getYear());
             Label monthYearLabel = new Label(headerText);
-            monthYearLabel.getStyleClass().add(CssClasses.CALENDAR_HEADER_LABEL);
+            monthYearLabel.getStyleClass().add(JfxStyles.CALENDAR_HEADER_LABEL);
 
             header.getChildren().addAll(prevBtn, monthYearLabel, nextBtn);
             return header;
@@ -115,13 +115,13 @@ public class CalendarAnt {
         /** 导航按钮（上/下一月）：视觉与 hover 由 LESS .calendar-nav-btn 控制 */
         private Button createNavButton(String text) {
             Button btn = new Button(text);
-            btn.getStyleClass().add(CssClasses.CALENDAR_NAV_BTN);
+            btn.getStyleClass().add(JfxStyles.CALENDAR_NAV_BTN);
             return btn;
         }
 
         private GridPane buildMonthView() {
             GridPane grid = new GridPane();
-            grid.getStyleClass().add(CssClasses.CALENDAR_GRID);
+            grid.getStyleClass().add(JfxStyles.CALENDAR_GRID);
             grid.setHgap(0);
             grid.setVgap(0);
 
@@ -143,7 +143,7 @@ public class CalendarAnt {
             String[] dayNames = {"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"};
             for (int i = 0; i < 7; i++) {
                 Label dayLabel = new Label(dayNames[i]);
-                dayLabel.getStyleClass().add(CssClasses.CALENDAR_DAY_HEADER);
+                dayLabel.getStyleClass().add(JfxStyles.CALENDAR_DAY_HEADER);
                 dayLabel.setAlignment(Pos.CENTER);
                 dayLabel.setMaxWidth(Double.MAX_VALUE);
                 dayLabel.setMaxHeight(Double.MAX_VALUE);
@@ -207,7 +207,7 @@ public class CalendarAnt {
 
         private VBox buildYearView() {
             VBox yearView = new VBox(8);
-            yearView.getStyleClass().add(CssClasses.CALENDAR_YEAR_VIEW);
+            yearView.getStyleClass().add(JfxStyles.CALENDAR_YEAR_VIEW);
 
             GridPane grid = new GridPane();
             grid.setHgap(8);
@@ -220,11 +220,11 @@ public class CalendarAnt {
                 Button monthBtn = new Button(months[i]);
                 monthBtn.setPrefWidth(80);
                 monthBtn.setPrefHeight(40);
-                monthBtn.getStyleClass().add(CssClasses.CALENDAR_MONTH_BTN);
+                monthBtn.getStyleClass().add(JfxStyles.CALENDAR_MONTH_BTN);
 
                 boolean isCurrentMonth = value.getMonthValue() == month;
                 if (isCurrentMonth) {
-                    monthBtn.getStyleClass().add(CssClasses.CALENDAR_MONTH_BTN_CURRENT);
+                    monthBtn.getStyleClass().add(JfxStyles.CALENDAR_MONTH_BTN_CURRENT);
                 }
 
                 monthBtn.setOnAction(e -> {
@@ -249,16 +249,16 @@ public class CalendarAnt {
             label.setAlignment(Pos.CENTER);
             label.setMaxWidth(Double.MAX_VALUE);
             label.setMaxHeight(Double.MAX_VALUE);
-            label.getStyleClass().add(CssClasses.CALENDAR_DAY_LABEL);
+            label.getStyleClass().add(JfxStyles.CALENDAR_DAY_LABEL);
 
             StackPane cell = new StackPane();
             cell.setMaxWidth(Double.MAX_VALUE);
             cell.setMaxHeight(Double.MAX_VALUE);
             cell.setAlignment(Pos.CENTER);
-            cell.getStyleClass().add(CssClasses.CALENDAR_CELL);
-            if (isOtherMonth) cell.getStyleClass().add(CssClasses.CALENDAR_CELL_OTHER_MONTH);
-            if (isSelected) cell.getStyleClass().add(CssClasses.CALENDAR_CELL_SELECTED);
-            else if (isToday) cell.getStyleClass().add(CssClasses.CALENDAR_CELL_TODAY);
+            cell.getStyleClass().add(JfxStyles.CALENDAR_CELL);
+            if (isOtherMonth) cell.getStyleClass().add(JfxStyles.CALENDAR_CELL_OTHER_MONTH);
+            if (isSelected) cell.getStyleClass().add(JfxStyles.CALENDAR_CELL_SELECTED);
+            else if (isToday) cell.getStyleClass().add(JfxStyles.CALENDAR_CELL_TODAY);
 
             cell.setOnMouseClicked(e -> {
                 selectedDate = date;

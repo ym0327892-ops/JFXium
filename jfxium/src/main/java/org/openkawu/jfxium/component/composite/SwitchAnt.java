@@ -11,7 +11,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -115,14 +115,14 @@ public class SwitchAnt {
         public HBox build() {
             HBox container = new HBox(8);
             container.setAlignment(Pos.CENTER_LEFT);
-            container.getStyleClass().add(CssClasses.SWITCH_CONTAINER);
+            container.getStyleClass().add(JfxStyles.SWITCH_CONTAINER);
 
             // 轨道、滑块容器、滑块尺寸固定，视觉细节（圆角、颜色、cursor）走 LESS
             Region track = new Region();
             track.setMinSize(44, 22);
             track.setMaxSize(44, 22);
             track.setPrefSize(44, 22);
-            track.getStyleClass().add(CssClasses.SWITCH_TRACK);
+            track.getStyleClass().add(JfxStyles.SWITCH_TRACK);
 
             StackPane thumbContainer = new StackPane();
             thumbContainer.setMinSize(44, 22);
@@ -134,7 +134,7 @@ public class SwitchAnt {
             thumb.setMinSize(18, 18);
             thumb.setMaxSize(18, 18);
             thumb.setPrefSize(18, 18);
-            thumb.getStyleClass().add(CssClasses.SWITCH_THUMB);
+            thumb.getStyleClass().add(JfxStyles.SWITCH_THUMB);
             thumb.setLayoutX(2);
 
             thumbContainer.getChildren().add(thumb);
@@ -143,7 +143,7 @@ public class SwitchAnt {
             switchPane.setMinSize(44, 22);
             switchPane.setMaxSize(44, 22);
             switchPane.setPrefSize(44, 22);
-            switchPane.getStyleClass().add(CssClasses.SWITCH);
+            switchPane.getStyleClass().add(JfxStyles.SWITCH);
 
             // 用 BooleanProperty 持有可变的当前选中态（支持双向绑定）
             final SimpleBooleanProperty valueProperty = new SimpleBooleanProperty(selected);
@@ -152,13 +152,13 @@ public class SwitchAnt {
             }
 
             if (selected) {
-                switchPane.getStyleClass().add(CssClasses.SWITCH_SELECTED);
+                switchPane.getStyleClass().add(JfxStyles.SWITCH_SELECTED);
                 // 关键：初始就选中时，thumb 要直接放到右侧（translateX=24），否则蓝轨道配左侧 thumb 视觉错乱
                 thumb.setTranslateX(24);
             }
             // 禁用态用 styleClass 切换，避免 inline setStyle 在动态场景下残留 cursor
             if (disabled) {
-                switchPane.getStyleClass().add(CssClasses.SWITCH_DISABLED);
+                switchPane.getStyleClass().add(JfxStyles.SWITCH_DISABLED);
             }
             // Shape 修饰类（M19.20）—— PILL 默认不挂；ROUNDED/SQUARE 挂修饰类切换圆角
             switch (shape) {
@@ -184,7 +184,7 @@ public class SwitchAnt {
             // 状态文本：仅当用户配置了 checkedText/uncheckedText 才创建
             if (!checkedText.isEmpty() || !uncheckedText.isEmpty()) {
                 Label statusLabel = new Label(selected ? checkedText : uncheckedText);
-                statusLabel.getStyleClass().add(CssClasses.SWITCH_STATUS_LABEL);
+                statusLabel.getStyleClass().add(JfxStyles.SWITCH_STATUS_LABEL);
                 // 用 properties 标记，方便 toggle 时找到这个 Label 来更新文本
                 statusLabel.getProperties().put("switchLabel", true);
                 container.getChildren().add(statusLabel);
@@ -197,9 +197,9 @@ public class SwitchAnt {
 
         private void toggle(StackPane switchPane, Region thumb, boolean isSelected) {
             if (isSelected) {
-                switchPane.getStyleClass().add(CssClasses.SWITCH_SELECTED);
+                switchPane.getStyleClass().add(JfxStyles.SWITCH_SELECTED);
             } else {
-                switchPane.getStyleClass().remove(CssClasses.SWITCH_SELECTED);
+                switchPane.getStyleClass().remove(JfxStyles.SWITCH_SELECTED);
             }
 
             // 从当前实际位置滑到目标位置（不写死 from，避免与初始 translateX 冲突）

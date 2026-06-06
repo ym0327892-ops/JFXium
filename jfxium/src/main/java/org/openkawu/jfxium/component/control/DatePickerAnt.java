@@ -2,7 +2,7 @@ package org.openkawu.jfxium.component.control;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.DatePicker;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.time.LocalDate;
 import java.util.function.Consumer;
@@ -114,11 +114,11 @@ public class DatePickerAnt extends DatePicker {
      * DEFAULT 仅清不挂。
      */
     public DatePickerAnt size(Size size) {
-        getStyleClass().removeAll(CssClasses.SIZE_SMALL, CssClasses.SIZE_LARGE);
+        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
         if (size == Size.SMALL) {
-            getStyleClass().add(CssClasses.SIZE_SMALL);
+            getStyleClass().add(JfxStyles.SIZE_SMALL);
         } else if (size == Size.LARGE) {
-            getStyleClass().add(CssClasses.SIZE_LARGE);
+            getStyleClass().add(JfxStyles.SIZE_LARGE);
         }
         return this;
     }

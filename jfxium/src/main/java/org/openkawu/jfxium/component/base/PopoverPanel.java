@@ -6,7 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * 内部基础组件：气泡卡片面板（标题 + 内容 + 关闭按钮）。
@@ -56,13 +56,13 @@ public class PopoverPanel {
 
         public VBox build() {
             VBox panel = new VBox(0);
-            panel.getStyleClass().add(CssClasses.POPOVER_PANEL);
+            panel.getStyleClass().add(JfxStyles.POPOVER_PANEL);
             panel.setStyle("-fx-min-width: " + minWidth + ";-fx-max-width: " + maxWidth + ";");
 
             if (!title.isEmpty()) {
                 VBox titleBox = new VBox(0);
                 titleBox.setAlignment(Pos.CENTER_LEFT);
-                titleBox.getStyleClass().add(CssClasses.POPOVER_TITLE_BOX);
+                titleBox.getStyleClass().add(JfxStyles.POPOVER_TITLE_BOX);
 
                 if (closable && onClose != null) {
                     HBox titleRow = new HBox();
@@ -70,7 +70,7 @@ public class PopoverPanel {
                     HBox.setHgrow(titleRow, Priority.ALWAYS);
 
                     Label titleLabel = new Label(title);
-                    titleLabel.getStyleClass().add(CssClasses.POPOVER_TITLE_LABEL);
+                    titleLabel.getStyleClass().add(JfxStyles.POPOVER_TITLE_LABEL);
                     HBox.setHgrow(titleLabel, Priority.ALWAYS);
                     titleRow.getChildren().add(titleLabel);
 
@@ -79,7 +79,7 @@ public class PopoverPanel {
                     titleBox.getChildren().add(titleRow);
                 } else {
                     Label titleLabel = new Label(title);
-                    titleLabel.getStyleClass().add(CssClasses.POPOVER_TITLE_LABEL);
+                    titleLabel.getStyleClass().add(JfxStyles.POPOVER_TITLE_LABEL);
                     titleBox.getChildren().add(titleLabel);
                 }
                 panel.getChildren().add(titleBox);

@@ -9,7 +9,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,13 +90,13 @@ public class ListAnt {
 
         public VBox build() {
             VBox list = new VBox(0);
-            list.getStyleClass().add(CssClasses.LIST);
-            if (bordered) list.getStyleClass().add(CssClasses.LIST_BORDERED);
-            if (loading) list.getStyleClass().add(CssClasses.LIST_LOADING);
+            list.getStyleClass().add(JfxStyles.LIST);
+            if (bordered) list.getStyleClass().add(JfxStyles.LIST_BORDERED);
+            if (loading) list.getStyleClass().add(JfxStyles.LIST_LOADING);
 
             if (header != null) {
                 Label headerLabel = new Label(header);
-                headerLabel.getStyleClass().add(CssClasses.LIST_HEADER);
+                headerLabel.getStyleClass().add(JfxStyles.LIST_HEADER);
                 list.getChildren().add(headerLabel);
             }
 
@@ -105,9 +105,9 @@ public class ListAnt {
 
                 HBox row = new HBox(12);
                 row.setAlignment(Pos.CENTER_LEFT);
-                row.getStyleClass().add(CssClasses.LIST_ITEM);
+                row.getStyleClass().add(JfxStyles.LIST_ITEM);
                 if (item.getOnClick() != null) {
-                    row.getStyleClass().add(CssClasses.LIST_ITEM_CLICKABLE);
+                    row.getStyleClass().add(JfxStyles.LIST_ITEM_CLICKABLE);
                     row.setOnMouseClicked(e -> item.getOnClick().run());
                 }
 
@@ -118,11 +118,11 @@ public class ListAnt {
                 VBox content = new VBox(4);
                 content.setAlignment(Pos.CENTER_LEFT);
                 Label titleLabel = new Label(item.getTitle());
-                titleLabel.getStyleClass().add(CssClasses.LIST_ITEM_TITLE);
+                titleLabel.getStyleClass().add(JfxStyles.LIST_ITEM_TITLE);
                 content.getChildren().add(titleLabel);
                 if (item.getDescription() != null && !item.getDescription().isEmpty()) {
                     Label descLabel = new Label(item.getDescription());
-                    descLabel.getStyleClass().add(CssClasses.LIST_ITEM_DESCRIPTION);
+                    descLabel.getStyleClass().add(JfxStyles.LIST_ITEM_DESCRIPTION);
                     content.getChildren().add(descLabel);
                 }
                 row.getChildren().add(content);
@@ -136,7 +136,7 @@ public class ListAnt {
 
                 if (split && i < items.size() - 1) {
                     Region divider = new Region();
-                    divider.getStyleClass().add(CssClasses.LIST_DIVIDER);
+                    divider.getStyleClass().add(JfxStyles.LIST_DIVIDER);
                     // 分隔线左右留出与 item 一致的内边距，结构性 padding 保留 inline
                     divider.setPadding(new Insets(0, 24, 0, 24));
                     list.getChildren().add(divider);
@@ -145,7 +145,7 @@ public class ListAnt {
 
             if (footer != null) {
                 Label footerLabel = new Label(footer);
-                footerLabel.getStyleClass().add(CssClasses.LIST_FOOTER);
+                footerLabel.getStyleClass().add(JfxStyles.LIST_FOOTER);
                 list.getChildren().add(footerLabel);
             }
             return list;

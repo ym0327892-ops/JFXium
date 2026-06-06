@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.HBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.time.LocalTime;
 import java.util.function.Consumer;
@@ -67,7 +67,7 @@ public class TimePickerAnt {
 
         public HBox build() {
             HBox container = new HBox(8);
-            container.getStyleClass().add(CssClasses.TIME_PICKER);
+            container.getStyleClass().add(JfxStyles.TIME_PICKER);
             container.setAlignment(Pos.CENTER_LEFT);
 
             boolean showSeconds = format.contains("ss");
@@ -119,7 +119,7 @@ public class TimePickerAnt {
         /** 创建一个":"分隔符 Label，颜色字号由 LESS 控制 */
         private Label makeSeparator() {
             Label sep = new Label(":");
-            sep.getStyleClass().add(CssClasses.TIME_PICKER_SEPARATOR);
+            sep.getStyleClass().add(JfxStyles.TIME_PICKER_SEPARATOR);
             return sep;
         }
 
@@ -128,12 +128,12 @@ public class TimePickerAnt {
             spinner.setPrefWidth(60);
             spinner.setMinWidth(60);
             spinner.setMaxWidth(60);
-            spinner.getStyleClass().add(CssClasses.TIME_PICKER_SPINNER);
+            spinner.getStyleClass().add(JfxStyles.TIME_PICKER_SPINNER);
             spinner.setDisable(disabled);
 
             spinner.getEditor().setAlignment(Pos.CENTER);
             // 编辑器视觉样式（字号/padding/边框等）走 LESS
-            spinner.getEditor().getStyleClass().add(CssClasses.TIME_PICKER_EDITOR);
+            spinner.getEditor().getStyleClass().add(JfxStyles.TIME_PICKER_EDITOR);
 
             return spinner;
         }

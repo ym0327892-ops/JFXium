@@ -10,7 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -87,19 +87,19 @@ public class InputNumberAnt {
         public HBox build() {
             HBox container = new HBox(0);
             container.setAlignment(Pos.CENTER_LEFT);
-            container.getStyleClass().add(CssClasses.INPUT_NUMBER);
-            if (disabled) container.getStyleClass().add(CssClasses.INPUT_NUMBER_DISABLED);
+            container.getStyleClass().add(JfxStyles.INPUT_NUMBER);
+            if (disabled) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_DISABLED);
 
             if (prefix != null && !prefix.isEmpty()) {
                 Label prefixLabel = new Label(prefix);
-                prefixLabel.getStyleClass().add(CssClasses.INPUT_NUMBER_PREFIX);
+                prefixLabel.getStyleClass().add(JfxStyles.INPUT_NUMBER_PREFIX);
                 container.getChildren().add(prefixLabel);
             }
 
             TextField field = new TextField(formatValue(value));
             field.setAlignment(Pos.CENTER);
             field.setPrefWidth(80);
-            field.getStyleClass().add(CssClasses.INPUT_NUMBER_FIELD);
+            field.getStyleClass().add(JfxStyles.INPUT_NUMBER_FIELD);
             HBox.setHgrow(field, Priority.ALWAYS);
 
             // 双向绑定：外部 property 变化时更新输入框
@@ -136,7 +136,7 @@ public class InputNumberAnt {
 
             if (suffix != null && !suffix.isEmpty()) {
                 Label suffixLabel = new Label(suffix);
-                suffixLabel.getStyleClass().add(CssClasses.INPUT_NUMBER_SUFFIX);
+                suffixLabel.getStyleClass().add(JfxStyles.INPUT_NUMBER_SUFFIX);
                 container.getChildren().add(suffixLabel);
             }
 
@@ -161,11 +161,11 @@ public class InputNumberAnt {
             btn.setMinSize(28, 32);
             btn.setPrefSize(28, 32);
             btn.setMaxSize(28, 32);
-            btn.getStyleClass().add(CssClasses.INPUT_NUMBER_BTN);
+            btn.getStyleClass().add(JfxStyles.INPUT_NUMBER_BTN);
 
             SVGPath path = new SVGPath();
             path.setContent(svgPath);
-            path.getStyleClass().add(CssClasses.INPUT_NUMBER_ARROW);
+            path.getStyleClass().add(JfxStyles.INPUT_NUMBER_ARROW);
 
             StackPane graphic = new StackPane(path);
             graphic.setAlignment(Pos.CENTER);

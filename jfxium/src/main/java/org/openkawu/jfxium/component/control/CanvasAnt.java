@@ -3,7 +3,7 @@ package org.openkawu.jfxium.component.control;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  *   <li><b>尺寸</b>：size(w, h) 设置画布大小</li>
  *   <li><b>自定义绘制</b>：onDraw(GraphicsContext) 回调，每次重绘时触发</li>
  *   <li><b>快捷方法</b>：clear()、fill(Color)、stroke(Color) 等常用操作</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#CANVAS} LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#CANVAS} LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -60,12 +60,12 @@ public class CanvasAnt extends Canvas {
 
     public CanvasAnt() {
         super();
-        getStyleClass().add(CssClasses.CANVAS);
+        getStyleClass().add(JfxStyles.CANVAS);
     }
 
     public CanvasAnt(double width, double height) {
         super(width, height);
-        getStyleClass().add(CssClasses.CANVAS);
+        getStyleClass().add(JfxStyles.CANVAS);
     }
 
     // ============================================================

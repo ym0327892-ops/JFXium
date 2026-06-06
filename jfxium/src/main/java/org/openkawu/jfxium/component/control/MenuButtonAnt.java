@@ -9,7 +9,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import org.openkawu.jfxium.component.overlay.DropdownAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,16 +190,16 @@ public class MenuButtonAnt {
 
             // Size
             if (size == Size.SMALL) {
-                btn.getStyleClass().add(CssClasses.SIZE_SMALL);
+                btn.getStyleClass().add(JfxStyles.SIZE_SMALL);
             } else if (size == Size.LARGE) {
-                btn.getStyleClass().add(CssClasses.SIZE_LARGE);
+                btn.getStyleClass().add(JfxStyles.SIZE_LARGE);
             }
 
             // Shape
             if (rounded) {
-                btn.getStyleClass().add(CssClasses.SHAPE_ROUNDED);
+                btn.getStyleClass().add(JfxStyles.SHAPE_ROUNDED);
             } else if (square) {
-                btn.getStyleClass().add(CssClasses.SHAPE_SQUARE);
+                btn.getStyleClass().add(JfxStyles.SHAPE_SQUARE);
             }
 
             // Arrow style（M19.6.1）

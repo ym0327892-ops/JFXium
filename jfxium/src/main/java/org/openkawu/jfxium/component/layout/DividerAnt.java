@@ -8,7 +8,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 分割线组件 - 对标 Ant Design Divider。
@@ -22,7 +22,7 @@ import org.openkawu.jfxium.core.css.CssClasses;
  *   <li>有 text 时返回 {@link HBox}：{@code Separator | Label | Separator}，对齐 Ant Divider</li>
  *   <li>无 text 时仍返回单个 {@link Separator}（保持轻量）</li>
  *   <li>{@code build()} 返回 {@link Node}，统一接口（实际是 {@link Separator} 或 {@link HBox}）</li>
- *   <li>styleClass 接 {@link CssClasses}</li>
+ *   <li>styleClass 接 {@link JfxStyles}</li>
  *   <li>新增 {@code orientation()} 显式 API；保留 {@code vertical()} 向下兼容</li>
  *   <li>新增 {@code position()} 控制文本位置（LEFT/CENTER/RIGHT），对齐 Ant Divider {@code orientation} 属性</li>
  * </ul>
@@ -97,9 +97,9 @@ public class DividerAnt {
         private Separator buildPlainSeparator() {
             Separator separator = new Separator();
             separator.setOrientation(orientation);
-            separator.getStyleClass().add(CssClasses.DIVIDER);
+            separator.getStyleClass().add(JfxStyles.DIVIDER);
             separator.getStyleClass().add(orientation == Orientation.VERTICAL
-                    ? CssClasses.DIVIDER_VERTICAL : CssClasses.DIVIDER_HORIZONTAL);
+                    ? JfxStyles.DIVIDER_VERTICAL : JfxStyles.DIVIDER_HORIZONTAL);
             applyStyles(separator);
             return separator;
         }
@@ -112,14 +112,14 @@ public class DividerAnt {
         private HBox buildSeparatorWithText() {
             HBox box = new HBox(8);
             box.setAlignment(Pos.CENTER);
-            box.getStyleClass().addAll(CssClasses.DIVIDER, CssClasses.DIVIDER_HORIZONTAL);
+            box.getStyleClass().addAll(JfxStyles.DIVIDER, JfxStyles.DIVIDER_HORIZONTAL);
 
             Separator left = new Separator(Orientation.HORIZONTAL);
-            left.getStyleClass().add(CssClasses.DIVIDER_LINE);
+            left.getStyleClass().add(JfxStyles.DIVIDER_LINE);
             Label label = new Label(text);
-            label.getStyleClass().add(CssClasses.DIVIDER_TEXT);
+            label.getStyleClass().add(JfxStyles.DIVIDER_TEXT);
             Separator right = new Separator(Orientation.HORIZONTAL);
-            right.getStyleClass().add(CssClasses.DIVIDER_LINE);
+            right.getStyleClass().add(JfxStyles.DIVIDER_LINE);
 
             // 左右线段总是一起占据剩余空间。两个 ALWAYS 平均分时是 CENTER；
             // LEFT/RIGHT 时给"短的一侧"min/pref 较小、Hgrow 仍 ALWAYS，让长边自然占大头。

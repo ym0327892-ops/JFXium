@@ -7,7 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.component.control.ButtonAnt;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * 内部基础组件：气泡确认面板（标题 + 描述 + 确认/取消按钮）。
@@ -63,7 +63,7 @@ public class PopconfirmPanel {
 
         public VBox build() {
             VBox panel = new VBox(12);
-            panel.getStyleClass().add(CssClasses.POPCONFIRM_PANEL);
+            panel.getStyleClass().add(JfxStyles.POPCONFIRM_PANEL);
             panel.setStyle("-fx-min-width: " + minWidth + ";");
 
             HBox titleBox = new HBox(8);
@@ -71,18 +71,18 @@ public class PopconfirmPanel {
 
             SVGPath icon = new SVGPath();
             icon.setContent("M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z");
-            icon.getStyleClass().add(CssClasses.POPCONFIRM_ICON);
+            icon.getStyleClass().add(JfxStyles.POPCONFIRM_ICON);
             titleBox.getChildren().add(icon);
 
             Label titleLabel = new Label(title);
-            titleLabel.getStyleClass().add(CssClasses.POPCONFIRM_TITLE);
+            titleLabel.getStyleClass().add(JfxStyles.POPCONFIRM_TITLE);
             titleBox.getChildren().add(titleLabel);
 
             panel.getChildren().add(titleBox);
 
             if (!description.isEmpty()) {
                 Label descLabel = new Label(description);
-                descLabel.getStyleClass().add(CssClasses.POPCONFIRM_DESC);
+                descLabel.getStyleClass().add(JfxStyles.POPCONFIRM_DESC);
                 descLabel.setWrapText(true);
                 panel.getChildren().add(descLabel);
             }

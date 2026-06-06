@@ -4,7 +4,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  *   <li><b>展开/折叠</b>：expandAll() / collapseAll() / expandToLevel(n)</li>
  *   <li><b>选择回调</b>：onSelect(node) 选中时触发</li>
  *   <li><b>多选</b>：multiSelect(true) 启用多选</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#TREE_TABLE} 系列 LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#TREE_TABLE} 系列 LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -68,7 +68,7 @@ public class TreeTableAnt<T> extends TreeTableView<T> {
 
     public TreeTableAnt() {
         super();
-        getStyleClass().add(CssClasses.TREE_TABLE);
+        getStyleClass().add(JfxStyles.TREE_TABLE);
         setShowRoot(true);
 
         // 选择监听
@@ -86,7 +86,7 @@ public class TreeTableAnt<T> extends TreeTableView<T> {
     public TreeTableAnt<T> column(String title, String property) {
         TreeTableColumn<T, Object> col = new TreeTableColumn<>(title);
         col.setCellValueFactory(new TreeItemPropertyValueFactory<>(property));
-        col.getStyleClass().add(CssClasses.TREE_TABLE_HEADER);
+        col.getStyleClass().add(JfxStyles.TREE_TABLE_HEADER);
         columns.add(col);
         return this;
     }
@@ -95,7 +95,7 @@ public class TreeTableAnt<T> extends TreeTableView<T> {
         TreeTableColumn<T, Object> col = new TreeTableColumn<>(title);
         col.setCellValueFactory(new TreeItemPropertyValueFactory<>(property));
         col.setPrefWidth(width);
-        col.getStyleClass().add(CssClasses.TREE_TABLE_HEADER);
+        col.getStyleClass().add(JfxStyles.TREE_TABLE_HEADER);
         columns.add(col);
         return this;
     }

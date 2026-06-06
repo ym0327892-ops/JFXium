@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,14 +105,14 @@ public class SurfaceAnt {
 
         public VBox build() {
             VBox surface = new VBox(gap);
-            surface.getStyleClass().add(CssClasses.SURFACE);
+            surface.getStyleClass().add(JfxStyles.SURFACE);
             if (bordered) {
-                surface.getStyleClass().add(CssClasses.CARD_BORDERED);
+                surface.getStyleClass().add(JfxStyles.CARD_BORDERED);
             }
             switch (shadow) {
-                case SMALL -> surface.getStyleClass().add(CssClasses.CARD_SHADOW_SM);
-                case MEDIUM -> surface.getStyleClass().add(CssClasses.CARD_SHADOW_MD);
-                case LARGE -> surface.getStyleClass().add(CssClasses.CARD_SHADOW_LG);
+                case SMALL -> surface.getStyleClass().add(JfxStyles.CARD_SHADOW_SM);
+                case MEDIUM -> surface.getStyleClass().add(JfxStyles.CARD_SHADOW_MD);
+                case LARGE -> surface.getStyleClass().add(JfxStyles.CARD_SHADOW_LG);
                 case NONE -> {
                 }
             }
@@ -122,20 +122,20 @@ public class SurfaceAnt {
                 javafx.scene.control.Label titleLabel = null;
                 if (!title.isEmpty()) {
                     titleLabel = new javafx.scene.control.Label(title);
-                    titleLabel.getStyleClass().add(CssClasses.SURFACE_TITLE);
+                    titleLabel.getStyleClass().add(JfxStyles.SURFACE_TITLE);
                 }
                 HBox header = BarAnt.create()
                         .left(titleLabel)
                         .right(extra)
                         .gap(8)
                         .build();
-                header.getStyleClass().add(CssClasses.SURFACE_HEADER);
+                header.getStyleClass().add(JfxStyles.SURFACE_HEADER);
                 surface.getChildren().add(header);
             }
 
             if (!content.isEmpty()) {
                 VBox body = new VBox(gap);
-                body.getStyleClass().add(CssClasses.SURFACE_CONTENT);
+                body.getStyleClass().add(JfxStyles.SURFACE_CONTENT);
                 body.getChildren().addAll(content);
                 surface.getChildren().add(body);
             }

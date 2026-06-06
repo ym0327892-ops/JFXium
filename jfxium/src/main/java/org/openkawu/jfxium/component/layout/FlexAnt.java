@@ -6,7 +6,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +31,7 @@ import java.util.List;
  *   <li>{@code wrap=true} 时使用 {@link FlowPane}，自动支持 {@code rowGap}/{@code columnGap}</li>
  *   <li>{@code justify=BETWEEN/AROUND/EVENLY} 通过插入弹性 {@link Region} 实现，
  *       对齐 CSS Flexbox 标准语义</li>
- *   <li>所有样式通过 {@link CssClasses} 常量挂载，不再使用 {@code setStyle} 注入</li>
+ *   <li>所有样式通过 {@link JfxStyles} 常量挂载，不再使用 {@code setStyle} 注入</li>
  * </ul>
  *
  * <h2>使用示例</h2>
@@ -219,7 +219,7 @@ public class FlexAnt {
             flow.setRowValignment(toVPos(align));
 
             flow.getChildren().addAll(ordered);
-            flow.getStyleClass().addAll(CssClasses.FLEX, CssClasses.FLEX_WRAP);
+            flow.getStyleClass().addAll(JfxStyles.FLEX, JfxStyles.FLEX_WRAP);
             return flow;
         }
 
@@ -229,7 +229,7 @@ public class FlexAnt {
             List<Node> withSpacers = injectSpacersIfNeeded(ordered, true);
             box.getChildren().addAll(withSpacers);
             box.setAlignment(resolveAlignmentForBox(true));
-            box.getStyleClass().addAll(CssClasses.FLEX, CssClasses.FLEX_HORIZONTAL);
+            box.getStyleClass().addAll(JfxStyles.FLEX, JfxStyles.FLEX_HORIZONTAL);
             // STRETCH：让子节点交叉轴拉伸（HBox 中即垂直方向）
             // HBox 默认行为已经会让子节点根据自身 maxHeight 决定，无需额外处理；
             // 用户如需强制拉伸可对子节点 setMaxHeight(Double.MAX_VALUE)
@@ -241,7 +241,7 @@ public class FlexAnt {
             List<Node> withSpacers = injectSpacersIfNeeded(ordered, false);
             box.getChildren().addAll(withSpacers);
             box.setAlignment(resolveAlignmentForBox(false));
-            box.getStyleClass().addAll(CssClasses.FLEX, CssClasses.FLEX_VERTICAL);
+            box.getStyleClass().addAll(JfxStyles.FLEX, JfxStyles.FLEX_VERTICAL);
             return box;
         }
 

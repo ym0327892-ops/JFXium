@@ -8,7 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,20 +100,20 @@ public class DescriptionsAnt {
 
         public VBox build() {
             VBox container = new VBox(0);
-            container.getStyleClass().add(CssClasses.DESCRIPTIONS);
+            container.getStyleClass().add(JfxStyles.DESCRIPTIONS);
             // 尺寸修饰类
             String sizeClass = switch (size) {
-                case SMALL -> CssClasses.DESCRIPTIONS_SIZE_SMALL;
-                case MIDDLE -> CssClasses.DESCRIPTIONS_SIZE_MIDDLE;
-                case LARGE -> CssClasses.DESCRIPTIONS_SIZE_LARGE;
+                case SMALL -> JfxStyles.DESCRIPTIONS_SIZE_SMALL;
+                case MIDDLE -> JfxStyles.DESCRIPTIONS_SIZE_MIDDLE;
+                case LARGE -> JfxStyles.DESCRIPTIONS_SIZE_LARGE;
                 default -> null;
             };
             if (sizeClass != null) container.getStyleClass().add(sizeClass);
-            if (bordered) container.getStyleClass().add(CssClasses.DESCRIPTIONS_BORDERED);
+            if (bordered) container.getStyleClass().add(JfxStyles.DESCRIPTIONS_BORDERED);
 
             if (!title.isEmpty()) {
                 Label titleLabel = new Label(title);
-                titleLabel.getStyleClass().add(CssClasses.DESCRIPTIONS_TITLE);
+                titleLabel.getStyleClass().add(JfxStyles.DESCRIPTIONS_TITLE);
                 container.getChildren().add(titleLabel);
             }
 
@@ -127,7 +127,7 @@ public class DescriptionsAnt {
 
         private GridPane buildHorizontal() {
             GridPane grid = new GridPane();
-            grid.getStyleClass().add(CssClasses.DESCRIPTIONS_GRID);
+            grid.getStyleClass().add(JfxStyles.DESCRIPTIONS_GRID);
             grid.setHgap(0);
             grid.setVgap(0);
 
@@ -136,12 +136,12 @@ public class DescriptionsAnt {
 
             for (Item item : items) {
                 Label label = new Label(item.label);
-                label.getStyleClass().add(CssClasses.DESCRIPTIONS_LABEL);
+                label.getStyleClass().add(JfxStyles.DESCRIPTIONS_LABEL);
 
                 Node content = item.content;
                 // content 如果是 Label，自动挂 styleClass
                 if (content instanceof Label contentLabel) {
-                    contentLabel.getStyleClass().add(CssClasses.DESCRIPTIONS_CONTENT);
+                    contentLabel.getStyleClass().add(JfxStyles.DESCRIPTIONS_CONTENT);
                 }
 
                 int labelSpan = 1;
@@ -168,7 +168,7 @@ public class DescriptionsAnt {
 
         private VBox buildVertical() {
             VBox container = new VBox(0);
-            container.getStyleClass().add(CssClasses.DESCRIPTIONS_VERTICAL);
+            container.getStyleClass().add(JfxStyles.DESCRIPTIONS_VERTICAL);
 
             int currentCol = 0;
             HBox rowBox = null;
@@ -184,12 +184,12 @@ public class DescriptionsAnt {
                 HBox.setHgrow(itemBox, Priority.ALWAYS);
 
                 Label label = new Label(item.label);
-                label.getStyleClass().add(CssClasses.DESCRIPTIONS_LABEL);
+                label.getStyleClass().add(JfxStyles.DESCRIPTIONS_LABEL);
                 itemBox.getChildren().add(label);
 
                 Node content = item.content;
                 if (content instanceof Label contentLabel) {
-                    contentLabel.getStyleClass().add(CssClasses.DESCRIPTIONS_CONTENT);
+                    contentLabel.getStyleClass().add(JfxStyles.DESCRIPTIONS_CONTENT);
                 }
                 itemBox.getChildren().add(content);
 

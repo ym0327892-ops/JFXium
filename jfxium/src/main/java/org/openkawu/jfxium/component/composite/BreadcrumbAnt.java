@@ -5,7 +5,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +65,7 @@ public class BreadcrumbAnt {
         public HBox build() {
             HBox breadcrumb = new HBox(4);
             breadcrumb.setAlignment(Pos.CENTER_LEFT);
-            breadcrumb.getStyleClass().add(CssClasses.BREADCRUMB);
+            breadcrumb.getStyleClass().add(JfxStyles.BREADCRUMB);
 
             for (int i = 0; i < items.size(); i++) {
                 Item item = items.get(i);
@@ -73,26 +73,26 @@ public class BreadcrumbAnt {
 
                 if (isLast) {
                     Label lastLabel = new Label(item.title);
-                    lastLabel.getStyleClass().addAll(CssClasses.BREADCRUMB_ITEM, CssClasses.BREADCRUMB_LAST);
+                    lastLabel.getStyleClass().addAll(JfxStyles.BREADCRUMB_ITEM, JfxStyles.BREADCRUMB_LAST);
                     breadcrumb.getChildren().add(lastLabel);
                 } else {
                     if (item.onClick != null) {
                         Hyperlink link = new Hyperlink(item.title);
-                        link.getStyleClass().add(CssClasses.BREADCRUMB_LINK);
+                        link.getStyleClass().add(JfxStyles.BREADCRUMB_LINK);
                         link.setOnAction(e -> item.onClick.accept(item));
                         breadcrumb.getChildren().add(link);
                     } else if (item.href != null) {
                         Hyperlink link = new Hyperlink(item.title);
-                        link.getStyleClass().add(CssClasses.BREADCRUMB_LINK);
+                        link.getStyleClass().add(JfxStyles.BREADCRUMB_LINK);
                         breadcrumb.getChildren().add(link);
                     } else {
                         Label label = new Label(item.title);
-                        label.getStyleClass().add(CssClasses.BREADCRUMB_ITEM);
+                        label.getStyleClass().add(JfxStyles.BREADCRUMB_ITEM);
                         breadcrumb.getChildren().add(label);
                     }
 
                     Label sepLabel = new Label(separator);
-                    sepLabel.getStyleClass().add(CssClasses.BREADCRUMB_SEPARATOR);
+                    sepLabel.getStyleClass().add(JfxStyles.BREADCRUMB_SEPARATOR);
                     breadcrumb.getChildren().add(sepLabel);
                 }
             }

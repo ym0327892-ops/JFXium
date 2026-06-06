@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 骨架屏组件 - 对标 Ant Design Skeleton（组合式，Builder 模式）。
@@ -84,15 +85,13 @@ public class SkeletonAnt {
 
         public StackPane build() {
             StackPane skeleton = new StackPane();
-            skeleton.getStyleClass().add("skeleton");
+            skeleton.getStyleClass().add(JfxStyles.SKELETON);
             skeleton.setPrefSize(width, height);
             skeleton.setMaxSize(width, height);
 
             Rectangle rect = new Rectangle(width, height);
-            String baseColor = "-color-bg-subtle";
-            String highlightColor = "-color-base-2";
-
-            rect.setStyle("-fx-fill: " + baseColor + ";");
+            // 填充颜色通过 styleClass 在 LESS 中定义（避免 setStyle 中 CSS 变量导致 ClassCastException）
+            rect.getStyleClass().add(JfxStyles.SKELETON_RECT);
 
             switch (variant) {
                 case CIRCULAR -> {

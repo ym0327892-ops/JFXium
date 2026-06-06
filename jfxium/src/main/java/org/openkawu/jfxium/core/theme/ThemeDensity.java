@@ -1,20 +1,19 @@
 package org.openkawu.jfxium.core.theme;
 
 /**
- * Theme density mode, inspired by Ant Design Compact Theme.
- * Controls the spacing and sizing scale of components.
+ * 主题密度模式 —— 控制组件的间距和尺寸缩放，对齐 Ant Design 紧凑主题。
  */
 public enum ThemeDensity {
     /**
-     * Default density - standard padding and component sizes.
-     * Equivalent to Ant Design default algorithm (sizeStep=4, controlHeight=32).
+     * 默认密度 —— 标准内边距和组件尺寸。
+     * 等价于 Ant Design 默认算法（sizeStep=4, controlHeight=32）。
      */
     DEFAULT,
 
     /**
-     * Compact density - reduced padding and smaller component sizes.
-     * Equivalent to Ant Design compact algorithm (sizeStep=2, controlHeight=28).
-     * All paddings, margins, and heights are reduced by ~25-30%.
+     * 紧凑密度 —— 减小内边距和组件尺寸。
+     * 等价于 Ant Design 紧凑算法（sizeStep=2, controlHeight=28）。
+     * 所有间距、内边距、高度约缩减 25%~30%。
      */
     COMPACT
 }

@@ -5,7 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,9 +115,9 @@ public class AnchorAnt {
 
         public VBox build() {
             VBox anchor = new VBox(4);
-            anchor.getStyleClass().add(CssClasses.ANCHOR);
+            anchor.getStyleClass().add(JfxStyles.ANCHOR);
             anchor.getStyleClass().add(direction == Direction.HORIZONTAL
-                    ? CssClasses.ANCHOR_HORIZONTAL : CssClasses.ANCHOR_VERTICAL);
+                    ? JfxStyles.ANCHOR_HORIZONTAL : JfxStyles.ANCHOR_VERTICAL);
 
             // 装配 Controller：持有 key→label 引用，支持 runtime 切高亮（BUG #52）
             this.controller = new Controller(activeKey);
@@ -152,9 +152,9 @@ public class AnchorAnt {
         private Node createItemNode(AnchorItem item) {
             boolean isActive = activeKey != null && activeKey.equals(item.getKey());
             Label label = new Label(item.getTitle());
-            label.getStyleClass().add(CssClasses.ANCHOR_LINK);
+            label.getStyleClass().add(JfxStyles.ANCHOR_LINK);
             if (isActive) {
-                label.getStyleClass().add(CssClasses.ANCHOR_LINK_ACTIVE);
+                label.getStyleClass().add(JfxStyles.ANCHOR_LINK_ACTIVE);
             }
             // 注册到 Controller：让 setActiveKey() 能找到该 label 改 styleClass
             controller.register(item.getKey(), label);
@@ -218,14 +218,14 @@ public class AnchorAnt {
             // 取消老高亮
             if (activeKey != null) {
                 Label old = links.get(activeKey);
-                if (old != null) old.getStyleClass().remove(CssClasses.ANCHOR_LINK_ACTIVE);
+                if (old != null) old.getStyleClass().remove(JfxStyles.ANCHOR_LINK_ACTIVE);
             }
             // 挂新高亮
             activeKey = key;
             if (key != null) {
                 Label cur = links.get(key);
-                if (cur != null && !cur.getStyleClass().contains(CssClasses.ANCHOR_LINK_ACTIVE)) {
-                    cur.getStyleClass().add(CssClasses.ANCHOR_LINK_ACTIVE);
+                if (cur != null && !cur.getStyleClass().contains(JfxStyles.ANCHOR_LINK_ACTIVE)) {
+                    cur.getStyleClass().add(JfxStyles.ANCHOR_LINK_ACTIVE);
                 }
             }
         }

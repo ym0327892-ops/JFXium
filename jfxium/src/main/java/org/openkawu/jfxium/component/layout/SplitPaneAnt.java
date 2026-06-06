@@ -5,7 +5,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import org.openkawu.jfxium.core.css.Background;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * SplitPaneAnt - 继承式 SplitPane 容器（M19.36 升级为双工厂模式）。
@@ -50,12 +50,12 @@ public class SplitPaneAnt extends SplitPane {
 
     public SplitPaneAnt() {
         super();
-        getStyleClass().add(CssClasses.SPLIT_PANE);
+        getStyleClass().add(JfxStyles.SPLIT_PANE);
     }
 
     public SplitPaneAnt(Node... items) {
         super(items);
-        getStyleClass().add(CssClasses.SPLIT_PANE);
+        getStyleClass().add(JfxStyles.SPLIT_PANE);
     }
 
     // ============================================================

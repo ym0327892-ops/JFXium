@@ -8,7 +8,7 @@ import javafx.scene.layout.*;
 import org.openkawu.jfxium.component.composite.CardAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.ArrayList;
@@ -151,12 +151,12 @@ public class DashboardTemplate {
         public VBox build() {
             VBox root = new VBox(sectionGap);
             root.setPadding(new Insets(padding));
-            root.getStyleClass().add(CssClasses.DASHBOARD_ROOT);
+            root.getStyleClass().add(JfxStyles.DASHBOARD_ROOT);
 
             // 1. 欢迎语
             if (welcome != null && !welcome.isEmpty()) {
                 Label w = new Label(welcome);
-                w.getStyleClass().add(CssClasses.DASHBOARD_WELCOME);
+                w.getStyleClass().add(JfxStyles.DASHBOARD_WELCOME);
                 root.getChildren().add(w);
             }
 
@@ -199,22 +199,22 @@ public class DashboardTemplate {
             StackPane iconBox = new StackPane(iconNode);
             iconBox.setMinSize(40, 40);
             iconBox.setMaxSize(40, 40);
-            iconBox.getStyleClass().add(CssClasses.DASHBOARD_STAT_ICON_BOX);
+            iconBox.getStyleClass().add(JfxStyles.DASHBOARD_STAT_ICON_BOX);
 
             // 标题
             Label title = new Label(s.title());
-            title.getStyleClass().add(CssClasses.DASHBOARD_STAT_TITLE);
+            title.getStyleClass().add(JfxStyles.DASHBOARD_STAT_TITLE);
 
             // 大数值
             Label value = new Label(s.value());
-            value.getStyleClass().add(CssClasses.DASHBOARD_STAT_VALUE);
+            value.getStyleClass().add(JfxStyles.DASHBOARD_STAT_VALUE);
 
             // 趋势
             Label trend = new Label(s.trend());
-            String trendClass = s.up() ? CssClasses.DASHBOARD_STAT_TREND_UP : CssClasses.DASHBOARD_STAT_TREND_DOWN;
+            String trendClass = s.up() ? JfxStyles.DASHBOARD_STAT_TREND_UP : JfxStyles.DASHBOARD_STAT_TREND_DOWN;
             trend.getStyleClass().add(trendClass);
             Label trendHint = new Label(" " + Messages.get("dashboard.compared_to_last_week"));
-            trendHint.getStyleClass().add(CssClasses.DASHBOARD_STAT_TREND_HINT);
+            trendHint.getStyleClass().add(JfxStyles.DASHBOARD_STAT_TREND_HINT);
             HBox trendRow = new HBox(0, trend, trendHint);
             trendRow.setAlignment(Pos.CENTER_LEFT);
 

@@ -14,7 +14,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Supplier;
 
@@ -144,7 +144,7 @@ public class WatermarkAnt {
             }
 
             StackPane root = new StackPane();
-            root.getStyleClass().add(CssClasses.WATERMARK);
+            root.getStyleClass().add(JfxStyles.WATERMARK);
             applyStyles(root);
 
             // 1. 内容层（底层）
@@ -168,7 +168,7 @@ public class WatermarkAnt {
          */
         private Region createWatermarkLayer() {
             Region layer = new Region();
-            layer.getStyleClass().add(CssClasses.WATERMARK_LAYER);
+            layer.getStyleClass().add(JfxStyles.WATERMARK_LAYER);
 
             // 异步加载图片：图片水印需要等 Image 加载完成才能 snapshot
             if (imagePath != null) {

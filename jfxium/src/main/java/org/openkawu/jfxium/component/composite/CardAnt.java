@@ -13,7 +13,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -250,28 +250,28 @@ public class CardAnt {
             card.setSpacing(0);  // 各部分自己控制间距
 
             // ========== 基础样式类 ==========
-            card.getStyleClass().add(CssClasses.CARD);
+            card.getStyleClass().add(JfxStyles.CARD);
             
             if (size == Size.SMALL) {
-                card.getStyleClass().add(CssClasses.CARD_SMALL);
+                card.getStyleClass().add(JfxStyles.CARD_SMALL);
             }
             
             if (type == Type.INNER) {
-                card.getStyleClass().add(CssClasses.CARD_INNER);
+                card.getStyleClass().add(JfxStyles.CARD_INNER);
             }
             
             if (bordered) {
-                card.getStyleClass().add(CssClasses.CARD_BORDERED);
+                card.getStyleClass().add(JfxStyles.CARD_BORDERED);
             }
             
             if (hoverable) {
-                card.getStyleClass().add(CssClasses.CARD_HOVERABLE);
+                card.getStyleClass().add(JfxStyles.CARD_HOVERABLE);
             }
             
             switch (shadow) {
-                case SMALL -> card.getStyleClass().add(CssClasses.CARD_SHADOW_SM);
-                case MEDIUM -> card.getStyleClass().add(CssClasses.CARD_SHADOW_MD);
-                case LARGE -> card.getStyleClass().add(CssClasses.CARD_SHADOW_LG);
+                case SMALL -> card.getStyleClass().add(JfxStyles.CARD_SHADOW_SM);
+                case MEDIUM -> card.getStyleClass().add(JfxStyles.CARD_SHADOW_MD);
+                case LARGE -> card.getStyleClass().add(JfxStyles.CARD_SHADOW_LG);
                 case NONE -> {}  // 无阴影
             }
 
@@ -323,7 +323,7 @@ public class CardAnt {
          */
         private Node buildHeader() {
             VBox header = new VBox(0);
-            header.getStyleClass().add(CssClasses.CARD_HEADER);
+            header.getStyleClass().add(JfxStyles.CARD_HEADER);
 
             // 第一行：Title + Extra
             if (!title.isEmpty() || extra != null) {
@@ -331,7 +331,7 @@ public class CardAnt {
                 javafx.scene.control.Label titleLabel = null;
                 if (!title.isEmpty()) {
                     titleLabel = new javafx.scene.control.Label(title);
-                    titleLabel.getStyleClass().add(CssClasses.CARD_TITLE);
+                    titleLabel.getStyleClass().add(JfxStyles.CARD_TITLE);
                 }
                 HBox titleRow = BarAnt.create()
                         .left(titleLabel)
@@ -357,7 +357,7 @@ public class CardAnt {
             // 如果有标签页，Body 是 StackPane（用于切换内容）
             if (!tabList.isEmpty()) {
                 StackPane body = new StackPane();
-                body.getStyleClass().add(CssClasses.CARD_BODY);
+                body.getStyleClass().add(JfxStyles.CARD_BODY);
                 
                 // 显示当前激活的 tab 内容
                 String currentKey = activeTabKey != null ? activeTabKey :
@@ -376,11 +376,11 @@ public class CardAnt {
             
             // 普通 Body（VBox）
             VBox body = new VBox(12);
-            body.getStyleClass().add(CssClasses.CARD_BODY);
+            body.getStyleClass().add(JfxStyles.CARD_BODY);
             
             if (content != null) {
                 if (content.getStyleClass().isEmpty()) {
-                    content.getStyleClass().add(CssClasses.CARD_CONTENT);
+                    content.getStyleClass().add(JfxStyles.CARD_CONTENT);
                 }
                 body.getChildren().add(content);
             }
@@ -393,12 +393,12 @@ public class CardAnt {
          */
         private Node buildFooter() {
             HBox footer = new HBox(0);
-            footer.getStyleClass().add(CssClasses.CARD_ACTIONS);
+            footer.getStyleClass().add(JfxStyles.CARD_ACTIONS);
             footer.setAlignment(Pos.CENTER);
 
             for (Node action : actions) {
                 StackPane actionItem = new StackPane(action);
-                actionItem.getStyleClass().add(CssClasses.CARD_ACTION_ITEM);
+                actionItem.getStyleClass().add(JfxStyles.CARD_ACTION_ITEM);
                 actionItem.setAlignment(Pos.CENTER);
                 HBox.setHgrow(actionItem, javafx.scene.layout.Priority.ALWAYS);
                 actionItem.setMaxWidth(Double.MAX_VALUE);
@@ -414,11 +414,11 @@ public class CardAnt {
          */
         private Node buildTabBar() {
             HBox tabBar = new HBox(0);
-            tabBar.getStyleClass().add(CssClasses.CARD_TAB_BAR);
+            tabBar.getStyleClass().add(JfxStyles.CARD_TAB_BAR);
 
             // 标签按钮列表
             HBox tabButtons = new HBox(0);
-            tabButtons.getStyleClass().add(CssClasses.CARD_TAB_LIST);
+            tabButtons.getStyleClass().add(JfxStyles.CARD_TAB_LIST);
 
             // 确定当前激活的 key
             String currentKey = activeTabKey != null ? activeTabKey :
@@ -428,11 +428,11 @@ public class CardAnt {
             // 创建标签按钮 — 用 userData 存储 key，避免依赖 children 索引顺序
             for (TabItem tabItem : tabList) {
                 Label tabButton = new Label(tabItem.getLabel());
-                tabButton.getStyleClass().add(CssClasses.CARD_TAB_ITEM);
+                tabButton.getStyleClass().add(JfxStyles.CARD_TAB_ITEM);
                 tabButton.setUserData(tabItem.getKey()); // ← 存储 key 用于后续查找
 
                 if (tabItem.getKey().equals(currentKey)) {
-                    tabButton.getStyleClass().add(CssClasses.CARD_TAB_ITEM_ACTIVE);
+                    tabButton.getStyleClass().add(JfxStyles.CARD_TAB_ITEM_ACTIVE);
                 }
 
                 // 点击事件：切换 tab
@@ -463,14 +463,14 @@ public class CardAnt {
         private void handleTabChange(String newKey, HBox tabButtons) {
             // 清除所有按钮的激活状态
             tabButtons.getChildren().forEach(btn -> {
-                btn.getStyleClass().remove(CssClasses.CARD_TAB_ITEM_ACTIVE);
+                btn.getStyleClass().remove(JfxStyles.CARD_TAB_ITEM_ACTIVE);
             });
 
             // 通过 userData 匹配 key 找到目标按钮并激活
             tabButtons.getChildren().stream()
                     .filter(btn -> newKey.equals(btn.getUserData()))
                     .findFirst()
-                    .ifPresent(btn -> btn.getStyleClass().add(CssClasses.CARD_TAB_ITEM_ACTIVE));
+                    .ifPresent(btn -> btn.getStyleClass().add(JfxStyles.CARD_TAB_ITEM_ACTIVE));
 
             // 触发回调（用户需要自己处理内容切换）
             if (onTabChange != null) {
@@ -484,7 +484,7 @@ public class CardAnt {
          */
         private VBox buildLoadingSkeleton() {
             VBox skeleton = new VBox(12);
-            skeleton.getStyleClass().add(CssClasses.CARD_BODY);
+            skeleton.getStyleClass().add(JfxStyles.CARD_BODY);
             skeleton.setPadding(new Insets(24));
 
             // 标题骨架
@@ -509,7 +509,7 @@ public class CardAnt {
         private Node buildCover() {
             if (coverNode != null) {
                 StackPane coverContainer = new StackPane(coverNode);
-                coverContainer.getStyleClass().add(CssClasses.CARD_COVER);
+                coverContainer.getStyleClass().add(JfxStyles.CARD_COVER);
                 return coverContainer;
             }
 
@@ -521,7 +521,7 @@ public class CardAnt {
                     imageView.setFitWidth(Double.MAX_VALUE);  // 自适应宽度
                     
                     StackPane coverContainer = new StackPane(imageView);
-                    coverContainer.getStyleClass().add(CssClasses.CARD_COVER);
+                    coverContainer.getStyleClass().add(JfxStyles.CARD_COVER);
                     return coverContainer;
                 } catch (Exception e) {
                     System.err.println("Failed to load cover image: " + coverImagePath);

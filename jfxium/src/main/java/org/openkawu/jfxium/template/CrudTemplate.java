@@ -9,7 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.composite.BarAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -191,9 +191,9 @@ public class CrudTemplate {
 
         public BorderPane build() {
             BorderPane root = new BorderPane();
-            root.getStyleClass().add(CssClasses.CRUD_TEMPLATE);
+            root.getStyleClass().add(JfxStyles.CRUD_TEMPLATE);
             if (bordered) {
-                root.getStyleClass().add(CssClasses.CARD_BORDERED);
+                root.getStyleClass().add(JfxStyles.CARD_BORDERED);
             }
 
             // ========== 顶部 = title + topbar（VBox 组合）==========
@@ -202,13 +202,13 @@ public class CrudTemplate {
 
             if (title != null && !title.isEmpty()) {
                 Label titleLabel = new Label(title);
-                titleLabel.getStyleClass().add(CssClasses.CRUD_TEMPLATE_TITLE);
+                titleLabel.getStyleClass().add(JfxStyles.CRUD_TEMPLATE_TITLE);
                 top.getChildren().add(titleLabel);
             }
 
             if (!topLeft.isEmpty() || !topRight.isEmpty()) {
                 HBox topbar = buildBar(topLeft, topRight, topbarSpacing);
-                topbar.getStyleClass().add(CssClasses.CRUD_TEMPLATE_TOPBAR);
+                topbar.getStyleClass().add(JfxStyles.CRUD_TEMPLATE_TOPBAR);
                 top.getChildren().add(topbar);
             }
 
@@ -220,8 +220,8 @@ public class CrudTemplate {
 
             // ========== 中部 = body ==========
             if (body != null) {
-                if (!body.getStyleClass().contains(CssClasses.CRUD_TEMPLATE_BODY)) {
-                    body.getStyleClass().add(CssClasses.CRUD_TEMPLATE_BODY);
+                if (!body.getStyleClass().contains(JfxStyles.CRUD_TEMPLATE_BODY)) {
+                    body.getStyleClass().add(JfxStyles.CRUD_TEMPLATE_BODY);
                 }
                 root.setCenter(body);
             }
@@ -229,7 +229,7 @@ public class CrudTemplate {
             // ========== 底部 = bottombar ==========
             if (!bottomLeft.isEmpty() || !bottomRight.isEmpty()) {
                 HBox bottombar = buildBar(bottomLeft, bottomRight, bottombarSpacing);
-                bottombar.getStyleClass().add(CssClasses.CRUD_TEMPLATE_BOTTOMBAR);
+                bottombar.getStyleClass().add(JfxStyles.CRUD_TEMPLATE_BOTTOMBAR);
                 BorderPane.setMargin(bottombar, new Insets(sectionGap, 0, 0, 0));
                 root.setBottom(bottombar);
             }

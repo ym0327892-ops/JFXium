@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,12 +90,12 @@ public class CascaderAnt {
         public HBox build() {
             HBox container = new HBox(0);
             container.setAlignment(Pos.CENTER_LEFT);
-            container.getStyleClass().add(CssClasses.CASCADER);
+            container.getStyleClass().add(JfxStyles.CASCADER);
 
             TextField field = new TextField();
             field.setPromptText(placeholder);
             field.setEditable(showSearch);
-            field.getStyleClass().add(CssClasses.CASCADER_FIELD);
+            field.getStyleClass().add(JfxStyles.CASCADER_FIELD);
             HBox.setHgrow(field, Priority.ALWAYS);
 
             if (!selectedPath.isEmpty()) {
@@ -107,7 +107,7 @@ public class CascaderAnt {
             popup.setHideOnEscape(true);
 
             HBox cascaderPanel = new HBox(0);
-            cascaderPanel.getStyleClass().add(CssClasses.POPUP_MENU);
+            cascaderPanel.getStyleClass().add(JfxStyles.POPUP_MENU);
             popup.getContent().add(cascaderPanel);
 
             buildColumns(cascaderPanel, options, 0, field, popup);
@@ -139,25 +139,25 @@ public class CascaderAnt {
             if (currentOptions == null || currentOptions.isEmpty()) return;
 
             VBox column = new VBox(0);
-            column.getStyleClass().add(CssClasses.CASCADER_COLUMN);
+            column.getStyleClass().add(JfxStyles.CASCADER_COLUMN);
             column.setPrefHeight(200);
 
             for (Option option : currentOptions) {
                 HBox item = new HBox(8);
                 item.setAlignment(Pos.CENTER_LEFT);
-                item.getStyleClass().add(CssClasses.CASCADER_ITEM);
+                item.getStyleClass().add(JfxStyles.CASCADER_ITEM);
                 if (option.isDisabled()) {
-                    item.getStyleClass().add(CssClasses.CASCADER_ITEM_DISABLED);
+                    item.getStyleClass().add(JfxStyles.CASCADER_ITEM_DISABLED);
                 }
 
                 Label label = new Label(option.getLabel());
-                label.getStyleClass().add(CssClasses.CASCADER_ITEM_LABEL);
+                label.getStyleClass().add(JfxStyles.CASCADER_ITEM_LABEL);
                 item.getChildren().add(label);
 
                 if (option.hasChildren() && !option.isDisabled()) {
                     SVGPath arrow = new SVGPath();
                     arrow.setContent("M6 4L10 8L6 12");
-                    arrow.getStyleClass().add(CssClasses.CASCADER_ARROW);
+                    arrow.getStyleClass().add(JfxStyles.CASCADER_ARROW);
                     HBox spacer = new HBox();
                     HBox.setHgrow(spacer, Priority.ALWAYS);
                     item.getChildren().addAll(spacer, arrow);
@@ -197,7 +197,7 @@ public class CascaderAnt {
             // 根据 selectedPath 递归展开下一级
             if (!selectedPath.isEmpty() && depth < selectedPath.size()) {
                 Region divider = new Region();
-                divider.getStyleClass().add(CssClasses.CASCADER_DIVIDER);
+                divider.getStyleClass().add(JfxStyles.CASCADER_DIVIDER);
                 panel.getChildren().add(divider);
 
                 String selectedLabel = selectedPath.get(depth);

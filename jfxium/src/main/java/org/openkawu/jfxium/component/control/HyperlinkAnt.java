@@ -1,7 +1,7 @@
 package org.openkawu.jfxium.component.control;
 
 import javafx.scene.control.Hyperlink;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  *   <li><b>点击回调</b>：onClick(action) 点击时触发</li>
  *   <li><b>禁用</b>：disabled(true)</li>
  *   <li><b>下划线</b>：underline(true) 始终显示下划线</li>
- *   <li><b>视觉</b>：走 {@link CssClasses#HYPERLINK} LESS 样式</li>
+ *   <li><b>视觉</b>：走 {@link JfxStyles#HYPERLINK} LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -56,12 +56,12 @@ public class HyperlinkAnt extends Hyperlink {
 
     public HyperlinkAnt() {
         super();
-        getStyleClass().add(CssClasses.HYPERLINK);
+        getStyleClass().add(JfxStyles.HYPERLINK);
     }
 
     public HyperlinkAnt(String text) {
         super(text);
-        getStyleClass().add(CssClasses.HYPERLINK);
+        getStyleClass().add(JfxStyles.HYPERLINK);
     }
 
     // ============================================================

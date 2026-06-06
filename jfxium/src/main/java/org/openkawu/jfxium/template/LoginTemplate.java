@@ -8,7 +8,7 @@ import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.CssClasses;
+import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.ArrayList;
@@ -140,7 +140,7 @@ public class LoginTemplate {
 
         public BorderPane build() {
             BorderPane root = new BorderPane();
-            root.getStyleClass().add(CssClasses.LOGIN_ROOT);
+            root.getStyleClass().add(JfxStyles.LOGIN_ROOT);
             root.setLeft(buildBanner());
             root.setCenter(buildForm());
             applyStyles(root);
@@ -159,16 +159,16 @@ public class LoginTemplate {
             Region logoIcon = IconAnt.path(IconAnt.Path.DASHBOARD, 24);
             // 图标颜色由 LESS 控制（.login-template-banner-logo .jfx-icon-path）
             StackPane logoBox = new StackPane(logoIcon);
-            logoBox.getStyleClass().add(CssClasses.LOGIN_BANNER_LOGO_BOX);
+            logoBox.getStyleClass().add(JfxStyles.LOGIN_BANNER_LOGO_BOX);
             logoBox.setMinSize(48, 48);
             logoBox.setMaxSize(48, 48);
 
             // 品牌名 / 标语
             Label name = new Label(resolvedBrand);
-            name.getStyleClass().add(CssClasses.LOGIN_BANNER_BRAND);
+            name.getStyleClass().add(JfxStyles.LOGIN_BANNER_BRAND);
 
             Label sub = new Label(resolvedTagline);
-            sub.getStyleClass().add(CssClasses.LOGIN_BANNER_TAGLINE);
+            sub.getStyleClass().add(JfxStyles.LOGIN_BANNER_TAGLINE);
 
             VBox top = new VBox(16, logoBox, name, sub);
             top.setAlignment(Pos.TOP_LEFT);
@@ -181,14 +181,14 @@ public class LoginTemplate {
 
             // 版权
             Label copyrightLabel = new Label(resolvedCopyright);
-            copyrightLabel.getStyleClass().add(CssClasses.LOGIN_BANNER_COPYRIGHT);
+            copyrightLabel.getStyleClass().add(JfxStyles.LOGIN_BANNER_COPYRIGHT);
 
             // 弹性占位
             Region s1 = new Region(); VBox.setVgrow(s1, Priority.ALWAYS);
             Region s2 = new Region(); VBox.setVgrow(s2, Priority.ALWAYS);
 
             VBox banner = new VBox(20, top, s1, featuresBox, s2, copyrightLabel);
-            banner.getStyleClass().add(CssClasses.LOGIN_BANNER);
+            banner.getStyleClass().add(JfxStyles.LOGIN_BANNER);
             banner.setPadding(new Insets(40, 32, 32, 32));
             banner.setMinWidth(bannerWidth);
             banner.setMaxWidth(bannerWidth);
@@ -199,10 +199,10 @@ public class LoginTemplate {
 
         private HBox buildFeature(String text) {
             Label check = new Label("✓");
-            check.getStyleClass().add(CssClasses.LOGIN_BANNER_FEATURE_CHECK);
+            check.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_CHECK);
 
             Label content = new Label(text);
-            content.getStyleClass().add(CssClasses.LOGIN_BANNER_FEATURE_TEXT);
+            content.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_TEXT);
 
             HBox row = new HBox(10, check, content);
             row.setAlignment(Pos.CENTER_LEFT);
@@ -220,10 +220,10 @@ public class LoginTemplate {
             String resolvedSubmit = submitText != null ? submitText : Messages.get("login.submit");
 
             Label title = new Label(resolvedFormTitle);
-            title.getStyleClass().add(CssClasses.LOGIN_FORM_TITLE);
+            title.getStyleClass().add(JfxStyles.LOGIN_FORM_TITLE);
 
             Label subtitle = new Label(resolvedFormSubtitle);
-            subtitle.getStyleClass().add(CssClasses.LOGIN_FORM_SUBTITLE);
+            subtitle.getStyleClass().add(JfxStyles.LOGIN_FORM_SUBTITLE);
 
             // 输入框（前置图标 + 文本框，看起来像「集成式输入」）
             TextField usernameField = InputAnt.create().placeholder(resolvedUsername).build();
@@ -235,7 +235,7 @@ public class LoginTemplate {
 
             // 错误提示（默认隐藏）
             Label errorLabel = new Label("");
-            errorLabel.getStyleClass().add(CssClasses.LOGIN_FORM_ERROR);
+            errorLabel.getStyleClass().add(JfxStyles.LOGIN_FORM_ERROR);
             errorLabel.setVisible(false);
             errorLabel.setManaged(false);
 
@@ -243,7 +243,7 @@ public class LoginTemplate {
             HBox rememberRow = null;
             if (showRememberMe || onForgot != null) {
                 CheckBox rememberMe = new CheckBox(Messages.get("login.remember_me"));
-                rememberMe.getStyleClass().add(CssClasses.LOGIN_FORM_REMEMBER);
+                rememberMe.getStyleClass().add(JfxStyles.LOGIN_FORM_REMEMBER);
                 if (!showRememberMe) {
                     rememberMe.setVisible(false);
                     rememberMe.setManaged(false);
@@ -259,7 +259,7 @@ public class LoginTemplate {
 
                 if (onForgot != null) {
                     Hyperlink forgotLink = new Hyperlink(Messages.get("login.forgot"));
-                    forgotLink.getStyleClass().add(CssClasses.LOGIN_FORM_LINK_SMALL);
+                    forgotLink.getStyleClass().add(JfxStyles.LOGIN_FORM_LINK_SMALL);
                     forgotLink.setOnAction(e -> onForgot.run());
                     rememberRow.getChildren().add(forgotLink);
                 }
@@ -284,13 +284,13 @@ public class LoginTemplate {
                         }
                     })
                     .build();
-            loginBtn.getStyleClass().add(CssClasses.LOGIN_FORM_SUBMIT);
+            loginBtn.getStyleClass().add(JfxStyles.LOGIN_FORM_SUBMIT);
             loginBtn.setMaxWidth(Double.MAX_VALUE);
             loginBtn.setPrefHeight(40);
 
             // 组装
             VBox panel = new VBox(16);
-            panel.getStyleClass().add(CssClasses.LOGIN_FORM);
+            panel.getStyleClass().add(JfxStyles.LOGIN_FORM);
             panel.setPadding(new Insets(60, 48, 40, 48));
             panel.setAlignment(Pos.TOP_LEFT);
             panel.getChildren().addAll(title, subtitle, vSpacer(8), usernameRow, passwordRow, errorLabel);
@@ -303,10 +303,10 @@ public class LoginTemplate {
                 VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
 
                 Label noAccount = new Label(Messages.get("login.no_account"));
-                noAccount.getStyleClass().add(CssClasses.LOGIN_FORM_NO_ACCOUNT);
+                noAccount.getStyleClass().add(JfxStyles.LOGIN_FORM_NO_ACCOUNT);
 
                 Hyperlink registerLink = new Hyperlink(Messages.get("login.register"));
-                registerLink.getStyleClass().add(CssClasses.LOGIN_FORM_LINK_SMALL);
+                registerLink.getStyleClass().add(JfxStyles.LOGIN_FORM_LINK_SMALL);
                 registerLink.setOnAction(e -> onRegister.run());
 
                 HBox registerRow = new HBox(0, noAccount, registerLink);
@@ -329,10 +329,10 @@ public class LoginTemplate {
             HBox.setHgrow(field, Priority.ALWAYS);
             field.setMaxWidth(Double.MAX_VALUE);
             // 字段挂 styleClass，由 LESS 把背景 / 边框抹掉（看起来像无边框输入）
-            field.getStyleClass().add(CssClasses.LOGIN_FORM_INPUT_FIELD);
+            field.getStyleClass().add(JfxStyles.LOGIN_FORM_INPUT_FIELD);
 
             HBox row = new HBox(0, iconBox, field);
-            row.getStyleClass().add(CssClasses.LOGIN_FORM_INPUT_ROW);
+            row.getStyleClass().add(JfxStyles.LOGIN_FORM_INPUT_ROW);
             row.setAlignment(Pos.CENTER_LEFT);
             row.setPrefHeight(40);
             return row;
