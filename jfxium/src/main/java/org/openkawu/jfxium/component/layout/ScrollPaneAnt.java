@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.layout;
 
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import org.openkawu.jfxium.core.css.Background;
@@ -151,6 +152,13 @@ public class ScrollPaneAnt extends ScrollPane {
         return this;
     }
 
+    /** 同时设置首选宽高。 */
+    public ScrollPaneAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
+    /** 同时设置最大宽高。 */
+    public ScrollPaneAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
+    /** 同时设置最小宽高。 */
+    public ScrollPaneAnt minSize(double w, double h) { setMinSize(w, h); return this; }
+
     // ============================================================
     // 视觉钩子
     // ============================================================
@@ -178,6 +186,44 @@ public class ScrollPaneAnt extends ScrollPane {
         if (style != null) setStyle(style);
         return this;
     }
+
+    // ============================================================
+    // 方向性边框线（分割线）
+    // ============================================================
+
+    /** 顶部分割线。 */
+    public ScrollPaneAnt borderTop() { styleClass("border-top"); return this; }
+    /** 顶部分割线（开关）。 */
+    public ScrollPaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
+    /** 底部分割线。 */
+    public ScrollPaneAnt borderBottom() { styleClass("border-bottom"); return this; }
+    /** 底部分割线（开关）。 */
+    public ScrollPaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
+    /** 左侧分割线。 */
+    public ScrollPaneAnt borderLeft() { styleClass("border-left"); return this; }
+    /** 左侧分割线（开关）。 */
+    public ScrollPaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
+    /** 右侧分割线。 */
+    public ScrollPaneAnt borderRight() { styleClass("border-right"); return this; }
+    /** 右侧分割线（开关）。 */
+    public ScrollPaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
+
+    // ============================================================
+    // 高频节点属性
+    // ============================================================
+
+    /** 设置可见性。 */
+    public ScrollPaneAnt visible(boolean v) { setVisible(v); return this; }
+    /** 设置禁用状态。 */
+    public ScrollPaneAnt disable(boolean d) { setDisable(d); return this; }
+    /** 设置是否受布局管理。 */
+    public ScrollPaneAnt managed(boolean m) { setManaged(m); return this; }
+    /** 设置透明度（0.0 ~ 1.0）。 */
+    public ScrollPaneAnt opacity(double o) { setOpacity(o); return this; }
+    /** 设置鼠标光标。 */
+    public ScrollPaneAnt cursor(Cursor c) { setCursor(c); return this; }
+    /** 设置节点 ID。 */
+    public ScrollPaneAnt id(String id) { setId(id); return this; }
 
     /** Builder 模式终结调用，返回自身。详见 {@link VBoxAnt#build()}。 */
     public ScrollPaneAnt build() {

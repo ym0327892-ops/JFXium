@@ -1,0 +1,144 @@
+/* ============================================
+   Color Scale (Base Tokens)
+   ============================================ */
+.root {
+  -color-base-0: @color-base-0;
+  -color-base-1: @color-base-1;
+  -color-base-2: @color-base-2;
+  -color-base-3: @color-base-3;
+  -color-base-4: @color-base-4;
+  -color-base-5: @color-base-5;
+  -color-base-6: @color-base-6;
+  -color-base-7: @color-base-7;
+  -color-base-8: @color-base-8;
+  -color-base-9: @color-base-9;
+  -color-base-10: @color-base-10;
+
+  /* Accent Scale */
+  -color-accent-0: @color-accent-0;
+  -color-accent-1: @color-accent-1;
+  -color-accent-2: @color-accent-2;
+  -color-accent-3: @color-accent-3;
+  -color-accent-4: @color-accent-4;
+  -color-accent-5: @color-accent-5;
+  -color-accent-6: @color-accent-6;
+  -color-accent-7: @color-accent-7;
+  -color-accent-8: @color-accent-8;
+  -color-accent-9: @color-accent-9;
+
+  /* Success Scale */
+  -color-success-0: @color-success-0;
+  -color-success-1: @color-success-1;
+  -color-success-2: @color-success-2;
+  -color-success-3: @color-success-3;
+  -color-success-4: @color-success-4;
+  -color-success-5: @color-success-5;
+  -color-success-6: @color-success-6;
+  -color-success-7: @color-success-7;
+  -color-success-8: @color-success-8;
+  -color-success-9: @color-success-9;
+
+  /* Warning Scale */
+  -color-warning-0: @color-warning-0;
+  -color-warning-1: @color-warning-1;
+  -color-warning-2: @color-warning-2;
+  -color-warning-3: @color-warning-3;
+  -color-warning-4: @color-warning-4;
+  -color-warning-5: @color-warning-5;
+  -color-warning-6: @color-warning-6;
+  -color-warning-7: @color-warning-7;
+  -color-warning-8: @color-warning-8;
+  -color-warning-9: @color-warning-9;
+
+  /* Danger Scale */
+  -color-danger-0: @color-danger-0;
+  -color-danger-1: @color-danger-1;
+  -color-danger-2: @color-danger-2;
+  -color-danger-3: @color-danger-3;
+  -color-danger-4: @color-danger-4;
+  -color-danger-5: @color-danger-5;
+  -color-danger-6: @color-danger-6;
+  -color-danger-7: @color-danger-7;
+  -color-danger-8: @color-danger-8;
+  -color-danger-9: @color-danger-9;
+}
+
+/* ============================================
+   Semantic Variables
+   ============================================ */
+.root {
+  -color-fg-default: @color-fg-default;
+  -color-fg-muted: @color-fg-muted;
+  -color-fg-subtle: @color-fg-subtle;
+  -color-fg-on-emphasis: @color-fg-on-emphasis;
+
+  -color-bg-default: @color-bg-default;
+  -color-bg-overlay: @color-bg-overlay;
+  -color-bg-subtle: @color-bg-subtle;
+  -color-bg-inset: @color-bg-inset;
+  -color-bg-container: @color-bg-default;
+  -color-bg-layout: @color-bg-subtle;
+  -color-bg-masked: rgba(0, 0, 0, 0.45);
+
+  -color-border-default: @color-border-default;
+  -color-border-muted: @color-border-muted;
+  -color-border-subtle: @color-border-subtle;
+
+  // Accent Color Scale
+  -color-accent-emphasis: @color-accent-emphasis;
+  -color-accent-hover: @color-accent-hover;
+  -color-accent-active: @color-accent-active;
+  -color-accent-muted: @color-accent-muted;
+  -color-accent-subtle: @color-accent-subtle;
+
+  // 表格/树表选中态：对齐 Ant Design controlItemBgActive token
+  // 绑定到主题色色阶（accent-subtle = accent-0 极浅主题色），
+  // 这样换主题色时选中态自动跟着变；文字保持默认前景色，对比度安全
+  -color-cell-bg-selected: @color-accent-subtle;
+  -color-cell-fg-selected: @color-fg-default;
+
+  // Success Color Scale
+  -color-success-emphasis: @color-success-emphasis;
+  -color-success-hover: @color-success-hover;
+  -color-success-active: @color-success-active;
+  -color-success-muted: @color-success-muted;
+  -color-success-subtle: @color-success-subtle;
+
+  // Warning Color Scale
+  -color-warning-emphasis: @color-warning-emphasis;
+  -color-warning-hover: @color-warning-hover;
+  -color-warning-active: @color-warning-active;
+  -color-warning-muted: @color-warning-muted;
+  -color-warning-subtle: @color-warning-subtle;
+
+  // Danger Color Scale
+  -color-danger-emphasis: @color-danger-emphasis;
+  -color-danger-hover: @color-danger-hover;
+  -color-danger-active: @color-danger-active;
+  -color-danger-muted: @color-danger-muted;
+  -color-danger-subtle: @color-danger-subtle;
+
+  -color-shadow-default: @color-shadow-default;
+}
+
+/* ============================================
+   Global Styles
+   ============================================ */
+.root {
+  -fx-font-family: @font-family;
+  -fx-font-size: @font-size-md;
+  -fx-background-color: -color-bg-layout;
+}
+
+/* ============================================
+   通用背景层级（M19.35）— Background 枚举对应的 styleClass
+   ============================================
+   用法：组件挂 .jfx-bg-* 后，对应 LESS 变量驱动的色随主题切换自动适配。
+   命名前缀 jfx- 避免跟用户自定义 styleClass 冲突。
+*/
+.jfx-bg-default     { -fx-background-color: -color-bg-default; }
+.jfx-bg-subtle      { -fx-background-color: -color-bg-subtle; }
+.jfx-bg-layout      { -fx-background-color: -color-bg-layout; }
+.jfx-bg-inset       { -fx-background-color: -color-bg-inset; }
+.jfx-bg-transparent { -fx-background-color: transparent; }
+

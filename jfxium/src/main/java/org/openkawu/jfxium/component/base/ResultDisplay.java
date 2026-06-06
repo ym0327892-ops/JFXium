@@ -5,7 +5,13 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import org.openkawu.jfxium.core.css.CssClasses;
 
+/**
+ * 内部基础组件：结果页显示面板（状态图标 + 标题 + 副标题 + 操作区）。
+ *
+ * <p>供 {@link org.openkawu.jfxium.component.composite.ResultAnt} 使用，不直接对外暴露。</p>
+ */
 public class ResultDisplay {
 
     public enum Status {
@@ -63,13 +69,13 @@ public class ResultDisplay {
 
             if (!title.isEmpty()) {
                 Label titleLabel = new Label(title);
-                titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: 600; -fx-text-fill: -color-fg-default;");
+                titleLabel.getStyleClass().add(CssClasses.RESULT_TITLE);
                 result.getChildren().add(titleLabel);
             }
 
             if (!subTitle.isEmpty()) {
                 Label subTitleLabel = new Label(subTitle);
-                subTitleLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: -color-fg-muted;");
+                subTitleLabel.getStyleClass().add(CssClasses.RESULT_SUBTITLE);
                 subTitleLabel.setWrapText(true);
                 subTitleLabel.setAlignment(Pos.CENTER);
                 result.getChildren().add(subTitleLabel);

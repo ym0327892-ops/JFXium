@@ -9,22 +9,43 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * JFXium Tabs 组件 - 全面对标 Ant Design Tabs
+ * JFXium 标签页组件 - 对标 Ant Design Tabs（组合式，Builder 模式）。
  *
- * 支持形态：
- * - line: 下划线指示条样式（默认）
- * - card: 卡片式页签
+ * <p><b>定位</b>：内容切换标签页，支持多个标签页之间的内容切换，
+ * 无需页面跳转。</p>
  *
- * 使用示例：
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>形态</b>：LINE（下划线指示条）/ CARD（卡片式页签）</li>
+ *   <li><b>尺寸</b>：SMALL / MIDDLE / LARGE</li>
+ *   <li><b>位置</b>：TOP / BOTTOM / LEFT / RIGHT</li>
+ *   <li><b>可关闭</b>：closable 支持关闭标签页</li>
+ *   <li><b>禁用</b>：单个标签页可禁用</li>
+ *   <li><b>额外操作区</b>：tabBarExtra 放右侧操作按钮</li>
+ * </ul>
+ *
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>详情页多标签（基本信息 / 日志 / 配置）</li>
+ *   <li>设置页分组（通用 / 外观 / 插件）</li>
+ *   <li>多文档标签（IDE 风格）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
  * <pre>{@code
  * Node tabs = TabsAnt.create()
- *     .tab("tab1", "Tab 1", new Label("Content 1"))
- *     .tab("tab2", "Tab 2", new Label("Content 2"))
+ *     .tab("basic", "基本信息", basicPanel)
+ *     .tab("logs", "日志", logsPanel)
+ *     .tab("config", "配置", configPanel)
+ *     .type(TabsAnt.Type.CARD)
+ *     .size(TabsAnt.Size.MIDDLE)
  *     .build();
  * }</pre>
  */
@@ -36,7 +57,7 @@ public class TabsAnt {
 
     public static Builder create() { return new Builder(); }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private final List<TabItem> tabs = new ArrayList<>();
         private Type type = Type.LINE;
         private Size size = Size.MIDDLE;
@@ -147,15 +168,15 @@ public class TabsAnt {
                 indicatorPane.setPrefHeight(3);
                 indicatorPane.setMinHeight(3);
                 indicatorPane.setMaxHeight(3);
-                indicatorPane.setStyle("-fx-background-color: #f0f0f0;");
+                indicatorPane.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.TABS_INDICATOR_PANE);
 
-                // 创建指示条 - 直接用硬编码颜色
+                // 创建指示条
                 Region indicator = new Region();
                 indicator.setPrefHeight(3);
                 indicator.setMinHeight(3);
                 indicator.setMaxHeight(3);
                 indicator.setPrefWidth(100); // 初始宽度
-                indicator.setStyle("-fx-background-color: #1677ff; -fx-background-radius: 2px;");
+                indicator.getStyleClass().add(org.openkawu.jfxium.core.css.CssClasses.TABS_INDICATOR_BAR);
                 indicatorPane.getChildren().add(indicator);
 
                 wrapper.getChildren().add(indicatorPane);
@@ -284,7 +305,7 @@ public class TabsAnt {
             sb.append("-fx-background-color: transparent;");
 
             if (type == Type.CARD) {
-                sb.append("-fx-background-color: rgba(0,0,0,0.02);");
+                sb.append("-fx-background-color: -color-bg-subtle;");
                 sb.append("-fx-border-color: transparent transparent -color-border-muted transparent;");
                 sb.append("-fx-border-width: 0 0 1px 0;");
             }

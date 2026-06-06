@@ -13,7 +13,16 @@ const CSS_DIR = path.resolve(LESS_DIR, '..');
 
 const themes = [
   { input: 'theme-light.less', output: 'theme-light.css' },
-  { input: 'theme-dark.less', output: 'theme-dark.css' }
+  { input: 'theme-dark.less', output: 'theme-dark.css' },
+  { input: 'theme-light-compact.less', output: 'theme-light-compact.css' },
+  { input: 'theme-dark-compact.less', output: 'theme-dark-compact.css' },
+  { input: 'theme-mui.less', output: 'theme-mui.css' },
+  { input: 'theme-mui-dark.less', output: 'theme-mui-dark.css' },
+  { input: 'theme-mui-compact.less', output: 'theme-mui-compact.css' },
+  { input: 'theme-mui-dark-compact.less', output: 'theme-mui-dark-compact.css' },
+  { input: 'theme-cyberpunk.less', output: 'theme-cyberpunk.css' },
+  { input: 'theme-shadcn.less', output: 'theme-shadcn.css' },
+  { input: 'theme-custom.less', output: 'theme-custom.css' }
 ];
 
 function compileTheme(inputFile, outputFile) {

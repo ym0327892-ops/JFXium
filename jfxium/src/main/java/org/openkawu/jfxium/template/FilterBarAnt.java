@@ -101,7 +101,7 @@ public class FilterBarAnt {
             group.setAlignment(Pos.CENTER_LEFT);
             if (label != null && !label.isEmpty()) {
                 Label l = new Label(label + ":");
-                l.setStyle("-fx-text-fill: -color-fg-muted;");
+                l.getStyleClass().add(CssClasses.FILTER_BAR_LABEL);
                 group.getChildren().add(l);
             }
             group.getChildren().add(control);

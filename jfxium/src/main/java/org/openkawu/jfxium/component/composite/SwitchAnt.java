@@ -16,30 +16,31 @@ import org.openkawu.jfxium.core.css.CssClasses;
 import java.util.function.Consumer;
 
 /**
- * JFXium Switch 开关组件 - 对标 Ant Design Switch。
+ * JFXium 开关组件 - 对标 Ant Design Switch（组合式，Builder 模式）。
  *
- * <h2>修复说明</h2>
- * 原实现存在 3 处 inline style 注入：
- * <ul>
- *   <li>{@code switchPane.setStyle("-fx-cursor: hand;")} 默认 cursor</li>
- *   <li>{@code switchPane.setStyle("-fx-opacity: 0.5; -fx-cursor: default;")}
- *       第二个 setStyle 整体覆盖第一个，cursor: hand 实际不会失效是因为 build 时
- *       两个分支不会同时进入；但**如果未来支持动态切换 disabled，cursor 会残留为 default**，
- *       是个潜在 bug</li>
- *   <li>{@code statusLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: ...; -fx-padding: ...")}
- *       字号/颜色/padding 拼字符串</li>
- * </ul>
- * 还有一处死代码：{@code Label textLabel = new Label(); textLabel.setStyle(...)} 创建后从未加入容器。
+ * <p><b>定位</b>：二态切换开关（开/关），用于切换某个配置项的启用状态，
+ * 与 CheckBoxAnt（多选语义）和 ToggleButtonAnt（按钮语义）严格区分。</p>
  *
- * <h2>本次改动</h2>
+ * <h2>功能特性</h2>
  * <ul>
- *   <li>所有 styleClass 改用 {@link CssClasses}</li>
- *   <li>新增 {@code .jfx-switch.switch-disabled} 选择器替代 inline 的 opacity+cursor</li>
- *   <li>新增 {@code .jfx-switch-status-label} 选择器替代 inline 的字号/颜色/padding</li>
- *   <li>删除死代码 {@code textLabel}</li>
- *   <li>接入 {@link AbstractStyleBuilder}，统一 style/styleClass 钩子</li>
- *   <li>消除 disabled cursor 残留隐患（用 styleClass 切换，不再 inline 设 setStyle）</li>
+ *   <li><b>尺寸</b>：SMALL / DEFAULT / LARGE</li>
+ *   <li><b>状态文本</b>：checkedText / uncheckedText（开/关文字）</li>
+ *   <li><b>禁用</b>：disabled 模式</li>
+ *   <li><b>加载</b>：loading 状态</li>
+ *   <li><b>变化回调</b>：onChange 监听开关状态</li>
+ *   <li>所有视觉样式走 LESS（{@code .jfx-switch} 系列）</li>
  * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node sw = SwitchAnt.create()
+ *     .checked(true)
+ *     .size(SwitchAnt.Size.SMALL)
+ *     .checkedText("开")
+ *     .uncheckedText("关")
+ *     .onChange(checked -> System.out.println("开关：" + checked))
+ *     .build();
+ * }</pre>
  */
 public class SwitchAnt {
 

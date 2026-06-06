@@ -7,6 +7,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
@@ -14,10 +15,40 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * JFXium 提及组件 - 对标 Ant Design Mentions。
+ * JFXium 提及组件 - 对标 Ant Design Mentions（组合式，Builder 模式）。
  *
- * 重构：TextArea 视觉与 popup options 全部 styleClass 化（{@link CssClasses#MENTIONS_AREA}
- * + {@link CssClasses#POPUP_MENU} + {@link CssClasses#POPUP_MENU_ITEM}），hover 由 LESS 控制。
+ * <p><b>定位</b>：输入时 @ 提及用户/对象的文本城，包装 JavaFX {@link TextArea} + {@link Popup}，
+ * 输入触发符（默认 {@code @}）后弹出候选列表，选中后自动插入。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li>自定义触发符（默认 {@code @}，可改为 {@code #} / {@code $} 等）</li>
+ *   <li>候选项配置（value + label）</li>
+ *   <li>选中回调（{@code onSelect}）+ 文本变化回调（{@code onChange}）</li>
+ *   <li>自定义占位文本 + 行数</li>
+ *   <li>所有视觉样式走 LESS（{@link CssClasses#MENTIONS} + {@link CssClasses#POPUP_MENU}）</li>
+ * </ul>
+ *
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>评论框 @ 用户</li>
+ *   <li>任务分配 @ 负责人</li>
+ *   <li>聊天输入 @ 群成员</li>
+ *   <li>代码注释 # 标签引用</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * TextArea mentions = MentionsAnt.create()
+ *     .placeholder("输入 @ 提及用户...")
+ *     .prefix("@")
+ *     .option("zhangsan", "张三")
+ *     .option("lisi", "李四")
+ *     .option("wangwu", "王五")
+ *     .onSelect(value -> System.out.println("选中了：" + value))
+ *     .rows(4)
+ *     .build();
+ * }</pre>
  */
 public class MentionsAnt {
 
@@ -34,7 +65,7 @@ public class MentionsAnt {
         public String getLabel() { return label; }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String placeholder = "";
         private List<Option> options = new ArrayList<>();
         private String prefix = "@";

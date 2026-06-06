@@ -9,6 +9,13 @@ public final class CssClasses {
     private CssClasses() {}
 
     /* ============================================
+       PanelHeader（base/）— 面板头部基础组件
+       ============================================ */
+    public static final String PANEL_HEADER = "jfx-panel-header";
+    public static final String PANEL_TITLE = "jfx-panel-title";
+    public static final String PANEL_CLOSE_BTN = "jfx-panel-close-btn";
+
+    /* ============================================
        通用背景层级（M19.35）— 容器组件用 Background 枚举挑层级，挂对应 styleClass
        ============================================ */
     public static final String BG_DEFAULT     = "jfx-bg-default";
@@ -570,6 +577,87 @@ public final class CssClasses {
     public static final String SPLIT_BAR_SPACER = "split-bar-spacer";
 
     /* ============================================
+       MenuBarAnt（PC 软件刚需）— 系统菜单栏
+       ============================================ */
+    public static final String MENU_BAR = "jfx-menu-bar";
+    public static final String MENU_BAR_MENU = "jfx-menu-bar-menu";
+    public static final String MENU_BAR_ITEM = "jfx-menu-bar-item";
+    public static final String MENU_BAR_SUBMENU = "jfx-menu-bar-submenu";
+    public static final String MENU_BAR_DIVIDER = "jfx-menu-bar-divider";
+
+    /* ============================================
+       ToolBarAnt（PC 软件刚需）— 可定制工具栏
+       ============================================ */
+    public static final String TOOL_BAR = "jfx-tool-bar";
+    public static final String TOOL_BAR_ITEM = "jfx-tool-bar-item";
+    public static final String TOOL_BAR_OVERFLOW = "jfx-tool-bar-overflow";
+
+    /* ============================================
+       StatusBarAnt（PC 软件刚需）— 底部状态栏
+       ============================================ */
+    public static final String STATUS_BAR = "jfx-status-bar";
+    public static final String STATUS_BAR_LEFT = "jfx-status-bar-left";
+    public static final String STATUS_BAR_CENTER = "jfx-status-bar-center";
+    public static final String STATUS_BAR_RIGHT = "jfx-status-bar-right";
+
+    /* ============================================
+       ContextMenuAnt（PC 软件刚需）— 右键菜单
+       ============================================ */
+    public static final String CONTEXT_MENU = "jfx-context-menu";
+    public static final String CONTEXT_MENU_ITEM = "jfx-context-menu-item";
+    public static final String CONTEXT_MENU_ITEM_DISABLED = "jfx-context-menu-item-disabled";
+    public static final String CONTEXT_MENU_DIVIDER = "jfx-context-menu-divider";
+
+    /* ============================================
+       HyperlinkAnt — 超链接
+       ============================================ */
+    public static final String HYPERLINK = "jfx-hyperlink";
+
+    /* ============================================
+       TreeTableAnt — 树形表格
+       ============================================ */
+    public static final String TREE_TABLE = "jfx-tree-table";
+    public static final String TREE_TABLE_ROW = "jfx-tree-table-row";
+    public static final String TREE_TABLE_CELL = "jfx-tree-table-cell";
+    public static final String TREE_TABLE_HEADER = "jfx-tree-table-header";
+
+    /* ============================================
+       InputAnt 密码模式（M19.55）
+       ============================================ */
+    public static final String INPUT_PASSWORD = "jfx-input-password";
+    public static final String INPUT_PASSWORD_EYE = "jfx-input-password-eye";
+    public static final String INPUT_PASSWORD_MASKED = "jfx-input-password-masked";
+    public static final String INPUT_PASSWORD_VISIBLE = "jfx-input-password-visible";
+
+    /* ============================================
+       ColorPickerAnt — 颜色选择器
+       ============================================ */
+    public static final String COLOR_PICKER = "jfx-color-picker";
+
+    /* ============================================
+       CanvasAnt — 自绘图形容器
+       ============================================ */
+    public static final String CANVAS = "jfx-canvas";
+
+    /* ============================================
+       PromptDialogAnt — 快速输入弹框
+       ============================================ */
+    public static final String PROMPT_DIALOG = "jfx-prompt-dialog";
+    public static final String PROMPT_DIALOG_MESSAGE = "jfx-prompt-dialog-message";
+    public static final String PROMPT_DIALOG_INPUT = "jfx-prompt-dialog-input";
+    public static final String PROMPT_DIALOG_FOOTER = "jfx-prompt-dialog-footer";
+
+    /* ============================================
+       TilePaneAnt — 平铺布局
+       ============================================ */
+    public static final String TILE_PANE = "jfx-tile-pane";
+
+    /* ============================================
+       AnchorPaneAnt — 绝对定位布局
+       ============================================ */
+    public static final String ANCHOR_PANE = "jfx-anchor-pane";
+
+    /* ============================================
        SelectableTextAnt（M19.7）— 只读可选可复制文本
        ============================================ */
     public static final String SELECTABLE_TEXT           = "jfx-selectable-text";
@@ -601,4 +689,58 @@ public final class CssClasses {
     public static final String LOGIN_FORM_LINK_SMALL = "login-template-link-small";
     public static final String LOGIN_FORM_SUBMIT     = "login-template-submit";
     public static final String LOGIN_FORM_NO_ACCOUNT = "login-template-no-account";
+
+    /* ============================================
+       TabsAnt
+       ============================================ */
+    public static final String TABS_INDICATOR_PANE = "tabs-indicator-pane";
+    public static final String TABS_INDICATOR_BAR  = "tabs-indicator-bar";
+
+    /* ============================================
+       PopoverPanel / PopoverAnt
+       ============================================ */
+    public static final String POPOVER_PANEL      = "popover-panel";
+    public static final String POPOVER_TITLE_BOX  = "popover-title-box";
+    public static final String POPOVER_TITLE_LABEL = "popover-title-label";
+
+    /* ============================================
+       Base Cards — Popconfirm / Message / Notification / Result
+       ============================================ */
+    public static final String POPCONFIRM_PANEL = "popconfirm-panel";
+    public static final String POPCONFIRM_ICON  = "popconfirm-icon";
+    public static final String POPCONFIRM_TITLE = "popconfirm-title";
+    public static final String POPCONFIRM_DESC  = "popconfirm-desc";
+    public static final String MESSAGE_CARD         = "message-card";
+    public static final String MESSAGE_CARD_CONTENT = "message-card-content";
+    public static final String NOTIFICATION_CARD       = "notification-card";
+    public static final String NOTIFICATION_CARD_TITLE = "notification-card-title";
+    public static final String NOTIFICATION_CARD_DESC  = "notification-card-desc";
+    public static final String RESULT_TITLE    = "result-title";
+    public static final String RESULT_SUBTITLE = "result-subtitle";
+
+    /* ============================================
+       Template / Utility Components
+       ============================================ */
+    public static final String FILTER_BAR_LABEL       = "filter-bar-label";
+    public static final String DASHBOARD_ROOT         = "dashboard-root";
+    public static final String DASHBOARD_STAT_ICON_BOX = "dashboard-stat-icon-box";
+    public static final String DASHBOARD_STAT_TITLE   = "dashboard-stat-title";
+    public static final String DASHBOARD_STAT_TREND_UP   = "dashboard-stat-trend-up";
+    public static final String DASHBOARD_STAT_TREND_DOWN = "dashboard-stat-trend-down";
+    public static final String DASHBOARD_STAT_TREND_HINT = "dashboard-stat-trend-hint";
+    public static final String DASHBOARD_WELCOME    = "dashboard-welcome";
+    public static final String DASHBOARD_STAT_VALUE = "dashboard-stat-value";
+    public static final String BAR_BORDER_BOTTOM = "bar-border-bottom";
+    public static final String BAR_BORDER_TOP    = "bar-border-top";
+
+    /* ============================================
+       Universal directional borders — 任意组件可用
+       ============================================ */
+    public static final String BORDER_TOP    = "border-top";
+    public static final String BORDER_BOTTOM = "border-bottom";
+    public static final String BORDER_LEFT   = "border-left";
+    public static final String BORDER_RIGHT  = "border-right";
+
+    public static final String FOCUS_VISIBLE      = "focus-visible";
+    public static final String CODEBLOCK_HIGHLIGHT = "codeblock-highlight";
 }

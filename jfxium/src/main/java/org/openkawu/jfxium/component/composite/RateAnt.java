@@ -4,14 +4,42 @@ import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 
 import java.util.function.Consumer;
 
 /**
- * JFXium Rate Component
- * Inspired by Ant Design Rate
+ * JFXium 评分组件 - 对标 Ant Design Rate（组合式，Builder 模式）。
+ *
+ * <p><b>定位</b>：星级评分控件，用多个图标（默认星星）表示 0-N 分，
+ * 支持点击、悬浮预览、半星。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>尺寸</b>：SMALL(16px) / DEFAULT(24px) / LARGE(32px)</li>
+ *   <li><b>分数</b>：可设最大值（默认 5）、当前值、允许半星（allowHalf）</li>
+ *   <li><b>只读</b>：disabled 模式（展示评分不可修改）</li>
+ *   <li><b>自定义图标</b>：可替换为心形、拇指等其他图标</li>
+ * </ul>
+ *
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>商品评分展示 / 评价</li>
+ *   <li>用户满意度打分</li>
+ *   <li>评分筛选（列表页筛选器）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node rate = RateAnt.create()
+ *     .value(3.5)
+ *     .count(5)
+ *     .allowHalf(true)
+ *     .size(RateAnt.Size.LARGE)
+ *     .onChange(val -> System.out.println("评分：" + val))
+ *     .build();
+ * }</pre>
  */
 public class RateAnt {
 
@@ -29,7 +57,7 @@ public class RateAnt {
         }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private int count = 5;
         private double value = 0;
         private double defaultValue = 0;
@@ -172,13 +200,10 @@ public class RateAnt {
 
         private void updateStarColor(SVGPath star, int starIndex, double currentValue, String inactiveColor, String activeColor) {
             if (starIndex <= currentValue) {
-                star.setFill(Color.web("#faad14"));
                 star.setStyle("-fx-fill: " + activeColor + "; -fx-cursor: hand;");
             } else if (starIndex - 0.5 <= currentValue && allowHalf) {
-                star.setFill(Color.web("#faad14"));
                 star.setStyle("-fx-fill: " + activeColor + "; -fx-cursor: hand;");
             } else {
-                star.setFill(Color.web("#d9d9d9"));
                 star.setStyle("-fx-fill: " + inactiveColor + "; -fx-cursor: hand;");
             }
         }

@@ -16,20 +16,54 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.function.Consumer;
 
 /**
- * Modal 对话框组件 - 对齐 Ant Design 6.x 规范
+ * JFXium 对话框组件 - 对标 Ant Design Modal 6.x 规范。
  *
- * Ant Design Modal 设计要点：
- * 1. 遮罩层：固定定位，覆盖整个视口，rgba(0,0,0,0.45)
- * 2. 内容区：垂直居中或顶部偏移，宽度默认 520px，圆角 8px
- * 3. 头部：标题 + 关闭按钮，padding 16px 24px，底部边框
- * 4. 内容：padding 24px，自适应高度
- * 5. 底部：padding 16px 24px，顶部边框，按钮右对齐
- * 6. 动画：Zoom(0.9->1) + Fade，200ms ease-out
+ * <p><b>定位</b>：屏幕中央弹出的模态对话框，适合需要用户明确响应的场景（确认、警告、表单输入）。
+ * 比 DrawerAnt 更适合简短交互，比 PopconfirmAnt 更重（支持自定义 footer）。</p>
+ *
+ * <h2>设计要点</h2>
+ * <ul>
+ *   <li>遮罩层：rgba(0,0,0,0.45)，覆盖整个视口</li>
+ *   <li>内容区：垂直居中或顶部偏移（centered），宽度默认 520px，圆角 8px</li>
+ *   <li>头部：标题 + 关闭按钮，关闭按钮位置可配：LEFT / RIGHT（默认）/ NONE</li>
+ *   <li>默认 footer：取消 + 确定按钮（支持 i18n / confirmLoading / 自定义文案）</li>
+ *   <li>动画：Zoom(0.9→1) + Fade，200ms ease-out</li>
+ *   <li>ESC 关闭 / 点击遮罩关闭（均可配置禁用）</li>
+ *   <li>静态快捷方法：info() / confirm()</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * // 确认对话框
+ * ModalAnt.confirm("确认删除？", "删除后无法恢复", ownerNode, () -> doDelete());
+ *
+ * // Builder 用法：自定义 footer
+ * ModalAnt.create()
+ *     .title("编辑用户")
+ *     .content(editFormNode)
+ *     .width(640)
+ *     .onOk(() -> saveUser())
+ *     .build()
+ *     .open(ownerNode);
+ *
+ * // 无 footer + 不居中
+ * ModalAnt.create()
+ *     .title("系统提示")
+ *     .content("当前版本已过期，请更新")
+ *     .centered(false)
+ *     .noFooter()
+ *     .build()
+ *     .open(ownerNode);
+ * }</pre>
+ *
+ * @see DrawerAnt 抽屉式面板（适合大量内容展示）
+ * @see PopconfirmAnt 轻量气泡确认框
  */
 public class ModalAnt {
 
@@ -51,7 +85,7 @@ public class ModalAnt {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String title = "";
         private Node content = null;
         private boolean maskClosable = true;

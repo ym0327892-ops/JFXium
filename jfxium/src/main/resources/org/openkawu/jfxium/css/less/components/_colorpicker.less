@@ -1,0 +1,161 @@
+/* ============================================
+   ColorPicker Component
+   ============================================ */
+.color-picker {
+  .input-base();
+  -fx-min-width: 60px;
+  -fx-pref-width: 80px;
+  
+}
+
+.color-picker:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.color-picker:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.color-picker .arrow-button {
+  -fx-background-color: transparent;
+}
+
+/* ColorPicker Popup - 防止内部组件超出容器 */
+.color-palette {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+  -fx-padding: 10px;
+  -fx-min-width: 200px;
+}
+
+.color-palette .color-picker-grid {
+  -fx-padding: 0;
+}
+
+.color-palette .color-picker-grid .color-square {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-padding: 0;
+}
+
+.color-palette .color-picker-grid .color-square:hover {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 2px;
+}
+
+/* ColorPicker 内部 Slider 防止超出 */
+.color-palette .slider {
+  -fx-pref-width: 180px;
+  -fx-max-width: 180px;
+  -fx-min-width: 180px;
+}
+
+.color-palette .slider .thumb {
+  -fx-padding: 0;
+}
+
+.color-palette .controls-pane {
+  -fx-padding: 5px 0;
+}
+
+/* ============================================
+   CustomColorDialog（点「自定义颜色」弹出的高级取色对话框）
+   --------------------------------------------
+   根因（BUG #55）：项目此前完全没有 .custom-color-dialog 样式，
+   导致 #settings-pane 行（label + slider + 单位 + 输入框）没有显式宽度约束，
+   RGB/HSB 调节 slider 把整行撑出对话框宽度，且整体排版不居中、边线杂乱。
+   解法：照抄 AtlantaFX _color-picker.scss 的 .custom-color-dialog 规范，
+   em 值按项目根字号 14px 换算成 px（如 10em → 140px、5.75em → 80px）。
+   关键：给 settings-pane 内每个微组件显式宽度，整行才能在固定宽度内排布。
+   ============================================ */
+.custom-color-dialog {
+  -fx-background-color: -color-bg-overlay;
+  -fx-padding: 16px;
+  -fx-spacing: 16px;
+}
+
+/* 左侧大色块 + 竖向色带 */
+.custom-color-dialog > .color-rect-pane {
+  -fx-spacing: 14px;
+  -fx-pref-height: 224px;          /* 16em */
+  -fx-alignment: TOP_LEFT;
+  -fx-fill-height: true;
+}
+
+.custom-color-dialog > .color-rect-pane > .color-rect {
+  -fx-min-width: 224px;            /* 16em */
+  -fx-min-height: 224px;
+}
+
+.custom-color-dialog > .color-rect-pane > .color-rect .color-rect-border {
+  -fx-border-color: -color-border-default;
+}
+
+.custom-color-dialog > .color-rect-pane > .color-bar {
+  -fx-min-width: 24px;             /* 1.666667em */
+  -fx-max-width: 24px;
+  -fx-min-height: 234px;           /* 16.666667em */
+  -fx-border-color: -color-border-default;
+}
+
+/* 右侧控制区 */
+.custom-color-dialog > .controls-pane > .current-new-color-grid > .color-rect {
+  -fx-min-width: 140px;            /* 10em */
+  -fx-pref-width: 140px;
+  -fx-min-height: 24px;            /* 1.75em */
+  -fx-pref-height: 24px;
+}
+
+.custom-color-dialog > .controls-pane > .current-new-color-grid > #current-new-color-border {
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+}
+
+/* settings-pane：RGB/HSB 调节行（label + slider + 单位 + 输入框）—— 溢出根因区 */
+.custom-color-dialog #settings-pane {
+  -fx-hgap: 6px;
+  -fx-vgap: 6px;
+}
+
+.custom-color-dialog #settings-pane > .settings-label {
+  -fx-min-width: 80px;             /* 5.75em，左侧 R/G/B 标签列固定宽 */
+}
+
+.custom-color-dialog #settings-pane > .slider {
+  -fx-pref-width: 140px;           /* 10em，关键：给 slider 固定宽，不再撑爆整行 */
+}
+
+.custom-color-dialog #settings-pane > .settings-unit {
+  -fx-min-width: 21px;             /* 1.5em，% / ° 单位列 */
+  -fx-pref-width: 21px;
+  -fx-max-width: 21px;
+}
+
+.custom-color-dialog #settings-pane > .color-input-field {
+  -fx-min-width: 56px;             /* 4em，数值输入框 */
+  -fx-pref-width: 56px;
+  -fx-max-width: 56px;
+}
+
+.custom-color-dialog #settings-pane > .web-field {
+  -fx-pref-width: 112px;           /* 8em，十六进制色值输入框 */
+}
+
+.custom-color-dialog #settings-pane > #spacer-side {
+  -fx-min-width: 7px;              /* 0.5em */
+  -fx-pref-width: 7px;
+}
+
+/* 底部按钮区右对齐 */
+.custom-color-dialog > .controls-pane > #buttons-hbox {
+  -fx-spacing: 10px;
+  -fx-padding: 14px 0 0 0;
+  -fx-alignment: BOTTOM_RIGHT;
+}
+

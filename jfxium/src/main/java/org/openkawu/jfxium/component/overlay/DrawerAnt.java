@@ -15,20 +15,60 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+
 import java.util.function.Consumer;
 
 /**
- * Drawer 抽屉组件 - 对齐 Ant Design 6.x 规范
+ * JFXium 抽屉组件 - 对标 Ant Design Drawer 6.x 规范。
  *
- * Ant Design Drawer 设计要点：
- * 1. 从屏幕边缘滑入，覆盖部分父窗体内容
- * 2. 默认宽度 378px，大号 736px
- * 3. 关闭按钮在左上角（默认）
- * 4. 头部：标题 + extra 操作区，padding 16px 24px，底部边框
- * 5. 内容：padding 24px，flex:1 自适应高度
- * 6. 底部：可选，padding 16px 24px，顶部边框
- * 7. 动画：Slide + Fade，250ms ease-out
- * 8. 遮罩：rgba(0,0,0,0.45)，点击可关闭
+ * <p><b>定位</b>：从屏幕边缘滑入的覆盖式面板，适合详情展示、表单编辑、筛选面板等场景。
+ * 比 ModalAnt 更适合展示大量内容，不挡住整个视口。</p>
+ *
+ * <h2>设计要点</h2>
+ * <ul>
+ *   <li>从屏幕边缘滑入，覆盖部分父窗体内容</li>
+ *   <li>默认宽度 378px，LARGE 尺寸 736px</li>
+ *   <li>关闭按钮位置可配：LEFT（Ant 默认）/ RIGHT / NONE</li>
+ *   <li>头部：标题 + extra 操作区，底部边框</li>
+ *   <li>内容：padding 24px，flex:1 自适应高度</li>
+ *   <li>底部：可选 footer，顶部边框</li>
+ *   <li>动画：Slide + Fade，250ms ease-out</li>
+ *   <li>遮罩：rgba(0,0,0,0.45)，点击可关闭</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * // 右侧抽屉（默认）
+ * DrawerAnt.create()
+ *     .title("用户详情")
+ *     .content(userDetailNode)
+ *     .placement(DrawerAnt.Placement.RIGHT)
+ *     .onClose(ok -> System.out.println("已关闭"))
+ *     .build()
+ *     .open(ownerNode);
+ *
+ * // 底部抽屉 + footer
+ * DrawerAnt.create()
+ *     .title("高级筛选")
+ *     .content(filterFormNode)
+ *     .placement(DrawerAnt.Placement.BOTTOM)
+ *     .height(400)
+ *     .footer(ButtonAnt.create("应用").type(ButtonAnt.Type.PRIMARY).build())
+ *     .build()
+ *     .open(ownerNode);
+ *
+ * // LARGE 尺寸 + 无关闭按钮
+ * DrawerAnt.create()
+ *     .title("文件预览")
+ *     .content(filePreviewNode)
+ *     .size(DrawerAnt.Size.LARGE)
+ *     .closePlacement(DrawerAnt.ClosePlacement.NONE)
+ *     .build()
+ *     .open(ownerNode);
+ * }</pre>
+ *
+ * @see ModalAnt 居中对话框（适合确认性操作）
  */
 public class DrawerAnt {
 
@@ -58,7 +98,7 @@ public class DrawerAnt {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String title = "";
         private Node content = null;
         private Placement placement = Placement.RIGHT;

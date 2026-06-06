@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 import org.openkawu.jfxium.core.i18n.Messages;
 
@@ -16,14 +17,41 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * JFXium Transfer - 对标 Ant Design Transfer。
+ * JFXium 穿梭框组件 - 对标 Ant Design Transfer（组合式，Builder 模式）。
  *
- * 重构：列表容器/header/搜索框/方向按钮全部走 LESS（{@code transfer-*}），
- * 中间方向按钮 hover 状态由 LESS 伪类控制，不再用 setOnMouseEntered/Exited。
+ * <p><b>定位</b>：双列列表控件，用于在两个列表之间移动数据项，
+ * 比下拉多选更直观。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li>数据源 + 已选目标列表</li>
+ *   <li>搜索过滤（showSearch）</li>
+ *   <li>自定义渲染（render 函数）</li>
+ *   <li>自定义标题（titles）</li>
+ *   <li>变化回调（onChange）+ 选中变化回调（onSelectChange）</li>
+ *   <li>视觉样式走 LESS（{@code .transfer-*} 系列）</li>
+ * </ul>
+ *
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>权限分配（可选权限 vs 已分配权限）</li>
+ *   <li>成员分配（可选成员 vs 已加入成员）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node transfer = TransferAnt.<String>create()
+ *     .dataSource(List.of("用户 A", "用户 B", "用户 C", "用户 D"))
+ *     .targetKeys(List.of("用户 A"))
+ *     .showSearch(true)
+ *     .titles("可选", "已选")
+ *     .onChange(keys -> System.out.println("目标：" + keys))
+ *     .build();
+ * }</pre>
  */
 public class TransferAnt<T> {
 
-    public static class Builder<T> {
+    public static class Builder<T> extends AbstractStyleBuilder<Builder<T>> {
         private List<T> dataSource = new ArrayList<>();
         private List<T> targetKeys = new ArrayList<>();
         private List<T> selectedSourceKeys = new ArrayList<>();

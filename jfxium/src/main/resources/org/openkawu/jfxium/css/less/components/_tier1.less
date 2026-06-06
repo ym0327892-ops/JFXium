@@ -1,0 +1,125 @@
+/* ============================================
+   Tier 1 简单组件 LESS 选择器
+   ============================================ */
+
+/* IconAnt：极简符号图标，颜色随主题切换 */
+.jfx-icon {
+  -fx-text-fill: -color-fg-default;
+}
+
+/* IconAnt SVG path 模式：用 -fx-background-color 给 Region 上色（配合 -fx-shape） */
+.jfx-icon-path {
+  -fx-background-color: -color-fg-default;
+}
+
+/* 当 icon 在可交互父容器中（button/menu-item/等）时，hover 自动变主题色 */
+.button:hover .jfx-icon-path,
+.menu-item:hover .jfx-icon-path,
+.toggle-button:hover .jfx-icon-path {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* 选中态 */
+.button:armed .jfx-icon-path,
+.toggle-button:selected .jfx-icon-path {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* 主题色变体：用户挂额外 styleClass 即可切色 */
+.jfx-icon-path.icon-muted   { -fx-background-color: -color-fg-muted; }
+.jfx-icon-path.icon-accent  { -fx-background-color: -color-accent-emphasis; }
+.jfx-icon-path.icon-success { -fx-background-color: -color-success-emphasis; }
+.jfx-icon-path.icon-warning { -fx-background-color: -color-warning-emphasis; }
+.jfx-icon-path.icon-danger  { -fx-background-color: -color-danger-emphasis; }
+
+/* EmptyAnt：空状态 */
+.jfx-empty {
+  -fx-padding: 48;
+}
+
+.jfx-empty-icon {
+  -fx-fill: -color-fg-subtle;
+}
+
+.jfx-empty-description {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+}
+
+/* BackTopAnt：回到顶部圆形按钮，hover 时背景与阴影加深 */
+.jfx-back-top {
+  -fx-background-color: -color-bg-overlay;
+  -fx-background-radius: 9999;
+  -fx-border-radius: 9999;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-padding: 12;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
+}
+
+.jfx-back-top:hover {
+  -fx-background-color: -color-bg-subtle;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 3);
+}
+
+.jfx-back-top-arrow {
+  -fx-fill: -color-fg-default;
+}
+
+/* SpinAnt：加载中容器与 tip 文字 */
+.jfx-spin {
+  -fx-background-color: transparent;
+}
+
+/* fullscreen 模式：半透明白色背景遮罩 */
+.jfx-spin.spin-fullscreen {
+  -fx-background-color: rgba(255, 255, 255, 0.7);
+}
+
+.jfx-spin-tip {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+/* SpinAnt Indicator：三种加载动画样式 */
+/* Spinner：圆形旋转弧线（使用 border 模拟 Arc） */
+.jfx-spin-indicator-spinner {
+  -fx-border-color: -color-accent-emphasis transparent transparent transparent;
+  -fx-border-width: 3;
+  -fx-border-radius: 50%;
+  -fx-background-radius: 50%;
+}
+
+/* Dots：圆点（使用 border-radius: 50% 实现圆形） */
+.jfx-spin-indicator-dot {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-radius: 50%;
+}
+
+/* Bars：矩形条 */
+.jfx-spin-indicator-bar {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-radius: 2;
+}
+
+/* TimePickerAnt：时分秒分隔符与 spinner 编辑器 */
+.jfx-time-picker {
+  -fx-background-color: transparent;
+}
+
+.jfx-time-picker-separator {
+  -fx-font-size: @font-size-lg;
+  -fx-text-fill: -color-fg-muted;
+}
+
+/* spinner 编辑框：去除默认边框，仅保留底部一根线，对齐 Material 风格 */
+.jfx-time-picker-editor {
+  -fx-font-size: @font-size-md;
+  -fx-padding: 4 2 4 2;
+  -fx-pref-width: 40;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+

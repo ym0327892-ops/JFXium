@@ -1,0 +1,34 @@
+/* ============================================
+   ScrollBar Component
+   ============================================ */
+.scroll-bar {
+  -fx-background-color: transparent;
+  -fx-pref-width: @scrollbar-size;
+  -fx-pref-height: @scrollbar-size;
+}
+
+.scroll-bar .thumb {
+  -fx-background-color: -color-base-4;
+  -fx-background-radius: @border-radius-full;
+  
+}
+
+.scroll-bar .thumb:hover {
+  -fx-background-color: -color-base-5;
+}
+
+.scroll-bar .thumb:pressed {
+  -fx-background-color: -color-base-6;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+  -fx-background-color: transparent;
+  -fx-padding: @spinner-arrow-padding;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+  -fx-background-color: -color-base-5;
+}
+

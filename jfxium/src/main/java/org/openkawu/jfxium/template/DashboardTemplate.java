@@ -8,6 +8,7 @@ import javafx.scene.layout.*;
 import org.openkawu.jfxium.component.composite.CardAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.CssClasses;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.ArrayList;
@@ -150,12 +151,12 @@ public class DashboardTemplate {
         public VBox build() {
             VBox root = new VBox(sectionGap);
             root.setPadding(new Insets(padding));
-            root.setStyle("-fx-background-color: -color-bg-layout;");
+            root.getStyleClass().add(CssClasses.DASHBOARD_ROOT);
 
             // 1. 欢迎语
             if (welcome != null && !welcome.isEmpty()) {
                 Label w = new Label(welcome);
-                w.setStyle("-fx-font-size: 22px; -fx-font-weight: 700;");
+                w.getStyleClass().add(CssClasses.DASHBOARD_WELCOME);
                 root.getChildren().add(w);
             }
 
@@ -198,22 +199,22 @@ public class DashboardTemplate {
             StackPane iconBox = new StackPane(iconNode);
             iconBox.setMinSize(40, 40);
             iconBox.setMaxSize(40, 40);
-            iconBox.setStyle("-fx-background-radius: 8; -fx-background-color: -color-bg-subtle;");
+            iconBox.getStyleClass().add(CssClasses.DASHBOARD_STAT_ICON_BOX);
 
             // 标题
             Label title = new Label(s.title());
-            title.setStyle("-fx-font-size: 13px; -fx-text-fill: -color-fg-muted;");
+            title.getStyleClass().add(CssClasses.DASHBOARD_STAT_TITLE);
 
             // 大数值
             Label value = new Label(s.value());
-            value.setStyle("-fx-font-size: 28px; -fx-font-weight: 700;");
+            value.getStyleClass().add(CssClasses.DASHBOARD_STAT_VALUE);
 
             // 趋势
             Label trend = new Label(s.trend());
-            trend.setStyle("-fx-font-size: 12px; -fx-text-fill: "
-                    + (s.up() ? "-color-success-emphasis" : "-color-danger-emphasis") + ";");
+            String trendClass = s.up() ? CssClasses.DASHBOARD_STAT_TREND_UP : CssClasses.DASHBOARD_STAT_TREND_DOWN;
+            trend.getStyleClass().add(trendClass);
             Label trendHint = new Label(" " + Messages.get("dashboard.compared_to_last_week"));
-            trendHint.setStyle("-fx-font-size: 12px; -fx-text-fill: -color-fg-muted;");
+            trendHint.getStyleClass().add(CssClasses.DASHBOARD_STAT_TREND_HINT);
             HBox trendRow = new HBox(0, trend, trendHint);
             trendRow.setAlignment(Pos.CENTER_LEFT);
 

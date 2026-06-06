@@ -1,0 +1,154 @@
+/* ============================================
+   CodeBlockAnt 完整状态机：
+   - 容器：浅灰背景、边框、圆角
+   - header：稍深的背景 + 顶部圆角，承载 title/lang/copyBtn
+   - title/lang/content：等宽字体显示代码
+   - copy 按钮：默认浅色背景，hover 变主题色 subtle
+   原 Java 端 7 处 inline setStyle 的视觉样式现已搬入此 section。
+   ============================================ */
+.jfx-codeblock {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.jfx-codeblock-header {
+  -fx-background-color: -color-border-muted;
+  -fx-padding: 8 12 8 12;
+  /* 头部仅保留顶部圆角，与容器圆角配合，底部为直角让上下两段视觉连续 */
+  -fx-background-radius: @border-radius-md @border-radius-md 0 0;
+}
+
+.jfx-codeblock-title {
+  -fx-font-weight: 600;
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-codeblock-lang {
+  -fx-font-size: @font-size-xs;
+  -fx-text-fill: -color-fg-muted;
+  /* 等宽字体让语言标识与代码内容视觉一致 */
+  -fx-font-family: "Consolas", "Monaco", monospace;
+}
+
+.jfx-codeblock-copy-btn {
+  -fx-font-size: @font-size-xs;
+  -fx-padding: 2 8 2 8;
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-cursor: hand;
+}
+
+.jfx-codeblock-copy-btn:hover {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-muted;
+}
+
+.jfx-codeblock-scroll {
+  -fx-background-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 12;
+}
+
+/* ScrollPane 的视口也需要透明，否则会盖住 codeblock 容器的浅灰背景 */
+.jfx-codeblock-scroll > .viewport {
+  -fx-background-color: transparent;
+}
+
+.jfx-codeblock-content {
+  -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-default;
+  -fx-wrap-text: true;
+}
+
+/* selectable 模式：只读 TextArea 单色渲染，可拖选 + Ctrl+C。
+   去掉 TextArea 默认 chrome（背景/边框/焦点环），让它融入代码块容器。
+   用复合选择器 .text-area.jfx-codeblock-textarea 提高优先级盖掉 modena 默认（参考 SelectableTextAnt M19.7.2）。
+   关键：content 区用不透明浅灰底（-color-bg-subtle）而非 transparent，
+   否则 macOS 上 LCD 文本渲染退化为灰度抗锯齿导致文字发虚（M19.39 修）。 */
+.text-area.jfx-codeblock-textarea {
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-text-fill: -color-fg-default;
+  -fx-highlight-fill: -color-accent-muted;
+  -fx-highlight-text-fill: -color-fg-default;
+  -fx-padding: 8;
+  -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
+  -fx-font-size: @font-size-sm;
+  /* 去掉 modena 默认焦点阴影（会导致子节点重绘时亚像素偏移 → 文字模糊） */
+  -fx-effect: null;
+}
+
+.text-area.jfx-codeblock-textarea .content {
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+}
+
+/* 焦点态：去掉所有视觉变化（代码块不是输入控件，不需要焦点环） */
+.text-area.jfx-codeblock-textarea:focused {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+  -fx-effect: null;
+}
+
+/* TextArea 内嵌 scroll-pane / viewport 用同色不透明底，保证 LCD 文本渲染清晰 */
+.text-area.jfx-codeblock-textarea > .scroll-pane,
+.text-area.jfx-codeblock-textarea > .scroll-pane > .viewport,
+.text-area.jfx-codeblock-textarea > .scroll-pane .content {
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+}
+
+/* 代码语法高亮（用于 CodeBlockAnt 只读显示） */
+.jfx-codeblock-content .code-keyword {
+  -fx-fill: -color-accent-emphasis;
+  -fx-font-weight: bold;
+}
+
+.jfx-codeblock-content .code-string {
+  -fx-fill: -color-success-emphasis;
+}
+
+.jfx-codeblock-content .code-comment {
+  -fx-fill: -color-fg-muted;
+  -fx-font-style: italic;
+}
+
+.jfx-codeblock-content .code-number {
+  -fx-fill: -color-warning-emphasis;
+}
+
+.jfx-codeblock-content .code-text {
+  -fx-fill: -color-fg-default;
+}
+
+/* 行号样式 */
+.code-line-numbers {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: transparent -color-border-muted transparent transparent;
+  -fx-border-width: 0 1 0 0;
+}
+
+.code-line-number {
+  -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-muted;
+  -fx-alignment: center-right;
+  -fx-padding: 0 4 0 0;
+}
+
+/* Temporary highlight on double-click selection */
+.codeblock-highlight { -fx-background-color: -color-bg-subtle; }
+

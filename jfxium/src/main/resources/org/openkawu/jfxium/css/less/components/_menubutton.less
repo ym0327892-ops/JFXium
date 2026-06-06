@@ -1,0 +1,263 @@
+/* ============================================
+   MenuButton Component（M19.6 修复 — 对齐 AtlantaFX _menu-button.scss）
+   关键：padding=0 在 .menu-button 自身，padding 下放到 > .label 和 > .arrow-button
+   ============================================ */
+.menu-button {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: 0;
+  -fx-alignment: CENTER_LEFT;
+  -fx-cursor: hand;
+}
+
+.menu-button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+}
+
+.menu-button:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+}
+
+.menu-button > .label {
+  -fx-padding: @btn-padding-y @btn-padding-x @btn-padding-y @btn-padding-x;
+  -fx-text-fill: -color-fg-default;
+}
+
+.menu-button:hover > .label {
+  -fx-text-fill: -color-fg-default;
+}
+
+.menu-button > .arrow-button {
+  /* 上下 padding 与 label 一致；水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），
+     避免箭头区过宽显得不协调 */
+  -fx-padding: @btn-padding-y @spacing-sm @btn-padding-y 0;
+  -fx-background-color: transparent;
+}
+
+.menu-button > .arrow-button > .arrow {
+  /* 默认 Ant Design chevron 样式（细 V 形描边） */
+  -fx-shape: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z";
+  -fx-min-width: 10px;
+  -fx-min-height: 6px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 6px;
+  -fx-background-color: -color-fg-muted;
+}
+
+.menu-button:hover > .arrow-button > .arrow {
+  -fx-background-color: -color-fg-default;
+}
+
+/* MenuButton 箭头样式变体（M19.6.1） */
+.menu-button.arrow-triangle > .arrow-button > .arrow {
+  -fx-shape: "M7 10l5 5 5-5z";
+  -fx-min-width: 8px;
+  -fx-min-height: 8px;
+  -fx-pref-width: 8px;
+  -fx-pref-height: 8px;
+}
+
+/* 关闭箭头（对齐 AtlantaFX `&.no-arrow`） */
+.menu-button.no-arrow > .arrow-button {
+  -fx-padding: 0;
+}
+
+.menu-button.no-arrow > .arrow-button > .arrow {
+  -fx-shape: null;
+  -fx-min-width: 0;
+  -fx-min-height: 0;
+  -fx-pref-width: 0;
+  -fx-pref-height: 0;
+  -fx-background-color: transparent;
+}
+
+/* MenuButton Popup */
+.menu-button .menu-item {
+  -fx-padding: @menu-item-padding-y @menu-item-padding-x;
+}
+
+.menu-button .menu-item:hover,
+.menu-button .menu-item:focused {
+  -fx-background-color: -color-accent-subtle;
+}
+
+.menu-button .menu-item .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+/* ============================================
+   SplitMenuButton Component（M19.6 修复 — 对齐 AtlantaFX）
+   关键：padding=0 在容器；左 .label 拿水平 padding；右 .arrow-button 拿水平 padding；
+        左右两块自身有视觉区分（中间分隔线）
+   ============================================ */
+.split-menu-button {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: 0;
+  -fx-cursor: hand;
+}
+
+.split-menu-button > .label {
+  -fx-padding: @btn-padding-y @btn-padding-x @btn-padding-y @btn-padding-x;
+  -fx-background-color: -color-bg-default;
+  -fx-text-fill: -color-fg-default;
+  /* 左侧两角跟随容器圆角，避免方角盖住容器圆角露出"缺角"（M19.42 #3） */
+  -fx-background-radius: @border-radius-md 0 0 @border-radius-md;
+}
+
+.split-menu-button > .label:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-background-radius: @border-radius-md 0 0 @border-radius-md;
+}
+
+.split-menu-button > .label:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-background-radius: @border-radius-md 0 0 @border-radius-md;
+}
+
+.split-menu-button > .arrow-button {
+  /* 水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），避免箭头区过宽 */
+  -fx-padding: @btn-padding-y @spacing-sm @btn-padding-y @spacing-sm;
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1px;
+  /* 右侧两角跟随容器圆角 */
+  -fx-background-radius: 0 @border-radius-md @border-radius-md 0;
+}
+
+.split-menu-button > .arrow-button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-background-radius: 0 @border-radius-md @border-radius-md 0;
+}
+
+.split-menu-button > .arrow-button:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-background-radius: 0 @border-radius-md @border-radius-md 0;
+}
+
+.split-menu-button > .arrow-button > .arrow {
+  /* 默认 Ant Design chevron 样式（细 V 形描边） */
+  -fx-shape: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z";
+  -fx-min-width: 10px;
+  -fx-min-height: 6px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 6px;
+  -fx-background-color: -color-fg-muted;
+}
+
+.split-menu-button:hover > .arrow-button > .arrow {
+  -fx-background-color: -color-fg-default;
+}
+
+/* SplitMenuButton 箭头样式变体（M19.6.1） */
+.split-menu-button.arrow-triangle > .arrow-button > .arrow {
+  -fx-shape: "M7 10l5 5 5-5z";
+  -fx-min-width: 8px;
+  -fx-min-height: 8px;
+  -fx-pref-width: 8px;
+  -fx-pref-height: 8px;
+}
+
+/* ============================================
+   ToggleButton Component (M19.6 — 通用 .toggle-button 视觉)
+   注：.toggle-button.switch 的 Switch 样式已在前面单独定义；
+       这里是"独立切换按钮"通用视觉，不会污染 Switch（CSS 后定义优先级在 Switch 那块就近覆盖）
+   ============================================ */
+.toggle-button {
+  .button-base();
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-text-fill: -color-fg-default;
+  -fx-cursor: hand;
+}
+
+.toggle-button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+}
+
+.toggle-button:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+}
+
+.toggle-button:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.toggle-button:selected:hover {
+  -fx-background-color: -color-accent-4;
+}
+
+.toggle-button:selected:armed {
+  -fx-background-color: -color-accent-6;
+}
+
+.toggle-button:disabled {
+  -fx-opacity: 0.4;
+  -fx-cursor: default;
+}
+
+/* ToggleButton sizes — 与 .button.small/.large 保持一致 */
+.toggle-button.small {
+  -fx-padding: @btn-padding-y-sm @btn-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.toggle-button.large {
+  -fx-padding: @btn-padding-y-lg @btn-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* MenuButton sizes — padding 下放到 .label 和 .arrow-button（M19.6） */
+.menu-button.small > .label {
+  -fx-padding: @btn-padding-y-sm @btn-padding-x-sm @btn-padding-y-sm @btn-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.menu-button.small > .arrow-button {
+  /* 水平 padding 减半，对齐 AtlantaFX */
+  -fx-padding: @btn-padding-y-sm @spacing-xs @btn-padding-y-sm 0;
+}
+
+.menu-button.large > .label {
+  -fx-padding: @btn-padding-y-lg @btn-padding-x-lg @btn-padding-y-lg @btn-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+.menu-button.large > .arrow-button {
+  -fx-padding: @btn-padding-y-lg @spacing-md @btn-padding-y-lg 0;
+}
+
+/* SplitMenuButton sizes — padding 下放到 .label 和 .arrow-button（M19.6） */
+.split-menu-button.small > .label {
+  -fx-padding: @btn-padding-y-sm @btn-padding-x-sm @btn-padding-y-sm @btn-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.split-menu-button.small > .arrow-button {
+  /* 水平 padding 减半，对齐 AtlantaFX */
+  -fx-padding: @btn-padding-y-sm @spacing-xs @btn-padding-y-sm @spacing-xs;
+}
+
+.split-menu-button.large > .label {
+  -fx-padding: @btn-padding-y-lg @btn-padding-x-lg @btn-padding-y-lg @btn-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+.split-menu-button.large > .arrow-button {
+  -fx-padding: @btn-padding-y-lg @spacing-md @btn-padding-y-lg @spacing-md;
+}
+

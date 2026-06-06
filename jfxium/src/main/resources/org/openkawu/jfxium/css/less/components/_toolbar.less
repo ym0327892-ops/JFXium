@@ -1,0 +1,24 @@
+/* ============================================
+   ToolBar
+   ============================================ */
+.tool-bar {
+  -fx-background-color: -color-border-muted, -color-bg-subtle;
+  -fx-background-insets: 0, 0 0 1px 0;
+  -fx-border-color: transparent;
+  -fx-padding: @toolbar-padding-y @toolbar-padding-x;
+  -fx-spacing: @spacing-xs;
+  -fx-alignment: CENTER_LEFT;
+}
+
+.tool-bar > .container > .button,
+.tool-bar > .container > .menu-button,
+.tool-bar > .container > .split-menu-button {
+  -fx-background-insets: 0;
+  -fx-effect: none;
+}
+
+.tool-bar > .container > .toggle-button {
+  -fx-background-insets: 0;
+  -fx-effect: none;
+}
+

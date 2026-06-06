@@ -1826,6 +1826,83 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 
 ---
 
+### 📋 JavaFX 原生控件封装缺口盘点（2026-06-05）
+
+> **背景**：系统性对比 `javafx.scene.control` / `javafx.scene.layout` 全部原生控件与 JFXium 现有封装，找出真正缺口。
+
+#### 一、核心控件缺口（PC 桌面软件刚需）
+
+| JavaFX 原生 | JFXium 现状 | 缺口 | 优先级 |
+|---|---|---|---|
+| `MenuBar` | ✅ **MenuBarAnt** 已实现（2026-06-05）| 系统菜单栏 + 快捷键 + 图标 + 子菜单 | 🔴 P0 ✅ |
+| `ToolBar` | ✅ **ToolBarAnt** 已实现（2026-06-05）| 可定制工具栏 + 溢出菜单 + 垂直/水平 | 🔴 P0 ✅ |
+| `ContextMenu` | ✅ **ContextMenuAnt** 已实现（2026-06-05）| 右键菜单 + 分组 + 图标 + 快捷键 | 🔴 P0 ✅ |
+| `StatusBar`（无原生，ControlsFX 才有）| ✅ **StatusBarAnt** 已实现（2026-06-05）| 底部状态栏（左/中/右三栏）| 🟠 P1 ✅ |
+| `TreeTableView` | ✅ **TreeTableAnt** 已实现（2026-06-05）| 树形表格（文件夹+属性面板典型）| 🟠 P1 ✅ |
+| `Hyperlink` | ✅ **HyperlinkAnt** 已实现（2026-06-05）| 超链接（外链 / 邮件 / 跳转）| 🟠 P1 ✅ |
+| `PasswordField` | ✅ **InputAnt.createPassword()** 已实现（2026-06-05）| 密码模式 + 可见切换按钮 | 🟠 P1 ✅ |
+| `Canvas` | ✅ **CanvasAnt** 已实现（2026-06-05）| **CanvasAnt**：自绘图形容器（图表、绘图、游戏）| 🟡 P2 ✅ |
+| `TextInputDialog` / `ChoiceDialog` | ✅ **PromptDialogAnt** 已实现（2026-06-05）| **PromptDialogAnt**：快速输入/选择弹框 | 🟡 P2 ✅ |
+| `TilePane` | ✅ **TilePaneAnt** 已实现（2026-06-05）| **TilePaneAnt**：平铺布局（缩略图网格）| 🟡 P2 ✅ |
+| `AnchorPane`（布局层）| ✅ **AnchorPaneAnt** 已实现（2026-06-05）| **AnchorPaneAnt**：绝对定位布局 | 🟢 P3 ✅ |
+
+#### 二、图表缺口（`javafx.scene.chart`，全部缺失）
+
+| 原生控件 | JFXium | 备注 |
+|---|---|---|
+| `LineChart` | ❌ | 折线图 |
+| `BarChart` | ❌ | 柱状图 |
+| `PieChart` | ❌ | 饼图 |
+| `AreaChart` | ❌ | 面积图 |
+| `ScatterChart` | ❌ | 散点图 |
+| `BubbleChart` | ❌ | 气泡图 |
+| `StackedBarChart` / `StackedAreaChart` | ❌ | 堆叠图 |
+
+> 建议统一封装为 `ChartAnt`（Builder API + 主题色自动绑定），优先级 🟡 P2。
+
+#### 三、媒体 / Web 缺口
+
+| 原生控件 | JFXium | 备注 |
+|---|---|---|
+| `WebView` | ❌ 未封装 | 内嵌浏览器（帮助文档、Markdown 渲染）|
+| `MediaView` | ❌ 未封装 | 视频播放（教程、预览）|
+
+> 优先级低（🟢 P3），大多数业务软件不需要。
+
+#### 四、文档与代码不一致（顺带发现）
+
+- `COMPONENTS.md` 使用旧命名 `JFXButton / JFXInput / JFXMenu`，实际类为 `ButtonAnt / InputAnt / MenuAnt`
+- `COMPONENTS.md` 说 `JFXMenu.build()` 返回 `MenuBar`，实际 `MenuAnt` 返回 `VBox/HBox`（侧边导航）
+- `COMPONENTS.md` 说 InputAnt 有 `.password()` 方法，实际代码中不存在 → **✅ 已修复**：`InputAnt.createPassword()` Builder API（2026-06-05）
+- `COMPONENTS.md` 说"不新增 ToolBarAnt"，但 PC 软件确实需要 → **✅ 已实现**：ToolBarAnt（2026-06-05）
+
+#### 五、优先级汇总
+
+```
+🔴 P0（PC软件必备，做完才能像桌面应用）：
+  1. ✅ MenuBarAnt    —— 系统菜单栏（已实现 2026-06-05）
+  2. ✅ ToolBarAnt    —— 工具栏（已实现 2026-06-05）
+  3. ✅ ContextMenuAnt —— 右键菜单（已实现 2026-06-05）
+
+🟠 P1（PC软件常用，明显缺口）：
+  4. ✅ StatusBarAnt   —— 底部状态栏（已实现 2026-06-05）
+  5. ✅ TreeTableAnt   —— 树形表格（已实现 2026-06-05）
+  6. ✅ HyperlinkAnt   —— 超链接（已实现 2026-06-05）
+  7. ✅ InputAnt.createPassword() —— 密码输入模式（已实现 2026-06-05）
+
+🟡 P2（有价值但非紧急）：
+  8. ChartAnt       —— 图表统一封装
+  9. ✅ CanvasAnt      —— 自绘容器（已实现 2026-06-05）
+  10. ✅ PromptDialogAnt —— 输入/选择弹框（已实现 2026-06-05）
+  11. ✅ TilePaneAnt   —— 平铺布局（已实现 2026-06-05）
+
+🟢 P3（长期）：
+  12. ✅ AnchorPaneAnt —— 绝对定位布局（已实现 2026-06-05）
+  13. WebViewAnt / MediaViewAnt —— Web/媒体（不引入 javafx.web/media 模块）
+```
+
+---
+
 ## 五、下一阶段计划
 
 ### 🔴 P0：本次重构遗留收尾（短期）

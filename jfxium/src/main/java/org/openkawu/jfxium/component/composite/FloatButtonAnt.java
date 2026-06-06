@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 
 /**
  * JFXium 悬浮按钮组件 - 对标 Ant Design FloatButton
@@ -32,7 +33,7 @@ public class FloatButtonAnt {
         DEFAULT, PRIMARY
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private Node icon;
         private String tooltip = null;
         private Type type = Type.DEFAULT;

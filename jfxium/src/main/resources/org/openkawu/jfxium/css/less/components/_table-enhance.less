@@ -1,0 +1,162 @@
+/* ============================================
+   Table Row & Cell Enhancements
+   ============================================ */
+.table-row-cell {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent -color-border-subtle transparent;
+  -fx-border-width: 0 0 1px 0;
+  
+}
+
+.table-row-cell:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.table-row-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.table-row-cell:selected {
+  -fx-background-color: -color-cell-bg-selected;
+}
+
+.table-row-cell:selected .table-cell {
+  -fx-text-fill: -color-cell-fg-selected;
+}
+
+/* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，
+   背景在 subtle(accent-0) 基础上加深一档到 muted(accent-2)，
+   给用户"选中后还能继续交互"的反馈 */
+.table-row-cell:selected:hover {
+  -fx-background-color: -color-accent-muted;
+}
+
+.table-cell {
+  -fx-padding: @table-cell-padding-y @table-cell-padding-x;
+  -fx-text-fill: -color-fg-default;
+  /* 默认垂直居中（水平由 align-* 复合类控制；不设的话默认 center-left）*/
+  -fx-alignment: center-left;
+}
+
+/* 行高保护：保证最低行高足以容纳 Avatar(32px)/Tag(24px)/按钮(28px) 等内容，
+   同时文字行也有舒适的上下留白。
+   不用 -fx-cell-size（那个会强制裁切高内容），用 min-height 让行高自适应但有下限。 */
+.table-view .table-row-cell {
+  -fx-min-height: 48px;
+}
+
+/* M11.2 三档尺寸（对齐 Ant Design Table size：SMALL / MIDDLE / LARGE）
+   ============================================================ */
+
+/* SMALL：紧凑模式（mini 表格）。表头 40 / 行高 36 / padding 6×8 / 字号 13 */
+.table-view.jfx-table-small .column-header-background {
+  -fx-pref-height: 40px;
+}
+.table-view.jfx-table-small .column-header {
+  -fx-padding: 6px 8px;
+}
+.table-view.jfx-table-small .table-row-cell {
+  -fx-min-height: 36px;
+}
+.table-view.jfx-table-small .table-cell {
+  -fx-padding: 6px 8px;
+  -fx-font-size: 13px;
+}
+
+/* MIDDLE：默认（无需重写，使用上方的 .column-header / .table-cell 默认值）
+   .jfx-table-middle 仅用于 styleClass 标识，便于用户后续 grep 调试 */
+
+/* LARGE：宽松模式。表头 56 / 行高 56 / padding 14×16 / 字号 15 */
+.table-view.jfx-table-large .column-header-background {
+  -fx-pref-height: 56px;
+}
+.table-view.jfx-table-large .column-header {
+  -fx-padding: 14px 16px;
+}
+.table-view.jfx-table-large .table-row-cell {
+  -fx-min-height: 56px;
+}
+.table-view.jfx-table-large .table-cell {
+  -fx-padding: 14px 16px;
+  -fx-font-size: 15px;
+}
+
+/* 老 .jfx-table-compact 兼容（等价 SMALL）。
+   保留是为了万一有用户手动挂 styleClass，但 Java API 走 size(SMALL) 会自动加 jfx-table-small。 */
+.table-view.jfx-table-compact .table-row-cell {
+  -fx-min-height: 36px;
+}
+
+/* Striped rows —— styleClass 由 TableAnt 挂 jfx-table-striped（不是 striped），M19.40 修对齐 */
+.table-view.jfx-table-striped .table-row-cell:odd {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.table-view.jfx-table-striped .table-row-cell:even {
+  -fx-background-color: -color-bg-default;
+}
+
+/* Bordered table（兼容老 .bordered API；新代码请用 Border.BOTH） */
+.table-view.bordered .table-cell {
+  -fx-border-color: transparent -color-border-muted -color-border-muted transparent;
+  -fx-border-width: 0 1px 1px 0;
+}
+
+/* M11.x 内容区分割线 4 种模式 ============================================ */
+
+/* NONE：完全无分割线（行底线也去掉） */
+.table-view.jfx-table-border-none .table-row-cell {
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+.table-view.jfx-table-border-none .table-cell {
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+
+/* HORIZONTAL：仅行底横线（默认） */
+.table-view.jfx-table-border-h .table-row-cell {
+  -fx-border-color: transparent transparent -color-border-subtle transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+.table-view.jfx-table-border-h .table-cell {
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+
+/* VERTICAL：仅列竖线（行底无线） */
+.table-view.jfx-table-border-v .table-row-cell {
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+.table-view.jfx-table-border-v .table-cell {
+  -fx-border-color: transparent -color-border-subtle transparent transparent;
+  -fx-border-width: 0 1px 0 0;
+}
+
+/* BOTH：横竖都有（Excel 风格） */
+.table-view.jfx-table-border-both .table-row-cell {
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+.table-view.jfx-table-border-both .table-cell {
+  -fx-border-color: transparent -color-border-muted transparent transparent;
+  -fx-border-width: 0 1px 0 0;
+}
+
+/* 隐藏表头：showHeader(false) ============================================ */
+.table-view.jfx-table-no-header .column-header-background {
+  -fx-pref-height: 0;
+  -fx-min-height: 0;
+  -fx-max-height: 0;
+}
+
+.table-view.jfx-table-no-header .column-header,
+.table-view.jfx-table-no-header .filler {
+  -fx-pref-height: 0;
+  -fx-min-height: 0;
+  -fx-max-height: 0;
+  -fx-padding: 0;
+  -fx-border-width: 0;
+}
+

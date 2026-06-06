@@ -5,126 +5,169 @@ import javafx.scene.control.TextArea;
 import java.util.function.Consumer;
 
 /**
- * JFXium TextArea Component
- * Inspired by Ant Design Input.TextArea
+ * JFXium TextArea 组件 - 对标 Ant Design Input.TextArea（继承式，M19.50 重构）。
  *
- * Usage:
+ * <p><b>定位</b>：多行文本输入控件，继承自 {@link TextArea}，
+ * 跟 {@link InputAnt} / {@link org.openkawu.jfxium.component.layout.VBoxAnt VBoxAnt}
+ * 同款「双工厂模式」。</p>
+ *
+ * <h2>用法</h2>
+ *
+ * <h3>1. 工厂链式（build 可选）</h3>
  * <pre>{@code
- * TextArea textArea = TextAreaAnt.create()
- *     .placeholder("Enter description...")
+ * TextArea ta = TextAreaAnt.create()
+ *     .placeholder("请输入描述")
  *     .rows(4)
- *     .onChange((oldVal, newVal) -> System.out.println("Changed: " + newVal))
+ *     .onChange(text -> System.out.println(text))
  *     .build();
  *
- * // 只读文本（用于显示错误信息）
- * TextArea readOnly = TextAreaAnt.readOnly("Error message here...")
- *     .build();
+ * // build 后再改状态（继承式核心优势）
+ * ta.disabled(true).rows(6);
  * }</pre>
+ *
+ * <h3>2. 业务继承</h3>
+ * <pre>{@code
+ * public class DescriptionArea extends TextAreaAnt {
+ *     public DescriptionArea() {
+ *         placeholder("请输入描述...");
+ *         rows(4);
+ *     }
+ * }
+ * }</pre>
+ *
+ * <h2>设计契约</h2>
+ * <ul>
+ *   <li><b>双重身份</b>：是 {@link TextArea} 也是工厂——可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时仍保留链式</li>
+ *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
+ * </ul>
  */
-public class TextAreaAnt {
+public class TextAreaAnt extends TextArea {
 
-    public static Builder create() {
-        return new Builder();
+    // ============================================================
+    // 工厂入口
+    // ============================================================
+
+    /** 工厂入口（空文本域）。 */
+    public static TextAreaAnt create() {
+        return new TextAreaAnt();
     }
 
-    public static class Builder {
-        private String placeholder = "";
-        private String text = "";
-        private int rows = 3;
-        private boolean wrapText = true;
-        private boolean disabled = false;
-        private boolean editable = true;
-        private boolean showCharCount = false;
-        private Consumer<String> onChange;
-        private String style = "";
-
-        private Builder() {}
-
-        public Builder placeholder(String placeholder) {
-            this.placeholder = placeholder;
-            return this;
-        }
-
-        public Builder text(String text) {
-            this.text = text;
-            return this;
-        }
-
-        public Builder rows(int rows) {
-            this.rows = rows;
-            return this;
-        }
-
-        public Builder wrapText(boolean wrapText) {
-            this.wrapText = wrapText;
-            return this;
-        }
-
-        public Builder disabled(boolean disabled) {
-            this.disabled = disabled;
-            return this;
-        }
-
-        public Builder editable(boolean editable) {
-            this.editable = editable;
-            return this;
-        }
-
-        public Builder showCharCount(boolean show) {
-            this.showCharCount = show;
-            return this;
-        }
-
-        public Builder onChange(Consumer<String> handler) {
-            this.onChange = handler;
-            return this;
-        }
-
-        public Builder style(String style) {
-            this.style = style;
-            return this;
-        }
-
-        public TextArea build() {
-            TextArea textArea = new TextArea(text);
-            textArea.setPromptText(placeholder);
-            textArea.setWrapText(wrapText);
-            textArea.setDisable(disabled);
-            textArea.setEditable(editable);
-            textArea.setPrefRowCount(rows);
-
-            if (onChange != null) {
-                textArea.textProperty().addListener((obs, oldVal, newVal) -> {
-                    onChange.accept(newVal);
-                });
-            }
-
-            textArea.getStyleClass().add("jfx-text-area");
-
-            if (!style.isEmpty()) {
-                textArea.setStyle(style);
-            }
-
-            return textArea;
-        }
+    /** 工厂入口（带初始文本）。 */
+    public static TextAreaAnt create(String text) {
+        return new TextAreaAnt(text);
     }
 
+    // ============================================================
+    // 构造函数（公开，便于业务 extends）
+    // ============================================================
+
+    public TextAreaAnt() {
+        super();
+        init();
+    }
+
+    public TextAreaAnt(String text) {
+        super(text);
+        init();
+    }
+
+    private void init() {
+        setWrapText(true);
+        getStyleClass().add("jfx-text-area");
+    }
+
+    // ============================================================
+    // 流式 API
+    // ============================================================
+
+    /** 设置占位提示文本。 */
+    public TextAreaAnt placeholder(String placeholder) {
+        setPromptText(placeholder != null ? placeholder : "");
+        return this;
+    }
+
+    /** 设置文本（链式包装 setText）。 */
+    public TextAreaAnt text(String text) {
+        setText(text != null ? text : "");
+        return this;
+    }
+
+    /** 设置默认可见行数。 */
+    public TextAreaAnt rows(int rows) {
+        setPrefRowCount(rows);
+        return this;
+    }
+
+    /** 设置是否自动换行。 */
+    public TextAreaAnt wrapText(boolean wrap) {
+        setWrapText(wrap);
+        return this;
+    }
+
+    /** 设置禁用状态。 */
+    public TextAreaAnt disabled(boolean disabled) {
+        setDisable(disabled);
+        return this;
+    }
+
+    /** 设置可编辑状态。 */
+    public TextAreaAnt editable(boolean editable) {
+        setEditable(editable);
+        return this;
+    }
+
+    /** 监听文本变化。 */
+    public TextAreaAnt onChange(Consumer<String> handler) {
+        if (handler != null) {
+            textProperty().addListener((obs, oldVal, newVal) -> handler.accept(newVal));
+        }
+        return this;
+    }
+
+    // ============================================================
+    // 视觉钩子
+    // ============================================================
+
+    /** 追加一个 styleClass（幂等）。 */
+    public TextAreaAnt styleClass(String cls) {
+        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
+            getStyleClass().add(cls);
+        }
+        return this;
+    }
+
+    /** 批量挂多个 styleClass。 */
+    public TextAreaAnt styleClass(String... classes) {
+        if (classes != null) {
+            for (String c : classes) styleClass(c);
+        }
+        return this;
+    }
+
+    /** inline style（应急用，优先用 styleClass + LESS）。 */
+    public TextAreaAnt style(String style) {
+        if (style != null) setStyle(style);
+        return this;
+    }
+
+    /** Builder 模式终结调用——返回自身（向后兼容）。 */
+    public TextAreaAnt build() {
+        return this;
+    }
+
+    // ============================================================
+    // 静态便捷方法
+    // ============================================================
+
+    /**
+     * 创建只读文本域（用于显示错误信息等）。
+     * 保留原静态方法以向后兼容。
+     */
     public static TextArea readOnly(String message) {
-        TextArea textArea = new TextArea(message);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setDisable(false);
-        textArea.getStyleClass().addAll("jfx-text-area", "jfx-text-area-read-only");
-        textArea.setStyle(
-            "-fx-background-color: -color-danger-bg;" +
-            "-fx-border-color: -color-danger-border;" +
-            "-fx-text-fill: -color-danger;" +
-            "-fx-font-size: 14px;" +
-            "-fx-padding: 12px;" +
-            "-fx-border-radius: 6px;" +
-            "-fx-background-radius: 6px;" +
-            "-fx-border-width: 1px;"
-        );
-        return textArea;
+        TextAreaAnt ta = new TextAreaAnt(message);
+        ta.setEditable(false);
+        ta.getStyleClass().add("jfx-text-area-read-only");
+        return ta;
     }
 }

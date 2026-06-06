@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
@@ -17,14 +18,33 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * AutoCompleteAnt - 对标 Ant Design AutoComplete。
+ * JFXium 自动完成组件 - 对标 Ant Design AutoComplete。
  *
- * 重构：suggestions 弹层走通用 {@link CssClasses#POPUP_MENU}/{@link CssClasses#POPUP_MENU_ITEM}，
- * hover 由 LESS 控制，不再用 setOnMouseEntered/Exited 拼整段 setStyle 字符串。
+ * <p><b>定位</b>：输入框 + 智能建议下拉，常用于搜索框、城市选择、
+ * 代码补全等场景。支持泛型选项 + 自定义过滤逻辑。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>泛型选项</b>：Builder&lt;T&gt; 支持任意类型选项</li>
+ *   <li><b>过滤</b>：输入时自动过滤建议列表</li>
+ *   <li><b>自定义渲染</b>：labelFunction 控制选项显示文案</li>
+ *   <li><b>回调</b>：onSelect / onChange</li>
+ *   <li><b>视觉</b>：弹层走通用 POPUP_MENU 样式</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * HBox autoComplete = AutoCompleteAnt.<String>create()
+ *     .placeholder("搜索城市...")
+ *     .options(List.of("北京", "上海", "广州", "深圳"))
+ *     .labelFunction(s -> s)
+ *     .onSelect(city -> System.out.println("选中：" + city))
+ *     .build();
+ * }</pre>
  */
 public class AutoCompleteAnt {
 
-    public static class Builder<T> {
+    public static class Builder<T> extends AbstractStyleBuilder<Builder<T>> {
         private String placeholder = "";
         private String value = "";
         private List<T> options = new ArrayList<>();

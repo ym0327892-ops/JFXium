@@ -1,0 +1,84 @@
+/* ============================================
+   TreeTableView Component
+   ============================================ */
+.tree-table-view {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+  -fx-background-radius: @border-radius-lg;
+}
+
+.tree-table-view .column-header {
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: @table-header-padding-y @table-header-padding-x;
+  -fx-font-weight: 600;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+  -fx-alignment: center-left;
+}
+
+.tree-table-view .column-header .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: 600;
+}
+
+.tree-table-row-cell {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent transparent -color-border-subtle transparent;
+  -fx-border-width: 0 0 1px 0;
+  
+}
+
+.tree-table-row-cell:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.tree-table-row-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.tree-table-row-cell:selected {
+  -fx-background-color: -color-cell-bg-selected;
+}
+
+.tree-table-row-cell:selected .tree-table-cell {
+  -fx-text-fill: -color-cell-fg-selected;
+}
+
+/* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，
+   背景在 subtle(accent-0) 基础上加深一档到 muted(accent-2)，
+   给用户"选中后还能继续交互"的反馈 */
+.tree-table-row-cell:selected:hover {
+  -fx-background-color: -color-accent-muted;
+}
+
+.tree-table-cell {
+  -fx-padding: @table-cell-padding-y @table-cell-padding-x;
+  -fx-text-fill: -color-fg-default;
+}
+
+.tree-table-view .tree-disclosure-node .arrow {
+  -fx-background-color: -color-fg-muted;
+  
+}
+
+.tree-table-view .tree-disclosure-node:hover .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* TreeTableView Striped */
+.tree-table-view.striped .tree-table-row-cell:odd {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.tree-table-view.striped .tree-table-row-cell:even {
+  -fx-background-color: -color-bg-default;
+}
+
+/* TreeTableView Bordered */
+.tree-table-view.bordered .tree-table-cell {
+  -fx-border-color: transparent -color-border-muted -color-border-muted transparent;
+  -fx-border-width: 0 1px 1px 0;
+}
+

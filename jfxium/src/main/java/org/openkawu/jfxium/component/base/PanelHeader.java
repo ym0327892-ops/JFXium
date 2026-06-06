@@ -1,16 +1,20 @@
 package org.openkawu.jfxium.component.base;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import org.openkawu.jfxium.core.css.CssClasses;
 
 /**
  * 面板头部基础组件
  * 微型化设计：只负责头部布局（标题 + extra + 关闭按钮）
  * 可组合到 Modal、Drawer 等组件中
- * 
+ *
+ * <p>样式全部走 CSS 类（{@link CssClasses}），支持主题切换覆盖。</p>
+ *
  * 使用示例：
  * <pre>{@code
  * HBox header = PanelHeader.create()
@@ -21,7 +25,7 @@ import javafx.scene.layout.Priority;
  * }</pre>
  */
 public class PanelHeader {
-    
+
     public static Builder create() {
         return new Builder();
     }
@@ -30,7 +34,7 @@ public class PanelHeader {
         private String title = "";
         private Node extra = null;
         private Runnable onClose = null;
-        private String padding = "16px 24px";
+        private Insets padding = new Insets(16, 24, 16, 24);
 
         public Builder title(String title) {
             this.title = title;
@@ -47,21 +51,23 @@ public class PanelHeader {
             return this;
         }
 
-        public Builder padding(String padding) {
-            this.padding = padding;
+        /**
+         * 设置内边距（四边独立）。默认 16px 24px。
+         */
+        public Builder padding(double top, double right, double bottom, double left) {
+            this.padding = new Insets(top, right, bottom, left);
             return this;
         }
 
         public HBox build() {
             HBox header = new HBox(8);
             header.setAlignment(Pos.CENTER_LEFT);
-            header.setStyle("-fx-padding: " + padding + "; " +
-                           "-fx-border-color: transparent transparent -color-border-muted transparent; " +
-                           "-fx-border-width: 0 0 1px 0;");
+            header.getStyleClass().add(CssClasses.PANEL_HEADER);
+            header.setPadding(padding);
 
             // Title - 左侧
             Label titleLabel = new Label(title);
-            titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: -color-fg-default;");
+            titleLabel.getStyleClass().add(CssClasses.PANEL_TITLE);
             HBox.setHgrow(titleLabel, Priority.ALWAYS);
             header.getChildren().add(titleLabel);
 
@@ -73,11 +79,7 @@ public class PanelHeader {
             // Close Button - 右侧
             if (onClose != null) {
                 javafx.scene.control.Button closeBtn = new javafx.scene.control.Button("×");
-                closeBtn.setStyle("-fx-background-color: transparent; " +
-                                 "-fx-text-fill: -color-fg-muted; " +
-                                 "-fx-font-size: 20px; " +
-                                 "-fx-cursor: hand; " +
-                                 "-fx-padding: 0 4px;");
+                closeBtn.getStyleClass().add(CssClasses.PANEL_CLOSE_BTN);
                 closeBtn.setOnAction(e -> onClose.run());
                 header.getChildren().add(closeBtn);
             }

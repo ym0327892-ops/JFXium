@@ -5,10 +5,44 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 
 /**
- * JFXium Tag Component
- * Inspired by Ant Design Tag
+ * JFXium 标签组件 - 对标 Ant Design Tag（组合式，Builder 模式）。
+ *
+ * <p><b>定位</b>：小型语义化标签，用于标记状态、分类、属性等，
+ * 支持多种类型 / 尺寸 / 形状变体。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>类型</b>：DEFAULT / PRIMARY / SUCCESS / WARNING / ERROR / PROCESSING</li>
+ *   <li><b>尺寸</b>：SMALL / DEFAULT / LARGE</li>
+ *   <li><b>形状</b>：DEFAULT / ROUND / SQUARE</li>
+ *   <li><b>边框</b>：bordered 可选</li>
+ *   <li><b>可关闭</b>：closable 带关闭按钮 + onClose 回调</li>
+ *   <li><b>可修改</b>：modify() 方法支持 build 后再改类型 / 尺寸</li>
+ * </ul>
+ *
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>状态标签（已发布 / 草稿 / 已下线）</li>
+ *   <li>属性标签（热门 / 新品 / VIP）</li>
+ *   <li>表格内联标签（操作结果、用户角色）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node tag = TagAnt.create("已发布")
+ *     .type(TagAnt.Type.SUCCESS)
+ *     .size(TagAnt.Size.SMALL)
+ *     .build();
+ *
+ * Node closable = TagAnt.create("可删除")
+ *     .type(TagAnt.Type.ERROR)
+ *     .closable(true)
+ *     .onClose(() -> System.out.println("已关闭"))
+ *     .build();
+ * }</pre>
  */
 public class TagAnt {
 
@@ -54,7 +88,7 @@ public class TagAnt {
         return new ModifyBuilder(tag);
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String text = "";
         private Type type = Type.DEFAULT;
         private Size size = Size.DEFAULT;
@@ -156,7 +190,7 @@ public class TagAnt {
 
             SVGPath x = new SVGPath();
             x.setContent("M6 4.5L4.5 6 6 7.5 7.5 6 6 4.5z");
-            x.setFill(Color.web("#8c959f"));
+            x.getStyleClass().add("tag-close-icon");
             closeBtn.getChildren().add(x);
 
             closeBtn.setOnMouseEntered(e -> closeBtn.setOpacity(0.8));

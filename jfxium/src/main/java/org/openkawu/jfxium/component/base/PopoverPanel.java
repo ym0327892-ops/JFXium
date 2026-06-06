@@ -6,7 +6,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.core.css.CssClasses;
 
+/**
+ * 内部基础组件：气泡卡片面板（标题 + 内容 + 关闭按钮）。
+ *
+ * <p>供 {@link org.openkawu.jfxium.component.overlay.PopoverAnt} 使用，
+ * 在目标元素旁弹出，支持 CLICK / HOVER 触发。</p>
+ */
 public class PopoverPanel {
 
     public static class Builder {
@@ -49,21 +56,13 @@ public class PopoverPanel {
 
         public VBox build() {
             VBox panel = new VBox(0);
-            panel.setStyle(
-                "-fx-background-color: -color-bg-overlay;" +
-                "-fx-background-radius: 8px;" +
-                "-fx-border-radius: 8px;" +
-                "-fx-border-color: -color-border-default;" +
-                "-fx-border-width: 1px;" +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);" +
-                "-fx-min-width: " + minWidth + ";" +
-                "-fx-max-width: " + maxWidth + ";"
-            );
+            panel.getStyleClass().add(CssClasses.POPOVER_PANEL);
+            panel.setStyle("-fx-min-width: " + minWidth + ";-fx-max-width: " + maxWidth + ";");
 
             if (!title.isEmpty()) {
                 VBox titleBox = new VBox(0);
                 titleBox.setAlignment(Pos.CENTER_LEFT);
-                titleBox.setStyle("-fx-padding: 12px 16px; -fx-border-color: transparent transparent -color-border-muted transparent; -fx-border-width: 0 0 1px 0;");
+                titleBox.getStyleClass().add(CssClasses.POPOVER_TITLE_BOX);
 
                 if (closable && onClose != null) {
                     HBox titleRow = new HBox();
@@ -71,7 +70,7 @@ public class PopoverPanel {
                     HBox.setHgrow(titleRow, Priority.ALWAYS);
 
                     Label titleLabel = new Label(title);
-                    titleLabel.setStyle("-fx-text-fill: -color-fg-default; -fx-font-size: 14px; -fx-font-weight: 600;");
+                    titleLabel.getStyleClass().add(CssClasses.POPOVER_TITLE_LABEL);
                     HBox.setHgrow(titleLabel, Priority.ALWAYS);
                     titleRow.getChildren().add(titleLabel);
 
@@ -80,7 +79,7 @@ public class PopoverPanel {
                     titleBox.getChildren().add(titleRow);
                 } else {
                     Label titleLabel = new Label(title);
-                    titleLabel.setStyle("-fx-text-fill: -color-fg-default; -fx-font-size: 14px; -fx-font-weight: 600;");
+                    titleLabel.getStyleClass().add(CssClasses.POPOVER_TITLE_LABEL);
                     titleBox.getChildren().add(titleLabel);
                 }
                 panel.getChildren().add(titleBox);

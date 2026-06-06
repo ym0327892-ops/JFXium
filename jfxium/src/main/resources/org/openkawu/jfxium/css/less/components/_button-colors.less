@@ -1,0 +1,257 @@
+/* ============================================
+   Button Color Variants (Success/Danger/Warning)
+   ============================================ */
+.button.success {
+  -fx-background-color: -color-success-emphasis;
+  -fx-border-color: -color-success-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.success:hover {
+  -fx-background-color: -color-success-4;
+  -fx-border-color: -color-success-4;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.success:armed,
+.button.success:pressed {
+  -fx-background-color: -color-success-active;
+  -fx-border-color: -color-success-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.danger {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-border-color: -color-danger-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.danger:hover {
+  -fx-background-color: -color-danger-4;
+  -fx-border-color: -color-danger-4;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.danger:armed,
+.button.danger:pressed {
+  -fx-background-color: -color-danger-active;
+  -fx-border-color: -color-danger-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.warning {
+  -fx-background-color: -color-warning-emphasis;
+  -fx-border-color: -color-warning-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.warning:hover {
+  -fx-background-color: -color-warning-4;
+  -fx-border-color: -color-warning-4;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.warning:armed,
+.button.warning:pressed {
+  -fx-background-color: -color-warning-active;
+  -fx-border-color: -color-warning-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* Outlined variants */
+.button.outlined.success {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-success-emphasis;
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.button.outlined.success:hover {
+  -fx-background-color: -color-success-hover;
+  -fx-border-color: -color-success-muted;
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.button.outlined.success:armed,
+.button.outlined.success:pressed {
+  -fx-background-color: -color-success-active;
+  -fx-border-color: -color-success-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.outlined.danger {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.button.outlined.danger:hover {
+  -fx-background-color: -color-danger-hover;
+  -fx-border-color: -color-danger-muted;
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.button.outlined.danger:armed,
+.button.outlined.danger:pressed {
+  -fx-background-color: -color-danger-active;
+  -fx-border-color: -color-danger-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.outlined.warning {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.button.outlined.warning:hover {
+  -fx-background-color: -color-warning-hover;
+  -fx-border-color: -color-warning-muted;
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.button.outlined.warning:armed,
+.button.outlined.warning:pressed {
+  -fx-background-color: -color-warning-active;
+  -fx-border-color: -color-warning-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* Text variants */
+.button.text.success {
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.button.text.success:hover {
+  -fx-background-color: -color-success-subtle;
+}
+
+.button.text.danger {
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.button.text.danger:hover {
+  -fx-background-color: -color-danger-subtle;
+}
+
+.button.text.warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.button.text.warning:hover {
+  -fx-background-color: -color-warning-subtle;
+}
+
+/* ============================================
+   Button Ghost variant（M19.28 重构：从 Java inline style 迁出）
+   规则：背景透明 + 描边 1px + 文字色随 type 变化。
+   与 type 修饰类组合使用：.button.ghost / .button.ghost.accent / .button.ghost.danger 等。
+   注意：必须用复合选择器（.button.ghost vs .button.ghost.accent），
+   优先级（特异性）才能压过单 type 的实色规则。
+   ============================================ */
+
+/* default：无 type 时的 ghost——中性边框 + 默认前景色 */
+.button.ghost {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-fg-default;
+  -fx-border-width: 1px;
+  -fx-text-fill: -color-fg-default;
+}
+
+.button.ghost:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.button.ghost:armed,
+.button.ghost:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-accent-active;
+}
+
+/* accent ghost（PRIMARY/ACCENT 共用 .accent 类） */
+.button.ghost.accent {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.button.ghost.accent:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-accent-4;
+  -fx-text-fill: -color-accent-4;
+}
+
+.button.ghost.accent:armed,
+.button.ghost.accent:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-accent-6;
+  -fx-text-fill: -color-accent-6;
+}
+
+/* success ghost */
+.button.ghost.success {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-success-emphasis;
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.button.ghost.success:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-success-muted;
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.button.ghost.success:armed,
+.button.ghost.success:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-success-active;
+  -fx-text-fill: -color-success-active;
+}
+
+/* warning ghost */
+.button.ghost.warning {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.button.ghost.warning:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-warning-muted;
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.button.ghost.warning:armed,
+.button.ghost.warning:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-warning-active;
+  -fx-text-fill: -color-warning-active;
+}
+
+/* danger ghost */
+.button.ghost.danger {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.button.ghost.danger:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-danger-muted;
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.button.ghost.danger:armed,
+.button.ghost.danger:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-danger-active;
+  -fx-text-fill: -color-danger-active;
+}
+
+/* 禁用态：所有 ghost 共用 */
+.button.ghost:disabled {
+  -fx-opacity: 0.6;
+}
+

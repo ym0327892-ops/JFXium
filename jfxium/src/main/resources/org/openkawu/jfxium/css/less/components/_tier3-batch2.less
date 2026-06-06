@@ -1,0 +1,414 @@
+/* ============================================
+   Batch 4 Tier 3/4：ListAnt / MenuAnt / UploadAnt /
+                     StepsAnt / BreadcrumbAnt
+   ============================================ */
+
+/* ListAnt */
+.list {
+  -fx-background-color: -color-bg-default;
+}
+
+.list.list-bordered {
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.list.list-loading {
+  -fx-opacity: 0.6;
+}
+
+.list-header {
+  -fx-font-size: @font-size-lg;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 12 24 12 24;
+}
+
+.list-footer {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+  -fx-padding: 12 24 12 24;
+}
+
+.list-item {
+  -fx-background-color: transparent;
+  -fx-padding: 12 24 12 24;
+}
+
+.list-item.list-item-clickable {
+  -fx-cursor: hand;
+}
+
+.list-item.list-item-clickable:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.list-item-title {
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 500;
+  -fx-text-fill: -color-fg-default;
+}
+
+.list-item-description {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.list-divider {
+  -fx-background-color: -color-border-default;
+  -fx-min-height: 1;
+  -fx-pref-height: 1;
+}
+
+/* MenuAnt */
+.menu {
+  -fx-background-color: -color-bg-default;
+}
+
+/* INLINE 模式：默认竖向，右侧给一条边框线（admin 侧栏典型） */
+.menu.menu-inline {
+  -fx-border-color: transparent -color-border-default transparent transparent;
+  -fx-border-width: 0 1 0 0;
+}
+
+/* HORIZONTAL 模式：横向顶导航，底部给一条边框线 */
+.menu.menu-horizontal {
+  -fx-border-color: transparent transparent -color-border-default transparent;
+  -fx-border-width: 0 0 1 0;
+  -fx-background-color: -color-bg-default;
+}
+
+.menu-item {
+  -fx-background-color: transparent;
+  -fx-cursor: hand;
+}
+
+.menu-item:hover {
+  -fx-background-color: -color-accent-subtle;
+}
+
+/* 选中态：背景 + 文字主题色。INLINE 时再加左侧 3px 主题色竖线，HORIZONTAL 加底部 3px 横线 */
+.menu-inline .menu-item-selected,
+.menu-inline .menu-submenu-header.menu-item-selected {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-emphasis transparent transparent transparent;
+  -fx-border-width: 0 0 0 3;
+}
+
+.menu-inline .menu-item-selected .menu-item-label {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+}
+
+.menu-horizontal .menu-item-selected,
+.menu-horizontal .menu-submenu-header.menu-item-selected {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent -color-accent-emphasis transparent;
+  -fx-border-width: 0 0 3 0;
+}
+
+.menu-horizontal .menu-item-selected .menu-item-label {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+}
+
+/* HORIZONTAL 顶级 item hover 视觉：底部细线，仿 Ant Design horizontal Menu */
+.menu-horizontal .menu-item:hover,
+.menu-horizontal .menu-submenu-header:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent -color-accent-muted transparent;
+  -fx-border-width: 0 0 3 0;
+}
+
+.menu-item-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+}
+
+.menu-submenu-header {
+  -fx-background-color: transparent;
+  -fx-cursor: hand;
+}
+
+.menu-submenu-header:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.menu-submenu-body {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.menu-submenu-arrow {
+  -fx-fill: -color-fg-muted;
+}
+
+.menu-submenu-arrow-box {
+  -fx-padding: 0 0 0 8;
+}
+
+.menu-group-label {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-weight: 600;
+}
+
+.menu-divider {
+  -fx-background-color: -color-border-muted;
+  -fx-min-height: 1;
+  -fx-pref-height: 1;
+  -fx-max-height: 1;
+}
+
+/* M14.3 DARK 主题：深色侧栏（admin 经典暗色风格） */
+.menu.menu-dark {
+  -fx-background-color: #001529;        /* Ant Design 默认侧栏深色 */
+  -fx-border-color: transparent;
+}
+
+.menu-dark .menu-item-label,
+.menu-dark .menu-submenu-header .menu-item-label {
+  -fx-text-fill: rgba(255, 255, 255, 0.85);
+}
+
+.menu-dark .menu-item:hover,
+.menu-dark .menu-submenu-header:hover {
+  -fx-background-color: rgba(255, 255, 255, 0.08);
+}
+
+.menu-dark .menu-item-selected,
+.menu-dark .menu-submenu-header.menu-item-selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: transparent;
+}
+
+.menu-dark .menu-item-selected .menu-item-label,
+.menu-dark .menu-submenu-header.menu-item-selected .menu-item-label {
+  -fx-text-fill: white;
+  -fx-font-weight: 600;
+}
+
+.menu-dark .menu-submenu-body {
+  -fx-background-color: #000c17;        /* 比 menu 更深一档 */
+}
+
+.menu-dark .menu-submenu-arrow {
+  -fx-fill: rgba(255, 255, 255, 0.65);
+}
+
+.menu-dark .menu-group-label {
+  -fx-text-fill: rgba(255, 255, 255, 0.45);
+}
+
+.menu-dark .menu-divider {
+  -fx-background-color: rgba(255, 255, 255, 0.12);
+}
+
+.menu-dark .jfx-icon-path {
+  -fx-background-color: rgba(255, 255, 255, 0.85);
+}
+
+.menu-dark .menu-item-selected .jfx-icon-path {
+  -fx-background-color: white;
+}
+
+/* M14.4 折叠模式（仅 INLINE 有效）：宽度收窄，仅显示图标 */
+.menu.menu-collapsed {
+  -fx-pref-width: 64;
+  -fx-min-width: 64;
+  -fx-max-width: 64;
+}
+
+.menu-collapsed .menu-item,
+.menu-collapsed .menu-submenu-header {
+  -fx-padding: 0;
+}
+
+/* 折叠 + 选中态：左侧主题色竖线（保留 INLINE 视觉）*/
+.menu-collapsed .menu-item-selected,
+.menu-collapsed .menu-submenu-header.menu-item-selected {
+  -fx-border-color: -color-accent-emphasis transparent transparent transparent;
+  -fx-border-width: 0 0 0 3;
+}
+
+/* UploadAnt */
+.upload {
+  -fx-background-color: transparent;
+}
+
+.upload-drag {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-style: dashed;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: 32;
+  -fx-min-height: 180;
+  -fx-cursor: hand;
+}
+
+/* drag 激活态：拖拽进入时切换主题色边框 */
+.upload-drag.upload-drag-active {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 2px;
+}
+
+.upload-drag-icon {
+  -fx-fill: -color-accent-emphasis;
+}
+
+.upload-drag-text {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-lg;
+}
+
+.upload-hint-text {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-sm;
+}
+
+.upload-list {
+  -fx-padding: 8 0 8 0;
+  -fx-background-color: transparent;
+}
+
+.upload-file-item {
+  -fx-padding: 8;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.upload-file-name {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.upload-file-error {
+  -fx-text-fill: -color-danger-emphasis;
+  -fx-font-size: @font-size-sm;
+}
+
+.upload-remove-btn {
+  -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-lg;
+  -fx-cursor: hand;
+}
+
+.upload-remove-btn:hover {
+  -fx-text-fill: -color-fg-default;
+}
+
+/* StepsAnt */
+.steps {
+  -fx-padding: 16 0 16 0;
+}
+
+.steps-vertical {
+  -fx-padding: 16;
+}
+
+.steps-item {
+  -fx-padding: 8 0 8 0;
+}
+
+/* steps 圆圈 + 数字 + 标题 + 描述 + 连线，状态用修饰类切换 */
+.steps-circle {
+  -fx-fill: -color-bg-default;
+  -fx-stroke: -color-border-default;
+  -fx-stroke-width: 1px;
+}
+
+.steps-circle.steps-finished {
+  -fx-fill: -color-accent-emphasis;
+  -fx-stroke: -color-accent-emphasis;
+}
+
+.steps-circle.steps-current {
+  -fx-stroke: -color-accent-emphasis;
+}
+
+.steps-number {
+  -fx-text-fill: -color-fg-subtle;
+  -fx-font-weight: 600;
+}
+
+.steps-number.steps-finished {
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.steps-number.steps-current {
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.steps-title {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: 400;
+}
+
+.steps-title.steps-current {
+  -fx-font-weight: 600;
+}
+
+.steps-title.steps-wait {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.steps-description {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-sm;
+}
+
+.steps-line {
+  -fx-stroke: -color-border-muted;
+  -fx-stroke-width: 1px;
+}
+
+.steps-line.steps-finished {
+  -fx-stroke: -color-accent-emphasis;
+}
+
+/* BreadcrumbAnt */
+.breadcrumb {
+  -fx-padding: 8 0 8 0;
+}
+
+.breadcrumb-item {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 0 4 0 4;
+}
+
+/* 最后一项：高亮显示当前位置 */
+.breadcrumb-item.breadcrumb-last {
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 0;
+}
+
+.breadcrumb-link {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 0 4 0 4;
+  -fx-border-color: transparent;
+}
+
+.breadcrumb-link:hover {
+  -fx-text-fill: -color-fg-default;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.breadcrumb-separator {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 0 4 0 4;
+}
+
+/* SkeletonAnt */
+.skeleton-shimmer {
+  -fx-fill: -color-bg-default;
+}
+

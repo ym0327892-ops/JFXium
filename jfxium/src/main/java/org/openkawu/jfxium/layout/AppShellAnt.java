@@ -306,14 +306,6 @@ public class AppShellAnt {
             Button btn = new Button(collapsedProp.get() ? "›" : "‹");
             btn.getStyleClass().addAll(CssClasses.APP_SHELL_SIDER + "-trigger", "button");
             btn.setMaxWidth(Double.MAX_VALUE);
-            btn.setStyle(
-                    "-fx-background-radius: 0;" +
-                    "-fx-border-color: -color-border-muted transparent transparent transparent;" +
-                    "-fx-border-width: 1 0 0 0;" +
-                    "-fx-padding: 12 8 12 8;" +
-                    "-fx-font-size: 18px;" +
-                    "-fx-cursor: hand;"
-            );
             btn.setOnAction(e -> collapsedProp.set(!collapsedProp.get()));
             // 同步按钮文字与折叠状态
             collapsedProp.addListener((obs, ov, nv) -> btn.setText(nv ? "›" : "‹"));

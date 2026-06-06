@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
@@ -11,10 +12,27 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * JFXium Anchor - 对标 Ant Design Anchor。
+ * JFXium 锚点导航组件 - 对标 Ant Design Anchor（组合式，Builder 模式）。
  *
- * 重构：active/hover 状态全部走 LESS（{@code .anchor-link} + {@code :hover} + {@code .anchor-link-active}），
- * 不再用 {@code label.setStyle().replace()} 这种字符串替换的反模式。
+ * <p><b>定位</b>：页内锚点导航，点击链接滚动到对应区域，
+ * 支持多级嵌套、水平/垂直布局。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li>多级锚点项（支持子层级）</li>
+ *   <li>方向：VERTICAL（默认）/ HORIZONTAL</li>
+ *   <li>选中状态高亮（active/hover 走 LESS）</li>
+ *   <li>自定义滚动目标容器</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node anchor = AnchorAnt.create()
+ *     .item("intro", "介绍", "#intro")
+ *     .item("features", "功能", "#features")
+ *     .item("api", "API", "#api")
+ *     .build();
+ * }</pre>
  */
 public class AnchorAnt {
 
@@ -45,7 +63,7 @@ public class AnchorAnt {
         public List<AnchorItem> getChildren() { return children; }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private List<AnchorItem> items = new ArrayList<>();
         private Direction direction = Direction.VERTICAL;
         private int offsetTop = 0;

@@ -98,8 +98,6 @@ public class BarAnt {
         private double gap = 8;
         private Pos alignment = Pos.CENTER_LEFT;
         private javafx.geometry.Insets padding = null;
-        private boolean borderBottom = false;
-        private boolean borderTop = false;
         private double minHeight = -1;
         private double prefHeight = -1;
         private double maxWidth = -1;
@@ -172,28 +170,6 @@ public class BarAnt {
             return this;
         }
 
-        /** 底部分隔线（Card header / Toolbar 常用）。 */
-        public Builder borderBottom(boolean show) {
-            this.borderBottom = show;
-            return this;
-        }
-
-        /** 底部分隔线（无参重载，等价 borderBottom(true)）。 */
-        public Builder borderBottom() {
-            return borderBottom(true);
-        }
-
-        /** 顶部分隔线（Footer 常用）。 */
-        public Builder borderTop(boolean show) {
-            this.borderTop = show;
-            return this;
-        }
-
-        /** 顶部分隔线（无参重载，等价 borderTop(true)）。 */
-        public Builder borderTop() {
-            return borderTop(true);
-        }
-
         /** 最小高度（固定高度 toolbar 场景）。 */
         public Builder minHeight(double height) {
             this.minHeight = height;
@@ -237,20 +213,9 @@ public class BarAnt {
             // 4. 右段
             bar.getChildren().addAll(right);
 
-            // 5. 应用 padding / border / sizing（M19.51 增强）
+            // 5. 应用 padding / sizing
             if (padding != null) {
                 bar.setPadding(padding);
-            }
-            if (borderBottom) {
-                // 底部 1px 分隔线（用 border，不用 effect）
-                bar.setStyle((bar.getStyle() == null ? "" : bar.getStyle())
-                        + "-fx-border-color: transparent transparent -color-border-muted transparent;"
-                        + "-fx-border-width: 0 0 1px 0;");
-            }
-            if (borderTop) {
-                bar.setStyle((bar.getStyle() == null ? "" : bar.getStyle())
-                        + "-fx-border-color: -color-border-muted transparent transparent transparent;"
-                        + "-fx-border-width: 1px 0 0 0;");
             }
             if (minHeight >= 0) {
                 bar.setMinHeight(minHeight);

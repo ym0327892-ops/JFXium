@@ -1,0 +1,100 @@
+/* ============================================
+   Size Variants (Small / Large)
+   ============================================ */
+
+/* Button sizes */
+.button.small {
+  -fx-padding: @spacing-xs @spacing-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.button.large {
+  -fx-padding: @spacing-sm @spacing-lg;
+  -fx-font-size: @font-size-md;
+}
+
+/* Input/TextField sizes */
+.text-field.small,
+.text-area.small,
+.password-field.small {
+  -fx-padding: @spacing-xs @input-padding-x;
+  -fx-font-size: @font-size-sm;
+}
+
+.text-field.large,
+.text-area.large,
+.password-field.large {
+  -fx-padding: @spacing-sm @input-padding-x;
+  -fx-font-size: @font-size-md;
+}
+
+/* ComboBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
+.combo-box.small {
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.combo-box.large {
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* ChoiceBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
+.choice-box.small {
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.choice-box.large {
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* DatePicker sizes — 与 input-base 家族其他成员一致（M19.5 新增） */
+.date-picker.small {
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.date-picker.large {
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* ColorPicker sizes — 与 input-base 家族其他成员一致（M19.5 新增） */
+.color-picker.small {
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.color-picker.large {
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+
+/* Tag sizes */
+.tag.small {
+  -fx-padding: 0 @spacing-xs;
+  -fx-font-size: @font-size-xs;
+}
+
+.tag.large {
+  -fx-padding: @spacing-xs @spacing-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.tag-close-icon {
+  -fx-fill: -color-fg-muted;
+}
+
+/* Badge sizes */
+.badge.small {
+  -fx-padding: 0 4px;
+  -fx-font-size: 10px;
+}
+
+.badge.large {
+  -fx-padding: 2px 10px;
+  -fx-font-size: @font-size-sm;
+}
+

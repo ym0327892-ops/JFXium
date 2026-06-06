@@ -8,16 +8,36 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JFXium Timeline - 对标 Ant Design Timeline。
+ * JFXium 时间线组件 - 对标 Ant Design Timeline。
  *
- * 重构：所有 inline {@code setStyle}（item padding / label / content / line / dot 颜色）
- * 改为挂 LESS styleClass。dot 颜色通过 {@code timeline-dot-blue/red/green/gray/pending} 修饰类切换。
+ * <p><b>定位</b>：垂直时间线展示事件序列，常用于操作日志、订单流程、
+ * 版本历史等场景。支持多种颜色圆点和布局模式。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>模式</b>：LEFT（默认）/ RIGHT / ALTERNATE（左右交替）</li>
+ *   <li><b>圆点颜色</b>：BLUE / RED / GREEN / GRAY（通过 CSS 修饰类切换）</li>
+ *   <li><b>自定义圆点</b>：dot(Node) 可放入任意自定义节点</li>
+ *   <li><b>标签</b>：label(text) 右侧时间标签</li>
+ *   <li><b>内容</b>：支持字符串或自定义 Node</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * VBox timeline = TimelineAnt.create()
+ *     .item("创建订单", "2024-01-01 10:00", TimelineAnt.DotColor.BLUE)
+ *     .item("支付成功", "2024-01-01 10:05", TimelineAnt.DotColor.GREEN)
+ *     .item("已发货", "2024-01-02 14:00", TimelineAnt.DotColor.BLUE)
+ *     .item("待签收", "", TimelineAnt.DotColor.GRAY)
+ *     .build();
+ * }</pre>
  */
 public class TimelineAnt {
 
@@ -43,7 +63,7 @@ public class TimelineAnt {
         }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private List<TimelineItem> items = new ArrayList<>();
         private Mode mode = Mode.LEFT;
         private boolean pending = false;

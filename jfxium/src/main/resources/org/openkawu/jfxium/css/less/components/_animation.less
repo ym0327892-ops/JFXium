@@ -1,0 +1,47 @@
+/* ============================================
+   Animation Utilities
+   ============================================ */
+
+/* Fade in animation */
+.fade-in {
+  -fx-opacity: 0;
+}
+
+.fade-in.visible {
+  -fx-opacity: 1;
+}
+
+/* Slide up animation */
+.slide-up {
+  -fx-translate-y: 20px;
+  -fx-opacity: 0;
+}
+
+.slide-up.visible {
+  -fx-translate-y: 0;
+  -fx-opacity: 1;
+}
+
+/* Scale animation */
+.scale-in {
+  -fx-scale-x: 0.9;
+  -fx-scale-y: 0.9;
+  -fx-opacity: 0;
+}
+
+.scale-in.visible {
+  -fx-scale-x: 1;
+  -fx-scale-y: 1;
+  -fx-opacity: 1;
+}
+
+/* Shake animation for error states */
+.shake {
+  -fx-translate-x: 0;
+}
+
+.shake.error {
+  -fx-translate-x: -5px;
+}
+
+

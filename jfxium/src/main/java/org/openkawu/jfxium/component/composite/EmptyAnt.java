@@ -11,16 +11,25 @@ import org.openkawu.jfxium.core.css.CssClasses;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 /**
- * JFXium Empty Component - 对标 Ant Design Empty。
+ * JFXium 空状态组件 - 对标 Ant Design Empty（组合式，Builder 模式）。
  *
- * <h2>修复说明</h2>
- * 原实现 4 处 inline {@code setStyle}：
+ * <p><b>定位</b>：空数据占位提示，用于列表 / 表格 / 搜索无结果时展示友好提示。</p>
+ *
+ * <h2>功能特性</h2>
  * <ul>
- *   <li>{@code empty.setStyle("-fx-padding: 48px;")}</li>
- *   <li>{@code icon.setStyle("-fx-fill: -color-fg-subtle;")}</li>
- *   <li>{@code descLabel.setStyle("-fx-text-fill: -color-fg-muted; -fx-font-size: 14px;")}</li>
+ *   <li>自定义描述文本（默认用 i18n {@code empty.description}）</li>
+ *   <li>自定义图标 / 图片（image）</li>
+ *   <li>额外操作区（extra，如“新建”按钮）</li>
+ *   <li>所有视觉样式走 LESS（{@code .jfx-empty} 系列）</li>
  * </ul>
- * 全部搬到 LESS 的 {@code .jfx-empty}/{@code .jfx-empty-icon}/{@code .jfx-empty-description} 选择器。
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node empty = EmptyAnt.create()
+ *     .description("暂无数据")
+ *     .extra(ButtonAnt.create("新增记录").type(ButtonAnt.Type.PRIMARY).build())
+ *     .build();
+ * }</pre>
  */
 public class EmptyAnt {
 

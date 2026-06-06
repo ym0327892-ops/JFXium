@@ -1,0 +1,69 @@
+/* ============================================
+   Slider Component
+   ============================================ */
+
+/* JavaFX Slider 内置属性：让"已选中轨道"颜色随主题切换。
+   原 SliderAnt.getSliderStyle 在 Java 端 setStyle 拼这两个值，现搬到 LESS。 */
+.slider {
+  -fx-control-inner-background: -color-border-muted;
+  -fx-control-inner-background-alt: -color-border-muted;
+  -fx-accent: -color-accent-emphasis;
+}
+
+.slider .track {
+  -fx-background-color: -color-border-default;
+  /* M19.43.2 #6 真正根因：track 用 @border-radius-full(9999px) 会把 track 的视觉边界
+     向左右各撑出 ~9999px（SliderSkin 不裁切 track 圆角），形成「一根线横穿整个窗口」的
+     假溢出（探针实测 track 宽达 20000px）。track 只有 4px 高，4px 圆角即可完全圆头。
+     对齐 AtlantaFX：track-radius = 普通 border-radius，不用 full。 */
+  -fx-background-radius: @border-radius-md;
+  -fx-pref-height: 4px;
+}
+
+.slider .thumb {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 2px;
+  -fx-background-radius: @border-radius-full;
+  -fx-border-radius: @border-radius-full;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 4, 0, 0, 1);
+  -fx-snap-to-pixel: false;
+  /* 显式设尺寸——modena 默认 thumb 偏小，对齐 Ant Design 14px 圆点手柄 */
+  -fx-min-width: 14px;
+  -fx-min-height: 14px;
+  -fx-pref-width: 14px;
+  -fx-pref-height: 14px;
+  -fx-max-width: 14px;
+  -fx-max-height: 14px;
+}
+
+.slider .thumb:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-cursor: hand;
+}
+
+.slider .thumb:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.slider .slider:focused .thumb {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.slider:focused {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+.slider .colored-track {
+  -fx-background-color: -color-accent-emphasis;
+  /* 同 .track：避免 9999px 圆角撑爆视觉边界 */
+  -fx-background-radius: @border-radius-md;
+}
+
+.slider .axis {
+  -fx-tick-label-fill: -color-fg-muted;
+  -fx-tick-length: 4px;
+}
+

@@ -1,0 +1,42 @@
+/* ============================================
+   Input Component
+   ============================================ */
+.text-field {
+  .input-base();
+  
+}
+
+.text-field:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.text-field:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+/* ============================================
+   TextArea Component
+   ============================================ */
+.text-area {
+  .input-base();
+}
+
+.text-area:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.text-area:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.text-area .content {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: @border-radius-md;
+}
+
+.text-area:disabled {
+  -fx-opacity: 0.6;
+}
+

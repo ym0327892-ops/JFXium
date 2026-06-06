@@ -1,0 +1,31 @@
+/* ============================================
+   Tree Cell Enhancements
+   ============================================ */
+.tree-cell {
+  -fx-padding: @tree-cell-padding-y @tree-cell-padding-x;
+  -fx-text-fill: -color-fg-default;
+  -fx-background-color: transparent;
+  
+}
+
+.tree-cell:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.tree-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.tree-cell:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.tree-cell .tree-disclosure-node .arrow {
+  -fx-background-color: -color-fg-muted;
+}
+
+.tree-cell:expanded .tree-disclosure-node .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+

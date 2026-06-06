@@ -1,0 +1,113 @@
+/* ============================================
+   ProgressBar Sizes
+   ============================================ */
+.progress-bar.small {
+  -fx-pref-height: 4px;
+}
+
+.progress-bar.large {
+  -fx-pref-height: 12px;
+}
+
+/* ============================================
+   Form Layout Helpers
+   ============================================ */
+.form-label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 500;
+}
+
+.form-label-required::after {
+  -fx-content: " *";
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.form-help-text {
+  -fx-text-fill: -color-fg-subtle;
+  -fx-font-size: @font-size-sm;
+}
+
+/* 校验状态色：通过修饰类切换 helpText 颜色，避免在 Java 端拼 inline style */
+.form-help-text.form-help-error {
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.form-help-text.form-help-warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.form-help-text.form-help-success {
+  -fx-text-fill: -color-success-emphasis;
+}
+
+/* Form footer：padding 通过 LESS 控制，对齐"组件不在 Java 注入样式"原则 */
+.form-footer {
+  -fx-padding: 16 0 0 0;
+}
+
+/* Form header 区（M19.39）：顶部 banner 区，底部加分隔线与表单体拉开 */
+.form-header {
+  -fx-padding: 0 0 @spacing-md 0;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+/* Form section 分段标题（M19.39）：长表单分组标题，上方留间距与前一组拉开 */
+.form-section-title {
+  -fx-font-size: @font-size-lg;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: @spacing-lg 0 @spacing-sm 0;
+}
+
+/* Form 尺寸调节：仅控制字号与控件最小高度，间距由 Java 侧 VBox.spacing 负责 */
+.form-size-small {
+  -fx-font-size: @font-size-sm;
+}
+
+.form-size-large {
+  -fx-font-size: @font-size-lg;
+}
+
+/* ============================================
+   Layout Primitive 命名空间挂载点
+   FlexAnt / GridAnt / SpaceAnt / DividerAnt 的 styleClass。
+   当前仅作为外部主题/扩展的样式锚点，本基础主题不为它们注入特殊样式，
+   保持"布局原语保持原生 JavaFX 行为"的原则。
+   ============================================ */
+.flex,
+.flex-horizontal,
+.flex-vertical,
+.flex-wrap {
+  -fx-background-color: transparent;
+}
+
+.grid,
+.grid-row,
+.grid-col {
+  -fx-background-color: transparent;
+}
+
+.space,
+.space-horizontal,
+.space-vertical {
+  -fx-background-color: transparent;
+}
+
+/* DividerAnt 文本与线条样式 */
+.divider {
+  -fx-background-color: transparent;
+}
+
+.divider-text {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-padding: 0 12 0 12;
+}
+
+.divider-line {
+  /* 让带文本的 Divider 中线段保持与单独 Separator 一致的视觉粗细 */
+  -fx-pref-height: 1px;
+}
+

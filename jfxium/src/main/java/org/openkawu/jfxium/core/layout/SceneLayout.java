@@ -4,6 +4,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.CssClasses;
 
 /**
  * Scene 根布局管理器。
@@ -110,7 +112,7 @@ public class SceneLayout {
     /**
      * SceneLayout Builder。
      */
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private Node appBar;
         private Node content;
         private Node footer;

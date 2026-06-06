@@ -1,0 +1,308 @@
+/* ============================================
+   Batch 2 Tier 2/3：TypographyAnt / CollapseAnt / TreeSelectAnt /
+                     SegmentedAnt / InputNumberAnt / CarouselAnt
+   ============================================ */
+
+/* TypographyAnt */
+.typography-title {
+  -fx-text-fill: -color-fg-default;
+}
+
+.typography-paragraph {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.typography-text {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+/* Type 修饰类（Primary 已是默认） */
+.typography-text.typography-secondary { -fx-text-fill: -color-fg-muted; }
+.typography-text.typography-success   { -fx-text-fill: -color-success-emphasis; }
+.typography-text.typography-warning   { -fx-text-fill: -color-warning-emphasis; }
+.typography-text.typography-danger    { -fx-text-fill: -color-danger-emphasis; }
+.typography-text.typography-disabled  { -fx-text-fill: -color-fg-subtle; }
+
+/* 修饰行为：italic / underline / delete / mark / code，
+   通过 styleClass 切换 fontStyle/装饰，避免 inline 拼字符串 */
+.typography-text.typography-italic    { -fx-font-style: italic; }
+.typography-text.typography-underline { -fx-underline: true; }
+.typography-text.typography-delete    { -fx-strikethrough: true; }
+.typography-text.typography-copyable  { -fx-cursor: hand; }
+
+.typography-text.typography-mark {
+  -fx-background-color: -color-warning-subtle;
+  -fx-padding: 0 4 0 4;
+}
+
+.typography-text.typography-code {
+  -fx-font-family: "SFMono-Regular", "Consolas", monospace;
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: 2 6 2 6;
+  -fx-background-radius: @border-radius-sm;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-sm;
+}
+
+/* CollapseAnt */
+.collapse {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+}
+
+.collapse-panel {
+  -fx-background-color: transparent;
+}
+
+.collapse-header {
+  -fx-padding: 12 16 12 16;
+  -fx-cursor: hand;
+}
+
+.collapse-header.collapse-disabled {
+  -fx-cursor: default;
+}
+
+.collapse-header-label {
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 500;
+  -fx-text-fill: -color-fg-default;
+}
+
+.collapse-header.collapse-disabled .collapse-header-label {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.collapse-arrow {
+  -fx-stroke: -color-fg-muted;
+  -fx-stroke-width: 2;
+  -fx-fill: none;
+}
+
+.collapse-content {
+  -fx-background-color: -color-bg-default;
+  -fx-padding: 0 16 16 40;
+}
+
+.collapse-divider {
+  -fx-background-color: -color-border-default;
+  -fx-min-height: 1;
+  -fx-pref-height: 1;
+}
+
+/* TreeSelectAnt */
+.tree-select {
+  -fx-background-color: transparent;
+}
+
+.tree-select:disabled {
+  -fx-opacity: 0.6;
+}
+
+.tree-select-field {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 8 32 8 12;
+}
+
+.tree-select-row {
+  -fx-cursor: hand;
+  -fx-background-color: transparent;
+  -fx-padding: 6 12 6 12;
+}
+
+.tree-select-row:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.tree-select-row.tree-select-disabled {
+  -fx-cursor: default;
+}
+
+.tree-select-arrow {
+  -fx-font-size: 8px;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.tree-select-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+}
+
+.tree-select-row.tree-select-disabled .tree-select-label {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+/* 多选模式：选中行高亮（BUG #53，对齐 Ant Design TreeSelect 选中项浅蓝底 + 主色文字） */
+.tree-select-row.tree-select-selected {
+  -fx-background-color: -color-accent-subtle;
+}
+
+.tree-select-row.tree-select-selected .tree-select-label {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+}
+
+/* SegmentedAnt */
+.segmented {
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: 2;
+  -fx-background-radius: @border-radius-md;
+}
+
+.segmented.segmented-disabled {
+  -fx-opacity: 0.6;
+}
+
+.segmented-item {
+  -fx-background-color: transparent;
+  -fx-background-radius: @border-radius-sm;
+  -fx-cursor: hand;
+}
+
+.segmented-item:hover {
+  -fx-background-color: -color-bg-overlay;
+}
+
+.segmented-item.segmented-item-selected {
+  -fx-background-color: -color-bg-default;
+}
+
+.segmented-item.segmented-item-selected:hover {
+  -fx-background-color: -color-bg-default;
+}
+
+.segmented-item-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.segmented-item.segmented-item-selected .segmented-item-label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: 500;
+}
+
+/* SegmentedAnt 尺寸 */
+.segmented.segmented-small .segmented-item-label  { -fx-font-size: @font-size-sm; }
+.segmented.segmented-large .segmented-item-label  { -fx-font-size: @font-size-lg; }
+
+/* InputNumberAnt */
+.input-number {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.input-number.input-number-disabled {
+  -fx-opacity: 0.6;
+}
+
+.input-number-prefix,
+.input-number-suffix {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.input-number-prefix { -fx-padding: 0 4 0 8; }
+.input-number-suffix { -fx-padding: 0 8 0 4; }
+
+.input-number-field {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 8 4 8 4;
+}
+
+.input-number-btn {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-cursor: hand;
+  -fx-padding: 4;
+}
+
+.input-number-btn:hover,
+.input-number-btn:armed,
+.input-number-btn:pressed {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.input-number-arrow {
+  -fx-stroke: -color-fg-muted;
+  -fx-stroke-width: 1.5;
+  -fx-fill: none;
+}
+
+/* CarouselAnt */
+.carousel {
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: @border-radius-md;
+}
+
+.carousel-content {
+  -fx-background-radius: @border-radius-md;
+}
+
+/* 箭头按钮：Ant 风格圆形浮层（半透明黑底 + 白字 + 阴影 + hover 加深）
+   注意：用 .button.carousel-arrow-btn 复合选择器提优先级，
+   否则会被 .button / .button:hover / .button:armed 等通用规则覆盖 */
+.button.carousel-arrow-btn {
+  -fx-background-color: rgba(0, 0, 0, 0.4);
+  -fx-background-radius: 9999;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-border-radius: 9999;
+  -fx-min-width: 40;
+  -fx-min-height: 40;
+  -fx-pref-width: 40;
+  -fx-pref-height: 40;
+  -fx-max-width: 40;
+  -fx-max-height: 40;
+  -fx-text-fill: white;
+  -fx-font-size: 16;
+  -fx-font-weight: 700;
+  -fx-padding: 0;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 6, 0, 0, 2);
+}
+
+.button.carousel-arrow-btn:hover {
+  -fx-background-color: rgba(0, 0, 0, 0.6);
+  -fx-border-color: transparent;
+  -fx-text-fill: white;
+}
+
+.button.carousel-arrow-btn:armed,
+.button.carousel-arrow-btn:pressed {
+  -fx-background-color: rgba(0, 0, 0, 0.75);
+  -fx-border-color: transparent;
+  -fx-text-fill: white;
+}
+
+/* dots 容器：透明背景，仅做布局；干净浮在 slide 之上不喧宾夺主（Ant Design 风格） */
+.carousel-dots {
+  -fx-padding: 0;
+  -fx-background-color: transparent;
+  -fx-spacing: 8;
+}
+
+/* dot 用 styleClass 切换 fill；尺寸由 Java 端 setRadius 控制 */
+.carousel-dot {
+  -fx-fill: rgba(255, 255, 255, 0.55);
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 4, 0, 0, 1);
+}
+
+.carousel-dot.carousel-dot-active {
+  -fx-fill: white;
+}
+

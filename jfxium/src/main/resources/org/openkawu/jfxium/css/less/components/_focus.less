@@ -1,0 +1,27 @@
+/* ============================================
+   Focus Traversal
+   ============================================ */
+*:focused {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+/* ============================================
+   Focus Visible (Accessibility)
+   ============================================ */
+.button:focused,
+.text-field:focused,
+.text-area:focused,
+.password-field:focused,
+.combo-box:focused,
+.choice-box:focused {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+/* Accessibility focus ring (applied via AccessibilityUtils) */
+.focus-visible {
+  -fx-focus-color: -color-accent-emphasis;
+  -fx-faint-focus-color: -color-accent-subtle;
+}
+

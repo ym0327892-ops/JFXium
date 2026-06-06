@@ -13,6 +13,7 @@ import javafx.stage.Popup;
 import javafx.stage.Window;
 import javafx.util.Duration;
 import org.openkawu.jfxium.component.base.NotificationCard;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,51 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * JFXium 全局通知组件 - 对标 Ant Design Notification。
+ *
+ * <p><b>定位</b>：在窗口四个角落弹出通知卡片（标题 + 描述 + 可选自定义内容），
+ * 支持自动消失或手动关闭。与 MessageAnt（短暂提示）和 AlertAnt（嵌入式常驻）严格区分。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>类型</b>：SUCCESS / ERROR / WARNING / INFO（带对应图标）</li>
+ *   <li><b>位置</b>：TOP_LEFT / TOP_RIGHT（默认）/ BOTTOM_LEFT / BOTTOM_RIGHT</li>
+ *   <li><b>动画</b>：300ms FadeIn + SlideIn，200ms FadeOut</li>
+ *   <li><b>自动消失</b>：duration 秒后自动关闭（默认 4s，0 = 不自动关闭）</li>
+ *   <li><b>自定义内容</b>：content(Node) 可放入任意节点</li>
+ *   <li><b>窗口跟随</b>：窗口拖动/缩放时通知自动跟随重定位</li>
+ *   <li><b>静态快捷方法</b>：success() / error() / warning() / info()</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * // 快捷调用：右上角成功通知
+ * NotificationAnt.success("保存成功", "数据已保存到服务器");
+ *
+ * // Builder 用法：左下角错误通知，不自动消失
+ * NotificationAnt.create()
+ *     .title("连接失败")
+ *     .description("无法连接到数据库，请检查配置")
+ *     .type(NotificationAnt.Type.ERROR)
+ *     .placement(NotificationAnt.Placement.BOTTOM_LEFT)
+ *     .duration(0)  // 不自动消失
+ *     .closable(true)
+ *     .build()
+ *     .show();
+ *
+ * // 带自定义内容节点
+ * NotificationAnt.create()
+ *     .title("系统更新")
+ *     .description("新版本已就绪")
+ *     .content(new Hyperlink("查看更新内容"))
+ *     .build()
+ *     .show();
+ * }</pre>
+ *
+ * @see MessageAnt 全局短暂提示（自动消失，无标题）
+ * @see org.openkawu.jfxium.component.composite.AlertAnt 嵌入式常驻提示
+ */
 public class NotificationAnt {
 
     public enum Type {
@@ -171,7 +217,7 @@ public class NotificationAnt {
         }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String title = "";
         private String description = "";
         private Node content = null;

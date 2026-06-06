@@ -1,0 +1,61 @@
+/* ============================================
+   Spinner (Number/Text Spinner)
+   ============================================ */
+.spinner {
+  .input-base();
+  -fx-padding: 0;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+  -fx-focus-traversable: false;
+}
+
+.spinner:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.spinner .text-field {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-padding: @input-padding-y @input-padding-x;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1px;
+  
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.spinner .increment-arrow-button:armed,
+.spinner .increment-arrow-button:pressed,
+.spinner .decrement-arrow-button:armed,
+.spinner .decrement-arrow-button:pressed {
+  -fx-background-color: -color-accent-active;
+}
+
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+  -fx-background-color: -color-fg-muted;
+}
+
+.spinner .increment-arrow-button:hover .increment-arrow,
+.spinner .decrement-arrow-button:hover .decrement-arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+.spinner .increment-arrow-button:armed .increment-arrow,
+.spinner .increment-arrow-button:pressed .increment-arrow,
+.spinner .decrement-arrow-button:armed .decrement-arrow,
+.spinner .decrement-arrow-button:pressed .decrement-arrow {
+  -fx-background-color: -color-fg-on-emphasis;
+}
+

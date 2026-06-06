@@ -8,10 +8,56 @@ import javafx.scene.text.FontWeight;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 /**
- * JFXium 排版组件 - 对标 Ant Design Typography。
+ * JFXium 排版组件 - 对标 Ant Design Typography（组合式，Builder 模式）。
  *
- * 重构：所有视觉样式（颜色/字号/装饰）走 LESS（{@code typography-*} 系列），
- * Java 端不再 setStyle 拼字符串。Font 由 Java 设置（结构性属性，level → fontSize 动态计算）。
+ * <p><b>定位</b>：富文本排版工厂，提供三种 Builder 入口（{@link TitleBuilder} / {@link ParagraphBuilder} / {@link TextBuilder}），
+ * 用于构建标题、段落、内联文本等富排版节点。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>标题</b>：5 级标题（level 1–5），字号自动计算（38/30/24/20/16）</li>
+ *   <li><b>段落</b>：自动换行 + 省略号（ellipsis）+ 行数限制</li>
+ *   <li><b>内联文本</b>：type 色彩（SECONDARY/SUCCESS/WARNING/DANGER/DISABLED）
+ *       + 装饰（strong/italic/underline/delete/code/mark）+ 可复制（copyable）</li>
+ *   <li>所有视觉样式走 LESS（{@code typography-*} 系列），Java 端不再 setStyle</li>
+ * </ul>
+ *
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>页面主标题 / 副标题</li>
+ *   <li>帮助文本 / 说明段落</li>
+ *   <li>带装饰的内联文本（代码片段、删除线、标记高亮）</li>
+ *   <li>可复制文本（点击复制 API Key / Token）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * // 1 级标题
+ * Label h1 = TypographyAnt.title("系统概览", 1).build();
+ *
+ * // 段落（2 行省略）
+ * Label p = TypographyAnt.paragraph("这是一段很长的描述文本...")
+ *     .ellipsis(true)
+ *     .rows(2)
+ *     .build();
+ *
+ * // 带装饰的内联文本
+ * Label code = TypographyAnt.text("git clone https://...")
+ *     .code()
+ *     .copyable()
+ *     .build();
+ *
+ * Label danger = TypographyAnt.text("危险操作")
+ *     .type(Type.DANGER)
+ *     .strong()
+ *     .build();
+ * }</pre>
+ *
+ * <h2>与 LabelAnt 的区别</h2>
+ * <ul>
+ *   <li>{@code TypographyAnt} —— 富排版（多 Builder、多装饰、copyable），{@code build()} 返回原生 Label</li>
+ *   <li>{@code LabelAnt} —— 轻量链式 Label，{@code extends Label}，支持业务继承</li>
+ * </ul>
  */
 public class TypographyAnt {
 

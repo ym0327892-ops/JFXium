@@ -1,0 +1,34 @@
+/* ============================================
+   SliderAnt 辅助元素样式
+   tipLabel / range 数字标签 / range 分隔符 / marksRow / markLabel
+   颜色与字号统一通过 LESS 控制，避免 Java 端拼 inline style
+   ============================================ */
+.jfx-slider-tip {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-slider-range-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-slider-range-separator {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-slider-marks {
+  -fx-padding: 4 0 0 0;
+}
+
+.jfx-slider-mark-label {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-muted;
+}
+
+/* 禁用状态：通过 styleClass 切换，不再 inline 拼 -fx-opacity */
+.jfx-slider.slider-disabled {
+  -fx-opacity: 0.5;
+}
+

@@ -13,20 +13,25 @@ import java.util.function.Consumer;
 /**
  * JFXium 时间选择器组件 - 对标 Ant Design TimePicker。
  *
- * <h2>修复说明</h2>
- * 原实现 5 处 inline {@code setStyle}：
+ * <p><b>定位</b>：时/分/秒选择器，支持 12/24 小时制，常用于日程安排、
+ * 提醒设置、营业时间配置等场景。</p>
+ *
+ * <h2>功能特性</h2>
  * <ul>
- *   <li>2 个分隔符 Label（":"）使用匿名子类 + 实例初始化块拼字号/颜色</li>
- *   <li>spinner 编辑器拼字号/padding/背景/底部边框（实现 Material 风格）</li>
+ *   <li><b>时间格式</b>：支持 HH:mm:ss / HH:mm</li>
+ *   <li><b>默认值</b>：defaultValue(LocalTime)</li>
+ *   <li><b>回调</b>：onChange(LocalTime)</li>
+ *   <li><b>禁用</b>：disabled(true)</li>
+ *   <li><b>视觉</b>：编辑器 + 分隔符走 LESS 样式</li>
  * </ul>
  *
- * <h2>本次改动</h2>
- * <ul>
- *   <li>分隔符 styleClass 化（{@link CssClasses#TIME_PICKER_SEPARATOR}），
- *       使用普通 {@code new Label(":")} 替代匿名子类 + 实例初始化块的反模式</li>
- *   <li>spinner 编辑器样式搬到 LESS 的 {@code .jfx-time-picker-editor}</li>
- *   <li>接入 {@link AbstractStyleBuilder}</li>
- * </ul>
+ * <h2>用法</h2>
+ * <pre>{@code
+ * HBox timePicker = TimePickerAnt.create()
+ *     .defaultValue(LocalTime.of(9, 30))
+ *     .onChange(time -> System.out.println("时间：" + time))
+ *     .build();
+ * }</pre>
  */
 public class TimePickerAnt {
 

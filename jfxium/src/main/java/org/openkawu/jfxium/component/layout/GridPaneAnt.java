@@ -2,6 +2,7 @@ package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import org.openkawu.jfxium.core.css.Background;
@@ -196,6 +197,13 @@ public class GridPaneAnt extends GridPane {
         return this;
     }
 
+    /** 同时设置首选宽高。 */
+    public GridPaneAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
+    /** 同时设置最大宽高。 */
+    public GridPaneAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
+    /** 同时设置最小宽高。 */
+    public GridPaneAnt minSize(double w, double h) { setMinSize(w, h); return this; }
+
     // ============================================================
     // 视觉钩子
     // ============================================================
@@ -223,6 +231,44 @@ public class GridPaneAnt extends GridPane {
         if (style != null) setStyle(style);
         return this;
     }
+
+    // ============================================================
+    // 方向性边框线（分割线）
+    // ============================================================
+
+    /** 顶部分割线。 */
+    public GridPaneAnt borderTop() { styleClass("border-top"); return this; }
+    /** 顶部分割线（开关）。 */
+    public GridPaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
+    /** 底部分割线。 */
+    public GridPaneAnt borderBottom() { styleClass("border-bottom"); return this; }
+    /** 底部分割线（开关）。 */
+    public GridPaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
+    /** 左侧分割线。 */
+    public GridPaneAnt borderLeft() { styleClass("border-left"); return this; }
+    /** 左侧分割线（开关）。 */
+    public GridPaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
+    /** 右侧分割线。 */
+    public GridPaneAnt borderRight() { styleClass("border-right"); return this; }
+    /** 右侧分割线（开关）。 */
+    public GridPaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
+
+    // ============================================================
+    // 高频节点属性
+    // ============================================================
+
+    /** 设置可见性。 */
+    public GridPaneAnt visible(boolean v) { setVisible(v); return this; }
+    /** 设置禁用状态。 */
+    public GridPaneAnt disable(boolean d) { setDisable(d); return this; }
+    /** 设置是否受布局管理。 */
+    public GridPaneAnt managed(boolean m) { setManaged(m); return this; }
+    /** 设置透明度（0.0 ~ 1.0）。 */
+    public GridPaneAnt opacity(double o) { setOpacity(o); return this; }
+    /** 设置鼠标光标。 */
+    public GridPaneAnt cursor(Cursor c) { setCursor(c); return this; }
+    /** 设置节点 ID。 */
+    public GridPaneAnt id(String id) { setId(id); return this; }
 
     /** Builder 模式终结调用，返回自身。详见 {@link VBoxAnt#build()}。 */
     public GridPaneAnt build() {

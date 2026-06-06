@@ -2,158 +2,214 @@ package org.openkawu.jfxium.component.control;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.CheckBox;
-import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.function.Consumer;
 
 /**
- * JFXium CheckBox Component
- * Inspired by Ant Design Checkbox
+ * JFXium CheckBox 组件 - 对标 Ant Design Checkbox（继承式，M19.50 重构）。
  *
- * Usage:
+ * <p><b>定位</b>：多选控件，继承自 {@link CheckBox}，
+ * 跟 {@link org.openkawu.jfxium.component.layout.VBoxAnt VBoxAnt} /
+ * {@link LabelAnt} / {@link InputAnt} 同款「双工厂模式」。</p>
+ *
+ * <h2>用法</h2>
+ *
+ * <h3>1. 工厂链式（build 可选）</h3>
  * <pre>{@code
- * CheckBox checkBox = CheckBoxAnt.create("Remember me")
+ * CheckBox cb = CheckBoxAnt.create("记住我")
  *     .selected(true)
- *     .size(CheckBoxAnt.Size.SMALL)              // M19.6：与 InputAnt/ButtonAnt 一致
- *     .allowIndeterminate(true)                   // M19.6：让用户能在三态间循环
+ *     .size(Size.SMALL)
  *     .onChange(checked -> System.out.println("Checked: " + checked))
  *     .build();
+ *
+ * // build 后再改状态（继承式核心优势）
+ * cb.size(Size.LARGE).disabled(true);
  * }</pre>
+ *
+ * <h3>2. 业务继承</h3>
+ * <pre>{@code
+ * public class AgreeCheckBox extends CheckBoxAnt {
+ *     public AgreeCheckBox() {
+ *         text("我已阅读并同意");
+ *         size(Size.SMALL);
+ *     }
+ * }
+ * }</pre>
+ *
+ * <h2>设计契约</h2>
+ * <ul>
+ *   <li><b>双重身份</b>：是 {@link CheckBox} 也是工厂——可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时仍保留链式</li>
+ *   <li><b>幂等性</b>：{@code size(SMALL)} / {@code shape(CIRCLE)} 重复调用不会重复挂 styleClass</li>
+ *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
+ * </ul>
  */
-public class CheckBoxAnt {
+public class CheckBoxAnt extends CheckBox {
 
-    /** 尺寸枚举，与 ButtonAnt/InputAnt 完全一致（DEFAULT/SMALL/LARGE）。 */
+    /** 尺寸枚举，与 ButtonAnt/InputAnt 一致（DEFAULT/SMALL/LARGE）。 */
     public enum Size {
-        DEFAULT,
-        SMALL,
-        LARGE
+        DEFAULT, SMALL, LARGE
     }
 
     /**
-     * 形状枚举（M19.20）。
+     * 形状枚举。
      * <ul>
      *   <li>{@link #DEFAULT}：方形小圆角（4px，Ant Design 默认）</li>
-     *   <li>{@link #CIRCLE}：圆形（与 RadioButton 同款外形，但仍是 CheckBox 的多选语义）</li>
+     *   <li>{@link #CIRCLE}：圆形</li>
      *   <li>{@link #SQUARE}：直角方形（0 圆角）</li>
      *   <li>{@link #ROUNDED}：大圆角（适合卡片式选择）</li>
      * </ul>
      */
     public enum Shape {
-        DEFAULT,
-        CIRCLE,
-        SQUARE,
-        ROUNDED
+        DEFAULT, CIRCLE, SQUARE, ROUNDED
     }
 
-    public static Builder create(String text) {
-        return new Builder(text);
+    // ============================================================
+    // 工厂入口
+    // ============================================================
+
+    /** 工厂入口（无文本）。 */
+    public static CheckBoxAnt create() {
+        return new CheckBoxAnt();
     }
 
-    public static Builder create() {
-        return new Builder("");
+    /** 工厂入口（带文本）。 */
+    public static CheckBoxAnt create(String text) {
+        return new CheckBoxAnt(text);
     }
 
-    public static class Builder extends AbstractStyleBuilder<Builder> {
-        private final String text;
-        private boolean selected = false;
-        private boolean disabled = false;
-        private boolean indeterminate = false;
-        private boolean allowIndeterminate = false;
-        private Size size = Size.DEFAULT;
-        private Shape shape = Shape.DEFAULT;
-        private Consumer<Boolean> onChange;
-        private BooleanProperty bindProperty = null;
+    // ============================================================
+    // 构造函数（公开，便于业务 extends）
+    // ============================================================
 
-        private Builder(String text) {
-            this.text = text;
+    public CheckBoxAnt() {
+        super();
+        getStyleClass().add("jfx-check-box");
+    }
+
+    public CheckBoxAnt(String text) {
+        super(text);
+        getStyleClass().add("jfx-check-box");
+    }
+
+    // ============================================================
+    // 流式 API
+    // ============================================================
+
+    /** 设置文本（链式包装 setText）。 */
+    public CheckBoxAnt text(String text) {
+        setText(text != null ? text : "");
+        return this;
+    }
+
+    /** 设置选中状态。 */
+    public CheckBoxAnt selected(boolean selected) {
+        setSelected(selected);
+        return this;
+    }
+
+    /** 设置禁用状态。 */
+    public CheckBoxAnt disabled(boolean disabled) {
+        setDisable(disabled);
+        return this;
+    }
+
+    /** 设置不确定状态（"半选"）。 */
+    public CheckBoxAnt indeterminate(boolean indeterminate) {
+        setIndeterminate(indeterminate);
+        return this;
+    }
+
+    /**
+     * 是否允许用户点击在 selected ↔ indeterminate ↔ unselected 三态间循环。
+     * <p>对应 Ant Design Checkbox 的 indeterminate 三态切换语义。</p>
+     */
+    public CheckBoxAnt allowIndeterminate(boolean allow) {
+        setAllowIndeterminate(allow);
+        return this;
+    }
+
+    /**
+     * 设置尺寸。幂等——先清旧 size styleClass，再按需挂新。
+     * DEFAULT 仅清不挂（与 ButtonAnt 行为一致）。
+     */
+    public CheckBoxAnt size(Size size) {
+        getStyleClass().removeAll(CssClasses.SIZE_SMALL, CssClasses.SIZE_LARGE);
+        if (size == Size.SMALL) {
+            getStyleClass().add(CssClasses.SIZE_SMALL);
+        } else if (size == Size.LARGE) {
+            getStyleClass().add(CssClasses.SIZE_LARGE);
         }
+        return this;
+    }
 
-        public Builder selected(boolean selected) {
-            this.selected = selected;
-            return this;
-        }
-
-        public Builder disabled(boolean disabled) {
-            this.disabled = disabled;
-            return this;
-        }
-
-        /** 初始勾选不确定状态（"半选"）。 */
-        public Builder indeterminate(boolean indeterminate) {
-            this.indeterminate = indeterminate;
-            return this;
-        }
-
-        /**
-         * 是否允许用户点击在 selected ↔ indeterminate ↔ unselected 三态间循环。
-         * <p>对应 Ant Design Checkbox 的 indeterminate 三态切换语义。</p>
-         */
-        public Builder allowIndeterminate(boolean allow) {
-            this.allowIndeterminate = allow;
-            return this;
-        }
-
-        public Builder size(Size size) {
-            this.size = size;
-            return this;
-        }
-
-        /**
-         * 设置形状（M19.20）。默认 {@link Shape#DEFAULT}（方形小圆角，对齐 Ant Design）。
-         */
-        public Builder shape(Shape shape) {
-            this.shape = shape != null ? shape : Shape.DEFAULT;
-            return this;
-        }
-
-        public Builder onChange(Consumer<Boolean> handler) {
-            this.onChange = handler;
-            return this;
-        }
-
-        /** 双向绑定：控件值 ↔ Property 值实时同步。 */
-        public Builder bindValue(BooleanProperty property) {
-            this.bindProperty = property;
-            return this;
-        }
-
-        public CheckBox build() {
-            CheckBox checkBox = new CheckBox(text);
-            checkBox.setSelected(selected);
-            checkBox.setDisable(disabled);
-            checkBox.setIndeterminate(indeterminate);
-            checkBox.setAllowIndeterminate(allowIndeterminate);
-
-            // 双向绑定（在初始值设置之后）
-            if (bindProperty != null) {
-                checkBox.selectedProperty().bindBidirectional(bindProperty);
-            }
-
-            if (onChange != null) {
-                checkBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-                    onChange.accept(newVal);
-                });
-            }
-
-            // Size styleClass（复用通用常量，与 ButtonAnt/InputAnt 一致）
-            if (size == Size.SMALL) {
-                checkBox.getStyleClass().add(CssClasses.SIZE_SMALL);
-            } else if (size == Size.LARGE) {
-                checkBox.getStyleClass().add(CssClasses.SIZE_LARGE);
-            }
-
-            // Shape styleClass（M19.20）
+    /**
+     * 设置形状。幂等——先清旧 shape styleClass，再按需挂新。
+     * DEFAULT 仅清不挂。
+     */
+    public CheckBoxAnt shape(Shape shape) {
+        getStyleClass().removeAll("shape-circle", "shape-square", "shape-rounded");
+        if (shape != null) {
             switch (shape) {
-                case CIRCLE  -> checkBox.getStyleClass().add("shape-circle");
-                case SQUARE  -> checkBox.getStyleClass().add("shape-square");
-                case ROUNDED -> checkBox.getStyleClass().add("shape-rounded");
+                case CIRCLE  -> getStyleClass().add("shape-circle");
+                case SQUARE  -> getStyleClass().add("shape-square");
+                case ROUNDED -> getStyleClass().add("shape-rounded");
                 default      -> { /* DEFAULT 不挂额外类 */ }
             }
-
-            checkBox.getStyleClass().add("jfx-check-box");
-            applyStyles(checkBox);
-            return checkBox;
         }
+        return this;
+    }
+
+    /** 选中状态变化回调。 */
+    public CheckBoxAnt onChange(Consumer<Boolean> handler) {
+        if (handler != null) {
+            selectedProperty().addListener((obs, oldVal, newVal) -> handler.accept(newVal));
+        }
+        return this;
+    }
+
+    /** 双向绑定：控件值 ↔ Property 值实时同步。 */
+    public CheckBoxAnt bindValue(BooleanProperty property) {
+        if (property != null) {
+            selectedProperty().bindBidirectional(property);
+        }
+        return this;
+    }
+
+    // ============================================================
+    // 视觉钩子（跟 *Ant 风格一致）
+    // ============================================================
+
+    /** 追加一个 styleClass（幂等——重复调不会重复挂）。 */
+    public CheckBoxAnt styleClass(String cls) {
+        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
+            getStyleClass().add(cls);
+        }
+        return this;
+    }
+
+    /** 批量挂多个 styleClass。 */
+    public CheckBoxAnt styleClass(String... classes) {
+        if (classes != null) {
+            for (String c : classes) styleClass(c);
+        }
+        return this;
+    }
+
+    /** inline style（应急用，优先用 styleClass + LESS）。 */
+    public CheckBoxAnt style(String style) {
+        if (style != null) setStyle(style);
+        return this;
+    }
+
+    /**
+     * Builder 模式终结调用——返回自身。
+     *
+     * <p>CheckBoxAnt 既是工厂也是节点：{@code build()} 跟直接拿 {@code this} 等价，
+     * 提供本方法是为了让 API 跟旧版 Builder 的 {@code .build()} 完全对齐。</p>
+     */
+    public CheckBoxAnt build() {
+        return this;
     }
 }

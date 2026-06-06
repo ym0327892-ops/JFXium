@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
@@ -15,10 +16,44 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * JFXium Dropdown - 对标 Ant Design Dropdown。
+ * JFXium 下拉菜单组件 - 对标 Ant Design Dropdown。
  *
- * 重构：所有 inline {@code setStyle} 改为挂 {@link CssClasses#POPUP_MENU} 系列 styleClass，
- * hover/disabled 由 LESS 伪类控制，不再用 setOnMouseEntered/Exited 注入字符串。
+ * <p><b>定位</b>：点击触发节点弹出菜单列表，支持图标、禁用、分隔线。
+ * 与 SelectAnt（表单选择器）和 ContextMenuAnt（右键菜单）严格区分。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>菜单项</b>：支持 key/label/icon/disabled 完整配置</li>
+ *   <li><b>分隔线</b>：divider() 插入分组分隔线</li>
+ *   <li><b>回调</b>：onSelect(key) + onSelectItem(MenuItem) 双回调（BUG #54）</li>
+ *   <li><b>位置</b>：bottomLeft（默认）/ bottomRight / topLeft / topRight</li>
+ *   <li><b>禁用</b>：disabled(true) 禁用整个下拉</li>
+ *   <li><b>视觉</b>：走 CssClasses.POPUP_MENU 系列，hover/disabled 由 LESS 伪类控制</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * // 基础用法：按钮触发下拉
+ * ButtonAnt trigger = ButtonAnt.create("操作").build();
+ * DropdownAnt.create()
+ *     .trigger(trigger)
+ *     .item("edit", "编辑")
+ *     .item("copy", "复制")
+ *     .divider()
+ *     .item("delete", "删除", true)  // disabled
+ *     .onSelect(key -> handleAction(key))
+ *     .build();
+ *
+ * // 带图标 + onSelectItem 回调
+ * DropdownAnt.create()
+ *     .trigger(iconButton)
+ *     .item("export", "导出", exportIcon)
+ *     .item("print", "打印", printIcon)
+ *     .onSelectItem(item -> System.out.println("选中：" + item.getLabel()))
+ *     .build();
+ * }</pre>
+ *
+ * @see PopconfirmAnt 气泡确认框（带确认/取消）
  */
 public class DropdownAnt {
 
@@ -60,7 +95,7 @@ public class DropdownAnt {
         public boolean isDivider() { return divider; }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private Node trigger;
         private List<MenuItem> items = new ArrayList<>();
         private Consumer<String> onSelect = null;

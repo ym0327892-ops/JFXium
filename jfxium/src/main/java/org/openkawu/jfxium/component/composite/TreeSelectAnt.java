@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 import org.openkawu.jfxium.core.i18n.Messages;
 
@@ -16,10 +17,31 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * TreeSelectAnt - 对标 Ant Design TreeSelect。
+ * JFXium 树选择器组件 - 对标 Ant Design TreeSelect。
  *
- * 重构：field / 弹层 / row / arrow / label 全部走 LESS（{@link CssClasses#TREE_SELECT} 系列），
- * hover 由 LESS 控制；删除原来 inline 注入的 SVG-data-URL 下拉箭头（依赖 JavaFX 不一定支持）。
+ * <p><b>定位</b>：下拉树形选择器，支持多级嵌套节点，常用于组织架构选择、
+ * 分类目录选择、地区级联等场景。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>树形节点</b>：TreeNode 支持多级 children 嵌套</li>
+ *   <li><b>可禁用</b>：节点级别 disabled</li>
+ *   <li><b>回传完整对象</b>：onSelect 回调回传 TreeNode，可取 value/label</li>
+ *   <li><b>搜索过滤</b>：支持输入过滤节点</li>
+ *   <li><b>视觉</b>：弹层走 TREE_SELECT 系列 LESS 样式</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * HBox treeSelect = TreeSelectAnt.create()
+ *     .placeholder("选择部门")
+ *     .node(new TreeNode("tech", "技术部", List.of(
+ *         new TreeNode("fe", "前端组", null),
+ *         new TreeNode("be", "后端组", null))))
+ *     .node(new TreeNode("hr", "人力资源部", null))
+ *     .onSelect(node -> System.out.println("选中：" + node.getLabel()))
+ *     .build();
+ * }</pre>
  */
 public class TreeSelectAnt {
 
@@ -51,7 +73,7 @@ public class TreeSelectAnt {
         public boolean hasChildren() { return children != null && !children.isEmpty(); }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         // null = 用 i18n 默认值；非 null = 调用方显式指定
         private String placeholder = null;
         private TreeNode root;

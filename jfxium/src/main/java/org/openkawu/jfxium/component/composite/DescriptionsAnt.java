@@ -7,17 +7,39 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JFXium Descriptions - 对标 Ant Design Descriptions。
+ * JFXium 描述列表组件 - 对标 Ant Design Descriptions。
  *
- * 重构：title / label / content 全部走 LESS（{@code descriptions-*}），
- * size 通过 {@code descriptions-small/middle/large} 修饰类切换字号与 padding，
- * bordered 模式通过 {@code descriptions-bordered} 修饰类启用边框。
+ * <p><b>定位</b>：以列表形式展示多个字段的详情（标签 + 值对），常用于详情页、
+ * 用户资料、订单详情等场景。支持水平/垂直布局、多种尺寸、带边框模式。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>布局</b>：HORIZONTAL（默认）/ VERTICAL（标签在上、值在下）</li>
+ *   <li><b>尺寸</b>：SMALL / DEFAULT / MIDDLE / LARGE</li>
+ *   <li><b>边框</b>：bordered(true) 启用表格风格边框</li>
+ *   <li><b>列数</b>：column(n) 控制每行显示几个字段</li>
+ *   <li><b>标题</b>：title(text) 顶部标题</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * VBox desc = DescriptionsAnt.create()
+ *     .title("用户信息")
+ *     .bordered(true)
+ *     .column(2)
+ *     .item("姓名", "张三")
+ *     .item("邮箱", "zhangsan@example.com")
+ *     .item("角色", "管理员")
+ *     .item("状态", "在线")
+ *     .build();
+ * }</pre>
  */
 public class DescriptionsAnt {
 
@@ -41,7 +63,7 @@ public class DescriptionsAnt {
         }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String title = "";
         private Layout layout = Layout.HORIZONTAL;
         private Size size = Size.DEFAULT;

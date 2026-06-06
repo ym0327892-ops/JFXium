@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.time.LocalDate;
@@ -13,18 +14,35 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 /**
- * JFXium Calendar - 对标 Ant Design Calendar。
+ * JFXium 日历组件 - 对标 Ant Design Calendar（组合式，Builder 模式）。
  *
- * 重构：calendar 容器 / header / nav 按钮 / day header / day cell / month btn 全部走 LESS。
+ * <p><b>定位</b>：完整日历面板，支持月 / 年视图切换、日期选择，
+ * 与 DatePickerAnt（带输入框的日期选择）严格区分。</p>
  *
- * <h2>状态机</h2>
- * 日期 cell 三种状态通过修饰类切换：
+ * <h2>功能特性</h2>
  * <ul>
- *   <li>{@code calendar-cell-today} —— 今天，浅色主题底</li>
- *   <li>{@code calendar-cell-selected} —— 选中，深色主题底 + 反白文字</li>
- *   <li>{@code calendar-cell-other-month} —— 非当前月，模糊文字</li>
+ *   <li><b>视图模式</b>：MONTH（月视图）/ YEAR（年视图）</li>
+ *   <li><b>日期选择</b>：onSelect 回调</li>
+ *   <li><b>面板切换</b>：onPanelChange（月/年切换时触发）</li>
+ *   <li><b>日期状态</b>：今日 / 选中 / 非本月 三态走 LESS 修饰类</li>
+ *   <li>视觉样式走 LESS（{@code .calendar-*} 系列）</li>
  * </ul>
- * hover 由 LESS {@code .calendar-cell:hover} 控制，不再用 setOnMouseEntered/Exited 拼字符串。
+ *
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>仪表盘日历视图</li>
+ *   <li>日程管理页</li>
+ *   <li>日期选择器（嵌入式，非弹出）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node calendar = CalendarAnt.create()
+ *     .value(LocalDate.now())
+ *     .mode(CalendarAnt.Mode.MONTH)
+ *     .onSelect(date -> System.out.println("选中：" + date))
+ *     .build();
+ * }</pre>
  */
 public class CalendarAnt {
 
@@ -32,7 +50,7 @@ public class CalendarAnt {
         MONTH, YEAR
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private LocalDate value = LocalDate.now();
         private LocalDate selectedDate = null;
         private Mode mode = Mode.MONTH;

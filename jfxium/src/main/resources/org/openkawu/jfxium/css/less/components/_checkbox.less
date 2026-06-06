@@ -1,0 +1,63 @@
+/* ============================================
+   CheckBox Component
+   ============================================ */
+/* ============================================
+   CheckBox Component（M19.6.3 修复 — 对齐 AtlantaFX _checkbox.scss）
+   关键：.box padding 控制框尺寸，.mark min/max 控制中间✓尺寸
+   ============================================ */
+.check-box {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-label-padding: 0 0 0 6px;   /* 框与文字间距，对齐 AtlantaFX $graphic-gap: 6px */
+}
+
+.check-box .box {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-padding: 3px 3px 3px 3px;     /* mark(8) + padding(3) = 14×14 方框，与 Radio 圆框等大 */
+  -fx-alignment: CENTER;
+}
+
+.check-box .box .mark {
+  /* mark 是中间的 ✓ —— 显式设 shape 保证勾形不被覆盖丢失 */
+  -fx-shape: "M-0.25,6.083c0.843-0.758,4.583,4.833,5.75,4.833S14.5-1.5,15.917-0.917c1.292,0.532-8.75,17.083-10.5,17.083C3,16.167-1.083,6.833-0.25,6.083z";
+  -fx-min-width: 8px;
+  -fx-max-width: 8px;
+  -fx-min-height: 8px;
+  -fx-max-height: 8px;
+  -fx-background-color: transparent;   /* 未选中时透明（隐藏） */
+}
+
+.check-box .box:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.check-box:hover:selected .box {
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.check-box:selected .box {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.check-box:selected .box .mark {
+  -fx-background-color: -color-fg-on-emphasis;   /* 选中显示白色 ✓ */
+}
+
+.check-box:disabled {
+  -fx-opacity: 0.6;
+}
+
+.check-box:indeterminate .box {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.check-box:indeterminate .box .mark {
+  -fx-background-color: -color-fg-on-emphasis;
+}
+

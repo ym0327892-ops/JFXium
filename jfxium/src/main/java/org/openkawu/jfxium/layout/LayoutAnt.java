@@ -2,6 +2,7 @@ package org.openkawu.jfxium.layout;
 
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 
 /**
  * JFXium 页面布局组件 - 对标 Ant Design Layout
@@ -44,7 +45,7 @@ public class LayoutAnt {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         // 注意：不直接持有 AppShellAnt.Builder，而是把参数累积到本地，
         // 在 build() 时一次性传给 AppShellAnt。这样可以保留本组件特有的默认值（如 siderWidth=200）。
         private Node header;

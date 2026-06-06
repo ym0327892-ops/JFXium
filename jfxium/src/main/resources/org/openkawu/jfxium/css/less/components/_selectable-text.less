@@ -1,0 +1,230 @@
+/* ============================================
+   SelectableTextAnt（M19.7）— 只读可选可复制文本
+   关键：底层是 TextField/TextArea，去掉所有 input chrome（背景/边框/focus 阴影/padding）
+   让它看起来像一个普通 Label，但保留 selection + Ctrl+C 能力
+   注：用 .text-field.jfx-selectable-text / .text-area.jfx-selectable-text 复合选择器
+       提高优先级，确保盖掉 .text-field / .text-area 默认样式（M19.7.2 修）
+   ============================================ */
+.text-field.jfx-selectable-text,
+.text-area.jfx-selectable-text {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 0;
+  -fx-effect: none;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-cursor: text;
+  /* 选区高亮：用更实的浅蓝（accent-1）+ 深色文字，避免选中时文字与半透明高亮叠加发虚（M19.42 修） */
+  -fx-highlight-fill: -color-accent-1;
+  -fx-highlight-text-fill: -color-fg-default;
+}
+
+.text-field.jfx-selectable-text:hover,
+.text-area.jfx-selectable-text:hover {
+  /* hover 不变化，避免视觉抖动 */
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-effect: none;
+}
+
+/* 焦点态默认无视觉变化（M19.7.3 改：focusHalo 默认开但通过 styleClass 控制） */
+.text-field.jfx-selectable-text:focused,
+.text-area.jfx-selectable-text:focused {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-effect: none;
+  -fx-faint-focus-color: transparent;
+  -fx-focus-color: transparent;
+}
+
+/* 焦点光晕开关（M19.7.3）：仅当挂了 .jfx-selectable-text-focus-halo 时
+   在 :focused 态显示蓝边 + 外阴影光晕。让用户明确"已聚焦、可 Ctrl+C" */
+.text-field.jfx-selectable-text.jfx-selectable-text-focus-halo:focused,
+.text-area.jfx-selectable-text.jfx-selectable-text-focus-halo:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 4, 0, 0, 0);
+}
+
+/* TextArea 子结构：去掉内嵌滚动面板的所有装饰 */
+.text-area.jfx-selectable-text > .scroll-pane,
+.text-area.jfx-selectable-text > .scroll-pane > .viewport,
+.text-area.jfx-selectable-text > .scroll-pane .content {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+/* 隐藏 TextArea 内部滚动条（高度自适应模式下不需要） */
+.text-area.jfx-selectable-text > .scroll-pane > .scroll-bar {
+  -fx-opacity: 0;
+  -fx-pref-width: 0;
+  -fx-pref-height: 0;
+  -fx-max-width: 0;
+  -fx-max-height: 0;
+}
+
+/* 带边框模式（M19.7.1）：卡片式只读文本块——长 stack/JSON/配置展示用 */
+.text-field.jfx-selectable-text.jfx-selectable-text-bordered,
+.text-area.jfx-selectable-text.jfx-selectable-text-bordered {
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: @spacing-sm @spacing-md;
+}
+
+.text-field.jfx-selectable-text.jfx-selectable-text-bordered:focused,
+.text-area.jfx-selectable-text.jfx-selectable-text-bordered:focused {
+  /* bordered + focused：边框升级为主题蓝 + 保留浅灰底 */
+  -fx-border-color: -color-accent-emphasis;
+  -fx-background-color: -color-bg-subtle;
+  -fx-effect: none;
+  -fx-faint-focus-color: transparent;
+  -fx-focus-color: transparent;
+}
+
+/* TextArea 子结构在 bordered 模式下需要透明（让外层 padding/边框生效） */
+.text-area.jfx-selectable-text.jfx-selectable-text-bordered > .scroll-pane,
+.text-area.jfx-selectable-text.jfx-selectable-text-bordered > .scroll-pane > .viewport,
+.text-area.jfx-selectable-text.jfx-selectable-text-bordered > .scroll-pane .content {
+  -fx-background-color: transparent;
+}
+
+/* 语义类型：覆盖 text-fill */
+.jfx-selectable-text-secondary {
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-selectable-text-success {
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.jfx-selectable-text-warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.jfx-selectable-text-error {
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.app-shell,
+.layout {
+  -fx-background-color: -color-bg-layout;
+}
+
+.app-shell-header,
+.layout-header {
+  -fx-background-color: -color-bg-container;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+.app-shell-sider,
+.layout-sider {
+  -fx-background-color: -color-bg-container;
+  -fx-border-color: transparent -color-border-muted transparent transparent;
+  -fx-border-width: 0 1px 0 0;
+}
+
+/* M19.22 sider 折叠态钩子（宽度由 Java 端控制，这里仅留 styleClass 占位以便业务自定义） */
+.app-shell-sider-collapsed { /* 折叠时的样式钩子 */ }
+
+/* sider 底部折叠触发按钮（M19.22） */
+.button.app-shell-sider-trigger {
+  -fx-background-color: -color-bg-container;
+  -fx-text-fill: -color-fg-muted;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1 0 0 0;
+  -fx-background-radius: 0;
+  -fx-padding: 12 8 12 8;
+  -fx-font-size: 18px;
+  -fx-cursor: hand;
+}
+
+.button.app-shell-sider-trigger:hover {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+}
+
+.button.app-shell-sider-trigger:armed,
+.button.app-shell-sider-trigger:pressed {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+}
+
+.app-shell-content,
+.layout-content {
+  -fx-background-color: -color-bg-layout;
+}
+
+.app-shell-footer,
+.layout-footer {
+  -fx-background-color: -color-bg-container;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+}
+
+.split-pane-ant {
+  -fx-background-color: -color-bg-layout;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.split-pane-ant > .split-pane-divider {
+  -fx-background-color: -color-border-muted;
+  -fx-padding: @split-divider-padding;
+}
+
+.split-pane-ant > .split-pane-divider:hover {
+  -fx-background-color: -color-border-default;
+}
+
+.resizable-panel {
+  -fx-background-color: -color-bg-container;
+  -fx-background-radius: @border-radius-lg;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+}
+
+.resizable-panel-content {
+  -fx-background-color: transparent;
+}
+
+.resizable-panel-handle {
+  -fx-background-color: transparent;
+}
+
+.resizable-panel-handle:hover {
+  -fx-background-color: -color-accent-subtle;
+}
+
+.resizable-panel-handle.both {
+  -fx-background-color: -color-border-muted;
+  -fx-background-radius: @border-radius-sm 0 @border-radius-lg 0;
+}
+
+.resizable-panel-handle.both:hover {
+  -fx-background-color: -color-accent-muted;
+}
+
+.scroll-container {
+  -fx-background-color: -color-bg-layout;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.scroll-container > .viewport {
+  -fx-background-color: -color-bg-layout;
+}
+
+.scroll-container-viewport {
+  -fx-background-color: -color-bg-layout;
+}
+

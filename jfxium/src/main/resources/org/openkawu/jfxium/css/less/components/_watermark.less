@@ -1,0 +1,71 @@
+/* ============================================
+   WatermarkAnt - 水印组件
+   ============================================ */
+
+/* 水印容器（StackPane 根节点）*/
+.jfx-watermark {
+  -fx-background-color: transparent;
+}
+
+/* 水印层（Pane，用于平铺水印节点）*/
+.jfx-watermark-layer {
+  -fx-background-color: transparent;
+}
+
+/* 文字水印（单行）*/
+.jfx-watermark-text {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-weight: normal;
+}
+
+/* 文字水印组（多行）*/
+.jfx-watermark-text-group {
+  -fx-background-color: transparent;
+}
+
+/* 图片水印 */
+.jfx-watermark-image {
+  -fx-opacity: 1.0;  /* 透明度由 Java 代码控制 */
+}
+
+/* MentionsAnt TextArea */
+.jfx-mentions-area {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 8 12 8 12;
+}
+
+/* StatisticAnt 统计数值 */
+.jfx-statistic-title {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-statistic.statistic-small .jfx-statistic-title { -fx-font-size: @font-size-sm; }
+.jfx-statistic.statistic-large .jfx-statistic-title { -fx-font-size: @font-size-lg; }
+
+.jfx-statistic-value {
+  -fx-font-size: 24px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-statistic.statistic-small .jfx-statistic-value { -fx-font-size: 20px; }
+.jfx-statistic.statistic-large .jfx-statistic-value { -fx-font-size: 36px; }
+
+.jfx-statistic-prefix,
+.jfx-statistic-suffix {
+  -fx-font-size: 20px;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-statistic.statistic-small .jfx-statistic-prefix,
+.jfx-statistic.statistic-small .jfx-statistic-suffix { -fx-font-size: 16px; }
+
+.jfx-statistic.statistic-large .jfx-statistic-prefix,
+.jfx-statistic.statistic-large .jfx-statistic-suffix { -fx-font-size: 32px; }
+

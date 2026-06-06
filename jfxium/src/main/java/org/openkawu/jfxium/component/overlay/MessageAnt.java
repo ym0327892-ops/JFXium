@@ -8,10 +8,39 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 import org.openkawu.jfxium.component.base.MessageCard;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * JFXium 全局消息提示组件 - 对标 Ant Design Message（组合式，静态方法调用）。
+ *
+ * <p><b>定位</b>：全局顶部 / 底部 / 中心短暂提示，自动消失，
+ * 与 AlertAnt（嵌入式常驻）和 NotificationAnt（右下角通知）严格区分。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>类型</b>：SUCCESS / ERROR / WARNING / INFO / LOADING</li>
+ *   <li><b>位置</b>：TOP（默认）/ BOTTOM / CENTER（中间只显示一个）</li>
+ *   <li><b>动画</b>：顶部/底部滑入，中间淡入</li>
+ *   <li><b>手动关闭</b>：返回 MessageResult 可主动 close()</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * // 顶部成功提示
+ * MessageAnt.success("保存成功");
+ *
+ * // 底部错误提示
+ * MessageAnt.error("网络错误", MessageAnt.Position.BOTTOM);
+ *
+ * // Loading
+ * MessageResult loading = MessageAnt.loading("正在处理...");
+ * // ... 异步完成后
+ * loading.close();
+ * }</pre>
+ */
 public class MessageAnt {
 
     public enum Type {
@@ -46,7 +75,7 @@ public class MessageAnt {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String content = "";
         private Type type = Type.INFO;
         private int durationSeconds = 3;

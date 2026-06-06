@@ -6,17 +6,38 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 /**
- * ImageAnt - 对标 Ant Design Image。
+ * JFXium 图片组件 - 对标 Ant Design Image。
  *
- * 重构：容器背景与 fallback/placeholder 文本全部走 LESS（{@link CssClasses#IMAGE} +
- * {@link CssClasses#IMAGE_FALLBACK}）；borderRadius 仍由 Java 设置（每实例可变）。
+ * <p><b>定位</b>：增强型 ImageView，支持加载失败 fallback、加载中 placeholder、
+ * 圆角、预览、objectFit 等能力。视觉走 LESS。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>图片源</b>：src(url/path)</li>
+ *   <li><b>尺寸</b>：width/height 控制显示尺寸</li>
+ *   <li><b>圆角</b>：borderRadius(px)</li>
+ *   <li><b>Fallback</b>：加载失败时显示 fallback URL</li>
+ *   <li><b>Placeholder</b>：加载中显示占位图</li>
+ *   <li><b>Alt</b>：无图时显示文本</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * StackPane img = ImageAnt.create()
+ *     .src("https://example.com/photo.jpg")
+ *     .width(200).height(150)
+ *     .borderRadius(8)
+ *     .alt("加载失败")
+ *     .build();
+ * }</pre>
  */
 public class ImageAnt {
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String src = null;
         private double width = 0;
         private double height = 0;

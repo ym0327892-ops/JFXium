@@ -7,7 +7,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import org.openkawu.jfxium.core.css.CssClasses;
 
+/**
+ * 内部基础组件：通知卡片（图标 + 标题 + 描述 + 关闭按钮）。
+ *
+ * <p>供 {@link org.openkawu.jfxium.component.overlay.NotificationAnt} 使用，
+ * 作为 TOP_LEFT / TOP_RIGHT / BOTTOM_LEFT / BOTTOM_RIGHT 通知的 UI 面板。</p>
+ */
 public class NotificationCard {
 
     public enum Type {
@@ -66,17 +73,8 @@ public class NotificationCard {
         public VBox build() {
             VBox card = new VBox(12);
             card.setAlignment(Pos.TOP_LEFT);
-            card.setStyle(
-                "-fx-background-color: -color-bg-overlay;" +
-                "-fx-padding: 16px 24px;" +
-                "-fx-background-radius: 8px;" +
-                "-fx-border-radius: 8px;" +
-                "-fx-border-color: -color-border-default;" +
-                "-fx-border-width: 1px;" +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);" +
-                "-fx-min-width: " + width + ";" +
-                "-fx-max-width: " + width + ";"
-            );
+            card.getStyleClass().add(CssClasses.NOTIFICATION_CARD);
+            card.setStyle("-fx-min-width: " + width + ";-fx-max-width: " + width + ";");
 
             HBox headerBox = new HBox(12);
             headerBox.setAlignment(Pos.TOP_LEFT);
@@ -93,13 +91,13 @@ public class NotificationCard {
 
             if (!title.isEmpty()) {
                 Label titleLabel = new Label(title);
-                titleLabel.setStyle("-fx-text-fill: -color-fg-default; -fx-font-size: 16px; -fx-font-weight: 600;");
+                titleLabel.getStyleClass().add(CssClasses.NOTIFICATION_CARD_TITLE);
                 contentBox.getChildren().add(titleLabel);
             }
 
             if (!description.isEmpty()) {
                 Label descLabel = new Label(description);
-                descLabel.setStyle("-fx-text-fill: -color-fg-muted; -fx-font-size: 14px;");
+                descLabel.getStyleClass().add(CssClasses.NOTIFICATION_CARD_DESC);
                 descLabel.setWrapText(true);
                 contentBox.getChildren().add(descLabel);
             }

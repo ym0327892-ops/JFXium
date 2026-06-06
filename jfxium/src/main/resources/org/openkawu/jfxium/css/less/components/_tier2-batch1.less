@@ -1,0 +1,53 @@
+/* ============================================
+   Batch 1 Tier 2 组件
+   ============================================ */
+
+/* AnchorAnt 锚点导航 */
+.anchor {
+  -fx-padding: 8 12 8 0;
+}
+
+.anchor-link {
+  -fx-font-size: @font-size-md;
+  -fx-cursor: hand;
+  -fx-padding: 4 8 4 8;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.anchor-link:hover {
+  -fx-text-fill: -color-fg-default;
+}
+
+.anchor-link.anchor-link-active {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+  -fx-border-color: transparent transparent transparent -color-accent-emphasis;
+  -fx-border-width: 0 0 0 2px;
+}
+
+/* AutoCompleteAnt 输入框 */
+.jfx-auto-complete-field {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 8 12 8 12;
+}
+
+/* AutoCompleteAnt disabled */
+.jfx-auto-complete:disabled {
+  -fx-opacity: 0.6;
+}
+
+/* ImageAnt 容器：浅灰底用于占位/错误状态 */
+.jfx-image {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.jfx-image-fallback {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-muted;
+}
+

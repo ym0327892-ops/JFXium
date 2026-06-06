@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.FileChooser;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 import org.openkawu.jfxium.core.i18n.Messages;
 
@@ -22,10 +23,28 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * JFXium Upload - 对标 Ant Design Upload。
+ * JFXium 上传组件 - 对标 Ant Design Upload（组合式，Builder 模式）。
  *
- * 重构：drag 区域 / icon / 文字 / 文件项 / 移除按钮 全部走 LESS（{@code upload-*}），
- * 拖拽进入态通过 {@link CssClasses#UPLOAD_DRAG_ACTIVE} 修饰类切换，不再 inline 重写整段 setStyle。
+ * <p><b>定位</b>：文件上传控件，支持点击选择或拖拽上传，
+ * 展示已上传文件列表。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>上传方式</b>：SELECT（点击选择）/ DRAG（拖拽上传）</li>
+ *   <li><b>列表样式</b>：TEXT / PICTURE / PICTURE_CARD</li>
+ *   <li>多文件上传 + 文件列表展示</li>
+ *   <li>文件状态（uploading / done / error / removed）</li>
+ *   <li>拖拽进入态视觉反馈（走 LESS {@code .upload-drag-active}）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node upload = UploadAnt.create()
+ *     .type(UploadAnt.Type.DRAG)
+ *     .multiple(true)
+ *     .onChange(files -> System.out.println("文件数：" + files.size()))
+ *     .build();
+ * }</pre>
  */
 public class UploadAnt {
 
@@ -51,7 +70,7 @@ public class UploadAnt {
         }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private Type type = Type.SELECT;
         private ListType listType = ListType.TEXT;
         private boolean multiple = false;

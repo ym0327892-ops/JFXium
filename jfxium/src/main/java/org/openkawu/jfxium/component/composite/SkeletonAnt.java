@@ -6,13 +6,45 @@ import javafx.animation.Timeline;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 
 /**
- * JFXium Skeleton Component
- * Inspired by Ant Design Skeleton
+ * JFXium 骨架屏组件 - 对标 Ant Design Skeleton（组合式，Builder 模式）。
+ *
+ * <p><b>定位</b>：数据加载前的占位动画，模拟真实内容的形状，
+ * 提升用户体验（感知加载速度更快）。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>形态</b>：TEXT（文本行）/ CIRCULAR（圆形头像）/ RECTANGULAR（矩形图片）/ ROUNDED（圆角矩形）</li>
+ *   <li><b>尺寸</b>：自定义 width / height</li>
+ *   <li><b>动画</b>：可开关的脉冲动画（animated）</li>
+ *   <li>可组合多个骨架构成完整页面占位</li>
+ * </ul>
+ *
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>列表页加载中（多行 TEXT + 一个 CIRCULAR 头像）</li>
+ *   <li>卡片加载中（RECTANGULAR 封面 + 多行 TEXT）</li>
+ *   <li>详情页加载中（组合多形态）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * // 文本骨架行
+ * Node textLine = SkeletonAnt.create()
+ *     .variant(SkeletonAnt.Variant.TEXT)
+ *     .width(200).height(16)
+ *     .build();
+ *
+ * // 圆形头像骨架
+ * Node avatar = SkeletonAnt.create()
+ *     .variant(SkeletonAnt.Variant.CIRCULAR)
+ *     .width(48).height(48)
+ *     .build();
+ * }</pre>
  */
 public class SkeletonAnt {
 
@@ -20,7 +52,7 @@ public class SkeletonAnt {
         TEXT, CIRCULAR, RECTANGULAR, ROUNDED
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private Variant variant = Variant.TEXT;
         private double width = 200;
         private double height = 16;
@@ -88,7 +120,7 @@ public class SkeletonAnt {
 
             if (animated) {
                 Rectangle shimmer = new Rectangle(width, height);
-                shimmer.setFill(Color.web("#ffffff", 0.1));
+                shimmer.getStyleClass().add("skeleton-shimmer");
                 shimmer.setTranslateX(-width);
 
                 switch (variant) {

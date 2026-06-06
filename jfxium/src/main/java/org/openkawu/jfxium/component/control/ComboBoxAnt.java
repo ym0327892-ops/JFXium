@@ -4,131 +4,184 @@ import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
-import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.function.Consumer;
 
 /**
- * JFXium ComboBox Component
- * Inspired by Ant Design Select
+ * JFXium ComboBox 组件 - 对标 Ant Design Select（继承式，M19.50 重构）。
  *
- * Usage:
+ * <p><b>定位</b>：下拉选择控件，继承自 {@link ComboBox}，
+ * 跟 {@link org.openkawu.jfxium.component.layout.VBoxAnt VBoxAnt} /
+ * {@link LabelAnt} / {@link InputAnt} 同款「双工厂模式」。</p>
+ *
+ * <h2>用法</h2>
+ *
+ * <h3>1. 工厂链式（build 可选）</h3>
  * <pre>{@code
- * ComboBox<String> comboBox = ComboBoxAnt.<String>create()
- *     .items("Option 1", "Option 2", "Option 3")
- *     .placeholder("Select an option")
- *     .size(ComboBoxAnt.Size.SMALL)         // M19.5：与 InputAnt/ButtonAnt 一致
- *     .onChange(value -> System.out.println("Selected: " + value))
+ * ComboBox<String> cb = ComboBoxAnt.<String>create()
+ *     .items("选项一", "选项二", "选项三")
+ *     .placeholder("请选择")
  *     .build();
+ *
+ * // build 后再改尺寸 / 状态（继承式核心优势）
+ * cb.size(Size.SMALL).disabled(true);
  * }</pre>
+ *
+ * <h3>2. 业务继承</h3>
+ * <pre>{@code
+ * public class CitySelect extends ComboBoxAnt<String> {
+ *     public CitySelect() {
+ *         items("北京", "上海", "广州", "深圳");
+ *         placeholder("请选择城市");
+ *     }
+ * }
+ * }</pre>
+ *
+ * <h2>设计契约</h2>
+ * <ul>
+ *   <li><b>双重身份</b>：是 {@link ComboBox} 也是工厂——可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时仍保留链式</li>
+ *   <li><b>幂等性</b>：{@code size(SMALL)} 重复调用不会重复挂 styleClass</li>
+ *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
+ * </ul>
  */
-public class ComboBoxAnt<T> {
+public class ComboBoxAnt<T> extends ComboBox<T> {
 
-    /** 尺寸枚举，与 InputAnt/ButtonAnt 完全一致（DEFAULT/SMALL/LARGE）。 */
+    /** 尺寸枚举，与 InputAnt/ButtonAnt 一致（DEFAULT/SMALL/LARGE）。 */
     public enum Size {
-        DEFAULT,
-        SMALL,
-        LARGE
+        DEFAULT, SMALL, LARGE
     }
 
-    public static <T> Builder<T> create() {
-        return new Builder<>();
+    // ============================================================
+    // 工厂入口
+    // ============================================================
+
+    /** 工厂入口（空选项列表）。 */
+    public static <T> ComboBoxAnt<T> create() {
+        return new ComboBoxAnt<>();
     }
 
-    public static class Builder<T> extends AbstractStyleBuilder<Builder<T>> {
-        private ObservableList<T> items = FXCollections.observableArrayList();
-        private T value = null;
-        private String placeholder = "";
-        private boolean editable = false;
-        private boolean disabled = false;
-        private Size size = Size.DEFAULT;
-        private Consumer<T> onChange;
-        private Property<T> bindProperty = null;
+    // ============================================================
+    // 构造函数（公开，便于业务 extends）
+    // ============================================================
 
-        private Builder() {}
+    public ComboBoxAnt() {
+        super();
+        getStyleClass().add("jfx-combo-box");
+    }
 
-        @SafeVarargs
-        public final Builder<T> items(T... items) {
-            this.items = FXCollections.observableArrayList(items);
-            return this;
+    public ComboBoxAnt(ObservableList<T> items) {
+        super(items);
+        getStyleClass().add("jfx-combo-box");
+    }
+
+    // ============================================================
+    // 流式 API
+    // ============================================================
+
+    /** 设置选项列表（可变参数）。 */
+    @SafeVarargs
+    public final ComboBoxAnt<T> items(T... items) {
+        setItems(FXCollections.observableArrayList(items));
+        return this;
+    }
+
+    /** 设置选项列表（ObservableList）。 */
+    public ComboBoxAnt<T> items(ObservableList<T> items) {
+        setItems(items);
+        return this;
+    }
+
+    /** 设置当前选中值。 */
+    public ComboBoxAnt<T> value(T value) {
+        setValue(value);
+        return this;
+    }
+
+    /** 设置占位提示文本。 */
+    public ComboBoxAnt<T> placeholder(String placeholder) {
+        if (placeholder != null && !placeholder.isEmpty()) {
+            setPromptText(placeholder);
         }
+        return this;
+    }
 
-        public Builder<T> items(ObservableList<T> items) {
-            this.items = items;
-            return this;
+    /** 设置是否可编辑（允许用户输入文字过滤选项）。 */
+    public ComboBoxAnt<T> editable(boolean editable) {
+        setEditable(editable);
+        return this;
+    }
+
+    /** 设置禁用状态。 */
+    public ComboBoxAnt<T> disabled(boolean disabled) {
+        setDisable(disabled);
+        return this;
+    }
+
+    /**
+     * 设置尺寸。幂等——先清旧 size styleClass，再按需挂新。
+     * DEFAULT 仅清不挂（与 ButtonAnt 行为一致）。
+     */
+    public ComboBoxAnt<T> size(Size size) {
+        getStyleClass().removeAll(CssClasses.SIZE_SMALL, CssClasses.SIZE_LARGE);
+        if (size == Size.SMALL) {
+            getStyleClass().add(CssClasses.SIZE_SMALL);
+        } else if (size == Size.LARGE) {
+            getStyleClass().add(CssClasses.SIZE_LARGE);
         }
+        return this;
+    }
 
-        public Builder<T> value(T value) {
-            this.value = value;
-            return this;
+    /** 选中值变化回调。 */
+    public ComboBoxAnt<T> onChange(Consumer<T> handler) {
+        if (handler != null) {
+            valueProperty().addListener((obs, oldVal, newVal) -> handler.accept(newVal));
         }
+        return this;
+    }
 
-        public Builder<T> placeholder(String placeholder) {
-            this.placeholder = placeholder;
-            return this;
+    /** 双向绑定：控件值 ↔ Property 值实时同步。 */
+    public ComboBoxAnt<T> bindValue(Property<T> property) {
+        if (property != null) {
+            valueProperty().bindBidirectional(property);
         }
+        return this;
+    }
 
-        public Builder<T> editable(boolean editable) {
-            this.editable = editable;
-            return this;
+    // ============================================================
+    // 视觉钩子（跟 *Ant 风格一致）
+    // ============================================================
+
+    /** 追加一个 styleClass（幂等——重复调不会重复挂）。 */
+    public ComboBoxAnt<T> styleClass(String cls) {
+        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
+            getStyleClass().add(cls);
         }
+        return this;
+    }
 
-        public Builder<T> disabled(boolean disabled) {
-            this.disabled = disabled;
-            return this;
+    /** 批量挂多个 styleClass。 */
+    public ComboBoxAnt<T> styleClass(String... classes) {
+        if (classes != null) {
+            for (String c : classes) styleClass(c);
         }
+        return this;
+    }
 
-        public Builder<T> size(Size size) {
-            this.size = size;
-            return this;
-        }
+    /** inline style（应急用，优先用 styleClass + LESS）。 */
+    public ComboBoxAnt<T> style(String style) {
+        if (style != null) setStyle(style);
+        return this;
+    }
 
-        public Builder<T> onChange(Consumer<T> handler) {
-            this.onChange = handler;
-            return this;
-        }
-
-        /** 双向绑定：控件值 ↔ Property 值实时同步。 */
-        public Builder<T> bindValue(Property<T> property) {
-            this.bindProperty = property;
-            return this;
-        }
-
-        public ComboBox<T> build() {
-            ComboBox<T> comboBox = new ComboBox<>(items);
-            comboBox.setEditable(editable);
-            comboBox.setDisable(disabled);
-
-            if (value != null) {
-                comboBox.setValue(value);
-            }
-
-            // 双向绑定（在初始值设置之后）
-            if (bindProperty != null) {
-                comboBox.valueProperty().bindBidirectional(bindProperty);
-            }
-
-            if (!placeholder.isEmpty()) {
-                comboBox.setPromptText(placeholder);
-            }
-
-            if (onChange != null) {
-                comboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-                    onChange.accept(newVal);
-                });
-            }
-
-            // Size styleClass（复用 SIZE_SMALL/LARGE 通用常量，与 InputAnt/ButtonAnt 一致）
-            if (size == Size.SMALL) {
-                comboBox.getStyleClass().add(CssClasses.SIZE_SMALL);
-            } else if (size == Size.LARGE) {
-                comboBox.getStyleClass().add(CssClasses.SIZE_LARGE);
-            }
-
-            comboBox.getStyleClass().add("jfx-combo-box");
-            applyStyles(comboBox);
-            return comboBox;
-        }
+    /**
+     * Builder 模式终结调用——返回自身。
+     *
+     * <p>ComboBoxAnt 既是工厂也是节点：{@code build()} 跟直接拿 {@code this} 等价，
+     * 提供本方法是为了让 API 跟旧版 Builder 的 {@code .build()} 完全对齐。</p>
+     */
+    public ComboBoxAnt<T> build() {
+        return this;
     }
 }

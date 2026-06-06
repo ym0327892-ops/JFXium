@@ -1,0 +1,52 @@
+/* ============================================
+   RadioButton Component（M19.6.3 修复 — 对齐 AtlantaFX _radio.scss）
+   关键：.radio padding 控制圆框尺寸（与 .box 完全一致），.dot min/max 控制中间小圆点尺寸
+   ============================================ */
+.radio-button {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-label-padding: 0 0 0 6px;   /* 框与文字间距 6px（对齐 AtlantaFX $graphic-gap） */
+}
+
+.radio-button .radio {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-full;
+  -fx-background-radius: @border-radius-full;
+  -fx-padding: 4px 4px 4px 4px;     /* 与 CheckBox 外径一致：dot(6) + padding(4) = 14×14 */
+  -fx-alignment: CENTER;
+}
+
+.radio-button .radio .dot {
+  /* dot 是中间小圆点 —— 必须显式设尺寸（默认是 0 不可见）
+     Ant Design 风格：比 CheckBox 的 mark 略小，约 6×6 */
+  -fx-min-width: 6px;
+  -fx-max-width: 6px;
+  -fx-min-height: 6px;
+  -fx-max-height: 6px;
+  -fx-background-radius: @border-radius-full;
+  -fx-background-color: transparent;    /* 未选中透明 */
+}
+
+.radio-button:hover .radio {
+  -fx-border-color: -color-accent-muted;
+}
+
+.radio-button:hover:selected .radio {
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.radio-button:selected .radio {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.radio-button:selected .radio .dot {
+  -fx-background-color: -color-fg-on-emphasis;   /* 选中显示白色小圆点 */
+}
+
+.radio-button:disabled {
+  -fx-opacity: 0.6;
+}
+

@@ -5,13 +5,32 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 /**
- * JFXium Statistic - 对标 Ant Design Statistic。
+ * JFXium 统计数值组件 - 对标 Ant Design Statistic（组合式，Builder 模式）。
  *
- * 重构：title/value/prefix/suffix 字号与颜色全部走 LESS（{@link CssClasses#STATISTIC_TITLE}
- * 等系列），尺寸通过 {@link CssClasses#STATISTIC_SMALL}/{@link CssClasses#STATISTIC_LARGE} 切换。
+ * <p><b>定位</b>：展示统计数字（带标题、前缀、后缀、精度控制），
+ * 常用于 Dashboard 概览卡片。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li>标题 + 数值 + 前缀/后缀（文本或节点）</li>
+ *   <li>数值精度控制（precision）</li>
+ *   <li>三种尺寸：SMALL / DEFAULT / LARGE</li>
+ *   <li>所有视觉样式走 LESS（{@code .jfx-statistic} 系列）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node stat = StatisticAnt.create()
+ *     .title("总用户数")
+ *     .value("12,456")
+ *     .suffix("人")
+ *     .size(StatisticAnt.Size.LARGE)
+ *     .build();
+ * }</pre>
  */
 public class StatisticAnt {
 
@@ -19,7 +38,7 @@ public class StatisticAnt {
         SMALL, DEFAULT, LARGE
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String title = "";
         private String value = "";
         private String prefix = null;

@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Orientation;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import org.openkawu.jfxium.core.css.Background;
@@ -139,6 +140,13 @@ public class SplitPaneAnt extends SplitPane {
         return this;
     }
 
+    /** 同时设置首选宽高。 */
+    public SplitPaneAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
+    /** 同时设置最大宽高。 */
+    public SplitPaneAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
+    /** 同时设置最小宽高。 */
+    public SplitPaneAnt minSize(double w, double h) { setMinSize(w, h); return this; }
+
     // ============================================================
     // 视觉钩子
     // ============================================================
@@ -166,6 +174,44 @@ public class SplitPaneAnt extends SplitPane {
         if (style != null) setStyle(style);
         return this;
     }
+
+    // ============================================================
+    // 方向性边框线（分割线）
+    // ============================================================
+
+    /** 顶部分割线。 */
+    public SplitPaneAnt borderTop() { styleClass("border-top"); return this; }
+    /** 顶部分割线（开关）。 */
+    public SplitPaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
+    /** 底部分割线。 */
+    public SplitPaneAnt borderBottom() { styleClass("border-bottom"); return this; }
+    /** 底部分割线（开关）。 */
+    public SplitPaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
+    /** 左侧分割线。 */
+    public SplitPaneAnt borderLeft() { styleClass("border-left"); return this; }
+    /** 左侧分割线（开关）。 */
+    public SplitPaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
+    /** 右侧分割线。 */
+    public SplitPaneAnt borderRight() { styleClass("border-right"); return this; }
+    /** 右侧分割线（开关）。 */
+    public SplitPaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
+
+    // ============================================================
+    // 高频节点属性
+    // ============================================================
+
+    /** 设置可见性。 */
+    public SplitPaneAnt visible(boolean v) { setVisible(v); return this; }
+    /** 设置禁用状态。 */
+    public SplitPaneAnt disable(boolean d) { setDisable(d); return this; }
+    /** 设置是否受布局管理。 */
+    public SplitPaneAnt managed(boolean m) { setManaged(m); return this; }
+    /** 设置透明度（0.0 ~ 1.0）。 */
+    public SplitPaneAnt opacity(double o) { setOpacity(o); return this; }
+    /** 设置鼠标光标。 */
+    public SplitPaneAnt cursor(Cursor c) { setCursor(c); return this; }
+    /** 设置节点 ID。 */
+    public SplitPaneAnt id(String id) { setId(id); return this; }
 
     /** Builder 模式终结调用，返回自身。详见 {@code VBoxAnt#build()}。 */
     public SplitPaneAnt build() {

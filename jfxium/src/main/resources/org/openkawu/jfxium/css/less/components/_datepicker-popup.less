@@ -1,0 +1,52 @@
+/* ============================================
+   DatePicker Popup Enhancements
+   ============================================ */
+.date-picker-popup .previous-month,
+.date-picker-popup .next-month {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.date-picker-popup .previous-month:hover,
+.date-picker-popup .next-month:hover {
+  -fx-text-fill: -color-fg-default;
+}
+
+.date-picker-popup .week-number-cell {
+  -fx-text-fill: -color-fg-subtle;
+  -fx-font-size: @font-size-xs;
+}
+
+/* ============================================
+   ColorPicker Popup
+   ============================================ */
+.color-palette {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+}
+
+.color-palette .color-picker-grid .color-square {
+  -fx-background-color: transparent;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+}
+
+.color-palette .color-picker-grid .color-square:hover {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 2px;
+}
+
+/* ============================================
+   Slider Tick Enhancements
+   ============================================ */
+.slider .axis .axis-tick-mark {
+  -fx-stroke: -color-border-default;
+}
+
+.slider .axis .axis-minor-tick-mark {
+  -fx-stroke: -color-border-muted;
+}
+

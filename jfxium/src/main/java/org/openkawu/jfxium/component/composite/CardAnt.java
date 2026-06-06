@@ -19,51 +19,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JFXium Card Component
- * Inspired by AtlantaFX and Ant Design
+ * JFXium 卡片组件 - 对标 Ant Design Card（组合式，Builder 模式，参考 AtlantaFX）。
  *
- * <p>增强功能（M10）：</p>
+ * <p><b>定位</b>：内容承载容器，用于组织展示相关内容，
+ * 支持标题、内容、封面、操作按钮、标签页等丰富功能。</p>
+ *
+ * <h2>功能特性（M10 增强）</h2>
  * <ul>
- *   <li>loading - 加载状态（骨架屏）</li>
- *   <li>cover - 封面图片</li>
- *   <li>actions - 底部操作按钮</li>
- *   <li>tabList - 标签页支持</li>
- *   <li>type - 内嵌卡片样式</li>
- *   <li>size - 卡片尺寸（medium / small）</li>
+ *   <li><b>标题 + 额外操作</b>：title + extra 头部布局</li>
+ *   <li><b>封面</b>：cover 图片展示</li>
+ *   <li><b>底部操作区</b>：actions 按钮组</li>
+ *   <li><b>标签页</b>：tabList 内置标签切换</li>
+ *   <li><b>边框 / 悬浮</b>：bordered + hoverable</li>
+ *   <li><b>尺寸</b>：MEDIUM / SMALL</li>
+ *   <li><b>加载状态</b>：loading 骨架屏</li>
+ *   <li><b>内嵌卡片</b>：type=INNER 用于卡片嵌套</li>
  * </ul>
  *
- * Usage:
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>列表卡片（用户卡片、商品卡片）</li>
+ *   <li>详情卡片（基本信息 + 操作按钮）</li>
+ *   <li>统计卡片（Dashboard 概览）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
  * <pre>{@code
- * // 基础卡片
  * VBox card = CardAnt.create()
- *     .title("Card Title")
- *     .content(new Label("Card content"))
+ *     .title("用户信息")
+ *     .extra(ButtonAnt.create("编辑").type(ButtonAnt.Type.TEXT).build())
+ *     .content(userDetailPanel)
  *     .bordered(true)
- *     .shadow(CardAnt.Shadow.MEDIUM)
  *     .hoverable(true)
- *     .build();
- *
- * // 带封面和操作按钮的卡片
- * VBox card = CardAnt.create()
- *     .title("Card Title")
- *     .cover("/images/cover.jpg")
- *     .content(new Label("Card content"))
- *     .actions(editBtn, shareBtn, deleteBtn)
- *     .build();
- *
- * // 加载状态卡片
- * VBox card = CardAnt.create()
- *     .title("Card Title")
- *     .loading(true)
- *     .build();
- *
- * // 带标签页的卡片
- * VBox card = CardAnt.create()
- *     .title("Card Title")
- *     .tab("tab1", "Tab 1", content1)
- *     .tab("tab2", "Tab 2", content2)
- *     .defaultActiveTabKey("tab1")
- *     .onTabChange(key -> System.out.println("Tab changed: " + key))
  *     .build();
  * }</pre>
  */
@@ -438,18 +425,19 @@ public class CardAnt {
                     (defaultActiveTabKey != null ? defaultActiveTabKey :
                             (!tabList.isEmpty() ? tabList.get(0).getKey() : null));
 
-            // 创建标签按钮
+            // 创建标签按钮 — 用 userData 存储 key，避免依赖 children 索引顺序
             for (TabItem tabItem : tabList) {
                 Label tabButton = new Label(tabItem.getLabel());
                 tabButton.getStyleClass().add(CssClasses.CARD_TAB_ITEM);
-                
+                tabButton.setUserData(tabItem.getKey()); // ← 存储 key 用于后续查找
+
                 if (tabItem.getKey().equals(currentKey)) {
                     tabButton.getStyleClass().add(CssClasses.CARD_TAB_ITEM_ACTIVE);
                 }
 
                 // 点击事件：切换 tab
                 tabButton.setOnMouseClicked(e -> handleTabChange(tabItem.getKey(), tabButtons));
-                
+
                 tabButtons.getChildren().add(tabButton);
             }
 
@@ -468,27 +456,22 @@ public class CardAnt {
         }
 
         /**
-         * 处理标签页切换
+         * 处理标签页切换 — 通过 userData 匹配 key，不依赖 children 索引顺序。
+         *
+         * <p>这样即使 tabButtons 中插入了 spacer 等其他节点，也能正确找到对应按钮。</p>
          */
         private void handleTabChange(String newKey, HBox tabButtons) {
-            // 更新激活状态样式
+            // 清除所有按钮的激活状态
             tabButtons.getChildren().forEach(btn -> {
                 btn.getStyleClass().remove(CssClasses.CARD_TAB_ITEM_ACTIVE);
             });
-            
-            // 找到被点击的按钮并激活
-            int index = -1;
-            for (int i = 0; i < tabList.size(); i++) {
-                if (tabList.get(i).getKey().equals(newKey)) {
-                    index = i;
-                    break;
-                }
-            }
-            
-            if (index >= 0 && index < tabButtons.getChildren().size()) {
-                tabButtons.getChildren().get(index).getStyleClass().add(CssClasses.CARD_TAB_ITEM_ACTIVE);
-            }
-            
+
+            // 通过 userData 匹配 key 找到目标按钮并激活
+            tabButtons.getChildren().stream()
+                    .filter(btn -> newKey.equals(btn.getUserData()))
+                    .findFirst()
+                    .ifPresent(btn -> btn.getStyleClass().add(CssClasses.CARD_TAB_ITEM_ACTIVE));
+
             // 触发回调（用户需要自己处理内容切换）
             if (onTabChange != null) {
                 ActionEvent event = new ActionEvent(tabButtons, null);

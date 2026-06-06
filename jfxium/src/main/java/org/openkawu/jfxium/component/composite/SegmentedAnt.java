@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
@@ -13,10 +14,30 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * JFXium Segmented - 对标 Ant Design Segmented。
+ * JFXium 分段控制器组件 - 对标 Ant Design Segmented。
  *
- * 重构：容器/item 选中态/hover/label 颜色全部走 LESS（{@link CssClasses#SEGMENTED} 系列），
- * 不再用 setOnMouseEntered/Exited 拼字符串。
+ * <p><b>定位</b>：轻量级切换控件，类似 Tabs 但更紧凑，常用于视图切换、
+ * 筛选条件切换、时间范围切换等场景。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>选项</b>：option(value, label) / option(value, label, icon)</li>
+ *   <li><b>尺寸</b>：SMALL / DEFAULT / LARGE</li>
+ *   <li><b>回调</b>：onChange(value) 切换时触发</li>
+ *   <li><b>默认值</b>：defaultValue(value)</li>
+ *   <li><b>禁用</b>：option 级别 disabled</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * HBox segmented = SegmentedAnt.create()
+ *     .option("day", "日")
+ *     .option("week", "周")
+ *     .option("month", "月")
+ *     .defaultValue("week")
+ *     .onChange(val -> refreshView(val))
+ *     .build();
+ * }</pre>
  */
 public class SegmentedAnt {
 
@@ -41,7 +62,7 @@ public class SegmentedAnt {
         public Node getIcon() { return icon; }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private List<Option> options = new ArrayList<>();
         private String selectedValue = null;
         private Size size = Size.DEFAULT;

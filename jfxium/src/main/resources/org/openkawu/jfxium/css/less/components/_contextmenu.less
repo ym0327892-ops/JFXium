@@ -1,0 +1,79 @@
+/* ============================================
+   ContextMenu Component
+   ============================================ */
+.context-menu {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: @context-menu-padding-y @context-menu-padding-x;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+}
+
+.context-menu .menu-item {
+  -fx-padding: @menu-item-padding-y @menu-item-padding-x;
+  
+}
+
+.context-menu .menu-item:hover,
+.context-menu .menu-item:focused {
+  -fx-background-color: -color-accent-hover;
+}
+
+.context-menu .menu-item:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.context-menu .menu-item .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.context-menu .separator-menu-item .line {
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px 0 0 0;
+  -fx-padding: @spacing-xs 0;
+}
+
+/* ============================================
+   MenuItem within MenuBar
+   ============================================ */
+.menu-bar > .container > .menu {
+  -fx-padding: @menu-padding-y @menu-padding-x;
+}
+
+.menu-bar > .container > .menu > .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.menu-bar > .container > .menu:hover,
+.menu-bar > .container > .menu:showing {
+  -fx-background-color: -color-accent-hover;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.menu-bar > .container > .menu:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.menu-item {
+  -fx-padding: @menu-item-padding-y @menu-item-padding-x;
+  
+}
+
+.menu-item:hover,
+.menu-item:focused {
+  -fx-background-color: -color-accent-hover;
+}
+
+.menu-item:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.menu-item .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+

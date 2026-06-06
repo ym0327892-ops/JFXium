@@ -1,0 +1,67 @@
+/* ============================================
+   Pagination Component
+   ============================================ */
+.pagination {
+  -fx-background-color: transparent;
+}
+
+.pagination .pagination-control {
+  -fx-background-color: transparent;
+}
+
+.pagination .pagination-control .button {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: @pagination-padding-y @pagination-padding-x;
+  -fx-cursor: hand;
+}
+
+.pagination .pagination-control .button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.pagination .pagination-control .button:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.pagination .pagination-control .button:disabled {
+  -fx-opacity: 0.4;
+}
+
+.pagination .pagination-control .toggle-button {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: @pagination-padding-y @pagination-padding-x;
+  -fx-cursor: hand;
+}
+
+.pagination .pagination-control .toggle-button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.pagination .pagination-control .toggle-button:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.pagination .pagination-control .toggle-button:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+

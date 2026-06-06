@@ -1,0 +1,63 @@
+/* ============================================
+   ProgressBar Component
+   ============================================ */
+.progress-bar {
+  -fx-background-color: -color-border-muted;
+  -fx-background-radius: @border-radius-full;
+  -fx-pref-height: 8px;
+}
+
+.progress-bar .track {
+  -fx-background-color: -color-border-muted;
+  -fx-background-radius: @border-radius-full;
+}
+
+.progress-bar .bar {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-radius: @border-radius-full;
+}
+
+.progress-bar.success .bar {
+  -fx-background-color: -color-success-emphasis;
+}
+
+.progress-bar.warning .bar {
+  -fx-background-color: -color-warning-emphasis;
+}
+
+.progress-bar.error .bar {
+  -fx-background-color: -color-danger-emphasis;
+}
+
+/* ============================================
+   ProgressIndicator Component
+   ============================================ */
+.progress-indicator {
+  -fx-progress-color: -color-accent-emphasis;
+}
+
+.progress-indicator.success {
+  -fx-progress-color: -color-success-emphasis;
+}
+
+.progress-indicator.warning {
+  -fx-progress-color: -color-warning-emphasis;
+}
+
+.progress-indicator.error {
+  -fx-progress-color: -color-danger-emphasis;
+}
+
+/* ============================================
+   ProgressAnt 百分比文字
+   颜色随 status 切换，避免 Java 端拼字符串
+   ============================================ */
+.jfx-progress-info {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.jfx-progress-info.success { -fx-text-fill: -color-success-emphasis; }
+.jfx-progress-info.warning { -fx-text-fill: -color-warning-emphasis; }
+.jfx-progress-info.error   { -fx-text-fill: -color-danger-emphasis;  }
+

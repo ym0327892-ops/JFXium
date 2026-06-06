@@ -1,0 +1,131 @@
+/* ============================================
+   Button Component
+   ============================================ */
+.button {
+  .button-base();
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  
+}
+
+.button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+}
+
+.button:armed,
+.button:pressed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+}
+
+.button:disabled {
+  -fx-opacity: 0.6;
+  -fx-cursor: default;
+}
+
+/* Button Variants */
+.button.default {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+}
+
+.button.default:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+}
+
+.button.default:armed,
+.button.default:pressed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+}
+
+.button.accent {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.accent:hover {
+  -fx-background-color: -color-accent-4;
+  -fx-border-color: -color-accent-4;
+}
+
+.button.accent:armed,
+.button.accent:pressed {
+  -fx-background-color: -color-accent-6;
+  -fx-border-color: -color-accent-6;
+}
+
+.button.outlined {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.button.outlined:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.button.outlined:armed,
+.button.outlined:pressed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.text {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.button.text:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.button.text:armed,
+.button.text:pressed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.link {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-underline: true;
+}
+
+.button.link:hover {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-accent-4;
+}
+
+.button.link:armed,
+.button.link:pressed {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-text-fill: -color-accent-6;
+}
+
+/* Button Sizes */
+.button.small {
+  -fx-padding: @btn-padding-y-sm @btn-padding-x-sm;
+  -fx-font-size: @font-size-sm;
+}
+
+.button.large {
+  -fx-padding: @btn-padding-y-lg @btn-padding-x-lg;
+  -fx-font-size: @font-size-lg;
+}
+

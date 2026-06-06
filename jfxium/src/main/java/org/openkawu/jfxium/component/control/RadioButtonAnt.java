@@ -3,151 +3,199 @@ package org.openkawu.jfxium.component.control;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
-import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.function.Consumer;
 
 /**
- * JFXium RadioButton Component
- * Inspired by Ant Design Radio
+ * JFXium RadioButton 组件 - 对标 Ant Design Radio（继承式，M19.50 重构）。
  *
- * Usage:
+ * <p><b>定位</b>：单选控件，继承自 {@link RadioButton}，
+ * 跟 {@link CheckBoxAnt} 同款「双工厂模式」。</p>
+ *
+ * <h2>用法</h2>
+ *
+ * <h3>1. 工厂链式（build 可选）</h3>
  * <pre>{@code
  * ToggleGroup group = new ToggleGroup();
  *
- * RadioButton option1 = RadioButtonAnt.create("Option 1")
+ * RadioButton r1 = RadioButtonAnt.create("选项 A")
  *     .toggleGroup(group)
  *     .selected(true)
- *     .size(RadioButtonAnt.Size.SMALL)        // M19.6：与 InputAnt/ButtonAnt 一致
+ *     .size(Size.SMALL)
  *     .build();
  *
- * RadioButton option2 = RadioButtonAnt.create("Option 2")
- *     .toggleGroup(group)
- *     .build();
+ * // build 后再改（继承式核心优势）
+ * r1.size(Size.LARGE).disabled(true);
  * }</pre>
+ *
+ * <h3>2. 业务继承</h3>
+ * <pre>{@code
+ * public class YesRadio extends RadioButtonAnt {
+ *     public YesRadio() {
+ *         text("是");
+ *         size(Size.SMALL);
+ *     }
+ * }
+ * }</pre>
+ *
+ * <h2>设计契约</h2>
+ * <ul>
+ *   <li><b>双重身份</b>：是 {@link RadioButton} 也是工厂——可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时仍保留链式</li>
+ *   <li><b>幂等性</b>：{@code size(SMALL)} / {@code shape(SQUARE)} 重复调用不会重复挂 styleClass</li>
+ *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
+ * </ul>
  */
-public class RadioButtonAnt {
+public class RadioButtonAnt extends RadioButton {
 
-    /** 尺寸枚举，与 ButtonAnt/InputAnt 完全一致（DEFAULT/SMALL/LARGE）。 */
+    /** 尺寸枚举，与 ButtonAnt/InputAnt 一致（DEFAULT/SMALL/LARGE）。 */
     public enum Size {
-        DEFAULT,
-        SMALL,
-        LARGE
+        DEFAULT, SMALL, LARGE
     }
 
     /**
-     * 形状枚举（M19.20）。
+     * 形状枚举。
      * <ul>
      *   <li>{@link #DEFAULT}：圆形（Ant Design 默认）</li>
-     *   <li>{@link #SQUARE}：方形（与 CheckBox 同款外形，但仍是 RadioButton 的单选语义）</li>
+     *   <li>{@link #SQUARE}：方形</li>
      *   <li>{@link #ROUNDED}：圆角方形</li>
      * </ul>
      */
     public enum Shape {
-        DEFAULT,
-        SQUARE,
-        ROUNDED
+        DEFAULT, SQUARE, ROUNDED
     }
 
-    public static Builder create(String text) {
-        return new Builder(text);
+    // ============================================================
+    // 工厂入口
+    // ============================================================
+
+    /** 工厂入口（无文本）。 */
+    public static RadioButtonAnt create() {
+        return new RadioButtonAnt();
     }
 
-    public static Builder create() {
-        return new Builder("");
+    /** 工厂入口（带文本）。 */
+    public static RadioButtonAnt create(String text) {
+        return new RadioButtonAnt(text);
     }
 
-    public static class Builder extends AbstractStyleBuilder<Builder> {
-        private final String text;
-        private boolean selected = false;
-        private boolean disabled = false;
-        private Size size = Size.DEFAULT;
-        private Shape shape = Shape.DEFAULT;
-        private ToggleGroup toggleGroup;
-        private Consumer<Boolean> onChange;
-        private BooleanProperty bindProperty = null;
+    // ============================================================
+    // 构造函数（公开，便于业务 extends）
+    // ============================================================
 
-        private Builder(String text) {
-            this.text = text;
+    public RadioButtonAnt() {
+        super();
+        getStyleClass().add("jfx-radio-button");
+    }
+
+    public RadioButtonAnt(String text) {
+        super(text);
+        getStyleClass().add("jfx-radio-button");
+    }
+
+    // ============================================================
+    // 流式 API
+    // ============================================================
+
+    /** 设置文本（链式包装 setText）。 */
+    public RadioButtonAnt text(String text) {
+        setText(text != null ? text : "");
+        return this;
+    }
+
+    /** 设置选中状态。 */
+    public RadioButtonAnt selected(boolean selected) {
+        setSelected(selected);
+        return this;
+    }
+
+    /** 设置禁用状态。 */
+    public RadioButtonAnt disabled(boolean disabled) {
+        setDisable(disabled);
+        return this;
+    }
+
+    /**
+     * 设置尺寸。幂等——先清旧 size styleClass，再按需挂新。
+     * DEFAULT 仅清不挂。
+     */
+    public RadioButtonAnt size(Size size) {
+        getStyleClass().removeAll(CssClasses.SIZE_SMALL, CssClasses.SIZE_LARGE);
+        if (size == Size.SMALL) {
+            getStyleClass().add(CssClasses.SIZE_SMALL);
+        } else if (size == Size.LARGE) {
+            getStyleClass().add(CssClasses.SIZE_LARGE);
         }
+        return this;
+    }
 
-        public Builder selected(boolean selected) {
-            this.selected = selected;
-            return this;
+    /**
+     * 设置形状。幂等——先清旧 shape styleClass，再按需挂新。
+     * DEFAULT 仅清不挂。
+     */
+    public RadioButtonAnt shape(Shape shape) {
+        getStyleClass().removeAll("shape-square", "shape-rounded");
+        if (shape == Shape.SQUARE) {
+            getStyleClass().add("shape-square");
+        } else if (shape == Shape.ROUNDED) {
+            getStyleClass().add("shape-rounded");
         }
+        return this;
+    }
 
-        public Builder disabled(boolean disabled) {
-            this.disabled = disabled;
-            return this;
+    /** 设置 ToggleGroup。 */
+    public RadioButtonAnt toggleGroup(ToggleGroup toggleGroup) {
+        if (toggleGroup != null) {
+            setToggleGroup(toggleGroup);
         }
+        return this;
+    }
 
-        public Builder size(Size size) {
-            this.size = size;
-            return this;
+    /** 监听选中状态变化。 */
+    public RadioButtonAnt onChange(Consumer<Boolean> handler) {
+        if (handler != null) {
+            selectedProperty().addListener((obs, oldVal, newVal) -> handler.accept(newVal));
         }
+        return this;
+    }
 
-        /**
-         * 设置形状（M19.20）。默认 {@link Shape#DEFAULT}（圆形，对齐 Ant Design）。
-         */
-        public Builder shape(Shape shape) {
-            this.shape = shape != null ? shape : Shape.DEFAULT;
-            return this;
+    /** 双向绑定：控件值 ↔ Property 值实时同步。 */
+    public RadioButtonAnt bindValue(BooleanProperty property) {
+        if (property != null) {
+            selectedProperty().bindBidirectional(property);
         }
+        return this;
+    }
 
-        public Builder toggleGroup(ToggleGroup toggleGroup) {
-            this.toggleGroup = toggleGroup;
-            return this;
+    // ============================================================
+    // 视觉钩子
+    // ============================================================
+
+    /** 追加一个 styleClass（幂等）。 */
+    public RadioButtonAnt styleClass(String cls) {
+        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
+            getStyleClass().add(cls);
         }
+        return this;
+    }
 
-        public Builder onChange(Consumer<Boolean> handler) {
-            this.onChange = handler;
-            return this;
+    /** 批量挂多个 styleClass。 */
+    public RadioButtonAnt styleClass(String... classes) {
+        if (classes != null) {
+            for (String c : classes) styleClass(c);
         }
+        return this;
+    }
 
-        /** 双向绑定：控件值 ↔ Property 值实时同步。 */
-        public Builder bindValue(BooleanProperty property) {
-            this.bindProperty = property;
-            return this;
-        }
+    /** inline style（应急用，优先用 styleClass + LESS）。 */
+    public RadioButtonAnt style(String style) {
+        if (style != null) setStyle(style);
+        return this;
+    }
 
-        public RadioButton build() {
-            RadioButton radioButton = new RadioButton(text);
-            radioButton.setSelected(selected);
-            radioButton.setDisable(disabled);
-
-            // 双向绑定（在初始值设置之后）
-            if (bindProperty != null) {
-                radioButton.selectedProperty().bindBidirectional(bindProperty);
-            }
-
-            if (toggleGroup != null) {
-                radioButton.setToggleGroup(toggleGroup);
-            }
-
-            if (onChange != null) {
-                radioButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
-                    onChange.accept(newVal);
-                });
-            }
-
-            // Size styleClass（复用通用常量，与 ButtonAnt/InputAnt 一致）
-            if (size == Size.SMALL) {
-                radioButton.getStyleClass().add(CssClasses.SIZE_SMALL);
-            } else if (size == Size.LARGE) {
-                radioButton.getStyleClass().add(CssClasses.SIZE_LARGE);
-            }
-
-            // Shape styleClass（M19.20）
-            switch (shape) {
-                case SQUARE  -> radioButton.getStyleClass().add("shape-square");
-                case ROUNDED -> radioButton.getStyleClass().add("shape-rounded");
-                default      -> { /* DEFAULT 不挂额外类 */ }
-            }
-
-            radioButton.getStyleClass().add("jfx-radio-button");
-            applyStyles(radioButton);
-            return radioButton;
-        }
+    /** Builder 模式终结调用——返回自身（向后兼容）。 */
+    public RadioButtonAnt build() {
+        return this;
     }
 }

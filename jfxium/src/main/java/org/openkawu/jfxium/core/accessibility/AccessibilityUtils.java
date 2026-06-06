@@ -2,6 +2,7 @@ package org.openkawu.jfxium.core.accessibility;
 
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBase;
+import org.openkawu.jfxium.core.css.CssClasses;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TextInputControl;
 
@@ -83,9 +84,9 @@ public class AccessibilityUtils {
     public static void addFocusVisible(Node node) {
         node.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                node.setStyle(node.getStyle() + "-fx-focus-color: -color-accent-emphasis; -fx-faint-focus-color: -color-accent-subtle;");
+                node.getStyleClass().add(CssClasses.FOCUS_VISIBLE);
             } else {
-                node.setStyle(node.getStyle().replace("-fx-focus-color: -color-accent-emphasis; -fx-faint-focus-color: -color-accent-subtle;", ""));
+                node.getStyleClass().remove(CssClasses.FOCUS_VISIBLE);
             }
         });
     }

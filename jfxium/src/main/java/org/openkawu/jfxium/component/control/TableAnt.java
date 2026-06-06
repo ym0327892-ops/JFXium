@@ -23,17 +23,29 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * JFXium Table Component（M11 高级化重构）
- * Inspired by Ant Design Table
+ * JFXium 表格组件 - 对标 Ant Design Table（组合式，Builder 模式，M11 高级化重构）。
  *
- * <h3>设计思路</h3>
- * 路 B 重构：{@code .column(...)} 系列方法返回 {@link ColumnBuilder}，
- * 通过 {@code .end()} 回到表 Builder，实现"列级链式配置 + 表级链式配置"两层 API。
+ * <p><b>定位</b>：数据表格控件，包装 JavaFX {@link TableView}，
+ * 提供列级链式配置 + 表级链式配置的两层 API（路 B 设计）。</p>
  *
- * <p>列级能力：宽度、resizable、sortable、自定义 sorter、对齐、可见性。
- * 表级能力：resize 策略、默认排序、全局排序开关。</p>
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>列类型</b>：文本列（{@code column}）/ 数字列（{@code numberColumn}，右对齐）/
+ *       布尔列（{@code booleanColumn}，勾选框）/ 节点列（{@code nodeColumn}，自定义渲染）/
+ *       操作列（{@code actionColumn}，按钮组）</li>
+ *   <li><b>列级能力</b>：宽度、resizable、sortable、自定义 sorter、对齐（LEFT/CENTER/RIGHT）、可见性</li>
+ *   <li><b>表级能力</b>：resize 策略、默认排序、全局排序开关、斑马纹、边框模式、紧凑模式、隐藏表头</li>
+ *   <li><b>交互</b>：行选择 / 多选、行双击回调、选择变化监听</li>
+ * </ul>
  *
- * <h3>使用示例</h3>
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>admin 列表页（用户列表、订单列表、日志列表）</li>
+ *   <li>数据报表（带排序、斑马纹）</li>
+ *   <li>CRUD 操作（配合 CrudTemplate + actionColumn）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
  * <pre>{@code
  * TableView<Person> table = TableAnt.<Person>create()
  *     .column("ID", Person::getId)
@@ -46,6 +58,9 @@ import java.util.function.Function;
  *         .sorter(Comparator.naturalOrder())  // 自定义排序
  *         .end()
  *
+ *     .booleanColumn("在职", Person::isActive)
+ *         .end()
+ *
  *     .actionColumn("操作")
  *         .action("编辑", p -> openEdit(p))
  *         .action("删除", p -> doDelete(p)).type(ButtonAnt.Type.LINK).danger()
@@ -55,14 +70,17 @@ import java.util.function.Function;
  *     .defaultSortBy("年龄", TableColumn.SortType.DESCENDING)
  *     .data(people)
  *     .striped(true)
+ *     .selectable(true)
  *     .build();
  * }</pre>
  *
- * <h3>已知限制</h3>
+ * <h2>设计契约</h2>
  * <ul>
- *   <li>取值是"快照"：内部 cell value 是 {@code SimpleObjectProperty}，
- *       不会自动响应 JavaFX Property 变化。如需实时刷新，请重新 setItems。</li>
- *   <li>Node 列默认 sortable=false（Node 不可比较）。</li>
+ *   <li><b>列级 + 表级两层 API</b>：{@code .column(...)} 返回 {@link ColumnBuilder}，
+ *       {@code .end()} 回到表 Builder，避免“魔法”状态混淆</li>
+ *   <li><b>取值是快照</b>：内部 cell value 是 {@code SimpleObjectProperty}，
+ *       不会自动响应 JavaFX Property 变化。如需实时刷新，请重新 setItems</li>
+ *   <li><b>Node 列默认不可排序</b>：Node 不可比较，自动设 sortable=false</li>
  * </ul>
  *
  * @param <T> 行数据类型
@@ -517,13 +535,10 @@ public class TableAnt<T> {
             HBox bar = new HBox(spacing);
             bar.setAlignment(Pos.CENTER);  // 水平+垂直居中（之前是 CENTER_LEFT，按钮看起来贴左上）
             for (ActionSpec<T> a : actions) {
-                ButtonAnt.Builder bb = ButtonAnt.create(a.label).type(a.type);
+                ButtonAnt bb = ButtonAnt.create(a.label).type(a.type);
                 Button btn = bb.build();
                 if (a.danger) {
                     btn.getStyleClass().add("button-danger-text");
-                    // 兜底 inline，确保即使 LESS 没定义也能看出红色
-                    btn.setStyle((btn.getStyle() == null ? "" : btn.getStyle())
-                            + "-fx-text-fill: -color-danger-emphasis;");
                 }
                 EventHandler<ActionEvent> h = e -> a.handler.accept(row);
                 btn.setOnAction(h);

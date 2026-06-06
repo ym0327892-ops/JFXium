@@ -12,34 +12,45 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 /**
- * JFXium Alert 警告提示组件 - 对标 Ant Design Alert。
+ * JFXium 警告提示组件 - 对标 Ant Design Alert（组合式，Builder 模式）。
  *
- * <h2>修复说明</h2>
- * 原实现存在严重 inline style 集中：alert 容器（normal+banner 各一段）、icon Label、
- * title Label、message Label、close button 共 ~7 处 setStyle 拼字符串，
- * 颜色/字号/字重/边框/圆角全靠 Java 端字符串拼接。
+ * <p><b>定位</b>：展示警告、提示、成功、错误等信息的提示框，
+ * 常驻显示不自动消失，可手动关闭。</p>
  *
- * 与此同时，{@code theme-base.less} 中已有 {@code .alert-success/info/warning/error} 等
- * 选择器，但 Java 端从未给容器加这些 styleClass，全部 LESS 规则成为死代码。
- *
- * <h2>本次改动</h2>
+ * <h2>功能特性</h2>
  * <ul>
- *   <li>容器：挂 {@code jfx-alert} + 类型修饰类 {@code alert-success/info/warning/error}，
- *       配合新增的 {@code alert-banner} 修饰类支持 banner 形态</li>
- *   <li>子节点：icon/title/message/close 各自挂语义化 styleClass，颜色随 type 由 LESS 切换</li>
- *   <li>状态文字色：通过 LESS 选择器 {@code .jfx-alert.alert-success .alert-title} 等组合实现，
- *       Java 端不再用 {@code getTextColor()} 拼字符串</li>
- *   <li>接入 {@link AbstractStyleBuilder}</li>
- *   <li>删除 {@code getBackgroundColor/getBorderColor/getTextColor} 三个方法（颜色逻辑已搬到 LESS）</li>
+ *   <li><b>类型</b>：SUCCESS / INFO / WARNING / ERROR</li>
+ *   <li><b>标题 + 描述</b>：支持单行或双行信息展示</li>
+ *   <li><b>可关闭</b>：closable 显示关闭按钮 + onClose 回调</li>
+ *   <li><b>图标</b>：showIcon 显示类型图标</li>
+ *   <li><b>Banner 形态</b>：banner 模式用于顶部横幅提示</li>
+ *   <li>所有视觉样式走 LESS（{@code .jfx-alert.alert-*} 系列）</li>
  * </ul>
  *
- * <h2>使用示例</h2>
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>表单提交成功 / 失败提示</li>
+ *   <li>页面顶部全局警告横幅</li>
+ *   <li>操作结果反馈</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
  * <pre>{@code
- * VBox alert = AlertAnt.success("操作成功", "数据已保存")
+ * VBox alert = AlertAnt.create()
+ *     .type(AlertAnt.Type.SUCCESS)
+ *     .title("操作成功")
+ *     .message("记录已保存到数据库")
  *     .closable(true)
  *     .showIcon(true)
  *     .build();
  * }</pre>
+ *
+ * <h2>与 MessageAnt / NotificationAnt 的区别</h2>
+ * <ul>
+ *   <li>{@code AlertAnt} —— 嵌入式常驻提示（在页面内）</li>
+ *   <li>{@code MessageAnt} —— 全局顶部/底部/中心短暂提示</li>
+ *   <li>{@code NotificationAnt} —— 全局右下角通知</li>
+ * </ul>
  */
 public class AlertAnt {
 

@@ -1,0 +1,46 @@
+/* ============================================
+   Badge Component
+   ============================================ */
+.badge {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-background-radius: @border-radius-full;
+  -fx-padding: 0 @spacing-xs;
+  -fx-font-size: @font-size-xs;
+  -fx-font-weight: 600;
+}
+
+.badge-success {
+  -fx-background-color: -color-success-emphasis;
+}
+
+.badge-warning {
+  -fx-background-color: -color-warning-emphasis;
+}
+
+.badge-error {
+  -fx-background-color: -color-danger-emphasis;
+}
+
+.badge-dot {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-background-radius: @border-radius-full;
+  -fx-min-width: 8px;
+  -fx-min-height: 8px;
+  -fx-max-width: 8px;
+  -fx-max-height: 8px;
+  -fx-padding: 0;
+}
+
+/* ============================================
+   Divider / Separator Component
+   ============================================ */
+.separator .line {
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px 0 0 0;
+}
+
+.separator:vertical .line {
+  -fx-border-width: 0 1px 0 0;
+}
+

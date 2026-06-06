@@ -2,6 +2,7 @@ package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -150,6 +151,13 @@ public class HBoxAnt extends HBox {
         return this;
     }
 
+    /** 同时设置首选宽高。 */
+    public HBoxAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
+    /** 同时设置最大宽高。 */
+    public HBoxAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
+    /** 同时设置最小宽高。 */
+    public HBoxAnt minSize(double w, double h) { setMinSize(w, h); return this; }
+
     // ============================================================
     // 视觉钩子
     // ============================================================
@@ -177,6 +185,44 @@ public class HBoxAnt extends HBox {
         if (style != null) setStyle(style);
         return this;
     }
+
+    // ============================================================
+    // 方向性边框线（分割线）
+    // ============================================================
+
+    /** 顶部分割线。 */
+    public HBoxAnt borderTop() { styleClass("border-top"); return this; }
+    /** 顶部分割线（开关）。 */
+    public HBoxAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
+    /** 底部分割线。 */
+    public HBoxAnt borderBottom() { styleClass("border-bottom"); return this; }
+    /** 底部分割线（开关）。 */
+    public HBoxAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
+    /** 左侧分割线。 */
+    public HBoxAnt borderLeft() { styleClass("border-left"); return this; }
+    /** 左侧分割线（开关）。 */
+    public HBoxAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
+    /** 右侧分割线。 */
+    public HBoxAnt borderRight() { styleClass("border-right"); return this; }
+    /** 右侧分割线（开关）。 */
+    public HBoxAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
+
+    // ============================================================
+    // 高频节点属性
+    // ============================================================
+
+    /** 设置可见性。 */
+    public HBoxAnt visible(boolean v) { setVisible(v); return this; }
+    /** 设置禁用状态。 */
+    public HBoxAnt disable(boolean d) { setDisable(d); return this; }
+    /** 设置是否受布局管理。 */
+    public HBoxAnt managed(boolean m) { setManaged(m); return this; }
+    /** 设置透明度（0.0 ~ 1.0）。 */
+    public HBoxAnt opacity(double o) { setOpacity(o); return this; }
+    /** 设置鼠标光标。 */
+    public HBoxAnt cursor(Cursor c) { setCursor(c); return this; }
+    /** 设置节点 ID。 */
+    public HBoxAnt id(String id) { setId(id); return this; }
 
     /**
      * Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。

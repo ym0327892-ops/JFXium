@@ -11,16 +11,35 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CollapseAnt - 对标 Ant Design Collapse。
+ * JFXium 折叠面板组件 - 对标 Ant Design Collapse。
  *
- * 重构：collapse 容器 / panel header / arrow / content / divider 全部走 LESS 选择器，
- * disabled 通过 {@link CssClasses#COLLAPSE_DISABLED} 切换 cursor 与 label 颜色。
+ * <p><b>定位</b>：可展开/收缩的内容面板，支持多个 Panel，常用于 FAQ、详情分组、
+ * 设置分组等场景。视觉走 LESS，支持展开动画。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>多 Panel</b>：panel(key, header, content) 添加多个折叠项</li>
+ *   <li><b>手风琴模式</b>：accordion(true) 同时只展开一个</li>
+ *   <li><b>默认展开</b>：defaultActiveKeys(keys)</li>
+ *   <li><b>禁用</b>：panel 级别 disabled</li>
+ *   <li><b>展开动画</b>：内容区高度动画过渡</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * VBox collapse = CollapseAnt.create()
+ *     .panel("q1", "什么是 JFXium？", new Label("JavaFX 组件库..."))
+ *     .panel("q2", "如何安装？", new Label("Maven 依赖..."))
+ *     .accordion(true)
+ *     .build();
+ * }</pre>
  */
 public class CollapseAnt {
 
@@ -44,7 +63,7 @@ public class CollapseAnt {
         public boolean isDisabled() { return disabled; }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private List<Panel> panels = new ArrayList<>();
         private boolean accordion = false;
         private List<String> activeKeys = new ArrayList<>();

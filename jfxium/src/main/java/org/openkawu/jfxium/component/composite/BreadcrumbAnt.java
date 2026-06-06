@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
@@ -11,11 +12,26 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * JFXium Breadcrumb - 对标 Ant Design Breadcrumb。
+ * JFXium 面包屑导航组件 - 对标 Ant Design Breadcrumb。
  *
- * 重构：breadcrumb 容器 / item / link / 分隔符全部走 LESS（{@code breadcrumb-*}），
- * link hover 由 LESS 伪类控制，不再用 setOnMouseEntered/Exited 拼字符串。
- * 最后一项通过 {@link CssClasses#BREADCRUMB_LAST} 修饰类高亮当前位置。
+ * <p><b>定位</b>：显示当前页面在导航层级中的位置，常用于顶部导航路径展示。
+ * 最后一项自动高亮为当前位置。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>导航项</b>：item(title) 纯文本 / item(title, href, onClick) 可点击链接</li>
+ *   <li><b>分隔符</b>：默认 "/"，可自定义</li>
+ *   <li><b>自动高亮</b>：最后一项通过 CSS 修饰类高亮</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * HBox breadcrumb = BreadcrumbAnt.create()
+ *     .item("首页", "/", item -> navigateHome())
+ *     .item("用户管理", "/users", item -> navigateUsers())
+ *     .item("张三")  // 当前页，不可点击
+ *     .build();
+ * }</pre>
  */
 public class BreadcrumbAnt {
 
@@ -29,7 +45,7 @@ public class BreadcrumbAnt {
         public Item(String title, Consumer<Item> onClick) { this.title = title; this.onClick = onClick; }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private List<Item> items = new ArrayList<>();
         private String separator = "/";
 

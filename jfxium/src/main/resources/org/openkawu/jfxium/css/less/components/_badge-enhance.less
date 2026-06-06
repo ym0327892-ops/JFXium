@@ -1,0 +1,95 @@
+/* ============================================
+   Badge Enhancements
+   ============================================ */
+.badge-count {
+  -fx-background-color: -color-danger-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-background-radius: @border-radius-full;
+  -fx-padding: 0 6px;
+  -fx-font-size: @font-size-xs;
+  -fx-font-weight: 600;
+  -fx-min-width: 18px;
+  -fx-min-height: 18px;
+  -fx-alignment: center;
+}
+
+.badge-count.success {
+  -fx-background-color: -color-success-emphasis;
+}
+
+.badge-count.warning {
+  -fx-background-color: -color-warning-emphasis;
+}
+
+.badge-count.error {
+  -fx-background-color: -color-danger-emphasis;
+}
+
+.badge-count.info {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* ============================================
+   BadgeAnt status 形态
+   小圆点 + 状态色，对齐 Ant Design Badge#status。
+   颜色由 styleClass 切换，避免在 Java 端拼 -fx-background-color。
+   尺寸（8x8）与圆角由 Java 端 setPrefSize / setStyle 配合 LESS 共同控制。
+   ============================================ */
+.badge-status {
+  -fx-background-radius: @border-radius-full;
+  -fx-background-color: -color-fg-muted;
+}
+
+.badge-status.badge-status-success {
+  -fx-background-color: -color-success-emphasis;
+}
+
+.badge-status.badge-status-warning {
+  -fx-background-color: -color-warning-emphasis;
+}
+
+.badge-status.badge-status-error {
+  -fx-background-color: -color-danger-emphasis;
+}
+
+.badge-status.badge-status-default {
+  -fx-background-color: -color-fg-muted;
+}
+
+/* Badge with text */
+.badge-text {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-fg-default;
+  -fx-background-radius: @border-radius-sm;
+  -fx-padding: 2px 8px;
+  -fx-font-size: @font-size-xs;
+  -fx-font-weight: 500;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+}
+
+.badge-text.success {
+  -fx-background-color: -color-success-subtle;
+  -fx-text-fill: -color-success-emphasis;
+  -fx-border-color: -color-success-muted;
+}
+
+.badge-text.warning {
+  -fx-background-color: -color-warning-subtle;
+  -fx-text-fill: -color-warning-emphasis;
+  -fx-border-color: -color-warning-muted;
+}
+
+.badge-text.error {
+  -fx-background-color: -color-danger-subtle;
+  -fx-text-fill: -color-danger-emphasis;
+  -fx-border-color: -color-danger-muted;
+}
+
+.badge-text.info {
+  -fx-background-color: -color-accent-subtle;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: -color-accent-muted;
+}
+

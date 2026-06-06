@@ -1,0 +1,191 @@
+/* ============================================
+   Table Component
+   ============================================ */
+.table-view {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-lg;
+  -fx-background-radius: @border-radius-lg;
+  -fx-background-insets: 0;
+}
+
+.table-view .column-header {
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: 0;
+  -fx-font-weight: 600;
+  -fx-alignment: center-left;
+  -fx-background-insets: 0;
+}
+
+/* padding 移到内部 .label 上（AtlantaFX 同款做法），让 column-header 自己 padding=0，
+   排序区（label + arrow + sort-order-dots-container）能自由布局，不会出现"重叠"或"大空白"。 */
+.table-view .column-header .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: 600;
+  -fx-padding: 0 @table-header-padding-x 0 @table-header-padding-x;
+  -fx-alignment: center-left;
+}
+
+/* GridPane 是 column-header 内部包 label+arrow+sort-order 的容器，
+   给它一点右内边距，避免内容贴到列右边线。 */
+.table-view .column-header > GridPane {
+  -fx-padding: 0 4px 0 0;
+}
+
+/* 关键：JavaFX 表头高度由 .column-header-background 控制（外层容器），
+   而不是 .column-header（仅控制单列）。
+   Ant Design 默认 56px，这里设 48px（admin 实用感更紧凑）。 */
+.table-view .column-header-background {
+  -fx-pref-height: 48px;
+  /* 整个表头容器的背景：包括最后一列右侧的"剩余空白区" */
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+  -fx-effect: null;        /* 去掉系统默认的内阴影，避免出现深色阴影线 */
+}
+
+/* 表头容器中间层：嵌套列容器（多级表头时存在）也染同色 */
+.table-view .column-header-background .nested-column-header {
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+}
+
+/* 表头整体底部边框：跨越所有列+剩余空白区，保证视觉连续 */
+.table-view .column-header-background {
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+/* 列分隔线（拖拽手柄）：默认显示一条淡淡的右竖线，让用户能看到列与列的边界。
+   底部横线由 .column-header-background 统一画，这里只画右竖线避免双线。
+   AtlantaFX 同款做法。 */
+.table-view .column-header {
+  -fx-border-color: transparent -color-border-subtle transparent transparent;
+  -fx-border-width: 0 1px 0 0;
+}
+
+.table-view.bordered .column-header {
+  -fx-border-color: transparent -color-border-muted transparent transparent;
+}
+
+/* 表头列 hover：高亮提示"可点击排序" */
+.table-view .column-header:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-cursor: hand;
+}
+
+/* 列宽拖拽手柄：鼠标拖动时显示主题色竖线 */
+.table-view .column-resize-line {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* 排序箭头：AtlantaFX 标准做法。padding 3×4 是默认正常宽度（看起来正好，不是"太宽"）。
+   sorted 时 JavaFX 会自动旋转该节点表示升降序方向。 */
+.table-view .column-header .arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-padding: 3px 4px 3px 4px;
+  -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+}
+
+.table-view .column-header.sorted .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* 排序时显示的小指示点（多列排序时显示序号）。
+   保留默认 padding，AtlantaFX 同款；之前压成 0 会导致箭头与文字重叠。 */
+.table-view .column-header .sort-order-dots-container {
+  -fx-padding: 2px 0 2px 0;
+}
+
+.table-view .column-header .sort-order-dots-container > .sort-order-dot {
+  -fx-background-color: -color-fg-muted;
+  -fx-padding: 0.115em;
+  -fx-background-radius: 0.115em;
+}
+
+/* 多列排序数字（>3 列时显示） */
+.table-view .column-header .sort-order {
+  -fx-padding: 0 0 0 2px;
+}
+
+/* filler 和 show-hide-columns-button：AtlantaFX 标准做法。
+   背景透明（继承自 column-header-background），但保留底部 1px 边框跟 column-header 一致。
+   不再隐藏 show-hide-button（保留默认行为，少改）。 */
+.table-view .column-header-background > .filler {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+.table-view .column-header-background > .show-hide-columns-button {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+  -fx-cursor: hand;
+}
+
+/* Column alignment classes
+   关键：JavaFX 把 column-header 和 table-cell 自身打上 align-* 类，
+   所以选择器必须用".class.class"形式（同节点），不能是空格分隔的后代选择器。 */
+.table-view .column-header.align-left,
+.table-view .table-cell.align-left {
+  -fx-alignment: center-left;
+}
+
+.table-view .column-header.align-left .label,
+.table-view .table-cell.align-left .label {
+  -fx-alignment: center-left;
+  -fx-text-alignment: left;
+}
+
+.table-view .column-header.align-center,
+.table-view .table-cell.align-center {
+  -fx-alignment: center;
+}
+
+.table-view .column-header.align-center .label,
+.table-view .table-cell.align-center .label {
+  -fx-alignment: center;
+  -fx-text-alignment: center;
+}
+
+.table-view .column-header.align-right,
+.table-view .table-cell.align-right {
+  -fx-alignment: center-right;
+}
+
+.table-view .column-header.align-right .label,
+.table-view .table-cell.align-right .label {
+  -fx-alignment: center-right;
+  -fx-text-alignment: right;
+}
+
+/* 表头独立对齐：headerAlign(...) 只影响 column-header */
+.table-view .column-header.align-header-left   { -fx-alignment: center-left; }
+.table-view .column-header.align-header-center { -fx-alignment: center; }
+.table-view .column-header.align-header-right  { -fx-alignment: center-right; }
+
+.table-view .column-header.align-header-left   .label { -fx-alignment: center-left;   -fx-text-alignment: left; }
+.table-view .column-header.align-header-center .label { -fx-alignment: center;        -fx-text-alignment: center; }
+.table-view .column-header.align-header-right  .label { -fx-alignment: center-right;  -fx-text-alignment: right; }
+
+/* 内容独立对齐：contentAlign(...) 只影响 table-cell */
+.table-view .table-cell.align-content-left   { -fx-alignment: center-left; }
+.table-view .table-cell.align-content-center { -fx-alignment: center; }
+.table-view .table-cell.align-content-right  { -fx-alignment: center-right; }
+
+.table-view .table-cell.align-content-left   .label { -fx-alignment: center-left;   -fx-text-alignment: left; }
+.table-view .table-cell.align-content-center .label { -fx-alignment: center;        -fx-text-alignment: center; }
+.table-view .table-cell.align-content-right  .label { -fx-alignment: center-right;  -fx-text-alignment: right; }
+
+/* 表头默认整体居左（保持 Ant 风格），
+   单元格内容默认垂直居中（避免内容看起来贴在顶部） */
+.table-view .table-cell {
+  -fx-alignment: center-left;
+}
+
+/* CheckBoxTableCell 居中（booleanColumn 渲染勾选框时，让勾选框居中显示） */
+.table-view .check-box-table-cell {
+  -fx-alignment: center;
+}
+

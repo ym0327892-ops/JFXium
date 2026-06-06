@@ -4,7 +4,14 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.SVGPath;
+import org.openkawu.jfxium.core.css.CssClasses;
 
+/**
+ * 内部基础组件：消息提示卡片（图标 + 文本）。
+ *
+ * <p>供 {@link org.openkawu.jfxium.component.overlay.MessageAnt} 使用，
+ * 作为 TOP / BOTTOM / CENTER 位置的短暂提示 UI。</p>
+ */
 public class MessageCard {
 
     public enum Type {
@@ -40,15 +47,7 @@ public class MessageCard {
         public HBox build() {
             HBox card = new HBox(8);
             card.setAlignment(Pos.CENTER);
-            card.setStyle(
-                "-fx-background-color: -color-bg-overlay;" +
-                "-fx-padding: 10px 16px;" +
-                "-fx-background-radius: 8px;" +
-                "-fx-border-radius: 8px;" +
-                "-fx-border-color: -color-border-default;" +
-                "-fx-border-width: 1px;" +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);"
-            );
+            card.getStyleClass().add(CssClasses.MESSAGE_CARD);
 
             if (type != Type.LOADING) {
                 SVGPath icon = new SVGPath();
@@ -58,7 +57,7 @@ public class MessageCard {
             }
 
             Label contentLabel = new Label(content);
-            contentLabel.setStyle("-fx-text-fill: -color-fg-default; -fx-font-size: 14px;");
+            contentLabel.getStyleClass().add(CssClasses.MESSAGE_CARD_CONTENT);
             card.getChildren().add(contentLabel);
 
             if (closable && onClose != null) {

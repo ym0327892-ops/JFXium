@@ -4,6 +4,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 
 /**
  * JFXium 二维码组件 - 对标 Ant Design QRCode
@@ -29,7 +30,7 @@ import javafx.scene.paint.Color;
  */
 public class QRCodeAnt {
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String value = "";
         private int size = 160;
         private Color color = Color.BLACK;

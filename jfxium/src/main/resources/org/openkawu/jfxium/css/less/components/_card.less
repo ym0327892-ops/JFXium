@@ -1,0 +1,135 @@
+/* ============================================
+   Card Component
+   ============================================ */
+.card {
+  .card-base();
+}
+
+.card.bordered {
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+}
+
+.card.shadow-sm {
+  .shadow-sm();
+}
+
+.card.shadow-md {
+  .shadow-md();
+}
+
+.card.shadow-lg {
+  .shadow-lg();
+}
+
+/* M10 新增：Card 增强功能 */
+
+/* 小尺寸卡片 */
+.card.card-small {
+  -fx-font-size: 14px;
+}
+
+.card.card-small .card-header {
+  -fx-padding: @spacing-md @spacing-md;
+}
+
+.card.card-small .card-body {
+  -fx-padding: @spacing-md;
+}
+
+/* 内嵌卡片 */
+.card.card-inner {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+}
+
+/* 卡片 Header */
+.card .card-header {
+  -fx-padding: (@card-padding * 0.75) @card-padding;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+/* 卡片 Body */
+.card .card-body {
+  -fx-padding: @card-padding;
+}
+
+.card.card-small .card-body {
+  -fx-padding: @spacing-md;
+}
+
+/* 卡片封面 */
+.card .card-cover {
+  -fx-background-color: -color-bg-subtle;
+  -fx-min-height: 200px;
+}
+
+.card .card-cover .image-view {
+  -fx-fit-width: stretch;
+  -fx-preserve-ratio: true;
+}
+
+/* 卡片 Footer（操作区） */
+.card .card-actions {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+  -fx-padding: 12px 0;
+}
+
+.card .card-action-item {
+  -fx-padding: 12px 16px;
+  -fx-cursor: hand;
+}
+
+.card .card-action-item:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+/* 卡片标签页 */
+.card .card-tab-bar {
+  -fx-padding: 0 24px;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+  -fx-alignment: center-left;
+}
+
+.card.card-small .card-tab-bar {
+  -fx-padding: 0 12px;
+}
+
+.card .card-tab-list {
+  -fx-spacing: 0;
+  -fx-alignment: center-left;
+}
+
+.card .card-tab-item {
+  -fx-padding: 12px 16px;
+  -fx-text-fill: -color-fg-muted;
+  -fx-cursor: hand;
+  -fx-border-color: transparent;
+  -fx-border-width: 0 0 2px 0;
+}
+
+.card .card-tab-item:hover {
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.card .card-tab-item.active {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 0 0 2px 0;
+}
+
+.card .card-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.card.card-small .card-title {
+  -fx-font-size: 14px;
+}
+

@@ -12,8 +12,25 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 /**
- * JFXium 可调整尺寸面板组件。
+ * JFXium 可调整尺寸面板组件（组合式，Builder 模式）。
  *
+ * <p><b>定位</b>：可拖拽边缘调整大小的容器，包装 StackPane，
+ * 支持水平 / 垂直 / 双向调整。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>调整模式</b>：HORIZONTAL / VERTICAL / BOTH / NONE</li>
+ *   <li><b>尺寸约束</b>：prefWidth/prefHeight + minWidth/minHeight + maxWidth/maxHeight</li>
+ *   <li>拖拽边缘调整大小（带视觉反馈）</li>
+ * </ul>
+ *
+ * <h2>典型场景</h2>
+ * <ul>
+ *   <li>侧边详情面板（左右拖拽调整宽度）</li>
+ *   <li>底部控制台面板（上下拖拽调整高度）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
  * <pre>{@code
  * StackPane panel = ResizablePanelAnt.create()
  *     .content(detailView)

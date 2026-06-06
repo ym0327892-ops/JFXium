@@ -1,0 +1,39 @@
+/* ============================================
+   Label & Text Styles
+   ============================================ */
+.label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.label.muted {
+  -fx-text-fill: -color-fg-muted;
+}
+
+.label.subtle {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.label.heading {
+  -fx-font-size: @font-size-xl;
+  -fx-font-weight: 600;
+}
+
+/* ============================================
+   Hyperlink
+   ============================================ */
+.hyperlink {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: transparent;
+  -fx-underline: true;
+  -fx-cursor: hand;
+}
+
+.hyperlink:hover {
+  -fx-text-fill: -color-accent-4;
+}
+
+.hyperlink:disabled {
+  -fx-opacity: 0.6;
+}
+

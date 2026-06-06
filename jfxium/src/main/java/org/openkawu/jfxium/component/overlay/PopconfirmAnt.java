@@ -6,13 +6,54 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 import org.openkawu.jfxium.component.base.PopconfirmPanel;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.function.Consumer;
 
+/**
+ * JFXium 气泡确认框组件 - 对标 Ant Design Popconfirm。
+ *
+ * <p><b>定位</b>：在目标元素旁弹出轻量确认面板，包含标题 + 描述 + 确认/取消按钮，
+ * 用于二次确认危险操作（删除、提交等）。比 ModalAnt 更轻量，不打断用户操作流。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>标题 + 描述</b>：双行文案，描述可留空</li>
+ *   <li><b>自定义按钮文案</b>：okText / cancelText（null 时走 i18n 默认值）</li>
+ *   <li><b>回调</b>：onConfirm / onCancel，回传 boolean</li>
+ *   <li><b>目标锚定</b>：target(Node) 指定弹出位置（目标元素正下方 +8px）</li>
+ *   <li><b>动画</b>：150ms FadeIn</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * // 删除确认
+ * PopconfirmAnt.create()
+ *     .title("确定删除？")
+ *     .description("删除后无法恢复")
+ *     .target(deleteButton)
+ *     .onConfirm(ok -> doDelete())
+ *     .build()
+ *     .show();
+ *
+ * // 自定义按钮文案
+ * PopconfirmAnt.create()
+ *     .title("提交审批？")
+ *     .okText("提交")
+ *     .cancelText("再想想")
+ *     .target(submitBtn)
+ *     .onConfirm(ok -> submitForApproval())
+ *     .build()
+ *     .show();
+ * }</pre>
+ *
+ * @see ModalAnt 重量级对话框（适合复杂交互）
+ * @see org.openkawu.jfxium.component.overlay.MessageAnt 全局消息提示（无需确认）
+ */
 public class PopconfirmAnt {
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private String title = "";
         private String description = "";
         // null = 用 i18n 默认值；非 null = 调用方显式指定

@@ -8,9 +8,35 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+
 /**
- * JFXium Avatar Component
- * Inspired by Ant Design Avatar
+ * JFXium 头像组件 - 对标 Ant Design Avatar。
+ *
+ * <p><b>定位</b>：圆形/圆角方形头像容器，支持图片、文字首字母、自定义节点三种模式。
+ * 常用于用户头像、团队成员展示、评论者标识等场景。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>类型</b>：src(url) 图片 / text(“张三”) 文字首字母 / icon(Node) 自定义节点</li>
+ *   <li><b>尺寸</b>：SMALL(24) / DEFAULT(32) / LARGE(40) / XL(64)</li>
+ *   <li><b>形状</b>：CIRCLE（圆形，默认）/ SQUARE（圆角方形）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * // 图片头像
+ * StackPane avatar = AvatarAnt.create()
+ *     .src("https://example.com/avatar.jpg")
+ *     .size(AvatarAnt.Size.LARGE)
+ *     .build();
+ *
+ * // 文字头像（取首字母）
+ * StackPane textAvatar = AvatarAnt.create()
+ *     .text("张三")
+ *     .size(AvatarAnt.Size.DEFAULT)
+ *     .build();
+ * }</pre>
  */
 public class AvatarAnt {
 
@@ -36,7 +62,7 @@ public class AvatarAnt {
         IMAGE, TEXT, ICON
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private Size size = Size.DEFAULT;
         private Shape shape = Shape.CIRCLE;
         private String text = "";

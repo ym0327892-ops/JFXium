@@ -51,3 +51,14 @@
   -fx-text-fill: white;
   -fx-font-size: 13px;
 }
+
+/* BarAnt 自定义演示：蓝色强调背景 */
+.jfx-demo-bar-accent {
+  -fx-background-color: -color-accent-subtle;
+  -fx-background-radius: 4px;
+}
+
+/* BarAnt 自定义演示：白色卡片背景 */
+.jfx-demo-bar-card {
+  -fx-background-color: -color-bg-default;
+}

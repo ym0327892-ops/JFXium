@@ -1,0 +1,128 @@
+/* ============================================
+   Alert Enhancements with Icons
+   ============================================ */
+.alert-with-icon {
+  -fx-padding: @alert-padding-y @alert-padding-x;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-width: 1px;
+}
+
+.alert-with-icon.success {
+  -fx-background-color: -color-success-subtle;
+  -fx-border-color: -color-success-muted;
+}
+
+.alert-with-icon.info {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-muted;
+}
+
+.alert-with-icon.warning {
+  -fx-background-color: -color-warning-subtle;
+  -fx-border-color: -color-warning-muted;
+}
+
+.alert-with-icon.error {
+  -fx-background-color: -color-danger-subtle;
+  -fx-border-color: -color-danger-muted;
+}
+
+.alert-icon {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+}
+
+.alert-icon.success {
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.alert-icon.info {
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.alert-icon.warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.alert-icon.error {
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.alert-title {
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.alert-description {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-muted;
+}
+
+/* ============================================
+   AlertAnt 完整状态机：
+   - 容器形态：默认（带边框圆角） / banner（无边框、占满宽度）
+   - 文本三件套：alert-title / alert-message / alert-icon，颜色由 type 修饰类切换
+   - 关闭按钮：alert-close-btn，文字色随 type 变化
+   原 Java 端 inline setStyle 的所有视觉样式现已搬入此 section。
+   ============================================ */
+.jfx-alert {
+  -fx-padding: 12 16 12 16;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-radius: @border-radius-md;
+  -fx-border-width: 1px;
+}
+
+/* banner 形态：无圆角、无边框，整条横幅 */
+.jfx-alert.alert-banner {
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+  -fx-border-width: 0;
+}
+
+/* Alert 标题 + 各 type 文字色 */
+.jfx-alert .alert-title {
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 600;
+}
+
+.jfx-alert.alert-success .alert-title { -fx-text-fill: -color-success-emphasis; }
+.jfx-alert.alert-info .alert-title    { -fx-text-fill: -color-accent-emphasis;  }
+.jfx-alert.alert-warning .alert-title { -fx-text-fill: -color-warning-emphasis; }
+.jfx-alert.alert-error .alert-title   { -fx-text-fill: -color-danger-emphasis;  }
+
+/* Alert 描述/正文 */
+.jfx-alert .alert-message {
+  -fx-font-size: @font-size-sm;
+}
+
+.jfx-alert.alert-success .alert-message { -fx-text-fill: -color-success-emphasis; }
+.jfx-alert.alert-info .alert-message    { -fx-text-fill: -color-accent-emphasis;  }
+.jfx-alert.alert-warning .alert-message { -fx-text-fill: -color-warning-emphasis; }
+.jfx-alert.alert-error .alert-message   { -fx-text-fill: -color-danger-emphasis;  }
+
+/* Alert 状态图标（容器内）字号 */
+.jfx-alert .alert-icon {
+  -fx-font-size: 16px;
+}
+
+/* Alert 关闭按钮：透明背景，文字色随 type，hover 浅化通过 opacity 控制 */
+.jfx-alert .alert-close-btn {
+  -fx-background-color: transparent;
+  -fx-font-size: @font-size-sm;
+  -fx-padding: 0;
+  -fx-min-width: 20px;
+  -fx-min-height: 20px;
+  -fx-cursor: hand;
+}
+
+.jfx-alert.alert-success .alert-close-btn { -fx-text-fill: -color-success-emphasis; }
+.jfx-alert.alert-info .alert-close-btn    { -fx-text-fill: -color-accent-emphasis;  }
+.jfx-alert.alert-warning .alert-close-btn { -fx-text-fill: -color-warning-emphasis; }
+.jfx-alert.alert-error .alert-close-btn   { -fx-text-fill: -color-danger-emphasis;  }
+
+.jfx-alert .alert-close-btn:hover {
+  -fx-opacity: 0.7;
+}
+

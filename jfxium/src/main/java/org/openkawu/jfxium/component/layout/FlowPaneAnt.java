@@ -3,6 +3,7 @@ package org.openkawu.jfxium.component.layout;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
 import org.openkawu.jfxium.core.css.Background;
@@ -159,6 +160,13 @@ public class FlowPaneAnt extends FlowPane {
         return this;
     }
 
+    /** 同时设置首选宽高。 */
+    public FlowPaneAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
+    /** 同时设置最大宽高。 */
+    public FlowPaneAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
+    /** 同时设置最小宽高。 */
+    public FlowPaneAnt minSize(double w, double h) { setMinSize(w, h); return this; }
+
     /** 给指定子节点设置外边距。 */
     public FlowPaneAnt margin(Node child, Insets margin) {
         FlowPane.setMargin(child, margin);
@@ -192,6 +200,44 @@ public class FlowPaneAnt extends FlowPane {
         if (style != null) setStyle(style);
         return this;
     }
+
+    // ============================================================
+    // 方向性边框线（分割线）
+    // ============================================================
+
+    /** 顶部分割线。 */
+    public FlowPaneAnt borderTop() { styleClass("border-top"); return this; }
+    /** 顶部分割线（开关）。 */
+    public FlowPaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
+    /** 底部分割线。 */
+    public FlowPaneAnt borderBottom() { styleClass("border-bottom"); return this; }
+    /** 底部分割线（开关）。 */
+    public FlowPaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
+    /** 左侧分割线。 */
+    public FlowPaneAnt borderLeft() { styleClass("border-left"); return this; }
+    /** 左侧分割线（开关）。 */
+    public FlowPaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
+    /** 右侧分割线。 */
+    public FlowPaneAnt borderRight() { styleClass("border-right"); return this; }
+    /** 右侧分割线（开关）。 */
+    public FlowPaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
+
+    // ============================================================
+    // 高频节点属性
+    // ============================================================
+
+    /** 设置可见性。 */
+    public FlowPaneAnt visible(boolean v) { setVisible(v); return this; }
+    /** 设置禁用状态。 */
+    public FlowPaneAnt disable(boolean d) { setDisable(d); return this; }
+    /** 设置是否受布局管理。 */
+    public FlowPaneAnt managed(boolean m) { setManaged(m); return this; }
+    /** 设置透明度（0.0 ~ 1.0）。 */
+    public FlowPaneAnt opacity(double o) { setOpacity(o); return this; }
+    /** 设置鼠标光标。 */
+    public FlowPaneAnt cursor(Cursor c) { setCursor(c); return this; }
+    /** 设置节点 ID。 */
+    public FlowPaneAnt id(String id) { setId(id); return this; }
 
     /** Builder 模式终结调用，返回自身。详见 {@link VBoxAnt#build()}。 */
     public FlowPaneAnt build() {

@@ -442,10 +442,10 @@ public class CodeBlockAnt {
             node.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() >= 2) {
                     // TextFlow 没有选中概念，这里给视觉反馈
-                    node.setStyle("-fx-background-color: -color-bg-subtle;");
+                    node.getStyleClass().add(CssClasses.CODEBLOCK_HIGHLIGHT);
                     javafx.animation.PauseTransition pause = 
                         new javafx.animation.PauseTransition(javafx.util.Duration.millis(200));
-                    pause.setOnFinished(ev -> node.setStyle(""));
+                    pause.setOnFinished(ev -> node.getStyleClass().remove(CssClasses.CODEBLOCK_HIGHLIGHT));
                     pause.play();
                 }
             });

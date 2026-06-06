@@ -12,25 +12,28 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 /**
- * JFXium BackTop Component - 对标 Ant Design BackTop。
+ * JFXium 回到顶部组件 - 对标 Ant Design BackTop（组合式，Builder 模式）。
  *
- * <h2>修复说明</h2>
- * 原实现存在 5 处 inline {@code setStyle}：
- * <ul>
- *   <li>容器初始样式：背景/圆角/边框/padding/cursor/dropshadow 拼一长串</li>
- *   <li>arrow 图标 fill</li>
- *   <li>{@code setOnMouseEntered} / {@code setOnMouseExited} 各自重新拼整段 setStyle 实现 hover</li>
- * </ul>
- * 这是典型"用 Java 事件回调实现 hover"的反模式：当 LESS 早就支持 {@code :hover} 伪类时，
- * 完全没必要走 Java。
+ * <p><b>定位</b>：固定在右下角的浮动按钮，滚动到一定高度后显示，
+ * 点击平滑滚动回顶部。</p>
  *
- * <h2>本次改动</h2>
+ * <h2>功能特性</h2>
  * <ul>
- *   <li>容器样式搬到 LESS {@code .jfx-back-top}，hover 走 LESS {@code :hover} 伪类</li>
- *   <li>删除 {@code setOnMouseEntered} / {@code setOnMouseExited} 两段 inline 注入</li>
- *   <li>arrow 颜色走 LESS {@code .jfx-back-top-arrow}</li>
- *   <li>接入 {@link AbstractStyleBuilder}</li>
+ *   <li>可设触发显示高度（{@code visibilityHeight}，默认 400px）</li>
+ *   <li>可设右下角位置（bottom + right）</li>
+ *   <li>平滑滚动动画（可设 duration）</li>
+ *   <li>可指定滚动目标容器（默认滚动父 ScrollPane）</li>
+ *   <li>hover 效果走 LESS（{@code .jfx-back-top:hover}）</li>
  * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node backTop = BackTopAnt.create()
+ *     .visibilityHeight(300)
+ *     .bottom(60).right(40)
+ *     .build();
+ * // 添加到 Scene 根层（与 ScrollPane 同级）
+ * }</pre>
  */
 public class BackTopAnt {
 

@@ -1,0 +1,20 @@
+/* ============================================
+   SplitPane
+   ============================================ */
+.split-pane {
+  -fx-background-color: -color-bg-default;
+}
+
+.split-pane .split-pane-divider {
+  -fx-background-color: -color-border-muted;
+  -fx-padding: 0 @split-divider-padding;
+}
+
+.split-pane:horizontal .split-pane-divider {
+  -fx-padding: 0 @split-divider-padding;
+}
+
+.split-pane:vertical .split-pane-divider {
+  -fx-padding: @split-divider-padding 0;
+}
+

@@ -9,15 +9,39 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.function.Consumer;
 
 /**
- * InputNumberAnt - 对标 Ant Design InputNumber。
+ * JFXium 数字输入框组件 - 对标 Ant Design InputNumber（组合式，Builder 模式）。
  *
- * 重构：容器/前后缀/编辑框/+/- 按钮的视觉样式全部走 LESS，
- * hover/pressed 由 LESS 伪类控制，不再用 setOnMouseEntered/Pressed/Released 注入字符串。
+ * <p><b>定位</b>：带 +/- 按钮的数字输入控件，支持范围限制、步长、精度控制，
+ * 与 SpinnerAnt（加载旋转）严格区分。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>范围限制</b>：min / max</li>
+ *   <li><b>步长</b>：step（默认 1）</li>
+ *   <li><b>精度</b>：precision（小数位数）</li>
+ *   <li><b>尺寸</b>：SMALL / DEFAULT / LARGE</li>
+ *   <li><b>前缀/后缀</b>：prefix / suffix（如￥、%）</li>
+ *   <li><b>禁用/只读</b>：disabled / readOnly</li>
+ *   <li>视觉样式走 LESS（{@code .jfx-input-number} 系列）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node numInput = InputNumberAnt.create()
+ *     .value(10)
+ *     .min(0).max(100)
+ *     .step(5)
+ *     .suffix("%")
+ *     .size(InputNumberAnt.Size.SMALL)
+ *     .onChange(val -> System.out.println("数值：" + val))
+ *     .build();
+ * }</pre>
  */
 public class InputNumberAnt {
 
@@ -25,7 +49,7 @@ public class InputNumberAnt {
         SMALL, DEFAULT, LARGE
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private double value = 0;
         private double min = Double.NEGATIVE_INFINITY;
         private double max = Double.POSITIVE_INFINITY;

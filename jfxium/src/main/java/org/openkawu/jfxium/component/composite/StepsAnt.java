@@ -9,16 +9,36 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JFXium Steps - 对标 Ant Design Steps。
+ * JFXium 步骤条组件 - 对标 Ant Design Steps。
  *
- * 重构：steps 容器 / circle / number / title / description / line 全部走 LESS，
- * 状态（finished / current / wait）通过修饰类 {@code steps-finished/current/wait} 切换。
+ * <p><b>定位</b>：引导用户按流程完成任务的导航条，常用于注册流程、订单状态、
+ * 向导式表单等场景。支持水平/垂直布局、多种尺寸。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>方向</b>：HORIZONTAL（默认）/ VERTICAL</li>
+ *   <li><b>尺寸</b>：SMALL / DEFAULT</li>
+ *   <li><b>步骤状态</b>：finished / current / wait，自动通过修饰类切换颜色</li>
+ *   <li><b>当前步</b>：current(n) 指定当前步骤索引</li>
+ *   <li><b>步骤项</b>：支持 title + description + 可选自定义图标</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * HBox steps = StepsAnt.create()
+ *     .step("填写信息", "基本资料")
+ *     .step("验证身份", "手机/邮箱")
+ *     .step("完成注册", "")
+ *     .current(1)  // 第二步进行中
+ *     .build();
+ * }</pre>
  */
 public class StepsAnt {
 
@@ -44,7 +64,7 @@ public class StepsAnt {
         }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private List<Step> steps = new ArrayList<>();
         private int current = 0;
         private Direction direction = Direction.HORIZONTAL;

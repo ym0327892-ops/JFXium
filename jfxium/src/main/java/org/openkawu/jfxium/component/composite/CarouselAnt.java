@@ -10,16 +10,37 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JFXium Carousel - 对标 Ant Design Carousel。
+ * JFXium 走马灯组件 - 对标 Ant Design Carousel（组合式，Builder 模式）。
  *
- * 重构：容器/箭头按钮/dots 视觉样式全部走 LESS，
- * 箭头按钮 hover 与 dot active 状态通过 styleClass 切换，不再 inline。
+ * <p><b>定位</b>：轮播图控件，支持自动播放、手动切换、指示点导航，
+ * 用于展示图片或内容轮播。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>切换效果</b>：SCROLL（滚动）/ FADE（淡入淡出）</li>
+ *   <li><b>自动播放</b>：autoplay + autoplayInterval（默认 3s）</li>
+ *   <li><b>指示点位置</b>：TOP / CENTER / BOTTOM</li>
+ *   <li><b>箭头按钮</b>：hover 显示左右切换箭头</li>
+ *   <li>视觉样式走 LESS（{@code .jfx-carousel} 系列）</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * Node carousel = CarouselAnt.create()
+ *     .item(image1)
+ *     .item(image2)
+ *     .item(image3)
+ *     .autoplay(true)
+ *     .effect(CarouselAnt.Effect.SCROLL)
+ *     .build();
+ * }</pre>
  */
 public class CarouselAnt {
 
@@ -32,7 +53,7 @@ public class CarouselAnt {
         TOP, CENTER, BOTTOM
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private List<Node> items = new ArrayList<>();
         private boolean autoplay = false;
         private Duration autoplayInterval = Duration.seconds(3);

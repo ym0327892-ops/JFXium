@@ -16,31 +16,35 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 /**
- * JFXium Spin Component - 对标 Ant Design Spin（加载状态）。
+ * JFXium 加载中组件 - 对标 Ant Design Spin。
  *
- * <h2>修复说明</h2>
- * 原实现 5 处 inline {@code setStyle}：
+ * <p><b>定位</b>：加载状态指示器，支持三种动画样式（spinner/dots/bars），
+ * 可嵌入内容区或全屏覆盖。常用于数据加载中、提交等待、异步操作等场景。</p>
+ *
+ * <h2>功能特性</h2>
  * <ul>
- *   <li>fullscreen 模式半透明遮罩拼字符串</li>
- *   <li>tipLabel 字号 + 颜色拼字符串</li>
- *   <li>3 个 indicator（spinner/dots/bars）通过 {@code Color.web("#1677ff")} 硬编码主题色</li>
+ *   <li><b>尺寸</b>：SMALL / DEFAULT / LARGE</li>
+ *   <li><b>动画样式</b>：SPINNER（旋转圆环）/ DOTS（圆点）/ BARS（矩形条）</li>
+ *   <li><b>提示文本</b>：tip("加载中...")</li>
+ *   <li><b>嵌入模式</b>：content(Node) 把加载器盖在内容上</li>
+ *   <li><b>全屏模式</b>：fullscreen(true) 覆盖整个场景</li>
+ *   <li><b>主题色</b>：所有颜色通过 LESS 变量控制，支持主题切换</li>
  * </ul>
  *
- * <h2>本次改动（M7）</h2>
- * <ul>
- *   <li>容器/fullscreen/tip 样式搬到 LESS 选择器</li>
- *   <li>接入 {@link AbstractStyleBuilder}</li>
- *   <li>✅ 修复 indicator 硬编码主题色：改用 Region + CSS 变量（替代 Shape + Color.web）</li>
- * </ul>
+ * <h2>用法</h2>
+ * <pre>{@code
+ * // 简单加载器
+ * StackPane spin = SpinAnt.create()
+ *     .size(SpinAnt.Size.LARGE)
+ *     .tip("加载中...")
+ *     .build();
  *
- * <h2>技术方案</h2>
- * 使用 Region + CSS {@code -fx-background-color} 替代 Shape + {@code Color.web("#1677ff")}：
- * <ul>
- *   <li>Spinner: 用 Region + CSS border + rotate 动画</li>
- *   <li>Dots: 用 Region + CSS border-radius: 50% 实现圆点</li>
- *   <li>Bars: 用 Region + CSS background-color 实现矩形条</li>
- * </ul>
- * 所有颜色通过 LESS 变量 {@code -color-accent-emphasis} 控制，支持主题切换。
+ * // 嵌入内容加载
+ * StackPane loading = SpinAnt.create()
+ *     .content(dataTable)
+ *     .tip("正在加载数据...")
+ *     .build();
+ * }</pre>
  */
 public class SpinAnt {
 

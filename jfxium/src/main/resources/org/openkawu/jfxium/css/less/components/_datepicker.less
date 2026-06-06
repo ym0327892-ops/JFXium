@@ -1,0 +1,207 @@
+/* ============================================
+   DatePicker Component
+   ============================================ */
+.date-picker {
+  .input-base();
+  /* M19.43 #7：modena 算的 pref 宽偏窄，配上我们的 padding + 箭头按钮会把日期文字裁掉「显示不全」。
+     给一个能容纳「2026/05/31 + 箭头」的最小宽度，文字不再被截断。 */
+  -fx-min-width: 130px;
+  -fx-pref-width: 160px;
+  
+}
+
+/* 去掉内部 text-field 自带的边框/背景，否则与外层 .date-picker 的 input-base 边框叠成"双边框"（M19.42 #7） */
+.date-picker > .text-field {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 0;
+  -fx-effect: none;
+}
+
+.date-picker:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+.date-picker:focused {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.date-picker .arrow-button {
+  -fx-background-color: transparent;
+  -fx-cursor: hand;
+}
+
+.date-picker .arrow-button .arrow {
+  /* 显式设 shape + 尺寸——modena 的 DatePicker arrow 默认没 shape，只设颜色会"有色无形"（SKILL §17）。
+     用日历图标 shape（Material event/calendar），保证箭头可见可点 */
+  -fx-shape: "M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z";
+  -fx-min-width: 14px;
+  -fx-min-height: 14px;
+  -fx-pref-width: 14px;
+  -fx-pref-height: 14px;
+  -fx-max-width: 14px;
+  -fx-max-height: 14px;
+  -fx-background-color: -color-fg-muted;
+}
+
+.date-picker:hover .arrow-button .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+.date-picker-popup {
+  -fx-background-color: -color-bg-overlay;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+  -fx-padding: 0;
+  -fx-alignment: center;
+  -fx-spacing: 0;
+}
+
+.date-picker-popup .month-year-pane {
+  -fx-background-color: transparent;
+  -fx-padding: 8px 12px;
+  -fx-alignment: center;
+}
+
+/* 名为 .spinner 实为 HBox（左箭头+标签+右箭头），靠 class 名复用 spinner 样式。
+   对齐 AtlantaFX：居中 + 紧凑间距，去掉边框/圆角。 */
+.date-picker-popup .spinner {
+  -fx-spacing: 4px;
+  -fx-alignment: center;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.date-picker-popup .spinner .button {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 4px 6px;
+  -fx-cursor: hand;
+}
+
+.date-picker-popup .spinner .button:hover {
+  -fx-background-color: transparent;
+}
+
+/* DatePicker popup 月/年 spinner 的左右箭头：modena 不给默认 shape，必须显式设
+   （否则箭头 0 尺寸不可见，只剩空圆角按钮——SKILL §17「有色无形」，M19.42 #49） */
+.date-picker-popup .spinner .left-arrow,
+.date-picker-popup .spinner .right-arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-padding: 4px;
+  -fx-scale-shape: true;
+}
+
+/* 左箭头：Material chevron-left；右箭头：chevron-right */
+.date-picker-popup .spinner .left-arrow {
+  -fx-shape: "M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z";
+}
+
+.date-picker-popup .spinner .right-arrow {
+  -fx-shape: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z";
+}
+
+.date-picker-popup .spinner .button:hover .left-arrow,
+.date-picker-popup .spinner .button:hover .right-arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+.date-picker-popup .spinner .label {
+  -fx-alignment: center;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 600;
+}
+
+.date-picker-popup .calendar-grid {
+  -fx-background-color: transparent;
+  -fx-padding: 8px;
+  -fx-hgap: 4px;
+  -fx-vgap: 2px;
+  -fx-alignment: center;
+}
+
+.date-picker-popup .day-cell {
+  -fx-text-fill: -color-fg-default;
+  -fx-background-color: transparent;
+  -fx-font-size: 13px;
+  -fx-alignment: center;
+  -fx-padding: 0;
+  -fx-cell-size: 32px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.date-picker-popup .day-cell:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-cursor: hand;
+}
+
+.date-picker-popup .day-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.date-picker-popup .day-cell:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-font-weight: 600;
+}
+
+.date-picker-popup .day-cell:today {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.date-picker-popup .day-cell:disabled {
+  -fx-text-fill: -color-fg-disabled;
+  -fx-opacity: 0.4;
+}
+
+/* DatePicker Popup 增强样式 */
+.date-picker-popup .calendar-header {
+  -fx-background-color: transparent;
+  -fx-padding: 12px 16px;
+  -fx-alignment: center;
+}
+
+.date-picker-popup .navigate-btn {
+  -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 4px 8px;
+  -fx-cursor: hand;
+}
+
+.date-picker-popup .navigate-btn:hover {
+  -fx-background-color: -color-accent-subtle;
+}
+
+.date-picker-popup .title-label {
+  -fx-font-size: 14px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.date-picker-popup .day-name-cell {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 12px;
+  -fx-font-weight: 500;
+  -fx-alignment: center;
+  -fx-padding: 4px;
+}
+
+.date-picker-popup .week-number-cell {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 11px;
+}
+

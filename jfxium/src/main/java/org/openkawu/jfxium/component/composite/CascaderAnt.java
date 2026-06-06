@@ -11,6 +11,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
@@ -18,9 +19,31 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * CascaderAnt - 对标 Ant Design Cascader。
+ * JFXium 级联选择器组件 - 对标 Ant Design Cascader。
  *
- * 重构：所有 inline 视觉样式改为 LESS（{@code cascader-*}），hover 由 LESS 控制。
+ * <p><b>定位</b>：多级下拉选择器，常用于省市区三级联动、分类目录选择等场景。
+ * 支持多级嵌套 Option。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>多级选项</b>：Option 支持 children 嵌套（无限层级）</li>
+ *   <li><b>搜索过滤</b>：输入关键字过滤选项</li>
+ *   <li><b>回调</b>：onChange 回传选中的值路径</li>
+ *   <li><b>占位符</b>：placeholder(text)</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * HBox cascader = CascaderAnt.create()
+ *     .placeholder("选择地区")
+ *     .option(new Option("zj", "浙江", List.of(
+ *         new Option("hz", "杭州", null),
+ *         new Option("nb", "宁波", null))))
+ *     .option(new Option("js", "江苏", List.of(
+ *         new Option("nj", "南京", null))))
+ *     .onChange(path -> System.out.println("选中：" + path))
+ *     .build();
+ * }</pre>
  */
 public class CascaderAnt {
 
@@ -46,7 +69,7 @@ public class CascaderAnt {
         public boolean hasChildren() { return children != null && !children.isEmpty(); }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private List<Option> options = new ArrayList<>();
         private String placeholder = "Please select";
         private boolean disabled = false;

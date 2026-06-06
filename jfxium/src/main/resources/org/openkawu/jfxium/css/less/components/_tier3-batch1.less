@@ -1,0 +1,248 @@
+/* ============================================
+   Batch 3 Tier 3：DrawerAnt / ModalAnt / CascaderAnt /
+                   TimelineAnt / TransferAnt
+   ============================================ */
+
+/* 通用 overlay 遮罩层（Drawer / Modal 共用） */
+.jfx-overlay-mask {
+  -fx-background-color: rgba(0, 0, 0, 0.45);
+}
+
+/* 通用面板"圆角 + 阴影 + 背景"（Drawer 与 Modal 主体复用） */
+.jfx-overlay-panel {
+  -fx-background-color: -color-bg-overlay;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 16, 0, 0, 4);
+}
+
+.jfx-overlay-panel.jfx-overlay-panel-rounded {
+  -fx-background-radius: @border-radius-lg;
+  -fx-border-radius: @border-radius-lg;
+}
+
+/* overlay 标题区（顶部边框 + 标题 + 关闭按钮） */
+.jfx-overlay-header {
+  -fx-padding: 16 24 16 24;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+.jfx-overlay-title {
+  -fx-font-size: @font-size-lg;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-overlay-close-btn {
+  /* 清除 JavaFX modena 默认按钮的层叠背景/边框/圆角，让 × 只显示纯文字符号 */
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: @border-radius-sm;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 18px;
+  /* 留出 hover 圆形背景的余地，但内边距不要太大避免视觉撑开 */
+  -fx-padding: 2 6 2 6;
+  -fx-min-width: 28;
+  -fx-min-height: 28;
+  -fx-cursor: hand;
+  /* 显式去掉默认 focus 描边，避免聚焦时弹出蓝框 */
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+/* hover 时才显浅色圆形背景，对齐 Ant Design Modal/Drawer × 的微交互 */
+.jfx-overlay-close-btn:hover {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-overlay-close-btn:armed,
+.jfx-overlay-close-btn:pressed {
+  -fx-background-color: -color-border-muted;
+}
+
+/* overlay 内容区与底部 */
+.jfx-overlay-body {
+  -fx-padding: 24;
+}
+
+.jfx-overlay-footer {
+  -fx-padding: 16 24 16 24;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1 0 0 0;
+}
+
+/* CascaderAnt */
+.cascader {
+  -fx-background-color: transparent;
+}
+
+.cascader:disabled {
+  -fx-opacity: 0.6;
+}
+
+.cascader-field {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 8 12 8 12;
+}
+
+.cascader-column {
+  -fx-min-width: 160;
+  -fx-padding: 4 0 4 0;
+}
+
+.cascader-item {
+  -fx-padding: 8 12 8 12;
+  -fx-background-color: transparent;
+  -fx-cursor: hand;
+}
+
+.cascader-item:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.cascader-item.cascader-item-disabled {
+  -fx-cursor: default;
+}
+
+.cascader-item.cascader-item-disabled:hover {
+  -fx-background-color: transparent;
+}
+
+.cascader-item-label {
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+}
+
+.cascader-item.cascader-item-disabled .cascader-item-label {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.cascader-arrow {
+  -fx-stroke: -color-fg-muted;
+  -fx-stroke-width: 1.5;
+  -fx-fill: none;
+}
+
+.cascader-divider {
+  -fx-background-color: -color-border-default;
+  -fx-min-width: 1;
+  -fx-pref-width: 1;
+}
+
+/* TimelineAnt */
+.timeline {
+  -fx-padding: 16;
+}
+
+.timeline-item {
+  -fx-padding: 0 0 16 0;
+}
+
+.timeline-label {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-sm;
+}
+
+.timeline-content {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.timeline-line {
+  -fx-stroke: -color-border-muted;
+  -fx-stroke-width: 2;
+}
+
+/* dot 颜色：基础类 + 颜色修饰类，避免 Java 拼字符串 */
+.timeline-dot {
+  -fx-fill: -color-accent-emphasis;
+}
+
+.timeline-dot.timeline-dot-blue   { -fx-fill: -color-accent-emphasis; }
+.timeline-dot.timeline-dot-red    { -fx-fill: -color-danger-emphasis; }
+.timeline-dot.timeline-dot-green  { -fx-fill: -color-success-emphasis; }
+.timeline-dot.timeline-dot-gray   { -fx-fill: -color-fg-muted; }
+
+/* pending 状态：空心圆 */
+.timeline-dot.timeline-dot-pending {
+  -fx-fill: transparent;
+  -fx-stroke: -color-border-default;
+  -fx-stroke-width: 2;
+}
+
+.timeline-pending-text {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-md;
+}
+
+/* TransferAnt */
+.transfer {
+  -fx-background-color: transparent;
+}
+
+.transfer-list {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.transfer-list-header {
+  -fx-padding: 8 12 8 12;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+.transfer-list-title {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 500;
+}
+
+.transfer-list-count {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: @font-size-sm;
+}
+
+.transfer-list-search-wrapper {
+  -fx-padding: 8 12 8 12;
+}
+
+.transfer-list-search {
+  -fx-padding: 4 8 4 8;
+  -fx-font-size: @font-size-sm;
+}
+
+.transfer-list-view {
+  -fx-background-color: transparent;
+  -fx-border-width: 0;
+}
+
+/* Transfer 中间方向按钮（hover 变主题色） */
+.transfer-arrow-btn {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+  -fx-min-width: 32;
+  -fx-min-height: 32;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-weight: bold;
+  -fx-cursor: hand;
+}
+
+.transfer-arrow-btn:hover {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+

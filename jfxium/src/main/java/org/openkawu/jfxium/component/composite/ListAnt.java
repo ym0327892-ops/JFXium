@@ -8,16 +8,36 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JFXium 高级列表 - 对标 Ant Design List。
+ * JFXium 列表组件 - 对标 Ant Design List。
  *
- * 重构：list 容器 / header / footer / item / 分隔线全部走 LESS（{@code list-*}），
- * hover 由 LESS {@code .list-item.list-item-clickable:hover} 控制，不再 inline 注入。
+ * <p><b>定位</b>：通用列表容器，支持头像 + 标题 + 描述 + 操作按钮的列表项，
+ * 常用于用户列表、消息列表、商品列表等场景。视觉走 LESS。</p>
+ *
+ * <h2>功能特性</h2>
+ * <ul>
+ *   <li><b>列表项</b>：支持 avatar / title / description / action 完整配置</li>
+ *   <li><b>头部/底部</b>：header(Node) / footer(Node)</li>
+ *   <li><b>可点击</b>：onClick(Runnable) 启用 hover 高亮效果</li>
+ *   <li><b>分隔线</b>：split(true) 显示项间分隔线</li>
+ *   <li><b>边框</b>：bordered(true) 启用外边框</li>
+ * </ul>
+ *
+ * <h2>用法</h2>
+ * <pre>{@code
+ * VBox list = ListAnt.create()
+ *     .header(new Label("团队成员"))
+ *     .bordered(true)
+ *     .item(avatarImg, "张三", "前端工程师", editBtn, () -> showDetail())
+ *     .item(avatarImg, "李四", "后端工程师", editBtn, () -> showDetail())
+ *     .build();
+ * }</pre>
  */
 public class ListAnt {
 
@@ -48,7 +68,7 @@ public class ListAnt {
         public Runnable getOnClick() { return onClick; }
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private List<ListItem> items = new ArrayList<>();
         private boolean bordered = false;
         private boolean split = true;

@@ -1,0 +1,43 @@
+/* ============================================
+   通用 Popup 菜单
+   DropdownAnt / AutoCompleteAnt / MentionsAnt 等浮层共用同一套视觉
+   ============================================ */
+.jfx-popup-menu {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-border-width: 1px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 4);
+  -fx-padding: 4 0 4 0;
+  -fx-min-width: 160;
+}
+
+.jfx-popup-menu-item {
+  -fx-padding: 8 12 8 12;
+  -fx-cursor: hand;
+  -fx-background-color: transparent;
+  -fx-font-size: @font-size-md;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-popup-menu-item:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.jfx-popup-menu-item-disabled {
+  -fx-cursor: default;
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.jfx-popup-menu-item-disabled:hover {
+  -fx-background-color: transparent;
+}
+
+.jfx-popup-menu-divider {
+  -fx-background-color: -color-border-default;
+  -fx-min-height: 1;
+  -fx-pref-height: 1;
+  -fx-padding: 0;
+}
+

@@ -350,6 +350,9 @@
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1 0 0 0;
   -fx-background-radius: 0;
+  -fx-padding: 12 8 12 8;
+  -fx-font-size: 18px;
+  -fx-cursor: hand;
 }
 .button.app-shell-sider-trigger:hover {
   -fx-background-color: -color-bg-subtle;
@@ -903,6 +906,14 @@
   -fx-background-color: -color-accent-subtle;
   -fx-border-color: transparent transparent -color-accent-emphasis transparent;
   -fx-border-width: 0 0 2px 0;
+}
+/* TabsAnt indicator */
+.tabs-indicator-pane {
+  -fx-background-color: -color-border-muted;
+}
+.tabs-indicator-bar {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-radius: 2px;
 }
 /* ============================================
    Tree Component
@@ -2595,6 +2606,10 @@
   -fx-alignment: center-right;
   -fx-padding: 0 4 0 0;
 }
+/* Temporary highlight on double-click selection */
+.codeblock-highlight {
+  -fx-background-color: -color-bg-subtle;
+}
 /* ============================================
    Tier 1 简单组件 LESS 选择器
    ============================================ */
@@ -3689,6 +3704,10 @@
   -fx-font-size: 14px;
   -fx-padding: 0 4 0 4;
 }
+/* SkeletonAnt */
+.skeleton-shimmer {
+  -fx-fill: -color-bg-default;
+}
 /* ============================================
    Batch 5 Tier 4：DescriptionsAnt / CalendarAnt
    ============================================ */
@@ -4729,6 +4748,143 @@
   -fx-opacity: 0.7;
 }
 /* ============================================
+   Base Cards — Popover / Popconfirm / Message / Notification / Result
+   Overlay card surface + text styles shared by base/ components
+   ============================================ */
+/* Popconfirm */
+.popconfirm-panel {
+  -fx-background-color: -color-bg-overlay;
+  -fx-padding: 12px 16px;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+}
+.popconfirm-icon {
+  -fx-fill: -color-warning-emphasis;
+}
+.popconfirm-title {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 14px;
+  -fx-font-weight: 500;
+}
+.popconfirm-desc {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 12px;
+}
+/* Message */
+.message-card {
+  -fx-background-color: -color-bg-overlay;
+  -fx-padding: 10px 16px;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+}
+.message-card-content {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 14px;
+}
+/* Notification */
+.notification-card {
+  -fx-background-color: -color-bg-overlay;
+  -fx-padding: 16px 24px;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+}
+.notification-card-title {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 16px;
+  -fx-font-weight: 600;
+}
+.notification-card-desc {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 14px;
+}
+/* Result */
+.result-title {
+  -fx-font-size: 24px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+.result-subtitle {
+  -fx-font-size: 14px;
+  -fx-text-fill: -color-fg-muted;
+}
+/* FilterBar label */
+.filter-bar-label {
+  -fx-text-fill: -color-fg-muted;
+}
+/* TableAnt danger action button */
+.button-danger-text {
+  -fx-text-fill: -color-danger-emphasis;
+}
+/* TextAreaAnt read-only danger style */
+.jfx-text-area-read-only {
+  -fx-background-color: -color-danger-bg;
+  -fx-border-color: -color-danger-border;
+  -fx-text-fill: -color-danger;
+  -fx-font-size: 14px;
+  -fx-padding: 12px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+  -fx-border-width: 1px;
+}
+/* BarAnt borders */
+.bar-border-bottom {
+  -fx-border-color: transparent transparent -color-border-default transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+.bar-border-top {
+  -fx-border-color: -color-border-default transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+}
+/* ============================================================
+   Universal directional borders — 任意 Node 可用
+   ============================================================ */
+.border-top {
+  -fx-border-color: -color-border-default transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+}
+.border-bottom {
+  -fx-border-color: transparent transparent -color-border-default transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+.border-left {
+  -fx-border-color: transparent transparent transparent -color-border-default;
+  -fx-border-width: 0 0 0 1px;
+}
+.border-right {
+  -fx-border-color: transparent -color-border-default transparent transparent;
+  -fx-border-width: 0 1px 0 0;
+}
+/* ============================================
+   Popover Component
+   ============================================ */
+.popover-panel {
+  -fx-background-color: -color-bg-overlay;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+}
+.popover-title-box {
+  -fx-padding: 12px 16px;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+.popover-title-label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 14px;
+  -fx-font-weight: 600;
+}
+/* ============================================
    Focus Traversal
    ============================================ */
 *:focused {
@@ -4746,6 +4902,11 @@
 .choice-box:focused {
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
+}
+/* Accessibility focus ring (applied via AccessibilityUtils) */
+.focus-visible {
+  -fx-focus-color: -color-accent-emphasis;
+  -fx-faint-focus-color: -color-accent-subtle;
 }
 /* ============================================
    Size Variants (Small / Large)
@@ -4817,6 +4978,9 @@
   -fx-padding: 4px 8px;
   -fx-font-size: 12px;
 }
+.tag-close-icon {
+  -fx-fill: -color-fg-muted;
+}
 /* Badge sizes */
 .badge.small {
   -fx-padding: 0 4px;
@@ -4835,7 +4999,6 @@
 }
 .fade-in.visible {
   -fx-opacity: 1;
-  -fx-transition: opacity 200ms ease-out;
 }
 /* Slide up animation */
 .slide-up {
@@ -4845,7 +5008,6 @@
 .slide-up.visible {
   -fx-translate-y: 0;
   -fx-opacity: 1;
-  -fx-transition: all 200ms ease-out;
 }
 /* Scale animation */
 .scale-in {
@@ -4857,7 +5019,6 @@
   -fx-scale-x: 1;
   -fx-scale-y: 1;
   -fx-opacity: 1;
-  -fx-transition: all 200ms ease-out;
 }
 /* Shake animation for error states */
 .shake {
@@ -4865,7 +5026,6 @@
 }
 .shake.error {
   -fx-translate-x: -5px;
-  -fx-transition: translate-x 100ms ease-in-out;
 }
 /* ============================================================
    LoginTemplate（M19.39 LESS 化）
@@ -4958,6 +5118,40 @@
 .login-template-no-account {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 13px;
+}
+/* ============================================================
+   DashboardTemplate
+   ============================================================ */
+.dashboard-root {
+  -fx-background-color: -color-bg-layout;
+}
+.dashboard-stat-icon-box {
+  -fx-background-radius: 8;
+  -fx-background-color: -color-bg-subtle;
+}
+.dashboard-stat-title {
+  -fx-font-size: 13px;
+  -fx-text-fill: -color-fg-muted;
+}
+.dashboard-stat-trend-up {
+  -fx-font-size: 12px;
+  -fx-text-fill: -color-success-emphasis;
+}
+.dashboard-stat-trend-down {
+  -fx-font-size: 12px;
+  -fx-text-fill: -color-danger-emphasis;
+}
+.dashboard-stat-trend-hint {
+  -fx-font-size: 12px;
+  -fx-text-fill: -color-fg-muted;
+}
+.dashboard-welcome {
+  -fx-font-size: 22px;
+  -fx-font-weight: 700;
+}
+.dashboard-stat-value {
+  -fx-font-size: 28px;
+  -fx-font-weight: 700;
 }
 /* Button - MUI Dark Elevated Style */
 .button {

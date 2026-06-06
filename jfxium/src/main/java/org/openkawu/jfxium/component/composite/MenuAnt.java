@@ -10,6 +10,7 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.CssClasses;
 
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class MenuAnt {
     // ============================================================
     // Builder
     // ============================================================
-    public static class Builder {
+    public static class Builder extends AbstractStyleBuilder<Builder> {
         private final List<MenuItem> items = new ArrayList<>();
         private SubMenuBuilder currentSubMenu = null;
 
