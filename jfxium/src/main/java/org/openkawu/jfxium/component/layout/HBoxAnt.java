@@ -2,12 +2,9 @@ package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import org.openkawu.jfxium.core.css.Background;
-import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * HBoxAnt - 继承式 HBox 容器（M19.36 引入）。
@@ -36,8 +33,16 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *     }
  * }
  * }</pre>
+ *
+ * <h2>设计契约</h2>
+ * <ul>
+ *   <li><b>视觉钩子、方向性边框线、尺寸、高频节点属性</b>统一继承自 {@link LayoutCommon}
+ *       默认实现（节省 ~140 行重复模板代码，行为 100% 等价原 HBoxAnt）</li>
+ *   <li><b>双重身份</b>：是 HBox 也是工厂——继承自 {@link HBox}，可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
+ * </ul>
  */
-public class HBoxAnt extends HBox {
+public class HBoxAnt extends HBox implements LayoutCommon<HBoxAnt> {
 
     /** 工厂入口。 */
     public static HBoxAnt create() {
@@ -70,7 +75,7 @@ public class HBoxAnt extends HBox {
     }
 
     // ============================================================
-    // 流式 API
+    // 流式 API（HBox 特有业务方法）
     // ============================================================
 
     /** 设置子节点之间的水平间距。 */
@@ -79,22 +84,13 @@ public class HBoxAnt extends HBox {
         return this;
     }
 
-    public HBoxAnt padding(double padding) {
-        setPadding(new Insets(padding));
-        return this;
-    }
-
-    public HBoxAnt padding(double top, double right, double bottom, double left) {
-        setPadding(new Insets(top, right, bottom, left));
-        return this;
-    }
-
-    /** 设置子节点对齐方式（默认 {@code CENTER_LEFT}，与 HBoxBuilder 一致）。 */
+    /** 设置子节点对齐方式（默认 {@code CENTER_LEFT}）。 */
     public HBoxAnt align(Pos alignment) {
         setAlignment(alignment);
         return this;
     }
 
+    /** 批量添加子节点（null 节点会被过滤）。 */
     public HBoxAnt children(Node... nodes) {
         if (nodes != null) {
             for (Node n : nodes) {
@@ -122,112 +118,13 @@ public class HBoxAnt extends HBox {
         return this;
     }
 
-    public HBoxAnt maxW(double width) {
-        setMaxWidth(width);
-        return this;
-    }
-
-    public HBoxAnt maxH(double height) {
-        setMaxHeight(height);
-        return this;
-    }
-
-    public HBoxAnt minW(double width) {
-        setMinWidth(width);
-        return this;
-    }
-
-    public HBoxAnt minH(double height) {
-        setMinHeight(height);
-        return this;
-    }
-
-    public HBoxAnt prefW(double width) {
-        setPrefWidth(width);
-        return this;
-    }
-
-    public HBoxAnt prefH(double height) {
-        setPrefHeight(height);
-        return this;
-    }
-
-    /** 同时设置首选宽高。 */
-    public HBoxAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
-    /** 同时设置最大宽高。 */
-    public HBoxAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
-    /** 同时设置最小宽高。 */
-    public HBoxAnt minSize(double w, double h) { setMinSize(w, h); return this; }
-
     // ============================================================
-    // 视觉钩子
+    // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
+    // LayoutCommon<HBoxAnt> 默认实现
+    // （节省 ~140 行重复模板代码，行为 100% 等价原 HBoxAnt）
     // ============================================================
 
-    public HBoxAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    public HBoxAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    public HBoxAnt background(Background bg) {
-        if (bg != null) styleClass(bg.styleClass());
-        return this;
-    }
-
-    public HBoxAnt style(String style) {
-        if (style != null) setStyle(style);
-        return this;
-    }
-
-    // ============================================================
-    // 方向性边框线（分割线）
-    // ============================================================
-
-    /** 顶部分割线。 */
-    public HBoxAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
-    /** 顶部分割线（开关）。 */
-    public HBoxAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
-    /** 底部分割线。 */
-    public HBoxAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
-    /** 底部分割线（开关）。 */
-    public HBoxAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
-    /** 左侧分割线。 */
-    public HBoxAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
-    /** 左侧分割线（开关）。 */
-    public HBoxAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
-    /** 右侧分割线。 */
-    public HBoxAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
-    /** 右侧分割线（开关）。 */
-    public HBoxAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
-
-    // ============================================================
-    // 高频节点属性
-    // ============================================================
-
-    /** 设置可见性。 */
-    public HBoxAnt visible(boolean v) { setVisible(v); return this; }
-    /** 设置禁用状态。 */
-    public HBoxAnt disable(boolean d) { setDisable(d); return this; }
-    /** 设置是否受布局管理。 */
-    public HBoxAnt managed(boolean m) { setManaged(m); return this; }
-    /** 设置透明度（0.0 ~ 1.0）。 */
-    public HBoxAnt opacity(double o) { setOpacity(o); return this; }
-    /** 设置鼠标光标。 */
-    public HBoxAnt cursor(Cursor c) { setCursor(c); return this; }
-    /** 设置节点 ID。 */
-    public HBoxAnt id(String id) { setId(id); return this; }
-
-    /**
-     * Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。
-     */
+    /** Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。 */
     public HBoxAnt build() {
         return this;
     }
