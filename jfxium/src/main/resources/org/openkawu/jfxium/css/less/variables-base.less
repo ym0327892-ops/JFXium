@@ -143,10 +143,30 @@
 @table-row-height: 48px;      // 数据行高下限（.table-row-cell）
 
 // Menu / MenuItem Padding
-// 使用位置：.menu-bar > .container > .menu、.menu-item、.context-menu .menu-item
+// 使用位置：
+//   @menu-bar-padding-y/x → 顶级菜单栏容器（.menu-bar > .container，VS Code / IDEA 风格的紧凑菜单栏）
+//   @menu-button-padding-y/x → 顶级菜单栏项（.menu-bar > .container > .menu，按钮自身 padding）
+//   @menu-padding-y/x   → 下拉菜单项 + 弹层菜单容器
+//   @menu-item-padding-y/x → 弹层里的菜单项 .menu-item / .context-menu .menu-item
 // 影响组件：MenuAnt、MenuBar、ContextMenu
+//
+// 为什么 menu-bar 要单独 token？（BUG #67）
+//   顶级菜单栏的视觉是"横向贴边小按钮"，VS Code 约 28-30px / IDEA 约 28px。
+//   下拉菜单项需要更高的点击舒适度（8px+），不能共用同一组值。
+//   默认 4px → 14px 字号 + 19px 文字高 → 菜单项约 27px 高（贴近控制高度 @control-height 32 的 1-2px 舍入差，IDE 风格）。
+//   compact 主题覆盖为 2px → 约 23px 高（极致紧凑）。
+//
+// 为什么 menu-button-padding 是公式？（BUG #68，对齐 AtlantaFX _menu.scss）
+//   AtlantaFX 设计：容器 padding + 按钮 padding + 文字高 + 1px 底部 border ≈ 36px（IDE 风格）
+//   公式：@menu-button-padding = @menu-padding - @menu-bar-padding / 2
+//   默认 8-2=6 / 12-2=10（按钮内 padding 6+15+6=27，加 4+4 容器 padding + 1 border = 36）
+//   compact 4-1=3 / 12-2=10（公式自然让 compact 更紧）
+@menu-bar-padding-y: 4px;
+@menu-bar-padding-x: 4px;
 @menu-padding-y: @spacing-sm;
 @menu-padding-x: @spacing-md;
+@menu-button-padding-y: @menu-padding-y - (@menu-bar-padding-y / 2);
+@menu-button-padding-x: @menu-padding-x - (@menu-bar-padding-x / 2);
 @menu-item-padding-y: @spacing-sm;
 @menu-item-padding-x: @spacing-lg;
 

@@ -102,10 +102,11 @@ description: >
 ### 4.2 必须项
 
 - 所有 CSS 属性必须以 `-fx-` 前缀开头
-- 边框/外发光用 **背景层叠**：`-fx-background-color: borderColor, fillColor; -fx-background-insets: -2, 0;`
+- **交互控件**边框/外发光用 **背景层叠**：`-fx-background-color: borderColor, fillColor; -fx-background-insets: -2, 0;`（布局容器层走原生 border，详见第九节）
 - 所有高度/padding 必须用 token（`@control-height`），不硬编码 px
 - `:armed` 和 `:pressed` 状态必须同时定义
 - 复合选择器（`.A.B`）vs 后代选择器（`.A .B`）要严格按 styleClass 挂载方式选择
+- **使用原生 `-fx-border-*` 时必须同时声明 `-fx-border-style: solid`**（JavaFX/modena 默认为 `none`，不声明则边框不渲染）。仅当选择器继承了 modena 已设 `border-style` 的原生控件（如 `.button`、`.text-field`）时可省略
 
 ### 4.3 组合控件「内部 padding 下放」
 
@@ -141,7 +142,7 @@ description: >
 - **安全**：thumb 14×14、badge-dot 8×8（width/height 都被钳死）
 - **危险**：track、进度条等宽度靠父布局拉伸的节点
 
-### 4.6 动画类例外
+### 4.7 动画类例外
 
 JavaFX CSS **不支持**交互状态的 transition，但**支持动画类的 transition**：
 ```less
@@ -206,15 +207,94 @@ ctrl.setSelectedKey("file");   // 改已渲染节点的 styleClass，不重建
 
 判断：持续显示 → 直接节点；按需弹出 → Result。
 
-## 九、复杂控件查 AtlantaFX 源码
+## 九、边框技术分层策略（border vs background-insets）
+
+> 参考 AtlantaFX（`_config.scss` 注释）：**"Most components use background insets to draw its borders due to performance reasons"**——但这是针对**交互控件**而言的。布局容器应走原生 border。
+
+### 分层决策表
+
+| 层级 | 技术选型 | 适用场景 | 代表组件 |
+|------|---------|---------|----------|
+| **交互控件层** | `background-insets` 背景层叠 | 多状态切换（normal/hover/focus/pressed）、圆角边框、焦点环 | ButtonAnt, InputAnt, ComboBoxAnt |
+| **布局容器层** | 原生 `-fx-border-*` | 1px 直线分割线、无圆角、无焦点环、无多状态切换 | BarAnt, GroupBoxAnt, AppShellAnt |
+| **纯分割线** | 原生 `-fx-border-*` | 需要极细线条、不干扰布局占位 | Separator, Divider |
+
+### 布局层走原生 border 的理由
+
+1. **4 条规则全是 1px 直线**：无圆角、无焦点环，原生 border 在此场景下**没有锯齿问题**（锯齿只在圆角/小尺寸时才出现）
+2. **占位与可见区对齐**：`background-insets` 使用负 inset 时，「组件占位空间」和「可见区域」不对齐，对布局容器反而是坑
+3. **border 占外空间 1px**：这是已知且可接受的代价，布局组件靠这 1px 划出清晰边界
+
+### 交互控件层走 background-insets 的理由
+
+1. **状态切换高效**：hover/focus/pressed 只需换第一层 `background-color` 值，无需重绘 border 区域
+2. **圆角完美**：内外层 `-fx-background-radius` 配合，圆角过渡无锯齿
+3. **不占外部空间**：边框效果完全在节点 padding 区域内绘制，不影响布局计算
+
+### 写法对照
+
+```less
+/* ✅ 交互控件（Button/Input）：background-insets 层叠 */
+.jfx-button {
+  -fx-background-color: -color-border-default, -color-bg-default;
+  -fx-background-insets: 0, 1;
+  -fx-background-radius: @border-radius-md, calc(@border-radius-md - 1px);
+}
+.jfx-button:focused {
+  -fx-background-color: -color-accent-emphasis, -color-bg-default;  /* 只换颜色 */
+}
+
+/* ✅ 布局容器（BarAnt/GroupBoxAnt）：原生 border */
+.jfx-bar {
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+/* ✅ 纯分割线（Separator）：原生 border */
+.separator:horizontal > .line {
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-insets: 1 0 0 0;
+}
+```
+
+### AtlantaFX 源码中的实证
+
+| 文件 | 组件类型 | 使用技术 | 原文注释 |
+|------|---------|---------|----------|
+| `_button.scss` | 交互控件 | `background-insets: 0, $border-width` | "performance reasons" |
+| `_text-input.scss` | 交互控件 | `background-insets: 0, $border-width` | 同上 |
+| `_card.scss` | 布局容器 | `-fx-border-color` + `-fx-border-width` | 无圆角状态切换 |
+| `_separator.scss` | 分割线 | `-fx-border-color` | **"using border instead of insets to get thinner line"** |
+| `_toolbar.scss` | `background-insets` 层叠 | `-fx-background-insets: 0, 0 0 $border-width 0` | 方向灵活（horizontal/vertical/bottom 切换 inset 方向），ToolBar 是控件而非布局容器 |
+
+## 十、复杂控件查 AtlantaFX 源码
 
 调 TableView / TreeView / ComboBox 弹层等复杂控件样式时，**先读 AtlantaFX 源码**，再改 LESS。不凭印象猜选择器层级。
 
-**常用文件**（路径：`/Users/openai/workspace/work_open/atlantafx/styles/src/components/`）：
-- `_data.scss` — TableView / TreeView / ListView
-- `_combo-box.scss` — ComboBox / DatePicker / ChoiceBox
-- `_text-input.scss` — TextField / TextArea
-- `_button.scss` / `_menu.scss` / `_scroll-bar.scss`
+**本地源码路径**：`ant-design-ref/AntLantaFx/src/`
+
+| 文件 | 覆盖控件 |
+|------|----------|
+| `components/_data.scss` | TableView / TreeView / ListView |
+| `components/_combo-box.scss` | ComboBox / DatePicker / ChoiceBox |
+| `components/_text-input.scss` | TextField / TextArea |
+| `components/_button.scss` | Button / ToggleButton |
+| `components/_menu.scss` | Menu / ContextMenu / MenuBar |
+| `components/_tab-pane.scss` | TabPane（三种风格：普通/floating/classic） |
+| `components/_scrolling.scss` | ScrollBar / ScrollPane |
+| `components/_card.scss` | Card（原生 border 写法参考） |
+| `components/_toolbar.scss` | ToolBar（background-insets 层叠写法参考） |
+| `components/_dialog.scss` | DialogPane |
+| `settings/_config.scss` | 全局 token（间距/圆角/阴影/elevation） |
+| `settings/_color-scale.scss` | 色阶定义（base/accent/success/warning/danger 0-9） |
+| `settings/_color-vars.scss` | 语义变量映射（fg/bg/border/neutral/accent/success/warning/danger） |
+| `settings/_effects.scss` | 阴影 mixin（dropshadow） |
+| `settings/_icons.scss` | SVG 图标 path 库 |
+
+**编译好的 CSS 输出**（用于直接查看最终效果）：`ant-design-ref/AntLantaFx/dist/`
+- `antdesign-light.css` / `antdesign-dark.css` — Ant Design 风格
+- `primer-light.css` / `primer-dark.css` — GitHub Primer 风格
+- `cupertino-light.css` / `cupertino-dark.css` — macOS 风格
 
 ### 复合选择器优先级陷阱
 

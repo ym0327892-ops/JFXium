@@ -803,4 +803,16 @@ public final class JfxStyles {
 
     public static final String FOCUS_VISIBLE      = "jfx-focus-visible";
     public static final String CODEBLOCK_HIGHLIGHT = "jfx-codeblock-highlight";
+
+    /* ============================================
+       CodeEditor（VS Code 风格演示用）— 配套 TextAreaAnt
+       区别于 CodeBlockAnt：CodeBlockAnt 是「只读 display」，
+       CodeEditor 是「可编辑编辑器」——用于演示页/业务 demo。
+       ============================================ */
+
+    /** 可编辑代码区（透明底 + 等宽字体，融入 IDE 编辑器背景）。 */
+    public static final String CODE_EDITOR = "jfx-code-editor";
+
+    /** 终端区（inset 底 + 等宽字体，主题切换自动反色）。 */
+    public static final String CODE_EDITOR_TERMINAL = "jfx-code-terminal";
 }

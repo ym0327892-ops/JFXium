@@ -140,6 +140,7 @@
 .jfx-crud-template.bordered {
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: 8px;
   -fx-background-radius: 8px;
 }
@@ -186,6 +187,7 @@
 .jfx-surface.bordered {
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
 }
 .jfx-surface.shadow-sm {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 4, 0, 0, 1);
@@ -201,6 +203,7 @@
   -fx-padding: 0 0 8px 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
+  -fx-border-style: solid;
 }
 .jfx-surface-title {
   -fx-font-size: 13px;
@@ -265,6 +268,7 @@
 .text-area.jfx-selectable-text.jfx-selectable-text-focus-halo:focused {
   -fx-border-color: -color-accent-emphasis;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: 6px;
   -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 4, 0, 0, 0);
 }
@@ -289,6 +293,7 @@
 .text-area.jfx-selectable-text.jfx-selectable-text-bordered {
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: 6px;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 6px;
@@ -331,12 +336,14 @@
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
+  -fx-border-style: solid;
 }
 .jfx-app-shell-sider,
 .layout-sider {
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent -color-border-muted transparent transparent;
   -fx-border-width: 0 1px 0 0;
+  -fx-border-style: solid;
 }
 /* M19.22 sider 折叠态钩子（宽度由 Java 端控制，这里仅留 styleClass 占位以便业务自定义） */
 .jfx-app-shell-sider-collapsed {
@@ -347,7 +354,8 @@
   -fx-background-color: -color-bg-container;
   -fx-text-fill: -color-fg-muted;
   -fx-border-color: -color-border-muted transparent transparent transparent;
-  -fx-border-width: 1 0 0 0;
+  -fx-border-width: 1px 0 0 0;
+  -fx-border-style: solid;
   -fx-background-radius: 0;
   -fx-padding: 12 8 12 8;
   -fx-font-size: 18px;
@@ -372,6 +380,7 @@
   -fx-background-color: -color-bg-container;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
+  -fx-border-style: solid;
 }
 .jfx-split-pane-ant {
   -fx-background-color: -color-bg-layout;
@@ -390,6 +399,7 @@
   -fx-background-radius: 8px;
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: 8px;
 }
 .jfx-resizable-panel-content {
@@ -591,6 +601,7 @@
 .jfx-group-box.bordered {
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
 }
 /* 悬停效果 —— 桌面克制：仅底色微调，无阴影/缩放 */
 .jfx-group-box.hoverable:hover {
@@ -611,6 +622,7 @@
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
 }
 /* Header（标题行）—— padding 由 BarAnt 默认值处理（4px 10px） */
 .jfx-group-box .jfx-group-box-header {
@@ -624,6 +636,7 @@
 .jfx-group-box .jfx-group-box-header.jfx-group-box-header-border {
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
+  -fx-border-style: solid;
 }
 /* Body（内容区） */
 .jfx-group-box .jfx-group-box-body {
@@ -646,6 +659,7 @@
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
+  -fx-border-style: solid;
   -fx-padding: 8px 0;
 }
 .jfx-group-box .jfx-group-box-action-item {
@@ -660,6 +674,7 @@
   -fx-padding: 0 8px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
+  -fx-border-style: solid;
   -fx-alignment: center-left;
 }
 .jfx-group-box.jfx-group-box-small .jfx-group-box-tab-bar {
@@ -675,6 +690,7 @@
   -fx-cursor: hand;
   -fx-border-color: transparent;
   -fx-border-width: 0 0 2px 0;
+  -fx-border-style: solid;
   -fx-font-size: 13px;
 }
 .jfx-group-box .jfx-group-box-tab-item:hover {
@@ -684,6 +700,7 @@
   -fx-text-fill: -color-accent-emphasis;
   -fx-border-color: -color-accent-emphasis;
   -fx-border-width: 0 0 2px 0;
+  -fx-border-style: solid;
 }
 /* ============================================
    Table Component
@@ -878,12 +895,44 @@
   -fx-alignment: center;
 }
 /* ============================================
-   Menu Component
+   MenuBar 容器（BUG #68，对齐 AtlantaFX _menu.scss）
+   容器本身 padding 0，1px 底部 border 走 background stacking
+   （避免占用 LayoutBox 的 padding 空间，让 .container 拿 padding）
+   注意：必须用 .jfx-menu-bar，Java 端挂的是 jfx- 前缀 styleClass（红线 #8）
    ============================================ */
-.menu-bar {
-  -fx-background-color: -color-bg-default;
-  -fx-border-color: transparent transparent -color-border-muted transparent;
-  -fx-border-width: 0 0 1px 0;
+.jfx-menu-bar {
+  -fx-background-color: -color-border-muted, -color-bg-default;
+  -fx-background-insets: 0 0 1 0, 1 0 0 0;
+  -fx-padding: 0;
+}
+/* ============================================
+   MenuAnt — 自定义菜单项（INLINE / HORIZONTAL 共用）
+   注意：left padding 为 0，由 Java 端 indentation spacer 接管。
+   token：@spacing-sm / @spacing-lg → 默认 8px/16px，compact 6px/12px
+   ============================================ */
+/* INLINE 模式基础行（侧栏菜单项） */
+.jfx-menu-item {
+  -fx-padding: 6px 12px 6px 0;
+}
+/* INLINE 模式子菜单 header */
+.jfx-menu-submenu-header {
+  -fx-padding: 6px 12px 6px 0;
+}
+/* HORIZONTAL 模式：横向导航栏行高 = @control-height-lg（40px→compact 36px） */
+.jfx-menu-horizontal > .jfx-menu-item,
+.jfx-menu-horizontal > .jfx-menu-submenu-header {
+  -fx-min-height: 36px;
+  -fx-pref-height: 36px;
+  -fx-padding: 0 12px;
+}
+/* COLLAPSED 模式：居中纯图标行（vertical padding 保持跟 INLINE 一致） */
+.jfx-menu-collapsed > .jfx-menu-item {
+  -fx-padding: 6px 0;
+  -fx-alignment: center;
+}
+.jfx-menu-collapsed > .jfx-menu-submenu-header {
+  -fx-padding: 6px 0;
+  -fx-alignment: center;
 }
 /* ============================================
    Tabs Component
@@ -1803,21 +1852,33 @@
   -fx-padding: 2px 0;
 }
 /* ============================================
-   MenuItem within MenuBar
+   MenuBar 顶级菜单（BUG #68，对齐 AtlantaFX _menu.scss）
+   三层结构：
+     .jfx-menu-bar                     → 容器（padding 0, 1px 底部 border）
+       > .container                    → 中间层（@menu-bar-padding，4px/4px）
+         > .menu-button                → 按钮（@menu-button-padding，6px/10px）
+   总高公式：@menu-bar-padding-y*2 + @menu-button-padding-y*2 + 文字高(15px) + 1border
+           = 4+4+6+6+15+1 = 36px（默认，IDE 风格）
+           = 4+4+4+4+15+1 = 32px（compact 公式自然收紧，@spacing-sm 6px 派生）
+   注意：必须用 .jfx-menu-bar（红线 #8）；.menu-button 是 JavaFX MenuBarSkin 内部节点名
    ============================================ */
-.menu-bar > .container > .menu {
-  -fx-padding: 6px 8px;
+.jfx-menu-bar > .container {
+  -fx-padding: 2px 4px;
 }
-.menu-bar > .container > .menu > .label {
+.jfx-menu-bar > .container > .menu-button {
+  -fx-padding: 5px 6px;
+  -fx-background-color: transparent;
+  -fx-background-radius: 4px;
+}
+.jfx-menu-bar > .container > .menu-button > .label {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
 }
-.menu-bar > .container > .menu:hover,
-.menu-bar > .container > .menu:showing {
+.jfx-menu-bar > .container > .menu-button:hover,
+.jfx-menu-bar > .container > .menu-button:showing {
   -fx-background-color: -color-accent-hover;
-  -fx-background-radius: 4px;
 }
-.menu-bar > .container > .menu:armed {
+.jfx-menu-bar > .container > .menu-button:armed {
   -fx-background-color: -color-accent-active;
 }
 .menu-item {
@@ -1919,6 +1980,7 @@
   -fx-background-radius: 9px;
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: 9px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
 }
@@ -2076,7 +2138,7 @@
   -fx-text-fill: -color-fg-default;
   -fx-alignment: CENTER;
   -fx-content-display: LEFT;
-  -fx-padding: 2px 8px;
+  -fx-padding: 5px 8px;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
@@ -2481,6 +2543,7 @@
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
 }
@@ -2507,6 +2570,7 @@
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
   -fx-cursor: hand;
@@ -2591,7 +2655,8 @@
 .code-line-numbers {
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: transparent -color-border-muted transparent transparent;
-  -fx-border-width: 0 1 0 0;
+  -fx-border-width: 0 1px 0 0;
+  -fx-border-style: solid;
 }
 .code-line-number {
   -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
@@ -2603,6 +2668,106 @@
 /* Temporary highlight on double-click selection */
 .codeblock-highlight {
   -fx-background-color: -color-bg-subtle;
+}
+/* ============================================
+   CodeEditor（VS Code 风格演示用）— 配套 TextAreaAnt
+
+   区别于 CodeBlockAnt：
+   - CodeBlockAnt  →  「只读 display」场景（带 header/复制按钮/语法高亮）
+   - CodeEditor    →  「可编辑编辑器」场景（裸 TextArea + 主题色 + 等宽字体）
+
+   用法：
+     TextAreaAnt editor = TextAreaAnt.create()
+         .text("// 在此编辑代码")
+         .styleClass(JfxStyles.CODE_EDITOR)
+         .build();
+
+     TextAreaAnt terminal = TextAreaAnt.create()
+         .text("$ ")
+         .styleClass(JfxStyles.CODE_EDITOR_TERMINAL)
+         .build();
+
+   关键设计：
+   - 复合选择器 .text-area.jfx-code-editor / .text-area.jfx-code-terminal 提高优先级，
+     盖掉 modena 默认的边框/背景/焦点环（参考 _codeblock.less 模式）
+   - 编辑器底色走 -color-bg-default（light=#fff / dark=#1e1e1e）— 主题切换自动反色，
+     跟 VS Code 编辑器 dark theme #1e1e1e 一致
+   - 终端底色走 -color-bg-inset（light=#f3f4f6 / dark=#010409）— 凹陷面板语义
+   - 字体统一走 @font-family-code token，主题无关
+   - -fx-effect: null 去掉 modena 默认焦点高亮（不要让编辑器被聚焦时整块变色）
+   - 内嵌 scroll-pane/viewport 必须同步穿透背景，否则会盖住容器底色
+   ============================================ */
+/* ---------- 可编辑编辑器（融入 IDE 白色背景） ---------- */
+.text-area.jfx-code-editor {
+  -fx-background-color: -color-bg-default;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-border-width: 0;
+  -fx-padding: 8px;
+  -fx-font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  -fx-font-size: 13px;
+  -fx-text-fill: -color-fg-default;
+  -fx-highlight-fill: -color-accent-muted;
+  -fx-highlight-text-fill: -color-fg-default;
+  -fx-prompt-text-fill: -color-fg-muted;
+  /* 去掉 modena 默认焦点阴影 */
+  -fx-effect: null;
+}
+.text-area.jfx-code-editor .content {
+  -fx-background-color: -color-bg-default;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+}
+/* 焦点态：保持视觉稳定（编辑器聚焦不应该整块变色） */
+.text-area.jfx-code-editor:focused {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+  -fx-effect: null;
+}
+/* TextArea 内嵌 scroll-pane / viewport 同步穿透，
+   否则 modena 默认浅灰会盖住 -color-bg-default（白底） */
+.text-area.jfx-code-editor > .scroll-pane,
+.text-area.jfx-code-editor > .scroll-pane > .viewport,
+.text-area.jfx-code-editor > .scroll-pane .content {
+  -fx-background-color: -color-bg-default;
+  -fx-background-insets: 0;
+}
+/* ---------- 终端（凹陷底，主题切换自动反色） ---------- */
+.text-area.jfx-code-terminal {
+  -fx-background-color: -color-bg-inset;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-border-width: 0;
+  -fx-padding: 6px;
+  -fx-font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  -fx-font-size: 12px;
+  -fx-text-fill: -color-fg-default;
+  -fx-highlight-fill: -color-accent-emphasis;
+  -fx-highlight-text-fill: -color-fg-default;
+  -fx-prompt-text-fill: -color-fg-muted;
+  -fx-effect: null;
+}
+.text-area.jfx-code-terminal .content {
+  -fx-background-color: -color-bg-inset;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+}
+.text-area.jfx-code-terminal:focused {
+  -fx-background-color: -color-bg-inset;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+  -fx-effect: null;
+}
+.text-area.jfx-code-terminal > .scroll-pane,
+.text-area.jfx-code-terminal > .scroll-pane > .viewport,
+.text-area.jfx-code-terminal > .scroll-pane .content {
+  -fx-background-color: -color-bg-inset;
+  -fx-background-insets: 0;
 }
 /* ============================================
    Tier 1 简单组件 LESS 选择器
@@ -3539,15 +3704,12 @@
 .jfx-menu-dark .jfx-menu-item-selected .jfx-icon-path {
   -fx-background-color: white;
 }
-/* M14.4 折叠模式（仅 INLINE 有效）：宽度收窄，仅显示图标 */
+/* M14.4 折叠模式（仅 INLINE 有效）：宽度收窄，仅显示图标
+   padding 已迁入 _menu.less 统一管理，此处仅保留布局尺寸 */
 .jfx-menu.jfx-menu-collapsed {
   -fx-pref-width: 64;
   -fx-min-width: 64;
   -fx-max-width: 64;
-}
-.jfx-menu-collapsed .jfx-menu-item,
-.jfx-menu-collapsed .jfx-menu-submenu-header {
-  -fx-padding: 0;
 }
 /* 折叠 + 选中态：左侧主题色竖线（保留 INLINE 视觉）*/
 .jfx-menu-collapsed .jfx-menu-item-selected,
@@ -4746,6 +4908,7 @@
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
 .jfx-popconfirm-icon {
@@ -4768,6 +4931,7 @@
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
 .jfx-message-card-content {
@@ -4782,6 +4946,7 @@
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
 .jfx-notification-card-title {
@@ -4821,15 +4986,18 @@
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
 }
 /* BarAnt borders */
 .bar-border-bottom {
   -fx-border-color: transparent transparent -color-border-default transparent;
   -fx-border-width: 0 0 1px 0;
+  -fx-border-style: solid;
 }
 .bar-border-top {
   -fx-border-color: -color-border-default transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
+  -fx-border-style: solid;
 }
 /* ============================================================
    Universal directional borders — 任意 Node 可用
@@ -4837,18 +5005,22 @@
 .jfx-border-top {
   -fx-border-color: -color-border-default transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
+  -fx-border-style: solid;
 }
 .jfx-border-bottom {
   -fx-border-color: transparent transparent -color-border-default transparent;
   -fx-border-width: 0 0 1px 0;
+  -fx-border-style: solid;
 }
 .jfx-border-left {
   -fx-border-color: transparent transparent transparent -color-border-default;
   -fx-border-width: 0 0 0 1px;
+  -fx-border-style: solid;
 }
 .jfx-border-right {
   -fx-border-color: transparent -color-border-default transparent transparent;
   -fx-border-width: 0 1px 0 0;
+  -fx-border-style: solid;
 }
 /* ============================================
    Popover Component

@@ -212,16 +212,12 @@
   -fx-background-color: white;
 }
 
-/* M14.4 折叠模式（仅 INLINE 有效）：宽度收窄，仅显示图标 */
+/* M14.4 折叠模式（仅 INLINE 有效）：宽度收窄，仅显示图标
+   padding 已迁入 _menu.less 统一管理，此处仅保留布局尺寸 */
 .jfx-menu.jfx-menu-collapsed {
   -fx-pref-width: 64;
   -fx-min-width: 64;
   -fx-max-width: 64;
-}
-
-.jfx-menu-collapsed .jfx-menu-item,
-.jfx-menu-collapsed .jfx-menu-submenu-header {
-  -fx-padding: 0;
 }
 
 /* 折叠 + 选中态：左侧主题色竖线（保留 INLINE 视觉）*/

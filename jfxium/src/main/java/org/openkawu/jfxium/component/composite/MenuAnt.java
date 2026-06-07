@@ -659,8 +659,7 @@ public class MenuAnt {
         private Node buildInlineCollapsed(BuildContext ctx) {
             HBox header = new HBox();
             header.setAlignment(Pos.CENTER);
-            header.setMinHeight(40);
-            header.setPrefHeight(40);
+            // CSS .jfx-menu-collapsed > .jfx-menu-submenu-header 控制 padding + 对齐
             header.getStyleClass().add(JfxStyles.MENU_SUBMENU_HEADER);
             header.setStyle("-fx-cursor: hand;");
 
@@ -701,14 +700,26 @@ public class MenuAnt {
         }
 
         private HBox createInlineHeader() {
-            HBox row = new HBox(12);
+            HBox row = new HBox(0);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.setPadding(new Insets(10, 16, 10, 16 + level * 16));
+            // CSS .jfx-menu-submenu-header 控制 top/right/bottom padding，left=0 由 indent spacer 接管
             row.getStyleClass().add(JfxStyles.MENU_SUBMENU_HEADER);
 
-            if (icon != null) row.getChildren().add(icon);
+            // 左侧缩进 spacer：@spacing-lg + level * @spacing-lg（16 + level*16）
+            Region indent = new Region();
+            indent.setMinWidth(16 + level * 16);
+            indent.setPrefWidth(16 + level * 16);
+            indent.setMaxWidth(16 + level * 16);
+            row.getChildren().add(indent);
+
+            if (icon != null) {
+                row.getChildren().add(icon);
+            }
             Label label = new Label(text);
             label.getStyleClass().add(JfxStyles.MENU_ITEM_LABEL);
+            if (icon != null) {
+                HBox.setMargin(label, new Insets(0, 0, 0, 12));  // icon-label gap
+            }
             row.getChildren().add(label);
             // 用独立 Region spacer 把右侧箭头推到最右（Label 默认 maxWidth=USE_PREF_SIZE
             // 给它设 Hgrow=ALWAYS 不会拉伸；详见 SKILL §4.1 / §20.1）
@@ -724,9 +735,7 @@ public class MenuAnt {
         Node buildHorizontal(BuildContext ctx) {
             HBox header = new HBox(8);
             header.setAlignment(Pos.CENTER_LEFT);
-            header.setPadding(new Insets(0, 16, 0, 16));
-            header.setMinHeight(48);
-            header.setPrefHeight(48);
+            // CSS .jfx-menu-horizontal > .jfx-menu-submenu-header 控制 padding + height
             header.getStyleClass().add(JfxStyles.MENU_SUBMENU_HEADER);
             header.setStyle("-fx-cursor: hand;");
 
@@ -788,14 +797,12 @@ public class MenuAnt {
         // 默认提供两种渲染：buildInline / buildHorizontal。子类可覆盖。
 
         Node buildInline(BuildContext ctx) {
-            HBox row = new HBox(12);
-            row.setPadding(new Insets(10, 16, 10, 16 + level * 16));
+            HBox row = new HBox(0);
             applyItemStyles(row, ctx);
 
             if (ctx.collapsed) {
-                // 折叠模式：只显示图标，无 padding-left 偏移
+                // 折叠模式：只显示图标。CSS .jfx-menu-collapsed > .jfx-menu-item 控制 padding+居中
                 row.setAlignment(Pos.CENTER);
-                row.setPadding(new Insets(10, 0, 10, 0));
                 if (icon != null) {
                     row.getChildren().add(icon);
                 } else if (text != null && !text.isEmpty()) {
@@ -806,9 +813,22 @@ public class MenuAnt {
                 }
             } else {
                 row.setAlignment(Pos.CENTER_LEFT);
-                if (icon != null) row.getChildren().add(icon);
+                // 左侧缩进 spacer：@spacing-lg + level * @spacing-lg（16 + level * 16）
+                // CSS .jfx-menu-item 设 left-padding=0，由 spacer 接管全部左侧偏移
+                Region indent = new Region();
+                indent.setMinWidth(16 + level * 16);
+                indent.setPrefWidth(16 + level * 16);
+                indent.setMaxWidth(16 + level * 16);
+                row.getChildren().add(indent);
+
+                if (icon != null) {
+                    row.getChildren().add(icon);
+                }
                 Label label = new Label(text);
                 label.getStyleClass().add(JfxStyles.MENU_ITEM_LABEL);
+                if (icon != null) {
+                    HBox.setMargin(label, new Insets(0, 0, 0, 12));  // icon-label gap
+                }
                 row.getChildren().add(label);
             }
 
@@ -819,9 +839,7 @@ public class MenuAnt {
         Node buildHorizontal(BuildContext ctx) {
             HBox row = new HBox(8);
             row.setAlignment(Pos.CENTER);
-            row.setPadding(new Insets(0, 16, 0, 16));
-            row.setMinHeight(48);
-            row.setPrefHeight(48);
+            // CSS .jfx-menu-horizontal > .jfx-menu-item 控制 padding + height
             applyItemStyles(row, ctx);
 
             if (icon != null) row.getChildren().add(icon);

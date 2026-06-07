@@ -1,9 +1,47 @@
 /* ============================================
-   Menu Component
+   MenuBar 容器（BUG #68，对齐 AtlantaFX _menu.scss）
+   容器本身 padding 0，1px 底部 border 走 background stacking
+   （避免占用 LayoutBox 的 padding 空间，让 .container 拿 padding）
+   注意：必须用 .jfx-menu-bar，Java 端挂的是 jfx- 前缀 styleClass（红线 #8）
    ============================================ */
-.menu-bar {
-  -fx-background-color: -color-bg-default;
-  -fx-border-color: transparent transparent -color-border-muted transparent;
-  -fx-border-width: 0 0 1px 0;
+.jfx-menu-bar {
+  -fx-background-color: -color-border-muted, -color-bg-default;
+  -fx-background-insets: 0 0 1 0, 1 0 0 0;
+  -fx-padding: 0;
+}
+
+/* ============================================
+   MenuAnt — 自定义菜单项（INLINE / HORIZONTAL 共用）
+   注意：left padding 为 0，由 Java 端 indentation spacer 接管。
+   token：@spacing-sm / @spacing-lg → 默认 8px/16px，compact 6px/12px
+   ============================================ */
+
+/* INLINE 模式基础行（侧栏菜单项） */
+.jfx-menu-item {
+  -fx-padding: @spacing-sm @spacing-lg @spacing-sm 0;
+}
+
+/* INLINE 模式子菜单 header */
+.jfx-menu-submenu-header {
+  -fx-padding: @spacing-sm @spacing-lg @spacing-sm 0;
+}
+
+/* HORIZONTAL 模式：横向导航栏行高 = @control-height-lg（40px→compact 36px） */
+.jfx-menu-horizontal > .jfx-menu-item,
+.jfx-menu-horizontal > .jfx-menu-submenu-header {
+  -fx-min-height: @control-height-lg;
+  -fx-pref-height: @control-height-lg;
+  -fx-padding: 0 @spacing-lg;
+}
+
+/* COLLAPSED 模式：居中纯图标行（vertical padding 保持跟 INLINE 一致） */
+.jfx-menu-collapsed > .jfx-menu-item {
+  -fx-padding: @spacing-sm 0;
+  -fx-alignment: center;
+}
+
+.jfx-menu-collapsed > .jfx-menu-submenu-header {
+  -fx-padding: @spacing-sm 0;
+  -fx-alignment: center;
 }
 

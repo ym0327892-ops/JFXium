@@ -45,6 +45,7 @@
 .text-area.jfx-selectable-text.jfx-selectable-text-focus-halo:focused {
   -fx-border-color: -color-accent-emphasis;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: @border-radius-md;
   -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 4, 0, 0, 0);
 }
@@ -72,6 +73,7 @@
 .text-area.jfx-selectable-text.jfx-selectable-text-bordered {
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: @border-radius-md;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: @border-radius-md;
@@ -122,6 +124,7 @@
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
+  -fx-border-style: solid;
 }
 
 .jfx-app-shell-sider,
@@ -129,6 +132,7 @@
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent -color-border-muted transparent transparent;
   -fx-border-width: 0 1px 0 0;
+  -fx-border-style: solid;
 }
 
 /* M19.22 sider 折叠态钩子（宽度由 Java 端控制，这里仅留 styleClass 占位以便业务自定义） */
@@ -139,7 +143,8 @@
   -fx-background-color: -color-bg-container;
   -fx-text-fill: -color-fg-muted;
   -fx-border-color: -color-border-muted transparent transparent transparent;
-  -fx-border-width: 1 0 0 0;
+  -fx-border-width: 1px 0 0 0;
+  -fx-border-style: solid;
   -fx-background-radius: 0;
   -fx-padding: 12 8 12 8;
   -fx-font-size: 18px;
@@ -168,6 +173,7 @@
   -fx-background-color: -color-bg-container;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
+  -fx-border-style: solid;
 }
 
 .jfx-split-pane-ant {
@@ -190,6 +196,7 @@
   -fx-background-radius: @border-radius-lg;
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: @border-radius-lg;
 }
 

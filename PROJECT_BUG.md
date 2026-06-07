@@ -89,6 +89,7 @@
 | 64 | Maven LESS 编译「假成功」—— groovy-maven-plugin 下 `Files.writeString`/`File.text` 静默不落盘，日志报成功但 CSS 没更新（改 LESS 不生效）| ✅ 已修复 | 2026-06-02 |
 | 65 | CheckBox/RadioButton 图标与文字间距太近（用户反馈「贴在一起」）—— 缺 `-fx-graphic-text-gap`，用 JavaFX 默认 ~4px 不符合 admin 信息密度 | ✅ 已修复 | 2026-06-03 |
 | 66 | layout 包 7 个继承式组件 + AbstractStyleBuilder 的 `borderTop/Bottom/Left/Right()` 挂错 styleClass 名（缺 `jfx-` 前缀）—— CSS 永远匹配不上 | ✅ 已修复 | 2026-06-07 |
+| 67 | MenuBarAnt 顶级菜单按钮太高（~35px）—— 顶用下拉菜单项的 `@menu-padding-y: 8px`，没专属 token 拆开 | ✅ 已修复 | 2026-06-07 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 
@@ -470,3 +471,47 @@
 - **沉淀**：
   - 凡是「LESS 写了样式但 Java 端不生效」类 bug，**第一反应是 grep 比对** class 名是否一致（`grep -r "JfxStyles.XXX" jfxium/src` ↔ `grep "\.jfx-xxx" jfxium/src/main/resources/.../less`）。这是 #37 / #44 / 本次 #66 三连击的同一个根因。
   - 风格名常量必须全部走 `JfxStyles`，禁止 `styleClass("border-...")` 硬编码——这条已通过常量类型契约从源头杜绝（IDE 自动补全会给 `JfxStyles.BORDER_*` 而不是裸字符串）。
+
+## 修复说明（2026-06-07：BUG #67 MenuBarAnt 顶级菜单按钮太高）
+
+> 用户反馈 `MenuBarAnt menuBar = MenuBarAnt.create()` 出来的菜单栏按钮太大——比 VS Code / IntelliJ 风格的菜单栏高出一截（~35px vs ~28-30px），视觉上很「粗」。追到 `_contextmenu.less` 顶级菜单 `.menu-bar > .container > .menu` 复用了下拉菜单项的 `@menu-padding-y: 8px`（8px + 8px + 14px 字号约 19px 文字高 ≈ 35px 渲染高），和"横向贴边小按钮"的 IDE 风格定位严重不符。
+
+### #67 MenuBarAnt 顶级菜单按钮太高（没专属 token）
+- **现象**：`MenuBarAnt.create()` 渲染出的 File/Edit/View/Help 顶级菜单项，单个高度约 35px（8px + 文字行高 19px + 8px = 35px），对比 VS Code（~30px）/ IntelliJ IDEA（~28px）风格明显偏胖，不符合 IDE/桌面应用菜单栏的紧凑观感。
+- **根因**：典型「视觉定位不同的控件共用同一组 padding token」：
+  - `.menu-bar > .container > .menu`（顶级菜单栏横向贴边按钮）`padding-y` 用了 `@menu-padding-y: @spacing-sm`（8px）
+  - 但这组 token 是为「下拉菜单垂直可点击行」设计的（点击舒适度优先，需要 8px+ 高度）
+  - 顶级菜单栏的视觉是「横向贴边小按钮」，需要的 padding 系统**完全不一样**
+  - 二者**共用 token 没有拆分** → 顶级菜单被迫变得和下拉项一样厚
+- **影响面**：所有使用 `MenuBarAnt`/`MenuAnt`/`ContextMenu` 的菜单栏（11 套主题都中招）。
+- **修复**：
+  1. `variables-base.less` 新增 **`@menu-bar-padding-y`** 专属 token，默认 `4px`（IDE 风格），并在注释里**写清楚三个 token 的分工**：
+     - `@menu-bar-padding-y` → 顶级菜单栏项（`.menu-bar > .container > .menu`，VS Code/IDEA 风格紧凑菜单栏）
+     - `@menu-padding-y/x`   → 下拉菜单容器 + 弹层
+     - `@menu-item-padding-y/x` → 弹层里的菜单项 `.menu-item` / `.context-menu .menu-item`
+  2. `_contextmenu.less` 顶级菜单选择器 `.menu-bar > .container > .menu` 改用 `@menu-bar-padding-y @menu-padding-x`（X 方向仍走原 token）。
+  3. 4 套 **compact 主题**（light-compact / dark-compact / mui-compact / mui-dark-compact）在各自的 size override 区块追加 `@menu-bar-padding-y: 2px;`（极致紧凑，~23px 高）。
+- **验证**（8 套 Java 可用主题编译产物实测）：
+
+  | 主题 | 修复前 padding | 修复后 padding | 视觉高度（14px 字号）|
+  |---|---|---|---|
+  | theme-light | `8px 12px` | `4px 12px` | ~27px ✅ |
+  | theme-dark | `8px 12px` | `4px 12px` | ~27px ✅ |
+  | theme-mui | `8px 12px` | `4px 12px` | ~27px ✅ |
+  | theme-mui-dark | `8px 12px` | `4px 12px` | ~27px ✅ |
+  | theme-light-compact | `6px 8px` | `2px 8px` | ~23px ✅ |
+  | theme-dark-compact | `6px 8px` | `2px 8px` | ~23px ✅ |
+  | theme-mui-compact | `6px 8px` | `2px 8px` | ~23px ✅ |
+  | theme-mui-dark-compact | `6px 8px` | `2px 8px` | ~23px ✅ |
+
+  弹层里 `.menu-item` padding 全部**未动**（默认 8px 16px / compact 6px 12px）→ 改动精准隔离，没误伤下拉项。
+- **保护性扫描**：
+  - `grep -r "@menu-padding-y" jfxium/src/main/resources/.../less` → 仅下拉菜单使用，顶级菜单已切到 `@menu-bar-padding-y` ✅
+  - `grep -r "@menu-bar-padding-y" jfxium/src/main/resources/.../less` → 1 个 base 定义 + 4 个 compact 覆盖 + 1 个消费点（_contextmenu.less）✅
+- **复测**：
+  - `./mvnw install -pl jfxium -DskipTests` → BUILD SUCCESS
+  - 8 套 Java 主题 CSS 产物 grep `.menu-bar > .container > .menu` 全部输出符合预期 padding
+- **沉淀**：
+  - **顶级横向菜单栏和下拉菜单项的 padding 系统必须分开**——前者是「贴边小按钮」要紧凑，后者是「垂直可点击行」要舒适，二者**不能用同一组 token**。
+  - 设计 token 命名要传达**视觉定位**而不是「能塞就用」：`@menu-bar-padding-y` 一看就知道是给菜单栏用的，`@menu-padding-y` 是给下拉菜单容器用的，分工清晰。
+  - 此类「控件 X 用了控件 Y 的 token」型 bug，**第一反应是回到 _xxx.less 看 padding 是从哪组 token 继承的**——如果继承方和被继承方的视觉定位不同，就要单独拆 token。

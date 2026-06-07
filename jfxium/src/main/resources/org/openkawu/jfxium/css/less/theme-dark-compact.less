@@ -47,6 +47,9 @@
 @input-padding-x-lg: 8px;
 
 @card-padding: 8px;
+
+// Menu bar padding（BUG #67）：顶级菜单栏紧凑下再收到 2px → 菜单项约 23px 高
+@menu-bar-padding-y: 2px;
 @font-size-md: 13px;
 
 // Step 3: 内联 Dark 配色（与 variables-dark.less 一致，避免 @import 反向覆盖尺寸 token）
