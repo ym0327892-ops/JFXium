@@ -3,11 +3,8 @@ package org.openkawu.jfxium.component.layout;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
-import org.openkawu.jfxium.core.css.Background;
-import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * FlowPaneAnt - 继承式 FlowPane 容器（M19.36 引入）。
@@ -23,19 +20,29 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *     .hgap(8).vgap(8)
  *     .children(tag1, tag2, tag3, tag4, ...);
  * }</pre>
+ *
+ * <h2>设计契约</h2>
+ * <ul>
+ *   <li><b>视觉钩子、方向性边框线、尺寸、高频节点属性</b>统一继承自 {@link LayoutCommon}
+ *       默认实现（节省 ~120 行重复模板代码，行为 100% 等价原 FlowPaneAnt）</li>
+ *   <li><b>双重身份</b>：是 FlowPane 也是工厂——继承自 {@link FlowPane}，可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
+ * </ul>
  */
-public class FlowPaneAnt extends FlowPane {
+public class FlowPaneAnt extends FlowPane implements LayoutCommon<FlowPaneAnt> {
 
+    /** 工厂入口。 */
     public static FlowPaneAnt create() {
         return new FlowPaneAnt();
     }
 
+    /** 工厂入口（带初始子节点）。 */
     public static FlowPaneAnt create(Node... children) {
         return new FlowPaneAnt(children);
     }
 
     // ============================================================
-    // 构造函数
+    // 构造函数（公开，便于业务 extends）
     // ============================================================
 
     public FlowPaneAnt() {
@@ -55,7 +62,7 @@ public class FlowPaneAnt extends FlowPane {
     }
 
     // ============================================================
-    // 流式 API
+    // 流式 API（FlowPane 特有业务方法）
     // ============================================================
 
     /** 子节点之间的水平间距。 */
@@ -84,26 +91,19 @@ public class FlowPaneAnt extends FlowPane {
         return this;
     }
 
+    /** 设置子节点排列方向。 */
     public FlowPaneAnt orientation(Orientation orientation) {
         setOrientation(orientation);
         return this;
     }
 
+    /** 设置子节点对齐方式。 */
     public FlowPaneAnt align(Pos alignment) {
         setAlignment(alignment);
         return this;
     }
 
-    public FlowPaneAnt padding(double padding) {
-        setPadding(new Insets(padding));
-        return this;
-    }
-
-    public FlowPaneAnt padding(double top, double right, double bottom, double left) {
-        setPadding(new Insets(top, right, bottom, left));
-        return this;
-    }
-
+    /** 批量添加子节点（null 节点会被过滤）。 */
     public FlowPaneAnt children(Node... nodes) {
         if (nodes != null) {
             for (Node n : nodes) {
@@ -131,43 +131,6 @@ public class FlowPaneAnt extends FlowPane {
         return this;
     }
 
-    public FlowPaneAnt maxW(double width) {
-        setMaxWidth(width);
-        return this;
-    }
-
-    public FlowPaneAnt maxH(double height) {
-        setMaxHeight(height);
-        return this;
-    }
-
-    public FlowPaneAnt minW(double width) {
-        setMinWidth(width);
-        return this;
-    }
-
-    public FlowPaneAnt minH(double height) {
-        setMinHeight(height);
-        return this;
-    }
-
-    public FlowPaneAnt prefW(double width) {
-        setPrefWidth(width);
-        return this;
-    }
-
-    public FlowPaneAnt prefH(double height) {
-        setPrefHeight(height);
-        return this;
-    }
-
-    /** 同时设置首选宽高。 */
-    public FlowPaneAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
-    /** 同时设置最大宽高。 */
-    public FlowPaneAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
-    /** 同时设置最小宽高。 */
-    public FlowPaneAnt minSize(double w, double h) { setMinSize(w, h); return this; }
-
     /** 给指定子节点设置外边距。 */
     public FlowPaneAnt margin(Node child, Insets margin) {
         FlowPane.setMargin(child, margin);
@@ -175,72 +138,12 @@ public class FlowPaneAnt extends FlowPane {
     }
 
     // ============================================================
-    // 视觉钩子
+    // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
+    // LayoutCommon<FlowPaneAnt> 默认实现
+    // （节省 ~120 行重复模板代码，行为 100% 等价原 FlowPaneAnt）
     // ============================================================
 
-    public FlowPaneAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    public FlowPaneAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    public FlowPaneAnt background(Background bg) {
-        if (bg != null) styleClass(bg.styleClass());
-        return this;
-    }
-
-    public FlowPaneAnt style(String style) {
-        if (style != null) setStyle(style);
-        return this;
-    }
-
-    // ============================================================
-    // 方向性边框线（分割线）
-    // ============================================================
-
-    /** 顶部分割线。 */
-    public FlowPaneAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
-    /** 顶部分割线（开关）。 */
-    public FlowPaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
-    /** 底部分割线。 */
-    public FlowPaneAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
-    /** 底部分割线（开关）。 */
-    public FlowPaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
-    /** 左侧分割线。 */
-    public FlowPaneAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
-    /** 左侧分割线（开关）。 */
-    public FlowPaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
-    /** 右侧分割线。 */
-    public FlowPaneAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
-    /** 右侧分割线（开关）。 */
-    public FlowPaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
-
-    // ============================================================
-    // 高频节点属性
-    // ============================================================
-
-    /** 设置可见性。 */
-    public FlowPaneAnt visible(boolean v) { setVisible(v); return this; }
-    /** 设置禁用状态。 */
-    public FlowPaneAnt disable(boolean d) { setDisable(d); return this; }
-    /** 设置是否受布局管理。 */
-    public FlowPaneAnt managed(boolean m) { setManaged(m); return this; }
-    /** 设置透明度（0.0 ~ 1.0）。 */
-    public FlowPaneAnt opacity(double o) { setOpacity(o); return this; }
-    /** 设置鼠标光标。 */
-    public FlowPaneAnt cursor(Cursor c) { setCursor(c); return this; }
-    /** 设置节点 ID。 */
-    public FlowPaneAnt id(String id) { setId(id); return this; }
-
-    /** Builder 模式终结调用，返回自身。详见 {@link VBoxAnt#build()}。 */
+    /** Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。 */
     public FlowPaneAnt build() {
         return this;
     }
