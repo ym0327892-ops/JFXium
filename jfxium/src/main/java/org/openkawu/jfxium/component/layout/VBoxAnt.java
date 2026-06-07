@@ -2,12 +2,9 @@ package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.core.css.Background;
-import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * VBoxAnt - 继承式 VBox 容器（M19.36 引入）。
@@ -67,7 +64,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *   <li><b>跟 *Ant 风格一致</b>：流式方法名跟 {@link VBoxBuilder} 完全对齐（spacing / padding / align / children）</li>
  * </ul>
  */
-public class VBoxAnt extends VBox {
+public class VBoxAnt extends VBox implements LayoutCommon<VBoxAnt> {
 
     /** 工厂入口。等价于 {@code new VBoxAnt()}，提供链式风格。 */
     public static VBoxAnt create() {
@@ -109,18 +106,6 @@ public class VBoxAnt extends VBox {
         return this;
     }
 
-    /** 设置统一的 padding（四边相同）。 */
-    public VBoxAnt padding(double padding) {
-        setPadding(new Insets(padding));
-        return this;
-    }
-
-    /** 设置 4 边各自的 padding。 */
-    public VBoxAnt padding(double top, double right, double bottom, double left) {
-        setPadding(new Insets(top, right, bottom, left));
-        return this;
-    }
-
     /** 设置子节点对齐方式。 */
     public VBoxAnt align(Pos alignment) {
         setAlignment(alignment);
@@ -155,117 +140,13 @@ public class VBoxAnt extends VBox {
         return this;
     }
 
-    public VBoxAnt maxW(double width) {
-        setMaxWidth(width);
-        return this;
-    }
-
-    public VBoxAnt maxH(double height) {
-        setMaxHeight(height);
-        return this;
-    }
-
-    public VBoxAnt minW(double width) {
-        setMinWidth(width);
-        return this;
-    }
-
-    public VBoxAnt minH(double height) {
-        setMinHeight(height);
-        return this;
-    }
-
-    public VBoxAnt prefW(double width) {
-        setPrefWidth(width);
-        return this;
-    }
-
-    public VBoxAnt prefH(double height) {
-        setPrefHeight(height);
-        return this;
-    }
-
-    /** 同时设置首选宽高。 */
-    public VBoxAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
-    /** 同时设置最大宽高。 */
-    public VBoxAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
-    /** 同时设置最小宽高。 */
-    public VBoxAnt minSize(double w, double h) { setMinSize(w, h); return this; }
-
     // ============================================================
-    // 视觉钩子（跟 *Ant 风格一致）
+    // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
+    // LayoutCommon<VBoxAnt> 默认实现
+    // （节省 ~110 行重复模板代码，行为 100% 等价原 VBoxAnt）
     // ============================================================
 
-    /** 追加一个 styleClass（幂等——重复调不会重复挂）。 */
-    public VBoxAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** 批量挂多个 styleClass（变长重载）。 */
-    public VBoxAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    /** 设置背景层级（M19.35 集成 Background 体系）。 */
-    public VBoxAnt background(Background bg) {
-        if (bg != null) {
-            styleClass(bg.styleClass());
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先用 styleClass + LESS）。 */
-    public VBoxAnt style(String style) {
-        if (style != null) setStyle(style);
-        return this;
-    }
-
-    // ============================================================
-    // 方向性边框线（分割线）
-    // ============================================================
-
-    /** 顶部分割线。 */
-    public VBoxAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
-    /** 顶部分割线（开关）。 */
-    public VBoxAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
-    /** 底部分割线。 */
-    public VBoxAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
-    /** 底部分割线（开关）。 */
-    public VBoxAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
-    /** 左侧分割线。 */
-    public VBoxAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
-    /** 左侧分割线（开关）。 */
-    public VBoxAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
-    /** 右侧分割线。 */
-    public VBoxAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
-    /** 右侧分割线（开关）。 */
-    public VBoxAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
-
-    // ============================================================
-    // 高频节点属性
-    // ============================================================
-
-    /** 设置可见性。 */
-    public VBoxAnt visible(boolean v) { setVisible(v); return this; }
-    /** 设置禁用状态。 */
-    public VBoxAnt disable(boolean d) { setDisable(d); return this; }
-    /** 设置是否受布局管理。 */
-    public VBoxAnt managed(boolean m) { setManaged(m); return this; }
-    /** 设置透明度（0.0 ~ 1.0）。 */
-    public VBoxAnt opacity(double o) { setOpacity(o); return this; }
-    /** 设置鼠标光标。 */
-    public VBoxAnt cursor(Cursor c) { setCursor(c); return this; }
-    /** 设置节点 ID。 */
-    public VBoxAnt id(String id) { setId(id); return this; }
-
-    /**
-     * Builder 模式终结调用——返回自身。
+    /** Builder 模式终结调用——返回自身。
      *
      * <p>VBoxAnt 既是工厂也是节点：调用 {@link #build()} 跟直接拿 {@code this} 等价，
      * 提供本方法是为了让 API 跟 {@link VBoxBuilder#build()} 等老式 Builder 完全对齐——

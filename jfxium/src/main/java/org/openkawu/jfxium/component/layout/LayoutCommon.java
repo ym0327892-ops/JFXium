@@ -2,6 +2,7 @@ package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -9,6 +10,15 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 /**
  * 继承式 layout 组件的统一流式 API 契约 —— 7 个 *Ant（VBox/HBox/FlowPane/SplitPane/
  * TilePane/StackPane/AnchorPane）通用方法的集中地。
+ *
+ * <h2>命名约定</h2>
+ * <p>本接口名字 <b>不包含</b> "Ant" 字段，原因：
+ * <ul>
+ *   <li>它本身不是 {@code *Ant} 系列类 —— 是给 {@code *Ant} 用的<b>通用契约</b></li>
+ *   <li>"Ant" 是实现类后缀（双工厂模式的具体产物），不应反向传染到抽象契约名</li>
+ *   <li>避免读者误以为 "LayoutAnt 是 LayoutAntCommon 的父类" 这类错误的继承关系</li>
+ * </ul>
+ * </p>
  *
  * <h2>背景</h2>
  * 此前 7 个继承式 layout 文件各自重复实现了 {@code styleClass / style / background /
@@ -19,10 +29,10 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * <h2>设计</h2>
  * 采用 Java 8+ {@code default methods} + self-bounded 泛型：
  * <ul>
- *   <li>{@code <SELF extends LayoutAntCommon<SELF>>} —— 保证链式调用返回子类类型
+ *   <li>{@code <SELF extends LayoutCommon<SELF>>} —— 保证链式调用返回子类类型
  *       （{@code vbox.borderTop().padding(16).spacing(8)} 编译通过，{@code spacing} 仍能链下去）</li>
- *   <li>default methods 通过 {@code this} 调 {@link javafx.scene.Node} 公开 API
- *       （{@code getStyleClass()} / {@code setStyle()} / {@code setVisible()} 等）</li>
+ *   <li>default methods 通过 {@code ((Node) this).xxx()} 调 {@link javafx.scene.Node} 公开 API
+ *       （所有实现类都是 Node 子类，cast 安全）</li>
  *   <li>Region 特有方法（{@code setPadding(Insets)} / {@code setMaxWidth(double)} 等）
  *       用 Java 16+ pattern matching for instanceof 强转调用</li>
  *   <li>业务继承语义完全保留 —— {@code class HomeView extends VBoxAnt} 仍然成立，
@@ -31,7 +41,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *
  * <h2>使用示例</h2>
  * <pre>{@code
- * public class VBoxAnt extends VBox implements LayoutAntCommon<VBoxAnt> {
+ * public class VBoxAnt extends VBox implements LayoutCommon<VBoxAnt> {
  *     // 无需实现任何方法 —— 全部从接口 default 获得
  *     // 仅保留 VBoxAnt 特有的方法（spacing/align/children/vgrow/margin/create/build 等）
  * }
@@ -45,7 +55,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * @param <SELF> 子类自身类型，确保链式调用返回子类引用
  * @see AbstractStyleBuilder
  */
-public interface LayoutAntCommon<SELF extends LayoutAntCommon<SELF>> {
+public interface LayoutCommon<SELF extends LayoutCommon<SELF>> {
 
     // ============================================================
     // 视觉钩子：styleClass / style / background
@@ -56,8 +66,8 @@ public interface LayoutAntCommon<SELF extends LayoutAntCommon<SELF>> {
      */
     @SuppressWarnings("unchecked")
     default SELF styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
+        if (cls != null && !cls.isEmpty() && !((Node) this).getStyleClass().contains(cls)) {
+            ((Node) this).getStyleClass().add(cls);
         }
         return (SELF) this;
     }
@@ -81,7 +91,7 @@ public interface LayoutAntCommon<SELF extends LayoutAntCommon<SELF>> {
     @SuppressWarnings("unchecked")
     default SELF style(String style) {
         if (style != null) {
-            this.setStyle(style);
+            ((Node) this).setStyle(style);
         }
         return (SELF) this;
     }
@@ -274,28 +284,28 @@ public interface LayoutAntCommon<SELF extends LayoutAntCommon<SELF>> {
     /** 设置可见性。 */
     @SuppressWarnings("unchecked")
     default SELF visible(boolean v) {
-        setVisible(v);
+        ((Node) this).setVisible(v);
         return (SELF) this;
     }
 
     /** 设置禁用状态。 */
     @SuppressWarnings("unchecked")
     default SELF disable(boolean d) {
-        setDisable(d);
+        ((Node) this).setDisable(d);
         return (SELF) this;
     }
 
     /** 设置是否受布局管理。 */
     @SuppressWarnings("unchecked")
     default SELF managed(boolean m) {
-        setManaged(m);
+        ((Node) this).setManaged(m);
         return (SELF) this;
     }
 
     /** 设置透明度（0.0 ~ 1.0）。 */
     @SuppressWarnings("unchecked")
     default SELF opacity(double o) {
-        setOpacity(o);
+        ((Node) this).setOpacity(o);
         return (SELF) this;
     }
 
@@ -305,7 +315,7 @@ public interface LayoutAntCommon<SELF extends LayoutAntCommon<SELF>> {
      */
     @SuppressWarnings("unchecked")
     default SELF cursor(Cursor c) {
-        setCursor(c);
+        ((Node) this).setCursor(c);
         return (SELF) this;
     }
 
@@ -315,7 +325,7 @@ public interface LayoutAntCommon<SELF extends LayoutAntCommon<SELF>> {
      */
     @SuppressWarnings("unchecked")
     default SELF id(String id) {
-        setId(id);
+        ((Node) this).setId(id);
         return (SELF) this;
     }
 }
