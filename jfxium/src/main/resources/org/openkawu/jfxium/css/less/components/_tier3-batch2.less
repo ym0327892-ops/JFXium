@@ -153,11 +153,12 @@
   -fx-font-weight: 600;
 }
 
+// .jfx-menu-divider（BUG #68）：行高 / padding 由 _menu.less 管控（padding 走 token @menu-divider-padding-y，
+// min-height 走 @menu-divider-row-height）。这里只负责 line border 颜色，不再管高度。
+// 历史：以前用 1px Region 画 line 写在 min/pref/max-height: 1，BUG #68 改成 padding 撑开（对齐 AtlantaFX
+// .separator:horizontal），必须删掉旧 height 覆盖否则 _menu.less 的 min-height 失效。
 .jfx-menu-divider {
   -fx-background-color: -color-border-muted;
-  -fx-min-height: 1;
-  -fx-pref-height: 1;
-  -fx-max-height: 1;
 }
 
 /* M14.3 DARK 主题：深色侧栏（admin 经典暗色风格） */

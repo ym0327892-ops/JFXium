@@ -515,3 +515,73 @@
   - **顶级横向菜单栏和下拉菜单项的 padding 系统必须分开**——前者是「贴边小按钮」要紧凑，后者是「垂直可点击行」要舒适，二者**不能用同一组 token**。
   - 设计 token 命名要传达**视觉定位**而不是「能塞就用」：`@menu-bar-padding-y` 一看就知道是给菜单栏用的，`@menu-padding-y` 是给下拉菜单容器用的，分工清晰。
   - 此类「控件 X 用了控件 Y 的 token」型 bug，**第一反应是回到 _xxx.less 看 padding 是从哪组 token 继承的**——如果继承方和被继承方的视觉定位不同，就要单独拆 token。
+
+## 修复说明（2026-06-07：BUG #68 MenuAnt INLINE 模式侧栏菜单 30px/row 极致紧凑）
+
+> 用户拍板（第二轮 AskUserQuestion 回答）：「横向两个组件暂不动，**inline 行高压到 30px/row（极致紧凑）**」，对标 VS Code（30px）/ IntelliJ IDEA（28-30px）风格。BUG #67 修了顶级 MenuBar 横向按钮（`@menu-bar-padding-y` 4px → ~27px），但侧栏 `MenuAnt.create().build()` 的 inline row 还是 ~35px 偏胖。本轮沿用 #67 的 token 拆分思路，把「侧栏 inline 行」也从下拉菜单 token 拆出来独立治理。
+>
+> 用户关键反馈「不会就看 AtlantaFX 源码」——本轮 2 个核心设计修正（MenuGroup padding 跟 item 一致 / MenuDivider 走独立 token + CSS）都是 AtlantaFX 源码给的指引。
+
+### #68 MenuAnt INLINE 模式 row 太高（共用下拉菜单 padding token + Java setPadding 吞 padding）
+- **现象**：`MenuAnt.create().group().item().divider().subMenu()...build()` 渲染的侧栏 row 约 35px（8+19+8），对比 IntelliJ IDEA（28-30px）偏胖 5-7px，信息密度低。
+- **根因**：三层问题叠加——
+  1. **token 复用**：inline 模式 `.jfx-menu-item / .jfx-menu-submenu-header` 复用了 `@menu-item-padding-y: @spacing-sm` (8px)——这组 token 是给「下拉菜单垂直可点击行」设计的（点击舒适度优先），侧栏要的是「30px/row 极致紧凑」完全不同
+  2. **Java 端吞 padding**（红线 #5 违反）：`MenuGroup.buildInline` 在 Java 端 `label.setPadding(new Insets(8, 0, 8, 16))` 硬编码，`MenuDivider.buildInline` 在 Java 端 `line.setPadding(new Insets(3, 0/16, 3, 0/16))`——Java 端 setPadding 会**覆盖** CSS `-fx-padding`，违背容器不吞 padding 原则
+  3. **未对齐 AtlantaFX 源码**：AtlantaFX 源码设计哲学
+     - `.caption-menu-item` padding 跟 `.menu-item` **完全一致**（不靠 padding 补偿字号差异，视觉区分只靠 fontsize + fontweight + text-fill）
+     - `.context-menu .separator:horizontal` 用独立 token `$separator-padding`（**不是 menu-padding**），padding 走 CSS（不是 Java setPadding）
+- **影响面**：所有使用 `MenuAnt` inline 模式的侧栏菜单（M19 内 admin 模板、login 模板、crud 模板都用）。
+- **修复**（4 个文件 + 4 个 compact 主题 + 1 个 JfxStyles 常量）：
+
+  1. **`variables-base.less`** 新增 4 个 token + 公式（默认 6px → 30/26，compact 4px 自动派生 26/22）：
+     ```less
+     // 行高公式：padding-y * 2 + 18px（label lineHeight @ fontSize 14）
+     @menu-inline-padding-y: 6px;          // 默认极致紧凑 30/26
+     @menu-inline-padding-x: @spacing-lg;  // 16/12
+     @menu-divider-padding-y: 3px;          // divider 独立 token（不共用 inline）
+     @menu-inline-row-height: @menu-inline-padding-y * 2 + 18px;     // 30/26
+     @menu-divider-row-height: @menu-divider-padding-y * 2 + 1px;    // 7
+     ```
+     注释里**写清 token 分工**：inline（侧栏）vs menu-item（下拉）vs menu-bar（顶级横向）vs divider（视觉标记）四套**完全独立**。
+  2. **`components/_menu.less`** 三处 CSS：
+     - `.jfx-menu-item` / `.jfx-menu-submenu-header` / `.jfx-menu-group`：padding 走新 token + `-fx-min-height: @menu-inline-row-height` 锁行高
+     - `.jfx-menu-divider`：`@-fx-min-height: @menu-divider-row-height` + padding 走新 token
+     - `.jfx-menu-collapsed > .jfx-menu-divider`：padding 上下 3px，left/right 0
+  3. **`components/_tier3-batch2.less`**（**关键修复，被 BUG #68 探针抓出**）：
+     - 删除历史遗留的 `-fx-min-height: 1; -fx-pref-height: 1; -fx-max-height: 1;`——这是 1px Region 旧设计，覆盖了 _menu.less 的 7px min-height，导致 divider 行高只显示 1px
+     - 只保留 `-fx-background-color: -color-border-muted;`（line border 颜色）
+  4. **`MenuAnt.java`** 两处 Java 端：
+     - `MenuGroup.buildInline`（line 883-906）：**拆开 `label.setPadding`**，改用 HBox 包装 + `.jfx-menu-group` styleClass + indent Region + inner Label（**完全对齐 AtlantaFX caption-menu-item**）
+     - `MenuDivider.buildInline`（line 921-928）：**移除 Java 端 `setPadding`**，只挂 `.jfx-menu-divider` styleClass（**完全对齐 AtlantaFX separator 走 CSS**）
+  5. **`JfxStyles.java`**：新增 `MENU_GROUP = "jfx-menu-group"` 常量（已有 `MENU_GROUP_LABEL` / `MENU_DIVIDER`）
+  6. **4 个 compact 主题**（`theme-light-compact` / `theme-dark-compact` / `theme-mui-compact` / `theme-mui-dark-compact`）：覆盖 `@menu-inline-padding-y: 4px;`（公式自动派生 26px/row + divider 7px）
+
+- **验证**（探针 `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/menu/MenuInlineProbe.java` 实测）：
+
+  > 探针设计关键：**`getBoundsInLocal().getHeight()` = 总高度（含 padding）**，`getLayoutBounds().getHeight()` = content 高度（不含 padding）——JavaFX 文档不强调，第一次跑错用 layoutBounds 测出 17px（实际 29px）卡了半小时。**`getPadding()` = Insets 才是 padding 真相**。
+  >
+  > 探针位置：`jfxium-demo/src/main/java/org/openkawu/jfxium/demo/menu/MenuInlineProbe.java`
+  > 跑法：临时改 `jfxium-demo/pom.xml` mainClass 为 `MenuInlineProbe` → `mvn -pl jfxium-demo javafx:run` → 跑完改回 `JfxiumUiExampleApp`（已在 pom 注释里写明候选清单）。
+
+  实测 7 rows（group + item + item + divider + subMenu container + divider + item）：
+
+  | 主题 | group | item | subMenu | divider | TOTAL | padding 实测 |
+  |------|-------|------|---------|---------|-------|--------------|
+  | LIGHT (default) | **30.0** | **30.0** | **30.0** | **7.0** | **164** | 6/16/6/0 + 3/16/3/16 ✅ |
+  | LIGHT-COMPACT   | **26.0** | **26.0** | **26.0** | **7.0** | **144** | 4/12/4/0 + 3/12/3/12 ✅ |
+
+  主题切换：padding 6/16 → 4/12、行高 30 → 26 完美联动，公式 `@menu-inline-padding-y * 2 + 18px` 实战有效。
+
+- **复测**：
+  - `./mvnw install -pl jfxium -DskipTests` → BUILD SUCCESS
+  - 探针跑出 164/144px 完全符合预期（30+30+30+7+30+7+30=164 / 26*5+7*2=144）
+  - 8 套 Java 主题 CSS 产物 grep `.jfx-menu-item / .jfx-menu-group / .jfx-menu-divider` padding + min-height 全部输出符合预期
+- **沉淀**：
+  - **「不会就看 AtlantaFX 源码」是金科玉律**——本轮 2 个关键修正（MenuGroup 6/6 padding 跟 item 一致 / MenuDivider 走独立 token + CSS）都是 AtlantaFX 源码给的指引，不是拍脑袋设计
+  - **AtlantaFX caption-menu-item 哲学**：padding 跟普通 `.menu-item` 完全一致，**不靠 padding 补偿字号差异**——视觉区分只靠 fontsize + fontweight + text-fill 三个属性
+  - **AtlantaFX separator 哲学**：用独立 token + 走 CSS（不是 Java setPadding）——divider 是「视觉分隔标记」不是「行」，padding 跟普通 item 完全不同
+  - **JavaFX 跟 web CSS 行为不同**：font lineHeight 算不出整 px（fontSize 14 → lineHeight ~17.5），单独靠 padding 撑会差 1-2px。**必须用 `-fx-min-height` 锁死行高**（这是对 AtlantaFX 设计的实用主义偏离，注释里写清楚）
+  - **改 CSS 时警惕历史 .less 残留覆盖**——新 `.jfx-menu-divider { min-height: 7px }` 被历史 `.jfx-menu-divider { min-height: 1; pref-height: 1; max-height: 1 }` 覆盖，CSS 优先级导致探针一度只显示 1px divider。**写完后要 grep 同名选择器**确认没残留
+  - **探针设计要分清 API**：`getBoundsInLocal()`（含 padding）vs `getLayoutBounds()`（不含 padding）vs `getPadding()`（Insets 真相）——JavaFX 文档不强调，第一次写错 debug 了半小时
+  - **红线 #5 容器不吞 padding** + **红线 #8 jfx- 前缀 styleClass** + **divider 走独立 token** 三者必须坚持——本轮 MenuGroup / MenuDivider 都从 Java setPadding 迁到 CSS，正是红线 #5 的正面应用
+  - 继承 #67 经验：设计 token 命名要传达**视觉定位**而不是「能塞就用」——`@menu-inline-padding-y` 一看就知道是给侧栏 inline 用的，`@menu-divider-padding-y` 是给分隔线用的，跟 `@menu-bar-padding-y`（顶级横向）和 `@menu-item-padding-y`（下拉项）四套分工清晰

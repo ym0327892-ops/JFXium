@@ -908,15 +908,28 @@
 /* ============================================
    MenuAnt — 自定义菜单项（INLINE / HORIZONTAL 共用）
    注意：left padding 为 0，由 Java 端 indentation spacer 接管。
-   token：@spacing-sm / @spacing-lg → 默认 8px/16px，compact 6px/12px
+   token：@menu-inline-padding-y → 默认 6px（30px/row 极致紧凑，BUG #68）
+                              → compact 4px（26px/row）
+         @menu-inline-padding-x → 默认 @spacing-lg（16px，compact 12px）
    ============================================ */
-/* INLINE 模式基础行（侧栏菜单项） */
+/* INLINE 模式基础行（侧栏菜单项，行高 30px/row 极致紧凑）
+   -fx-min-height 锁死行高：JavaFX font lineHeight 算不出 30px 整（fontSize 14 → ~17.5），
+   单独靠 padding 撑会差 1-2px。详见 variables-base.less @menu-inline-row-height 注释。 */
 .jfx-menu-item {
-  -fx-padding: 6px 12px 6px 0;
+  -fx-padding: 4px 12px 4px 0;
+  -fx-min-height: 26px;
 }
-/* INLINE 模式子菜单 header */
+/* INLINE 模式子菜单 header（行高同上） */
 .jfx-menu-submenu-header {
-  -fx-padding: 6px 12px 6px 0;
+  -fx-padding: 4px 12px 4px 0;
+  -fx-min-height: 26px;
+}
+/* INLINE 模式分组标题（BUG #68，对齐 AtlantaFX .caption-menu-item）
+   padding 跟普通 .jfx-menu-item 完全一致（top/right/bottom 走 token，left=0 由 indent spacer 接管）。
+   视觉区分只靠 inner label 的 .jfx-menu-group-label（font-size-sm + muted + 600） */
+.jfx-menu-group {
+  -fx-padding: 4px 12px 4px 0;
+  -fx-min-height: 26px;
 }
 /* HORIZONTAL 模式：横向导航栏行高 = @control-height-lg（40px→compact 36px） */
 .jfx-menu-horizontal > .jfx-menu-item,
@@ -925,14 +938,29 @@
   -fx-pref-height: 36px;
   -fx-padding: 0 12px;
 }
-/* COLLAPSED 模式：居中纯图标行（vertical padding 保持跟 INLINE 一致） */
+/* COLLAPSED 模式：居中纯图标行（vertical padding 跟 INLINE 一致：30px/row 极致紧凑） */
 .jfx-menu-collapsed > .jfx-menu-item {
-  -fx-padding: 6px 0;
+  -fx-padding: 4px 0;
   -fx-alignment: center;
 }
 .jfx-menu-collapsed > .jfx-menu-submenu-header {
-  -fx-padding: 6px 0;
+  -fx-padding: 4px 0;
   -fx-alignment: center;
+}
+/* ============================================
+   MenuAnt — Divider（BUG #68，对齐 AtlantaFX .separator:horizontal）
+   padding 走独立 token @menu-divider-padding-y（不是 menu-inline-padding-y）。
+   Java 端不 setPadding，全部由 CSS 控制（红线 #5：容器不吞 padding）。
+   -fx-min-height 锁死行高：JavaFX Region 没 min-height 时 padding 不反映在 bounds（layoutBounds=0），
+   加 1px min-height 触发 layout 分配高度，padding 上下 3+3=6px 才生效。详见 variables-base.less 注释。
+   ============================================ */
+.jfx-menu-divider {
+  -fx-min-height: 7px;
+  -fx-padding: 3px 12px 3px 12px;
+}
+.jfx-menu-collapsed > .jfx-menu-divider {
+  -fx-min-height: 7px;
+  -fx-padding: 3px 0 3px 0;
 }
 /* ============================================
    Tabs Component
@@ -1857,9 +1885,15 @@
      .jfx-menu-bar                     → 容器（padding 0, 1px 底部 border）
        > .container                    → 中间层（@menu-bar-padding，4px/4px）
          > .menu-button                → 按钮（@menu-button-padding，6px/10px）
-   总高公式：@menu-bar-padding-y*2 + @menu-button-padding-y*2 + 文字高(15px) + 1border
-           = 4+4+6+6+15+1 = 36px（默认，IDE 风格）
-           = 4+4+4+4+15+1 = 32px（compact 公式自然收紧，@spacing-sm 6px 派生）
+           > .label                    → 必须 padding 0！JavaFX MenuBarButtonSkin
+                                          内部 MenuLabeledImpl 硬编码 6/15/6/15，modena 的
+                                          .menu-bar > .container > .menu-button > .label
+                                          { padding: 0 } 在 JavaFX 21 上没生效（节点类名是
+                                          .label，但被 MenuBarButtonSkin 内部 padding 覆盖），
+                                          这里用 jfx- 前缀 + specificity 0,5,0 压过。
+   总高公式：@menu-bar-padding-y*2 + @menu-button-padding-y*2 + 文字高(18px) + 1border
+           = 4+4+6+6+18+1 = 39px（默认，IDE 风格）
+           = 4+4+4+4+18+1 = 35px（compact 公式自然收紧，@spacing-sm 6px 派生）
    注意：必须用 .jfx-menu-bar（红线 #8）；.menu-button 是 JavaFX MenuBarSkin 内部节点名
    ============================================ */
 .jfx-menu-bar > .container {
@@ -1871,6 +1905,7 @@
   -fx-background-radius: 4px;
 }
 .jfx-menu-bar > .container > .menu-button > .label {
+  -fx-padding: 0;
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
 }
@@ -3657,9 +3692,6 @@
 }
 .jfx-menu-divider {
   -fx-background-color: -color-border-muted;
-  -fx-min-height: 1;
-  -fx-pref-height: 1;
-  -fx-max-height: 1;
 }
 /* M14.3 DARK 主题：深色侧栏（admin 经典暗色风格） */
 .jfx-menu.jfx-menu-dark {

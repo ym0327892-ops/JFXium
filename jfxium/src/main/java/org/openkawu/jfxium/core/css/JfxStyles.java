@@ -478,6 +478,7 @@ public final class JfxStyles {
     public static final String MENU_SUBMENU_BODY = "jfx-menu-submenu-body";
     public static final String MENU_SUBMENU_ARROW = "jfx-menu-submenu-arrow";
     public static final String MENU_GROUP_LABEL = "jfx-menu-group-label";
+    public static final String MENU_GROUP = "jfx-menu-group";
     public static final String MENU_DIVIDER = "jfx-menu-divider";
 
     /** MenuAnt M14 增强：模式 + 选中态 + 主题 + 折叠 */

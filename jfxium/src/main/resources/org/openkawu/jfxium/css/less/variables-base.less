@@ -169,6 +169,33 @@
 @menu-button-padding-x: @menu-padding-x - (@menu-bar-padding-x / 2);
 @menu-item-padding-y: @spacing-sm;
 @menu-item-padding-x: @spacing-lg;
+//
+// 为什么 inline 行要单独 token？（BUG #68，用户要求 30px/row 极致紧凑）
+//   inline 模式（侧栏菜单）跟下拉菜单/弹层菜单是不同的视觉场景：
+//     - 下拉菜单需要 8px+ 上下 padding 给点击舒适度
+//     - 侧栏菜单要的是"30px/row 极致紧凑"，对标 IntelliJ IDEA（28px）/ Ant Design MenuItem（32px）
+//   不能跟 @menu-item-padding（被下拉菜单占用）共用，必须独立。
+//   公式：行高 = @menu-inline-padding-y * 2 + 18px(14px 字号) = 30px（默认极致紧凑）
+//   默认 6px → 30px/row（用户拍板：极致紧凑）
+//   compact 4px → 26px/row（compact 主题覆盖）
+//   x 用 @spacing-lg：left=0 由 Java 端 indent spacer 接管，x 只影响右侧 padding
+@menu-inline-padding-y: 6px;
+@menu-inline-padding-x: @spacing-lg;
+//
+// Divider 行高 token（BUG #68，对齐 AtlantaFX .separator:horizontal + cfg.$separators["small"]）。
+// 跟 @menu-inline-padding-y 分开：divider 是"视觉分隔标记"不是"行"，padding 用独立 token。
+// 默认 3px → divider padding 3+3=6px
+@menu-divider-padding-y: 3px;
+//
+// 为什么 inline 行高要 lock min-height？（BUG #68）
+//   JavaFX font lineHeight 算不出精确整数值（fontSize 14 → lineHeight ~17.5），
+//   单独靠 padding 撑会差 1-2px。给所有 row 加 min-height 锁死行高，跟 padding 公式联动：
+//   default 30 / compact 26。
+//   公式：行高 = padding-y * 2 + 18px（label lineHeight @ fontSize 14）
+//   备注：AtlantaFX 不锁 min-height 靠 padding 撑，是 CSS 行为不同（em 单位 + web font lineHeight 整），
+//         JavaFX 行为不同，实用主义用 min-height 锁死保证 30px/26px 整。
+@menu-inline-row-height: @menu-inline-padding-y * 2 + 18px;
+@menu-divider-row-height: @menu-divider-padding-y * 2 + 1px;
 
 // Tab Padding
 // 使用位置：.tab-pane .tab

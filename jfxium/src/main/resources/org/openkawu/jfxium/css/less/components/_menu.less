@@ -13,17 +13,31 @@
 /* ============================================
    MenuAnt — 自定义菜单项（INLINE / HORIZONTAL 共用）
    注意：left padding 为 0，由 Java 端 indentation spacer 接管。
-   token：@spacing-sm / @spacing-lg → 默认 8px/16px，compact 6px/12px
+   token：@menu-inline-padding-y → 默认 6px（30px/row 极致紧凑，BUG #68）
+                              → compact 4px（26px/row）
+         @menu-inline-padding-x → 默认 @spacing-lg（16px，compact 12px）
    ============================================ */
 
-/* INLINE 模式基础行（侧栏菜单项） */
+/* INLINE 模式基础行（侧栏菜单项，行高 30px/row 极致紧凑）
+   -fx-min-height 锁死行高：JavaFX font lineHeight 算不出 30px 整（fontSize 14 → ~17.5），
+   单独靠 padding 撑会差 1-2px。详见 variables-base.less @menu-inline-row-height 注释。 */
 .jfx-menu-item {
-  -fx-padding: @spacing-sm @spacing-lg @spacing-sm 0;
+  -fx-padding: @menu-inline-padding-y @menu-inline-padding-x @menu-inline-padding-y 0;
+  -fx-min-height: @menu-inline-row-height;
 }
 
-/* INLINE 模式子菜单 header */
+/* INLINE 模式子菜单 header（行高同上） */
 .jfx-menu-submenu-header {
-  -fx-padding: @spacing-sm @spacing-lg @spacing-sm 0;
+  -fx-padding: @menu-inline-padding-y @menu-inline-padding-x @menu-inline-padding-y 0;
+  -fx-min-height: @menu-inline-row-height;
+}
+
+/* INLINE 模式分组标题（BUG #68，对齐 AtlantaFX .caption-menu-item）
+   padding 跟普通 .jfx-menu-item 完全一致（top/right/bottom 走 token，left=0 由 indent spacer 接管）。
+   视觉区分只靠 inner label 的 .jfx-menu-group-label（font-size-sm + muted + 600） */
+.jfx-menu-group {
+  -fx-padding: @menu-inline-padding-y @menu-inline-padding-x @menu-inline-padding-y 0;
+  -fx-min-height: @menu-inline-row-height;
 }
 
 /* HORIZONTAL 模式：横向导航栏行高 = @control-height-lg（40px→compact 36px） */
@@ -34,14 +48,31 @@
   -fx-padding: 0 @spacing-lg;
 }
 
-/* COLLAPSED 模式：居中纯图标行（vertical padding 保持跟 INLINE 一致） */
+/* COLLAPSED 模式：居中纯图标行（vertical padding 跟 INLINE 一致：30px/row 极致紧凑） */
 .jfx-menu-collapsed > .jfx-menu-item {
-  -fx-padding: @spacing-sm 0;
+  -fx-padding: @menu-inline-padding-y 0;
   -fx-alignment: center;
 }
 
 .jfx-menu-collapsed > .jfx-menu-submenu-header {
-  -fx-padding: @spacing-sm 0;
+  -fx-padding: @menu-inline-padding-y 0;
   -fx-alignment: center;
+}
+
+/* ============================================
+   MenuAnt — Divider（BUG #68，对齐 AtlantaFX .separator:horizontal）
+   padding 走独立 token @menu-divider-padding-y（不是 menu-inline-padding-y）。
+   Java 端不 setPadding，全部由 CSS 控制（红线 #5：容器不吞 padding）。
+   -fx-min-height 锁死行高：JavaFX Region 没 min-height 时 padding 不反映在 bounds（layoutBounds=0），
+   加 1px min-height 触发 layout 分配高度，padding 上下 3+3=6px 才生效。详见 variables-base.less 注释。
+   ============================================ */
+.jfx-menu-divider {
+  -fx-min-height: @menu-divider-row-height;
+  -fx-padding: @menu-divider-padding-y @menu-inline-padding-x @menu-divider-padding-y @menu-inline-padding-x;
+}
+
+.jfx-menu-collapsed > .jfx-menu-divider {
+  -fx-min-height: @menu-divider-row-height;
+  -fx-padding: @menu-divider-padding-y 0 @menu-divider-padding-y 0;
 }
 

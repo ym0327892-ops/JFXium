@@ -885,10 +885,24 @@ public class MenuAnt {
             // 折叠模式：分组标题隐藏（只剩图标列没意义显示文字）
             if (ctx.collapsed) return null;
 
+            // 对齐 AtlantaFX .caption-menu-item + 对齐 subMenu header 结构：
+            // HBox 拿 .jfx-menu-group（top/right/bottom padding 走 CSS token，left=0 由 indent spacer 接管）
+            // inner Label 拿 .jfx-menu-group-label（拿字体样式：@font-size-sm / muted / 600）
+            HBox row = new HBox(0);
+            row.setAlignment(Pos.CENTER_LEFT);
+            row.getStyleClass().add(JfxStyles.MENU_GROUP);
+
+            // 左侧缩进 spacer：@spacing-lg + level * @spacing-lg（16 + level*16）
+            Region indent = new Region();
+            indent.setMinWidth(16 + level * 16);
+            indent.setPrefWidth(16 + level * 16);
+            indent.setMaxWidth(16 + level * 16);
+            row.getChildren().add(indent);
+
             Label label = new Label(text);
             label.getStyleClass().add(JfxStyles.MENU_GROUP_LABEL);
-            label.setPadding(new Insets(16, 16, 8, 16 + level * 16));
-            return label;
+            row.getChildren().add(label);
+            return row;
         }
 
         @Override
@@ -906,14 +920,10 @@ public class MenuAnt {
 
         @Override
         Node buildInline(BuildContext ctx) {
+            // 对齐 AtlantaFX .context-menu .separator:horizontal：divider padding 走 CSS（独立 token），
+            // Java 端不 setPadding，padding 由 .jfx-menu-divider styleClass 控制
             Region line = new Region();
             line.getStyleClass().add(JfxStyles.MENU_DIVIDER);
-            // 折叠模式：分割线左右无 padding 偏移
-            if (ctx.collapsed) {
-                line.setPadding(new Insets(8, 0, 8, 0));
-            } else {
-                line.setPadding(new Insets(8, 16, 8, 16 + level * 16));
-            }
             return line;
         }
 
