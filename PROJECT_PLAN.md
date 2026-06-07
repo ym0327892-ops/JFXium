@@ -9,7 +9,7 @@
 
 ## 一、项目开发约束
 
-1. **开发记录**：完成的、修改的内容需记录到 PLAN.md 合适位置
+1. **开发记录**：完成的、修改的内容需记录到 PROJECT_PLAN.md 合适位置
 2. **计划更新**：下一步计划、未完成的计划都需要记录
 3. **计划变更**：任何计划改变需综合考虑并更新项目总计划
 4. **什么是组件**：微型化、封装、可组合性，如 Modal、Drawer；小组件组装成大组件
@@ -104,9 +104,9 @@ HBox actions = BarAnt.create()
 
 ### 🎯 M1 活跃 Bug 修复（2026-05-17）
 
-**动机**：BUG.md 顶部存在 3 条未编号未关闭的活跃问题描述，与表格里"全部完成"自相矛盾，需要落地。
+**动机**：PROJECT_BUG.md 顶部存在 3 条未编号未关闭的活跃问题描述，与表格里"全部完成"自相矛盾，需要落地。
 
-**产出**：3 条 bug 全部修复并补编号入表（详见 [BUG.md](BUG.md) #21/#22/#23）。
+**产出**：3 条 bug 全部修复并补编号入表（详见 [PROJECT_BUG.md](PROJECT_BUG.md) #21/#22/#23）。
 
 **关键改动**：
 - [x] **#21 Table 选中色对比度**：`theme-base.less` 中 `-color-cell-bg-selected` 从 `@color-base-1` 改绑到 `@color-accent-subtle`（对齐 Ant Design `controlItemBgActive` token），新增 `:selected:hover` 规则
@@ -119,13 +119,13 @@ HBox actions = BarAnt.create()
 
 **动机**：开始大重构前，需要先把项目实情摸清楚，避免凭印象动手；同时清理已发现的文档与代码不一致。
 
-**产出**：项目结构与约定全面对齐文档；BUG.md/PLAN.md/README_CN 三处一致性修正。
+**产出**：项目结构与约定全面对齐文档；PROJECT_BUG.md/PROJECT_PLAN.md/README_CN 三处一致性修正。
 
 **关键改动**：
 - [x] 项目实情摸底：多模块结构（`jfxium` + `jfxium-demo`）、Java 21 + JavaFX 21.0.6、8 个 lessc execution 在 `generate-resources` 阶段
 - [x] 发现并记录隐性依赖：LESS 编译强依赖宿主机 Node.js
-- [x] BUG.md 重整：顶部 3 条未编号描述移入表格，按编号重排，新增"修复说明"小节
-- [x] PLAN.md 文件结构区从单模块视角扩展为多模块（补 `jfxium/` + `jfxium-demo/` 路径前缀）
+- [x] PROJECT_BUG.md 重整：顶部 3 条未编号描述移入表格，按编号重排，新增"修复说明"小节
+- [x] PROJECT_PLAN.md 文件结构区从单模块视角扩展为多模块（补 `jfxium/` + `jfxium-demo/` 路径前缀）
 
 ---
 
@@ -195,12 +195,12 @@ HBox actions = BarAnt.create()
 
 **动机**：M1-M5 的工作量巨大但散落在对话历史中，需要落档让后续维护者可追溯。
 
-**产出**：本次 PLAN.md 重组为时间线 + README_CN.md 同步重构成果。
+**产出**：本次 PROJECT_PLAN.md 重组为时间线 + README_CN.md 同步重构成果。
 
 **关键改动**：
-- [x] PLAN.md：原"📝 当前状态"+ 单一里程碑展开为 M0-M6 六个里程碑
-- [x] PLAN.md：第五章下一阶段计划重新分级为 P0/P1/P2/P3 路线图
-- [x] BUG.md：末尾新增"项目级里程碑"小节，串联 #21/#22/#23 与全量重构
+- [x] PROJECT_PLAN.md：原"📝 当前状态"+ 单一里程碑展开为 M0-M6 六个里程碑
+- [x] PROJECT_PLAN.md：第五章下一阶段计划重新分级为 P0/P1/P2/P3 路线图
+- [x] PROJECT_BUG.md：末尾新增"项目级里程碑"小节，串联 #21/#22/#23 与全量重构
 - [x] README_CN.md：新增"styleClass 体系"章节，主题文件清单补全到 8 个
 
 ---
@@ -293,7 +293,7 @@ HBox actions = BarAnt.create()
 **文档更新**：
 - [x] README_CN.md：更新 MessageAnt 文档，添加详细的位置功能说明
 - [x] README_CN.md：更新主题加载示例，改用 ThemeManager
-- [x] PLAN.md：添加 M7 里程碑记录
+- [x] PROJECT_PLAN.md：添加 M7 里程碑记录
 
 **影响文件**：
 - `core/container/` (8 个 Builder 类)
@@ -323,7 +323,7 @@ HBox actions = BarAnt.create()
 - [x] 添加 CSS 常量到 `CssClasses.java`（WATERMARK / WATERMARK_LAYER / WATERMARK_TEXT / WATERMARK_TEXT_GROUP / WATERMARK_IMAGE）
 - [x] 添加 LESS 样式到 `theme-base.less`（`.jfx-watermark` 系列选择器）
 - [x] 更新 `README_CN.md`（添加组件清单 + 详细使用说明）
-- [x] 更新 `PLAN.md`（添加 M8 里程碑记录）
+- [x] 更新 `PROJECT_PLAN.md`（添加 M8 里程碑记录）
 
 **子阶段 8.2：扩展功能（P2）**
 - [x] 支持自定义水印内容（Node 类型，通过 Supplier 工厂方法）
@@ -356,7 +356,7 @@ HBox actions = BarAnt.create()
 - `core/css/CssClasses.java`（添加 5 个常量）
 - `css/less/theme-base.less`（添加 `.jfx-watermark` 样式）
 - `README_CN.md`（添加组件清单 + 详细说明 + P2 新功能）
-- `PLAN.md`（添加 M8 里程碑）
+- `PROJECT_PLAN.md`（添加 M8 里程碑）
 - `jfxium-demo/src/main/java/org/openkawu/jfxium/demo/MyDemo.java`（添加 5 个示例）
 
 **待完成（可选）**：
@@ -955,7 +955,7 @@ HBox actions = BarAnt.create()
 - [x] 删除 CssClasses 中 `ACTION_BAR / ACTION_BAR_SPACER` 2 个常量
 - [x] 删除 `theme-base.less` 中 `.action-bar { ... }` 选择器（spacer 选择器从未单独使用，一并清掉）
 - [x] 8 套主题 CSS 重新生成，确认无残留
-- [x] 文档同步：README_CN.md / README.md / docs/COMPONENTS.md / docs/LAYOUT.md / PLAN.md（"二、Builder 命名约定"示例）所有 ActionBarAnt 调用替换为 BarAnt
+- [x] 文档同步：README_CN.md / README.md / docs/COMPONENTS.md / docs/LAYOUT.md / PROJECT_PLAN.md（"二、Builder 命名约定"示例）所有 ActionBarAnt 调用替换为 BarAnt
 
 **子阶段 19.5：input-base 家族高度对齐 + Size API 补齐（CrudTemplate 验收触发）**
 
@@ -1157,7 +1157,7 @@ HBox actions = BarAnt.create()
 - **删除** `core/util/Headers.java`（M19 子阶段 19.4）
 - `jfxium-demo/.../showcase/pages/SplitBarPage.java`（新建，5 Section）
 - `jfxium-demo/.../showcase/ShowcaseDemo.java`（注册）
-- `README_CN.md` / `README.md` / `docs/COMPONENTS.md` / `docs/LAYOUT.md` / `PLAN.md`（ActionBarAnt 引用全部替换）
+- `README_CN.md` / `README.md` / `docs/COMPONENTS.md` / `docs/LAYOUT.md` / `PROJECT_PLAN.md`（ActionBarAnt 引用全部替换）
 
 **与既有组件的关系**：
 
@@ -1188,7 +1188,7 @@ HBox actions = BarAnt.create()
 
 ### 🎯 M19.13 SKILL 沉淀：踩坑实证 → 强约束（2026-05-24，B 路线）
 
-**动机**：M11.2 / M19.5 / M19.6 / M19.7 等里程碑积累了多次踩坑实证，但都散落在 PLAN.md 单个里程碑里，未提炼为 SKILL 强约束。本轮一次性沉淀。
+**动机**：M11.2 / M19.5 / M19.6 / M19.7 等里程碑积累了多次踩坑实证，但都散落在 PROJECT_PLAN.md 单个里程碑里，未提炼为 SKILL 强约束。本轮一次性沉淀。
 
 **产出**：
 
@@ -1225,7 +1225,7 @@ HBox actions = BarAnt.create()
 **关键改动**：
 - `.kiro/steering/项目约束与计划/SKILL.md`（加 #16/#17/#18 + 「为什么重要」补 3 条；版本号未必单独标注）
 - `.kiro/steering/组件组合规范/SKILL.md`（加 §7 + §4.9/4.10/4.11；版本 1.0 → 1.1）
-- `PLAN.md`（累计成果 SKILL 强约束条数 15 → 18）
+- `PROJECT_PLAN.md`（累计成果 SKILL 强约束条数 15 → 18）
 
 **统计**：
 - 项目约束 SKILL：原 15 条 → 现 18 条（+3）
@@ -1235,7 +1235,7 @@ HBox actions = BarAnt.create()
 **B 路线意义**：
 1. **降低未来重复踩坑概率** —— 这些 bug 都不是「编译报错」型，而是「视觉效果不对」「Modal 不弹出」型，没有沉淀就会反复踩
 2. **缩短新协作者上手时间** —— 直接读 SKILL 即可知道 JavaFX 组合控件的 padding 规则
-3. **PLAN.md 减负** —— PLAN.md 是日志，SKILL 是规约，两者不应混用——本轮把 PLAN 里的「踩坑实证」提炼到 SKILL，PLAN.md 只保留时间线
+3. **PROJECT_PLAN.md 减负** —— PROJECT_PLAN.md 是日志，SKILL 是规约，两者不应混用——本轮把 PLAN 里的「踩坑实证」提炼到 SKILL，PROJECT_PLAN.md 只保留时间线
 
 ### 🎯 M19.14-M19.15 Showcase 第三/四/五/六批 + 收尾两页（2026-05-24，A 路线）
 
@@ -1687,7 +1687,7 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 - [x] sider 外层 `ScrollPane siderScroll` 字段化复用，runtime 切菜单不动这一层
 
 **子阶段 38.3：文档同步**
-- [x] BUG.md #30 立项 + 修复说明
+- [x] PROJECT_BUG.md #30 立项 + 修复说明
 - [x] SKILL.md §22 沉淀双向溯源原则
 
 **关键改动**：
@@ -1698,7 +1698,7 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
   - applyItemStyles 把 row 注册进 itemRows
   - selectedKey 从 final → 可写（Controller 修改）
 - `jfxium-demo/.../ShowcaseFrame.java`：navigateTo 改 controller API；rebuildSider 仅 expandMode 切换时调
-- `BUG.md`：新增 #30
+- `PROJECT_BUG.md`：新增 #30
 - `.kiro/steering/项目约束与计划/SKILL.md`：新增第 22 条 + 「为什么这些很重要」第 8 条
 
 **踩坑实证**：
@@ -1723,7 +1723,7 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 
 **沉淀**：项目约束 SKILL 新增 **#24「runtime 修改一律走 Controller 模式」**——build() 装配 Controller 持有已渲染节点引用，setter 直接改 styleClass 不重建。Menu/Steps/Anchor 三个组件已统一此范式。
 
-**关键改动**：`DropdownAnt` / `TreeSelectAnt` / `StepsAnt` / `AnchorAnt` + `CssClasses`（TREE_SELECT_SELECTED）+ `theme-base.less` + 4 个示例页删 workaround + BUG.md #51-54。
+**关键改动**：`DropdownAnt` / `TreeSelectAnt` / `StepsAnt` / `AnchorAnt` + `CssClasses`（TREE_SELECT_SELECTED）+ `theme-base.less` + 4 个示例页删 workaround + PROJECT_BUG.md #51-54。
 
 ---
 
@@ -1743,7 +1743,7 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 - 项目约束 SKILL **#23「@border-radius-full 只能用在尺寸被硬钳制的节点」**
 - 组件组合规范 SKILL **§4.12 反模式**（含探针排查法 + clip 会掩盖此类 bug）
 
-**关键改动**：`theme-base.less`（`.slider .track` / `.colored-track` / `.date-picker` 圆角与宽度）+ `SliderAnt.java`（范围模式 slider 限宽，虽非根因但顺手收敛布局）+ BUG.md #55-57。
+**关键改动**：`theme-base.less`（`.slider .track` / `.colored-track` / `.date-picker` 圆角与宽度）+ `SliderAnt.java`（范围模式 slider 限宽，虽非根因但顺手收敛布局）+ PROJECT_BUG.md #55-57。
 
 ---
 
@@ -1752,16 +1752,16 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 **动机**：进度走到 M19.43、BUG 表 #1–#57 全闭环、双模块编译零报错，进入「可验收」节点。但有两处账面与实际对不上，先抹平再验收。
 
 **产出**：
-- [x] **BUG.md 顶部清理**：把置顶的未编号原始反馈（第 1–9 条）折叠成「已归档对照表」，逐条标注对应修复编号（#41–#57），并修正自相矛盾的标题日期（原「2026-05-17 全部完成」）。
+- [x] **PROJECT_BUG.md 顶部清理**：把置顶的未编号原始反馈（第 1–9 条）折叠成「已归档对照表」，逐条标注对应修复编号（#41–#57），并修正自相矛盾的标题日期（原「2026-05-17 全部完成」）。
 - [x] **form-ant-enhance spec 收尾**：该 spec 此前只有 requirements.md，但 4 个新 API（header/footer 变长/footerAlign/section）+ FormExamplePage 实际已在 M19.39 落地。补回 `design.md`（实现实况）+ `acceptance.md`（验收清单），机器可验证项 9 条全部实测通过。
-- [x] **新增 `ACCEPTANCE.md`**（项目根）：全局人工验收清单——11 套主题 + 重点回归页（对应 #41–#57）+ 66 个示例页逐分类勾选，验收基准锁定 default 尺寸（SKILL 密度约束）。
+- [x] **新增 `PROJECT_ACCEPTANCE.md`**（项目根）：全局人工验收清单——11 套主题 + 重点回归页（对应 #41–#57）+ 66 个示例页逐分类勾选，验收基准锁定 default 尺寸（SKILL 密度约束）。
 
 **实测核对**（机器项）：
 - FormAnt / FormExamplePage `grep setStyle("-fx-` 均 0 命中
 - CssClasses 3 常量（FORM_HEADER/FORM_SECTION_TITLE/FORM_FOOTER）+ theme-base.less 3 选择器齐全
 - `./mvnw install -pl jfxium` + `compile -pl jfxium-demo` 双零报错
 
-**待办（移交人工）**：UI 层验收按 `ACCEPTANCE.md` 跑 `./mvnw javafx:run -pl jfxium-demo` 逐项勾选；新发现问题从 BUG #58 续编号，按 SKILL §22 双向溯源。
+**待办（移交人工）**：UI 层验收按 `PROJECT_ACCEPTANCE.md` 跑 `./mvnw javafx:run -pl jfxium-demo` 逐项勾选；新发现问题从 BUG #58 续编号，按 SKILL §22 双向溯源。
 
 ---
 

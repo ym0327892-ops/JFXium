@@ -235,7 +235,7 @@
 ## 🎯 项目级里程碑：SKILL #1 全合规重构（2026-05-17）
 
 继 #21/#22/#23 三条具体 bug 修复之后，对全项目做了**一次性深度清扫**，
-彻底消除 inline `setStyle("-fx-...: -color-...")` 硬编码注入。详见 [PLAN.md](PLAN.md) 第四章里程碑。
+彻底消除 inline `setStyle("-fx-...: -color-...")` 硬编码注入。详见 [PROJECT_PLAN.md](PROJECT_PLAN.md) 第四章里程碑。
 
 **核心数据**：
 - 已重构 *Ant 组件：48 个
@@ -243,7 +243,7 @@
 - 项目级 inline color 注入：**29 个文件 → 0 个文件**
 - 顺手修复 3 处隐性 bug：SwitchAnt cursor 残留、CodeBlockAnt spacer 死代码、DividerAnt 文档撒谎
 
-**已知遗留**（详见 PLAN.md P0/P1 计划）：
+**已知遗留**（详见 PROJECT_PLAN.md P0/P1 计划）：
 - SpinAnt 的 `Color.web("#1677ff")` 硬编码（JavaFX Shape API 限制）
 - AlertBanner 孤儿类去留
 - AnchorAnt / StatisticAnt 的 `Color`-based API（保留兼容）

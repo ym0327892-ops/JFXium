@@ -17,7 +17,7 @@ description: >
 2. **建立 `.qoder/`**：创建 `skills/` 和 `rules/` 两个子目录
 3. **建立对外文档**：创建 `docs/` 目录，文件名用中文
 4. **建立对内知识**：创建 `INTERNAL/`（或 `AI/`）目录
-5. **建立跟踪三件套**：根目录平级创建 `PLAN.md` / `BUG.md` / `ACCEPTANCE.md` / `AUDIT_REPORT.md`
+5. **建立跟踪三件套**：根目录平级创建 `PROJECT_PLAN.md` / `PROJECT_BUG.md` / `PROJECT_ACCEPTANCE.md` / `PROJECT_AUDIT_REPORT.md`
 
 ## 二、目录结构标准
 
@@ -34,12 +34,12 @@ my-project/
 │   └── *.md                 # 中文文件名
 │
 ├── INTERNAL/                # 对内知识（项目成员视角）
-│   └── *.md                 # SKILL.md / ARCHITECTURE.md / AUDIT_REPORT.md
+│   └── *.md                 # SKILL.md / ARCHITECTURE.md / PROJECT_AUDIT_REPORT.md
 │
-├── PLAN.md                  # 根目录跟踪（计划）
-├── BUG.md                   # 根目录跟踪（Bug，顺序编号 #1…）
-├── ACCEPTANCE.md            # 根目录跟踪（QA 验收）
-└── AUDIT_REPORT.md          # 根目录跟踪（架构审计，可选）
+├── PROJECT_PLAN.md                  # 根目录跟踪（计划）
+├── PROJECT_BUG.md                   # 根目录跟踪（Bug，顺序编号 #1…）
+├── PROJECT_ACCEPTANCE.md            # 根目录跟踪（QA 验收）
+└── PROJECT_AUDIT_REPORT.md          # 根目录跟踪（架构审计，可选）
 ```
 
 ## 三、三层分离原则
@@ -73,14 +73,14 @@ my-project/
 
 ## 五、跟踪文档最小骨架
 
-### BUG.md
+### PROJECT_BUG.md
 ```markdown
 # Bug 跟踪
 ## #1 [BUG-001] 简述
 - 发现时间、根因、修复、回归验证
 ```
 
-### ACCEPTANCE.md
+### PROJECT_ACCEPTANCE.md
 ```markdown
 # 验收清单
 ## 主题/模式切换
@@ -89,14 +89,14 @@ my-project/
 - [ ] 默认/悬停/按下/禁用 四态正确
 ```
 
-### AUDIT_REPORT.md
+### PROJECT_AUDIT_REPORT.md
 ```markdown
 # 审计报告
 ## v1.0 审计（YYYY-MM-DD）
 - 范围、结论、对应 BUG 编号
 ```
 
-### PLAN.md
+### PROJECT_PLAN.md
 ```markdown
 # 开发计划
 ## 当前阶段：v1.0
@@ -110,7 +110,7 @@ my-project/
 |------|----------|------|
 | 对外文档（`docs/`） | 中文 | 快速上手.md、主题系统.md |
 | 对内知识（`INTERNAL/`） | 英文大写 | SKILL.md、ARCHITECTURE.md |
-| 跟踪文档（根目录） | 英文大写 | BUG.md、ACCEPTANCE.md |
+| 跟踪文档（根目录） | 英文大写 | PROJECT_BUG.md、PROJECT_ACCEPTANCE.md |
 | 跟踪项编号 | `[BUG-NNN]` 顺序递增 | #1 [BUG-001] |
 
 ## 七、避免的反模式

@@ -82,7 +82,7 @@ ThemeManager.getInstance().setPrimaryColor("#ff5722");  // 运行时换主色
    - demo 侧：当前 workaround
    - 源头侧：jfxium 框架是否有 API 缺失 / 默认行为不对
 3. **该补 API 就补 API，该改默认就改默认**
-4. **记录到 `BUG.md`**（序号递增，当前 #65）
+4. **记录到 `PROJECT_BUG.md`**（序号递增，当前 #65）
 
 ### 判断必须修源头的信号
 
@@ -103,9 +103,9 @@ ThemeManager.getInstance().setPrimaryColor("#ff5722");  // 运行时换主色
 | 文件 | 用途 |
 |------|------|
 | `AGENTS.md` | AI 工作指南（项目全貌 + 红线） |
-| `PLAN.md` | 开发计划与进度 |
-| `BUG.md` | Bug 追踪（序号递增） |
-| `ACCEPTANCE.md` | QA 验收清单 |
+| `PROJECT_PLAN.md` | 开发计划与进度 |
+| `PROJECT_BUG.md` | Bug 追踪（序号递增） |
+| `PROJECT_ACCEPTANCE.md` | QA 验收清单 |
 | `JfxStyles.java` | styleClass 常量集中管理 |
 | `components/_index.less` | LESS 组件注册入口 |
 

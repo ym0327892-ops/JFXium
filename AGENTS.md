@@ -47,9 +47,9 @@ JFXium is a JavaFX UI framework inspired by Ant Design 6.x. It wraps and enhance
 | Document | Purpose |
 |----------|---------|
 | [.qoder/skills/project-constraints.md](.qoder/skills/project-constraints.md) | **Primary development specification** — color derivation, LESS rules, JavaFX CSS constraints, component design patterns |
-| [PLAN.md](PLAN.md) | Development plan and progress tracking |
-| [BUG.md](BUG.md) | Bug tracker and fix history (sequentially numbered, currently at #65) |
-| [ACCEPTANCE.md](ACCEPTANCE.md) | QA acceptance checklist for manual UI verification |
+| [PROJECT_PLAN.md](PROJECT_PLAN.md) | Development plan and progress tracking |
+| [PROJECT_BUG.md](PROJECT_BUG.md) | Bug tracker and fix history (sequentially numbered, currently at #65) |
+| [PROJECT_ACCEPTANCE.md](PROJECT_ACCEPTANCE.md) | QA acceptance checklist for manual UI verification |
 | [.kiro/steering/](.kiro/steering/) | Steering files with additional design constraints (component composition rules, PC UI standards) |
 
 ---
@@ -325,7 +325,7 @@ Follow the **dual traceability principle** (SKILL §22): when a demo bug is foun
 - Callbacks declared but never wired in `build()` (→ dead callback bug)
 - Repeated casts like `(VBox) component.build()` (→ `build()` return type not honest)
 
-The bug tracker is `BUG.md` (currently at #65). New issues are numbered sequentially. The acceptance checklist is `ACCEPTANCE.md`.
+The bug tracker is `PROJECT_BUG.md` (currently at #65). New issues are numbered sequentially. The acceptance checklist is `PROJECT_ACCEPTANCE.md`.
 
 ---
 

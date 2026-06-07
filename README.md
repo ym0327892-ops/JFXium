@@ -90,7 +90,7 @@ public void start(Stage stage) {
 | [.qoder/rules/red-lines.md](.qoder/rules/red-lines.md) | 致命红线（always-on） |
 | [.qoder/skills/project-constraints.md](.qoder/skills/project-constraints.md) | 项目技术约束 |
 | [.qoder/skills/component-pattern.md](.qoder/skills/component-pattern.md) | 组件设计模式 |
-| [PLAN.md](PLAN.md) | 开发计划与进度 |
+| [PROJECT_PLAN.md](PROJECT_PLAN.md) | 开发计划与进度 |
 
 > 内部知识沉淀：[INTERNAL/](INTERNAL/) 包含设计决策、审计报告、API 速查（对内文档）。
 
