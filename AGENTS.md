@@ -18,7 +18,7 @@ JFXium is a JavaFX UI framework inspired by Ant Design 6.x. It wraps and enhance
 
 | Document | Purpose |
 |----------|---------|
-| [docs/SKILL.md](docs/SKILL.md) | **Primary development specification** — color derivation, LESS rules, JavaFX CSS constraints, component design patterns |
+| [AI/SKILL.md](AI/SKILL.md) | **Primary development specification** — color derivation, LESS rules, JavaFX CSS constraints, component design patterns |
 | [PLAN.md](PLAN.md) | Development plan and progress tracking |
 | [BUG.md](BUG.md) | Bug tracker and fix history (sequentially numbered, currently at #65) |
 | [ACCEPTANCE.md](ACCEPTANCE.md) | QA acceptance checklist for manual UI verification |
@@ -77,7 +77,7 @@ JFXium/
 │       │   │   ├── control/         # ~29 native JavaFX control wrappers
 │       │   │   ├── composite/       # ~44 custom-built composite components
 │       │   │   ├── overlay/         # ~9 popup/dialog overlay components
-│       │   │   └── layout/          # ~15 layout container wrappers
+│       │   │   └── layout/          # ~12 layout container wrappers
 │       │   ├── layout/              # Page-level layouts (AppShellAnt, LayoutAnt)
 │       │   └── template/            # Business templates (CrudTemplate, LoginTemplate, etc.)
 │       └── resources/org/openkawu/jfxium/

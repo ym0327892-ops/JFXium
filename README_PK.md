@@ -10,33 +10,33 @@
 | JavaFX 原生 | JFXium 封装 | 作用简述 | JFXium 增强点 |
 |---|---|---|---|
 | `Button` | `ButtonAnt` | 按钮 | 类型（PRIMARY/DEFAULT/DASHED/DANGER/LINK）、尺寸、loading、图标、圆角 |
-| `CheckBox` | `CheckBoxAnt` | 复选框 | 尺寸、indeterminate、回调 |
-| `ComboBox` | `ComboBoxAnt` | 下拉选择框 | 占位符、禁用、回调 |
-| `DatePicker` | `DatePickerAnt` | 日期选择器 | 占位符、回调、格式 |
+| `CheckBox` | `CheckBoxAnt` | 复选框 | 尺寸、indeterminate、回调、**bindValue(BooleanProperty)** |
+| `ComboBox` | `ComboBoxAnt` | 下拉选择框 | 占位符、禁用、回调、**bindValue(Property<T>)** |
+| `DatePicker` | `DatePickerAnt` | 日期选择器 | 占位符、回调、格式、**bindValue(ObjectProperty<LocalDate>)** |
 | `Hyperlink` | `HyperlinkAnt` | 超链接 | 点击回调、禁用、下划线控制 |
 | `Label` | `LabelAnt` | 文本标签 | 类型（PRIMARY/SUCCESS/WARNING/DANGER）、尺寸、粗体、截断、可复制 |
 | `ListView` | `ListViewAnt` | 列表视图 | 选择回调、空状态 |
 | `PasswordField` | `InputAnt.createPassword()` | 密码输入 | 密码模式 + 可见切换按钮 |
-| `RadioButton` | `RadioAnt` | 单选按钮 | 组管理、尺寸、回调 |
+| `RadioButton` | `RadioAnt` | 单选按钮 | 组管理、尺寸、回调、**bindValue(BooleanProperty)** |
 | `Separator` | `DividerAnt` | 分割线 | 带文本、文本位置、垂直/水平 |
 | `Slider` | `SliderAnt` | 滑块 | 范围、步长、刻度、回调 |
 | `Spinner` | `SpinnerAnt` | 数值微调器 | 范围、步长、可编辑、回调 |
 | `TableView` | `TableAnt` | 表格 | 列定义、分页、选择回调、空状态 |
-| `TextArea` | `TextAreaAnt` | 多行文本输入 | 占位符、行数、只读、回调 |
-| `TextField` | `InputAnt` | 单行文本输入 | 占位符、尺寸、前缀/后缀、回调、清空按钮 |
+| `TextArea` | `TextAreaAnt` | 多行文本输入 | 占位符、行数、只读、回调、**bindValue 声明式绑定** |
+| `TextField` | `InputAnt` | 单行文本输入 | 占位符、尺寸、前缀/后缀、回调、清空按钮、**bindValue 声明式绑定** |
 | `TitledPane` | `TitledPaneAnt` | 标题面板 | 可折叠、动画、回调 |
-| `ToggleButton` | `ToggleButtonAnt` | 切换按钮 | 选中回调 |
+| `ToggleButton` | `ToggleButtonAnt` | 切换按钮 | 选中回调、**bindValue(BooleanProperty)** |
 | `ToolBar` | `ToolBarAnt` | 工具栏 | 图标按钮组、分隔线、弹性填充、垂直/水平 |
 | `Tooltip` | `TooltipAnt` | 提示框 | 位置、延迟、富文本内容 |
 | `TreeView` | `TreeAnt` | 树形控件 | 节点勾选、选择回调、搜索过滤 |
 | `TreeTableView` | `TreeTableAnt` | 树形表格 | 列定义、层级展开/折叠、选择回调 |
 | `MenuBar` | `MenuBarAnt` | 顶部系统菜单栏 | 多级菜单、快捷键、回调 |
-| `ColorPicker` | `ColorPickerAnt` | 颜色选择器 | 回调、默认值、调色板 |
+| `ColorPicker` | `ColorPickerAnt` | 颜色选择器 | 回调、默认值、调色板、**bindValue(ObjectProperty<Color>)** |
 | `Pagination` | `PaginationAnt` | 分页控件 | 页码、总数、快速跳转、回调 |
 | `Accordion` | `AccordionAnt` | 手风琴面板 | 多面板、展开回调 |
 | `MenuButton` | `MenuButtonAnt` | 菜单按钮 | 弹出菜单、图标、回调 |
 | `SplitMenuButton` | `SplitButtonAnt` | 分离式菜单按钮 | 默认操作 + 弹出菜单 |
-| `TextField` | `MentionsAnt` | 提及输入框 | @提及、自动补全 |
+| `TextField` | `MentionsAnt` | 提及输入框 | @提及、自动补全、**bindValue(StringProperty)** |
 | — | `IconAnt` | 图标 | 内置图标集、尺寸、颜色 |
 | `Text` | `TypographyAnt` | 排版 | 标题/段落/文本样式、可复制、可编辑 |
 
@@ -86,12 +86,12 @@
 | — | `FloatButtonAnt` | 浮动按钮 | 位置、类型、图标、提示 |
 | — | `FormAnt` | 表单 | 字段定义、校验、布局、提交回调 |
 | — | `ImageAnt` | 图片 | 加载失败 fallback、占位符、圆角、预览 |
-| — | `InputNumberAnt` | 数字输入框 | 范围、步长、精度、前缀/后缀 |
+| — | `InputNumberAnt` | 数字输入框 | 范围、步长、精度、前缀/后缀、**bindValue(DoubleProperty)** |
 | — | `ListAnt` | 高级列表 | 头像+标题+描述+操作、可点击、分隔线 |
 | — | `MenuAnt` | 侧边导航菜单 | 多级子菜单、图标、选中高亮、折叠 |
 | — | `ProgressAnt` | 进度展示 | 线形/环形、状态色、尺寸 |
 | — | `QRCodeAnt` | 二维码 | 内容、尺寸、颜色、容错级别 |
-| — | `RateAnt` | 评分 | 半星、只读、回调、自定义字符 |
+| — | `RateAnt` | 评分 | 半星、只读、回调、自定义字符、**bindValue(DoubleProperty)** |
 | — | `ResizablePanelAnt` | 可拖拽调整面板 | 水平/垂直/BOTH 拖拽、最小/最大尺寸约束 |
 | — | `ResultAnt` | 结果页 | 状态图标、标题、副标题、操作按钮 |
 | — | `SegmentedAnt` | 分段控制器 | 选项、尺寸、回调、默认选中 |
@@ -101,7 +101,7 @@
 | — | `StatisticAnt` | 统计数值 | 标题、数值、前缀/后缀、精度、趋势箭头 |
 | — | `StepsAnt` | 步骤条 | 水平/垂直、尺寸、状态、当前步 |
 | — | `SurfaceAnt` | 表面容器 | 背景、边框、阴影、圆角 |
-| — | `SwitchAnt` | 开关 | 尺寸、文字标签、回调、禁用 |
+| — | `SwitchAnt` | 开关 | 尺寸、文字标签、回调、禁用、**bindValue(BooleanProperty)** |
 | — | `TabsAnt` | 标签页 | 线形/卡片/胶囊类型、尺寸、关闭、回调 |
 | — | `TagAnt` | 标签 | 颜色、可关闭、图标、边框 |
 | — | `TimePickerAnt` | 时间选择器 | 时/分/秒、默认值、回调 |
@@ -110,7 +110,7 @@
 | — | `TreeSelectAnt` | 树选择器 | 多级嵌套、搜索、回调 |
 | — | `UploadAnt` | 文件上传 | 拖拽上传、多选、进度、回调 |
 | — | `WatermarkAnt` | 水印 | 文字/图片、密度、旋转、透明度 |
-| — | `SliderAnt` | 滑块（复合增强版） | 范围选择、步进点、刻度、双滑块模式 |
+| — | `SliderAnt` | 滑块（复合增强版） | 范围选择、步进点、刻度、双滑块模式、**bindValue(DoubleProperty)** |
 | — | `BreadcrumbAnt` | 面包屑 | 路径导航、分隔符、点击回调 |
 
 ---
@@ -189,7 +189,8 @@
 | 维度 | JavaFX 原生 | JFXium |
 |---|---|---|
 | **控件数量** | ~30 个基础控件 | **102** 个组件（97 *Ant + 4 *Template + 1 FilterBarAnt）|
-| **API 风格** | 命令式 / 属性绑定 | Builder 流式链式 API |
+| **API 风格** | 命令式 / 属性绑定 | Builder 流式链式 API + **bindValue 声明式双向绑定** |
+| **数据绑定** | 需持有控件引用 `field.getText()` | 声明 Property 即可 `nameProperty.get()`，无需控件引用 |
 | **主题系统** | 需手动写 CSS | LESS + CSS 变量 + 11 套内置主题 + 运行时切换 |
 | **响应式** | 无 | GridAnt 24 列栅格 + 断点系统 |
 | **国际化** | 需自行实现 | 内置 i18n 框架 |

@@ -196,7 +196,7 @@ NotificationAnt.info("Notification", "This is a notification message");
 | **LoginTemplate** | Two-column banner login page (M19.16) | `LoginTemplate.create().brandName("App").features("...").onSubmit((u,p)->auth(u,p)).build()` |
 | **DashboardTemplate** | Admin dashboard skeleton — welcome + stat cards + bottom 2-column (M19.16) | `DashboardTemplate.create().welcome("Hi").stat(...).bottomLeft(...).bottomRight(...).build()` |
 
-> See [docs/QUICKSTART.md](docs/QUICKSTART.md) for a complete 5-minute admin app using all 3 templates.
+> See [docs/cn/快速上手.md](docs/cn/快速上手.md) for a complete 5-minute admin app using all 3 templates.
 
 ---
 
@@ -279,18 +279,22 @@ scene.getStylesheets().add(getClass().getResource("/org/openkawu/jfxium/css/them
 
 Edit `src/main/resources/org/openkawu/jfxium/css/less/theme-custom.less` and run `mvn compile`.
 
-See [THEME.md](docs/THEME.md) for detailed theming guide.
+See [Theme Guide](docs/cn/主题系统.md) for detailed theming guide.
 
 ---
 
 ## Documentation
 
-- [API Reference](API.md) - Complete component API documentation
-- [Chinese Guide](README_CN.md) - Detailed Chinese documentation
-- [Theme Guide](docs/THEME.md) - Theming and customization
-- [Layout Guide](docs/LAYOUT.md) - Layout system
-- [Animation Guide](docs/ANIMATION.md) - Animation utilities
-- [Component Guide](docs/COMPONENTS.md) - Component details
+- [Chinese Guide](README_CN.md) - Detailed Chinese documentation & doc index
+- [Quick Start](docs/cn/快速上手.md) - Full tutorial with 5 runnable examples
+- [Component Reference](docs/cn/组件参考.md) - All 97 components + bindValue
+- [Theme Guide](docs/cn/主题系统.md) - Theming, custom themes, styleClass system
+- [Business Templates](docs/cn/业务模板.md) - CrudTemplate, LoginTemplate, DashboardTemplate
+- [Best Practices](docs/cn/最佳实践.md) - Builder patterns, EventBus, page skeleton
+- [Layout Guide](AI/LAYOUT.md) - Layout system (legacy)
+- [Animation Guide](AI/ANIMATION.md) - Animation utilities (legacy)
+
+> ARCHIVED: [AI/](AI/) contains legacy docs (SKILL.md, BUILDER_API_AUDIT.md, etc.)
 
 ---
 
