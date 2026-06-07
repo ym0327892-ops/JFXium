@@ -4,6 +4,34 @@ This file provides guidance to Qoder (qoder.com) when working with code in this 
 
 ---
 
+## ⚡ 致命红线（违反直接打回）
+
+> 完整红线规则见 `.qoder/rules/red-lines.md`，以下为速查：
+
+1. **禁止 `setStyle()` 写颜色/px** → 走 styleClass + LESS
+2. **禁止 CSS `box-shadow` / `:active` / `:focus` / `-fx-transition`（动画类除外）** → 用 `-fx-effect` / `:pressed` / `:focused` / 状态伪类
+3. **禁止容器吞 padding** → 组合控件容器 `-fx-padding: 0`，下放到子节点
+4. **禁止 9999px 圆角用于尺寸未钳制节点** → track/进度条用 `@border-radius-md`
+5. **禁止 `build()` 返回类型撒谎** → 返回什么就是什么
+6. **禁止新建 styleClass 不带 `jfx-` 前缀** → 避免与 modena 冲突
+7. **禁止 `.arrow` 只设颜色不设 shape** → 必须显式 `-fx-shape` + min/pref
+8. **禁止新增 public 类不同步 `module-info.java` exports**
+
+---
+
+## .qoder Skills & Rules 索引
+
+| 文件 | 定位 | 何时加载 |
+|------|------|----------|
+| `.qoder/rules/red-lines.md` | 致命红线（always-on） | 始终生效 |
+| `.qoder/rules/less-lint.md` | LESS 编写规范 | 编辑 `*.less` 时自动触发 |
+| `.qoder/skills/code-standard.md` | 通用编码技能（跨项目复用） | 编写/审查/重构代码时 |
+| `.qoder/skills/project-constraints.md` | 项目技术约束（色阶/交互/CSS） | 写组件代码前 |
+| `.qoder/skills/component-pattern.md` | 组件设计模式（微组件/反模式） | 新建/重构组件前 |
+| `.qoder/skills/workflow.md` | 构建/测试/调试工作流 | 执行构建/测试/发布时 |
+
+---
+
 ## Project Overview
 
 JFXium is a JavaFX UI framework inspired by Ant Design 6.x. It wraps and enhances JavaFX native controls with a Builder-pattern API, LESS-based theming (11 built-in themes), and over 94 components covering controls, composites, overlays, layouts, and business templates. Zero FXML — all UI is constructed in pure Java code.
@@ -18,7 +46,7 @@ JFXium is a JavaFX UI framework inspired by Ant Design 6.x. It wraps and enhance
 
 | Document | Purpose |
 |----------|---------|
-| [AI/SKILL.md](AI/SKILL.md) | **Primary development specification** — color derivation, LESS rules, JavaFX CSS constraints, component design patterns |
+| [.qoder/skills/project-constraints.md](.qoder/skills/project-constraints.md) | **Primary development specification** — color derivation, LESS rules, JavaFX CSS constraints, component design patterns |
 | [PLAN.md](PLAN.md) | Development plan and progress tracking |
 | [BUG.md](BUG.md) | Bug tracker and fix history (sequentially numbered, currently at #65) |
 | [ACCEPTANCE.md](ACCEPTANCE.md) | QA acceptance checklist for manual UI verification |
