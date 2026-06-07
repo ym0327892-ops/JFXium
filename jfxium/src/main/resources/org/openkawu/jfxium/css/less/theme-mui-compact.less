@@ -21,14 +21,14 @@
 // Compact Font Size
 @font-size-md: 13px; // 14px -> 13px
 
-// Compact Control Height
-@control-height: 28px;     // 32px -> 28px
-@control-height-sm: 20px;  // 24px -> 20px
-@control-height-lg: 36px;  // 40px -> 36px
+// Compact Control Height（PC UI 规范 §5.2 联动算法）
+@control-height: 28px;        // 32 - 4
+@control-height-sm: 24px;    // 28 - 4
+@control-height-lg: 36px;    // 40 - 4
 
-// Table 表头高 / 行高（M19.45）：紧凑模式收紧 48 → 36
-@table-header-height: 36px;
-@table-row-height: 36px;
+// Table 表头高 / 行高（PC UI 规范 §11.5）：compact 模式同走 -4 算法（32 → 28）
+@table-header-height: 28px;
+@table-row-height: 28px;
 
 // ============================================
 // MUI Color Palette (same as regular MUI)
@@ -226,7 +226,6 @@
 @border-radius-sm: 2px;
 @border-radius-md: 4px;
 @border-radius-lg: 6px;
-@border-radius-xl: 8px;
 
 // 字体
 @font-family: 'Roboto', 'Helvetica', 'Arial', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -528,7 +527,7 @@
 
 /* Badge - MUI Style */
 .badge-count {
-  -fx-font-size: @font-size-xs;
+  -fx-font-size: @font-size-sm;
 }
 
 /* Table - MUI Data Grid Style */

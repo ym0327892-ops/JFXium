@@ -21,19 +21,18 @@
 
 // Border Radius Scale (Base)
 // --------------------------------------------
-// 通用圆角梯度
+// 通用圆角梯度（PC UI 规范 §3：仅 4/6/8 三档，禁止使用 12px+ 圆角）
 // 使用位置：Button、Input、Card、Modal、Tooltip、Menu 等所有带圆角的组件
+//   @border-radius-full(9999px) 只用于尺寸已钳制的节点（thumb、badge），禁止用于 track/进度条
 @border-radius-sm: 4px;
 @border-radius-md: 6px;
 @border-radius-lg: 8px;
-@border-radius-xl: 12px;
 @border-radius-full: 9999px;
 
 // Font Size Scale (Base)
 // --------------------------------------------
-// 通用字号梯度
+// 通用字号梯度（PC UI 规范 §3：仅 12/14/16/20 四档，已删除 10px——DPI 缩放下难以辨识）
 // 使用位置：全局字体、组件内文字、标题、辅助文字
-@font-size-xs: 10px;
 @font-size-sm: 12px;
 @font-size-md: 14px;
 @font-size-lg: 16px;
@@ -48,10 +47,15 @@
 
 // Control Height (Base)
 // --------------------------------------------
-// 控件基准高度（Button、Input、ComboBox 等）
-// 使用位置：Button、Input、ComboBox、DatePicker、ColorPicker、ChoiceBox、Spinner
+// 控件基准高度（PC UI 规范 §3：4 档 22/28/32/40，无 24/26/30/34）
+// 使用位置：
+//   xs (22px) → CheckBox / Radio / Switch
+//   sm (28px) → Toolbar 按钮、MenuItem、Breadcrumb、TreeRow
+//   md (32px) → Button / Input / ComboBox / DatePicker / TableHeader / TableRow
+//   lg (40px) → 大操作按钮、MenuBar HORIZONTAL 模式
+@control-height-xs: 22px;
+@control-height-sm: 28px;
 @control-height: 32px;
-@control-height-sm: 24px;
 @control-height-lg: 40px;
 
 // Animation
@@ -132,15 +136,16 @@
 @table-header-padding-x: @spacing-lg;
 
 // ============================================
-// 行高 / 表头高 Token（M19.45 新增）
+// 行高 / 表头高 Token
 // ============================================
 // 背景：Table 的表头高/行高过去在 theme-base.less 里硬编码 px，紧凑模式覆盖 token 时管不到，
 //   导致紧凑模式下「字变小了但行高没收紧」。抽成 token 后紧凑主题覆盖即可联动收紧。
 // 注意：表头用 -fx-pref-height，数据行用 -fx-min-height（自适应但有下限，不裁切高内容）。
 // 说明：List / Tree / TreeTable 的行高靠 cell padding 撑（走 @spacing-*），紧凑模式下随
 //   spacing 收紧即可，无需独立高度 token。
-@table-header-height: 48px;   // 表头容器高（.column-header-background）
-@table-row-height: 48px;      // 数据行高下限（.table-row-cell）
+// PC UI 规范 §11.5：表头高与行高统一为 @control-height（32px），紧凑模式同走 -4 算法（28px）
+@table-header-height: @control-height;  // 表头容器高（.column-header-background）
+@table-row-height: @control-height;     // 数据行高下限（.table-row-cell）
 
 // Menu / MenuItem Padding
 // 使用位置：
@@ -260,7 +265,11 @@
 // ScrollBar Size
 // 使用位置：.scroll-bar
 // 影响组件：ScrollBar（所有滚动条）
+// PC UI 规范 §11.10：默认 8px，hover 状态扩大到 10px（JetBrains/IDEA 风格）
+//   注意：width 变化会引发相邻内容轻微抖动，但对桌面 admin 场景可接受。
+//   若后续要求严格不抖动，可改为：track 永远 10px，可见 thumb 用 6-8px。
 @scrollbar-size: 8px;
+@scrollbar-size-hover: 10px;
 
 // SplitPane Divider Padding
 // 使用位置：.split-pane .split-pane-divider

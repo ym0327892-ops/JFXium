@@ -1338,7 +1338,7 @@
   -fx-text-fill: -color-fg-on-emphasis;
   -fx-background-radius: 9999px;
   -fx-padding: 0 2px;
-  -fx-font-size: 10px;
+  -fx-font-size: 12px;
   -fx-font-weight: 600;
 }
 .badge-success {
@@ -1828,6 +1828,11 @@
   -fx-background-color: transparent;
   -fx-pref-width: 8px;
   -fx-pref-height: 8px;
+}
+/* PC UI 规范 §11.10：hover 状态从 8px 扩到 10px（JetBrains/IDEA 风格） */
+.scroll-bar:hover {
+  -fx-pref-width: 10px;
+  -fx-pref-height: 10px;
 }
 .scroll-bar .thumb {
   -fx-background-color: -color-base-4;
@@ -2507,7 +2512,7 @@
 }
 .date-picker-popup .week-number-cell {
   -fx-text-fill: -color-fg-subtle;
-  -fx-font-size: 10px;
+  -fx-font-size: 12px;
 }
 /* ============================================
    ColorPicker Popup
@@ -2594,13 +2599,13 @@
   -fx-text-fill: -color-fg-default;
 }
 .jfx-codeblock-lang {
-  -fx-font-size: 10px;
+  -fx-font-size: 12px;
   -fx-text-fill: -color-fg-muted;
   /* 等宽字体让语言标识与代码内容视觉一致 */
   -fx-font-family: "Consolas", "Monaco", monospace;
 }
 .jfx-codeblock-copy-btn {
-  -fx-font-size: 10px;
+  -fx-font-size: 12px;
   -fx-padding: 2 8 2 8;
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
@@ -3924,7 +3929,7 @@
 /* 尺寸修饰类切换字号与 padding */
 .jfx-descriptions.jfx-descriptions-small .jfx-descriptions-label,
 .jfx-descriptions.jfx-descriptions-small .jfx-descriptions-content {
-  -fx-font-size: 10px;
+  -fx-font-size: 12px;
   -fx-padding: 4 8 4 8;
 }
 .jfx-descriptions.jfx-descriptions-middle .jfx-descriptions-label,
@@ -4726,7 +4731,7 @@
   -fx-text-fill: -color-fg-on-emphasis;
   -fx-background-radius: 9999px;
   -fx-padding: 0 6px;
-  -fx-font-size: 10px;
+  -fx-font-size: 12px;
   -fx-font-weight: 600;
   -fx-min-width: 18px;
   -fx-min-height: 18px;
@@ -4772,7 +4777,7 @@
   -fx-text-fill: -color-fg-default;
   -fx-background-radius: 2px;
   -fx-padding: 2px 8px;
-  -fx-font-size: 10px;
+  -fx-font-size: 12px;
   -fx-font-weight: 500;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -5163,7 +5168,7 @@
 /* Tag sizes */
 .tag.small {
   -fx-padding: 0 2px;
-  -fx-font-size: 10px;
+  -fx-font-size: 12px;
 }
 .tag.large {
   -fx-padding: 2px 6px;
@@ -5762,7 +5767,7 @@
 }
 /* Badge - MUI Style */
 .badge-count {
-  -fx-font-size: 10px;
+  -fx-font-size: 12px;
 }
 /* Table - MUI Data Grid Style */
 .table-view {

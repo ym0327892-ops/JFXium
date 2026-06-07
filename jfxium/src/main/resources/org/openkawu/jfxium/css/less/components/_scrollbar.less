@@ -7,10 +7,15 @@
   -fx-pref-height: @scrollbar-size;
 }
 
+/* PC UI 规范 §11.10：hover 状态从 8px 扩到 10px（JetBrains/IDEA 风格） */
+.scroll-bar:hover {
+  -fx-pref-width: @scrollbar-size-hover;
+  -fx-pref-height: @scrollbar-size-hover;
+}
+
 .scroll-bar .thumb {
   -fx-background-color: -color-base-4;
   -fx-background-radius: @border-radius-full;
-  
 }
 
 .scroll-bar .thumb:hover {
