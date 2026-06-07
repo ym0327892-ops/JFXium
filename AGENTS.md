@@ -220,7 +220,7 @@ public static final String MY_COMPONENT = "my-component";
 
 LESS source files are compiled to CSS by **jlessc** (pure Java, no Node.js required) via `groovy-maven-plugin` during the `generate-resources` phase. This runs automatically with `mvn compile` or `mvn install`.
 
-**Themes compiled**: theme-light, theme-dark, theme-light-compact, theme-dark-compact, theme-mui, theme-mui-compact, theme-mui-dark, theme-mui-dark-compact, theme-shadcn, theme-cyberpunk, theme-custom (11 total).
+**Themes compiled (11 CSS files)**: theme-light, theme-dark, theme-light-compact, theme-dark-compact, theme-mui, theme-mui-compact, theme-mui-dark, theme-mui-dark-compact, theme-shadcn, theme-cyberpunk, theme-custom. Of these, only the first 8 have Java wrapper classes (`*Theme.java`) accessible via `ThemeManager.applyTheme(...)`. The last 3 (shadcn / cyberpunk / custom) are loaded directly via `scene.getStylesheets().add("/org/openkawu/jfxium/css/theme-xxx.css")` and are **not** part of the ThemeManager state machine.
 
 **⚠️ Build pitfall (BUG #64)**: If changes to `.less` files don't appear in compiled CSS, suspect the groovy-maven-plugin "fake success" issue — logs say "compiled successfully" but `Files.writeString` / Groovy `File.text` silently fail to write. Verify by adding a marker string to a CSS output file, re-running `mvn generate-resources -pl jfxium`, and checking if the marker was overwritten.
 
@@ -267,11 +267,11 @@ Semantic variables map to scale indices: `@color-accent-emphasis` → index 5, `
 ThemeManager.getInstance().applyTheme(new LightTheme());
 ThemeManager.getInstance().registerScene(scene);  // Watch for future theme changes
 
-// Change primary color at runtime (injects CSS variables via setStyle)
-ThemeManager.getInstance().setPrimaryColor(Color.web("#ff5722"));
+// Change primary color at runtime (injects CSS variables via data-URI stylesheet)
+ThemeManager.getInstance().setPrimaryColor("#ff5722");
 ```
 
-ThemeManager maintains a three-axis state machine: **Family** (Ant/MUI/Shadcn/Cyberpunk) × **dark** (boolean) × **compact** (boolean). Theme switching re-applies the accent color automatically (BUG #62 fix).
+ThemeManager maintains a three-axis state machine: **Family** (Ant/MUI) × **dark** (boolean) × **compact** (boolean). The `ThemeManager.Family` enum exposes only `ANT_DESIGN` and `MUI`; the eight concrete `*Theme` classes are the 2×2×2 cartesian product of these three axes. Shadcn / Cyberpunk / Custom themes (no dark/compact variants) are intentionally excluded from this state machine — load them via `scene.getStylesheets().add("/org/openkawu/jfxium/css/theme-xxx.css")` instead. Theme switching re-applies the accent color automatically (BUG #62 fix).
 
 ---
 
