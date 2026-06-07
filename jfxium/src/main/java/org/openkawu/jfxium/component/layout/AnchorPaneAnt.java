@@ -1,10 +1,7 @@
 package org.openkawu.jfxium.component.layout;
 
-import javafx.geometry.Insets;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
-import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -42,8 +39,16 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *     .center(popup)
  *     .build();
  * }</pre>
+ *
+ * <h2>设计契约</h2>
+ * <ul>
+ *   <li><b>视觉钩子、方向性边框线、尺寸、高频节点属性</b>统一继承自 {@link LayoutCommon}
+ *       默认实现（节省 ~110 行重复模板代码，行为 100% 等价原 AnchorPaneAnt）</li>
+ *   <li><b>双重身份</b>：是 AnchorPane 也是工厂——继承自 {@link AnchorPane}，可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
+ * </ul>
  */
-public class AnchorPaneAnt extends AnchorPane {
+public class AnchorPaneAnt extends AnchorPane implements LayoutCommon<AnchorPaneAnt> {
 
     // ============================================================
     // 工厂入口
@@ -54,7 +59,7 @@ public class AnchorPaneAnt extends AnchorPane {
     }
 
     // ============================================================
-    // 构造函数
+    // 构造函数（公开，便于业务 extends）
     // ============================================================
 
     public AnchorPaneAnt() {
@@ -63,7 +68,7 @@ public class AnchorPaneAnt extends AnchorPane {
     }
 
     // ============================================================
-    // 流式配置
+    // 流式配置（AnchorPane 特有业务方法）
     // ============================================================
 
     public AnchorPaneAnt anchor(Node node, Double top, Double right, Double bottom, Double left) {
@@ -125,106 +130,12 @@ public class AnchorPaneAnt extends AnchorPane {
     }
 
     // ============================================================
-    // 视觉钩子
+    // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
+    // LayoutCommon<AnchorPaneAnt> 默认实现
+    // （节省 ~110 行重复模板代码，行为 100% 等价原 AnchorPaneAnt）
     // ============================================================
 
-    /** 追加一个 styleClass（幂等——重复调不会重复挂）。 */
-    public AnchorPaneAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** 批量挂多个 styleClass（变长重载）。 */
-    public AnchorPaneAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    /** 设置背景层级。 */
-    public AnchorPaneAnt background(Background bg) {
-        if (bg != null) {
-            styleClass(bg.styleClass());
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先用 styleClass + LESS）。 */
-    public AnchorPaneAnt style(String style) {
-        if (style != null) setStyle(style);
-        return this;
-    }
-
-    /** 设置统一的 padding（四边相同）。 */
-    public AnchorPaneAnt padding(double padding) {
-        setPadding(new Insets(padding));
-        return this;
-    }
-
-    /** 设置 4 边各自的 padding。 */
-    public AnchorPaneAnt padding(double top, double right, double bottom, double left) {
-        setPadding(new Insets(top, right, bottom, left));
-        return this;
-    }
-
-    /** 设置 Insets 对象。 */
-    public AnchorPaneAnt padding(Insets padding) {
-        if (padding != null) setPadding(padding);
-        return this;
-    }
-
-    // ============================================================
-    // 方向性边框线（分割线）
-    // ============================================================
-
-    /** 顶部分割线。 */
-    public AnchorPaneAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
-    /** 顶部分割线（开关）。 */
-    public AnchorPaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
-    /** 底部分割线。 */
-    public AnchorPaneAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
-    /** 底部分割线（开关）。 */
-    public AnchorPaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
-    /** 左侧分割线。 */
-    public AnchorPaneAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
-    /** 左侧分割线（开关）。 */
-    public AnchorPaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
-    /** 右侧分割线。 */
-    public AnchorPaneAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
-    /** 右侧分割线（开关）。 */
-    public AnchorPaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
-
-    // ============================================================
-    // 高频节点属性
-    // ============================================================
-
-    /** 设置可见性。 */
-    public AnchorPaneAnt visible(boolean v) { setVisible(v); return this; }
-    /** 设置禁用状态。 */
-    public AnchorPaneAnt disable(boolean d) { setDisable(d); return this; }
-    /** 设置是否受布局管理。 */
-    public AnchorPaneAnt managed(boolean m) { setManaged(m); return this; }
-    /** 设置透明度（0.0 ~ 1.0）。 */
-    public AnchorPaneAnt opacity(double o) { setOpacity(o); return this; }
-    /** 设置鼠标光标。 */
-    public AnchorPaneAnt cursor(Cursor c) { setCursor(c); return this; }
-    /** 设置节点 ID。 */
-    public AnchorPaneAnt id(String id) { setId(id); return this; }
-
-    /** 同时设置首选宽高。 */
-    public AnchorPaneAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
-    /** 同时设置最大宽高。 */
-    public AnchorPaneAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
-    /** 同时设置最小宽高。 */
-    public AnchorPaneAnt minSize(double w, double h) { setMinSize(w, h); return this; }
-
-    // ============================================================
-    // 构建
-    // ============================================================
-
+    /** Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。 */
     public AnchorPaneAnt build() {
         return this;
     }
