@@ -18,7 +18,7 @@ import javafx.scene.layout.VBox;
  * Region spacer = Spacers.spacer(100, 20);
  * }</pre>
  */
-public class Spacers {
+public final class Spacers {
 
     /**
      * 创建弹性占位区域。

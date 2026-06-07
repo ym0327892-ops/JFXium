@@ -180,19 +180,19 @@ public class SplitPaneAnt extends SplitPane {
     // ============================================================
 
     /** 顶部分割线。 */
-    public SplitPaneAnt borderTop() { styleClass("border-top"); return this; }
+    public SplitPaneAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
     /** 顶部分割线（开关）。 */
     public SplitPaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
     /** 底部分割线。 */
-    public SplitPaneAnt borderBottom() { styleClass("border-bottom"); return this; }
+    public SplitPaneAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
     /** 底部分割线（开关）。 */
     public SplitPaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
     /** 左侧分割线。 */
-    public SplitPaneAnt borderLeft() { styleClass("border-left"); return this; }
+    public SplitPaneAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
     /** 左侧分割线（开关）。 */
     public SplitPaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
     /** 右侧分割线。 */
-    public SplitPaneAnt borderRight() { styleClass("border-right"); return this; }
+    public SplitPaneAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
     /** 右侧分割线（开关）。 */
     public SplitPaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
 

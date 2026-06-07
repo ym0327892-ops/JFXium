@@ -87,6 +87,8 @@
 | 62 | ThemeManager 主题色注入 inline style 带 `.root{}` 选择器（非法）→ 运行时 ClassCastException 警告（`-fx-border-color`）；切主题色/明暗后主题色丢失 | ✅ 已修复 | 2026-06-02 |
 | 63 | Button 与 ComboBox/Input/Select/DatePicker 在 small/large 下高度不一致（size variant padding 体系分裂 + 无 min-height 钳制）| ✅ 已修复 | 2026-06-02 |
 | 64 | Maven LESS 编译「假成功」—— groovy-maven-plugin 下 `Files.writeString`/`File.text` 静默不落盘，日志报成功但 CSS 没更新（改 LESS 不生效）| ✅ 已修复 | 2026-06-02 |
+| 65 | CheckBox/RadioButton 图标与文字间距太近（用户反馈「贴在一起」）—— 缺 `-fx-graphic-text-gap`，用 JavaFX 默认 ~4px 不符合 admin 信息密度 | ✅ 已修复 | 2026-06-03 |
+| 66 | layout 包 7 个继承式组件 + AbstractStyleBuilder 的 `borderTop/Bottom/Left/Right()` 挂错 styleClass 名（缺 `jfx-` 前缀）—— CSS 永远匹配不上 | ✅ 已修复 | 2026-06-07 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 
@@ -436,3 +438,35 @@
   2. 在紧凑模式中自动派生为 6px（`@spacing-sm` 在紧凑主题中为 6px）
 - **效果**：所有主题（light/dark/mui/cyberpunk 等 11 套）的 CheckBox 和 RadioButton 图标与文字间距统一为 8px（紧凑模式 6px），符合 Ant Design 间距规范，视觉上不再「贴在一起」
 - **沉淀**：JavaFX 中 CheckBox/RadioButton 等带图标的控件需显式设置 `-fx-graphic-text-gap` 控制图标与文字间距，默认值偏小不符合桌面 admin 高信息密度下的视觉舒适度。本项目所有间距都应走 token 体系（`@spacing-*`），确保紧凑模式能自动联动收紧。
+
+## 修复说明（2026-06-07：BUG #66 layout 包继承式组件 borderXxx styleClass 缺 jfx- 前缀）
+
+> 上一轮检查 `jfxium/src/main/java/org/openkawu/jfxium/component/layout` 时发现，7 个继承式组件的 `borderTop/Bottom/Left/Right()` 与 `AbstractStyleBuilder` 基类同款 API 全部挂的是裸字符串 `"border-top"`，但 LESS `_base-cards.less` 实际定义的是 `.jfx-border-top`（SKILL 「jfx- 前缀强制」），class 名错位导致 CSS 永不命中。和 #37 TableAnt 斑马纹失效属同源 bug。
+
+### #66 layout 包继承式组件 borderXxx() 挂错 styleClass（CSS 永不命中）
+- **现象**：调用 `.borderTop()` 等方法后，节点上看不到预期的某一条边线（4 条边都失效）。
+- **根因**：典型「Java 挂的 class 名 ≠ LESS 选择器」错位：
+  - Java 端 `styleClass("border-top")` / `add("border-top")` 写的是裸名
+  - LESS `_base-cards.less` 实际定义的是 `.jfx-border-top`
+  - 节点 styleClass 是 `border-top`，CSS 找的是 `jfx-border-top`，**匹配数 = 0**
+- **影响面**（grep `"border-(top|bottom|left|right)"` 命中的 25 处）：
+  - `AbstractStyleBuilder.borderTop/Bottom/Left/Right()` 公共实现（影响所有继承式 builder）
+  - 7 个 layout 继承式组件各自又写了一份：`AnchorPaneAnt` / `HBoxAnt` / `VBoxAnt` / `StackPaneAnt` / `FlowPaneAnt` / `SplitPaneAnt` / `TilePaneAnt`
+- **修复**：全部改用 `JfxStyles.BORDER_TOP/BOTTOM/LEFT/RIGHT` 常量（值 = `jfx-border-top` 等），杜绝再次硬编码漂移：
+  - `AbstractStyleBuilder.java`：4 处 `add("border-...")` → `add(JfxStyles.BORDER_...)`，新增 import
+  - 7 个 layout 组件：4 处 × 7 = 28 处 `styleClass("border-...")` → `styleClass(JfxStyles.BORDER_...)`，各加 import
+- **顺手补齐**（两处 API 缺口）：
+  - `AnchorPaneAnt`：原 API 只有 `padding(Insets)` 单签名，按 `AbstractStyleBuilder` 约定补齐 `padding(double)` / `padding(double, double, double, double)` / `padding(Insets)` 三重载
+  - `TilePaneAnt`：同上
+- **测试同步**（`AbstractStyleBuilderTest`）：5 个 borderXxx 断言（`borderTop/Bottom/Left/Right` + `fullChain`）+ 4 处 `@DisplayName` 文案 同步切到 `JfxStyles.BORDER_XXX` 常量；`borderTop_false` 改用 `assertFalse(contains(JfxStyles.BORDER_TOP))`（语义保持）
+- **保护性扫描**：
+  - 全项目 `grep "border-(top|bottom|left|right)"` 硬编码 → **0 处**
+  - demo 中 15 处 `borderTop|borderBottom|borderLeft|borderRight` 调用 → 全部是方法调用，无字符串残留
+- **复测**：
+  - `./mvnw compile -pl jfxium` → BUILD SUCCESS（147 source files）
+  - `./mvnw install -pl jfxium -DskipTests` → BUILD SUCCESS
+  - `./mvnw test -pl jfxium` → **151/151 passed, 0 failures**
+  - LESS 编译产物 `target/classes/.../theme-light.css` L4837-4852 确认有 `.jfx-border-top/bottom/left/right` 选择器
+- **沉淀**：
+  - 凡是「LESS 写了样式但 Java 端不生效」类 bug，**第一反应是 grep 比对** class 名是否一致（`grep -r "JfxStyles.XXX" jfxium/src` ↔ `grep "\.jfx-xxx" jfxium/src/main/resources/.../less`）。这是 #37 / #44 / 本次 #66 三连击的同一个根因。
+  - 风格名常量必须全部走 `JfxStyles`，禁止 `styleClass("border-...")` 硬编码——这条已通过常量类型契约从源头杜绝（IDE 自动补全会给 `JfxStyles.BORDER_*` 而不是裸字符串）。

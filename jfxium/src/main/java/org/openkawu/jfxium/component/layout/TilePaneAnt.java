@@ -1,9 +1,11 @@
 package org.openkawu.jfxium.component.layout;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
+import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -134,24 +136,56 @@ public class TilePaneAnt extends TilePane {
         return this;
     }
 
+    /** 设置背景层级。 */
+    public TilePaneAnt background(Background bg) {
+        if (bg != null) {
+            styleClass(bg.styleClass());
+        }
+        return this;
+    }
+
+    /** inline style（应急用，优先用 styleClass + LESS）。 */
+    public TilePaneAnt style(String style) {
+        if (style != null) setStyle(style);
+        return this;
+    }
+
+    /** 设置统一的 padding（四边相同）。 */
+    public TilePaneAnt padding(double padding) {
+        setPadding(new Insets(padding));
+        return this;
+    }
+
+    /** 设置 4 边各自的 padding。 */
+    public TilePaneAnt padding(double top, double right, double bottom, double left) {
+        setPadding(new Insets(top, right, bottom, left));
+        return this;
+    }
+
+    /** 设置 Insets 对象。 */
+    public TilePaneAnt padding(Insets padding) {
+        if (padding != null) setPadding(padding);
+        return this;
+    }
+
     // ============================================================
     // 方向性边框线（分割线）
     // ============================================================
 
     /** 顶部分割线。 */
-    public TilePaneAnt borderTop() { styleClass("border-top"); return this; }
+    public TilePaneAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
     /** 顶部分割线（开关）。 */
     public TilePaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
     /** 底部分割线。 */
-    public TilePaneAnt borderBottom() { styleClass("border-bottom"); return this; }
+    public TilePaneAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
     /** 底部分割线（开关）。 */
     public TilePaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
     /** 左侧分割线。 */
-    public TilePaneAnt borderLeft() { styleClass("border-left"); return this; }
+    public TilePaneAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
     /** 左侧分割线（开关）。 */
     public TilePaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
     /** 右侧分割线。 */
-    public TilePaneAnt borderRight() { styleClass("border-right"); return this; }
+    public TilePaneAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
     /** 右侧分割线（开关）。 */
     public TilePaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
 

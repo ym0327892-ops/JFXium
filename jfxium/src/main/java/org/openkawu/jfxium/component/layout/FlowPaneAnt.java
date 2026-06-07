@@ -7,6 +7,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
 import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * FlowPaneAnt - 继承式 FlowPane 容器（M19.36 引入）。
@@ -206,19 +207,19 @@ public class FlowPaneAnt extends FlowPane {
     // ============================================================
 
     /** 顶部分割线。 */
-    public FlowPaneAnt borderTop() { styleClass("border-top"); return this; }
+    public FlowPaneAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
     /** 顶部分割线（开关）。 */
     public FlowPaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
     /** 底部分割线。 */
-    public FlowPaneAnt borderBottom() { styleClass("border-bottom"); return this; }
+    public FlowPaneAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
     /** 底部分割线（开关）。 */
     public FlowPaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
     /** 左侧分割线。 */
-    public FlowPaneAnt borderLeft() { styleClass("border-left"); return this; }
+    public FlowPaneAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
     /** 左侧分割线（开关）。 */
     public FlowPaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
     /** 右侧分割线。 */
-    public FlowPaneAnt borderRight() { styleClass("border-right"); return this; }
+    public FlowPaneAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
     /** 右侧分割线（开关）。 */
     public FlowPaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
 

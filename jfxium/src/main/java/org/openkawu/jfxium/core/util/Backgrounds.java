@@ -3,6 +3,8 @@ package org.openkawu.jfxium.core.util;
 import javafx.scene.Node;
 import org.openkawu.jfxium.core.css.Background;
 
+import java.util.Arrays;
+
 /**
  * Background 工具类（M19.35）—— 给任意 {@link Node} 挂 / 切换 background styleClass。
  *
@@ -34,14 +36,17 @@ import org.openkawu.jfxium.core.css.Background;
  */
 public final class Backgrounds {
 
-    /** 所有 Background 对应的 styleClass 集合，{@link #replace} 用它做先清后挂。 */
-    private static final String[] ALL_BG_CLASSES = {
-            Background.DEFAULT.styleClass(),
-            Background.SUBTLE.styleClass(),
-            Background.LAYOUT.styleClass(),
-            Background.INSET.styleClass(),
-            Background.TRANSPARENT.styleClass(),
-    };
+    /**
+     * 所有 Background 对应的 styleClass 集合，{@link #replace} 用它做先清后挂。
+     *
+     * <p>枚举驱动——新增 {@link Background} 等级时无需同步修改此处，
+     * 数组内容在 class load 时由 {@link Background#values()} 流式生成。
+     * 性能等价于硬编码（仅初始化一次,final 字段）。</p>
+     */
+    private static final String[] ALL_BG_CLASSES =
+            Arrays.stream(Background.values())
+                  .map(Background::styleClass)
+                  .toArray(String[]::new);
 
     private Backgrounds() {
         // 工具类禁实例化

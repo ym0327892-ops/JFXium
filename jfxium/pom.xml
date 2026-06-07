@@ -57,6 +57,25 @@
                 </configuration>
             </plugin>
             <!-- ============================================
+                 单元测试：surefire + JavaFX 模块参数
+                 ============================================ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>
+                        --add-opens javafx.graphics/javafx.application=ALL-UNNAMED
+                        --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                        --add-opens org.openkawu.jfxium/org.openkawu.jfxium=ALL-UNNAMED
+                        --add-opens org.openkawu.jfxium/org.openkawu.jfxium.component.control=ALL-UNNAMED
+                        --add-opens org.openkawu.jfxium/org.openkawu.jfxium.component.composite=ALL-UNNAMED
+                        --add-opens org.openkawu.jfxium/org.openkawu.jfxium.core.builder=ALL-UNNAMED
+                        --add-opens org.openkawu.jfxium/org.openkawu.jfxium.core.css=ALL-UNNAMED
+                    </argLine>
+                </configuration>
+            </plugin>
+            <!-- ============================================
                  LESS → CSS 编译（纯 Java，不依赖 Node.js）
                  使用 jlessc（de.inetsoftware:jlessc:1.16）纯 Java LESS 编译器。
                  M19.46：从 exec-maven-plugin(npx lessc) 迁移而来，新机器无需安装 Node。

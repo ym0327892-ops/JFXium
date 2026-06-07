@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * VBoxAnt - 继承式 VBox 容器（M19.36 引入）。
@@ -230,19 +231,19 @@ public class VBoxAnt extends VBox {
     // ============================================================
 
     /** 顶部分割线。 */
-    public VBoxAnt borderTop() { styleClass("border-top"); return this; }
+    public VBoxAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
     /** 顶部分割线（开关）。 */
     public VBoxAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
     /** 底部分割线。 */
-    public VBoxAnt borderBottom() { styleClass("border-bottom"); return this; }
+    public VBoxAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
     /** 底部分割线（开关）。 */
     public VBoxAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
     /** 左侧分割线。 */
-    public VBoxAnt borderLeft() { styleClass("border-left"); return this; }
+    public VBoxAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
     /** 左侧分割线（开关）。 */
     public VBoxAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
     /** 右侧分割线。 */
-    public VBoxAnt borderRight() { styleClass("border-right"); return this; }
+    public VBoxAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
     /** 右侧分割线（开关）。 */
     public VBoxAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
 

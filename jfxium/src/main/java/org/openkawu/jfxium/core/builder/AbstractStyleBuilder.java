@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * <h2>背景</h2>
  * 之前 {@code ButtonAnt / AppShellAnt / PageAnt / SurfaceAnt / ActionBarAnt /
- * CardAnt / SplitPaneAnt / ResizablePanelAnt / ScrollContainerAnt} 等 9+ 个 Builder
+ * GroupBoxAnt / SplitPaneAnt / ResizablePanelAnt / ScrollContainerAnt / GroupBoxAnt} 等 9+ 个 Builder
  * 各自重复实现：
  * <pre>{@code
  * private String style = "";
@@ -346,10 +347,10 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
         if (cursor != null)   node.setCursor(cursor);
         if (id != null)       node.setId(id);
         if (node instanceof Region region) {
-            if (borderTop)    node.getStyleClass().add("border-top");
-            if (borderBottom) node.getStyleClass().add("border-bottom");
-            if (borderLeft)   node.getStyleClass().add("border-left");
-            if (borderRight)  node.getStyleClass().add("border-right");
+            if (borderTop)    node.getStyleClass().add(JfxStyles.BORDER_TOP);
+            if (borderBottom) node.getStyleClass().add(JfxStyles.BORDER_BOTTOM);
+            if (borderLeft)   node.getStyleClass().add(JfxStyles.BORDER_LEFT);
+            if (borderRight)  node.getStyleClass().add(JfxStyles.BORDER_RIGHT);
             if (padding != null) region.setPadding(padding);
             if (!Double.isNaN(maxWidth)) region.setMaxWidth(maxWidth);
             if (!Double.isNaN(minWidth)) region.setMinWidth(minWidth);

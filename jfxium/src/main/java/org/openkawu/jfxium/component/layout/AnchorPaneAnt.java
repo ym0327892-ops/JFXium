@@ -1,8 +1,10 @@
 package org.openkawu.jfxium.component.layout;
 
+import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
+import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -142,24 +144,56 @@ public class AnchorPaneAnt extends AnchorPane {
         return this;
     }
 
+    /** 设置背景层级。 */
+    public AnchorPaneAnt background(Background bg) {
+        if (bg != null) {
+            styleClass(bg.styleClass());
+        }
+        return this;
+    }
+
+    /** inline style（应急用，优先用 styleClass + LESS）。 */
+    public AnchorPaneAnt style(String style) {
+        if (style != null) setStyle(style);
+        return this;
+    }
+
+    /** 设置统一的 padding（四边相同）。 */
+    public AnchorPaneAnt padding(double padding) {
+        setPadding(new Insets(padding));
+        return this;
+    }
+
+    /** 设置 4 边各自的 padding。 */
+    public AnchorPaneAnt padding(double top, double right, double bottom, double left) {
+        setPadding(new Insets(top, right, bottom, left));
+        return this;
+    }
+
+    /** 设置 Insets 对象。 */
+    public AnchorPaneAnt padding(Insets padding) {
+        if (padding != null) setPadding(padding);
+        return this;
+    }
+
     // ============================================================
     // 方向性边框线（分割线）
     // ============================================================
 
     /** 顶部分割线。 */
-    public AnchorPaneAnt borderTop() { styleClass("border-top"); return this; }
+    public AnchorPaneAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
     /** 顶部分割线（开关）。 */
     public AnchorPaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
     /** 底部分割线。 */
-    public AnchorPaneAnt borderBottom() { styleClass("border-bottom"); return this; }
+    public AnchorPaneAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
     /** 底部分割线（开关）。 */
     public AnchorPaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
     /** 左侧分割线。 */
-    public AnchorPaneAnt borderLeft() { styleClass("border-left"); return this; }
+    public AnchorPaneAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
     /** 左侧分割线（开关）。 */
     public AnchorPaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
     /** 右侧分割线。 */
-    public AnchorPaneAnt borderRight() { styleClass("border-right"); return this; }
+    public AnchorPaneAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
     /** 右侧分割线（开关）。 */
     public AnchorPaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
 

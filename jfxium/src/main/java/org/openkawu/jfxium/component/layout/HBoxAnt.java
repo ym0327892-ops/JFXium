@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * HBoxAnt - 继承式 HBox 容器（M19.36 引入）。
@@ -191,19 +192,19 @@ public class HBoxAnt extends HBox {
     // ============================================================
 
     /** 顶部分割线。 */
-    public HBoxAnt borderTop() { styleClass("border-top"); return this; }
+    public HBoxAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
     /** 顶部分割线（开关）。 */
     public HBoxAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
     /** 底部分割线。 */
-    public HBoxAnt borderBottom() { styleClass("border-bottom"); return this; }
+    public HBoxAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
     /** 底部分割线（开关）。 */
     public HBoxAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
     /** 左侧分割线。 */
-    public HBoxAnt borderLeft() { styleClass("border-left"); return this; }
+    public HBoxAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
     /** 左侧分割线（开关）。 */
     public HBoxAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
     /** 右侧分割线。 */
-    public HBoxAnt borderRight() { styleClass("border-right"); return this; }
+    public HBoxAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
     /** 右侧分割线（开关）。 */
     public HBoxAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
 
