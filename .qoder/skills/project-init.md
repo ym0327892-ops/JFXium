@@ -33,8 +33,8 @@ my-project/
 ├── docs/                    # 对外文档（外部使用者视角）
 │   └── *.md                 # 中文文件名
 │
-├── INTERNAL/                # 对内知识（项目成员视角）
-│   └── *.md                 # SKILL.md / ARCHITECTURE.md / PROJECT_AUDIT_REPORT.md
+├── INTERNAL/                # 对内知识（项目成员视角，英文大写避免与 docs/cn/ 同名）
+│   └── *.md                 # COMPONENTS.md / LAYOUT.md / THEME.md / ...（详见六、命名规范）
 │
 ├── PROJECT_PLAN.md                  # 根目录跟踪（计划）
 ├── PROJECT_BUG.md                   # 根目录跟踪（Bug，顺序编号 #1…）
@@ -106,12 +106,25 @@ my-project/
 
 ## 六、命名规范
 
-| 类别 | 命名风格 | 示例 |
-|------|----------|------|
-| 对外文档（`docs/`） | 中文 | 快速上手.md、主题系统.md |
-| 对内知识（`INTERNAL/`） | 英文大写 | SKILL.md、ARCHITECTURE.md |
-| 跟踪文档（根目录） | 英文大写 | PROJECT_BUG.md、PROJECT_ACCEPTANCE.md |
-| 跟踪项编号 | `[BUG-NNN]` 顺序递增 | #1 [BUG-001] |
+### 6.1 三套命名约定（避免跨目录混淆）
+
+| 类别 | 位置 | 命名风格 | 示例 |
+|------|------|----------|------|
+| **对外**（用户视角） | `docs/cn/` | 中文 | 快速上手.md、主题系统.md |
+| **对内**（团队视角） | `INTERNAL/` | 英文大写 | COMPONENTS.md、LAYOUT.md、THEME.md |
+| **跟踪**（流程视角） | 根目录 | 英文大写 + `PROJECT_` 前缀 | PROJECT_BUG.md、PROJECT_PLAN.md |
+| 跟踪项编号 | — | `[BUG-NNN]` 顺序递增 | #1 [BUG-001] |
+
+### 6.2 为什么 INTERNAL/ 必须英文大写（与 docs/ 异名）
+
+`docs/cn/快速上手.md`（对外详细教程，839 行）和 `INTERNAL/QUICKSTART.md`（对内快速模板，159 行）
+描述同类内容但视角不同。若都用中文名，文件浏览器会出现**两个同名文件但内容不同**——
+用户分不清"哪个给用户看"、"哪个给团队看"。
+
+**核心口诀**：
+- 写"**现在是什么 / 为什么**" → 对外 `docs/cn/`（中文）或对内 `INTERNAL/`（英文大写）
+- 写"**过去做了什么 / 未来做啥**" → 根目录 `PROJECT_*`
+- 同义内容必须**跨目录异名**（中文 ↔ 英文大写）
 
 ## 七、避免的反模式
 
@@ -120,6 +133,7 @@ my-project/
 | 项目结构同时写进 3 个文件 | 信息过期不一致 | 单一信息源：只写在 `AGENTS.md` 一处 |
 | 跟踪文档埋进子目录 | 没人看 → 失效 | 根目录平级 |
 | `INTERNAL/` 改名 `docs/internal/` | 对内对外混在一起 | 根目录平级，命名清晰 |
+| `INTERNAL/` 改用中文命名 | 与 `docs/cn/` 重名，对外/对内混淆 | 严格英文大写，跨目录异名 |
 | 用 `.internal/` 加点隐藏 | 团队成员不知道存在 | 普通目录 + 大写醒目 |
 | skill 文件加得过多 | 维护成本飙升 | 不超过 5 个，宁缺毋滥 |
 
