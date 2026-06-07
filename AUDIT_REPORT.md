@@ -1,7 +1,7 @@
 # JFXium 全量代码健康检查审核报告
 
 > 审核日期：2026-06-05 | 审核范围：全部代码（组件层 + 基础设施层，150+ 文件）
-> 审核基准：AI/SKILL.md 强约束、AGENTS.md 架构规范、BUG.md 历史教训
+> 审核基准：INTERNAL/SKILL.md 强约束、AGENTS.md 架构规范、BUG.md 历史教训
 
 ---
 

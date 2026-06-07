@@ -92,7 +92,7 @@ public void start(Stage stage) {
 | [.qoder/skills/component-pattern.md](.qoder/skills/component-pattern.md) | 组件设计模式 |
 | [PLAN.md](PLAN.md) | 开发计划与进度 |
 
-> ARCHIVED: [AI/](AI/) contains legacy docs (SKILL.md, BUILDER_API_AUDIT.md, etc.)
+> 内部知识沉淀：[INTERNAL/](INTERNAL/) 包含设计决策、审计报告、API 速查（对内文档）。
 
 ---
 
