@@ -1,10 +1,8 @@
 package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Orientation;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
-import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -22,24 +20,22 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *     .dividerPositions(0.3);
  * }</pre>
  *
- * <h3>2. 业务继承用法（IDE 风格分屏页）</h3>
- * <pre>{@code
- * public class IdePage extends SplitPaneAnt {
- *     public IdePage() {
- *         direction(Direction.HORIZONTAL);
- *         items(buildSidebar(), buildEditorArea());
- *         dividerPositions(0.25);
- *     }
- * }
- * }</pre>
+ * <h2>设计契约</h2>
+ * <ul>
+ *   <li><b>视觉钩子、方向性边框线、尺寸、高频节点属性</b>统一继承自 {@link LayoutCommon}
+ *       默认实现（节省 ~110 行重复模板代码，行为 100% 等价原 SplitPaneAnt）</li>
+ *   <li><b>双重身份</b>：是 SplitPane 也是工厂——继承自 {@link SplitPane}，可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
+ * </ul>
  */
-public class SplitPaneAnt extends SplitPane {
+public class SplitPaneAnt extends SplitPane implements LayoutCommon<SplitPaneAnt> {
 
     public enum Direction {
         HORIZONTAL,
         VERTICAL
     }
 
+    /** 工厂入口。 */
     public static SplitPaneAnt create() {
         return new SplitPaneAnt();
     }
@@ -59,7 +55,7 @@ public class SplitPaneAnt extends SplitPane {
     }
 
     // ============================================================
-    // 流式 API
+    // 流式 API（SplitPane 特有业务方法）
     // ============================================================
 
     public SplitPaneAnt direction(Direction direction) {
@@ -100,120 +96,13 @@ public class SplitPaneAnt extends SplitPane {
         return this;
     }
 
-    public SplitPaneAnt padding(double padding) {
-        setPadding(new javafx.geometry.Insets(padding));
-        return this;
-    }
-
-    public SplitPaneAnt padding(double top, double right, double bottom, double left) {
-        setPadding(new javafx.geometry.Insets(top, right, bottom, left));
-        return this;
-    }
-
-    public SplitPaneAnt maxW(double width) {
-        setMaxWidth(width);
-        return this;
-    }
-
-    public SplitPaneAnt maxH(double height) {
-        setMaxHeight(height);
-        return this;
-    }
-
-    public SplitPaneAnt minW(double width) {
-        setMinWidth(width);
-        return this;
-    }
-
-    public SplitPaneAnt minH(double height) {
-        setMinHeight(height);
-        return this;
-    }
-
-    public SplitPaneAnt prefW(double width) {
-        setPrefWidth(width);
-        return this;
-    }
-
-    public SplitPaneAnt prefH(double height) {
-        setPrefHeight(height);
-        return this;
-    }
-
-    /** 同时设置首选宽高。 */
-    public SplitPaneAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
-    /** 同时设置最大宽高。 */
-    public SplitPaneAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
-    /** 同时设置最小宽高。 */
-    public SplitPaneAnt minSize(double w, double h) { setMinSize(w, h); return this; }
-
     // ============================================================
-    // 视觉钩子
+    // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
+    // LayoutCommon<SplitPaneAnt> 默认实现
+    // （节省 ~110 行重复模板代码，行为 100% 等价原 SplitPaneAnt）
     // ============================================================
 
-    public SplitPaneAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    public SplitPaneAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    public SplitPaneAnt background(Background bg) {
-        if (bg != null) styleClass(bg.styleClass());
-        return this;
-    }
-
-    public SplitPaneAnt style(String style) {
-        if (style != null) setStyle(style);
-        return this;
-    }
-
-    // ============================================================
-    // 方向性边框线（分割线）
-    // ============================================================
-
-    /** 顶部分割线。 */
-    public SplitPaneAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
-    /** 顶部分割线（开关）。 */
-    public SplitPaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
-    /** 底部分割线。 */
-    public SplitPaneAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
-    /** 底部分割线（开关）。 */
-    public SplitPaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
-    /** 左侧分割线。 */
-    public SplitPaneAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
-    /** 左侧分割线（开关）。 */
-    public SplitPaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
-    /** 右侧分割线。 */
-    public SplitPaneAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
-    /** 右侧分割线（开关）。 */
-    public SplitPaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
-
-    // ============================================================
-    // 高频节点属性
-    // ============================================================
-
-    /** 设置可见性。 */
-    public SplitPaneAnt visible(boolean v) { setVisible(v); return this; }
-    /** 设置禁用状态。 */
-    public SplitPaneAnt disable(boolean d) { setDisable(d); return this; }
-    /** 设置是否受布局管理。 */
-    public SplitPaneAnt managed(boolean m) { setManaged(m); return this; }
-    /** 设置透明度（0.0 ~ 1.0）。 */
-    public SplitPaneAnt opacity(double o) { setOpacity(o); return this; }
-    /** 设置鼠标光标。 */
-    public SplitPaneAnt cursor(Cursor c) { setCursor(c); return this; }
-    /** 设置节点 ID。 */
-    public SplitPaneAnt id(String id) { setId(id); return this; }
-
-    /** Builder 模式终结调用，返回自身。详见 {@code VBoxAnt#build()}。 */
+    /** Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。 */
     public SplitPaneAnt build() {
         return this;
     }
