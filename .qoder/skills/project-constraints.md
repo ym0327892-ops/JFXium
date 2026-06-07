@@ -267,9 +267,9 @@ ctrl.setSelectedKey("file");   // 改已渲染节点的 styleClass，不重建
 | `_separator.scss` | 分割线 | `-fx-border-color` | **"using border instead of insets to get thinner line"** |
 | `_toolbar.scss` | `background-insets` 层叠 | `-fx-background-insets: 0, 0 0 $border-width 0` | 方向灵活（horizontal/vertical/bottom 切换 inset 方向），ToolBar 是控件而非布局容器 |
 
-## 十、复杂控件查 AtlantaFX 源码
+## 十、控件查 AtlantaFX 源码
 
-调 TableView / TreeView / ComboBox 弹层等复杂控件样式时，**先读 AtlantaFX 源码**，再改 LESS。不凭印象猜选择器层级。
+调 TableView / TreeView / ComboBox 弹层等复杂或者简单控件样式, 时，**先读 AtlantaFX 源码**，再改 LESS。不凭印象猜选择器层级。
 
 **本地源码路径**：`ant-design-ref/AntLantaFx/src/`
 
