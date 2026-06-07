@@ -1,11 +1,9 @@
 package org.openkawu.jfxium.component.layout;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.scene.Cursor;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
-import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -24,37 +22,27 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *   <li><b>视觉</b>：走 {@link JfxStyles#TILE_PANE} LESS 样式</li>
  * </ul>
  *
- * <h2>用法</h2>
- * <pre>{@code
- * // 缩略图网格（4列）
- * TilePaneAnt grid = TilePaneAnt.create()
- *     .prefColumns(4)
- *     .hgap(10).vgap(10)
- *     .alignment(Pos.CENTER)
- *     .children(thumb1, thumb2, thumb3, thumb4)
- *     .build();
- *
- * // 垂直平铺（图标面板）
- * TilePaneAnt icons = TilePaneAnt.create()
- *     .orientation(Orientation.VERTICAL)
- *     .prefRows(3)
- *     .hgap(8).vgap(8)
- *     .children(icon1, icon2, icon3)
- *     .build();
- * }</pre>
+ * <h2>设计契约</h2>
+ * <ul>
+ *   <li><b>视觉钩子、方向性边框线、尺寸、高频节点属性</b>统一继承自 {@link LayoutCommon}
+ *       默认实现（节省 ~110 行重复模板代码，行为 100% 等价原 TilePaneAnt）</li>
+ *   <li><b>双重身份</b>：是 TilePane 也是工厂——继承自 {@link TilePane}，可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
+ * </ul>
  */
-public class TilePaneAnt extends TilePane {
+public class TilePaneAnt extends TilePane implements LayoutCommon<TilePaneAnt> {
 
     // ============================================================
     // 工厂入口
     // ============================================================
 
+    /** 工厂入口。 */
     public static TilePaneAnt create() {
         return new TilePaneAnt();
     }
 
     // ============================================================
-    // 构造函数
+    // 构造函数（公开，便于业务 extends）
     // ============================================================
 
     public TilePaneAnt() {
@@ -63,7 +51,7 @@ public class TilePaneAnt extends TilePane {
     }
 
     // ============================================================
-    // 流式配置
+    // 流式配置（TilePane 特有业务方法）
     // ============================================================
 
     public TilePaneAnt prefColumns(int columns) {
@@ -97,7 +85,7 @@ public class TilePaneAnt extends TilePane {
         return this;
     }
 
-    public TilePaneAnt alignment(javafx.geometry.Pos pos) {
+    public TilePaneAnt alignment(Pos pos) {
         setAlignment(pos);
         return this;
     }
@@ -117,104 +105,9 @@ public class TilePaneAnt extends TilePane {
     }
 
     // ============================================================
-    // 视觉钩子
-    // ============================================================
-
-    /** 追加一个 styleClass（幂等——重复调不会重复挂）。 */
-    public TilePaneAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** 批量挂多个 styleClass（变长重载）。 */
-    public TilePaneAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    /** 设置背景层级。 */
-    public TilePaneAnt background(Background bg) {
-        if (bg != null) {
-            styleClass(bg.styleClass());
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先用 styleClass + LESS）。 */
-    public TilePaneAnt style(String style) {
-        if (style != null) setStyle(style);
-        return this;
-    }
-
-    /** 设置统一的 padding（四边相同）。 */
-    public TilePaneAnt padding(double padding) {
-        setPadding(new Insets(padding));
-        return this;
-    }
-
-    /** 设置 4 边各自的 padding。 */
-    public TilePaneAnt padding(double top, double right, double bottom, double left) {
-        setPadding(new Insets(top, right, bottom, left));
-        return this;
-    }
-
-    /** 设置 Insets 对象。 */
-    public TilePaneAnt padding(Insets padding) {
-        if (padding != null) setPadding(padding);
-        return this;
-    }
-
-    // ============================================================
-    // 方向性边框线（分割线）
-    // ============================================================
-
-    /** 顶部分割线。 */
-    public TilePaneAnt borderTop() { styleClass(JfxStyles.BORDER_TOP); return this; }
-    /** 顶部分割线（开关）。 */
-    public TilePaneAnt borderTop(boolean on) { if (on) return borderTop(); return this; }
-    /** 底部分割线。 */
-    public TilePaneAnt borderBottom() { styleClass(JfxStyles.BORDER_BOTTOM); return this; }
-    /** 底部分割线（开关）。 */
-    public TilePaneAnt borderBottom(boolean on) { if (on) return borderBottom(); return this; }
-    /** 左侧分割线。 */
-    public TilePaneAnt borderLeft() { styleClass(JfxStyles.BORDER_LEFT); return this; }
-    /** 左侧分割线（开关）。 */
-    public TilePaneAnt borderLeft(boolean on) { if (on) return borderLeft(); return this; }
-    /** 右侧分割线。 */
-    public TilePaneAnt borderRight() { styleClass(JfxStyles.BORDER_RIGHT); return this; }
-    /** 右侧分割线（开关）。 */
-    public TilePaneAnt borderRight(boolean on) { if (on) return borderRight(); return this; }
-
-    // ============================================================
-    // 高频节点属性
-    // ============================================================
-
-    /** 设置可见性。 */
-    public TilePaneAnt visible(boolean v) { setVisible(v); return this; }
-    /** 设置禁用状态。 */
-    public TilePaneAnt disable(boolean d) { setDisable(d); return this; }
-    /** 设置是否受布局管理。 */
-    public TilePaneAnt managed(boolean m) { setManaged(m); return this; }
-    /** 设置透明度（0.0 ~ 1.0）。 */
-    public TilePaneAnt opacity(double o) { setOpacity(o); return this; }
-    /** 设置鼠标光标。 */
-    public TilePaneAnt cursor(Cursor c) { setCursor(c); return this; }
-    /** 设置节点 ID。 */
-    public TilePaneAnt id(String id) { setId(id); return this; }
-
-    /** 同时设置首选宽高。 */
-    public TilePaneAnt prefSize(double w, double h) { setPrefSize(w, h); return this; }
-    /** 同时设置最大宽高。 */
-    public TilePaneAnt maxSize(double w, double h) { setMaxSize(w, h); return this; }
-    /** 同时设置最小宽高。 */
-    public TilePaneAnt minSize(double w, double h) { setMinSize(w, h); return this; }
-
-    // ============================================================
-    // 构建
+    // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
+    // LayoutCommon<TilePaneAnt> 默认实现
+    // （节省 ~110 行重复模板代码，行为 100% 等价原 TilePaneAnt）
     // ============================================================
 
     public TilePaneAnt build() {
