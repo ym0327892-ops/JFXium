@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.composite;
 
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -69,6 +70,7 @@ public class SegmentedAnt {
         private boolean disabled = false;
         private boolean block = false;
         private Consumer<String> onChange = null;
+        private StringProperty bindProperty = null;
 
         public Builder option(String value, String label) {
             this.options.add(new Option(value, label));
@@ -88,6 +90,12 @@ public class SegmentedAnt {
         public Builder block(boolean block) { this.block = block; return this; }
         public Builder block() { return block(true); }
         public Builder onChange(Consumer<String> onChange) { this.onChange = onChange; return this; }
+
+        /** 双向绑定：控件值 ↔ Property 值实时同步。 */
+        public Builder bindValue(StringProperty property) {
+            this.bindProperty = property;
+            return this;
+        }
 
         public HBox build() {
             HBox segmented = new HBox(2);
@@ -125,6 +133,10 @@ public class SegmentedAnt {
 
                 if (!disabled) {
                     optionPane.setOnMouseClicked(e -> {
+                        selectedValue = option.getValue();
+                        if (bindProperty != null) {
+                            bindProperty.set(option.getValue());
+                        }
                         if (onChange != null) onChange.accept(option.getValue());
                     });
                 }

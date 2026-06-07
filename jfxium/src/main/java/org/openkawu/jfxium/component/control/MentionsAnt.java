@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.control;
 
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -72,6 +73,7 @@ public class MentionsAnt {
         private Consumer<String> onSelect = null;
         private Consumer<String> onChange = null;
         private int rows = 4;
+        private StringProperty bindProperty = null;
 
         public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
         public Builder option(String value, String label) { this.options.add(new Option(value, label)); return this; }
@@ -81,11 +83,22 @@ public class MentionsAnt {
         public Builder onChange(Consumer<String> onChange) { this.onChange = onChange; return this; }
         public Builder rows(int rows) { this.rows = rows; return this; }
 
+        /** 双向绑定：控件值 ↔ Property 值实时同步。 */
+        public Builder bindValue(StringProperty property) {
+            this.bindProperty = property;
+            return this;
+        }
+
         public TextArea build() {
             TextArea textArea = new TextArea();
             textArea.getStyleClass().addAll(JfxStyles.MENTIONS, JfxStyles.MENTIONS_AREA);
             textArea.setPromptText(placeholder);
             textArea.setPrefRowCount(rows);
+
+            // 双向绑定（在初始值设置之后）
+            if (bindProperty != null) {
+                textArea.textProperty().bindBidirectional(bindProperty);
+            }
 
             Popup popup = new Popup();
             popup.setAutoHide(true);

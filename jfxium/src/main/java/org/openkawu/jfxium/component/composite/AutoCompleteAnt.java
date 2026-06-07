@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.composite;
 
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -54,6 +55,7 @@ public class AutoCompleteAnt {
         private Consumer<String> onChange = null;
         private Consumer<T> onSelect = null;
         private int maxSuggestions = 10;
+        private StringProperty bindProperty = null;
 
         public Builder<T> placeholder(String placeholder) { this.placeholder = placeholder; return this; }
         public Builder<T> value(String value) { this.value = value; return this; }
@@ -66,6 +68,12 @@ public class AutoCompleteAnt {
         public Builder<T> onSelect(Consumer<T> onSelect) { this.onSelect = onSelect; return this; }
         public Builder<T> maxSuggestions(int max) { this.maxSuggestions = max; return this; }
 
+        /** 双向绑定：控件值 ↔ Property 值实时同步。 */
+        public Builder<T> bindValue(StringProperty property) {
+            this.bindProperty = property;
+            return this;
+        }
+
         public HBox build() {
             HBox container = new HBox(0);
             container.setAlignment(Pos.CENTER_LEFT);
@@ -75,6 +83,11 @@ public class AutoCompleteAnt {
             field.setPromptText(placeholder);
             field.getStyleClass().add(JfxStyles.AUTO_COMPLETE_FIELD);
             HBox.setHgrow(field, Priority.ALWAYS);
+
+            // 双向绑定（在初始值设置之后）
+            if (bindProperty != null) {
+                field.textProperty().bindBidirectional(bindProperty);
+            }
 
             Popup popup = new Popup();
             popup.setAutoHide(true);

@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.composite.BarAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
@@ -102,6 +103,7 @@ public class CrudTemplate {
 
         // 装饰
         private boolean bordered = false;
+        private Background background = Background.DEFAULT;  // M19.35 整体背景层级（默认白底）
         private double topbarSpacing = 8;
         private double bottombarSpacing = 8;
         private double sectionGap = 16;     // title / topbar / body / bottombar 之间间距
@@ -169,6 +171,15 @@ public class CrudTemplate {
             return this;
         }
 
+        /**
+         * 整体背景层级（M19.35）。默认 {@code Background.DEFAULT}（白底）。
+         * 设为 {@code null} 或 {@code Background.TRANSPARENT} 即透明。
+         */
+        public Builder background(Background background) {
+            this.background = background;
+            return this;
+        }
+
         public Builder topbarSpacing(double spacing) {
             this.topbarSpacing = spacing;
             return this;
@@ -193,7 +204,11 @@ public class CrudTemplate {
             BorderPane root = new BorderPane();
             root.getStyleClass().add(JfxStyles.CRUD_TEMPLATE);
             if (bordered) {
-                root.getStyleClass().add(JfxStyles.CARD_BORDERED);
+                root.getStyleClass().add("bordered");
+            }
+            // M19.35 background：默认挂 DEFAULT（白底），可覆盖
+            if (background != null) {
+                root.getStyleClass().add(background.styleClass());
             }
 
             // ========== 顶部 = title + topbar（VBox 组合）==========

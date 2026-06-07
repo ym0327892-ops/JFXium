@@ -20,7 +20,7 @@ import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.jfxiumUiExample.pages.HomePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.AvatarBadgeExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CalendarExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CardExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.GroupBoxExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CarouselExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CollapseExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.DescriptionsExamplePage;
@@ -247,8 +247,8 @@ public class MainView {
                 PageRegistry.Category.DATA_DISPLAY, TableExamplePage::new);
         registry.register("datadisplay.tag", "Tag 标签",
                 PageRegistry.Category.DATA_DISPLAY, TagExamplePage::new);
-        registry.register("datadisplay.card", "Card 卡片",
-                PageRegistry.Category.DATA_DISPLAY, CardExamplePage::new);
+        registry.register("datadisplay.card", "GroupBox 分组框",
+                PageRegistry.Category.DATA_DISPLAY, GroupBoxExamplePage::new);
         registry.register("datadisplay.avatar", "Avatar 头像 + Badge",
                 PageRegistry.Category.DATA_DISPLAY, AvatarBadgeExamplePage::new);
         registry.register("datadisplay.progress", "Progress 进度条",

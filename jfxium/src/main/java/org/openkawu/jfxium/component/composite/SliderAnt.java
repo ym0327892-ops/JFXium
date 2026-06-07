@@ -22,25 +22,6 @@ import java.util.function.Function;
 /**
  * JFXium Slider 组件 - 全面对标 Ant Design Slider。
  *
- * <h2>修复说明</h2>
- * 原实现存在多处 inline {@code setStyle} 注入：
- * <ul>
- *   <li>{@code getSliderStyle()} 拼接 {@code -fx-control-inner-background} / {@code -fx-accent}</li>
- *   <li>{@code tipLabel} / {@code startLabel} / {@code endLabel} / {@code separator} / {@code marksRow} / {@code markLabel}
- *       6 处 setStyle 拼字号/颜色/padding</li>
- *   <li>{@code slider.setStyle(slider.getStyle() + style)} 在已有 inline 上叠加用户 style</li>
- * </ul>
- *
- * <h2>本次改动</h2>
- * <ul>
- *   <li>删除 {@code getSliderStyle()}：{@code -fx-control-inner-background}/{@code -fx-accent}
- *       已搬到 {@code theme-base.less} 的 {@code .slider} 选择器</li>
- *   <li>tip/range labels/marks 全部改为挂 styleClass，颜色字号由 LESS 控制</li>
- *   <li>{@code disabled} 状态：通过 {@code .slider-disabled} styleClass 切换 opacity，
- *       不再 inline 拼字符串</li>
- *   <li>接入 {@link AbstractStyleBuilder}</li>
- * </ul>
- *
  * <h2>使用示例</h2>
  * <pre>{@code
  * Node slider = SliderAnt.create()

@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.composite;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -77,6 +78,7 @@ public class CascaderAnt {
         private boolean showSearch = false;
         private Consumer<List<String>> onChange = null;
         private List<String> selectedPath = new ArrayList<>();
+        private ObjectProperty<List<String>> bindProperty = null;
 
         public Builder options(List<Option> options) { this.options = options; return this; }
         public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
@@ -86,6 +88,12 @@ public class CascaderAnt {
         public Builder showSearch(boolean showSearch) { this.showSearch = showSearch; return this; }
         public Builder onChange(Consumer<List<String>> onChange) { this.onChange = onChange; return this; }
         public Builder value(List<String> path) { this.selectedPath = path != null ? path : new ArrayList<>(); return this; }
+
+        /** 双向绑定：控件值（选中的 values 路径）↔ Property 值实时同步。 */
+        public Builder bindValue(ObjectProperty<List<String>> property) {
+            this.bindProperty = property;
+            return this;
+        }
 
         public HBox build() {
             HBox container = new HBox(0);
@@ -182,9 +190,12 @@ public class CascaderAnt {
                             selectedPath = newPath;
                             field.setText(String.join(" / ", selectedPath));
                             popup.hide();
+                            List<String> values = new ArrayList<>();
+                            collectValues(options, selectedPath, 0, values);
+                            if (bindProperty != null) {
+                                bindProperty.set(values);
+                            }
                             if (onChange != null) {
-                                List<String> values = new ArrayList<>();
-                                collectValues(options, selectedPath, 0, values);
                                 onChange.accept(values);
                             }
                         }

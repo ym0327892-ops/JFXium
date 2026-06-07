@@ -635,7 +635,7 @@ public class BarExamplePage extends VBoxAnt {
                         .build();
                 """;
         return Demos.sectionWithCode("12. 通用边框（全 Builder 组件可用）",
-                "borderTop/bottom/left/right 在 AbstractStyleBuilder 基类实现。所有用 Builder 模式的组件（BarAnt、CardAnt、FlexAnt、GridAnt、FormAnt…）全部零成本继承。颜色走 -color-border-default，随主题自动切换。",
+                "borderTop/bottom/left/right 在 AbstractStyleBuilder 基类实现。所有用 Builder 模式的组件（BarAnt、GroupBoxAnt、FlexAnt、GridAnt、FormAnt…）全部零成本继承。颜色走 -color-border-default，随主题自动切换。",
                 code, row);
     }
 }

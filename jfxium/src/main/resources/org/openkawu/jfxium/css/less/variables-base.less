@@ -116,7 +116,7 @@
 
 // Card Padding
 // 使用位置：.card
-// 影响组件：CardAnt
+// 影响组件：GroupBoxAnt
 // 注：Ant Design 官方 Card body padding 默认 24，桌面 admin 信息密度高。
 //     M19.41 取 16 → M19.51 再收紧到 12（admin「小卡片配置面板」是核心场景，
 //     16 的留白在桌面 admin 里显大，用户实测反馈"那个大的在哪用"）。
@@ -276,17 +276,16 @@
   -fx-text-fill: @color-fg-default;
 }
 
-// Card 基础样式混入
-// 使用位置：.card
-.card-base() {
+// GroupBox 基础样式混入
+// 使用位置：.jfx-group-box
+.group-box-base() {
   -fx-background-color: @color-bg-default;
-  -fx-background-radius: @border-radius-lg;
-  -fx-border-radius: @border-radius-lg;
-  -fx-padding: @card-padding;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-radius: @border-radius-md;
 }
 
 // 阴影效果混入
-// 使用位置：.card.shadow-sm、.tooltip、.modal-content、.combo-box-popup 等
+// 使用位置：.tooltip、.modal-content、.combo-box-popup 等
 .shadow-sm() {
   -fx-effect: dropshadow(gaussian, @color-shadow-default, 4, 0, 0, 1);
 }

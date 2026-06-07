@@ -13,27 +13,10 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * JFXium 间距组件 - 对标 Ant Design Space。
- *
- * <h2>修复说明</h2>
- * 原实现存在 3 个问题：
- * <ul>
- *   <li>styleClass 硬编码字符串 {@code "space"}，未接入 {@link JfxStyles}</li>
- *   <li>VBox 分支用 {@code Pos.BASELINE_LEFT}，VBox 无 baseline 概念，会回退为 TOP_LEFT，
- *       与用户预期不符</li>
- *   <li>{@code split(true)} 但未提供 splitNode 时啥也不显示，是隐性 bug</li>
- * </ul>
- *
- * <h2>本次改动</h2>
- * <ul>
- *   <li>所有 styleClass 改用 {@link JfxStyles} 常量</li>
- *   <li>VBox 不支持 BASELINE，遇到时降级为 START 并打印告警</li>
- *   <li>{@code split(true)} 但 splitNode 为 null 时，自动渲染一根原生 {@link Separator} 作为分隔</li>
- *   <li>{@code build()} 返回类型从 {@code Node} 改为 {@link Pane}（更具体）</li>
- *   <li>新增 {@code style/styleClass} 钩子，对齐其他 *Ant 组件</li>
- * </ul>
  *
  * <h2>使用示例</h2>
  * <pre>{@code
@@ -58,6 +41,8 @@ import java.util.List;
  * }</pre>
  */
 public class SpaceAnt {
+
+    private static final Logger LOGGER = Logger.getLogger(SpaceAnt.class.getName());
 
     public enum Align {
         START, END, CENTER, BASELINE
@@ -187,7 +172,7 @@ public class SpaceAnt {
                 case END -> Pos.BOTTOM_LEFT;
                 case CENTER -> Pos.CENTER_LEFT;
                 case BASELINE -> {
-                    System.err.println("[SpaceAnt] Align.BASELINE 在垂直方向无效，已降级为 START");
+                    LOGGER.warning("Align.BASELINE 在垂直方向无效，已降级为 START");
                     yield Pos.TOP_LEFT;
                 }
             };

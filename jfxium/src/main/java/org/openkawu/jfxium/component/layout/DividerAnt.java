@@ -10,22 +10,10 @@ import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
+import java.util.logging.Logger;
+
 /**
  * JFXium 分割线组件 - 对标 Ant Design Divider。
- *
- * <h2>修复说明</h2>
- * 原实现（60 行）只是 {@link Separator} 的薄包装，不支持文本，
- * 但 javadoc 与 README 都声称 "{@code .text("OR")}" 可用，属于文档与代码不一致。
- *
- * <h2>本次改动</h2>
- * <ul>
- *   <li>有 text 时返回 {@link HBox}：{@code Separator | Label | Separator}，对齐 Ant Divider</li>
- *   <li>无 text 时仍返回单个 {@link Separator}（保持轻量）</li>
- *   <li>{@code build()} 返回 {@link Node}，统一接口（实际是 {@link Separator} 或 {@link HBox}）</li>
- *   <li>styleClass 接 {@link JfxStyles}</li>
- *   <li>新增 {@code orientation()} 显式 API；保留 {@code vertical()} 向下兼容</li>
- *   <li>新增 {@code position()} 控制文本位置（LEFT/CENTER/RIGHT），对齐 Ant Divider {@code orientation} 属性</li>
- * </ul>
  *
  * <h2>使用示例</h2>
  * <pre>{@code
@@ -43,6 +31,8 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * }</pre>
  */
 public class DividerAnt {
+
+    private static final Logger LOGGER = Logger.getLogger(DividerAnt.class.getName());
 
     /** 文本位置，对齐 Ant Divider 的 orientation 属性（默认 CENTER）*/
     public enum Position {
@@ -70,7 +60,7 @@ public class DividerAnt {
             return this;
         }
 
-        /** 兼容老 API。等价于 {@code orientation(Orientation.VERTICAL)}。*/
+        /** 设置为垂直方向分割线。等价于 {@code orientation(Orientation.VERTICAL)}。*/
         public Builder vertical() {
             return orientation(Orientation.VERTICAL);
         }
@@ -88,7 +78,7 @@ public class DividerAnt {
             // 有文本时返回 HBox: [线段] [文本] [线段]，左右线段宽度根据 position 调整
             // 垂直方向暂不支持文本（Ant Divider 也不支持垂直 + 文本组合）
             if (orientation == Orientation.VERTICAL) {
-                System.err.println("[DividerAnt] 垂直方向暂不支持 text，已忽略 text 参数");
+                LOGGER.warning("垂直方向暂不支持 text，已忽略 text 参数");
                 return buildPlainSeparator();
             }
             return buildSeparatorWithText();

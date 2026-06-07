@@ -95,14 +95,16 @@ public class BarAnt {
         private final List<Node> center = new ArrayList<>();
         private final List<Node> right = new ArrayList<>();
 
+        private Builder() {
+            this.borderBottom = true;
+        }
+
         private double gap = 8;
         private Pos alignment = Pos.CENTER_LEFT;
-        private javafx.geometry.Insets padding = null;
+        private javafx.geometry.Insets padding = new javafx.geometry.Insets(4, 10, 4, 10);
         private double minHeight = -1;
         private double prefHeight = -1;
         private double maxWidth = -1;
-
-        private Builder() {}
 
         // ============================================================
         // 三段节点

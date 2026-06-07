@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.composite;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -63,6 +64,7 @@ public class TransferAnt<T> {
         private Consumer<List<T>> onSelectChange = null;
         private boolean showSearch = false;
         private boolean disabled = false;
+        private ObjectProperty<List<T>> bindProperty = null;
 
         public Builder<T> dataSource(List<T> dataSource) { this.dataSource = new ArrayList<>(dataSource); return this; }
         public Builder<T> targetKeys(List<T> targetKeys) { this.targetKeys = new ArrayList<>(targetKeys); return this; }
@@ -73,6 +75,12 @@ public class TransferAnt<T> {
         public Builder<T> showSearch(boolean showSearch) { this.showSearch = showSearch; return this; }
         public Builder<T> showSearch() { return showSearch(true); }
         public Builder<T> disabled(boolean disabled) { this.disabled = disabled; return this; }
+
+        /** 双向绑定：控件值（目标列表 targetKeys）↔ Property 值实时同步。 */
+        public Builder<T> bindValue(ObjectProperty<List<T>> property) {
+            this.bindProperty = property;
+            return this;
+        }
 
         public HBox build() {
             HBox transfer = new HBox(12);
@@ -173,6 +181,7 @@ public class TransferAnt<T> {
                 if (!selectedSourceKeys.isEmpty()) {
                     targetKeys.addAll(selectedSourceKeys);
                     selectedSourceKeys.clear();
+                    if (bindProperty != null) bindProperty.set(new ArrayList<>(targetKeys));
                     if (onChange != null) onChange.accept(new ArrayList<>(targetKeys));
                 }
             });
@@ -182,6 +191,7 @@ public class TransferAnt<T> {
                 if (!selectedTargetKeys.isEmpty()) {
                     targetKeys.removeAll(selectedTargetKeys);
                     selectedTargetKeys.clear();
+                    if (bindProperty != null) bindProperty.set(new ArrayList<>(targetKeys));
                     if (onChange != null) onChange.accept(new ArrayList<>(targetKeys));
                 }
             });

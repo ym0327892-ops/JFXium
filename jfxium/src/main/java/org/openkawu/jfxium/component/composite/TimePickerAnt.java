@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.composite;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -44,6 +45,7 @@ public class TimePickerAnt {
         private String format = "HH:mm:ss";
         private boolean disabled = false;
         private Consumer<LocalTime> onChange = null;
+        private ObjectProperty<LocalTime> bindProperty = null;
 
         public Builder value(LocalTime value) {
             this.value = value;
@@ -62,6 +64,12 @@ public class TimePickerAnt {
 
         public Builder onChange(Consumer<LocalTime> onChange) {
             this.onChange = onChange;
+            return this;
+        }
+
+        /** 双向绑定：控件值 ↔ Property 值实时同步。 */
+        public Builder bindValue(ObjectProperty<LocalTime> property) {
+            this.bindProperty = property;
             return this;
         }
 
@@ -93,7 +101,7 @@ public class TimePickerAnt {
             // M19.42 修复：原实现 onChange 字段从未被任何 spinner 触发（死回调），
             // 导致调用方无法拿到用户选中的时间。这里把时/分/秒三个 spinner 的值变化
             // 汇聚成 LocalTime 后回调，未显示的段（分/秒）按 0 计。
-            if (onChange != null) {
+            if (onChange != null || bindProperty != null) {
                 final Spinner<Integer> h = hourSpinner;
                 final Spinner<Integer> m = minuteSpinner;
                 final Spinner<Integer> s = secondSpinner;
@@ -101,7 +109,13 @@ public class TimePickerAnt {
                     int hh = h.getValue();
                     int mm = m != null ? m.getValue() : 0;
                     int ss = s != null ? s.getValue() : 0;
-                    onChange.accept(LocalTime.of(hh, mm, ss));
+                    LocalTime newTime = LocalTime.of(hh, mm, ss);
+                    if (onChange != null) {
+                        onChange.accept(newTime);
+                    }
+                    if (bindProperty != null) {
+                        bindProperty.set(newTime);
+                    }
                 };
                 hourSpinner.valueProperty().addListener((obs, ov, nv) -> notify.run());
                 if (minuteSpinner != null) {
@@ -109,6 +123,17 @@ public class TimePickerAnt {
                 }
                 if (secondSpinner != null) {
                     secondSpinner.valueProperty().addListener((obs, ov, nv) -> notify.run());
+                }
+
+                // 双向绑定：外部 property 变化时同步更新 spinner
+                if (bindProperty != null) {
+                    bindProperty.addListener((obs, ov, nv) -> {
+                        if (nv != null && !nv.equals(ov)) {
+                            h.getValueFactory().setValue(nv.getHour());
+                            if (m != null) m.getValueFactory().setValue(nv.getMinute());
+                            if (s != null) s.getValueFactory().setValue(nv.getSecond());
+                        }
+                    });
                 }
             }
 

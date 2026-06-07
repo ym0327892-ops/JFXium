@@ -13,7 +13,7 @@ import java.util.List;
  * JFXium 承载面组件（组合式，Builder 模式）。
  *
  * <p><b>定位</b>：轻量的内容承载面板，带可选标题 + 额外操作区，
- * 用于在页面中创建视觉上分组的区域。比 CardAnt 更轻量。</p>
+ * 用于在页面中创建视觉上分组的区域。比 GroupBoxAnt 更轻量。</p>
  *
  * <h2>功能特性</h2>
  * <ul>
@@ -22,10 +22,10 @@ import java.util.List;
  *   <li>边框可选（bordered）</li>
  * </ul>
  *
- * <h2>与 CardAnt 的区别</h2>
+ * <h2>与 GroupBoxAnt 的区别</h2>
  * <ul>
  *   <li>{@code SurfaceAnt} —— 轻量分组面板，无封面 / 标签页 / 操作区</li>
- *   <li>{@code CardAnt} —— 全功能卡片，支持封面 / 标签页 / 加载状态</li>
+ *   <li>{@code GroupBoxAnt} —— 全功能面板，支持标签页 / 底部操作区</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -107,12 +107,12 @@ public class SurfaceAnt {
             VBox surface = new VBox(gap);
             surface.getStyleClass().add(JfxStyles.SURFACE);
             if (bordered) {
-                surface.getStyleClass().add(JfxStyles.CARD_BORDERED);
+                surface.getStyleClass().add("bordered");
             }
             switch (shadow) {
-                case SMALL -> surface.getStyleClass().add(JfxStyles.CARD_SHADOW_SM);
-                case MEDIUM -> surface.getStyleClass().add(JfxStyles.CARD_SHADOW_MD);
-                case LARGE -> surface.getStyleClass().add(JfxStyles.CARD_SHADOW_LG);
+                case SMALL -> surface.getStyleClass().add("shadow-sm");
+                case MEDIUM -> surface.getStyleClass().add("shadow-md");
+                case LARGE -> surface.getStyleClass().add("shadow-lg");
                 case NONE -> {
                 }
             }

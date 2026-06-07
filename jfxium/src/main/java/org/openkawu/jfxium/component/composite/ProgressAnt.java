@@ -13,24 +13,6 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 /**
  * JFXium Progress 进度组件 - 对标 Ant Design Progress。
  *
- * <h2>修复说明</h2>
- * 原实现 Bar/Circle 双 Builder，每个 Builder 都通过 inline {@code setStyle} 拼接：
- * <ul>
- *   <li>{@code -fx-accent} / {@code -fx-progress-color} 按 status 注入</li>
- *   <li>info Label 的字号/颜色拼字符串</li>
- * </ul>
- *
- * 与此同时 {@code theme-base.less} 中已有 {@code .progress-bar.success} 等完整规则，
- * Java 端从未挂相应 styleClass，导致 LESS 死代码。
- *
- * <h2>本次改动</h2>
- * <ul>
- *   <li>{@code ProgressBar/ProgressIndicator} 挂 status styleClass：success / warning / error</li>
- *   <li>info Label 挂 {@code jfx-progress-info} + status 修饰类，颜色由 LESS 切换</li>
- *   <li>删除 {@code getStatusColor()} 方法（颜色逻辑已搬到 LESS）</li>
- *   <li>双 Builder 接入 {@link AbstractStyleBuilder}</li>
- * </ul>
- *
  * <h2>使用示例</h2>
  * <pre>{@code
  * HBox bar = ProgressAnt.bar()

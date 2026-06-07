@@ -65,30 +65,26 @@ public final class JfxStyles {
     public static final String SHAPE_SQUARE = "square";
 
     /* ============================================
-       Card 卡片
+       GroupBox 分组框
        ============================================ */
 
-    public static final String CARD = "jfx-card";
-    public static final String CARD_BORDERED = "bordered";
-    public static final String CARD_HOVERABLE = "hoverable";
-    public static final String CARD_SHADOW_SM = "shadow-sm";
-    public static final String CARD_SHADOW_MD = "shadow-md";
-    public static final String CARD_SHADOW_LG = "shadow-lg";
-    public static final String CARD_TITLE = "jfx-card-title";
-    public static final String CARD_CONTENT = "jfx-card-content";
-    
-    // M10 新增：Card 增强功能
-    public static final String CARD_SMALL = "jfx-card-small";
-    public static final String CARD_INNER = "jfx-card-inner";
-    public static final String CARD_HEADER = "jfx-card-header";
-    public static final String CARD_BODY = "jfx-card-body";
-    public static final String CARD_COVER = "jfx-card-cover";
-    public static final String CARD_ACTIONS = "jfx-card-actions";
-    public static final String CARD_ACTION_ITEM = "jfx-card-action-item";
-    public static final String CARD_TAB_BAR = "jfx-card-tab-bar";
-    public static final String CARD_TAB_LIST = "jfx-card-tab-list";
-    public static final String CARD_TAB_ITEM = "jfx-card-tab-item";
-    public static final String CARD_TAB_ITEM_ACTIVE = "active";
+    public static final String GROUP_BOX = "jfx-group-box";
+    public static final String GROUP_BOX_BORDERED = "bordered";
+    public static final String GROUP_BOX_HOVERABLE = "hoverable";
+    public static final String GROUP_BOX_TITLE = "jfx-group-box-title";
+    public static final String GROUP_BOX_CONTENT = "jfx-group-box-content";
+    public static final String GROUP_BOX_SMALL = "jfx-group-box-small";
+    public static final String GROUP_BOX_INNER = "jfx-group-box-inner";
+    public static final String GROUP_BOX_HEADER = "jfx-group-box-header";
+    public static final String GROUP_BOX_HEADER_BG = "jfx-group-box-header-bg";
+    public static final String GROUP_BOX_HEADER_BORDER = "jfx-group-box-header-border";
+    public static final String GROUP_BOX_BODY = "jfx-group-box-body";
+    public static final String GROUP_BOX_ACTIONS = "jfx-group-box-actions";
+    public static final String GROUP_BOX_ACTION_ITEM = "jfx-group-box-action-item";
+    public static final String GROUP_BOX_TAB_BAR = "jfx-group-box-tab-bar";
+    public static final String GROUP_BOX_TAB_LIST = "jfx-group-box-tab-list";
+    public static final String GROUP_BOX_TAB_ITEM = "jfx-group-box-tab-item";
+    public static final String GROUP_BOX_TAB_ITEM_ACTIVE = "active";
 
     /* ============================================
        Page / Layout 页面布局

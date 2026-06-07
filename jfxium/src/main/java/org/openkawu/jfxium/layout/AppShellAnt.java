@@ -97,10 +97,13 @@ public class AppShellAnt {
         private GridAnt.Breakpoint breakpoint;
         private Consumer<Boolean> onCollapseChange;
 
-        // M19.35 各区域背景层级（null = 不挂任何 background styleClass，沿用主题默认）
+        // M19.35 各区域背景层级
+        // 默认：sider=SUBTLE（灰底导航区），content=DEFAULT（白底内容区），
+        // header/footer=null（透明，继承父容器），遵循 admin 行业惯例。
+        // 显式设 null 或 Background.TRANSPARENT 可覆盖默认值。
         private Background headerBackground;
-        private Background siderBackground;
-        private Background contentBackground;
+        private Background siderBackground = Background.SUBTLE;
+        private Background contentBackground = Background.DEFAULT;
         private Background footerBackground;
 
         private Builder() {}
@@ -158,29 +161,28 @@ public class AppShellAnt {
         // ============================================================
         // 各区域背景层级（M19.35）
         // ============================================================
-        // 设计意图：让用户用 Background 枚举选层级，框架挂 styleClass，
-        // 视觉规则全部走 LESS（.jfx-bg-* 选择器）。
-        // 不调用 = null = 不动该区域当前主题色（向后兼容）。
+        // 默认：sider=SUBTLE，content=DEFAULT，header/footer=null。
+        // 可通过 .xxxBackground(null) 或 Background.TRANSPARENT 覆盖。
 
-        /** Header 区域背景层级（M19.35）。 */
+        /** Header 区域背景层级（M19.35）。默认 null（透明，继承父容器）。 */
         public Builder headerBackground(Background bg) {
             this.headerBackground = bg;
             return this;
         }
 
-        /** Sider 区域背景层级（M19.35）。admin 行业惯例：{@code Background.SUBTLE}。 */
+        /** Sider 区域背景层级（M19.35）。默认 {@code Background.SUBTLE}（admin 行业惯例：灰底导航区）。 */
         public Builder siderBackground(Background bg) {
             this.siderBackground = bg;
             return this;
         }
 
-        /** Content 区域背景层级（M19.35）。admin 行业惯例：{@code Background.DEFAULT}。 */
+        /** Content 区域背景层级（M19.35）。默认 {@code Background.DEFAULT}（admin 行业惯例：白底内容区）。 */
         public Builder contentBackground(Background bg) {
             this.contentBackground = bg;
             return this;
         }
 
-        /** Footer 区域背景层级（M19.35）。 */
+        /** Footer 区域背景层级（M19.35）。默认 null（透明，继承父容器）。 */
         public Builder footerBackground(Background bg) {
             this.footerBackground = bg;
             return this;

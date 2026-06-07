@@ -35,9 +35,6 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * </ul>
  * 默认色 {@code -color-fg-default}，需主题色等其它变体请挂额外 styleClass。
  *
- * <h2>修复说明</h2>
- * 原实现 {@code label.setStyle("-fx-text-fill: -color-fg-default;")} 在 Java 端拼字符串。
- * 改为挂 {@link JfxStyles#ICON} styleClass，颜色由 LESS 的 {@code .jfx-icon} 选择器统一控制。
  */
 public class IconAnt {
 

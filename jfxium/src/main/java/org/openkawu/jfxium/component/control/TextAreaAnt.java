@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.control;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TextArea;
 
 import java.util.function.Consumer;
@@ -121,6 +122,14 @@ public class TextAreaAnt extends TextArea {
     public TextAreaAnt onChange(Consumer<String> handler) {
         if (handler != null) {
             textProperty().addListener((obs, oldVal, newVal) -> handler.accept(newVal));
+        }
+        return this;
+    }
+
+    /** 双向绑定：控件值 ↔ Property 值实时同步。 */
+    public TextAreaAnt bindValue(StringProperty property) {
+        if (property != null) {
+            textProperty().bindBidirectional(property);
         }
         return this;
     }

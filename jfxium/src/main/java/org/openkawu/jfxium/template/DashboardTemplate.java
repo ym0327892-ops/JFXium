@@ -5,7 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import org.openkawu.jfxium.component.composite.CardAnt;
+import org.openkawu.jfxium.component.composite.GroupBoxAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -62,7 +62,7 @@ import java.util.List;
  * <ul>
  *   <li>底层 VBox —— 欢迎/统计/底部区按顺序竖排</li>
  *   <li>统计卡用 GridPane 等分宽度，自动适配 N 列（默认按数量决定）</li>
- *   <li>每个 StatCard 是 CardAnt + 图标盒 + 标题 + 大值 + 趋势文字</li>
+ *   <li>每个 StatCard 是 GroupBoxAnt + 图标盒 + 标题 + 大值 + 趋势文字</li>
  *   <li>底部双栏比例 60:40（admin 行业惯例：主区给数据/活动，副区给操作/Todo）</li>
  *   <li>所有可选 —— 不调用即不渲染该区</li>
  * </ul>
@@ -220,10 +220,9 @@ public class DashboardTemplate {
 
             VBox content = new VBox(8, iconBox, title, value, trendRow);
 
-            return CardAnt.create()
+            return GroupBoxAnt.create()
                     .content(content)
                     .bordered(true)
-                    .shadow(CardAnt.Shadow.SMALL)
                     .build();
         }
 

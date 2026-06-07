@@ -10,7 +10,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.CodeBlockAnt;
-import org.openkawu.jfxium.component.composite.CardAnt;
+import org.openkawu.jfxium.component.composite.GroupBoxAnt;
 
 /**
  * 示例页面用的小工具集合 —— 把"一段说明 + 一组控件演示"封装成统一外观，
@@ -30,7 +30,7 @@ public final class Demos {
     /**
      * 单个 Section：标题 + 说明 + 演示节点（横向自动 wrap 用 HBox 多控件即可）。
      *
-     * <p>底层是一张 CardAnt 卡片，让多个 section 在 PageTemplate 里能形成卡片列表式的视觉。</p>
+     * <p>底层是一张 GroupBox 分组框，让多个 section 在 PageTemplate 里能形成卡片列表式的视觉。</p>
      */
     public static Node section(String title, String description, Node... demoNodes) {
         return sectionWithCode(title, description, null, demoNodes);
@@ -88,8 +88,8 @@ public final class Demos {
             content.children(buildCodeToggle(sourceCode));
         }
 
-        // CardAnt 的 content() 接受单 Node —— 我们用 VBoxAnt 把 header+body 打包成 1 个 Node
-        return CardAnt.create()
+        // GroupBoxAnt 的 content() 接受单 Node —— 我们用 VBoxAnt 把 header+body 打包成 1 个 Node
+        return GroupBoxAnt.create()
                 .content(content)
                 .bordered(true)
                 .build();

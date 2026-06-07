@@ -10,26 +10,6 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 /**
  * JFXium Badge Component - 对标 Ant Design Badge。
  *
- * <h2>修复说明</h2>
- * 原实现存在 3 处 indicator inline style 注入（count/dot/status 三种形态）：
- * <ul>
- *   <li>{@code count}：拼 background-color + text-fill + font-size + padding + radius + min-width/height</li>
- *   <li>{@code dot}：拼 background-color + radius</li>
- *   <li>{@code status}：拼 background-color (按 status 切换) + radius</li>
- * </ul>
- * 与此同时，{@code theme-base.less} 中早已存在 {@code .badge-count}/{@code .badge-dot} 等 LESS 选择器，
- * 但 Java 端从未给 indicator 加这些 styleClass，导致 LESS 规则成为死代码。
- *
- * <h2>本次改动</h2>
- * <ul>
- *   <li>indicator 改为挂 styleClass：{@code badge-count} / {@code badge-dot} / {@code badge-status} +
- *       状态色修饰类 {@code badge-status-*}</li>
- *   <li>颜色全部交给 LESS（删除 {@code getStatusColor} 方法）</li>
- *   <li>结构性属性（尺寸 setPrefSize、对齐 StackPane.setAlignment、translateX 偏移）保留在 Java，
- *       因为它们和 indicator 的 form 而非 visual style 相关</li>
- *   <li>接入 {@link AbstractStyleBuilder}</li>
- * </ul>
- *
  * <h2>使用示例</h2>
  * <pre>{@code
  * // 数字徽标

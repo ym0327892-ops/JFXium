@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.control;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -99,6 +100,14 @@ public class ColorPickerAnt extends ColorPicker {
 
     public ColorPickerAnt disabled(boolean disabled) {
         setDisable(disabled);
+        return this;
+    }
+
+    /** 双向绑定：控件值 ↔ Property 值实时同步。 */
+    public ColorPickerAnt bindValue(ObjectProperty<Color> property) {
+        if (property != null) {
+            valueProperty().bindBidirectional(property);
+        }
         return this;
     }
 

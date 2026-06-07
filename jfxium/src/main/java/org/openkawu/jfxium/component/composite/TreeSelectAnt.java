@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.composite;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -84,6 +85,7 @@ public class TreeSelectAnt {
         private TreeNode selectedNode = null;
         // 多选模式下已选中的节点集合（BUG #53：原 onMultipleSelect 死回调，从未维护选中态）
         private final List<TreeNode> selectedNodes = new ArrayList<>();
+        private ObjectProperty<String> bindProperty = null;
 
         public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
         public Builder tree(TreeNode root) { this.root = root; return this; }
@@ -91,6 +93,12 @@ public class TreeSelectAnt {
         public Builder multiple(boolean multiple) { this.multiple = multiple; return this; }
         public Builder onSelect(Consumer<TreeNode> onSelect) { this.onSelect = onSelect; return this; }
         public Builder onMultipleSelect(Consumer<List<TreeNode>> onMultipleSelect) { this.onMultipleSelect = onMultipleSelect; return this; }
+
+        /** 双向绑定：控件值（单选：选中节点的 value）↔ Property 值实时同步。 */
+        public Builder bindValue(ObjectProperty<String> property) {
+            this.bindProperty = property;
+            return this;
+        }
 
         public HBox build() {
             HBox container = new HBox(0);
@@ -198,6 +206,9 @@ public class TreeSelectAnt {
                         // 单选模式——回填单个 label，触发 onSelect，关闭弹层
                         field.setText(node.getLabel());
                         selectedNode = node;
+                        if (bindProperty != null) {
+                            bindProperty.set(node.getValue());
+                        }
                         if (onSelect != null) onSelect.accept(node);
                         if (popup != null) popup.hide();
                     }

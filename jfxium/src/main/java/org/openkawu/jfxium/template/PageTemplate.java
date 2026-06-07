@@ -98,7 +98,7 @@ public class PageTemplate {
         private double sectionGap = 20;     // section/body 之间间距
         private double headerToBodyGap = 20;// header 整体 → body 之间间距
         private double padding = 0;         // 整体 padding（默认 0，让父容器决定）
-        private Background background;      // M19.35 整体背景层级（null = 透明，让父容器决定）
+        private Background background = Background.DEFAULT;  // M19.35 整体背景层级（默认白底）
 
         private Builder() {}
 
@@ -179,11 +179,12 @@ public class PageTemplate {
         /**
          * 整体背景层级（M19.35）。
          *
-         * <p>常见用法：</p>
+         * <p>默认 {@code Background.DEFAULT}（白底），在 LAYOUT 灰底 Scene 上形成清晰的“页面卡”效果。
+         * 常见用法：</p>
          * <ul>
-         *   <li>{@code Background.LAYOUT}——页面外层灰底（admin 行业惯例）</li>
-         *   <li>{@code Background.DEFAULT}——白底（独立卡片状）</li>
-         *   <li>不调用——透明，让父容器决定（默认）</li>
+         *   <li>不调用——使用默认白底（推荐）</li>
+         *   <li>{@code Background.LAYOUT}——页面外层灰底</li>
+         *   <li>{@code null} 或 {@code Background.TRANSPARENT}——透明，让父容器决定</li>
          * </ul>
          */
         public Builder background(Background background) {

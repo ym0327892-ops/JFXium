@@ -1,0 +1,127 @@
+/* ============================================
+   GroupBox 分组框
+   - 带标题边框的内容容器，用于表单分块
+   - 桌面端风格：紧凑、小圆角、底色衬托
+   ============================================ */
+.jfx-group-box {
+  .group-box-base();
+}
+
+.jfx-group-box.bordered {
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+}
+
+/* 悬停效果 —— 桌面克制：仅底色微调，无阴影/缩放 */
+.jfx-group-box.hoverable:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+/* 小尺寸 */
+.jfx-group-box.jfx-group-box-small {
+  -fx-font-size: 14px;
+}
+
+.jfx-group-box.jfx-group-box-small .jfx-group-box-header {
+  -fx-padding: @spacing-sm @spacing-sm;
+}
+
+.jfx-group-box.jfx-group-box-small .jfx-group-box-body {
+  -fx-padding: @spacing-sm;
+}
+
+/* 内嵌模式 */
+.jfx-group-box.jfx-group-box-inner {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+}
+
+/* Header（标题行）—— padding 由 BarAnt 默认值处理（4px 10px） */
+.jfx-group-box .jfx-group-box-header {
+  /* 基础样式，具体修饰由下面两个 class 控制 */
+}
+
+/* Header 背景色开关 */
+.jfx-group-box .jfx-group-box-header.jfx-group-box-header-bg {
+  -fx-background-color: -color-bg-subtle;
+}
+
+/* Header 底部分割线开关 */
+.jfx-group-box .jfx-group-box-header.jfx-group-box-header-border {
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+
+/* Body（内容区） */
+.jfx-group-box .jfx-group-box-body {
+  -fx-padding: @spacing-xs @card-padding @card-padding @card-padding;
+}
+
+.jfx-group-box.jfx-group-box-small .jfx-group-box-body {
+  -fx-padding: @spacing-xs @spacing-sm @spacing-sm @spacing-sm;
+}
+
+/* 标题文字 */
+.jfx-group-box .jfx-group-box-title {
+  -fx-font-size: 14px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-group-box.jfx-group-box-small .jfx-group-box-title {
+  -fx-font-size: 13px;
+}
+
+/* Footer（底部操作区） */
+.jfx-group-box .jfx-group-box-actions {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+  -fx-padding: 8px 0;
+}
+
+.jfx-group-box .jfx-group-box-action-item {
+  -fx-padding: 8px 16px;
+  -fx-cursor: hand;
+}
+
+.jfx-group-box .jfx-group-box-action-item:hover {
+  -fx-background-color: -color-bg-subtle;
+}
+
+/* 标签栏 */
+.jfx-group-box .jfx-group-box-tab-bar {
+  -fx-padding: 0 @card-padding;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+  -fx-alignment: center-left;
+}
+
+.jfx-group-box.jfx-group-box-small .jfx-group-box-tab-bar {
+  -fx-padding: 0 @spacing-sm;
+}
+
+.jfx-group-box .jfx-group-box-tab-list {
+  -fx-spacing: 0;
+  -fx-alignment: center-left;
+}
+
+.jfx-group-box .jfx-group-box-tab-item {
+  -fx-padding: 8px 12px;
+  -fx-text-fill: -color-fg-muted;
+  -fx-cursor: hand;
+  -fx-border-color: transparent;
+  -fx-border-width: 0 0 2px 0;
+  -fx-font-size: 13px;
+}
+
+.jfx-group-box .jfx-group-box-tab-item:hover {
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.jfx-group-box .jfx-group-box-tab-item.active {
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 0 0 2px 0;
+}
