@@ -3,18 +3,20 @@
    ============================================ */
 .progress-bar {
   -fx-background-color: -color-border-muted;
-  -fx-background-radius: @border-radius-full;
-  -fx-pref-height: 8px;
+  /* M19.44 红线#6 修复：progress-bar / track / bar 宽度由父布局决定，非尺寸钳制节点，
+     禁止 @border-radius-full(9999px)，改用 @border-radius-md(6px) 对齐 AtlantaFX */
+  -fx-background-radius: @border-radius-md;
+  -fx-pref-height: @progress-bar-height;
 }
 
 .progress-bar .track {
   -fx-background-color: -color-border-muted;
-  -fx-background-radius: @border-radius-full;
+  -fx-background-radius: @border-radius-md;
 }
 
 .progress-bar .bar {
   -fx-background-color: -color-accent-emphasis;
-  -fx-background-radius: @border-radius-full;
+  -fx-background-radius: @border-radius-md;
 }
 
 .progress-bar.success .bar {

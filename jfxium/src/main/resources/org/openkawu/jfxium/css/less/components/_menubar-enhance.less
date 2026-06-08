@@ -2,6 +2,12 @@
    MenuBar Submenu Enhancements
    ============================================ */
 .menu > .right-container > .arrow {
+  /* M19.44 红线#9 修复：显式设 shape + 尺寸（右指三角，表示子菜单） */
+  -fx-shape: "M10 7l-5 5 5 5z";
+  -fx-min-width: 6px;
+  -fx-min-height: 10px;
+  -fx-pref-width: 6px;
+  -fx-pref-height: 10px;
   -fx-background-color: -color-fg-muted;
 }
 

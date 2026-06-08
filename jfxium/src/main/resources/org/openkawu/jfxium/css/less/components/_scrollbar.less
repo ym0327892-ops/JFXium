@@ -15,7 +15,9 @@
 
 .scroll-bar .thumb {
   -fx-background-color: -color-base-4;
-  -fx-background-radius: @border-radius-full;
+  /* M19.44 红线#6 修复：thumb 宽度由 JavaFX Skin 动态计算（视口/内容比），非尺寸钳制节点，
+     禁止 @border-radius-full，改用 @border-radius-md 对齐 AtlantaFX (cfg.$border-radius) */
+  -fx-background-radius: @border-radius-md;
 }
 
 .scroll-bar .thumb:hover {
@@ -26,14 +28,17 @@
   -fx-background-color: -color-base-6;
 }
 
+/* M19.44 红线#9 修复：隐藏 increment/decrement 按钮（对齐 AtlantaFX _scrolling.scss），
+   箭头设空 shape 避免残留 */
 .scroll-bar .increment-button,
 .scroll-bar .decrement-button {
-  -fx-background-color: transparent;
-  -fx-padding: @spinner-arrow-padding;
+  visibility: hidden;
+  -fx-managed: false;
 }
 
-.scroll-bar .increment-arrow,
-.scroll-bar .decrement-arrow {
-  -fx-background-color: -color-base-5;
+.scroll-bar .increment-button > .increment-arrow,
+.scroll-bar .decrement-button > .decrement-arrow {
+  -fx-shape: " ";
+  -fx-padding: 0;
 }
 

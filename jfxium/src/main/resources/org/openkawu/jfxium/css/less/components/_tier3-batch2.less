@@ -163,7 +163,7 @@
 
 /* M14.3 DARK 主题：深色侧栏（admin 经典暗色风格） */
 .jfx-menu.jfx-menu-dark {
-  -fx-background-color: #001529;        /* Ant Design 默认侧栏深色 */
+  -fx-background-color: @color-menu-dark-bg;
   -fx-border-color: transparent;
 }
 
@@ -190,7 +190,7 @@
 }
 
 .jfx-menu-dark .jfx-menu-submenu-body {
-  -fx-background-color: #000c17;        /* 比 menu 更深一档 */
+  -fx-background-color: @color-menu-dark-submenu-bg;
 }
 
 .jfx-menu-dark .jfx-menu-submenu-arrow {
@@ -330,6 +330,11 @@
 .jfx-steps-number {
   -fx-text-fill: -color-fg-subtle;
   -fx-font-weight: 600;
+  -fx-font-size: 13px;
+}
+
+.jfx-steps-number.jfx-steps-small {
+  -fx-font-size: 10px;
 }
 
 .jfx-steps-number.jfx-steps-finished {

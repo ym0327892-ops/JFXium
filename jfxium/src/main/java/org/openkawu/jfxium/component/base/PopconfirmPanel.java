@@ -64,7 +64,8 @@ public class PopconfirmPanel {
         public VBox build() {
             VBox panel = new VBox(12);
             panel.getStyleClass().add(JfxStyles.POPCONFIRM_PANEL);
-            panel.setStyle("-fx-min-width: " + minWidth + ";");
+            // M19.44 红线#1 修复：用 setMinWidth 替代 setStyle("-fx-min-width: ...");
+            panel.setMinWidth(parsePx(minWidth));
 
             HBox titleBox = new HBox(8);
             titleBox.setAlignment(Pos.CENTER_LEFT);
@@ -114,6 +115,13 @@ public class PopconfirmPanel {
             panel.getChildren().add(buttonBox);
 
             return panel;
+        }
+
+        /** M19.44 解析 "200px" 格式的宽度字符串为 double。 */
+        private static double parsePx(String value) {
+            if (value == null || value.isEmpty()) return 200;
+            String s = value.endsWith("px") ? value.substring(0, value.length() - 2) : value;
+            return Double.parseDouble(s);
         }
     }
 

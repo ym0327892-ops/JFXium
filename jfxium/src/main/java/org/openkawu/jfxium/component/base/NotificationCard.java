@@ -74,7 +74,10 @@ public class NotificationCard {
             VBox card = new VBox(12);
             card.setAlignment(Pos.TOP_LEFT);
             card.getStyleClass().add(JfxStyles.NOTIFICATION_CARD);
-            card.setStyle("-fx-min-width: " + width + ";-fx-max-width: " + width + ";");
+            // M19.44 红线#1 修复：用 setMinWidth/setMaxWidth 替代 setStyle
+            double w = parsePx(width);
+            card.setMinWidth(w);
+            card.setMaxWidth(w);
 
             HBox headerBox = new HBox(12);
             headerBox.setAlignment(Pos.TOP_LEFT);
@@ -116,6 +119,13 @@ public class NotificationCard {
             card.getChildren().add(headerBox);
 
             return card;
+        }
+
+        /** M19.44 解析 "384px" 格式的宽度字符串为 double。 */
+        private static double parsePx(String value) {
+            if (value == null || value.isEmpty()) return 384;
+            String s = value.endsWith("px") ? value.substring(0, value.length() - 2) : value;
+            return Double.parseDouble(s);
         }
 
         private String getIconPath(Type type) {

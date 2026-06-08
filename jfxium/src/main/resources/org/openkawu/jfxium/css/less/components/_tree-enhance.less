@@ -22,10 +22,17 @@
 }
 
 .tree-cell .tree-disclosure-node .arrow {
+  /* M19.44 红线#9 修复：显式设 shape + 尺寸（右指三角，对齐 AtlantaFX arrow-right） */
+  -fx-shape: "M5 0l5 5-5 5z";
+  -fx-min-width: 5px;
+  -fx-min-height: 10px;
+  -fx-pref-width: 5px;
+  -fx-pref-height: 10px;
   -fx-background-color: -color-fg-muted;
 }
 
 .tree-cell:expanded .tree-disclosure-node .arrow {
+  -fx-shape: "M0 5l5 5 5-5z";
   -fx-background-color: -color-accent-emphasis;
 }
 

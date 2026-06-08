@@ -4,7 +4,9 @@
 .badge {
   -fx-background-color: -color-danger-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
-  -fx-background-radius: @border-radius-full;
+  /* M19.44 红线#6 修复：badge 宽度由文字内容决定，非尺寸钳制节点，
+     禁止 @border-radius-full，改用 @border-radius-md */
+  -fx-background-radius: @border-radius-md;
   -fx-padding: 0 @spacing-xs;
   -fx-font-size: @font-size-sm;
   -fx-font-weight: 600;

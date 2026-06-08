@@ -137,7 +137,7 @@
 .jfx-crud-template {
   -fx-padding: 24px;
 }
-.jfx-crud-template.bordered {
+.jfx-crud-template.jfx-crud-template-bordered {
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
   -fx-border-style: solid;
@@ -1124,6 +1124,12 @@
   -fx-background-color: transparent;
 }
 .combo-box .arrow {
+  /* M19.44 红线#9 修复：显式设 shape + 尺寸（对齐 AtlantaFX arrow-drop-down） */
+  -fx-shape: "M7 10l5 5 5-5z";
+  -fx-min-width: 10px;
+  -fx-min-height: 5px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 5px;
   -fx-background-color: -color-fg-muted;
 }
 .combo-box:hover .arrow {
@@ -1243,16 +1249,18 @@
    ============================================ */
 .progress-bar {
   -fx-background-color: -color-border-muted;
-  -fx-background-radius: 9999px;
+  /* M19.44 红线#6 修复：progress-bar / track / bar 宽度由父布局决定，非尺寸钳制节点，
+     禁止 @border-radius-full(9999px)，改用 @border-radius-md(6px) 对齐 AtlantaFX */
+  -fx-background-radius: 4px;
   -fx-pref-height: 8px;
 }
 .progress-bar .track {
   -fx-background-color: -color-border-muted;
-  -fx-background-radius: 9999px;
+  -fx-background-radius: 4px;
 }
 .progress-bar .bar {
   -fx-background-color: -color-accent-emphasis;
-  -fx-background-radius: 9999px;
+  -fx-background-radius: 4px;
 }
 .progress-bar.success .bar {
   -fx-background-color: -color-success-emphasis;
@@ -1336,7 +1344,9 @@
 .badge {
   -fx-background-color: -color-danger-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
-  -fx-background-radius: 9999px;
+  /* M19.44 红线#6 修复：badge 宽度由文字内容决定，非尺寸钳制节点，
+     禁止 @border-radius-full，改用 @border-radius-md */
+  -fx-background-radius: 4px;
   -fx-padding: 0 4px;
   -fx-font-size: 12px;
   -fx-font-weight: 600;
@@ -1836,7 +1846,9 @@
 }
 .scroll-bar .thumb {
   -fx-background-color: -color-base-4;
-  -fx-background-radius: 9999px;
+  /* M19.44 红线#6 修复：thumb 宽度由 JavaFX Skin 动态计算（视口/内容比），非尺寸钳制节点，
+     禁止 @border-radius-full，改用 @border-radius-md 对齐 AtlantaFX (cfg.$border-radius) */
+  -fx-background-radius: 4px;
 }
 .scroll-bar .thumb:hover {
   -fx-background-color: -color-base-5;
@@ -1844,14 +1856,17 @@
 .scroll-bar .thumb:pressed {
   -fx-background-color: -color-base-6;
 }
+/* M19.44 红线#9 修复：隐藏 increment/decrement 按钮（对齐 AtlantaFX _scrolling.scss），
+   箭头设空 shape 避免残留 */
 .scroll-bar .increment-button,
 .scroll-bar .decrement-button {
-  -fx-background-color: transparent;
-  -fx-padding: 0;
+  visibility: hidden;
+  -fx-managed: false;
 }
-.scroll-bar .increment-arrow,
-.scroll-bar .decrement-arrow {
-  -fx-background-color: -color-base-5;
+.scroll-bar .increment-button > .increment-arrow,
+.scroll-bar .decrement-button > .decrement-arrow {
+  -fx-shape: " ";
+  -fx-padding: 0;
 }
 /* ============================================
    ContextMenu Component
@@ -2198,6 +2213,12 @@
   -fx-padding: 6px 11px;
 }
 .choice-box .open-button .arrow {
+  /* M19.44 红线#9 修复：显式设 shape + 尺寸 */
+  -fx-shape: "M7 10l5 5 5-5z";
+  -fx-min-width: 10px;
+  -fx-min-height: 5px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 5px;
   -fx-background-color: -color-fg-muted;
 }
 /* ============================================
@@ -2261,7 +2282,9 @@
    SplitPane
    ============================================ */
 .split-pane {
-  -fx-background-color: -color-bg-default;
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
 }
 .split-pane .split-pane-divider {
   -fx-background-color: -color-border-muted;
@@ -2272,6 +2295,64 @@
 }
 .split-pane:vertical .split-pane-divider {
   -fx-padding: 2px 0;
+}
+/* M19.44 对齐 AtlantaFX _split-pane.scss：补 divider 交互状态 */
+.split-pane .split-pane-divider:hover {
+  -fx-opacity: 1;
+}
+.split-pane .split-pane-divider:pressed {
+  -fx-background-color: -color-accent-emphasis;
+}
+.split-pane .split-pane-divider .horizontal-grabber {
+  -fx-background-color: -color-base-4;
+  -fx-padding: 10px 2px 10px 2px;
+}
+.split-pane .split-pane-divider .vertical-grabber {
+  -fx-background-color: -color-base-4;
+  -fx-padding: 2px 10px 2px 10px;
+}
+/* ============================================
+   Separator (JFXium `.jfx-separator`)
+   ============================================ */
+.jfx-separator {
+  -fx-padding: 4px 0;
+}
+.jfx-separator .line {
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 0.5;
+}
+/* ============================================
+   SplitMenuButton (JFXium `.jfx-split-menu-button`)
+   继承 button 基因，独立 token 体系。
+   ============================================ */
+.jfx-split-menu-button {
+  -fx-background-color: -color-border-default, -color-bg-default;
+  -fx-background-insets: 0, 1px;
+  -fx-background-radius: 4px, 2px;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 0;
+}
+.jfx-split-menu-button:hover {
+  -fx-border-color: -color-accent-muted;
+}
+.jfx-split-menu-button:focused {
+  -fx-border-color: -color-accent-emphasis;
+}
+.jfx-split-menu-button:disabled {
+  -fx-opacity: 0.6;
+}
+.jfx-split-menu-button > .arrow-button {
+  -fx-background-color: transparent;
+  -fx-padding: 6px 8px;
+}
+.jfx-split-menu-button > .arrow-button > .arrow {
+  /* M19.44 红线#9 修复：显式设 shape + 尺寸 */
+  -fx-shape: "M7 10l5 5 5-5z";
+  -fx-min-width: 10px;
+  -fx-min-height: 5px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 5px;
+  -fx-background-color: -color-fg-muted;
 }
 /* ============================================
    Table Row & Cell Enhancements
@@ -2485,15 +2566,28 @@
   -fx-text-fill: -color-fg-on-emphasis;
 }
 .tree-cell .tree-disclosure-node .arrow {
+  /* M19.44 红线#9 修复：显式设 shape + 尺寸（右指三角，对齐 AtlantaFX arrow-right） */
+  -fx-shape: "M5 0l5 5-5 5z";
+  -fx-min-width: 5px;
+  -fx-min-height: 10px;
+  -fx-pref-width: 5px;
+  -fx-pref-height: 10px;
   -fx-background-color: -color-fg-muted;
 }
 .tree-cell:expanded .tree-disclosure-node .arrow {
+  -fx-shape: "M0 5l5 5 5-5z";
   -fx-background-color: -color-accent-emphasis;
 }
 /* ============================================
    MenuBar Submenu Enhancements
    ============================================ */
 .menu > .right-container > .arrow {
+  /* M19.44 红线#9 修复：显式设 shape + 尺寸（右指三角，表示子菜单） */
+  -fx-shape: "M10 7l-5 5 5 5z";
+  -fx-min-width: 6px;
+  -fx-min-height: 10px;
+  -fx-pref-width: 6px;
+  -fx-pref-height: 10px;
   -fx-background-color: -color-fg-muted;
 }
 .menu:hover > .right-container > .arrow {
@@ -3701,7 +3795,6 @@
 /* M14.3 DARK 主题：深色侧栏（admin 经典暗色风格） */
 .jfx-menu.jfx-menu-dark {
   -fx-background-color: #001529;
-  /* Ant Design 默认侧栏深色 */
   -fx-border-color: transparent;
 }
 .jfx-menu-dark .jfx-menu-item-label,
@@ -3724,7 +3817,6 @@
 }
 .jfx-menu-dark .jfx-menu-submenu-body {
   -fx-background-color: #000c17;
-  /* 比 menu 更深一档 */
 }
 .jfx-menu-dark .jfx-menu-submenu-arrow {
   -fx-fill: rgba(255, 255, 255, 0.65);
@@ -3838,6 +3930,10 @@
 .jfx-steps-number {
   -fx-text-fill: -color-fg-subtle;
   -fx-font-weight: 600;
+  -fx-font-size: 13px;
+}
+.jfx-steps-number.jfx-steps-small {
+  -fx-font-size: 10px;
 }
 .jfx-steps-number.jfx-steps-finished {
   -fx-text-fill: -color-fg-on-emphasis;
@@ -4490,6 +4586,12 @@
   -fx-text-fill: -color-fg-default;
 }
 .tree-table-view .tree-disclosure-node .arrow {
+  /* M19.44 红线#9 修复：显式设 shape + 尺寸 */
+  -fx-shape: "M5 0l5 5-5 5z";
+  -fx-min-width: 5px;
+  -fx-min-height: 10px;
+  -fx-pref-width: 5px;
+  -fx-pref-height: 10px;
   -fx-background-color: -color-fg-muted;
 }
 .tree-table-view .tree-disclosure-node:hover .arrow {
@@ -5353,6 +5455,7 @@
    Component Auxiliary Styles
    Fix: CSS variables must live in external stylesheets,
    NOT in Java setStyle() inline styles.
+   所有选择器统一使用 jfx- 前缀，避免与 modena 冲突（红线 #8）。
    ============================================ */
 /* -------------------------------------------
    PanelFooter
@@ -5368,15 +5471,27 @@
 /* -------------------------------------------
    QRCodeAnt
    ------------------------------------------- */
+.jfx-qr-code {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: 6px;
+  -fx-border-radius: 6px;
+}
 .jfx-qr-code-bordered {
   -fx-border-color: -color-border-default;
-  -fx-border-radius: 8px;
-  -fx-background-radius: 8px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
   -fx-padding: 12px;
 }
 /* -------------------------------------------
-   TabsAnt — tab bar
+   TabsAnt — root + tab bar
    ------------------------------------------- */
+.jfx-tabs {
+  -fx-background-color: transparent;
+}
+.jfx-tabs-content {
+  -fx-background-color: transparent;
+  -fx-padding: 16px;
+}
 .jfx-tabs-bar {
   -fx-background-color: transparent;
 }
@@ -5408,8 +5523,8 @@
   -fx-text-fill: -color-accent-emphasis;
   -fx-border-color: -color-border-muted -color-border-muted transparent -color-border-muted;
   -fx-border-width: 1px 1px 0 1px;
-  -fx-background-radius: 8px 8px 0 0;
-  -fx-border-radius: 8px 8px 0 0;
+  -fx-background-radius: 6px 6px 0 0;
+  -fx-border-radius: 6px 6px 0 0;
 }
 .jfx-tabs-label-card:not(.jfx-tabs-active) {
   -fx-background-color: transparent;
@@ -5453,6 +5568,9 @@
 /* -------------------------------------------
    RateAnt — star fill colors
    ------------------------------------------- */
+.jfx-rate {
+  -fx-spacing: 8px;
+}
 .jfx-rate-star {
   -fx-cursor: hand;
 }
@@ -5467,6 +5585,9 @@
 /* -------------------------------------------
    FloatButtonAnt
    ------------------------------------------- */
+.jfx-float-button {
+  -fx-alignment: center;
+}
 .jfx-float-button-primary {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
@@ -5496,48 +5617,306 @@
   -fx-fill: -color-bg-subtle;
 }
 /* -------------------------------------------
-   TagAnt — type colors via compound selector
+   TagAnt — 根容器 + 基础视觉
    ------------------------------------------- */
-.tag.primary,
-.tag.processing {
+.jfx-tag {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-fg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-style: solid;
+  -fx-background-radius: 2px;
+  -fx-border-radius: 2px;
+  -fx-padding: 0 8 0 8;
+  -fx-min-height: 22;
+  -fx-alignment: center;
+  -fx-spacing: 4;
+  -fx-font-size: 12px;
+}
+/* Tag shape variants */
+.jfx-tag.jfx-tag-rounded {
+  -fx-background-radius: 9999;
+  -fx-border-radius: 9999;
+}
+.jfx-tag.jfx-tag-square {
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+}
+/* Tag size variants */
+.jfx-tag.jfx-tag-small {
+  -fx-padding: 0 6 0 6;
+  -fx-min-height: 20;
+  -fx-font-size: 12px;
+}
+.jfx-tag.jfx-tag-large {
+  -fx-padding: 2 12 2 12;
+  -fx-min-height: 28;
+  -fx-font-size: 14px;
+}
+.jfx-tag-label {
+  -fx-text-fill: inherit;
+  -fx-font-size: inherit;
+}
+.jfx-tag-close {
+  -fx-cursor: hand;
+  -fx-padding: 0;
+  -fx-min-width: 14;
+  -fx-min-height: 14;
+  -fx-background-color: transparent;
+}
+.jfx-tag-close:hover {
+  -fx-opacity: 0.7;
+}
+.jfx-tag-close-icon {
+  -fx-fill: -color-fg-muted;
+  -fx-cursor: hand;
+}
+/* -------------------------------------------
+   TagAnt — type colors via compound selector
+   所有修饰类必须搭配 .jfx-tag 根类，避免裸类名（红线 #8）
+   ------------------------------------------- */
+.jfx-tag.jfx-tag-primary,
+.jfx-tag.jfx-tag-processing {
   -fx-background-color: -color-accent-subtle;
   -fx-text-fill: -color-accent-emphasis;
   -fx-border-color: -color-accent-muted;
 }
-.tag.success {
+.jfx-tag.jfx-tag-success {
   -fx-background-color: -color-success-subtle;
   -fx-text-fill: -color-success-emphasis;
   -fx-border-color: -color-success-muted;
 }
-.tag.warning {
+.jfx-tag.jfx-tag-warning {
   -fx-background-color: -color-warning-subtle;
   -fx-text-fill: -color-warning-emphasis;
   -fx-border-color: -color-warning-muted;
 }
-.tag.error {
+.jfx-tag.jfx-tag-error {
   -fx-background-color: -color-danger-subtle;
   -fx-text-fill: -color-danger-emphasis;
   -fx-border-color: -color-danger-muted;
 }
-/* Tag default type (no specific type class added) */
-.tag.default {
+/* Tag default type（基类 .jfx-tag 已是 default 视觉，这里只显式声明保持一致） */
+.jfx-tag.jfx-tag-default {
   -fx-background-color: -color-bg-subtle;
   -fx-text-fill: -color-fg-default;
   -fx-border-color: -color-border-default;
 }
+/* Tag 填充态：纯色背景 + fg-on-emphasis */
+.jfx-tag.jfx-tag-has-color {
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-border-color: transparent;
+}
+.jfx-tag.jfx-tag-has-color.jfx-tag-primary {
+  -fx-background-color: -color-accent-emphasis;
+}
+.jfx-tag.jfx-tag-has-color.jfx-tag-success {
+  -fx-background-color: -color-success-emphasis;
+}
+.jfx-tag.jfx-tag-has-color.jfx-tag-warning {
+  -fx-background-color: -color-warning-emphasis;
+}
+.jfx-tag.jfx-tag-has-color.jfx-tag-error {
+  -fx-background-color: -color-danger-emphasis;
+}
 /* Tag no-border override */
-.tag.no-border {
+.jfx-tag.jfx-tag-borderless {
   -fx-border-color: transparent;
   -fx-border-width: 0;
 }
+/* Tag checkable / checked */
+.jfx-tag.jfx-tag-checkable {
+  -fx-cursor: hand;
+}
+.jfx-tag.jfx-tag-checkable:hover {
+  -fx-opacity: 0.85;
+}
+.jfx-tag.jfx-tag-checked.jfx-tag-primary,
+.jfx-tag.jfx-tag-checked.jfx-tag-success,
+.jfx-tag.jfx-tag-checked.jfx-tag-warning,
+.jfx-tag.jfx-tag-checked.jfx-tag-error {
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-border-color: transparent;
+}
+.jfx-tag.jfx-tag-checked.jfx-tag-primary {
+  -fx-background-color: -color-accent-emphasis;
+}
+.jfx-tag.jfx-tag-checked.jfx-tag-success {
+  -fx-background-color: -color-success-emphasis;
+}
+.jfx-tag.jfx-tag-checked.jfx-tag-warning {
+  -fx-background-color: -color-warning-emphasis;
+}
+.jfx-tag.jfx-tag-checked.jfx-tag-error {
+  -fx-background-color: -color-danger-emphasis;
+}
 /* -------------------------------------------
-   AvatarAnt — default theme colors
+   AvatarAnt — 根容器 + 形状/尺寸/组合修饰
    ------------------------------------------- */
+.jfx-avatar {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-radius: 4px;
+  -fx-min-width: 32;
+  -fx-min-height: 32;
+  -fx-pref-width: 32;
+  -fx-pref-height: 32;
+  -fx-max-width: 32;
+  -fx-max-height: 32;
+  -fx-alignment: center;
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-font-size: 14px;
+}
+.jfx-avatar.jfx-avatar-small {
+  -fx-min-width: 24;
+  -fx-min-height: 24;
+  -fx-pref-width: 24;
+  -fx-pref-height: 24;
+  -fx-max-width: 24;
+  -fx-max-height: 24;
+  -fx-font-size: 12px;
+}
+.jfx-avatar.jfx-avatar-large {
+  -fx-min-width: 40;
+  -fx-min-height: 40;
+  -fx-pref-width: 40;
+  -fx-pref-height: 40;
+  -fx-max-width: 40;
+  -fx-max-height: 40;
+  -fx-font-size: 16px;
+}
+.jfx-avatar.jfx-avatar-square {
+  -fx-background-radius: 2px;
+}
+.jfx-avatar.jfx-avatar-circle {
+  -fx-background-radius: 9999;
+}
+.jfx-avatar-group {
+  -fx-spacing: -8;
+  -fx-alignment: center-left;
+}
 .jfx-avatar-bg-default {
   -fx-background-color: -color-accent-emphasis;
 }
 .jfx-avatar-fg-default {
   -fx-text-fill: -color-fg-on-emphasis;
+}
+/* Avatar 文字字号修饰类（避免 Java 端 setStyle 拼 -fx-font-size 违反红线 #1）
+   以 s*0.4 取近似像素值：24→10, 32→13, 40→16, 64→26 */
+.jfx-avatar-text {
+  -fx-font-weight: 600;
+}
+.jfx-avatar-text-24 {
+  -fx-font-size: 10px;
+}
+.jfx-avatar-text-32 {
+  -fx-font-size: 13px;
+}
+.jfx-avatar-text-40 {
+  -fx-font-size: 16px;
+}
+.jfx-avatar-text-64 {
+  -fx-font-size: 26px;
+}
+/* -------------------------------------------
+   ResultAnt — 根容器 + 子元素
+   ------------------------------------------- */
+.jfx-result {
+  -fx-alignment: center;
+  -fx-padding: 48 32 48 32;
+}
+.jfx-result-icon-box {
+  -fx-padding: 0 0 16 0;
+  -fx-alignment: center;
+}
+.jfx-result-icon {
+  -fx-font-size: 72px;
+}
+.jfx-result.jfx-result-status-success .jfx-result-icon {
+  -fx-text-fill: -color-success-emphasis;
+}
+.jfx-result.jfx-result-status-info .jfx-result-icon {
+  -fx-text-fill: -color-accent-emphasis;
+}
+.jfx-result.jfx-result-status-warning .jfx-result-icon {
+  -fx-text-fill: -color-warning-emphasis;
+}
+.jfx-result.jfx-result-status-error .jfx-result-icon {
+  -fx-text-fill: -color-danger-emphasis;
+}
+.jfx-result.jfx-result-status-404 .jfx-result-icon {
+  -fx-text-fill: -color-fg-muted;
+}
+.jfx-result.jfx-result-status-403 .jfx-result-icon {
+  -fx-text-fill: -color-fg-muted;
+}
+.jfx-result.jfx-result-status-500 .jfx-result-icon {
+  -fx-text-fill: -color-danger-emphasis;
+}
+.jfx-result-body {
+  -fx-alignment: center;
+  -fx-spacing: 8;
+}
+.jfx-result-title {
+  -fx-font-size: 24px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+}
+.jfx-result-subtitle {
+  -fx-font-size: 14px;
+  -fx-text-fill: -color-fg-muted;
+}
+.jfx-result-extra {
+  -fx-padding: 16 0 0 0;
+  -fx-alignment: center;
+  -fx-spacing: 8;
+}
+/* -------------------------------------------
+   ImageAnt — 圆角 + 预览修饰
+   ------------------------------------------- */
+.jfx-image {
+  -fx-background-color: -color-bg-subtle;
+}
+.jfx-image.jfx-image-rounded {
+  -fx-background-radius: 4px;
+}
+.jfx-image.jfx-image-circle {
+  -fx-background-radius: 9999;
+}
+.jfx-image-fallback {
+  -fx-font-size: 14px;
+  -fx-text-fill: -color-fg-muted;
+}
+.jfx-image-preview {
+  -fx-cursor: hand;
+}
+/* -------------------------------------------
+   Overlay (base component) — 全屏遮罩
+   ------------------------------------------- */
+.jfx-overlay {
+  /* Java 端 builder 暴露 opacity 入参 → 在 JavaFX 中无法同时用 rgba + 变量，
+     因此默认 -fx-background-color 写一个深色 mask，opacity 由 inline 注入。
+     注意：alpha 通道写在 background-color 内，opacity 属性会同时影响子节点，慎用。 */
+  -fx-background-color: rgba(0, 0, 0, 0.45);
+  -fx-alignment: center;
+}
+/* -------------------------------------------
+   TreeSelectAnt — 选中 / 缩进 / 叶子修饰
+   ------------------------------------------- */
+.jfx-tree-select-row.jfx-tree-select-active {
+  -fx-background-color: -color-accent-subtle;
+  -fx-text-fill: -color-accent-emphasis;
+}
+.jfx-tree-select-row.jfx-tree-select-leaf {
+  -fx-padding: 6 12 6 12;
+}
+.jfx-tree-select-row.jfx-tree-select-indent {
+  /* 缩进由 Java 端按 depth 动态控制，基线放在 .jfx-tree-select-row 上 */
+}
+.jfx-tree-select-row.jfx-tree-select-selected {
+  -fx-background-color: -color-accent-subtle;
+}
+.jfx-tree-select-row.jfx-tree-select-disabled {
+  -fx-opacity: 0.5;
 }
 /* -------------------------------------------
    Shared Icon Type Colors — 消息/通知/结果页通用
