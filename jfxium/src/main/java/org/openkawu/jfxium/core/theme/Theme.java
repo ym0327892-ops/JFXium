@@ -8,8 +8,9 @@ package org.openkawu.jfxium.core.theme;
  * <p>设计参考 <a href="https://github.com/mkpaz/atlantafx">AtlantaFX</a>。</p>
  *
  * <p>密度（{@link ThemeDensity}）是 {@link Theme} 的可选属性，PC UI 规范 §12.2 定义。
- * 默认实现返回 {@link ThemeDensity#DEFAULT}；4 个 *CompactTheme 子类覆盖为 {@link ThemeDensity#COMPACT}。
- * 调用方应当通过 {@link ThemeManager#getDensity()} 读取「当前生效的密度」（而非本方法），
+ * 默认实现返回 {@link ThemeDensity#DEFAULT}。自 §15.3 P3 起，密度由
+ * {@link ThemeManager} 作为正交维度独立管理，不再为每种密度派生子类。
+ * 调用方应当通过 {@link ThemeManager#getDensity()} 读取「当前生效的密度」，
  * 因为密度可由 ThemeManager 在运行时独立于 Theme 对象切换。</p>
  */
 public interface Theme {

@@ -12,8 +12,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.openkawu.jfxium.component.composite.MenuAnt;
 import org.openkawu.jfxium.core.css.JfxStyles;
-import org.openkawu.jfxium.core.theme.LightCompactTheme;
 import org.openkawu.jfxium.core.theme.LightTheme;
+import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 
 /**
@@ -59,8 +59,8 @@ public class MenuInlineProbe extends Application {
             // LIGHT 主题下测量
             measureAndPrint("LIGHT (default)", menu);
 
-            // LIGHT-COMPACT 主题下测量（强制 re-layout）
-            mgr.applyTheme(new LightCompactTheme());
+            // LIGHT + COMPACT 密度下测量（强制 re-layout）
+            mgr.setDensity(ThemeDensity.COMPACT);
             menu.applyCss();  // 强制 CSS 重新解析
             menu.requestLayout();
             Platform.runLater(() -> {
