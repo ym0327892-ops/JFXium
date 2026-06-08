@@ -130,7 +130,11 @@ public class PromptDialogAnt {
     // 构建并显示
     // ============================================================
 
-    public void build() {
+    /**
+     * 构建弹框并返回 {@link PromptDialogResult}，调用方可通过 {@code result.close()} 程序化关闭。
+     * @return PromptDialogResult（可关闭弹框）
+     */
+    public PromptDialogResult build() {
         VBox content = new VBox(12);
         content.setPadding(new Insets(20));
         content.setAlignment(Pos.CENTER_LEFT);
@@ -156,40 +160,52 @@ public class PromptDialogAnt {
         buttons.setAlignment(Pos.CENTER_RIGHT);
         buttons.getStyleClass().add(JfxStyles.PROMPT_DIALOG_FOOTER);
 
+        PromptDialogResult result = new PromptDialogResult();
+
         Button cancelBtn = new Button(cancelText);
         cancelBtn.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT);
         cancelBtn.setOnAction(e -> {
             if (onCancel != null) onCancel.run();
-            close();
+            result.close();
         });
 
         Button okBtn = new Button(okText);
         okBtn.getStyleClass().addAll(JfxStyles.BUTTON_ACCENT);
         okBtn.setOnAction(e -> {
             if (onConfirm != null) onConfirm.accept(input.getText());
-            close();
+            result.close();
         });
 
         buttons.getChildren().addAll(cancelBtn, okBtn);
         content.getChildren().add(buttons);
 
         // 使用 ModalAnt 显示
-        modalResult = ModalAnt.create()
+        ModalAnt.ModalResult modalResult = ModalAnt.create()
             .title(title)
             .content(content)
             .width(400)
             .build();
 
+        result.modalResult = modalResult;
+
         // 需要 owner Node，这里用空 Label 占位（实际使用时需要传入）
         javafx.scene.Node ownerNode = new javafx.scene.control.Label();
         modalResult.open(ownerNode);
+
+        return result;
     }
 
-    private ModalAnt.ModalResult modalResult;
+    /**
+     * Prompt 弹框结果封装，提供程序化关闭能力。
+     */
+    public static class PromptDialogResult {
+        private ModalAnt.ModalResult modalResult;
 
-    private void close() {
-        if (modalResult != null) {
-            modalResult.close();
+        /** 程序化关闭弹框。 */
+        public void close() {
+            if (modalResult != null) {
+                modalResult.close();
+            }
         }
     }
 }

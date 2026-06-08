@@ -162,8 +162,8 @@ public class SwitchAnt {
             }
             // Shape 修饰类（M19.20）—— PILL 默认不挂；ROUNDED/SQUARE 挂修饰类切换圆角
             switch (shape) {
-                case ROUNDED -> switchPane.getStyleClass().add("shape-rounded");
-                case SQUARE  -> switchPane.getStyleClass().add("shape-square");
+                case ROUNDED -> switchPane.getStyleClass().add(JfxStyles.CHECKBOX_SHAPE_ROUNDED);
+                case SQUARE  -> switchPane.getStyleClass().add(JfxStyles.CHECKBOX_SHAPE_SQUARE);
                 default      -> { /* PILL 不挂额外类 */ }
             }
 

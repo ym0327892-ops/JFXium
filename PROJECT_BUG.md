@@ -819,10 +819,10 @@
 
 ## 修复统计（更新）
 
-- **总计问题**：79 个（#1–#79）
-- **已修复 / 已完成**：79 个
+- **总计问题**：83 个（#1–#83）
+- **已修复 / 已完成**：83 个
 - **未修复**：0
-- **本轮 commit**：`fix(p1): 全量规则审计 P1 LESS lint 修复 #77-#79`
+- **本轮 commit**：`fix(p2): 全量规则审计收尾 + 字符串字面量迁移 #80-#83`
 - **最后更新**：2026-06-08
 
 ## 修复说明（2026-06-08：BUG #73–#76 P0 红线批量修复 — 全面规则审计第二轮）
@@ -903,3 +903,44 @@
 - 编译：`./mvnw compile -pl jfxium` → BUILD SUCCESS
 - 新增 LESS token：12 个（@border-width-default + 3 shadow/mask + 5 dark menu + 5 banner）
 - 全局选择器污染清零：`.label`、`.hyperlink`、`.tree-cell` 全部改为 jfx- 前缀
+
+## 修复说明（2026-06-08：BUG #80–#83 P2 修复 + 审计交叉验证 — 全面规则审计第四轮）
+
+> 对 PROJECT_AUDIT_REPORT 和红线审计中剩余项做交叉验证与修复。
+> 审计报告中的 P0/P1/P2/P3/P4/P5 已在此前批次中修复或迁移完毕，
+> 本轮处理最后一批 P2 遗留 + P6 字符串字面量迁移。
+
+### #80 _switch.less CheckBox shape-circle 9999 → @border-radius-full（红线审计 P2-2）
+- **现象**：`.check-box.shape-circle .box { -fx-background-radius: 9999; }` 使用裸 9999 而非 token。
+- **修复**：3 处 `9999` → `@border-radius-full`。
+
+### #81 PromptDialogAnt.build() void → PromptDialogResult（红线审计 P2-1）
+- **现象**：`build()` 返回 `void`，调用方无法程序化关闭弹框，与所有其他 overlay 组件的 Result wrapper 模式不一致。
+- **修复**：
+  - `build()` 返回类型 `void` → `PromptDialogResult`
+  - 新增 `PromptDialogResult` 内部类，封装 `ModalResult`，暴露 `close()`
+  - 同步更新按钮事件处理器，使用 `result.close()` 替代 `this.close()`
+
+### #82 SkeletonAnt shimmer 字符串字面量 → JfxStyles.SKELETON_SHIMMER（P6）
+- **现象**：`"skeleton-shimmer"` 字符串字面量，而 `JfxStyles.SKELETON_SHIMMER = "jfx-skeleton-shimmer"`。
+- **根因**：LESS 选择器是 `.jfx-skeleton-shimmer`（jfx- 前缀），Java 端却用了裸名 `"skeleton-shimmer"`——名字不匹配导致样式不生效。
+- **修复**：`"skeleton-shimmer"` → `JfxStyles.SKELETON_SHIMMER`。
+
+### #83 SurfaceAnt/SwitchAnt 字符串字面量 → JfxStyles 常量（P6）
+- **现象**：`SurfaceAnt` 的 `"bordered"`/`"shadow-sm"`/`"shadow-md"`/`"shadow-lg"` 和 `SwitchAnt` 的 `"shape-rounded"`/`"shape-square"` 使用字符串字面量。
+- **修复**：
+  - JfxStyles 新增 6 个常量：`SURFACE_BORDERED`、`SURFACE_SHADOW_SM/MD/LG`、`CHECKBOX_SHAPE_ROUNDED`、`CHECKBOX_SHAPE_SQUARE`
+  - SurfaceAnt.java：4 处字符串 → JfxStyles 常量
+  - SwitchAnt.java：2 处字符串 → JfxStyles 常量
+
+### 交叉验证：审计报告已修复项确认
+以下 PROJECT_AUDIT_REPORT 中的问题经本次验证确认已在先前批次中修复：
+- P0 `_animation.less` -fx-transition → 已验证 0 残留
+- P1 TabsAnt 硬编码颜色 `#1677ff`/`#f0f0f0` → 已验证全部走 styleClass
+- P2 TabsAnt setStyle 动态拼接 → 已验证全部走 styleClass + token
+- P3 overlay 8 Builder → 全部 8 个已 extends AbstractStyleBuilder
+- P4 composite 23 Builder → 全部 23 个已 extends AbstractStyleBuilder
+- P5 Color.web() 硬编码 → 已验证 0 残留
+
+### #80–#83 整体验证
+- 编译：`./mvnw compile -pl jfxium` → BUILD SUCCESS

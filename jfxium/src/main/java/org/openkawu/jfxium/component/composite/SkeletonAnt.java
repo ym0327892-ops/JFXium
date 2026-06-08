@@ -119,7 +119,7 @@ public class SkeletonAnt {
 
             if (animated) {
                 Rectangle shimmer = new Rectangle(width, height);
-                shimmer.getStyleClass().add("skeleton-shimmer");
+                shimmer.getStyleClass().add(JfxStyles.SKELETON_SHIMMER);
                 shimmer.setTranslateX(-width);
 
                 switch (variant) {

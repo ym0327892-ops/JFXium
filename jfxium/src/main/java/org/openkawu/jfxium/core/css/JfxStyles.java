@@ -101,6 +101,11 @@ public final class JfxStyles {
     public static final String SURFACE_HEADER = "jfx-surface-header";
     public static final String SURFACE_TITLE = "jfx-surface-title";
     public static final String SURFACE_CONTENT = "jfx-surface-content";
+    /** Surface 边框/阴影修饰类 */
+    public static final String SURFACE_BORDERED = "bordered";
+    public static final String SURFACE_SHADOW_SM = "shadow-sm";
+    public static final String SURFACE_SHADOW_MD = "shadow-md";
+    public static final String SURFACE_SHADOW_LG = "shadow-lg";
 
     /** FilterBarAnt 通用筛选+操作工具条（admin 列表页上栏标配） */
     public static final String FILTER_BAR = "jfx-filter-bar";
@@ -211,6 +216,9 @@ public final class JfxStyles {
     public static final String SWITCH_SELECTED = "switch-selected";
     public static final String SWITCH_DISABLED = "switch-disabled";
     public static final String SWITCH_STATUS_LABEL = "jfx-switch-status-label";
+    /** CheckBox/Radio shape 修饰类（M19.20） */
+    public static final String CHECKBOX_SHAPE_ROUNDED = "shape-rounded";
+    public static final String CHECKBOX_SHAPE_SQUARE = "shape-square";
 
     /* ============================================
        BadgeAnt 徽标

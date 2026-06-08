@@ -139,11 +139,11 @@
 /* CheckBox 形状变体（M19.20）：默认方形小圆角（modena 默认），其他覆盖
    关键：选择器要带 .check-box 提优先级，否则被默认 .check-box .box 覆盖 */
 .check-box.shape-circle .box {
-  -fx-background-radius: 9999;
-  -fx-border-radius: 9999;
+  -fx-background-radius: @border-radius-full;
+  -fx-border-radius: @border-radius-full;
 }
 .check-box.shape-circle .box .mark {
-  -fx-background-radius: 9999;
+  -fx-background-radius: @border-radius-full;
 }
 
 .check-box.shape-square .box {

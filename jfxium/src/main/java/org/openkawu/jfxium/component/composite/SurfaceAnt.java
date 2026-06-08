@@ -107,12 +107,12 @@ public class SurfaceAnt {
             VBox surface = new VBox(gap);
             surface.getStyleClass().add(JfxStyles.SURFACE);
             if (bordered) {
-                surface.getStyleClass().add("bordered");
+                surface.getStyleClass().add(JfxStyles.SURFACE_BORDERED);
             }
             switch (shadow) {
-                case SMALL -> surface.getStyleClass().add("shadow-sm");
-                case MEDIUM -> surface.getStyleClass().add("shadow-md");
-                case LARGE -> surface.getStyleClass().add("shadow-lg");
+                case SMALL -> surface.getStyleClass().add(JfxStyles.SURFACE_SHADOW_SM);
+                case MEDIUM -> surface.getStyleClass().add(JfxStyles.SURFACE_SHADOW_MD);
+                case LARGE -> surface.getStyleClass().add(JfxStyles.SURFACE_SHADOW_LG);
                 case NONE -> {
                 }
             }
