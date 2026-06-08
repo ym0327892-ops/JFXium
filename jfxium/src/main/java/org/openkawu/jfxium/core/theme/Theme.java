@@ -3,9 +3,14 @@ package org.openkawu.jfxium.core.theme;
 /**
  * JFXium 主题接口。
  * 每个具体主题（LightTheme、DarkTheme、MuiTheme 等）实现此接口，
- * 提供主题名称、CSS 样式表路径和明暗类型。
+ * 提供主题名称、CSS 样式表路径、明暗类型和密度。
  *
  * <p>设计参考 <a href="https://github.com/mkpaz/atlantafx">AtlantaFX</a>。</p>
+ *
+ * <p>密度（{@link ThemeDensity}）是 {@link Theme} 的可选属性，PC UI 规范 §12.2 定义。
+ * 默认实现返回 {@link ThemeDensity#DEFAULT}；4 个 *CompactTheme 子类覆盖为 {@link ThemeDensity#COMPACT}。
+ * 调用方应当通过 {@link ThemeManager#getDensity()} 读取「当前生效的密度」（而非本方法），
+ * 因为密度可由 ThemeManager 在运行时独立于 Theme 对象切换。</p>
  */
 public interface Theme {
 
@@ -17,6 +22,14 @@ public interface Theme {
 
     /** 获取主题类型（亮色 / 暗色）。 */
     ThemeType getType();
+
+    /**
+     * 获取本主题内置的密度。默认 {@link ThemeDensity#DEFAULT}。
+     * 注：这是 Theme 对象的「自带」密度，与 ThemeManager 的「当前」密度是两回事。
+     */
+    default ThemeDensity getDensity() {
+        return ThemeDensity.DEFAULT;
+    }
 
     /** 主题明暗类型。 */
     enum ThemeType {

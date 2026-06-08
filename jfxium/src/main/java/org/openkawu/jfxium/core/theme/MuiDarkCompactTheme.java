@@ -28,6 +28,7 @@ public class MuiDarkCompactTheme implements Theme {
     /**
      * Get the density mode for this theme.
      */
+    @Override
     public ThemeDensity getDensity() {
         return ThemeDensity.COMPACT;
     }

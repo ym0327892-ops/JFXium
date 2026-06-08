@@ -28,6 +28,7 @@ public class DarkCompactTheme implements Theme {
     /**
      * Get the density mode for this theme.
      */
+    @Override
     public ThemeDensity getDensity() {
         return ThemeDensity.COMPACT;
     }

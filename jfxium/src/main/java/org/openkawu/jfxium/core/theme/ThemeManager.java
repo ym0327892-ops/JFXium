@@ -38,10 +38,11 @@ public class ThemeManager {
         public String getDisplayName() { return displayName; }
     }
 
-    // 三个正交维度的当前状态（family × dark × compact），用于组合出具体 Theme
+    // 两个正交维度的当前状态（family × dark），用于组合出具体 Theme（PC UI 规范 §12.3）
+    // 密度（density）已从状态机拆出为独立维度，通过 setDensity() 切换（见 §15.3）。
     private Family currentFamily = Family.ANT_DESIGN;
     private boolean dark = false;
-    private boolean compact = false;
+    private ThemeDensity density = ThemeDensity.DEFAULT;
 
     private ThemeManager() {
         this.currentTheme = new LightTheme();
@@ -96,6 +97,10 @@ public class ThemeManager {
         // 关键：userAgentStylesheet 重置后，之前 inline 注入的 accent 色阶会被覆盖，
         // 必须重新应用一次，否则切风格 / 切明暗后主题色回退到 CSS 默认蓝。
         applyPrimaryColorToAll();
+        // 密度同样需要重应用：densityStylesheet 在 scene.getStylesheets() 上，UA CSS 重置不被清，
+        // 但为了保持 applyTheme() 后状态唯一源仍是 ThemeManager，这里依然走 applyDensityToAll()。
+        // 该方法是幂等的：DEFAULT 状态下只是 remove 之前的 COMPACT，no-op。
+        applyDensityToAll();
     }
 
     // ============================================================
@@ -103,17 +108,13 @@ public class ThemeManager {
     // ============================================================
 
     /**
-     * 根据当前 family × dark × compact 三个维度组合出具体 Theme 并应用。
-     * 8 个 Theme 类 = 2 家族(Ant/MUI) × 2 明暗 × 2 密度的笛卡尔积。
+     * 根据当前 family × dark 二维状态组合出具体 Theme 并应用。
+     * 4 个 Theme 类 = 2 家族(Ant/MUI) × 2 明暗。密度不再参与主题类选择（见 §15.3）。
      */
     private void applyComposite() {
         Theme theme = switch (currentFamily) {
-            case ANT_DESIGN -> dark
-                    ? (compact ? new DarkCompactTheme() : new DarkTheme())
-                    : (compact ? new LightCompactTheme() : new LightTheme());
-            case MUI -> dark
-                    ? (compact ? new MuiDarkCompactTheme() : new MuiDarkTheme())
-                    : (compact ? new MuiCompactTheme() : new MuiTheme());
+            case ANT_DESIGN -> dark ? new DarkTheme() : new LightTheme();
+            case MUI        -> dark ? new MuiDarkTheme() : new MuiTheme();
         };
         applyTheme(theme);
     }
@@ -132,10 +133,30 @@ public class ThemeManager {
         applyComposite();
     }
 
-    /** 设置紧凑密度，保持家族 / 明暗 / 主题色不变。 */
+    /**
+     * 切换密度（PC UI 规范 §12.2 / §15.3）。
+     * 保持家族 / 明暗 / 主题色不变；密度通过 CSS 变量注入而非独立主题类实现。
+     *
+     * @param density {@link ThemeDensity#DEFAULT} 或 {@link ThemeDensity#COMPACT}；null 忽略
+     */
+    public void setDensity(ThemeDensity density) {
+        if (density == null) return;
+        this.density = density;
+        applyDensityToAll();
+    }
+
+    /** 获取当前密度。 */
+    public ThemeDensity getDensity() {
+        return density;
+    }
+
+    /**
+     * @deprecated 自 v1.0 起密度升级为一等状态，使用 {@link #setDensity(ThemeDensity)}。
+     *             保留 2 个版本以兼容旧 API，内部委托给 setDensity()。
+     */
+    @Deprecated
     public void setCompactDensity(boolean compact) {
-        this.compact = compact;
-        applyComposite();
+        setDensity(compact ? ThemeDensity.COMPACT : ThemeDensity.DEFAULT);
     }
 
     public Family getCurrentFamily() { return currentFamily; }
@@ -205,19 +226,91 @@ public class ThemeManager {
     /** 上一次注入的 accent data-URI stylesheet，用于切换时移除旧的。 */
     private String accentStylesheet;
 
+    /** 上一次注入的 density data-URI stylesheet，用于切换 / 恢复时移除旧的。 */
+    private String densityStylesheet;
+
+    /**
+     * 将当前 density 注入到所有已注册的 Scene 上（PC UI 规范 §15.3.3）。
+     *
+     * <p>与 {@link #applyPrimaryColorToAll()} 同套路：构造一份 data-URI stylesheet，
+     * 写入每个 scene.getStylesheets()，并在再次切换时移除旧引用保持幂等。</p>
+     *
+     * <p>幂等性：</p>
+     * <ul>
+     *   <li>DEFAULT 状态下不注入新 stylesheet（走 LESS 默认值），仅 remove 之前的 COMPACT。</li>
+     *   <li>切回 COMPACT 后再切回 DEFAULT 不会残留旧 stylesheet。</li>
+     *   <li>applyTheme() 后调用是 no-op（UA CSS 重置不波及 scene.getStylesheets()）。</li>
+     * </ul>
+     */
+    private void applyDensityToAll() {
+        // 1. 移除上一次的 density stylesheet（无论是否相同）
+        if (densityStylesheet != null) {
+            for (Scene scene : registeredScenes) {
+                scene.getStylesheets().remove(densityStylesheet);
+            }
+            densityStylesheet = null;
+        }
+
+        // 2. DEFAULT 状态不注入新 stylesheet（走 LESS 默认值）
+        if (density == ThemeDensity.DEFAULT) return;
+
+        // 3. 构造 density CSS（PC UI 规范 §5.2 / §6 联动算法）
+        String css = buildDensityCss(density);
+        String dataUri = "data:text/css;base64,"
+                + java.util.Base64.getEncoder().encodeToString(
+                        css.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+
+        // 4. 注入到所有 scene
+        for (Scene scene : registeredScenes) {
+            scene.getStylesheets().add(dataUri);
+        }
+        densityStylesheet = dataUri;
+    }
+
+    /**
+     * 构造 density 对应的 CSS 规则（PC UI 规范 §5.2 / §6 联动算法）。
+     * 复用 JavaFX looked-up color 变量名（无 {@code -fx-} 前缀），与 LESS {@code @control-height} 命名一致。
+     */
+    private String buildDensityCss(ThemeDensity d) {
+        return switch (d) {
+            case DEFAULT -> "";
+            case COMPACT -> """
+                    .root {
+                        -control-height: 28px;
+                        -control-height-sm: 24px;
+                        -control-height-lg: 36px;
+                        -control-height-xs: 18px;
+                        -spacing-xs: 2px;
+                        -spacing-sm: 6px;
+                        -spacing-md: 8px;
+                        -spacing-lg: 12px;
+                        -spacing-xl: 16px;
+                        -table-header-height: 28px;
+                        -table-row-height: 28px;
+                    }
+                    """;
+        };
+    }
+
     /** 切换亮色 / 暗色主题（保持家族 / 密度 / 主题色不变）。 */
     public void toggleTheme() {
         setDark(!dark);
     }
 
-    /** 切换默认 / 紧凑密度（保持家族 / 明暗 / 主题色不变）。 */
+    /**
+     * @deprecated 使用 {@link #setDensity(ThemeDensity)} 代替。
+     */
+    @Deprecated
     public void toggleCompact() {
-        setCompactDensity(!compact);
+        setDensity(isCompact() ? ThemeDensity.DEFAULT : ThemeDensity.COMPACT);
     }
 
-    /** 当前是否为紧凑密度。 */
+    /**
+     * @deprecated 使用 {@code getDensity() == ThemeDensity.COMPACT} 代替。
+     */
+    @Deprecated
     public boolean isCompact() {
-        return compact;
+        return density == ThemeDensity.COMPACT;
     }
 
     /** 切换到 MUI 亮色主题家族。 */
