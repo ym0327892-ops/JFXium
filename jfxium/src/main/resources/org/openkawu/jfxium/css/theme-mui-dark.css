@@ -5650,15 +5650,24 @@
 .root.jfx-compact .tree-table-view.jfx-table-large .tree-table-cell {
   -fx-padding: 2px 8px;
 }
-.root.jfx-compact .menu-item,
-.root.jfx-compact .jfx-menu-item {
-  -fx-padding: 4px 8px;
+.root.jfx-compact .menu-item {
+  -fx-padding: 4px 12px;
+}
+.root.jfx-compact .jfx-menu-item,
+.root.jfx-compact .jfx-menu-submenu-header,
+.root.jfx-compact .jfx-menu-group {
+  -fx-padding: 4px 12px 4px 0;
+  -fx-min-height: 26px;
+}
+.root.jfx-compact .jfx-menu-divider {
+  -fx-padding: 3px 12px 3px 12px;
+  -fx-min-height: 7px;
 }
 .root.jfx-compact .menu-bar {
-  -fx-padding: 2px 0;
+  -fx-padding: 2px 4px;
 }
 .root.jfx-compact .context-menu {
-  -fx-padding: 4px 0;
+  -fx-padding: 2px 0;
 }
 .root.jfx-compact .list-view .list-cell {
   -fx-padding: 4px 8px;

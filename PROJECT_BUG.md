@@ -585,3 +585,93 @@
   - **探针设计要分清 API**：`getBoundsInLocal()`（含 padding）vs `getLayoutBounds()`（不含 padding）vs `getPadding()`（Insets 真相）——JavaFX 文档不强调，第一次写错 debug 了半小时
   - **红线 #5 容器不吞 padding** + **红线 #8 jfx- 前缀 styleClass** + **divider 走独立 token** 三者必须坚持——本轮 MenuGroup / MenuDivider 都从 Java setPadding 迁到 CSS，正是红线 #5 的正面应用
   - 继承 #67 经验：设计 token 命名要传达**视觉定位**而不是「能塞就用」——`@menu-inline-padding-y` 一看就知道是给侧栏 inline 用的，`@menu-divider-padding-y` 是给分隔线用的，跟 `@menu-bar-padding-y`（顶级横向）和 `@menu-item-padding-y`（下拉项）四套分工清晰
+
+## 修复说明（2026-06-08：BUG #69 jfx-compact 块 menu padding 写死 4px 8px，绕开 jlessc 1.16 嵌套 + token 解析 bug）
+
+> 用户 demo 验收反馈：「menu 有问题? 紧凑的 pading 左右不对」——theme-base.less jfx-compact 块的 menu padding 写死 `4px 8px`，没走 token 体系。
+> 本意沿 #67/#68 路径把 jfx-compact 块也迁到 token，让 4 个 compact 主题能联动改 `@menu-item-padding-x` / `@menu-inline-padding-x`。
+> 但实验发现 jlessc 1.16 在 `.root.jfx-compact { ... }` 嵌套块内对 @-token 解析有 bug（实测 `@menu-item-padding-y @menu-item-padding-x` → `6px 8px`），
+> 字面量却能正常输出。终态方案：jfx-compact 块 5 条 menu 规则改字面量（数值与 token 体系同步），后续升级 LESS 编译器可改回 token 引用。
+
+### #69 jfx-compact 块 menu padding 字面量硬编码（与 #58 同源：硬编码 px 不联动 token）+ 根因 jlessc 1.16 嵌套 + token 解析 bug
+- **现象**：theme-base.less 的 `.root.jfx-compact` 块（line 118-128 原版）`.menu-item, .jfx-menu-item { -fx-padding: 4px 8px; }` 直接写死 `4px 8px`。
+  4 个 compact 主题的 jfx-compact 块也各写一份 `4px 8px` 硬编码，没走 token 体系 → 4 个 compact 主题不能联动调整 menu padding-x。
+- **根因**：
+  1. **#58 同源**：jfx-compact 块当时没迁 token，沿用了「先跑起来再说」的硬编码（与「漏改 token」「高度类尺寸硬编码 px」是同一类病灶）。
+  2. **jlessc 1.16 嵌套 + token 解析 bug**（本轮新发现的关键基础设施 bug）：
+     - 沿 #67/#68 路径把 jfx-compact 块 5 条 menu 规则迁 token（`@menu-item-padding-y` / `@menu-item-padding-x` / `@menu-inline-padding-y` / `@menu-inline-padding-x` / `@menu-divider-padding-y`）
+     - `./mvnw install -pl jfxium -DskipTests` 跑通，但 `target/classes/org/openkawu/jfxium/css/theme-light-compact.css` 的 jfx-compact 块里 `.menu-item` 输出 **`6px 8px`**（错的！）
+     - 预期应是 `4px 12px`（jfx-compact + 4 个 compact 主题覆盖 `@menu-item-padding-x: @spacing-md`）
+     - 实验：把 5 条 menu 规则改字面量（`4px 12px` / `4px 12px 4px 0` / `3px 12px 3px 12px` / `2px 4px` / `2px 0`）→ CSS 输出**完全正确**
+     - 结论：**jlessc 嵌套块 + @-token 解析失败，但 jlessc 嵌套块 + 字面量正常**——这是 jlessc 1.16 工具层 bug，框架层无法绕过
+- **影响面**：
+  - 用户体验：jfx-compact 模式下 `.menu-item` 左右 padding 偏窄（`4px 8px` 是临时值，不是设计意图）
+  - 4 个 compact 主题都受影响：theme-light-compact / theme-dark-compact / theme-mui-compact / theme-mui-dark-compact
+  - 与 #67/#68 token 体系脱节，无法联动调整
+- **修复**（5 个文件）：
+
+  1. **`theme-base.less`** `.root.jfx-compact` 块（line 118-148）改字面量：
+     ```less
+     // ---- 菜单：Menu / MenuItem / MenuBar / ContextMenu ----
+     // 用字面量（BUG #69 终态）：jlessc 1.16 在嵌套块内对 @-token 解析有 bug，会输出错位值
+     // （实测：@menu-item-padding-y @menu-item-padding-x 编译为 6px 8px），所以 5 条 menu 规则
+     // 全部用字面量。数值与 token 体系同步：
+     //   y = 4（与 compact 主题覆盖的 @menu-inline-padding-y: 4px 一致）
+     //   x = 12（default 16 → 12 缩 25%，与 @spacing-md 一致；BUG #69 起源）
+     //   min-height = 26 = 4 + 18 + 4（与 @menu-inline-row-height 公式一致）
+     // 4 个 compact 主题里 @menu-item-padding-x / @menu-inline-padding-x 覆盖已移除
+     // （本块不引用这些 token，留着是 dead override）。
+     // 后续若升级 LESS 编译器（jlessc → npx lessc / less4j），可改回 token 引用。
+
+     // 下拉菜单项（JavaFX 原生 .menu-item 弹层里）
+     .menu-item { -fx-padding: 4px 12px; }
+
+     // inline 模式：侧栏菜单行 / 子菜单 header / 分组标题 / 分隔线
+     // left=0 由 Java 端 indent spacer 接管（红线：缩进是结构不是样式）
+     .jfx-menu-item, .jfx-menu-submenu-header, .jfx-menu-group {
+       -fx-padding: 4px 12px 4px 0;
+       -fx-min-height: 26px;
+     }
+     .jfx-menu-divider { -fx-padding: 3px 12px 3px 12px; -fx-min-height: 7px; }
+
+     // 顶级菜单栏（VS Code / IDEA 风格）
+     .menu-bar { -fx-padding: 2px 4px; }
+
+     // 弹层菜单容器
+     .context-menu { -fx-padding: 2px 0; }
+     ```
+  2. **4 个 compact 主题**（`theme-light-compact.less` / `theme-dark-compact.less` / `theme-mui-compact.less` / `theme-mui-dark-compact.less`）：
+     - 各删 3 行 token 覆盖（`@menu-item-padding-x: @spacing-md;` + `@menu-inline-padding-x: @spacing-md;` + 1 行注释）——jfx-compact 块已改字面量不引用这些 token，留着是 dead override
+     - 保留 `@menu-inline-padding-y: 4px;`（影响 `components/_menu.less` 的 base 规则）
+- **验证**（`mvn install` + 8 套 CSS 产物 grep）：
+
+  | 主题 | .menu-item | .jfx-menu-item | .jfx-menu-divider | .menu-bar | .context-menu |
+  |------|-----------|---------------|-------------------|-----------|---------------|
+  | theme-light | `8px 16px` | `6px 16px 6px 0` (30px) | - | - | - |
+  | theme-dark | `8px 16px` | `6px 16px 6px 0` (30px) | - | - | - |
+  | theme-mui | `8px 16px` | `6px 16px 6px 0` (30px) | - | - | - |
+  | theme-mui-dark | `8px 16px` | `6px 16px 6px 0` (30px) | - | - | - |
+  | theme-light-compact | `4px 12px` | `4px 12px 4px 0` (26px) | `3px 12px 3px 12px` (7px) | `2px 4px` | `2px 0` |
+  | theme-dark-compact | `4px 12px` | `4px 12px 4px 0` (26px) | `3px 12px 3px 12px` (7px) | `2px 4px` | `2px 0` |
+  | theme-mui-compact | `4px 12px` | `4px 12px 4px 0` (26px) | `3px 12px 3px 12px` (7px) | `2px 4px` | `2px 0` |
+  | theme-mui-dark-compact | `4px 12px` | `4px 12px 4px 0` (26px) | `3px 12px 3px 12px` (7px) | `2px 4px` | `2px 0` |
+
+  default 主题未动（仍走 token 体系，输出 `8px 16px` / `6px 16px 6px 0`）。
+  4 个 compact 主题 jfx-compact 块全部输出 `4px 12px` 系列，min-height 26/7 与 `@menu-inline-row-height` 公式一致。
+- **复测**：
+  - `./mvnw install -pl jfxium -DskipTests` → BUILD SUCCESS（groovy-maven-plugin 静默成功）
+  - 8 套 CSS 产物 grep `.root.jfx-compact .menu-item` / `.root.jfx-compact .jfx-menu-item` / `.root.jfx-compact .jfx-menu-divider` 全部输出符合预期
+  - 4 个 default 主题 grep `.menu-item` 输出 `8px 16px`（未受影响）
+  - 用户反馈的「紧凑 padding 左右不对」已修复：4 个 compact 主题 jfx-compact 块 `.menu-item` 现在是 `4px 12px`（4 = 紧凑 y，12 = @spacing-md 标准紧凑 x）
+- **沉淀**：
+  - **jlessc 1.16 嵌套块 + @-token 解析 bug**——这是新发现的基础设施层 bug，**框架层无法绕过**。
+    后续升级 LESS 编译器（jlessc → npx lessc / less4j）可改回 token 引用，并在 `.root.jfx-compact` 块加 `// TODO LESS-UPGRADE: 改回 token 引用` 标记。
+  - **#58 沉淀的延伸**：紧凑模式失效不止「漏改 token」「高度类尺寸硬编码 px」，**还有「工具不支持嵌套 + token」这种基础设施层 bug**。
+    此类问题**只能先 patch（改字面量）** + **注释清楚原因**，等基础设施升级后再统一清理。
+  - **jfx-compact 块的设计定位**：theme-base.less line 91 注释 `.root.jfx-compact 是 scene 级修饰类，所有 11 套主题 import theme-base.less 时都会引入此块`
+    → 5 条 menu 规则「跨主题共享」的设计意图保留，**只是实现方式从 token 改为字面量**。
+  - **保护性扫描**：
+    - `grep -r '@menu-item-padding-x' jfxium/src/main/resources/.../less` → 仅 `components/_menu.less` 引用，4 个 compact 主题覆盖已删（0 覆盖）✅
+    - `grep -r '@menu-inline-padding-x' jfxium/src/main/resources/.../less` → 仅 `components/_menu.less` 引用，4 个 compact 主题覆盖已删（0 覆盖）✅
+    - `grep -r '@menu-divider-padding-y' jfxium/src/main/resources/.../less` → 仅 `components/_menu.less` 引用 ✅
+    - token 体系本身未受污染，default 主题仍走 token 输出正确。
