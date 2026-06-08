@@ -2,7 +2,7 @@ package org.openkawu.jfxium.core.theme;
 
 /**
  * JFXium 主题接口。
- * 每个具体主题（LightTheme、DarkTheme、MuiTheme 等）实现此接口，
+ * 每个具体主题（LightTheme、DarkTheme、MuiLightTheme 等）实现此接口，
  * 提供主题名称、CSS 样式表路径、明暗类型和密度。
  *
  * <p>设计参考 <a href="https://github.com/mkpaz/atlantafx">AtlantaFX</a>。</p>

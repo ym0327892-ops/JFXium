@@ -198,8 +198,10 @@ public class StepsAnt {
             Label numberLabel = new Label(String.valueOf(number));
             numberLabel.getStyleClass().add(JfxStyles.STEPS_NUMBER);
             numberLabel.getStyleClass().add(stateClass(state));
-            // font-size 与 stepSize 联动（动态属性，留 inline）
-            numberLabel.setStyle("-fx-font-size: " + (stepSize * 0.4) + "px;");
+            // font-size 由 .jfx-steps-number / .jfx-steps-number.jfx-steps-small 修饰类控制（避免红线 #1）
+            if (stepSize == 24) {
+                numberLabel.getStyleClass().add(JfxStyles.STEPS_SMALL);
+            }
 
             sn.circle = circle;
             sn.number = numberLabel;

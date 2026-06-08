@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
@@ -160,8 +161,15 @@ public class TreeSelectAnt {
 
             HBox row = new HBox(8);
             row.setAlignment(Pos.CENTER_LEFT);
-            // depth 缩进通过 padding-left 动态控制（结构性属性，inline 在此可接受）
-            row.setStyle("-fx-padding: 6 12 6 " + (12 + depth * 16) + ";");
+            // depth 缩进：左侧插入占位 Region，避免 setStyle 拼 padding 违反红线 #1
+            if (depth > 0) {
+                Region indent = new Region();
+                indent.getStyleClass().add(JfxStyles.TREE_SELECT_INDENT);
+                indent.setMinWidth(depth * 16);
+                indent.setPrefWidth(depth * 16);
+                indent.setMaxWidth(depth * 16);
+                row.getChildren().add(indent);
+            }
             row.getStyleClass().add(JfxStyles.TREE_SELECT_ROW);
             if (node.isDisabled()) {
                 row.getStyleClass().add(JfxStyles.TREE_SELECT_DISABLED);
@@ -181,9 +189,11 @@ public class TreeSelectAnt {
                     refreshTree(panel, popup, field);
                 });
             } else {
-                Label spacer = new Label(" ");
-                spacer.setMinWidth(12);
-                row.getChildren().add(spacer);
+                // 无 children 时占位 12px，与有 children 行的 arrow 宽度对齐
+                Region leafSpacer = new Region();
+                leafSpacer.getStyleClass().add(JfxStyles.TREE_SELECT_LEAF);
+                leafSpacer.setMinWidth(12);
+                row.getChildren().add(leafSpacer);
             }
 
             Label label = new Label(node.getLabel());

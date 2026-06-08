@@ -6,6 +6,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
+
+import java.util.List;
 
 /**
  * JFXium 标签组件 - 对标 Ant Design Tag（组合式，Builder 模式）。
@@ -151,7 +154,7 @@ public class TagAnt {
             tag.setAlignment(javafx.geometry.Pos.CENTER);
 
             // 基础类（一次性，modify 不会清掉）
-            tag.getStyleClass().add("tag");
+            tag.getStyleClass().add(JfxStyles.TAG);
 
             // 把当前状态存进 properties，便于 modify() 时无差别重新渲染
             tag.getProperties().put(STATE_KEY, new TagState(type, size, shape, bordered));
@@ -161,7 +164,7 @@ public class TagAnt {
 
             // Label
             Label label = new Label(text);
-            label.getStyleClass().add("tag-label");
+            label.getStyleClass().add(JfxStyles.TAG_LABEL);
             tag.getChildren().add(label);
             // 把 label 也挂到 properties，modify().text(...) 时直接 setText 不重建
             tag.getProperties().put("jfxium.tag.label", label);
@@ -184,13 +187,13 @@ public class TagAnt {
 
         private StackPane createCloseButton() {
             StackPane closeBtn = new StackPane();
-            closeBtn.getStyleClass().add("tag-close");
+            closeBtn.getStyleClass().add(JfxStyles.TAG_CLOSE);
             closeBtn.setPrefSize(12, 12);
             closeBtn.setMaxSize(12, 12);
 
             SVGPath x = new SVGPath();
             x.setContent("M6 4.5L4.5 6 6 7.5 7.5 6 6 4.5z");
-            x.getStyleClass().add("tag-close-icon");
+            x.getStyleClass().add(JfxStyles.TAG_CLOSE_ICON);
             closeBtn.getChildren().add(x);
 
             closeBtn.setOnMouseEntered(e -> closeBtn.setOpacity(0.8));
@@ -220,46 +223,57 @@ public class TagAnt {
      * inline style 只负责 padding/radius/font-size/border-width 等布局属性。</p>
      */
     private static void applyVisualState(HBox tag, Type type, Size size, Shape shape, boolean bordered) {
-        // 1. 清掉所有可能残留的状态类（保留 "tag" 基础类与用户自定义类）
-        for (Type t : Type.values()) tag.getStyleClass().remove(t.name().toLowerCase());
-        for (Size s : Size.values()) tag.getStyleClass().remove(s.name().toLowerCase());
-        for (Shape sh : Shape.values()) tag.getStyleClass().remove(sh.name().toLowerCase());
-        tag.getStyleClass().remove("no-border");
-
-        // 2. 重新挂当前状态类
-        tag.getStyleClass().add(type.name().toLowerCase());
-        if (size != Size.DEFAULT) tag.getStyleClass().add(size.name().toLowerCase());
-        if (shape != Shape.DEFAULT) tag.getStyleClass().add(shape.name().toLowerCase());
-        if (!bordered) tag.getStyleClass().add("no-border");
-
-        // 3. 颜色由 LESS 中的 .tag.primary / .tag.success 等复合选择器提供，无需在此拼接
-
-        // 4. 拼 inline style（仅布局属性，无 CSS 变量）
-        String padding = switch (size) {
-            case SMALL -> "0 6px";
-            case LARGE -> "4px 12px";
-            default -> "2px 8px";
-        };
-        String radius = switch (shape) {
-            case ROUND -> "9999px";
-            case SQUARE -> "2px";
-            default -> "4px";
-        };
-        String fontSize = switch (size) {
-            case SMALL -> "12px";
-            case LARGE -> "16px";
-            default -> "14px";
-        };
-
-        StringBuilder style = new StringBuilder();
-        if (bordered) {
-            style.append("-fx-border-width: 1px;");
+        // 1. 清掉所有可能残留的状态类（保留 JfxStyles.TAG 基础类与用户自定义类）
+        for (String stateCls : TAG_STATE_CLASSES) {
+            tag.getStyleClass().remove(stateCls);
         }
-        style.append(" -fx-padding: ").append(padding).append(";");
-        style.append(" -fx-background-radius: ").append(radius).append(";");
-        style.append(" -fx-border-radius: ").append(radius).append(";");
-        style.append(" -fx-font-size: ").append(fontSize).append(";");
-        tag.setStyle(style.toString());
+
+        // 2. 重新挂当前状态类（按 JfxStyles 常量走，避免裸名——红线 #8）
+        tag.getStyleClass().add(typeStyleClass(type));
+        String sizeCls = sizeStyleClass(size);
+        if (sizeCls != null) tag.getStyleClass().add(sizeCls);
+        String shapeCls = shapeStyleClass(shape);
+        if (shapeCls != null) tag.getStyleClass().add(shapeCls);
+        if (!bordered) tag.getStyleClass().add(JfxStyles.TAG_BORDERLESS);
+
+        // 3. 颜色、padding、radius、font-size 全部由 LESS 复合选择器提供，无需 setStyle（红线 #1）
+        // 4. 圆角处理也下沉到 .jfx-tag-rounded（红线的 #6 不适用：Tag 是 size-clamped 节点）
+    }
+
+    /** Tag 所有可能的状态 styleClass 集合（用于清理 applyVisualState 中的旧状态）。 */
+    private static final List<String> TAG_STATE_CLASSES = List.of(
+            JfxStyles.TAG_DEFAULT, JfxStyles.TAG_PRIMARY, JfxStyles.TAG_SUCCESS,
+            JfxStyles.TAG_PROCESSING, JfxStyles.TAG_ERROR, JfxStyles.TAG_WARNING,
+            JfxStyles.TAG_SMALL, JfxStyles.TAG_LARGE,
+            JfxStyles.TAG_ROUNDED, JfxStyles.TAG_SQUARE,
+            JfxStyles.TAG_BORDERLESS, JfxStyles.TAG_HAS_COLOR
+    );
+
+    private static String typeStyleClass(Type t) {
+        return switch (t) {
+            case PRIMARY    -> JfxStyles.TAG_PRIMARY;
+            case SUCCESS    -> JfxStyles.TAG_SUCCESS;
+            case WARNING    -> JfxStyles.TAG_WARNING;
+            case ERROR      -> JfxStyles.TAG_ERROR;
+            case PROCESSING -> JfxStyles.TAG_PROCESSING;
+            default         -> JfxStyles.TAG_DEFAULT;
+        };
+    }
+
+    private static String sizeStyleClass(Size s) {
+        return switch (s) {
+            case SMALL -> JfxStyles.TAG_SMALL;
+            case LARGE -> JfxStyles.TAG_LARGE;
+            default    -> null;
+        };
+    }
+
+    private static String shapeStyleClass(Shape sh) {
+        return switch (sh) {
+            case ROUND  -> JfxStyles.TAG_ROUNDED;
+            case SQUARE -> JfxStyles.TAG_SQUARE;
+            default     -> null;
+        };
     }
 
     /**

@@ -204,7 +204,7 @@ public class CrudTemplate {
             BorderPane root = new BorderPane();
             root.getStyleClass().add(JfxStyles.CRUD_TEMPLATE);
             if (bordered) {
-                root.getStyleClass().add("bordered");
+                root.getStyleClass().add(JfxStyles.CRUD_TEMPLATE_BORDERED);
             }
             // M19.35 background：默认挂 DEFAULT（白底），可覆盖
             if (background != null) {

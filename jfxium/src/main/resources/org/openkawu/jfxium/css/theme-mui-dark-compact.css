@@ -328,18 +328,18 @@
   -fx-text-fill: -color-danger-emphasis;
 }
 .jfx-app-shell,
-.layout {
+.jfx-layout {
   -fx-background-color: -color-bg-layout;
 }
 .jfx-app-shell-header,
-.layout-header {
+.jfx-layout-header {
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
   -fx-border-style: solid;
 }
 .jfx-app-shell-sider,
-.layout-sider {
+.jfx-layout-sider {
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent -color-border-muted transparent transparent;
   -fx-border-width: 0 1px 0 0;
@@ -372,11 +372,11 @@
   -fx-border-color: -color-border-muted transparent transparent transparent;
 }
 .jfx-app-shell-content,
-.layout-content {
+.jfx-layout-content {
   -fx-background-color: -color-bg-layout;
 }
 .jfx-app-shell-footer,
-.layout-footer {
+.jfx-layout-footer {
   -fx-background-color: -color-bg-container;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
@@ -1306,7 +1306,7 @@
 /* ============================================
    Alert / Notification Styles
    ============================================ */
-.alert-success {
+.jfx-alert-success {
   -fx-background-color: -color-success-subtle;
   -fx-border-color: -color-success-muted;
   -fx-border-width: 1px;
@@ -1314,7 +1314,7 @@
   -fx-background-radius: 4px;
   -fx-padding: 8px 12px;
 }
-.alert-info {
+.jfx-alert-info {
   -fx-background-color: -color-accent-subtle;
   -fx-border-color: -color-accent-muted;
   -fx-border-width: 1px;
@@ -1322,7 +1322,7 @@
   -fx-background-radius: 4px;
   -fx-padding: 8px 12px;
 }
-.alert-warning {
+.jfx-alert-warning {
   -fx-background-color: -color-warning-subtle;
   -fx-border-color: -color-warning-muted;
   -fx-border-width: 1px;
@@ -1330,7 +1330,7 @@
   -fx-background-radius: 4px;
   -fx-padding: 8px 12px;
 }
-.alert-error {
+.jfx-alert-error {
   -fx-background-color: -color-danger-subtle;
   -fx-border-color: -color-danger-muted;
   -fx-border-width: 1px;
@@ -1341,7 +1341,7 @@
 /* ============================================
    Badge Component
    ============================================ */
-.badge {
+.jfx-badge {
   -fx-background-color: -color-danger-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
   /* M19.44 红线#6 修复：badge 宽度由文字内容决定，非尺寸钳制节点，
@@ -1351,16 +1351,16 @@
   -fx-font-size: 12px;
   -fx-font-weight: 600;
 }
-.badge-success {
+.jfx-badge-success {
   -fx-background-color: -color-success-emphasis;
 }
-.badge-warning {
+.jfx-badge-warning {
   -fx-background-color: -color-warning-emphasis;
 }
-.badge-error {
+.jfx-badge-error {
   -fx-background-color: -color-danger-emphasis;
 }
-.badge-dot {
+.jfx-badge-dot {
   -fx-background-color: -color-danger-emphasis;
   -fx-background-radius: 9999px;
   -fx-min-width: 8px;
@@ -1716,27 +1716,27 @@
 /* ============================================
    Accordion Component
    ============================================ */
-.accordion .titled-pane {
+.jfx-accordion .titled-pane {
   -fx-background-color: -color-bg-default;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
-.accordion .titled-pane > .title {
+.jfx-accordion .titled-pane > .title {
   -fx-background-color: -color-bg-default;
   -fx-padding: 8px 12px;
   -fx-font-weight: 500;
 }
-.accordion .titled-pane > .title:hover {
+.jfx-accordion .titled-pane > .title:hover {
   -fx-background-color: -color-accent-hover;
 }
-.accordion .titled-pane > .title:armed {
+.jfx-accordion .titled-pane > .title:armed {
   -fx-background-color: -color-accent-active;
 }
-.accordion .titled-pane > .content {
+.jfx-accordion .titled-pane > .content {
   -fx-background-color: -color-bg-default;
   -fx-padding: 8px 12px;
 }
-.accordion .titled-pane:expanded > .title {
+.jfx-accordion .titled-pane:expanded > .title {
   -fx-text-fill: -color-accent-emphasis;
 }
 /* ============================================
@@ -1777,13 +1777,13 @@
 /* ============================================
    Pagination Component
    ============================================ */
-.pagination {
+.jfx-pagination {
   -fx-background-color: transparent;
 }
-.pagination .pagination-control {
+.jfx-pagination .pagination-control {
   -fx-background-color: transparent;
 }
-.pagination .pagination-control .button {
+.jfx-pagination .pagination-control .button {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -1793,20 +1793,20 @@
   -fx-padding: 2px 6px;
   -fx-cursor: hand;
 }
-.pagination .pagination-control .button:hover {
+.jfx-pagination .pagination-control .button:hover {
   -fx-background-color: -color-accent-hover;
   -fx-border-color: -color-accent-muted;
   -fx-text-fill: -color-accent-emphasis;
 }
-.pagination .pagination-control .button:armed {
+.jfx-pagination .pagination-control .button:armed {
   -fx-background-color: -color-accent-active;
   -fx-border-color: -color-accent-active;
   -fx-text-fill: -color-fg-on-emphasis;
 }
-.pagination .pagination-control .button:disabled {
+.jfx-pagination .pagination-control .button:disabled {
   -fx-opacity: 0.4;
 }
-.pagination .pagination-control .toggle-button {
+.jfx-pagination .pagination-control .toggle-button {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -1816,17 +1816,17 @@
   -fx-padding: 2px 6px;
   -fx-cursor: hand;
 }
-.pagination .pagination-control .toggle-button:hover {
+.jfx-pagination .pagination-control .toggle-button:hover {
   -fx-background-color: -color-accent-hover;
   -fx-border-color: -color-accent-muted;
   -fx-text-fill: -color-accent-emphasis;
 }
-.pagination .pagination-control .toggle-button:armed {
+.jfx-pagination .pagination-control .toggle-button:armed {
   -fx-background-color: -color-accent-active;
   -fx-border-color: -color-accent-active;
   -fx-text-fill: -color-fg-on-emphasis;
 }
-.pagination .pagination-control .toggle-button:selected {
+.jfx-pagination .pagination-control .toggle-button:selected {
   -fx-background-color: -color-accent-emphasis;
   -fx-border-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
@@ -2786,13 +2786,13 @@
   -fx-fill: -color-fg-default;
 }
 /* 行号样式 */
-.code-line-numbers {
+.jfx-code-line-numbers {
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: transparent -color-border-muted transparent transparent;
   -fx-border-width: 0 1px 0 0;
   -fx-border-style: solid;
 }
-.code-line-number {
+.jfx-code-line-number {
   -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
   -fx-font-size: 12px;
   -fx-text-fill: -color-fg-muted;
@@ -2800,7 +2800,7 @@
   -fx-padding: 0 4 0 0;
 }
 /* Temporary highlight on double-click selection */
-.codeblock-highlight {
+.jfx-codeblock-highlight {
   -fx-background-color: -color-bg-subtle;
 }
 /* ============================================
@@ -3994,7 +3994,7 @@
   -fx-padding: 0 4 0 4;
 }
 /* SkeletonAnt */
-.skeleton-shimmer {
+.jfx-skeleton-shimmer {
   -fx-fill: -color-bg-default;
 }
 /* ============================================
@@ -4874,7 +4874,7 @@
   -fx-background-color: -color-fg-muted;
 }
 /* Badge with text */
-.badge-text {
+.jfx-badge-text {
   -fx-background-color: -color-bg-subtle;
   -fx-text-fill: -color-fg-default;
   -fx-background-radius: 2px;
@@ -4885,22 +4885,22 @@
   -fx-border-width: 1px;
   -fx-border-radius: 2px;
 }
-.badge-text.success {
+.jfx-badge-text.success {
   -fx-background-color: -color-success-subtle;
   -fx-text-fill: -color-success-emphasis;
   -fx-border-color: -color-success-muted;
 }
-.badge-text.warning {
+.jfx-badge-text.warning {
   -fx-background-color: -color-warning-subtle;
   -fx-text-fill: -color-warning-emphasis;
   -fx-border-color: -color-warning-muted;
 }
-.badge-text.error {
+.jfx-badge-text.error {
   -fx-background-color: -color-danger-subtle;
   -fx-text-fill: -color-danger-emphasis;
   -fx-border-color: -color-danger-muted;
 }
-.badge-text.info {
+.jfx-badge-text.info {
   -fx-background-color: -color-accent-subtle;
   -fx-text-fill: -color-accent-emphasis;
   -fx-border-color: -color-accent-muted;
@@ -4908,25 +4908,25 @@
 /* ============================================
    Alert Enhancements with Icons
    ============================================ */
-.alert-with-icon {
+.jfx-alert-with-icon {
   -fx-padding: 8px 12px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
   -fx-border-width: 1px;
 }
-.alert-with-icon.success {
+.jfx-alert-with-icon.success {
   -fx-background-color: -color-success-subtle;
   -fx-border-color: -color-success-muted;
 }
-.alert-with-icon.info {
+.jfx-alert-with-icon.info {
   -fx-background-color: -color-accent-subtle;
   -fx-border-color: -color-accent-muted;
 }
-.alert-with-icon.warning {
+.jfx-alert-with-icon.warning {
   -fx-background-color: -color-warning-subtle;
   -fx-border-color: -color-warning-muted;
 }
-.alert-with-icon.error {
+.jfx-alert-with-icon.error {
   -fx-background-color: -color-danger-subtle;
   -fx-border-color: -color-danger-muted;
 }
@@ -4951,7 +4951,7 @@
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
-.alert-description {
+.jfx-alert-description {
   -fx-font-size: 12px;
   -fx-text-fill: -color-fg-muted;
 }
@@ -5112,7 +5112,7 @@
   -fx-text-fill: -color-fg-muted;
 }
 /* TableAnt danger action button */
-.button-danger-text {
+.jfx-button-danger-text {
   -fx-text-fill: -color-danger-emphasis;
 }
 /* TextAreaAnt read-only danger style */
@@ -5128,12 +5128,12 @@
   -fx-border-style: solid;
 }
 /* BarAnt borders */
-.bar-border-bottom {
+.jfx-bar-border-bottom {
   -fx-border-color: transparent transparent -color-border-default transparent;
   -fx-border-width: 0 0 1px 0;
   -fx-border-style: solid;
 }
-.bar-border-top {
+.jfx-bar-border-top {
   -fx-border-color: -color-border-default transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
   -fx-border-style: solid;
@@ -5181,6 +5181,9 @@
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
   -fx-font-weight: 600;
+}
+.jfx-popover-content {
+  -fx-padding: 12px 16px;
 }
 /* ============================================
    Focus Traversal
@@ -5268,23 +5271,23 @@
   -fx-font-size: 16px;
 }
 /* Tag sizes */
-.tag.small {
+.jfx-tag.jfx-tag-small {
   -fx-padding: 0 2px;
   -fx-font-size: 12px;
 }
-.tag.large {
+.jfx-tag.jfx-tag-large {
   -fx-padding: 2px 6px;
   -fx-font-size: 12px;
 }
-.tag-close-icon {
+.jfx-tag-close-icon {
   -fx-fill: -color-fg-muted;
 }
 /* Badge sizes */
-.badge.small {
+.jfx-badge.jfx-badge-small {
   -fx-padding: 0 4px;
   -fx-font-size: 10px;
 }
-.badge.large {
+.jfx-badge.jfx-badge-large {
   -fx-padding: 2px 10px;
   -fx-font-size: 12px;
 }
@@ -6054,9 +6057,6 @@
 .root.jfx-compact .list-view .list-cell:filled {
   -fx-padding: 4px 8px;
 }
-.root.jfx-compact .card {
-  -fx-padding: 8px;
-}
 .root.jfx-compact .tab-header-area {
   -fx-padding: 0 8px;
 }
@@ -6073,9 +6073,6 @@
   -fx-spacing: 6px;
 }
 .root.jfx-compact .group-box > .content {
-  -fx-padding: 8px;
-}
-.root.jfx-compact .panel > .panel-body {
   -fx-padding: 8px;
 }
 .root.jfx-compact .combo-box-popup .list-view .list-cell {
@@ -6282,10 +6279,10 @@
   -fx-background-radius: 2px;
 }
 /* Alert - MUI Dark Style */
-.alert-success,
-.alert-info,
-.alert-warning,
-.alert-error {
+.jfx-alert-success,
+.jfx-alert-info,
+.jfx-alert-warning,
+.jfx-alert-error {
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
 }

@@ -6,8 +6,11 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * JFXium 主题管理器 —— 负责全局主题切换、主题色注入和 Scene/Region 注册。
@@ -24,6 +27,12 @@ import java.util.List;
 public class ThemeManager {
 
     private static ThemeManager instance;
+
+    // 四个 Theme 实现均为无状态，缓存为单例避免反复 new
+    private static final Theme LIGHT_THEME = new LightTheme();
+    private static final Theme DARK_THEME = new DarkTheme();
+    private static final Theme MUI_LIGHT_THEME = new MuiLightTheme();
+    private static final Theme MUI_DARK_THEME = new MuiDarkTheme();
 
     private Theme currentTheme;
     private ThemeColor currentThemeColor;
@@ -47,7 +56,7 @@ public class ThemeManager {
     private ThemeDensity density = ThemeDensity.DEFAULT;
 
     private ThemeManager() {
-        this.currentTheme = new LightTheme();
+        this.currentTheme = LIGHT_THEME;
         this.currentThemeColor = new ThemeColor(ThemeColor.Preset.BLUE);
     }
 
@@ -73,12 +82,16 @@ public class ThemeManager {
     }
 
     /**
-     * 注册 Scene —— 主题切换 / 主色更改时自动刷新。
+     * 注册 Scene —— 主题切换 / 主色更改时自动刷新，并立即注入当前 accent 和密度。
      * 在 {@code stage.setScene(scene)} 之后调用。
      */
     public void registerScene(Scene scene) {
         if (!registeredScenes.contains(scene)) {
             registeredScenes.add(scene);
+            // 立即为新 Scene 注入当前 accent 色和密度状态，
+            // 确保无论注册时序，新 Scene 都能拿到当前主题的全部状态。
+            applyAccentToScene(scene);
+            applyDensityToScene(scene);
         }
     }
 
@@ -115,24 +128,26 @@ public class ThemeManager {
      */
     private void applyComposite() {
         Theme theme = switch (currentFamily) {
-            case ANT_DESIGN -> dark ? new DarkTheme() : new LightTheme();
-            case MUI        -> dark ? new MuiDarkTheme() : new MuiTheme();
+            case ANT_DESIGN -> dark ? DARK_THEME : LIGHT_THEME;
+            case MUI        -> dark ? MUI_DARK_THEME : MUI_LIGHT_THEME;
         };
         applyTheme(theme);
     }
 
     /** 切换主题家族（设计风格），保持明暗 / 密度 / 主题色不变。 */
     public void setFamily(Family family) {
-        if (family != null) {
-            this.currentFamily = family;
-            applyComposite();
-        }
+        if (family == null || family == currentFamily) return;
+        this.currentFamily = family;
+        applyComposite();
+        notifyListeners();
     }
 
     /** 设置明暗，保持家族 / 密度 / 主题色不变。 */
     public void setDark(boolean dark) {
+        if (dark == this.dark) return;
         this.dark = dark;
         applyComposite();
+        notifyListeners();
     }
 
     /**
@@ -142,9 +157,10 @@ public class ThemeManager {
      * @param density {@link ThemeDensity#DEFAULT} 或 {@link ThemeDensity#COMPACT}；null 忽略
      */
     public void setDensity(ThemeDensity density) {
-        if (density == null) return;
+        if (density == null || density == this.density) return;
         this.density = density;
         applyDensityToAll();
+        notifyListeners();
     }
 
     /** 获取当前密度。 */
@@ -171,8 +187,10 @@ public class ThemeManager {
      * @param color 十六进制颜色字符串（如 "#1677ff"、"#722ed1"）
      */
     public void setPrimaryColor(String color) {
+        if (color == null || color.equals(currentThemeColor.getHexColor())) return;
         this.currentThemeColor.setHexColor(color);
         applyPrimaryColorToAll();
+        notifyListeners();
     }
 
     /** 按预设色板更换主色（accent）。 */
@@ -182,51 +200,56 @@ public class ThemeManager {
 
     /** 将当前主色应用到所有已注册的 Scene 和 Region。 */
     private void applyPrimaryColorToAll() {
-        String[] lightScale = currentThemeColor.generateColorScale();
-        String[] darkScale = currentThemeColor.generateDarkColorScale();
+        String hex = currentThemeColor.getHexColor();
+        Theme.ThemeType currentType = currentTheme.getType();
 
-        boolean isDark = currentTheme.getType() == Theme.ThemeType.DARK;
-        String[] scale = isDark ? darkScale : lightScale;
+        // 短路：hex + 明暗类型均未变化时复用缓存 data-URI
+        String dataUri;
+        if (hex.equals(cachedAccentHex) && currentType == cachedAccentThemeType && accentStylesheet != null) {
+            dataUri = accentStylesheet;
+        } else {
+            String[] lightScale = currentThemeColor.generateColorScale();
+            String[] darkScale = currentThemeColor.generateDarkColorScale();
 
-        // ============================================================
-        // M19.51：用 data-URI stylesheet 注入 accent 变量，而非 Node.setStyle() inline。
-        //
-        // 为什么不用 inline setStyle？
-        //   JavaFX 的 looked-up color 解析有个陷阱：节点 inline style 里定义的变量集合
-        //   会「遮蔽」该节点从 user-agent stylesheet (.root) 继承的变量查找路径。
-        //   于是 root 上 inline 注入 accent 后，子节点（含 ComboBox 显示区 / 弹层 popup）
-        //   解析 -color-fg-default / -color-border-* 时反而找不到（这些定义在 UA CSS 的 .root），
-        //   导致 ClassCastException(String→Paint) + "Could not resolve -color-fg-default"。
-        //
-        // 正解：把 accent 变量也写成 .root { ... } 规则，做成 data-URI 加到 scene.getStylesheets()。
-        //   这样 accent 与 fg/border 等都在 stylesheet 的 .root 作用域合并解析，无遮蔽问题，
-        //   且 popup 弹层（独立 window 但共享 scene.getStylesheets()）也能正确解析。
-        // ============================================================
-        StringBuilder rule = new StringBuilder(".root {");
-        for (int i = 0; i < 10; i++) {
-            rule.append(String.format("-color-accent-%d: %s;", i, scale[i]));
+            boolean isDark = currentTheme.getType() == Theme.ThemeType.DARK;
+            String[] scale = isDark ? darkScale : lightScale;
+
+            StringBuilder rule = new StringBuilder(".root {");
+            for (int i = 0; i < 10; i++) {
+                rule.append(String.format("-color-accent-%d: %s;", i, scale[i]));
+            }
+            rule.append("-color-accent-emphasis:").append(scale[5]).append(";");
+            rule.append("-color-accent-muted:").append(scale[2]).append(";");
+            rule.append("-color-accent-subtle:").append(scale[0]).append(";");
+            rule.append("}");
+
+            dataUri = "data:text/css;base64,"
+                    + Base64.getEncoder().encodeToString(
+                            rule.toString().getBytes(StandardCharsets.UTF_8));
+
+            cachedAccentHex = hex;
+            cachedAccentThemeType = currentType;
+            accentStylesheet = dataUri;
         }
-        rule.append("-color-accent-emphasis:").append(scale[5]).append(";");
-        rule.append("-color-accent-muted:").append(scale[2]).append(";");
-        rule.append("-color-accent-subtle:").append(scale[0]).append(";");
-        rule.append("}");
-
-        String dataUri = "data:text/css;base64,"
-                + java.util.Base64.getEncoder().encodeToString(
-                        rule.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
 
         // 替换每个 scene 上一次注入的 accent stylesheet（先移除旧的，再加新的）
+        String oldUri = accentStylesheet;
         for (Scene scene : registeredScenes) {
-            if (accentStylesheet != null) {
-                scene.getStylesheets().remove(accentStylesheet);
-            }
+            scene.getStylesheets().remove(oldUri);
             scene.getStylesheets().add(dataUri);
         }
-        accentStylesheet = dataUri;
     }
 
     /** 上一次注入的 accent data-URI stylesheet，用于切换时移除旧的。 */
     private String accentStylesheet;
+
+    /** 生成当前 accentStylesheet 所用的 hex 值，用于短路：hex 不变则复用缓存 data-URI。 */
+    private String cachedAccentHex;
+    /** 生成 cachedAccentHex 时的明暗类型，用于检测 light↔dark 切换需重算色阶。 */
+    private Theme.ThemeType cachedAccentThemeType;
+
+    /** 状态变更监听器列表（线程安全）。 */
+    private final List<Runnable> listeners = new CopyOnWriteArrayList<>();
 
     /**
      * 将当前 density 应用到所有已注册的 Scene（PC UI 规范 §12.2 / §15.3 实施）。
@@ -261,6 +284,63 @@ public class ThemeManager {
         }
     }
 
+    /** 将当前 accent data-URI 注入单个 Scene（用于 registerScene 即时补齐）。 */
+    private void applyAccentToScene(Scene scene) {
+        if (accentStylesheet != null) {
+            scene.getStylesheets().remove(accentStylesheet);
+            scene.getStylesheets().add(accentStylesheet);
+        }
+    }
+
+    /** 将当前密度应用到单个 Scene（用于 registerScene 即时补齐）。 */
+    private void applyDensityToScene(Scene scene) {
+        if (scene.getRoot() == null) return;
+        boolean compact = density == ThemeDensity.COMPACT;
+        ObservableList<String> classes = scene.getRoot().getStyleClass();
+        if (compact) {
+            if (!classes.contains(JfxStyles.DENSITY_COMPACT)) {
+                classes.add(JfxStyles.DENSITY_COMPACT);
+            }
+        } else {
+            classes.remove(JfxStyles.DENSITY_COMPACT);
+        }
+    }
+
+    // ============================================================
+    // 公共 API：refresh / 监听器
+    // ============================================================
+
+    /**
+     * 对已注册的 Scene 重应用当前 accent 色和密度（不重设 UA CSS）。
+     * 适用于外部修改了 scene 的 stylesheets 后需要恢复主题状态的场景。
+     */
+    public void refresh() {
+        applyPrimaryColorToAll();
+        applyDensityToAll();
+    }
+
+    /**
+     * 注册状态变更监听器。在 Family / Dark / Density / PrimaryColor 任一维度变更时触发。
+     * 监听器在 JavaFX Application Thread 上执行。
+     */
+    public void addListener(Runnable listener) {
+        if (listener != null) {
+            listeners.add(listener);
+        }
+    }
+
+    /** 移除状态变更监听器。 */
+    public void removeListener(Runnable listener) {
+        listeners.remove(listener);
+    }
+
+    /** 通知所有监听器状态已变更。 */
+    private void notifyListeners() {
+        for (Runnable listener : listeners) {
+            listener.run();
+        }
+    }
+
     /** 切换亮色 / 暗色主题（保持家族 / 密度 / 主题色不变）。 */
     public void toggleTheme() {
         setDark(!dark);
@@ -284,16 +364,20 @@ public class ThemeManager {
 
     /** 切换到 MUI 亮色主题家族。 */
     public void switchToMui() {
+        if (currentFamily == Family.MUI && !dark) return;
         this.currentFamily = Family.MUI;
         this.dark = false;
         applyComposite();
+        notifyListeners();
     }
 
     /** 切换到 MUI 暗色主题家族。 */
     public void switchToMuiDark() {
+        if (currentFamily == Family.MUI && dark) return;
         this.currentFamily = Family.MUI;
         this.dark = true;
         applyComposite();
+        notifyListeners();
     }
 
     /** 获取当前主题家族名称。 */

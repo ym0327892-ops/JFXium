@@ -71,14 +71,15 @@ public class QRCodeAnt {
 
         public StackPane build() {
             StackPane container = new StackPane();
-            container.getStyleClass().add("qr-code");
+            container.getStyleClass().add(JfxStyles.QR_CODE);
 
-            StringBuilder containerStyle = new StringBuilder();
-            containerStyle.append("-fx-background-color: ").append(toHex(bgColor)).append(";");
+            // 默认背景走 .jfx-qr-code 修饰类（LESS 中 -color-bg-default），用户自定义颜色才走 setStyle
+            if (bgColor != null && !bgColor.equals(Color.WHITE)) {
+                container.setStyle("-fx-background-color: " + toHex(bgColor) + ";");
+            }
             if (bordered) {
                 container.getStyleClass().add(JfxStyles.QR_CODE_BORDERED);
             }
-            container.setStyle(containerStyle.toString());
 
             // Create canvas for QR code simulation
             Canvas canvas = new Canvas(size, size);

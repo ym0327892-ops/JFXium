@@ -2,6 +2,10 @@ package org.openkawu.jfxium.core.theme;
 
 import javafx.scene.paint.Color;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * 主题色工具 —— 支持运行时动态更换主色。
  *
@@ -45,6 +49,24 @@ public class ThemeColor {
 
     private String hexColor;
 
+    /** 亮色色阶 LRU 缓存，key=hex 颜色，value=10 色阶数组。上限 32。 */
+    private static final Map<String, String[]> LIGHT_SCALE_CACHE = Collections.synchronizedMap(
+            new LinkedHashMap<>(32, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<String, String[]> eldest) {
+                    return size() > 32;
+                }
+            });
+
+    /** 暗色色阶 LRU 缓存。 */
+    private static final Map<String, String[]> DARK_SCALE_CACHE = Collections.synchronizedMap(
+            new LinkedHashMap<>(32, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<String, String[]> eldest) {
+                    return size() > 32;
+                }
+            });
+
     public ThemeColor(String hexColor) {
         this.hexColor = hexColor;
     }
@@ -77,6 +99,9 @@ public class ThemeColor {
      * menu-item-selected 选中态背景（绑到 accent-subtle = accent-0）变实色把文字吞掉。
      */
     public String[] generateColorScale() {
+        String[] cached = LIGHT_SCALE_CACHE.get(hexColor);
+        if (cached != null) return cached;
+
         Color base = Color.web(hexColor);
         String[] scale = new String[10];
 
@@ -98,6 +123,7 @@ public class ThemeColor {
             scale[i] = toHex(c);
         }
 
+        LIGHT_SCALE_CACHE.put(hexColor, scale);
         return scale;
     }
 
@@ -113,6 +139,9 @@ public class ThemeColor {
      * </ul>
      */
     public String[] generateDarkColorScale() {
+        String[] cached = DARK_SCALE_CACHE.get(hexColor);
+        if (cached != null) return cached;
+
         Color base = Color.web(hexColor);
         String[] scale = new String[10];
 
@@ -130,6 +159,7 @@ public class ThemeColor {
         scale[8] = toHex(base.interpolate(Color.WHITE, 0.65));
         scale[9] = toHex(base.interpolate(Color.WHITE, 0.80));
 
+        DARK_SCALE_CACHE.put(hexColor, scale);
         return scale;
     }
 

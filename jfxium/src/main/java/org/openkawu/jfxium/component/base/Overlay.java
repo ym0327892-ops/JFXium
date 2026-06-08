@@ -3,6 +3,8 @@ package org.openkawu.jfxium.component.base;
 import javafx.geometry.Pos;
 import javafx.scene.layout.StackPane;
 
+import org.openkawu.jfxium.core.css.JfxStyles;
+
 /**
  * 遮罩层基础组件
  * 微型化设计：只负责遮罩功能，可被 Modal、Drawer 等组合使用
@@ -44,6 +46,9 @@ public class Overlay {
 
         public StackPane build() {
             StackPane pane = new StackPane();
+            // alpha 通道必须在 background-color 内，-fx-opacity 会同时影响子节点（参见 _component-aux.less:475 注释）
+            // opacity 为必要动态值，CSS 变量体系无法同时支持：rgba + 变量替换 alpha
+            pane.getStyleClass().add(JfxStyles.OVERLAY);
             pane.setStyle("-fx-background-color: rgba(0, 0, 0, " + opacity + ");");
             pane.setAlignment(Pos.CENTER);
             

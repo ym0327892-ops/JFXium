@@ -122,7 +122,7 @@ public class AvatarAnt {
             int s = customSize > 0 ? customSize : size.getValue();
 
             StackPane avatar = new StackPane();
-            avatar.getStyleClass().add("avatar");
+            avatar.getStyleClass().add(JfxStyles.AVATAR);
             avatar.setPrefSize(s, s);
             avatar.setMinSize(s, s);
             avatar.setMaxSize(s, s);
@@ -158,12 +158,21 @@ public class AvatarAnt {
             } else if (text != null && !text.isEmpty()) {
                 String displayText = text.length() > 2 ? text.substring(0, 2) : text;
                 Label label = new Label(displayText);
-                // 文字颜色：CSS 变量走 styleClass，用户自定义颜色走 setStyle
-                if (isCssVar(textColor)) {
-                    label.getStyleClass().add(JfxStyles.AVATAR_FG_DEFAULT);
-                    label.setStyle("-fx-font-size: " + (s * 0.4) + "px; -fx-font-weight: 600;");
+                // 文字根类：weight 600 + font-size 走 LESS 修饰类
+                label.getStyleClass().add(JfxStyles.AVATAR_TEXT);
+                if (customSize > 0) {
+                    // 自定义尺寸为动态值，唯一无法 LESS 化的场景 → 走 setStyle（必要的动态值）
+                    label.setStyle("-fx-font-size: " + (s * 0.4) + "px;");
                 } else {
-                    label.setStyle("-fx-text-fill: " + textColor + "; -fx-font-size: " + (s * 0.4) + "px; -fx-font-weight: 600;");
+                    // enum 尺寸走 LESS 修饰类（避免 setStyle 拼 -fx-font-size）
+                    label.getStyleClass().add(textSizeClass(size));
+                }
+                // 文字颜色：CSS 变量走 styleClass，用户自定义颜色走 setStyle
+                if (!isCssVar(textColor)) {
+                    String existing = label.getStyle();
+                    label.setStyle((existing == null ? "" : existing) + " -fx-text-fill: " + textColor + ";");
+                } else {
+                    label.getStyleClass().add(JfxStyles.AVATAR_FG_DEFAULT);
                 }
                 avatar.getChildren().add(label);
             }
@@ -175,6 +184,16 @@ public class AvatarAnt {
         /** 判断颜色是否为 CSS 变量（以 "-" 开头） */
         private static boolean isCssVar(String color) {
             return color != null && color.startsWith("-");
+        }
+
+        /** enum 尺寸 → 字体大小修饰类（s*0.4 px 在 LESS 预定义） */
+        private static String textSizeClass(Size size) {
+            return switch (size) {
+                case SMALL -> JfxStyles.AVATAR_TEXT_24;
+                case LARGE -> JfxStyles.AVATAR_TEXT_40;
+                case XL    -> JfxStyles.AVATAR_TEXT_64;
+                default    -> JfxStyles.AVATAR_TEXT_32;
+            };
         }
     }
 

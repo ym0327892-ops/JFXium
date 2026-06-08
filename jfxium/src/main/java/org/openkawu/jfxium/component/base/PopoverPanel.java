@@ -87,7 +87,7 @@ public class PopoverPanel {
 
             if (content != null) {
                 VBox contentBox = new VBox(content);
-                contentBox.setStyle("-fx-padding: 12px 16px;");
+                contentBox.getStyleClass().add(JfxStyles.POPOVER_CONTENT);
                 panel.getChildren().add(contentBox);
             }
 

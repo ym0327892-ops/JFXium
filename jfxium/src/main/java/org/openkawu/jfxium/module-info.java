@@ -7,6 +7,7 @@ module org.openkawu.jfxium {
 
     exports org.openkawu.jfxium.core.token;
     exports org.openkawu.jfxium.core.theme;
+    exports org.openkawu.jfxium.core.builder;
     exports org.openkawu.jfxium.core.css;
     exports org.openkawu.jfxium.core.layout;
     exports org.openkawu.jfxium.core.i18n;

@@ -272,7 +272,9 @@ public class WatermarkAnt {
                 cctx.drawImage(imgOrNull, 0, 0, contentW, contentH);
             } else {
                 String[] lines = textLines;
-                Color fillColor = textColor != null ? textColor : Color.web("#000000");
+                // 默认文字颜色与 setGlobalAlpha(opacity) 合成半透明黑底（Canvas API 颜色不是 CSS setStyle，
+                // 不走红线 #1；如需更精细的语义色可改用 -color-fg-default 的等价物例如 #1f1f1f）。
+                Color fillColor = textColor != null ? textColor : Color.BLACK;
                 cctx.setFill(fillColor);
                 cctx.setFont(Font.font(fontFamily, fontWeight, fontSize));
                 cctx.setTextBaseline(javafx.geometry.VPos.TOP);

@@ -49,7 +49,6 @@ import java.util.function.Consumer;
  *     .menu("Help")
  *         .item("About", () -> showAbout())
  *         .endMenu()
- *     .build();
  *
  * // 业务继承用法
  * public class AppMenuBar extends MenuBarAnt {
@@ -93,6 +92,7 @@ public class MenuBarAnt extends MenuBar {
     }
 
     public MenuBarAnt menu(Menu menu) {
+        menu.getStyleClass().add(JfxStyles.MENU_BAR_MENU);
         getMenus().add(menu);
         return this;
     }

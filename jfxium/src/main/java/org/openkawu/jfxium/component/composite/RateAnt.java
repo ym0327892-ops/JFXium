@@ -212,13 +212,13 @@ public class RateAnt {
 
             if (isCssVar(activeColor) && isCssVar(inactiveColor)) {
                 // 主题色：通过 styleClass 切换，避免 setStyle 无法解析 CSS 变量
+                // cursor: hand 已在 .jfx-rate-star / .jfx-rate-active / .jfx-rate-inactive LESS 中定义
                 star.getStyleClass().removeAll(JfxStyles.RATE_ACTIVE, JfxStyles.RATE_INACTIVE);
                 star.getStyleClass().add(isActive ? JfxStyles.RATE_ACTIVE : JfxStyles.RATE_INACTIVE);
-                star.setStyle("-fx-cursor: hand;");
             } else {
-                // 用户自定义颜色（hex）：直接使用 setStyle
+                // 用户自定义颜色（hex）：仅设置 -fx-fill，cursor 走 LESS 修饰类
                 String fill = isActive ? activeColor : inactiveColor;
-                star.setStyle("-fx-fill: " + fill + "; -fx-cursor: hand;");
+                star.setStyle("-fx-fill: " + fill + ";");
             }
         }
 

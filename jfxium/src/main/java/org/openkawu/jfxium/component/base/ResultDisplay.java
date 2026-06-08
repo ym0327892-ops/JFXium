@@ -53,8 +53,7 @@ public class ResultDisplay {
         public VBox build() {
             VBox result = new VBox(16);
             result.setAlignment(Pos.CENTER);
-            result.getStyleClass().add("result");
-            result.setStyle("-fx-padding: 48px 32px;");
+            result.getStyleClass().add(JfxStyles.RESULT);
 
             SVGPath icon = new SVGPath();
             icon.setContent(getIconPath(status));
@@ -64,7 +63,7 @@ public class ResultDisplay {
 
             VBox iconBox = new VBox(icon);
             iconBox.setAlignment(Pos.CENTER);
-            iconBox.setStyle("-fx-padding: 0 0 16px 0;");
+            iconBox.getStyleClass().add(JfxStyles.RESULT_ICON_BOX);
             result.getChildren().add(iconBox);
 
             if (!title.isEmpty()) {
@@ -84,7 +83,7 @@ public class ResultDisplay {
             if (extra != null) {
                 VBox extraBox = new VBox(extra);
                 extraBox.setAlignment(Pos.CENTER);
-                extraBox.setStyle("-fx-padding: 16px 0 0 0;");
+                extraBox.getStyleClass().add(JfxStyles.RESULT_EXTRA);
                 result.getChildren().add(extraBox);
             }
 

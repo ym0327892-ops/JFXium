@@ -93,7 +93,7 @@ public class TabsAnt {
             // 根容器
             VBox root = new VBox(0);
             root.setAlignment(Pos.TOP_LEFT);
-            root.getStyleClass().add("jfx-tabs");
+            root.getStyleClass().add(JfxStyles.TABS_ROOT);
 
             boolean isVertical = placement == TabPlacement.LEFT || placement == TabPlacement.RIGHT;
 
@@ -232,7 +232,8 @@ public class TabsAnt {
 
         private StackPane createContentArea() {
             contentAreaRef = new StackPane();
-            contentAreaRef.setStyle("-fx-background-color: transparent; -fx-padding: 16px;");
+            // 背景与内边距走 .jfx-tabs-content 修饰类（LESS 中 -color-bg-transparent + 16px padding）
+            contentAreaRef.getStyleClass().add(JfxStyles.TABS_CONTENT);
 
             for (int i = 0; i < tabs.size(); i++) {
                 Node content = tabs.get(i).content;

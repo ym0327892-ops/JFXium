@@ -4,6 +4,7 @@ import javafx.animation.RotateTransition;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -661,7 +662,7 @@ public class MenuAnt {
             header.setAlignment(Pos.CENTER);
             // CSS .jfx-menu-collapsed > .jfx-menu-submenu-header 控制 padding + 对齐
             header.getStyleClass().add(JfxStyles.MENU_SUBMENU_HEADER);
-            header.setStyle("-fx-cursor: hand;");
+            header.setCursor(Cursor.HAND);
 
             // 仅显示图标（如果有）；没有图标时显示 text 首字符
             if (icon != null) {
@@ -737,7 +738,7 @@ public class MenuAnt {
             header.setAlignment(Pos.CENTER_LEFT);
             // CSS .jfx-menu-horizontal > .jfx-menu-submenu-header 控制 padding + height
             header.getStyleClass().add(JfxStyles.MENU_SUBMENU_HEADER);
-            header.setStyle("-fx-cursor: hand;");
+            header.setCursor(Cursor.HAND);
 
             if (icon != null) header.getChildren().add(icon);
             Label label = new Label(text);
@@ -866,7 +867,7 @@ public class MenuAnt {
         /** 绑定点击：触发 onClick + onSelect 回调。 */
         private void attachClick(HBox row, BuildContext ctx) {
             if (onClick == null && key == null) return;
-            row.setStyle((row.getStyle() == null ? "" : row.getStyle()) + "-fx-cursor: hand;");
+            row.setCursor(Cursor.HAND);
             row.setOnMouseClicked(e -> {
                 if (onClick != null) onClick.run();
                 ctx.fireSelect(key);

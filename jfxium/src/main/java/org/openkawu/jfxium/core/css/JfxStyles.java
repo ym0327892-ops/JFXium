@@ -111,6 +111,16 @@ public final class JfxStyles {
     public static final String APP_SHELL_CONTENT = "jfx-app-shell-content";
     public static final String APP_SHELL_FOOTER = "jfx-app-shell-footer";
 
+    /** LayoutAnt 页面布局（同 APP_SHELL 视觉，别名便于业务选择） */
+    public static final String LAYOUT = "jfx-layout";
+    public static final String LAYOUT_HEADER = "jfx-layout-header";
+    public static final String LAYOUT_SIDER = "jfx-layout-sider";
+    public static final String LAYOUT_CONTENT = "jfx-layout-content";
+    public static final String LAYOUT_FOOTER = "jfx-layout-footer";
+
+    /** PaginationAnt 分页根容器 */
+    public static final String PAGINATION = "jfx-pagination";
+
     public static final String SPLIT_PANE = "jfx-split-pane-ant";
 
     public static final String RESIZABLE_PANEL = "jfx-resizable-panel";
@@ -122,6 +132,9 @@ public final class JfxStyles {
 
     public static final String SCROLL_CONTAINER = "jfx-scroll-container";
     public static final String SCROLL_CONTAINER_VIEWPORT = "jfx-scroll-container-viewport";
+
+    /** AccordionAnt 手风琴（仅作容器选择器，标题/内容走 .titled-pane 内置） */
+    public static final String ACCORDION = "jfx-accordion";
 
     /* ============================================
        布局原语（FlexAnt / GridAnt / SpaceAnt / DividerAnt）
@@ -214,6 +227,11 @@ public final class JfxStyles {
     public static final String BADGE_STATUS_WARNING = "jfx-badge-status-warning";
     public static final String BADGE_STATUS_ERROR = "jfx-badge-status-error";
     public static final String BADGE_STATUS_DEFAULT = "jfx-badge-status-default";
+    /** text 形态：含文本的胶囊形徽标，配合 success/warning/error/info 修饰类使用 */
+    public static final String BADGE_TEXT = "jfx-badge-text";
+    /** small/large 尺寸修饰类（与 BADGE 复合使用） */
+    public static final String BADGE_SMALL = "jfx-badge-small";
+    public static final String BADGE_LARGE = "jfx-badge-large";
 
     /* ============================================
        AlertAnt 警告提示
@@ -229,6 +247,8 @@ public final class JfxStyles {
     public static final String ALERT_MESSAGE = "jfx-alert-message";
     public static final String ALERT_ICON = "jfx-alert-icon";
     public static final String ALERT_CLOSE_BTN = "jfx-alert-close-btn";
+    public static final String ALERT_WITH_ICON = "jfx-alert-with-icon";
+    public static final String ALERT_DESCRIPTION = "jfx-alert-description";
 
     /* ============================================
        ProgressAnt 进度条
@@ -265,6 +285,10 @@ public final class JfxStyles {
     public static final String CODEBLOCK_COPY_BTN = "jfx-codeblock-copy-btn";
     public static final String CODEBLOCK_SCROLL = "jfx-codeblock-scroll";
     public static final String CODEBLOCK_CONTENT = "jfx-codeblock-content";
+    /** 代码块行号容器（左侧侧栏） */
+    public static final String CODE_LINE_NUMBERS = "jfx-code-line-numbers";
+    /** 代码块单个行号节点 */
+    public static final String CODE_LINE_NUMBER = "jfx-code-line-number";
 
     /* ============================================
        IconAnt / EmptyAnt / BackTopAnt / SpinAnt / TimePickerAnt
@@ -565,11 +589,13 @@ public final class JfxStyles {
     /* ============================================
        业务模板（template/）— M18 通用 CRUD 三段式骨架
        ============================================ */
-    public static final String CRUD_TEMPLATE         = "jfx-crud-template";
-    public static final String CRUD_TEMPLATE_TITLE   = "jfx-crud-template-title";
-    public static final String CRUD_TEMPLATE_TOPBAR  = "jfx-crud-template-topbar";
-    public static final String CRUD_TEMPLATE_BODY    = "jfx-crud-template-body";
+    public static final String CRUD_TEMPLATE           = "jfx-crud-template";
+    public static final String CRUD_TEMPLATE_TITLE     = "jfx-crud-template-title";
+    public static final String CRUD_TEMPLATE_TOPBAR    = "jfx-crud-template-topbar";
+    public static final String CRUD_TEMPLATE_BODY      = "jfx-crud-template-body";
     public static final String CRUD_TEMPLATE_BOTTOMBAR = "jfx-crud-template-bottombar";
+    /** 边框修饰类（jfx- 前缀避免与 .bordered 裸名冲突；与 LESS 中 .jfx-crud-template.jfx-crud-template-bordered 联动） */
+    public static final String CRUD_TEMPLATE_BORDERED  = "jfx-crud-template-bordered";
 
     /* ============================================
        PageTemplate（M19.33）— 通用展示页骨架
@@ -747,6 +773,7 @@ public final class JfxStyles {
        ============================================ */
     public static final String SKELETON = "jfx-skeleton";
     public static final String SKELETON_RECT = "jfx-skeleton-rect";
+    public static final String SKELETON_SHIMMER = "jfx-skeleton-shimmer";
 
     /* ============================================
        AvatarAnt — 头像
@@ -770,6 +797,7 @@ public final class JfxStyles {
     public static final String POPOVER_PANEL      = "jfx-popover-panel";
     public static final String POPOVER_TITLE_BOX  = "jfx-popover-title-box";
     public static final String POPOVER_TITLE_LABEL = "jfx-popover-title-label";
+    public static final String POPOVER_CONTENT    = "jfx-popover-content";
 
     /* ============================================
        Popconfirm / Message / Notification / Result 基础卡片
@@ -800,6 +828,8 @@ public final class JfxStyles {
     public static final String DASHBOARD_STAT_VALUE = "jfx-dashboard-stat-value";
     public static final String BAR_BORDER_BOTTOM = "jfx-bar-border-bottom";
     public static final String BAR_BORDER_TOP    = "jfx-bar-border-top";
+    /** TableAnt 危险动作按钮（红色文字按钮） */
+    public static final String BUTTON_DANGER_TEXT = "jfx-button-danger-text";
 
     /* ============================================
        通用四向边框 — 任意组件可用
@@ -823,4 +853,118 @@ public final class JfxStyles {
 
     /** 终端区（inset 底 + 等宽字体，主题切换自动反色）。 */
     public static final String CODE_EDITOR_TERMINAL = "jfx-code-terminal";
+
+    /* ============================================
+       TagAnt — 标签
+       ============================================ */
+    public static final String TAG              = "jfx-tag";
+    public static final String TAG_LABEL        = "jfx-tag-label";
+    public static final String TAG_CLOSE        = "jfx-tag-close";
+    public static final String TAG_CLOSE_ICON   = "jfx-tag-close-icon";
+    /** Tag 形状修饰类（与 .jfx-tag 复合：.jfx-tag.jfx-tag-rounded） */
+    public static final String TAG_ROUNDED      = "jfx-tag-rounded";
+    public static final String TAG_SQUARE       = "jfx-tag-square";
+    /** Tag 状态色修饰类 */
+    public static final String TAG_DEFAULT      = "jfx-tag-default";
+    public static final String TAG_PRIMARY      = "jfx-tag-primary";
+    public static final String TAG_SUCCESS      = "jfx-tag-success";
+    public static final String TAG_PROCESSING   = "jfx-tag-processing";
+    public static final String TAG_ERROR        = "jfx-tag-error";
+    public static final String TAG_WARNING      = "jfx-tag-warning";
+    public static final String TAG_HAS_COLOR    = "jfx-tag-has-color";
+    /** Tag 无边框样式（带默认色时使用） */
+    public static final String TAG_BORDERLESS   = "jfx-tag-borderless";
+    /** Tag 可选中状态 */
+    public static final String TAG_CHECKABLE    = "jfx-tag-checkable";
+    public static final String TAG_CHECKED      = "jfx-tag-checked";
+    /** Tag 尺寸修饰类 */
+    public static final String TAG_SMALL        = "jfx-tag-small";
+    public static final String TAG_LARGE        = "jfx-tag-large";
+
+    /* ============================================
+       ResultDisplay — 结果页（M19 标准化）
+       既有 RESULT_TITLE/RESULT_SUBTITLE 已在上面，本块补齐根类 + icon/extra
+       ============================================ */
+    public static final String RESULT           = "jfx-result";
+    public static final String RESULT_ICON      = "jfx-result-icon";
+    public static final String RESULT_ICON_BOX  = "jfx-result-icon-box";
+    public static final String RESULT_BODY      = "jfx-result-body";
+    public static final String RESULT_EXTRA     = "jfx-result-extra";
+    /** Result 状态修饰类（颜色用 5 套语义色，与 Alert 保持一致） */
+    public static final String RESULT_STATUS_SUCCESS = "jfx-result-status-success";
+    public static final String RESULT_STATUS_INFO    = "jfx-result-status-info";
+    public static final String RESULT_STATUS_WARNING = "jfx-result-status-warning";
+    public static final String RESULT_STATUS_ERROR   = "jfx-result-status-error";
+    public static final String RESULT_STATUS_404     = "jfx-result-status-404";
+    public static final String RESULT_STATUS_403     = "jfx-result-status-403";
+    public static final String RESULT_STATUS_500     = "jfx-result-status-500";
+
+    /* ============================================
+       AvatarAnt — 头像尺寸/形状变体
+       已有 AVATAR/AVATAR_BG_DEFAULT/AVATAR_FG_DEFAULT
+       补尺寸和形状修饰类
+       ============================================ */
+    public static final String AVATAR_SMALL      = "jfx-avatar-small";
+    public static final String AVATAR_LARGE      = "jfx-avatar-large";
+    public static final String AVATAR_SQUARE     = "jfx-avatar-square";
+    public static final String AVATAR_GROUP      = "jfx-avatar-group";
+    /** Avatar 文字根类 + 字号修饰类（避免 Java setStyle 拼 -fx-font-size） */
+    public static final String AVATAR_TEXT       = "jfx-avatar-text";
+    public static final String AVATAR_TEXT_24    = "jfx-avatar-text-24";
+    public static final String AVATAR_TEXT_32    = "jfx-avatar-text-32";
+    public static final String AVATAR_TEXT_40    = "jfx-avatar-text-40";
+    public static final String AVATAR_TEXT_64    = "jfx-avatar-text-64";
+
+    /* ============================================
+       ImageAnt — 圆角修饰类（border-radius 由 LESS 钳制）
+       已有 IMAGE/IMAGE_FALLBACK
+       ============================================ */
+    public static final String IMAGE_ROUNDED     = "jfx-image-rounded";
+    public static final String IMAGE_CIRCLE      = "jfx-image-circle";
+    public static final String IMAGE_PREVIEW     = "jfx-image-preview";
+
+    /* ============================================
+       Overlay — 全屏遮罩层
+       ============================================ */
+    public static final String OVERLAY           = "jfx-overlay";
+
+    /* ============================================
+       TabsAnt — 标签页根类（content 区域用 jfx-tabs-content）
+       ============================================ */
+    public static final String TABS_ROOT         = "jfx-tabs";
+    public static final String TABS_CONTENT      = "jfx-tabs-content";
+
+    /* ============================================
+       StepsAnt — 步骤条尺寸修饰类
+       ============================================ */
+    public static final String STEPS_SMALL       = "jfx-steps-small";
+
+    /* ============================================
+       TreeSelectAnt — 行内缩进修饰类（深度变体由 Java 端生成 jfx-tree-select-row-N）
+       已有 TREE_SELECT/TREE_SELECT_ROW/TREE_SELECT_FIELD/TREE_SELECT_LABEL/TREE_SELECT_ARROW
+       补选中/禁用/激活
+       ============================================ */
+    public static final String TREE_SELECT_ACTIVE     = "jfx-tree-select-active";
+    public static final String TREE_SELECT_LEAF       = "jfx-tree-select-leaf";
+    public static final String TREE_SELECT_INDENT     = "jfx-tree-select-indent";
+
+    /* ============================================
+       ListViewAnt — ListView 包装
+       ============================================ */
+    public static final String JFX_LIST_VIEW = "jfx-list-view";
+
+    /* ============================================
+       ChoiceBoxAnt — ChoiceBox 包装
+       ============================================ */
+    public static final String JFX_CHOICE_BOX = "jfx-choice-box";
+
+    /* ============================================
+       SeparatorAnt — Separator 包装
+       ============================================ */
+    public static final String JFX_SEPARATOR = "jfx-separator";
+
+    /* ============================================
+       SplitMenuButtonAnt — SplitMenuButton 包装
+       ============================================ */
+    public static final String JFX_SPLIT_MENU_BUTTON = "jfx-split-menu-button";
 }

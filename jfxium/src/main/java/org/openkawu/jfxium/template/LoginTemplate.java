@@ -320,7 +320,7 @@ public class LoginTemplate {
         /** 输入框 + 前置图标的复合行（HBox 自拼边框，看起来像「集成式输入」）。 */
         private static HBox inputWithIcon(IconAnt.Path iconPath, javafx.scene.control.TextInputControl field) {
             Region icon = IconAnt.path(iconPath, 16);
-            icon.getStyleClass().add("icon-muted");
+            icon.getStyleClass().add(JfxStyles.ICON_MUTED);
             StackPane iconBox = new StackPane(icon);
             iconBox.setMinWidth(36);
             iconBox.setMaxWidth(36);

@@ -103,8 +103,8 @@ public class ImageAnt {
                     }
 
                     if (preview) {
-                        // cursor 是交互细节，inline 一行可接受；后续可下沉到 .jfx-image-preview
-                        imageView.setStyle("-fx-cursor: hand;");
+                        // cursor 下沉到 .jfx-image-preview（LESS 提供 -fx-cursor: hand），避免红线 #1
+                        imageView.getStyleClass().add(JfxStyles.IMAGE_PREVIEW);
                         imageView.setOnMouseClicked(e -> {
                             // Simple preview - could be enhanced with a modal
                             System.out.println("Preview: " + src);

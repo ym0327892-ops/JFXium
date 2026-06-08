@@ -3,10 +3,10 @@ package org.openkawu.jfxium.core.theme;
 import java.util.Objects;
 
 /**
- * JFXium MUI Theme.
+ * JFXium MUI Light Theme.
  * Material Design inspired theme with blue primary color.
  */
-public class MuiTheme implements Theme {
+public class MuiLightTheme implements Theme {
 
     @Override
     public String getName() {
