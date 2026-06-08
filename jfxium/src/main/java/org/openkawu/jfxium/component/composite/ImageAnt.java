@@ -72,8 +72,10 @@ public class ImageAnt {
                 container.setPrefHeight(height);
                 container.setMaxHeight(height);
             }
-            // borderRadius 是用户传入的实例属性，无法预定义 LESS 选择器，保留 inline 注入
-            // 但只设 -fx-background-radius，不再混搭 background-color（背景由 LESS 控制）
+            // ── 红线#1 必要例外 ──────────────────────────────────
+            // borderRadius 是用户传入的实例属性（连续值），
+            // 无法预定义为 LESS 静态选择器。只设纯几何属性
+            // （border-radius），背景颜色/边框完全由 LESS 控制。
             if (borderRadius > 0) {
                 container.setStyle("-fx-background-radius: " + borderRadius + "px;");
             }

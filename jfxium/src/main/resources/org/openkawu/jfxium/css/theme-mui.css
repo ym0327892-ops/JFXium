@@ -2264,9 +2264,24 @@
 .spinner .decrement-arrow-button:pressed {
   -fx-background-color: -color-accent-active;
 }
-.spinner .increment-arrow,
+/* M19.44+ 红线#9 修复：显式设 shape + 尺寸（对齐全项目 arrow 规范，modena 默认 shape 保留作为显式声明） */
+.spinner .increment-arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-shape: "M 0 4 h 7 l -3.5 -4 z";
+  -fx-min-width: 4px;
+  -fx-min-height: 7px;
+  -fx-pref-width: 4px;
+  -fx-pref-height: 7px;
+  -fx-padding: 0 5px 0 5px;
+}
 .spinner .decrement-arrow {
   -fx-background-color: -color-fg-muted;
+  -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+  -fx-min-width: 4px;
+  -fx-min-height: 7px;
+  -fx-pref-width: 4px;
+  -fx-pref-height: 7px;
+  -fx-padding: 0 5px 0 5px;
 }
 .spinner .increment-arrow-button:hover .increment-arrow,
 .spinner .decrement-arrow-button:hover .decrement-arrow {

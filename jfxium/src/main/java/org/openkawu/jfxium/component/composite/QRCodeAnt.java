@@ -73,7 +73,9 @@ public class QRCodeAnt {
             StackPane container = new StackPane();
             container.getStyleClass().add(JfxStyles.QR_CODE);
 
-            // 默认背景走 .jfx-qr-code 修饰类（LESS 中 -color-bg-default），用户自定义颜色才走 setStyle
+            // ── 红线#1 必要例外 ─────────────────────────────
+            // 用户自定义背景颜色（hex），无法预定义 LESS；
+            // 默认背景（WHITE）走 .jfx-qr-code LESS 修饰类。
             if (bgColor != null && !bgColor.equals(Color.WHITE)) {
                 container.setStyle("-fx-background-color: " + toHex(bgColor) + ";");
             }

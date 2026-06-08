@@ -21,8 +21,8 @@ public class PopoverPanel {
         private Node content = null;
         private boolean closable = false;
         private Runnable onClose = null;
-        private String minWidth = "200px";
-        private String maxWidth = "300px";
+        private double minWidth = 200;
+        private double maxWidth = 300;
 
         public Builder title(String title) {
             this.title = title;
@@ -44,12 +44,12 @@ public class PopoverPanel {
             return this;
         }
 
-        public Builder minWidth(String minWidth) {
+        public Builder minWidth(double minWidth) {
             this.minWidth = minWidth;
             return this;
         }
 
-        public Builder maxWidth(String maxWidth) {
+        public Builder maxWidth(double maxWidth) {
             this.maxWidth = maxWidth;
             return this;
         }
@@ -57,7 +57,10 @@ public class PopoverPanel {
         public VBox build() {
             VBox panel = new VBox(0);
             panel.getStyleClass().add(JfxStyles.POPOVER_PANEL);
-            panel.setStyle("-fx-min-width: " + minWidth + ";-fx-max-width: " + maxWidth + ";");
+            // M19.44+ 红线#1 修复：用 setMinWidth/setMaxWidth 替代 setStyle("-fx-min-width: ...")
+            panel.setMinWidth(minWidth);
+            panel.setMaxWidth(maxWidth);
+            panel.setPrefWidth(minWidth);
 
             if (!title.isEmpty()) {
                 VBox titleBox = new VBox(0);

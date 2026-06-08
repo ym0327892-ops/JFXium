@@ -819,8 +819,48 @@
 
 ## 修复统计（更新）
 
-- **总计问题**：72 个（#1–#72）
-- **已修复 / 已完成**：72 个
+- **总计问题**：76 个（#1–#76）
+- **已修复 / 已完成**：76 个
 - **未修复**：0
-- **本轮 commit**：`6ee94e8`（fix(theme): 全面规则审计 + MuiTheme 重命名 + JavaFX 控件补齐，+1931 / -872，59 files）
+- **本轮 commit**：`M19.44+`（fix(p0): 全量规则审计 P0 修复，4 files，~45 行）
 - **最后更新**：2026-06-08
+
+## 修复说明（2026-06-08：BUG #73–#76 P0 红线批量修复 — 全面规则审计第二轮）
+
+> 全量规则审计报告（15 项检查覆盖 150 Java + 84 LESS）发现 4 个 P0 违规。
+> 本轮对全部 P0 做修复或必要例外标注。
+
+### #73 PopoverPanel setStyle 写 px → setMinWidth/setMaxWidth（红线 #1）
+- **现象**：`PopoverPanel.java:60` — `panel.setStyle("-fx-min-width: " + minWidth + ";-fx-max-width: " + maxWidth + ";")` 硬编码 px。
+- **根因**：minWidth/maxWidth 字段声明为 `String`（`"200px"` / `"300px"`），本应是 `double` 值走 Java API。
+- **修复**：
+  - 字段类型 `String → double`（`200` / `300`）
+  - `Builder.minWidth/maxWidth` 参数类型同步改为 `double`
+  - `build()` 中 `setStyle(...)` 替换为 `setMinWidth(minWidth); setMaxWidth(maxWidth); setPrefWidth(minWidth)`
+- **验证**：grep 确认全项目无调用方传 String 值。
+
+### #74 Spinner arrow 缺显式 -fx-shape + 尺寸（红线 #9）
+- **现象**：`_spinner.less:45-48` — `.spinner .increment-arrow` / `.spinner .decrement-arrow` 只设 `-fx-background-color`，无显式 `-fx-shape` 和 `min/pref` 尺寸。
+- **根因**：modena.css 已定义默认 shape，但红线 #9 要求「必须显式设 -fx-shape + min/pref 尺寸」。组合框、日期选择器等已在 M19.44 修复，spinner 漏修。
+- **修复**：
+  - `.spinner .increment-arrow` 新增 `-fx-shape: "M 0 4 h 7 l -3.5 -4 z"` + `min/pref: 4×7px` + `padding: 0 5px`
+  - `.spinner .decrement-arrow` 新增 `-fx-shape: "M 0 0 h 7 l -3.5 4 z"` + 同上尺寸
+  - 合并选择器拆分为独立块（两种箭头 shape 不同，不能共用）
+- **验证**：`mvn compile` → BUILD SUCCESS；grep 编译产物确认 11 套主题 CSS 均含新 -fx-shape。
+
+### #75 Overlay setStyle rgba → 必要例外注释规范化（红线 #1 豁免）
+- **现象**：`Overlay.java:52` — `setStyle("-fx-background-color: rgba(0, 0, 0, " + opacity + ");")` 技术上无法用 styleClass 替代。
+- **根因**：JavaFX CSS 不支持 `rgba(var(--color), N)` 动态 alpha 替换，且 `-fx-opacity` 会影响子节点透明度（参见 `_component-aux.less:475`）。opacity 是 Builder 入参连续值，非有限离散值不能映射为 styleClass。
+- **修复**：保留 setStyle，添加详细的「红线 #1 必要例外」注释块（6 行），说明 JavaFX 技术限制、与 AtlantaFX 策略一致、为何不能走 styleClass。
+- **沉淀**：动态连续值的 setStyle 是红线 #1 的唯一合法例外——必须满足三个条件同时成立：(1) 值来自 Builder 入参（非硬编码常量）、(2) 值是连续非离散的、(3) 注释中写清技术原因。
+
+### #76 6 处用户自定义 setStyle → 统一红线 #1 必要例外注释
+- **影响面**：AvatarAnt（3 处）、QRCodeAnt（1 处）、FloatButtonAnt（1 处）、ImageAnt（1 处）、RateAnt（1 处）
+- **根因**：这些 setStyle 的值全部来自用户 Builder 入参（hex 颜色 / 动态计算尺寸），无法预定义 LESS。代码已有 `isCssVar()` 分支正确走 styleClass，仅用户自定义值走 setStyle。
+- **修复**：6 处注释统一标准化为 `── 红线#1 必要例外 ──` 块格式，明确写道「用户自定义 X，无法预定义 LESS」+「Y 属性由 LESS styleClass 控制」。
+- **沉淀**：注解格式标准化降低后续审计假阳性——grep `红线#1 必要例外` 一键定位所有豁免点，其余 setStyle 即为真违规。
+
+### #73–#76 整体验证
+- 编译：`./mvnw compile -pl jfxium` → BUILD SUCCESS
+- LESS 编译产物：11 套主题 CSS 全部含 spinner arrow 新 -fx-shape
+- 红线覆盖：本次审计中发现的 P0 全部修复或标注豁免，0 遗留

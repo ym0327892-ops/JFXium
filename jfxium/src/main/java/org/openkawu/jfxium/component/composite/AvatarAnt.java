@@ -127,7 +127,9 @@ public class AvatarAnt {
             avatar.setMinSize(s, s);
             avatar.setMaxSize(s, s);
 
-            // Background：CSS 变量走 styleClass，用户自定义颜色走 setStyle
+            // ── 红线#1 必要例外 ─────────────────────────────
+            // 用户自定义背景颜色（hex/rgb），无法预定义 LESS；
+            // CSS 变量路径通过 isCssVar() 已正确走 styleClass。
             String bg = backgroundColor != null ? backgroundColor : null;
             if (bg == null || isCssVar(bg)) {
                 avatar.getStyleClass().add(JfxStyles.AVATAR_BG_DEFAULT);
@@ -161,13 +163,17 @@ public class AvatarAnt {
                 // 文字根类：weight 600 + font-size 走 LESS 修饰类
                 label.getStyleClass().add(JfxStyles.AVATAR_TEXT);
                 if (customSize > 0) {
-                    // 自定义尺寸为动态值，唯一无法 LESS 化的场景 → 走 setStyle（必要的动态值）
+                    // ── 红线#1 必要例外 ─────────────────────
+                    // 自定义尺寸为运行时计算值（s * 0.4），
+                    // 无法预定义为 LESS 静态选择器。
                     label.setStyle("-fx-font-size: " + (s * 0.4) + "px;");
                 } else {
                     // enum 尺寸走 LESS 修饰类（避免 setStyle 拼 -fx-font-size）
                     label.getStyleClass().add(textSizeClass(size));
                 }
-                // 文字颜色：CSS 变量走 styleClass，用户自定义颜色走 setStyle
+                // ── 红线#1 必要例外 ─────────────────────
+                // 用户自定义文字颜色（hex），无法预定义 LESS；
+                // CSS 变量路径已正确走 styleClass。
                 if (!isCssVar(textColor)) {
                     String existing = label.getStyle();
                     label.setStyle((existing == null ? "" : existing) + " -fx-text-fill: " + textColor + ";");
