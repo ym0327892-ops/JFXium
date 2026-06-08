@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import org.openkawu.jfxium.component.layout.ScrollContainerAnt;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.theme.ThemeColor;
+import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.jfxiumUiExample.pages.HomePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.AvatarBadgeExamplePage;
@@ -353,10 +354,19 @@ public class MainView {
                 .onChange(mode -> tm.setDark("暗色".equals(mode)))
                 .build();
 
-        // 紧凑密度切换
-        Button toggleCompact = ButtonAnt.create("紧凑")
+        // 密度切换（DEFAULT / COMPACT 正交于 family × dark）
+        // ButtonAnt 链式调用 lambda 内要回调设的按钮引用，用 Button[] 数组占位供 lambda 捕获
+        final Button[] densityBtn = {null};
+        densityBtn[0] = ButtonAnt.create(densityLabel(tm.getDensity()))
                 .size(ButtonAnt.Size.SMALL)
-                .onClick(e -> tm.toggleCompact()).build();
+                .onClick(e -> {
+                    ThemeDensity next = tm.getDensity() == ThemeDensity.DEFAULT
+                            ? ThemeDensity.COMPACT
+                            : ThemeDensity.DEFAULT;
+                    tm.setDensity(next);
+                    densityBtn[0].setText(densityLabel(next));
+                })
+                .build();
 
         // 主题色选择（11 个 Ant Design 预设色）
         ComboBox<ThemeColor.Preset> colorSelect = ComboBoxAnt.<ThemeColor.Preset>create()
@@ -377,12 +387,17 @@ public class MainView {
 
         HBox header = BarAnt.create()
                 .left(brandBox)
-                .right(styleSelect, modeSelect, toggleCompact, colorSelect, userLabel, logout)
+                .right(styleSelect, modeSelect, densityBtn[0], colorSelect, userLabel, logout)
                 .gap(12).build();
         // 背景色 + 底边框由 AppShellAnt 给 header 挂的 .app-shell-header styleClass 控制；
         // 这里只补 padding（结构性属性），不挂 Background.DEFAULT —— 避免覆盖 LESS 的容器色阶。
         header.setPadding(new Insets(12, 24, 12, 24));
         return header;
+    }
+
+    /** 密度切换按钮的 label 文案，反映当前生效的密度。 */
+    private static String densityLabel(ThemeDensity d) {
+        return d == ThemeDensity.COMPACT ? "密度: 紧凑" : "密度: 默认";
     }
 
     // ============================================================
