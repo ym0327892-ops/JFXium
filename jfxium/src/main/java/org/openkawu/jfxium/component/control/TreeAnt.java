@@ -1,9 +1,11 @@
 package org.openkawu.jfxium.component.control;
 
 import javafx.scene.Node;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -142,6 +144,24 @@ public class TreeAnt<T> {
         public TreeView<T> build() {
             TreeView<T> treeView = new TreeView<>(root);
             treeView.setShowRoot(showRoot);
+
+            // P1-1c 修复：显式挂载 jfx- 前缀样式类，避免 .tree-cell 全局污染
+            treeView.setCellFactory(tv -> {
+                TreeCell<T> cell = new TreeCell<>() {
+                    @Override
+                    protected void updateItem(T item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item.toString());
+                        }
+                    }
+                };
+                cell.getStyleClass().add(JfxStyles.TREE_CELL);
+                return cell;
+            });
 
             // Selection listener
             if (onSelect != null) {

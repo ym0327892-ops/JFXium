@@ -29,6 +29,12 @@
 @border-radius-lg: 8px;
 @border-radius-full: 9999px;
 
+// Border Width
+// --------------------------------------------
+// 统一边框宽度 token，替代硬编码 1px（用于未来可能的密度调整）
+// 使用位置：所有 -fx-border-width 声明
+@border-width-default: 1px;
+
 // Font Size Scale (Base)
 // --------------------------------------------
 // 通用字号梯度（PC UI 规范 §3：仅 12/14/16/20 四档，已删除 10px——DPI 缩放下难以辨识）
@@ -287,6 +293,20 @@
 @color-menu-dark-bg: #001529;
 @color-menu-dark-submenu-bg: #000c17;
 
+// Dark menu 文字/背景 token（P1-2: 从 rgba 硬编码提取）
+@color-fg-dark-menu: rgba(255, 255, 255, 0.85);
+@color-fg-dark-menu-muted: rgba(255, 255, 255, 0.65);
+@color-fg-dark-menu-subtle: rgba(255, 255, 255, 0.45);
+@color-bg-dark-menu-hover: rgba(255, 255, 255, 0.08);
+@color-bg-dark-menu-divider: rgba(255, 255, 255, 0.12);
+
+// LoginTemplate Banner 文字 token（P1-2: 从 rgba 硬编码提取）
+@color-fg-on-accent-primary: rgba(255, 255, 255, 0.95);
+@color-fg-on-accent-secondary: rgba(255, 255, 255, 0.90);
+@color-fg-on-accent-muted: rgba(255, 255, 255, 0.85);
+@color-fg-on-accent-subtle: rgba(255, 255, 255, 0.60);
+@color-bg-on-accent-logo: rgba(255, 255, 255, 0.18);
+
 // Switch Padding
 // 使用位置：.toggle-button.switch
 // 影响组件：SwitchAnt
@@ -336,7 +356,7 @@
 .input-base() {
   -fx-background-color: @color-bg-default;
   -fx-border-color: @color-border-default;
-  -fx-border-width: 1px;
+  -fx-border-width: @border-width-default;
   -fx-border-radius: @border-radius-md;
   -fx-background-radius: @border-radius-md;
   -fx-padding: @input-padding-y @input-padding-x;
@@ -353,6 +373,12 @@
 
 // 阴影效果混入
 // 使用位置：.tooltip、.modal-content、.combo-box-popup 等
+
+// 阴影/遮罩色 token（P1-2: 从 rgba 硬编码提取）
+@color-shadow-thumb: rgba(0, 0, 0, 0.1);
+@color-shadow-popover: rgba(0, 0, 0, 0.15);
+@color-mask-default: rgba(0, 0, 0, 0.45);
+
 .shadow-sm() {
   -fx-effect: dropshadow(gaussian, @color-shadow-default, 4, 0, 0, 1);
 }

@@ -1,27 +1,27 @@
 /* ============================================
-   Tree Cell Enhancements
+   Tree Cell Enhancements — jfx- 前缀避免全局污染
    ============================================ */
-.tree-cell {
+.jfx-tree-cell {
   -fx-padding: @tree-cell-padding-y @tree-cell-padding-x;
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
   
 }
 
-.tree-cell:hover {
+.jfx-tree-cell:hover {
   -fx-background-color: -color-accent-hover;
 }
 
-.tree-cell:armed {
+.jfx-tree-cell:armed {
   -fx-background-color: -color-accent-active;
 }
 
-.tree-cell:selected {
+.jfx-tree-cell:selected {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
 }
 
-.tree-cell .tree-disclosure-node .arrow {
+.jfx-tree-cell .tree-disclosure-node .arrow {
   /* M19.44 红线#9 修复：显式设 shape + 尺寸（右指三角，对齐 AtlantaFX arrow-right） */
   -fx-shape: "M5 0l5 5-5 5z";
   -fx-min-width: 5px;
@@ -31,8 +31,7 @@
   -fx-background-color: -color-fg-muted;
 }
 
-.tree-cell:expanded .tree-disclosure-node .arrow {
+.jfx-tree-cell:expanded .tree-disclosure-node .arrow {
   -fx-shape: "M0 5l5 5 5-5z";
   -fx-background-color: -color-accent-emphasis;
 }
-

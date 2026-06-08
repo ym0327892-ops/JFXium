@@ -237,7 +237,7 @@
   -fx-background-color: -color-bg-default;
   -fx-text-fill: -color-fg-default;
   -fx-border-color: -color-border-default;
-  -fx-border-width: 1px;
+  -fx-border-width: @border-width-default;
   -fx-border-radius: @border-radius-md;
 }
 
@@ -301,7 +301,7 @@
 .choice-box,
 .spinner {
   -fx-border-color: @input-border-color;
-  -fx-border-width: 1px;
+  -fx-border-width: @border-width-default;
   -fx-border-radius: @border-radius-md;
   -fx-background-radius: @border-radius-md;
 }
@@ -317,7 +317,7 @@
   // 焦点效果统一为"边框变色 + 外阴影"，对齐 SKILL 强约束 #5；
   // 边框宽度保持 1px，避免聚焦时尺寸抖动
   -fx-border-color: -color-accent-emphasis;
-  -fx-border-width: 1px;
+  -fx-border-width: @border-width-default;
   -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
 }
 
@@ -431,7 +431,7 @@
   -fx-background-color: -color-bg-default;
   -fx-background-radius: 10px;
   -fx-border-color: -color-border-default;
-  -fx-border-width: 1px;
+  -fx-border-width: @border-width-default;
   -fx-border-radius: 10px;
 }
 

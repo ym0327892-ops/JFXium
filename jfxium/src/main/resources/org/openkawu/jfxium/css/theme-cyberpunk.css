@@ -2113,35 +2113,35 @@
   -fx-background-radius: 2px;
 }
 /* ============================================
-   Label & Text Styles
+   Label & Text Styles — jfx- 前缀避免全局污染
    ============================================ */
-.label {
+.jfx-typography-text {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
 }
-.label.muted {
+.jfx-typography-text.muted {
   -fx-text-fill: -color-fg-muted;
 }
-.label.subtle {
+.jfx-typography-text.subtle {
   -fx-text-fill: -color-fg-subtle;
 }
-.label.heading {
+.jfx-typography-text.heading {
   -fx-font-size: 20px;
   -fx-font-weight: 600;
 }
 /* ============================================
-   Hyperlink
+   Hyperlink — jfx- 前缀避免全局污染
    ============================================ */
-.hyperlink {
+.jfx-hyperlink {
   -fx-text-fill: -color-accent-emphasis;
   -fx-border-color: transparent;
   -fx-underline: true;
   -fx-cursor: hand;
 }
-.hyperlink:hover {
+.jfx-hyperlink:hover {
   -fx-text-fill: -color-accent-4;
 }
-.hyperlink:disabled {
+.jfx-hyperlink:disabled {
   -fx-opacity: 0.6;
 }
 /* ============================================
@@ -2563,24 +2563,24 @@
   -fx-stroke: -color-danger-emphasis;
 }
 /* ============================================
-   Tree Cell Enhancements
+   Tree Cell Enhancements — jfx- 前缀避免全局污染
    ============================================ */
-.tree-cell {
+.jfx-tree-cell {
   -fx-padding: 8px 12px;
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
 }
-.tree-cell:hover {
+.jfx-tree-cell:hover {
   -fx-background-color: -color-accent-hover;
 }
-.tree-cell:armed {
+.jfx-tree-cell:armed {
   -fx-background-color: -color-accent-active;
 }
-.tree-cell:selected {
+.jfx-tree-cell:selected {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
 }
-.tree-cell .tree-disclosure-node .arrow {
+.jfx-tree-cell .tree-disclosure-node .arrow {
   /* M19.44 红线#9 修复：显式设 shape + 尺寸（右指三角，对齐 AtlantaFX arrow-right） */
   -fx-shape: "M5 0l5 5-5 5z";
   -fx-min-width: 5px;
@@ -2589,7 +2589,7 @@
   -fx-pref-height: 10px;
   -fx-background-color: -color-fg-muted;
 }
-.tree-cell:expanded .tree-disclosure-node .arrow {
+.jfx-tree-cell:expanded .tree-disclosure-node .arrow {
   -fx-shape: "M0 5l5 5 5-5z";
   -fx-background-color: -color-accent-emphasis;
 }

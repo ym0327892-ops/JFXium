@@ -397,6 +397,9 @@ public final class JfxStyles {
     public static final String COLLAPSE_DIVIDER = "jfx-collapse-divider";
     public static final String COLLAPSE_DISABLED = "jfx-collapse-disabled";
 
+    /** TreeAnt 树形组件 */
+    public static final String TREE_CELL = "jfx-tree-cell";
+
     /** TreeSelectAnt 树选择 */
     public static final String TREE_SELECT = "jfx-tree-select";
     public static final String TREE_SELECT_FIELD = "jfx-tree-select-field";

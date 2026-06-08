@@ -259,7 +259,7 @@ public class LoginTemplate {
 
                 if (onForgot != null) {
                     Hyperlink forgotLink = new Hyperlink(Messages.get("login.forgot"));
-                    forgotLink.getStyleClass().add(JfxStyles.LOGIN_FORM_LINK_SMALL);
+                    forgotLink.getStyleClass().addAll(JfxStyles.LOGIN_FORM_LINK_SMALL, JfxStyles.HYPERLINK);
                     forgotLink.setOnAction(e -> onForgot.run());
                     rememberRow.getChildren().add(forgotLink);
                 }
@@ -306,7 +306,7 @@ public class LoginTemplate {
                 noAccount.getStyleClass().add(JfxStyles.LOGIN_FORM_NO_ACCOUNT);
 
                 Hyperlink registerLink = new Hyperlink(Messages.get("login.register"));
-                registerLink.getStyleClass().add(JfxStyles.LOGIN_FORM_LINK_SMALL);
+                registerLink.getStyleClass().addAll(JfxStyles.LOGIN_FORM_LINK_SMALL, JfxStyles.HYPERLINK);
                 registerLink.setOnAction(e -> onRegister.run());
 
                 HBox registerRow = new HBox(0, noAccount, registerLink);

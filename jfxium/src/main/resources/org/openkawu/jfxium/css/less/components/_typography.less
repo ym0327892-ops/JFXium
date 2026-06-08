@@ -1,39 +1,38 @@
 /* ============================================
-   Label & Text Styles
+   Label & Text Styles — jfx- 前缀避免全局污染
    ============================================ */
-.label {
+.jfx-typography-text {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: @font-size-md;
 }
 
-.label.muted {
+.jfx-typography-text.muted {
   -fx-text-fill: -color-fg-muted;
 }
 
-.label.subtle {
+.jfx-typography-text.subtle {
   -fx-text-fill: -color-fg-subtle;
 }
 
-.label.heading {
+.jfx-typography-text.heading {
   -fx-font-size: @font-size-xl;
   -fx-font-weight: 600;
 }
 
 /* ============================================
-   Hyperlink
+   Hyperlink — jfx- 前缀避免全局污染
    ============================================ */
-.hyperlink {
+.jfx-hyperlink {
   -fx-text-fill: -color-accent-emphasis;
   -fx-border-color: transparent;
   -fx-underline: true;
   -fx-cursor: hand;
 }
 
-.hyperlink:hover {
+.jfx-hyperlink:hover {
   -fx-text-fill: -color-accent-4;
 }
 
-.hyperlink:disabled {
+.jfx-hyperlink:disabled {
   -fx-opacity: 0.6;
 }
-

@@ -819,10 +819,10 @@
 
 ## 修复统计（更新）
 
-- **总计问题**：76 个（#1–#76）
-- **已修复 / 已完成**：76 个
+- **总计问题**：79 个（#1–#79）
+- **已修复 / 已完成**：79 个
 - **未修复**：0
-- **本轮 commit**：`M19.44+`（fix(p0): 全量规则审计 P0 修复，4 files，~45 行）
+- **本轮 commit**：`fix(p1): 全量规则审计 P1 LESS lint 修复 #77-#79`
 - **最后更新**：2026-06-08
 
 ## 修复说明（2026-06-08：BUG #73–#76 P0 红线批量修复 — 全面规则审计第二轮）
@@ -864,3 +864,42 @@
 - 编译：`./mvnw compile -pl jfxium` → BUILD SUCCESS
 - LESS 编译产物：11 套主题 CSS 全部含 spinner arrow 新 -fx-shape
 - 红线覆盖：本次审计中发现的 P0 全部修复或标注豁免，0 遗留
+
+## 修复说明（2026-06-08：BUG #77–#79 P1 LESS lint 修复 — 全面规则审计第三轮）
+
+> 全量规则审计报告的 3 个 P1 LESS lint 违规项。
+> 本轮修复全局选择器污染、rgba 硬编码提取、border-width 1px token 化。
+
+### #77 全局选择器污染 — .label / .hyperlink / .tree-cell → jfx- 前缀（LESS lint）
+- **现象**：`_typography.less` 中 `.label { }` 和 `.hyperlink { }`、`_tree-enhance.less` 中 `.tree-cell { }` 为裸 JavaFX 选择器，会全局影响所有同类型节点。
+- **根因**：`.label` 影响面极大（所有 Label 的默认字体和颜色），`.hyperlink` 影响所有 Hyperlink，`.tree-cell` 影响所有 TreeView 行。与 `.button`/`.text-field` 等 JavaFX 标准控件覆盖不同，应走 jfx- 前缀。
+- **修复**：
+  - `_typography.less`：`.label` → `.jfx-typography-text`；`.hyperlink` → `.jfx-hyperlink`
+  - `_tree-enhance.less`：`.tree-cell` → `.jfx-tree-cell`
+  - `JfxStyles.java`：新增 `TREE_CELL = "jfx-tree-cell"` 常量
+  - `TreeAnt.java`：新增 `cellFactory`，显式为每个 TreeCell 挂载 `jfx-tree-cell` 样式类
+  - `LoginTemplate.java`：两处裸 `new Hyperlink()` 同步添加 `JfxStyles.HYPERLINK` 样式类
+
+### #78 硬编码 rgba() 提取为 token（LESS lint）
+- **现象**：组件 LESS 中约 20 处 `rgba()` 硬编码颜色值（switch shadow、popover shadow、modal backdrop、dark menu 文字/背景、login banner 文字/背景）。
+- **根因**：AtlantaFX 组件 SCSS 中不使用任何 `rgba()` 硬编码，全部走变量。
+- **修复**（`variables-base.less` 新增 11 个 token）：
+  - 阴影色：`@color-shadow-thumb`（`rgba(0,0,0,0.1)`）、`@color-shadow-popover`（`rgba(0,0,0,0.15)`）
+  - 遮罩色：`@color-mask-default`（`rgba(0,0,0,0.45)`）
+  - Dark menu：`@color-fg-dark-menu` / `muted` / `subtle` + `@color-bg-dark-menu-hover` / `divider`
+  - Login banner：`@color-fg-on-accent-primary` / `secondary` / `muted` / `subtle` + `@color-bg-on-accent-logo`
+  - 替换 `_switch.less`、`_popover.less`、`_modal-backdrop.less`、`_tier3-batch2.less`、`_template.less` 共 5 个文件
+
+### #79 -fx-border-width: 1px → @border-width-default token（LESS lint）
+- **现象**：约 40+ 处 `-fx-border-width: 1px` 硬编码（分布在 30+ 个 .less 文件），无 token 化。
+- **根因**：虽然 1px 是通用默认，但 token 化可支撑未来密度调整（如 compact 模式缩小边框）。
+- **修复**：
+  - `variables-base.less`：新增 `@border-width-default: 1px`
+  - 全量替换：76 处 `-fx-border-width: 1px;` → `-fx-border-width: @border-width-default;`
+  - 仅替换单值声明，多值（`0 0 1 0` 等）不碰
+- **验证**：grep 确认 0 残留硬编码 `1px` 单值 border-width
+
+### #77–#79 整体验证
+- 编译：`./mvnw compile -pl jfxium` → BUILD SUCCESS
+- 新增 LESS token：12 个（@border-width-default + 3 shadow/mask + 5 dark menu + 5 banner）
+- 全局选择器污染清零：`.label`、`.hyperlink`、`.tree-cell` 全部改为 jfx- 前缀

@@ -169,12 +169,12 @@
 
 .jfx-menu-dark .jfx-menu-item-label,
 .jfx-menu-dark .jfx-menu-submenu-header .jfx-menu-item-label {
-  -fx-text-fill: rgba(255, 255, 255, 0.85);
+  -fx-text-fill: @color-fg-dark-menu;
 }
 
 .jfx-menu-dark .jfx-menu-item:hover,
 .jfx-menu-dark .jfx-menu-submenu-header:hover {
-  -fx-background-color: rgba(255, 255, 255, 0.08);
+  -fx-background-color: @color-bg-dark-menu-hover;
 }
 
 .jfx-menu-dark .jfx-menu-item-selected,
@@ -194,19 +194,19 @@
 }
 
 .jfx-menu-dark .jfx-menu-submenu-arrow {
-  -fx-fill: rgba(255, 255, 255, 0.65);
+  -fx-fill: @color-fg-dark-menu-muted;
 }
 
 .jfx-menu-dark .jfx-menu-group-label {
-  -fx-text-fill: rgba(255, 255, 255, 0.45);
+  -fx-text-fill: @color-fg-dark-menu-subtle;
 }
 
 .jfx-menu-dark .jfx-menu-divider {
-  -fx-background-color: rgba(255, 255, 255, 0.12);
+  -fx-background-color: @color-bg-dark-menu-divider;
 }
 
 .jfx-menu-dark .jfx-icon-path {
-  -fx-background-color: rgba(255, 255, 255, 0.85);
+  -fx-background-color: @color-fg-dark-menu;
 }
 
 .jfx-menu-dark .jfx-menu-item-selected .jfx-icon-path {
@@ -236,7 +236,7 @@
 .jfx-upload-drag {
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: -color-border-default;
-  -fx-border-width: 1px;
+  -fx-border-width: @border-width-default;
   -fx-border-style: dashed;
   -fx-border-radius: @border-radius-md;
   -fx-background-radius: @border-radius-md;
