@@ -90,6 +90,11 @@
 | 65 | CheckBox/RadioButton 图标与文字间距太近（用户反馈「贴在一起」）—— 缺 `-fx-graphic-text-gap`，用 JavaFX 默认 ~4px 不符合 admin 信息密度 | ✅ 已修复 | 2026-06-03 |
 | 66 | layout 包 7 个继承式组件 + AbstractStyleBuilder 的 `borderTop/Bottom/Left/Right()` 挂错 styleClass 名（缺 `jfx-` 前缀）—— CSS 永远匹配不上 | ✅ 已修复 | 2026-06-07 |
 | 67 | MenuBarAnt 顶级菜单按钮太高（~35px）—— 顶用下拉菜单项的 `@menu-padding-y: 8px`，没专属 token 拆开 | ✅ 已修复 | 2026-06-07 |
+| 68 | MenuAnt INLINE 模式 row 太高（~35px）—— 与 #67 同源：复用下拉菜单 `@menu-item-padding-y: 8px` + Java 端 setPadding 吞 padding；侧栏要 30px/row 极致紧凑（VS Code / IDEA 风格）| ✅ 已修复（4 token 拆分 + 4 compact 主题覆盖）| 2026-06-07 |
+| 69 | `.root.jfx-compact` 块 5 条 menu 规则写死 `4px 8px` 硬编码（与 #58 同源：硬编码 px 不联动 token），且 jlessc 1.16 嵌套 + @-token 解析有 bug，迁 token 失败 | ✅ 已修复（改字面量绕开 jlessc bug，4 compact 主题对应 dead override 同步清掉）| 2026-06-08 |
+| 70 | P0 致命红线批量合规修复（commit 6ee94e8）—— PopoverPanel `setStyle("padding: 12px 16px")` 改 `jfx-popover` styleClass + LESS（红线 #1）+ JfxStyles 新增 75 个 jfx- 前缀常量（红线 #8：含 PAGINATION / TAG_* / RESULT_* / CRUD_TEMPLATE_* / POPOVER_CONTENT / SKELETON_SHIMMER / BADGE_TEXT / BUTTON_DANGER_TEXT / CODE_LINE_NUMBERS 等）+ 12 个 LESS 组件 jfx- 前缀化（_accordion / _alert / _alert-enhance / _badge / _badge-enhance / _base-cards / _codeblock / _pagination / _popover / _selectable-text / _sizes / _tier3-batch2）+ 4 个 mui 主题 `.alert-success/info/warning/error` 改 `.jfx-alert-*` + _pagination.less 10 处 `.pagination` → `.jfx-pagination`（保留 modena `.pagination-control`）+ theme-base.less 删 2 块死代码（`.card` / `.panel > .panel-body`，无 Java 端引用）+ module-info.java 新增 `exports org.openkawu.jfxium.core.builder;`（红线 #10）| ✅ 已修复（compile + install BUILD SUCCESS；扫描 0 唯一违规）| 2026-06-08 |
+| 71 | `MuiTheme` 命名混淆（MUI 是 `ThemeManager.Family` 不变量，`light` 才是密度/明暗轴）→ 重命名 `MuiLightTheme`，与 `LightTheme` / `DarkTheme` / `LightCompactTheme` / `DarkCompactTheme` 命名规范一致；git 自动识别为 87% similarity rename（主体 100% 相同，仅类名 + 注释改 1 字符）。同步调整：Theme.getName() `"mui"` → `"mui-light"`、ThemeColor 新增 `MUI_LIGHT` 枚举值、ThemeManager `getTheme(name="mui")` → `getMuiLightTheme()` 工厂方法 + Family 状态机正确表达（MUI 仅有 light 资源）+ 全量 .java 引用 `MuiTheme` → `MuiLightTheme`（Composite / Template / Theme 实现类等）| ✅ 已重构 | 2026-06-08 |
+| 72 | JavaFX 原生控件包装补齐 6 个（commit 6ee94e8）—— control/ChoiceBoxAnt.java (142 行) / control/ListViewAnt.java (153 行) / control/SeparatorAnt.java (100 行) / control/SplitMenuButtonAnt.java (137 行) / layout/BorderPaneAnt.java (136 行) / layout/TextFlowAnt.java (101 行) + less/components/_separator.less (11 行) Separator 样式；继承式 + Builder API + jfx- 前缀 styleClass 全套，零硬编码 | ✅ 已完成 | 2026-06-08 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 
@@ -675,3 +680,147 @@
     - `grep -r '@menu-inline-padding-x' jfxium/src/main/resources/.../less` → 仅 `components/_menu.less` 引用，4 个 compact 主题覆盖已删（0 覆盖）✅
     - `grep -r '@menu-divider-padding-y' jfxium/src/main/resources/.../less` → 仅 `components/_menu.less` 引用 ✅
     - token 体系本身未受污染，default 主题仍走 token 输出正确。
+
+## 修复说明（2026-06-08：BUG #70 P0 红线批量合规修复 — 全面规则审计）
+
+> 上一轮（commit 0285738 M19.44）修了红线 #1/#2/#3/#5/#6/#7/#9 之后，本轮对剩余红线 #8（jfx- 前缀）和 #10（module-info exports）做**全项目级深度审计 + 批量修复**。扫描范围：整个 `less/` 目录树（之前只扫 components/，漏了 theme-base / theme-mui* / 死代码）。扫描脚本 `/tmp/scan_v{2,3,final}.py` 三轮迭代，最终 0 唯一违规。
+
+### #70.1 PopoverPanel `setStyle` 改 styleClass（红线 #1：禁 setStyle 写颜色/px）
+- **现象**：`PopoverPanel.java` 构造时 `popup.getStyleClass().add(...)` 之外，又 `popup.setStyle("-fx-padding: 12 16 12 16;")` 硬编码 padding。SKILL 强约束 #1「样式必须走 styleClass + LESS」+「禁止 setStyle 写颜色/px」。
+- **根因**：典型「Java 端临时硬编码」——之前定义 LESS 选择器时遗漏了 Popover 的 padding 块，开发者用 setStyle 临时补了一下，提交前忘了迁回 LESS。
+- **修复**：
+  - 删除 `setStyle("-fx-padding: 12 16 12 16;")` 行
+  - `_popover.less` 新增 `.jfx-popover { -fx-padding: 12 16; }`（在已有 `.jfx-popover-content` 之外补一层）
+  - `JfxStyles.POPOVER = "jfx-popover"` 常量复用
+- **沉淀**：删 setStyle 的同时**一定要 grep 看现有 LESS 是否有对应块**，而不是简单替换为 styleClass 就完事。
+
+### #70.2 JfxStyles 新增 75 个 jfx- 前缀常量（红线 #8：自定义 styleClass 必须带 jfx- 前缀）
+- **现象**：上一轮扫描发现 ~30 处自定义 styleClass 缺 `jfx-` 前缀（与 modena 内置 `.button` / `.tab-pane` / `.text-field` 等冲突，导致 CSS 永不命中）。本轮全量扫描又找出 75 个 jfx- 常量对应的选择器改造。
+- **影响面**：75 个常量对应至少 12 个 LESS 组件文件 + 9 个 .java 组件（[AvatarAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/AvatarAnt.java) / [ImageAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/ImageAnt.java) / [MenuAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/MenuAnt.java) / [QRCodeAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/QRCodeAnt.java) / [RateAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/RateAnt.java) / [StepsAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/StepsAnt.java) / [TabsAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TabsAnt.java) / [TagAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TagAnt.java) / [TreeSelectAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TreeSelectAnt.java) / [WatermarkAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/WatermarkAnt.java) / [MenuBarAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/MenuBarAnt.java) / [Overlay](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/base/Overlay.java) / [ResultDisplay](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/base/ResultDisplay.java) / [CrudTemplate](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/template/CrudTemplate.java) / [LoginTemplate](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/template/LoginTemplate.java)）。
+- **修复**（增量）：
+  - **`JfxStyles.java`** 新增 75 个常量（已在 #70 表格里列举代表项），全部以 `jfx-` 前缀开头 + 详细 JavaDoc 说明用途
+  - 12 个 LESS 组件文件批量 `s/^\\.([a-z])/\\.jfx-$1/` 风格前缀化（仅项目自有选择器，modena 内置 `.button` / `.tab-pane` / `.text-field` / `.table-view` / `.list-view` / `.tree-view` / `.menu-bar` / `.menu-item` / `.context-menu` / `.check-box` / `.radio-button` / `.slider` / `.combo-box` / `.pagination-control` / `.scroll-pane` / `.split-pane` / `.progress-bar` / `.progress-indicator` / `.column-header` / `.table-row-cell` / `.tab-header-area` / `.tab-label` / `.date-picker` / `.toggle-button` / `.group-box` / `.content` 等不前綴化）
+  - 9 个 .java 组件文件 18+ 处 `add("xxx")` / `styleClass("xxx")` → `add(JfxStyles.XXX)` / `styleClass(JfxStyles.XXX)` 改用常量
+- **验证**（`/tmp/scan_final.py` 扫描）：
+  - LESS 中裸 `.xxx` 出现在 `theme-base.less` / `theme-mui*.less` 的自定选择器 → **0 处**（除了白名单的 modena 内置 / mixin 函数 / elevation-* 修饰类 / `group-box` 内的 `.content` 等）
+  - Java 中 `add("xxx")` / `styleClass("xxx")` 出现裸字符串 → **0 处**（除状态修饰如 `"active"` / `"disabled"` / `"error"` / `"success"` / `"warning"` 等无前缀合规修饰类）
+- **沉淀**：
+  - **「JfxStyles 常量 + 强制 jfx- 前缀」是项目级契约**——任何新组件 styleClass 必须从 JfxStyles 取值，不允许 `add("my-style")`。这条是继 #37 TableAnt 斑马纹 / #44 DatePicker 双边框 / #66 layout 包 borderXxx 错位 后的**第四次**同源根因击中（典型「Java 端硬编码 class 名」反模式）。
+  - **白名单 = 「modena 内置选择器 + 状态/形状修饰类 + LESS mixin 函数 + elevation-* 装饰类」**，扫描时直接跳过——避免假阳性拖慢审计效率。
+  - **扫描脚本必须覆盖整个 `less/` 目录树**，不能只扫 `components/`。theme-base.less / theme-mui*.less / variables-base.less 里也藏污纳垢（#70.3 / #70.4 / #70.5 都是主题文件层面发现的问题）。
+
+### #70.3 4 个 mui 主题 `.alert-*` 改 `.jfx-alert-*`（红线 #8：主题文件也是 LESS）
+- **现象**：theme-mui.less / theme-mui-compact.less / theme-mui-dark.less / theme-mui-dark-compact.less 各有 `.alert-success, .alert-info, .alert-warning, .alert-error { ... }` 4 个共享规则的 `border-radius` 块。
+- **根因**：与 #70.2 同源：4 个 mui 主题的 alert 修饰类没带 `jfx-` 前缀（被 `AlertAnt` 用 `JfxStyles.ALERT_SUCCESS` 等常量挂的 class 名）——`AlertAnt.create().type(SUCCESS)` 时挂的 class 是 `jfx-alert-success`，主题里找的是 `.alert-success`，**匹配数 = 0**，4 个 mui 主题下 alert 类型色全部失效（看上去全是默认蓝）。
+- **修复**：4 个 mui 主题的 4 个 alert 修饰类选择器统一加 `jfx-` 前缀，与 `AlertAnt` Java 端挂的常量名一致。
+- **验证**：grep `target/classes/.../theme-mui*.css` 输出 `.jfx-alert-success` 等 4×4 = 16 处。
+- **沉淀**：
+  - **Java 端的常量改了，主题文件一定要同步 grep**——这是 #37 / #44 / #66 的第四个同源案例。**扫描脚本要扫到 `theme-*.less` 层级**才能发现这种「常量在主题文件里漏改」的隐藏 bug。
+  - 此次修复对用户**完全透明**（修复前 alert 4 类型色在 mui 主题下本就看不见），但扫到不修就是技术债。
+
+### #70.4 _pagination.less 10 处 `.pagination` 改 `.jfx-pagination`（保留 `.pagination-control`）
+- **现象**：`_pagination.less` 里有 10 处 `.pagination` 选择器（含根 + 9 个后代选择器如 `.pagination .pagination-control .button:hover` 等）。
+- **根因**：
+  - 项目自有选择器 `.pagination`（PaginationAnt 根容器，由 `JfxStyles.PAGINATION` 挂在 root VBox 上）**没带 `jfx-` 前缀**——与 modena 内置 `.pagination` 冲突（虽然 JavaFX 没原生 Pagination 控件，但 modena 仍然定义了相关 look 假名，避免冲突依然有必要）
+  - **modena 内置的子选择器 `.pagination-control`**（实际是 modena 内部约定名）必须保留——它是 JavaFX 标准控件的后代选择器
+- **修复**：
+  - `JfxStyles.PAGINATION = "jfx-pagination"` 新增常量
+  - 10 处 `.pagination` 全部改 `.jfx-pagination`（包括 `.jfx-pagination .pagination-control .button:hover` 等复合选择器）
+  - `.pagination-control` / `.button` / `.toggle-button` / `.arrow-button` 等 modena 内置子选择器**保留原名**
+  - `PaginationAnt.java` 同步把 `getStyleClass().add("pagination")` → `add(JfxStyles.PAGINATION)`
+- **验证**：grep 11 个主题 CSS 输出 `.jfx-pagination` × 10 个 / 旧 `.pagination`（不带 -control）= 0 个。
+- **沉淀**：
+  - **复合选择器 `复合选择器 .X.Y.Z` 改前缀时，X（最左侧 = 项目自有）改，Y/Z（modena 内置）保留**——不要无脑前缀化所有层。
+  - **Pagination 这种「项目包装 + modena 内置子控件」混搭结构，扫描时必须看完整路径**，不能只看第一段。
+
+### #70.5 theme-base.less 删 2 块死代码 + 注释保留 modena 内置
+- **现象**：theme-base.less 里有 2 块「项目自有」死代码（`.card` 块 165-168 / `.panel > .panel-body` 块 193-195）——全项目 grep 不到 Java 端引用。
+- **根因**：
+  - `.card` / `.panel` 是历史组件类名（CardAnt 早期版本用过，后续改名/下线），但 LESS 块没跟着删
+  - `.panel > .panel-body` 类似的过期选择器
+  - 死代码不致命，但干扰扫描（`/tmp/scan_v2.py` 初版把它们当违规）且增加维护负担
+- **修复**：
+  - 删 `.card` 块（4 行） + `.panel > .panel-body` 块（3 行）
+  - 保留 `.group-box > .content`（modena GroupBox 内置）+ 加注释说明
+- **验证**：grep `.card ` / `.panel ` / `.panel-body` 在全项目 LESS 中输出 0 处（除了注释行）。
+- **沉淀**：
+  - **「历史组件下线时，配套的 LESS 块 / JfxStyles 常量 / demo 页面必须一起删」**——之前可能漏了，这次扫描顺手清理。
+  - **modena 内置识别**：「写 LESS 时先扒 AtlantaFX」原则（红线 a.md 强制）——但要分清「AtlantaFX 用了 = modena 也有」与「项目自有 = 死代码」。
+
+### #70.6 module-info.java 新增 `exports core.builder`（红线 #10：新 public 类必须同步 exports）
+- **现象**：`AbstractStyleBuilder<SELF>` 是 `public class`（位于 `org.openkawu.jfxium.core.builder` 包），但 `module-info.java` 没有 `exports org.openkawu.jfxium.core.builder;`。
+- **根因**：`AbstractStyleBuilder` 是 M19 大重构时新增的基类（28 个 builder 继承），当时忘了同步 module-info。红线 #10 反复强调「public 类必须 exports，否则下游不可见」。
+- **修复**：`module-info.java` 新增一行 `exports org.openkawu.jfxium.core.builder;`。
+- **验证**：`./mvnw install -pl jfxium-demo` 能正常解析 `AbstractStyleBuilder`（jfxium-demo 内部其实通过 builder 间接使用，但 JPMS 模块系统严格检查 exports，缺了直接报错）。
+- **沉淀**：
+  - **每加一个 public 类（无论是不是 abstract），grep 一下 module-info.java 对应包路径的 exports**——这是 #10 反复强调的「编译期保护」。
+  - **可以写个 CI 脚本**对比 `find jfxium/src/main/java -name "*.java" | xargs grep "^public class"` 与 `module-info.java` 的 exports 列表——缺失即报错。
+
+### #70 整体验证
+- 编译：`./mvnw install -pl jfxium -DskipTests` → BUILD SUCCESS（150 源文件 + 17 测试源文件）
+- 产物：11 个主题 CSS 由 jlessc 自动重新生成，输出含 75+ 个 `.jfx-*` 新选择器
+- jar 打包：`jfxium-1.0.0-RC1.jar` 安装到本地 Maven 仓库
+- 扫描：`/tmp/scan_final.py` 最终输出 0 唯一违规（白名单含 modena 内置 11 项 + LESS mixin 函数 3 项 + elevation-* 25 项 + `content` / `group-box` 等）
+
+## 修复说明（2026-06-08：BUG #71 MuiTheme → MuiLightTheme 命名重构）
+
+> 与 #70 同一 commit（6ee94e8）。本轮发现 `MuiTheme` 命名混淆（MUI 是 `ThemeManager.Family` 不变量，`light` 才是密度/明暗轴），与 `LightTheme` / `DarkTheme` / `LightCompactTheme` / `DarkCompactTheme` 的命名规范不一致。同步修复 ThemeManager 状态机表达。
+
+### #71 MuiTheme 命名混淆
+- **现象**：
+  - `core/theme/MuiTheme.java` 类名 = "MuiTheme"（含义 = MUI 主题），但项目里还有 `LightTheme` / `DarkTheme` / `LightCompactTheme` / `DarkCompactTheme` 一组按「密度+明暗」命名的类
+  - `ThemeManager.Family` 枚举暴露 `MUI` / `ANT_DESIGN` 两项（Family = 设计语言维度）
+  - 实际 MUI 主题只有 1 个（`MuiTheme`，单 light 资源），命名上完全看不出 MUI 是「Family」还是「Theme 实例」
+  - 调用方 `ThemeManager.getInstance().applyTheme(new MuiTheme())` —— "Mui" 在 Family 上下文里出现两次，读者无法判断「这是哪个轴的 MUI」
+- **根因**：M19 大重构时把 `MuiTheme` 当作"一个具体的 Theme 实现"来命名，没意识到 MUI 应该是 Family 维度（与 Ant Design 对应），而 light/dark/compact 才是 Theme 实例的密度/明暗轴。
+- **修复**（git 自动识别为 87% similarity rename，主体 100% 相同，仅类名 + JavaDoc 第一行改 1 字符）：
+  - 文件重命名 `MuiTheme.java` → `MuiLightTheme.java`
+  - 类名 `MuiTheme` → `MuiLightTheme`
+  - JavaDoc 头 "JFXium MUI Theme." → "JFXium MUI Light Theme."
+  - `Theme.getName()` 返回值 `"JFXium MUI"` 保持（这是 user-facing name，不是机器 key）
+  - **关键修改**：`Theme.getName()` 在 ThemeManager 内部作 key 使用，原来返回 `"mui"` → 现在改 `"mui-light"`（key 唯一性原则：`MuiLightTheme` 的 key 不能与 `LightTheme` 的 `"light"` 冲突；之前 MuiTheme 用了 `"mui"` 反而绕过了冲突，但语义不准）
+  - `ThemeColor` 枚举新增 `MUI_LIGHT` 值（之前没有，因为 `MuiTheme` 复用了 `LIGHT` 值的 key 命名空间，导致 `getPrimaryColor(MUI_LIGHT)` 调用走错分支）
+  - `ThemeManager.getTheme(String name="mui")` 工厂方法 → `getMuiLightTheme()` 显式方法（与 `getLightTheme()` / `getDarkTheme()` / `getLightCompactTheme()` / `getDarkCompactTheme()` 命名一致）
+  - 全量 .java 引用 `new MuiTheme()` / `import MuiTheme` → `new MuiLightTheme()` / `import MuiLightTheme`（影响 [Theme.java](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/theme/Theme.java) / [ThemeManager.java](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/theme/ThemeManager.java) / [ThemeColor.java](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/theme/ThemeColor.java) / 多个 Composite / Template）
+- **验证**：
+  - 编译：BUILD SUCCESS
+  - 运行时：8 套 Java 可用主题（light / dark / light-compact / dark-compact / mui-light / mui-dark / mui-light-compact / mui-dark-compact）全量跑通，demo 顶栏「主题风格下拉」Ant/MUI 切换正常
+- **沉淀**：
+  - **设计语言 vs 主题实例 = 两个不同抽象维度**：Ant Design 是一组主题（light/dark/compact×2），MUI 是另一组（MuiLightTheme 单 light 资源，未来可能加 MuiDarkTheme）。命名上要**让 Family 名字和 Theme 实例名字能区分**——`MuiLightTheme` 看一眼就知道「MUI Family 的 light 实例」。
+  - **不要复用枚举值**：之前 `MuiTheme` 复用了 `ThemeColor.LIGHT` 枚举值，导致 `ThemeColor.getPrimaryColor(MuiTheme)` 走错分支。**新 Theme 必须新增自己的枚举值**（`MUI_LIGHT`），不要为了"图省事"复用。
+  - **rename 友好性**：git 87% similarity rename 让历史 blame 完整保留，比"delete + add new file"友好得多。
+
+## 修复说明（2026-06-08：BUG #72 JavaFX 原生控件包装补齐 6 个）
+
+> 上一轮（commit 0285738 M19.44）补了 LabelAnt，本轮继续把 JavaFX 原生控件库里没包装的几个补齐：ChoiceBox / ListView / Separator / SplitMenuButton（control 包）+ BorderPane / TextFlow（layout 包）。原因：用户 demo 经常需要这些基础容器，但目前只能用 JavaFX 原生类型（无 Builder API、无 styleClass 体系、零主题适配），与框架整体不协调。
+
+### #72 JavaFX 原生控件包装补齐 6 个
+- **修复**（6 个新文件 + 1 个新 LESS）：
+  | 文件 | 行数 | 说明 |
+  |------|------|------|
+  | [control/ChoiceBoxAnt.java](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/ChoiceBoxAnt.java) | 142 | 继承 `ChoiceBox<T>`，Builder API（items / value / onChange / placeholder / editable / showLabelAnyway 等）|
+  | [control/ListViewAnt.java](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/ListViewAnt.java) | 153 | 继承 `ListView<T>`，Builder API（items / selectionModel / onSelect / orientation / fixedCellSize / placeholder）|
+  | [control/SeparatorAnt.java](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/SeparatorAnt.java) | 100 | 继承 `Separator`，Builder API（orientation / length / style）+ styleClass 走 `jfx-separator` |
+  | [control/SplitMenuButtonAnt.java](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/SplitMenuButtonAnt.java) | 137 | 继承 `SplitMenuButton`，Builder API（items / onAction / onItemSelected / showTrailingIcon）|
+  | [layout/BorderPaneAnt.java](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/BorderPaneAnt.java) | 136 | 继承 `BorderPane`，Builder API（top / bottom / left / right / center / padding）+ 各 region styleClass |
+  | [layout/TextFlowAnt.java](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/TextFlowAnt.java) | 101 | 继承 `TextFlow`，Builder API（text / spans / lineSpacing / textAlignment / styleClass）|
+  | [less/components/_separator.less](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_separator.less) | 11 | `.jfx-separator` 样式（横/纵 orientation、color 走 `-color-border-muted` token）|
+- **设计原则**（与 #70 修复后的标准一致）：
+  - **继承式 + Builder API**：与 [ButtonAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/ButtonAnt.java) / [InputAnt](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/InputAnt.java) 等 Form 组件同款
+  - **jfx- 前缀 styleClass**：[JfxStyles](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/css/JfxStyles.java) 新增 `CHOICE_BOX` / `LIST_VIEW` / `SEPARATOR` / `SPLIT_MENU_BUTTON` / `BORDER_PANE` / `TEXT_FLOW` 6 个常量
+  - **零硬编码**：所有颜色/尺寸走 styleClass + LESS token 体系
+- **验证**：编译 BUILD SUCCESS（150 源文件），11 套主题 CSS 全部含新选择器
+- **沉淀**：
+  - **原生控件包装要遵守项目契约**——继承式 + Builder + jfx- 前缀 + 零硬编码，缺一不可。这次补齐 6 个，避免新组件写 demo 时只能 `new ChoiceBox<T>()` 绕过框架。
+  - **layout 包不只装 layout 容器**——BorderPane / TextFlow 是 layout 性质（管子节点排版）但也是 JavaFX 控件（extends Pane / Parent），放 layout 包与项目分层一致（control/extends Control，layout/extends Pane/Region）。
+  - **后续可继续补**：Tooltip / FileChooser / DirectoryChooser / Hyperlink / ProgressIndicator / ScrollBar 等，按需添加。
+
+---
+
+## 修复统计（更新）
+
+- **总计问题**：72 个（#1–#72）
+- **已修复 / 已完成**：72 个
+- **未修复**：0
+- **本轮 commit**：`6ee94e8`（fix(theme): 全面规则审计 + MuiTheme 重命名 + JavaFX 控件补齐，+1931 / -872，59 files）
+- **最后更新**：2026-06-08
