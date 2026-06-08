@@ -5557,6 +5557,142 @@
 .jfx-icon-muted {
   -fx-fill: -color-fg-muted;
 }
+.root.jfx-compact .button {
+  -fx-padding: 5px 11px;
+  -fx-min-height: 28px;
+}
+.root.jfx-compact .button.small {
+  -fx-padding: 1px 7px;
+  -fx-min-height: 24px;
+}
+.root.jfx-compact .button.large {
+  -fx-padding: 7px 11px;
+  -fx-min-height: 36px;
+}
+.root.jfx-compact .text-field,
+.root.jfx-compact .password-field,
+.root.jfx-compact .text-area,
+.root.jfx-compact .combo-box,
+.root.jfx-compact .choice-box,
+.root.jfx-compact .spinner,
+.root.jfx-compact .date-picker,
+.root.jfx-compact .menu-button {
+  -fx-padding: 5px 8px;
+}
+.root.jfx-compact .text-field.small,
+.root.jfx-compact .password-field.small,
+.root.jfx-compact .combo-box.small,
+.root.jfx-compact .choice-box.small,
+.root.jfx-compact .spinner.small,
+.root.jfx-compact .date-picker.small,
+.root.jfx-compact .menu-button.small {
+  -fx-padding: 1px 7px;
+}
+.root.jfx-compact .text-field.large,
+.root.jfx-compact .password-field.large,
+.root.jfx-compact .combo-box.large,
+.root.jfx-compact .choice-box.large,
+.root.jfx-compact .spinner.large,
+.root.jfx-compact .date-picker.large,
+.root.jfx-compact .menu-button.large {
+  -fx-padding: 7px 8px;
+}
+.root.jfx-compact .table-view .column-header-background,
+.root.jfx-compact .tree-table-view .column-header-background {
+  -fx-pref-height: 28px;
+}
+.root.jfx-compact .table-view .column-header,
+.root.jfx-compact .tree-table-view .column-header {
+  -fx-padding: 2px 8px;
+}
+.root.jfx-compact .table-view .table-row-cell,
+.root.jfx-compact .tree-table-view .table-row-cell,
+.root.jfx-compact .table-view .tree-table-row-cell,
+.root.jfx-compact .tree-table-view .tree-table-row-cell {
+  -fx-min-height: 28px;
+}
+.root.jfx-compact .table-view .table-cell,
+.root.jfx-compact .tree-table-view .table-cell,
+.root.jfx-compact .table-view .tree-table-cell,
+.root.jfx-compact .tree-table-view .tree-table-cell {
+  -fx-padding: 2px 8px;
+  -fx-font-size: 13px;
+}
+.root.jfx-compact .table-view.jfx-table-small .column-header-background,
+.root.jfx-compact .tree-table-view.jfx-table-small .column-header-background {
+  -fx-pref-height: 28px;
+}
+.root.jfx-compact .table-view.jfx-table-small .table-row-cell,
+.root.jfx-compact .tree-table-view.jfx-table-small .table-row-cell,
+.root.jfx-compact .table-view.jfx-table-small .tree-table-row-cell,
+.root.jfx-compact .tree-table-view.jfx-table-small .tree-table-row-cell {
+  -fx-min-height: 28px;
+}
+.root.jfx-compact .table-view.jfx-table-small .table-cell,
+.root.jfx-compact .tree-table-view.jfx-table-small .table-cell,
+.root.jfx-compact .table-view.jfx-table-small .tree-table-cell,
+.root.jfx-compact .tree-table-view.jfx-table-small .tree-table-cell {
+  -fx-padding: 2px 8px;
+}
+.root.jfx-compact .table-view.jfx-table-large .column-header-background,
+.root.jfx-compact .tree-table-view.jfx-table-large .column-header-background {
+  -fx-pref-height: 28px;
+}
+.root.jfx-compact .table-view.jfx-table-large .table-row-cell,
+.root.jfx-compact .tree-table-view.jfx-table-large .table-row-cell,
+.root.jfx-compact .table-view.jfx-table-large .tree-table-row-cell,
+.root.jfx-compact .tree-table-view.jfx-table-large .tree-table-row-cell {
+  -fx-min-height: 28px;
+}
+.root.jfx-compact .table-view.jfx-table-large .table-cell,
+.root.jfx-compact .tree-table-view.jfx-table-large .table-cell,
+.root.jfx-compact .table-view.jfx-table-large .tree-table-cell,
+.root.jfx-compact .tree-table-view.jfx-table-large .tree-table-cell {
+  -fx-padding: 2px 8px;
+}
+.root.jfx-compact .menu-item,
+.root.jfx-compact .jfx-menu-item {
+  -fx-padding: 4px 8px;
+}
+.root.jfx-compact .menu-bar {
+  -fx-padding: 2px 0;
+}
+.root.jfx-compact .context-menu {
+  -fx-padding: 4px 0;
+}
+.root.jfx-compact .list-view .list-cell {
+  -fx-padding: 4px 8px;
+}
+.root.jfx-compact .list-view .list-cell:filled {
+  -fx-padding: 4px 8px;
+}
+.root.jfx-compact .card {
+  -fx-padding: 8px;
+}
+.root.jfx-compact .tab-header-area {
+  -fx-padding: 0 8px;
+}
+.root.jfx-compact .tab .tab-label {
+  -fx-padding: 2px 8px;
+}
+.root.jfx-compact .progress-bar {
+  -fx-min-height: 6px;
+}
+.root.jfx-compact .progress-indicator {
+  -fx-min-height: 6px;
+}
+.root.jfx-compact .form-item {
+  -fx-spacing: 6px;
+}
+.root.jfx-compact .group-box > .content {
+  -fx-padding: 8px;
+}
+.root.jfx-compact .panel > .panel-body {
+  -fx-padding: 8px;
+}
+.root.jfx-compact .combo-box-popup .list-view .list-cell {
+  -fx-padding: 4px 8px;
+}
 /* ============================================
    Button - MUI Elevated Style
    ============================================

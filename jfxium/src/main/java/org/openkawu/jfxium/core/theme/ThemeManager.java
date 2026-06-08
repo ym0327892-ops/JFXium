@@ -1,8 +1,10 @@
 package org.openkawu.jfxium.core.theme;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,9 +99,9 @@ public class ThemeManager {
         // 关键：userAgentStylesheet 重置后，之前 inline 注入的 accent 色阶会被覆盖，
         // 必须重新应用一次，否则切风格 / 切明暗后主题色回退到 CSS 默认蓝。
         applyPrimaryColorToAll();
-        // 密度同样需要重应用：densityStylesheet 在 scene.getStylesheets() 上，UA CSS 重置不被清，
-        // 但为了保持 applyTheme() 后状态唯一源仍是 ThemeManager，这里依然走 applyDensityToAll()。
-        // 该方法是幂等的：DEFAULT 状态下只是 remove 之前的 COMPACT，no-op。
+        // 密度同掉重应用：jfx-compact styleClass 在 scene.getRoot() 上，UA CSS 重置不影响
+        // styleClass 列表，但 applyTheme() 后再走一次保证状态唯一源仍是 ThemeManager。
+        // DEFAULT 状态等价于「移除 jfx-compact」，幂等 no-op。
         applyDensityToAll();
     }
 
@@ -226,70 +228,37 @@ public class ThemeManager {
     /** 上一次注入的 accent data-URI stylesheet，用于切换时移除旧的。 */
     private String accentStylesheet;
 
-    /** 上一次注入的 density data-URI stylesheet，用于切换 / 恢复时移除旧的。 */
-    private String densityStylesheet;
-
     /**
-     * 将当前 density 注入到所有已注册的 Scene 上（PC UI 规范 §15.3.3）。
+     * 将当前 density 应用到所有已注册的 Scene（PC UI 规范 §12.2 / §15.3 实施）。
      *
-     * <p>与 {@link #applyPrimaryColorToAll()} 同套路：构造一份 data-URI stylesheet，
-     * 写入每个 scene.getStylesheets()，并在再次切换时移除旧引用保持幂等。</p>
+     * <p>与 P2 初版不同：不再用 data-URI 注入 CSS 变量。
+     * LESS 用的是编译期变量（{@code @control-height}），运行时注入 JavaFX looked-up color
+     * （{@code -control-height}）不会被任何规则读取，注入等于 no-op（见 PROJECT_BUG.md #68 根因）。</p>
+     *
+     * <p>新方案：直接在 scene.getRoot() 上挂/卸 {@code jfx-compact} 修饰类。
+     * LESS 端在 theme-base.less 末尾提供 {@code .root.jfx-compact { ... }} 覆盖块，
+     * 用字面量 px 值覆盖控件高 / 行高 / padding，比运行时 looked-up color 链路短、稳。</p>
      *
      * <p>幂等性：</p>
      * <ul>
-     *   <li>DEFAULT 状态下不注入新 stylesheet（走 LESS 默认值），仅 remove 之前的 COMPACT。</li>
-     *   <li>切回 COMPACT 后再切回 DEFAULT 不会残留旧 stylesheet。</li>
-     *   <li>applyTheme() 后调用是 no-op（UA CSS 重置不波及 scene.getStylesheets()）。</li>
+     *   <li>DEFAULT → 从 root 卸 jfx-compact，CSS 走 LESS 默认值</li>
+     *   <li>COMPACT → 在 root 挂 jfx-compact，CSS 走 .root.jfx-compact 覆盖</li>
+     *   <li>applyTheme() 后调用是 no-op（UA CSS 重置不碰 root 的 styleClass 列表）</li>
      * </ul>
      */
     private void applyDensityToAll() {
-        // 1. 移除上一次的 density stylesheet（无论是否相同）
-        if (densityStylesheet != null) {
-            for (Scene scene : registeredScenes) {
-                scene.getStylesheets().remove(densityStylesheet);
-            }
-            densityStylesheet = null;
-        }
-
-        // 2. DEFAULT 状态不注入新 stylesheet（走 LESS 默认值）
-        if (density == ThemeDensity.DEFAULT) return;
-
-        // 3. 构造 density CSS（PC UI 规范 §5.2 / §6 联动算法）
-        String css = buildDensityCss(density);
-        String dataUri = "data:text/css;base64,"
-                + java.util.Base64.getEncoder().encodeToString(
-                        css.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-
-        // 4. 注入到所有 scene
+        boolean compact = density == ThemeDensity.COMPACT;
         for (Scene scene : registeredScenes) {
-            scene.getStylesheets().add(dataUri);
+            if (scene.getRoot() == null) continue;
+            ObservableList<String> classes = scene.getRoot().getStyleClass();
+            if (compact) {
+                if (!classes.contains(JfxStyles.DENSITY_COMPACT)) {
+                    classes.add(JfxStyles.DENSITY_COMPACT);
+                }
+            } else {
+                classes.remove(JfxStyles.DENSITY_COMPACT);
+            }
         }
-        densityStylesheet = dataUri;
-    }
-
-    /**
-     * 构造 density 对应的 CSS 规则（PC UI 规范 §5.2 / §6 联动算法）。
-     * 复用 JavaFX looked-up color 变量名（无 {@code -fx-} 前缀），与 LESS {@code @control-height} 命名一致。
-     */
-    private String buildDensityCss(ThemeDensity d) {
-        return switch (d) {
-            case DEFAULT -> "";
-            case COMPACT -> """
-                    .root {
-                        -control-height: 28px;
-                        -control-height-sm: 24px;
-                        -control-height-lg: 36px;
-                        -control-height-xs: 18px;
-                        -spacing-xs: 2px;
-                        -spacing-sm: 6px;
-                        -spacing-md: 8px;
-                        -spacing-lg: 12px;
-                        -spacing-xl: 16px;
-                        -table-header-height: 28px;
-                        -table-row-height: 28px;
-                    }
-                    """;
-        };
     }
 
     /** 切换亮色 / 暗色主题（保持家族 / 密度 / 主题色不变）。 */

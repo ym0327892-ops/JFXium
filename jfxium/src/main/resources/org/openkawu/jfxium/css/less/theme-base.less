@@ -10,3 +10,168 @@
 //
 
 @import "components/_index";
+
+// ============================================
+// 密度修饰类：.root.jfx-compact
+// ============================================
+//
+// 运行时在 scene.getRoot() 上添加 "jfx-compact" styleClass 即可触发。
+// ThemeManager.setDensity(ThemeDensity.COMPACT) 负责挂/卸。
+//
+// 为什么需要字面量 px 而不是 LESS 变量 @control-height？
+//   LESS 变量是编译期常量，编译后是字面量 32px。运行时注入 .root { -control-height: 28px; }
+//   是 JavaFX looked-up color（无 -fx- 前缀），没有任何 CSS 规则读取它，注入是 no-op。
+//   唯一能生效的路线是「设计时在 theme-*.less 里写多份 jfx-compact 覆盖，用修饰类开闸」。
+//
+// 数字体系（PC UI 规范 §5.2 联动算法：default - 4）：
+//   控件高-sm:     28 → 24
+//   控件高:        32 → 28
+//   控件高-lg:     40 → 36
+//   表头/行高:      32 → 28 (遵 spec §5.2，若项目里 table 默认 48px / 36px 需再微调)
+//   Button padding: 6/15 → 5/11 (sm 2/7 → 1/7 ; lg 9/15 → 7/11)
+//   Input padding:  6/11 → 5/8
+//   Card padding:   16 → 8
+// ============================================
+
+.root.jfx-compact {
+  // ---- 控件：Button ----
+  .button {
+    -fx-padding: 5px 11px;
+    -fx-min-height: 28px;
+  }
+  .button.small {
+    -fx-padding: 1px 7px;
+    -fx-min-height: 24px;
+  }
+  .button.large {
+    -fx-padding: 7px 11px;
+    -fx-min-height: 36px;
+  }
+
+  // ---- 控件：Input / ComboBox / ChoiceBox / Spinner / DatePicker / MenuButton ----
+  .text-field,
+  .password-field,
+  .text-area,
+  .combo-box,
+  .choice-box,
+  .spinner,
+  .date-picker,
+  .menu-button {
+    -fx-padding: 5px 8px;
+  }
+  .text-field.small,
+  .password-field.small,
+  .combo-box.small,
+  .choice-box.small,
+  .spinner.small,
+  .date-picker.small,
+  .menu-button.small {
+    -fx-padding: 1px 7px;
+  }
+  .text-field.large,
+  .password-field.large,
+  .combo-box.large,
+  .choice-box.large,
+  .spinner.large,
+  .date-picker.large,
+  .menu-button.large {
+    -fx-padding: 7px 8px;
+  }
+
+  // ---- 表格：TableView / TreeTableView ----
+  .table-view,
+  .tree-table-view {
+    .column-header-background {
+      -fx-pref-height: 28px;
+    }
+    .column-header {
+      -fx-padding: 2px 8px;
+    }
+    .table-row-cell,
+    .tree-table-row-cell {
+      -fx-min-height: 28px;
+    }
+    .table-cell,
+    .tree-table-cell {
+      -fx-padding: 2px 8px;
+      -fx-font-size: 13px;
+    }
+  }
+  // 盖过 .jfx-table-small / .jfx-table-large 紧型变体，jfx-compact 优先
+  .table-view.jfx-table-small,
+  .tree-table-view.jfx-table-small {
+    .column-header-background { -fx-pref-height: 28px; }
+    .table-row-cell,
+    .tree-table-row-cell { -fx-min-height: 28px; }
+    .table-cell,
+    .tree-table-cell { -fx-padding: 2px 8px; }
+  }
+  .table-view.jfx-table-large,
+  .tree-table-view.jfx-table-large {
+    .column-header-background { -fx-pref-height: 28px; }
+    .table-row-cell,
+    .tree-table-row-cell { -fx-min-height: 28px; }
+    .table-cell,
+    .tree-table-cell { -fx-padding: 2px 8px; }
+  }
+
+  // ---- 菜单：Menu / MenuItem / MenuBar ----
+  .menu-item,
+  .jfx-menu-item {
+    -fx-padding: 4px 8px;
+  }
+  .menu-bar {
+    -fx-padding: 2px 0;
+  }
+  .context-menu {
+    -fx-padding: 4px 0;
+  }
+
+  // ---- 列表：ListView / ListCell ----
+  .list-view .list-cell {
+    -fx-padding: 4px 8px;
+  }
+  .list-view .list-cell:filled {
+    -fx-padding: 4px 8px;
+  }
+
+  // ---- 卡片 ----
+  .card {
+    -fx-padding: 8px;
+  }
+
+  // ---- Tab ----
+  .tab-header-area {
+    -fx-padding: 0 8px;
+  }
+  .tab .tab-label {
+    -fx-padding: 2px 8px;
+  }
+
+  // ---- 进度条 ----
+  .progress-bar {
+    -fx-min-height: 6px;
+  }
+  .progress-indicator {
+    -fx-min-height: 6px;
+  }
+
+  // ---- 全局间距：Form / Panel / Group ----
+  .form-item {
+    -fx-spacing: 6px;
+  }
+  .group-box > .content {
+    -fx-padding: 8px;
+  }
+  .panel > .panel-body {
+    -fx-padding: 8px;
+  }
+
+  // ---- 弹层（dropdown / popup / popover / tooltip / context-menu）----
+  // popup 是独立 scene，scene.getRoot() 不共享 jfx-compact styleClass。
+  // 弹层自身默认走 28px 不必要（只占 200~300px），这里不作覆盖，弹层保持默认密度。
+  // 弹层列表项 (combo-box-popup / list-cell) 压住避免项过厚：
+  .combo-box-popup .list-view .list-cell {
+    -fx-padding: 4px 8px;
+  }
+}

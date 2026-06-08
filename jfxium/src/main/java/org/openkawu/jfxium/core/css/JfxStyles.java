@@ -42,6 +42,13 @@ public final class JfxStyles {
     public static final String BG_TRANSPARENT = "jfx-bg-transparent";
 
     /* ============================================
+       密度修饰类（ThemeManager 运行时切换）
+       挂在 scene.getRoot() 上，全局生效。
+       LESS 端见 theme-base.less 末尾的 .root.jfx-compact 覆盖块。
+       ============================================ */
+    public static final String DENSITY_COMPACT = "jfx-compact";
+
+    /* ============================================
        Button 按钮
        ============================================ */
 
