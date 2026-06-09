@@ -19,32 +19,41 @@ import org.openkawu.jfxium.core.theme.ThemeColor;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.jfxiumUiExample.pages.HomePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.AccordionExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.AvatarBadgeExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CalendarExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.GroupBoxExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CanvasExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CarouselExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CollapseExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.DescriptionsExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.DividerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.EmptyExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.GroupBoxExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.ImageExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.ListExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.ListViewExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.PopoverExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.ProgressExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.QRCodeExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.SeparatorExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.SkeletonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.StatisticExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TableExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TagExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TimelineExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TitledPaneExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TreeExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TreeTableExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.AutoCompleteExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.CascaderExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.CheckboxExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.ChoiceBoxExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.ColorPickerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.DatePickerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.FormExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.InputExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.InputNumberExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.MentionsExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.RadioExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.RateExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.SelectExamplePage;
@@ -57,34 +66,43 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.TransferExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.TreeSelectExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.UploadExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.AlertExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.ContextMenuExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.DrawerExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.FloatButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.MessageExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.ModalExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.NotificationExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.PopconfirmExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.PromptDialogExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.ResultExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.SpinExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.SpinnerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.TooltipExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.ButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.CodeBlockExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.general.HyperlinkExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.IconExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.LabelExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.MenuButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SegmentedExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SelectableTextExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SplitButtonExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.general.SplitMenuButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.TypographyExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.WatermarkExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.BarExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.FlexExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.GridExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.AnchorExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.BackTopExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.BreadcrumbExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.DropdownExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.MenuBarExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.MenuExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.PaginationExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.StepsExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.TabsExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.ToolBarExamplePage;
 import org.openkawu.jfxium.layout.AppShellAnt;
 
 import java.util.LinkedHashMap;
@@ -178,6 +196,10 @@ public class MainView {
                 PageRegistry.Category.GENERAL, MenuButtonExamplePage::new);
         registry.register("general.splitbutton", "SplitButton 分裂按钮",
                 PageRegistry.Category.GENERAL, SplitButtonExamplePage::new);
+        registry.register("general.splitmenu", "SplitMenuButton 分裂菜单",
+                PageRegistry.Category.GENERAL, SplitMenuButtonExamplePage::new);
+        registry.register("general.hyperlink", "Hyperlink 超链接",
+                PageRegistry.Category.GENERAL, HyperlinkExamplePage::new);
 
         // ============ 布局（Layout）============
         registry.register("layout.grid", "Grid 栅格",
@@ -202,6 +224,12 @@ public class MainView {
                 PageRegistry.Category.NAVIGATION, PaginationExamplePage::new);
         registry.register("navigation.anchor", "Anchor 锚点",
                 PageRegistry.Category.NAVIGATION, AnchorExamplePage::new);
+        registry.register("navigation.menubar", "MenuBar 菜单栏",
+                PageRegistry.Category.NAVIGATION, MenuBarExamplePage::new);
+        registry.register("navigation.toolbar", "ToolBar 工具栏",
+                PageRegistry.Category.NAVIGATION, ToolBarExamplePage::new);
+        registry.register("navigation.backtop", "BackTop 回到顶部",
+                PageRegistry.Category.NAVIGATION, BackTopExamplePage::new);
 
         // ============ 数据录入（Data Entry）============
         registry.register("dataentry.form", "Form 表单",
@@ -242,6 +270,10 @@ public class MainView {
                 PageRegistry.Category.DATA_ENTRY, TextAreaExamplePage::new);
         registry.register("dataentry.togglebutton", "ToggleButton 切换按钮",
                 PageRegistry.Category.DATA_ENTRY, ToggleButtonExamplePage::new);
+        registry.register("dataentry.choicebox", "ChoiceBox 选择框",
+                PageRegistry.Category.DATA_ENTRY, ChoiceBoxExamplePage::new);
+        registry.register("dataentry.mentions", "Mentions 提及",
+                PageRegistry.Category.DATA_ENTRY, MentionsExamplePage::new);
 
         // ============ 数据展示（Data Display）============
         registry.register("datadisplay.table", "Table 表格",
@@ -280,6 +312,20 @@ public class MainView {
                 PageRegistry.Category.DATA_DISPLAY, SkeletonExamplePage::new);
         registry.register("datadisplay.popover", "Popover 气泡卡片",
                 PageRegistry.Category.DATA_DISPLAY, PopoverExamplePage::new);
+        registry.register("datadisplay.divider", "Divider 分割线",
+                PageRegistry.Category.DATA_DISPLAY, DividerExamplePage::new);
+        registry.register("datadisplay.separator", "Separator 分隔符",
+                PageRegistry.Category.DATA_DISPLAY, SeparatorExamplePage::new);
+        registry.register("datadisplay.accordion", "Accordion 手风琴",
+                PageRegistry.Category.DATA_DISPLAY, AccordionExamplePage::new);
+        registry.register("datadisplay.titledpane", "TitledPane 标题面板",
+                PageRegistry.Category.DATA_DISPLAY, TitledPaneExamplePage::new);
+        registry.register("datadisplay.treetable", "TreeTable 树表格",
+                PageRegistry.Category.DATA_DISPLAY, TreeTableExamplePage::new);
+        registry.register("datadisplay.listview", "ListView 列表视图",
+                PageRegistry.Category.DATA_DISPLAY, ListViewExamplePage::new);
+        registry.register("datadisplay.canvas", "Canvas 画布",
+                PageRegistry.Category.DATA_DISPLAY, CanvasExamplePage::new);
 
         // ============ 反馈（Feedback）============
         registry.register("feedback.message",      "Message 全局消息",
@@ -300,6 +346,14 @@ public class MainView {
                 PageRegistry.Category.FEEDBACK, ResultExamplePage::new);
         registry.register("feedback.tooltip",      "Tooltip 文字提示",
                 PageRegistry.Category.FEEDBACK, TooltipExamplePage::new);
+        registry.register("feedback.contextmenu",  "ContextMenu 右键菜单",
+                PageRegistry.Category.FEEDBACK, ContextMenuExamplePage::new);
+        registry.register("feedback.floatbutton",  "FloatButton 悬浮按钮",
+                PageRegistry.Category.FEEDBACK, FloatButtonExamplePage::new);
+        registry.register("feedback.promptdialog", "PromptDialog 输入弹框",
+                PageRegistry.Category.FEEDBACK, PromptDialogExamplePage::new);
+        registry.register("feedback.spinner",      "Spinner 旋转加载",
+                PageRegistry.Category.FEEDBACK, SpinnerExamplePage::new);
     }
 
     /** 构建主页 root —— App 拿去 setScene。 */
