@@ -195,3 +195,22 @@
     -fx-padding: 4px 8px;
   }
 }
+
+/* ============================================
+   通用圆角修饰 —— 任意组件可挂
+   放在文件末尾确保优先级覆盖组件默认值
+   ============================================ */
+.jfx-radius-none {
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+}
+
+.jfx-radius-sm {
+  -fx-background-radius: @border-radius-sm;
+  -fx-border-radius: @border-radius-sm;
+}
+
+.jfx-radius-lg {
+  -fx-background-radius: @border-radius-lg;
+  -fx-border-radius: @border-radius-lg;
+}

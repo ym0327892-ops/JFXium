@@ -10,6 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.core.command.Command;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.builder.Radius;
 
 /**
  * JFXium 按钮组件 - 对标 Ant Design Button（继承式，M19.50 重构）。
@@ -169,6 +170,23 @@ public class ButtonAnt extends Button {
     /** 直角方形，等价于 {@code shape(Shape.SQUARE)}。 */
     public ButtonAnt square() {
         return shape(Shape.SQUARE);
+    }
+
+    /**
+     * 设置按钮圆角（精确档位），默认 {@link Radius#SM}。
+     * 幂等——先清旧圆角 styleClass，再按需挂新。
+     */
+    public ButtonAnt borderRadius(Radius radius) {
+        getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
+        if (radius == Radius.NONE) {
+            getStyleClass().add(JfxStyles.RADIUS_NONE);
+        } else if (radius == Radius.SM) {
+            getStyleClass().add(JfxStyles.RADIUS_SM);
+        } else if (radius == Radius.LG) {
+            getStyleClass().add(JfxStyles.RADIUS_LG);
+        }
+        // MD 为默认，无需额外 class
+        return this;
     }
 
     // ============================================================

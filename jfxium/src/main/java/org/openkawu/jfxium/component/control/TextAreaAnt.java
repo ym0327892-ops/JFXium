@@ -2,6 +2,8 @@ package org.openkawu.jfxium.component.control;
 
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.TextArea;
+import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.builder.Radius;
 
 import java.util.function.Consumer;
 
@@ -157,6 +159,21 @@ public class TextAreaAnt extends TextArea {
     /** inline style（应急用，优先用 styleClass + LESS）。 */
     public TextAreaAnt style(String style) {
         if (style != null) setStyle(style);
+        return this;
+    }
+
+    /**
+     * 设置圆角（精确档位），默认 {@link Radius#SM}。
+     */
+    public TextAreaAnt borderRadius(Radius radius) {
+        getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
+        if (radius == Radius.NONE) {
+            getStyleClass().add(JfxStyles.RADIUS_NONE);
+        } else if (radius == Radius.SM) {
+            getStyleClass().add(JfxStyles.RADIUS_SM);
+        } else if (radius == Radius.LG) {
+            getStyleClass().add(JfxStyles.RADIUS_LG);
+        }
         return this;
     }
 

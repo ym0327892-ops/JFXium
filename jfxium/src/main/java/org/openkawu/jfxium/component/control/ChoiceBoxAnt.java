@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.builder.Radius;
 
 import java.util.function.Consumer;
 
@@ -125,6 +126,21 @@ public class ChoiceBoxAnt<T> extends ChoiceBox<T> {
             getStyleClass().add(JfxStyles.SIZE_SMALL);
         } else if (size == Size.LARGE) {
             getStyleClass().add(JfxStyles.SIZE_LARGE);
+        }
+        return this;
+    }
+
+    /**
+     * 设置圆角（精确档位），默认 {@link Radius#SM}。
+     */
+    public ChoiceBoxAnt<T> borderRadius(Radius radius) {
+        getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
+        if (radius == Radius.NONE) {
+            getStyleClass().add(JfxStyles.RADIUS_NONE);
+        } else if (radius == Radius.SM) {
+            getStyleClass().add(JfxStyles.RADIUS_SM);
+        } else if (radius == Radius.LG) {
+            getStyleClass().add(JfxStyles.RADIUS_LG);
         }
         return this;
     }

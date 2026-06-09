@@ -49,6 +49,14 @@ public final class JfxStyles {
     public static final String DENSITY_COMPACT = "jfx-compact";
 
     /* ============================================
+       通用圆角修饰 —— 任意组件可挂，LESS 端统一覆盖
+       ============================================ */
+    public static final String RADIUS_NONE = "jfx-radius-none";
+    public static final String RADIUS_SM   = "jfx-radius-sm";
+    public static final String RADIUS_LG   = "jfx-radius-lg";
+    // MD 为默认值，不需要额外 class
+
+    /* ============================================
        Button 按钮
        ============================================ */
 

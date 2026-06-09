@@ -10,6 +10,7 @@ import javafx.scene.control.ToggleGroup;
 import org.openkawu.jfxium.component.composite.SwitchAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.builder.Radius;
 
 /**
  * JFXium 切换按钮组件（M19.6）— 包装 JavaFX {@link ToggleButton}。
@@ -94,6 +95,7 @@ public class ToggleButtonAnt {
         private boolean disabled = false;
         private boolean rounded = false;
         private boolean square = false;
+        private Radius borderRadius = Radius.SM;
         private Node icon;
         private ContentDisplay contentDisplay = ContentDisplay.LEFT;
         private ToggleGroup toggleGroup;
@@ -129,6 +131,14 @@ public class ToggleButtonAnt {
         public Builder square() {
             this.square = true;
             this.rounded = false;
+            return this;
+        }
+
+        /**
+         * 设置圆角（精确档位），默认 {@link Radius#SM}。
+         */
+        public Builder borderRadius(Radius radius) {
+            this.borderRadius = radius;
             return this;
         }
 
@@ -210,6 +220,15 @@ public class ToggleButtonAnt {
 
             btn.setFocusTraversable(true);
             btn.getStyleClass().add("jfx-toggle-button");
+
+            if (borderRadius == Radius.NONE) {
+                btn.getStyleClass().add(JfxStyles.RADIUS_NONE);
+            } else if (borderRadius == Radius.SM) {
+                btn.getStyleClass().add(JfxStyles.RADIUS_SM);
+            } else if (borderRadius == Radius.LG) {
+                btn.getStyleClass().add(JfxStyles.RADIUS_LG);
+            }
+
             applyStyles(btn);
             return btn;
         }

@@ -9,6 +9,7 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitMenuButton;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.builder.Radius;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,7 @@ public class SplitButtonAnt {
         private boolean disabled = false;
         private boolean rounded = false;
         private boolean square = false;
+        private Radius borderRadius = Radius.SM;
         private Node icon;
         private ContentDisplay contentDisplay = ContentDisplay.LEFT;
         private EventHandler<ActionEvent> onClick;
@@ -105,6 +107,14 @@ public class SplitButtonAnt {
         public Builder square() {
             this.square = true;
             this.rounded = false;
+            return this;
+        }
+
+        /**
+         * 设置圆角（精确档位），默认 {@link Radius#SM}。
+         */
+        public Builder borderRadius(Radius radius) {
+            this.borderRadius = radius;
             return this;
         }
 
@@ -203,6 +213,15 @@ public class SplitButtonAnt {
 
             btn.setFocusTraversable(true);
             btn.getStyleClass().add("jfx-split-button");
+
+            if (borderRadius == Radius.NONE) {
+                btn.getStyleClass().add(JfxStyles.RADIUS_NONE);
+            } else if (borderRadius == Radius.SM) {
+                btn.getStyleClass().add(JfxStyles.RADIUS_SM);
+            } else if (borderRadius == Radius.LG) {
+                btn.getStyleClass().add(JfxStyles.RADIUS_LG);
+            }
+
             applyStyles(btn);
             return btn;
         }
