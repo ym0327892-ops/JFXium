@@ -14,6 +14,8 @@ import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
+import org.openkawu.jfxium.core.builder.Radius;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +106,7 @@ public class GroupBoxAnt {
         private boolean headerBackground = true;
         private boolean headerBorder = true;
         private boolean hoverable = true;
+        private Radius borderRadius = Radius.SM;
 
         private Builder() {}
 
@@ -224,10 +227,22 @@ public class GroupBoxAnt {
         
         /**
          * 设置是否启用悬停效果（默认 true）。
-         * 悬停时底色微调，无阴影/缩放，保持桌面克制。
+         * 悬停时添加轻阴影（shadow-sm），无底色变化/缩放，保持桌面克制。
          */
         public Builder hoverable(boolean on) {
             this.hoverable = on;
+            return this;
+        }
+
+        /**
+         * 设置 GroupBox 圆角大小，默认 {@link Radius#SM}。
+         *
+         * @see Radius#NONE 无圆角（直角）
+         * @see Radius#SM   小圆角 4px
+         * @see Radius#LG   大圆角 8px
+         */
+        public Builder borderRadius(Radius radius) {
+            this.borderRadius = radius;
             return this;
         }
 
@@ -253,6 +268,15 @@ public class GroupBoxAnt {
             if (hoverable) {
                 group.getStyleClass().add(JfxStyles.GROUP_BOX_HOVERABLE);
             }
+
+            if (borderRadius == Radius.NONE) {
+                group.getStyleClass().add(JfxStyles.RADIUS_NONE);
+            } else if (borderRadius == Radius.SM) {
+                group.getStyleClass().add(JfxStyles.RADIUS_SM);
+            } else if (borderRadius == Radius.LG) {
+                group.getStyleClass().add(JfxStyles.RADIUS_LG);
+            }
+            // MD 为默认，无需额外 class
 
             // ========== 1. Header（标题行 + 标签栏，可选）==========
             if (shouldShowHeader()) {

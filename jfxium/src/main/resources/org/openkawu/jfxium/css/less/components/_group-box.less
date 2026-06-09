@@ -13,9 +13,9 @@
   -fx-border-style: solid;
 }
 
-/* 悬停效果 —— 桌面克制：仅底色微调，无阴影/缩放 */
+/* 悬停效果 —— 桌面克制：仅加轻阴影，无底色变化/缩放 */
 .jfx-group-box.hoverable:hover {
-  -fx-background-color: -color-bg-subtle;
+  .shadow-sm();
 }
 
 /* 小尺寸 */
