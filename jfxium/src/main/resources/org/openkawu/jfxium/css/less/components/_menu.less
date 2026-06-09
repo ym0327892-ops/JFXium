@@ -1,12 +1,19 @@
 /* ============================================
-   MenuBar 容器（BUG #68，对齐 AtlantaFX _menu.scss）
-   容器本身 padding 0，1px 底部 border 走 background stacking
-   （避免占用 LayoutBox 的 padding 空间，让 .container 拿 padding）
-   注意：必须用 .jfx-menu-bar，Java 端挂的是 jfx- 前缀 styleClass（红线 #8）
+   MenuBar 容器（对齐 AtlantaFX _menu.scss）
+   双层 background stacking 实现 1px 底部边线：
+     Layer 0（底）: -color-border-muted 满铺（insets 0）
+     Layer 1（顶）: -color-bg-subtle    insets 0 0 1 0 → 底部留 1px 露出 Layer 0
+   容器本身 padding 0，让 .container 拿 padding。
+   注意：.jfx-menu-bar（红线 #8）+ .menu-bar（覆盖 modena 默认，spec 0,1,0 对等）
    ============================================ */
 .jfx-menu-bar {
-  -fx-background-color: -color-border-muted, -color-bg-default;
-  -fx-background-insets: 0 0 1 0, 1 0 0 0;
+  -fx-padding: 0;
+}
+
+.menu-bar {
+  -fx-background-color: -color-border-muted, -color-bg-subtle;
+  -fx-background-insets: 0 0 0 0, 0 0 1 0;
+  -fx-background-radius: 0;
   -fx-padding: 0;
 }
 

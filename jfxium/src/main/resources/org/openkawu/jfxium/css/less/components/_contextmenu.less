@@ -37,44 +37,64 @@
 }
 
 /* ============================================
-   MenuBar 顶级菜单（BUG #68，对齐 AtlantaFX _menu.scss）
+   MenuBar 顶级菜单（对齐 AtlantaFX _menu.scss）
    三层结构：
-     .jfx-menu-bar                     → 容器（padding 0, 1px 底部 border）
-       > .container                    → 中间层（@menu-bar-padding，4px/4px）
-         > .menu-button                → 按钮（@menu-button-padding，6px/10px）
-           > .label                    → 必须 padding 0！JavaFX MenuBarButtonSkin
-                                          内部 MenuLabeledImpl 硬编码 6/15/6/15，modena 的
-                                          .menu-bar > .container > .menu-button > .label
-                                          { padding: 0 } 在 JavaFX 21 上没生效（节点类名是
-                                          .label，但被 MenuBarButtonSkin 内部 padding 覆盖），
-                                          这里用 jfx- 前缀 + specificity 0,5,0 压过。
-   总高公式：@menu-bar-padding-y*2 + @menu-button-padding-y*2 + 文字高(18px) + 1border
-           = 4+4+6+6+18+1 = 39px（默认，IDE 风格）
-           = 4+4+4+4+18+1 = 35px（compact 公式自然收紧，@spacing-sm 6px 派生）
-   注意：必须用 .jfx-menu-bar（红线 #8）；.menu-button 是 JavaFX MenuBarSkin 内部节点名
+     .menu-bar / .jfx-menu-bar           → 容器（padding 0, 1px 底部 border）
+       > .container                      → 中间层（@menu-bar-padding）
+         > .menu-button                  → 按钮（@menu-button-padding）
+           > .label                      → padding 0（覆盖 MenuBarButtonSkin 内部硬编码）
+           > .arrow-button > .arrow      → 隐藏下拉箭头（AtlantaFX 做法）
+   .jfx-menu-bar 选择器提供 jfx- 前缀匹配（红线 #8）；
+   .menu-bar 选择器覆盖 modena 默认（spec 0,1,0 对等，后加载胜出）。
+   注意：.menu-button 是 JavaFX MenuBarSkin 内部节点名
    ============================================ */
 .jfx-menu-bar > .container {
   -fx-padding: @menu-bar-padding-y @menu-bar-padding-x;
 }
 
-.jfx-menu-bar > .container > .menu-button {
-  -fx-padding: @menu-button-padding-y @menu-button-padding-x;
-  -fx-background-color: transparent;
-  -fx-background-radius: @border-radius-sm;
+.menu-bar > .container {
+  -fx-padding: @menu-bar-padding-y @menu-bar-padding-x;
 }
 
-.jfx-menu-bar > .container > .menu-button > .label {
+.jfx-menu-bar > .container > .menu-button,
+.menu-bar > .container > .menu-button {
+  -fx-padding: @menu-button-padding-y @menu-button-padding-x;
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: @border-radius-sm;
+  -fx-effect: none;
+  /* 显式覆盖独立 MenuButton 组件的 border（通用 .menu-button 有 1px border） */
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+
+/* 隐藏顶级菜单按钮的下拉箭头（AtlantaFX _menu.scss 做法） */
+.menu-bar > .container > .menu-button > .arrow-button {
+  -fx-padding: 0;
+}
+
+.menu-bar > .container > .menu-button > .arrow-button > .arrow {
+  -fx-padding: 0;
+  -fx-background-color: transparent;
+  -fx-shape: "";
+}
+
+.jfx-menu-bar > .container > .menu-button > .label,
+.menu-bar > .container > .menu-button > .label {
   -fx-padding: 0;
   -fx-text-fill: -color-fg-default;
   -fx-font-size: @font-size-md;
 }
 
 .jfx-menu-bar > .container > .menu-button:hover,
-.jfx-menu-bar > .container > .menu-button:showing {
+.jfx-menu-bar > .container > .menu-button:showing,
+.menu-bar > .container > .menu-button:hover,
+.menu-bar > .container > .menu-button:showing {
   -fx-background-color: -color-accent-hover;
 }
 
-.jfx-menu-bar > .container > .menu-button:armed {
+.jfx-menu-bar > .container > .menu-button:armed,
+.menu-bar > .container > .menu-button:armed {
   -fx-background-color: -color-accent-active;
 }
 
