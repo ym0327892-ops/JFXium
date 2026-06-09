@@ -340,7 +340,7 @@
 }
 .jfx-app-shell-sider,
 .jfx-layout-sider {
-  -fx-background-color: -color-bg-container;
+  -fx-background-color: -color-bg-subtle;
   -fx-border-color: transparent -color-border-muted transparent transparent;
   -fx-border-width: 0 1px 0 0;
   -fx-border-style: solid;
@@ -373,7 +373,7 @@
 }
 .jfx-app-shell-content,
 .jfx-layout-content {
-  -fx-background-color: -color-bg-layout;
+  -fx-background-color: -color-bg-default;
 }
 .jfx-app-shell-footer,
 .jfx-layout-footer {
@@ -433,7 +433,7 @@
    Button Component
    ============================================ */
 .button {
-  -fx-background-radius: 6px;
+  -fx-background-radius: 4px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 6px 15px;
   -fx-cursor: hand;
@@ -442,8 +442,8 @@
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
 }
 .button:hover {
   -fx-background-color: -color-accent-hover;
@@ -550,8 +550,8 @@
   -fx-background-color: #ffffff;
   -fx-border-color: #e4e4e7;
   -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
   -fx-padding: 6px 11px;
   -fx-text-fill: #09090b;
 }
@@ -569,8 +569,8 @@
   -fx-background-color: #ffffff;
   -fx-border-color: #e4e4e7;
   -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
   -fx-padding: 6px 11px;
   -fx-text-fill: #09090b;
 }
@@ -583,7 +583,7 @@
 }
 .text-area .content {
   -fx-background-color: -color-bg-default;
-  -fx-background-radius: 6px;
+  -fx-background-radius: 4px;
 }
 .text-area:disabled {
   -fx-opacity: 0.6;
@@ -595,17 +595,17 @@
    ============================================ */
 .jfx-group-box {
   -fx-background-color: #ffffff;
-  -fx-background-radius: 6px;
-  -fx-border-radius: 6px;
+  -fx-background-radius: 4px;
+  -fx-border-radius: 4px;
 }
 .jfx-group-box.bordered {
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-style: solid;
 }
-/* 悬停效果 —— 桌面克制：仅底色微调，无阴影/缩放 */
+/* 悬停效果 —— 桌面克制：仅加轻阴影，无底色变化/缩放 */
 .jfx-group-box.hoverable:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4, 0, 0, 1);
 }
 /* 小尺寸 */
 .jfx-group-box.jfx-group-box-small {
@@ -895,14 +895,20 @@
   -fx-alignment: center;
 }
 /* ============================================
-   MenuBar 容器（BUG #68，对齐 AtlantaFX _menu.scss）
-   容器本身 padding 0，1px 底部 border 走 background stacking
-   （避免占用 LayoutBox 的 padding 空间，让 .container 拿 padding）
-   注意：必须用 .jfx-menu-bar，Java 端挂的是 jfx- 前缀 styleClass（红线 #8）
+   MenuBar 容器（对齐 AtlantaFX _menu.scss）
+   双层 background stacking 实现 1px 底部边线：
+     Layer 0（底）: -color-border-muted 满铺（insets 0）
+     Layer 1（顶）: -color-bg-subtle    insets 0 0 1 0 → 底部留 1px 露出 Layer 0
+   容器本身 padding 0，让 .container 拿 padding。
+   注意：.jfx-menu-bar（红线 #8）+ .menu-bar（覆盖 modena 默认，spec 0,1,0 对等）
    ============================================ */
 .jfx-menu-bar {
-  -fx-background-color: -color-border-muted, -color-bg-default;
-  -fx-background-insets: 0 0 1 0, 1 0 0 0;
+  -fx-padding: 0;
+}
+.menu-bar {
+  -fx-background-color: -color-border-muted, -color-bg-subtle;
+  -fx-background-insets: 0 0 0 0, 0 0 1 0;
+  -fx-background-radius: 0;
   -fx-padding: 0;
 }
 /* ============================================
@@ -1108,8 +1114,8 @@
   -fx-background-color: #ffffff;
   -fx-border-color: #e4e4e7;
   -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
   -fx-padding: 6px 11px;
   -fx-text-fill: #09090b;
 }
@@ -1386,8 +1392,8 @@
   -fx-background-color: #ffffff;
   -fx-border-color: #e4e4e7;
   -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
   -fx-padding: 6px 11px;
   -fx-text-fill: #09090b;
   /* M19.43 #7：modena 算的 pref 宽偏窄，配上我们的 padding + 箭头按钮会把日期文字裁掉「显示不全」。
@@ -1568,8 +1574,8 @@
   -fx-background-color: #ffffff;
   -fx-border-color: #e4e4e7;
   -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
   -fx-padding: 6px 11px;
   -fx-text-fill: #09090b;
   -fx-min-width: 60px;
@@ -1900,40 +1906,57 @@
   -fx-padding: 4px 0;
 }
 /* ============================================
-   MenuBar 顶级菜单（BUG #68，对齐 AtlantaFX _menu.scss）
+   MenuBar 顶级菜单（对齐 AtlantaFX _menu.scss）
    三层结构：
-     .jfx-menu-bar                     → 容器（padding 0, 1px 底部 border）
-       > .container                    → 中间层（@menu-bar-padding，4px/4px）
-         > .menu-button                → 按钮（@menu-button-padding，6px/10px）
-           > .label                    → 必须 padding 0！JavaFX MenuBarButtonSkin
-                                          内部 MenuLabeledImpl 硬编码 6/15/6/15，modena 的
-                                          .menu-bar > .container > .menu-button > .label
-                                          { padding: 0 } 在 JavaFX 21 上没生效（节点类名是
-                                          .label，但被 MenuBarButtonSkin 内部 padding 覆盖），
-                                          这里用 jfx- 前缀 + specificity 0,5,0 压过。
-   总高公式：@menu-bar-padding-y*2 + @menu-button-padding-y*2 + 文字高(18px) + 1border
-           = 4+4+6+6+18+1 = 39px（默认，IDE 风格）
-           = 4+4+4+4+18+1 = 35px（compact 公式自然收紧，@spacing-sm 6px 派生）
-   注意：必须用 .jfx-menu-bar（红线 #8）；.menu-button 是 JavaFX MenuBarSkin 内部节点名
+     .menu-bar / .jfx-menu-bar           → 容器（padding 0, 1px 底部 border）
+       > .container                      → 中间层（@menu-bar-padding）
+         > .menu-button                  → 按钮（@menu-button-padding）
+           > .label                      → padding 0（覆盖 MenuBarButtonSkin 内部硬编码）
+           > .arrow-button > .arrow      → 隐藏下拉箭头（AtlantaFX 做法）
+   .jfx-menu-bar 选择器提供 jfx- 前缀匹配（红线 #8）；
+   .menu-bar 选择器覆盖 modena 默认（spec 0,1,0 对等，后加载胜出）。
+   注意：.menu-button 是 JavaFX MenuBarSkin 内部节点名
    ============================================ */
 .jfx-menu-bar > .container {
   -fx-padding: 4px 4px;
 }
-.jfx-menu-bar > .container > .menu-button {
+.menu-bar > .container {
+  -fx-padding: 4px 4px;
+}
+.jfx-menu-bar > .container > .menu-button,
+.menu-bar > .container > .menu-button {
   -fx-padding: 6px 10px;
   -fx-background-color: transparent;
+  -fx-background-insets: 0;
   -fx-background-radius: 4px;
+  -fx-effect: none;
+  /* 显式覆盖独立 MenuButton 组件的 border（通用 .menu-button 有 1px border） */
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
 }
-.jfx-menu-bar > .container > .menu-button > .label {
+/* 隐藏顶级菜单按钮的下拉箭头（AtlantaFX _menu.scss 做法） */
+.menu-bar > .container > .menu-button > .arrow-button {
+  -fx-padding: 0;
+}
+.menu-bar > .container > .menu-button > .arrow-button > .arrow {
+  -fx-padding: 0;
+  -fx-background-color: transparent;
+  -fx-shape: "";
+}
+.jfx-menu-bar > .container > .menu-button > .label,
+.menu-bar > .container > .menu-button > .label {
   -fx-padding: 0;
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
 }
 .jfx-menu-bar > .container > .menu-button:hover,
-.jfx-menu-bar > .container > .menu-button:showing {
+.jfx-menu-bar > .container > .menu-button:showing,
+.menu-bar > .container > .menu-button:hover,
+.menu-bar > .container > .menu-button:showing {
   -fx-background-color: -color-accent-hover;
 }
-.jfx-menu-bar > .container > .menu-button:armed {
+.jfx-menu-bar > .container > .menu-button:armed,
+.menu-bar > .container > .menu-button:armed {
   -fx-background-color: -color-accent-active;
 }
 .menu-item {
@@ -2228,8 +2251,8 @@
   -fx-background-color: #ffffff;
   -fx-border-color: #e4e4e7;
   -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
   -fx-padding: 6px 11px;
   -fx-text-fill: #09090b;
   -fx-padding: 0;
@@ -4448,7 +4471,7 @@
        这里是"独立切换按钮"通用视觉，不会污染 Switch（CSS 后定义优先级在 Switch 那块就近覆盖）
    ============================================ */
 .toggle-button {
-  -fx-background-radius: 6px;
+  -fx-background-radius: 4px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 6px 15px;
   -fx-cursor: hand;
@@ -4531,8 +4554,8 @@
   -fx-background-color: #ffffff;
   -fx-border-color: #e4e4e7;
   -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
   -fx-padding: 6px 11px;
   -fx-text-fill: #09090b;
 }
@@ -6092,4 +6115,20 @@
 }
 .root.jfx-compact .combo-box-popup .list-view .list-cell {
   -fx-padding: 4px 8px;
+}
+/* ============================================
+   通用圆角修饰 —— 任意组件可挂
+   放在文件末尾确保优先级覆盖组件默认值
+   ============================================ */
+.jfx-radius-none {
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+}
+.jfx-radius-sm {
+  -fx-background-radius: 4px;
+  -fx-border-radius: 4px;
+}
+.jfx-radius-lg {
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
 }
