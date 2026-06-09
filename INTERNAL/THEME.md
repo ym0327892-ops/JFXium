@@ -49,6 +49,7 @@ Base Token → Semantic Token → Component Token
 -color-bg-default: #ffffff;
 -color-bg-subtle: #f6f8fa;
 -color-bg-inset: #f3f4f6;
+-color-bg-layout: #f0f2f5;  /* 页面最外层底色，各主题独立定义 */
 
 /* 边框色 */
 -color-border-default: #d9d9d9;
