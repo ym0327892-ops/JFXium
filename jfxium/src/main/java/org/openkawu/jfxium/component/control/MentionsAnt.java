@@ -103,6 +103,14 @@ public class MentionsAnt {
             Popup popup = new Popup();
             popup.setAutoHide(true);
 
+            // Popup 有独立 Scene，不继承宿主节点的主题样式表。
+            // 显示时把宿主 Scene 的 stylesheets 注入 Popup Scene，确保暗色等主题下文字/背景颜色正确。
+            popup.showingProperty().addListener((obs, wasShowing, isShowing) -> {
+                if (isShowing && popup.getScene() != null && textArea.getScene() != null) {
+                    popup.getScene().getStylesheets().setAll(textArea.getScene().getStylesheets());
+                }
+            });
+
             VBox optionsPanel = new VBox(0);
             optionsPanel.getStyleClass().add(JfxStyles.POPUP_MENU);
             optionsPanel.setPrefWidth(200);

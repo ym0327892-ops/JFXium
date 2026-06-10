@@ -262,7 +262,7 @@
   -fx-cursor: hand;
 }
 .button.jfx-app-shell-sider-trigger:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
   -fx-text-fill: -color-accent-emphasis;
   -fx-border-color: -color-border-muted transparent transparent transparent;
 }
@@ -673,7 +673,7 @@
   -fx-cursor: hand;
 }
 .jfx-group-box .jfx-group-box-action-item:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
 }
 /* 标签栏 */
 .jfx-group-box .jfx-group-box-tab-bar {
@@ -3008,7 +3008,7 @@
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0, 0, 2);
 }
 .jfx-back-top:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 3);
 }
 .jfx-back-top-arrow {
@@ -3083,7 +3083,7 @@
   -fx-text-fill: -color-fg-default;
 }
 .jfx-popup-menu-item:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
 }
 .jfx-popup-menu-item-disabled {
   -fx-cursor: default;
@@ -3331,7 +3331,7 @@
   -fx-padding: 6 12 6 12;
 }
 .jfx-tree-select-row:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
 }
 .jfx-tree-select-row.jfx-tree-select-disabled {
   -fx-cursor: default;
@@ -3541,7 +3541,7 @@
 }
 /* hover 时才显浅色圆形背景，对齐 Ant Design Modal/Drawer × 的微交互 */
 .jfx-overlay-close-btn:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
   -fx-text-fill: -color-fg-default;
 }
 .jfx-overlay-close-btn:armed,
@@ -3583,7 +3583,7 @@
   -fx-cursor: hand;
 }
 .jfx-cascader-item:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
 }
 .jfx-cascader-item.jfx-cascader-item-disabled {
   -fx-cursor: default;
@@ -3742,7 +3742,7 @@
   -fx-cursor: hand;
 }
 .jfx-list-item.jfx-list-item-clickable:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
 }
 .jfx-list-item-title {
   -fx-font-size: 13px;
@@ -3817,7 +3817,7 @@
   -fx-cursor: hand;
 }
 .jfx-menu-submenu-header:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
 }
 .jfx-menu-submenu-body {
   -fx-background-color: -color-bg-subtle;
@@ -4029,7 +4029,7 @@
 }
 .jfx-breadcrumb-link:hover {
   -fx-text-fill: -color-fg-default;
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
   -fx-background-radius: 4px;
 }
 .jfx-breadcrumb-separator {
@@ -4116,7 +4116,7 @@
   -fx-background-radius: 4px;
 }
 .jfx-calendar-nav-btn:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
 }
 .jfx-calendar-grid {
   -fx-padding: 8;
@@ -4135,7 +4135,7 @@
   -fx-cursor: hand;
 }
 .jfx-calendar-cell:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
 }
 .jfx-calendar-cell.jfx-calendar-cell-today {
   -fx-background-color: -color-accent-subtle;
@@ -4174,7 +4174,7 @@
   -fx-cursor: hand;
 }
 .jfx-calendar-month-btn:hover {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
 }
 .jfx-calendar-month-btn.jfx-calendar-month-btn-current,
 .jfx-calendar-month-btn.jfx-calendar-month-btn-current:hover {

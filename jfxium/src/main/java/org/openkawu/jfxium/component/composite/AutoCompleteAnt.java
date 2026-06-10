@@ -93,6 +93,14 @@ public class AutoCompleteAnt {
             popup.setAutoHide(true);
             popup.setHideOnEscape(true);
 
+            // Popup 有独立 Scene，不继承宿主节点的主题样式表。
+            // 显示时把宿主 Scene 的 stylesheets 注入 Popup Scene，确保暗色等主题下文字/背景颜色正确。
+            popup.showingProperty().addListener((obs, wasShowing, isShowing) -> {
+                if (isShowing && popup.getScene() != null && field.getScene() != null) {
+                    popup.getScene().getStylesheets().setAll(field.getScene().getStylesheets());
+                }
+            });
+
             VBox suggestionsBox = new VBox(0);
             suggestionsBox.getStyleClass().add(JfxStyles.POPUP_MENU);
             suggestionsBox.setPrefWidth(200);

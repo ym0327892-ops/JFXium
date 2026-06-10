@@ -181,6 +181,13 @@ public class DropdownAnt {
             this.config = config;
             this.trigger = config.trigger;
             this.popup = new Popup();
+            // Popup 有独立 Scene，不继承宿主节点的主题样式表。
+            // 显示时把宿主 Scene 的 stylesheets 注入 Popup Scene，确保暗色等主题下文字/背景颜色正确。
+            this.popup.showingProperty().addListener((obs, wasShowing, isShowing) -> {
+                if (isShowing && this.popup.getScene() != null && trigger.getScene() != null) {
+                    this.popup.getScene().getStylesheets().setAll(trigger.getScene().getStylesheets());
+                }
+            });
             this.menu = createMenu();
             setupTrigger();
         }
