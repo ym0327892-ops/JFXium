@@ -225,6 +225,114 @@
   -fx-background-color: transparent;
 }
 /* ============================================
+   AppShell / Layout 应用骨架
+   ============================================ */
+.jfx-app-shell,
+.jfx-layout {
+  -fx-background-color: -color-bg-layout;
+}
+.jfx-app-shell-header,
+.jfx-layout-header {
+  -fx-background-color: -color-bg-container;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+  -fx-border-style: solid;
+}
+.jfx-app-shell-sider,
+.jfx-layout-sider {
+  -fx-background-color: -color-bg-subtle;
+  -fx-border-color: transparent -color-border-muted transparent transparent;
+  -fx-border-width: 0 1px 0 0;
+  -fx-border-style: solid;
+}
+/* M19.22 sider 折叠态钩子（宽度由 Java 端控制，这里仅留 styleClass 占位以便业务自定义） */
+.jfx-app-shell-sider-collapsed {
+  /* 折叠时的样式钩子 */
+}
+/* sider 底部折叠触发按钮（M19.22） */
+.button.jfx-app-shell-sider-trigger {
+  -fx-background-color: -color-bg-container;
+  -fx-text-fill: -color-fg-muted;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+  -fx-border-style: solid;
+  -fx-background-radius: 0;
+  -fx-padding: 12 8 12 8;
+  -fx-font-size: 18px;
+  -fx-cursor: hand;
+}
+.button.jfx-app-shell-sider-trigger:hover {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+}
+.button.jfx-app-shell-sider-trigger:armed,
+.button.jfx-app-shell-sider-trigger:pressed {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+}
+.jfx-app-shell-content,
+.jfx-layout-content {
+  -fx-background-color: -color-bg-default;
+}
+.jfx-app-shell-footer,
+.jfx-layout-footer {
+  -fx-background-color: -color-bg-container;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1px 0 0 0;
+  -fx-border-style: solid;
+}
+/* ============================================
+   SplitPaneAnt / ResizablePanelAnt / ScrollContainerAnt
+   ============================================ */
+.jfx-split-pane-ant {
+  -fx-background-color: -color-bg-layout;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+.jfx-split-pane-ant > .split-pane-divider {
+  -fx-background-color: -color-border-muted;
+  -fx-padding: 2px;
+}
+.jfx-split-pane-ant > .split-pane-divider:hover {
+  -fx-background-color: -color-border-default;
+}
+.jfx-resizable-panel {
+  -fx-background-color: -color-bg-container;
+  -fx-background-radius: 6px;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-style: solid;
+  -fx-border-radius: 6px;
+}
+.jfx-resizable-panel-content {
+  -fx-background-color: transparent;
+}
+.jfx-resizable-panel-handle {
+  -fx-background-color: transparent;
+}
+.jfx-resizable-panel-handle:hover {
+  -fx-background-color: -color-accent-subtle;
+}
+.jfx-resizable-panel-handle.both {
+  -fx-background-color: -color-border-muted;
+  -fx-background-radius: 2px 0 6px 0;
+}
+.jfx-resizable-panel-handle.both:hover {
+  -fx-background-color: -color-accent-muted;
+}
+.jfx-scroll-container {
+  -fx-background-color: -color-bg-layout;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+.jfx-scroll-container > .viewport {
+  -fx-background-color: -color-bg-layout;
+}
+.jfx-scroll-container-viewport {
+  -fx-background-color: -color-bg-layout;
+}
+/* ============================================
    SelectableTextAnt（M19.7）— 只读可选可复制文本
    关键：底层是 TextField/TextArea，去掉所有 input chrome（背景/边框/focus 阴影/padding）
    让它看起来像一个普通 Label，但保留 selection + Ctrl+C 能力
@@ -326,108 +434,6 @@
 }
 .jfx-selectable-text-error {
   -fx-text-fill: -color-danger-emphasis;
-}
-.jfx-app-shell,
-.jfx-layout {
-  -fx-background-color: -color-bg-layout;
-}
-.jfx-app-shell-header,
-.jfx-layout-header {
-  -fx-background-color: -color-bg-container;
-  -fx-border-color: transparent transparent -color-border-muted transparent;
-  -fx-border-width: 0 0 1px 0;
-  -fx-border-style: solid;
-}
-.jfx-app-shell-sider,
-.jfx-layout-sider {
-  -fx-background-color: -color-bg-subtle;
-  -fx-border-color: transparent -color-border-muted transparent transparent;
-  -fx-border-width: 0 1px 0 0;
-  -fx-border-style: solid;
-}
-/* M19.22 sider 折叠态钩子（宽度由 Java 端控制，这里仅留 styleClass 占位以便业务自定义） */
-.jfx-app-shell-sider-collapsed {
-  /* 折叠时的样式钩子 */
-}
-/* sider 底部折叠触发按钮（M19.22） */
-.button.jfx-app-shell-sider-trigger {
-  -fx-background-color: -color-bg-container;
-  -fx-text-fill: -color-fg-muted;
-  -fx-border-color: -color-border-muted transparent transparent transparent;
-  -fx-border-width: 1px 0 0 0;
-  -fx-border-style: solid;
-  -fx-background-radius: 0;
-  -fx-padding: 12 8 12 8;
-  -fx-font-size: 18px;
-  -fx-cursor: hand;
-}
-.button.jfx-app-shell-sider-trigger:hover {
-  -fx-background-color: -color-bg-subtle;
-  -fx-text-fill: -color-accent-emphasis;
-  -fx-border-color: -color-border-muted transparent transparent transparent;
-}
-.button.jfx-app-shell-sider-trigger:armed,
-.button.jfx-app-shell-sider-trigger:pressed {
-  -fx-background-color: -color-accent-subtle;
-  -fx-border-color: -color-border-muted transparent transparent transparent;
-}
-.jfx-app-shell-content,
-.jfx-layout-content {
-  -fx-background-color: -color-bg-default;
-}
-.jfx-app-shell-footer,
-.jfx-layout-footer {
-  -fx-background-color: -color-bg-container;
-  -fx-border-color: -color-border-muted transparent transparent transparent;
-  -fx-border-width: 1px 0 0 0;
-  -fx-border-style: solid;
-}
-.jfx-split-pane-ant {
-  -fx-background-color: -color-bg-layout;
-  -fx-background-insets: 0;
-  -fx-padding: 0;
-}
-.jfx-split-pane-ant > .split-pane-divider {
-  -fx-background-color: -color-border-muted;
-  -fx-padding: 2px;
-}
-.jfx-split-pane-ant > .split-pane-divider:hover {
-  -fx-background-color: -color-border-default;
-}
-.jfx-resizable-panel {
-  -fx-background-color: -color-bg-container;
-  -fx-background-radius: 6px;
-  -fx-border-color: -color-border-muted;
-  -fx-border-width: 1px;
-  -fx-border-style: solid;
-  -fx-border-radius: 6px;
-}
-.jfx-resizable-panel-content {
-  -fx-background-color: transparent;
-}
-.jfx-resizable-panel-handle {
-  -fx-background-color: transparent;
-}
-.jfx-resizable-panel-handle:hover {
-  -fx-background-color: -color-accent-subtle;
-}
-.jfx-resizable-panel-handle.both {
-  -fx-background-color: -color-border-muted;
-  -fx-background-radius: 2px 0 6px 0;
-}
-.jfx-resizable-panel-handle.both:hover {
-  -fx-background-color: -color-accent-muted;
-}
-.jfx-scroll-container {
-  -fx-background-color: -color-bg-layout;
-  -fx-background-insets: 0;
-  -fx-padding: 0;
-}
-.jfx-scroll-container > .viewport {
-  -fx-background-color: -color-bg-layout;
-}
-.jfx-scroll-container-viewport {
-  -fx-background-color: -color-bg-layout;
 }
 /* ============================================
    Button Component
