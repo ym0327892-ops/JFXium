@@ -122,8 +122,8 @@ HBox actions = BarAnt.create()
 **产出**：项目结构与约定全面对齐文档；PROJECT_BUG.md/PROJECT_PLAN.md/README_CN 三处一致性修正。
 
 **关键改动**：
-- [x] 项目实情摸底：多模块结构（`jfxium` + `jfxium-demo`）、Java 21 + JavaFX 21.0.6、8 个 lessc execution 在 `generate-resources` 阶段
-- [x] 发现并记录隐性依赖：LESS 编译强依赖宿主机 Node.js
+- [x] 项目实情摸底：多模块结构（`jfxium` + `jfxium-demo`）、Java 21 + JavaFX 21.0.6、M19.46 前为 8 个 lessc execution 在 `generate-resources` 阶段调用 npx lessc（**M19.46 已迁移至 `groovy-maven-plugin + jlessc 1.16` 单 execution，纯 Java**）
+- [x] 发现并记录隐性依赖：M19.46 前 LESS 编译强依赖宿主机 Node.js（**M19.46 后已去除 Node.js 依赖，新机器只需 JDK 21 + Maven 3.8+**）
 - [x] PROJECT_BUG.md 重整：顶部 3 条未编号描述移入表格，按编号重排，新增"修复说明"小节
 - [x] PROJECT_PLAN.md 文件结构区从单模块视角扩展为多模块（补 `jfxium/` + `jfxium-demo/` 路径前缀）
 
@@ -1863,7 +1863,7 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 - docs/cn/组件参考.md「bindValue 专题」同步更新（章节标头从 M19.51 改为 M19.51 + C-b1；19 → 21 控件；ChoiceBox 补登）。
 
 **M21.3 测试矩阵**：
-- 总测试文件 23 个（control 8 + composite 5 + layout 7 + core/builder 1 + 组件 2）
+- 总测试文件 25 个（control 9 + composite 6 + layout 7 + overlay 1 + core/builder 1 + core/theme 1）
 - 总测试方法 766 个（@Test 计数含 @Nested），M20 + M21 新增约 160 用例。
 - `./mvnw test -pl jfxium` 全量零退化，BUILD SUCCESS。
 
@@ -2068,7 +2068,7 @@ ShowcaseDemo
 ### 🟢 P3：长期愿景
 - [x] 国际化（i18n）支持（按钮文字、复制提示等硬编码字符串外置）—— M19.18 完成
 - [ ] 主题色板在线编辑器
-- [x] 单元测试覆盖（核心 Builder API）—— @B/M20 + @C/M21 大幅推进（详见下方 M20/M21 章节；测试矩阵已达 23 文件 / 766 用例）—— @B/M20 + @C/M21 大幅推进（详见下方 M20/M21 章节；测试矩阵已达 23 文件 / 766 用例）
+- [x] 单元测试覆盖（核心 Builder API）—— @B/M20 + @C/M21 大幅推进（详见下方 M20/M21 章节；测试矩阵已达 25 文件 / 796 用例）
 - [ ] 发布到 Maven Central
 - [ ] Figma 设计稿导入
 - [ ] 组件市场
@@ -2136,7 +2136,7 @@ JFXium/                                          # 多模块 Maven 项目（pare
 │       │       │       ├── theme-shadcn.less / theme-cyberpunk.less / theme-custom.less
 │       │       │       └── components/          # 64 个 _xxx.less 组件样式
 │       │       └── i18n/                        # messages.properties（zh_CN / en）
-│       └── test/java/org/openkawu/jfxium/      # @M20+ 测试矩阵（23 文件 / 766 用例）
+│       └── test/java/org/openkawu/jfxium/      # @M20+ 测试矩阵（25 文件 / 796 用例）
 │           ├── JfxTestBase.java                 # 测试基类（JavaFX headless 启动）
 │           ├── core/builder/AbstractStyleBuilderTest.java
 │           ├── core/css/BorderRadiusTest.java   # @M20.1 28 用例

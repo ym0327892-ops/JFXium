@@ -820,10 +820,10 @@
 
 ## 修复统计（更新）
 
-- **总计问题**：87 个（#1–#87）
-- **已修复 / 已完成**：83 个（#1–#83）
-- **待处理**：4 个（#84–#87，详见「待处理问题」章节）
-- **最后更新**：2026-06-09
+- **总计问题**：88 个（#1–#88）
+- **已修复 / 已完成**：84 个（#1–#84,#88 文档级 V2.2 完成）
+- **待处理**：4 个（#85–#87，详见「待处理问题」章节）
+- **最后更新**：2026-06-10
 
 ## 修复说明（2026-06-08：BUG #73–#76 P0 红线批量修复 — 全面规则审计第二轮）
 
@@ -974,18 +974,18 @@
 - **优先级**：P2（文档准确性）
 - **状态**：⏳ 待修复
 
-### #86 单元测试覆盖率偏低（17 测试文件覆盖 94+ 组件）
-- **现象**：`jfxium/src/test` 目录下仅 17 个测试文件（含 `JfxTestBase` 基类），实际测试组件 16 个：
-  - **control 包**（~13 个测试）：ButtonAnt / CheckBoxAnt / ComboBoxAnt / DatePickerAnt / InputAnt / InputNumberAnt / SliderAnt / SwitchAnt
-  - **layout 包**（~7 个测试）：AnchorPaneAnt / FlowPaneAnt / HBoxAnt / SplitPaneAnt / StackPaneAnt / TilePaneAnt / VBoxAnt
-  - **core 包**（1 个）：AbstractStyleBuilder
-  - **composite 包**（0 个测试）：CardAnt / FormAnt / MenuAnt / StepsAnt / TagAnt / TransferAnt / WatermarkAnt 等 ~44 个组件**零测试**
-  - **overlay 包**（0 个测试）：ModalAnt / DrawerAnt / DropdownAnt / MessageAnt 等 ~8 个组件**零测试**
-  - **template 包**（0 个测试）：CrudTemplate / LoginTemplate 等**零测试**
-- **影响**：composite 和 overlay 组件（占总数 55%+）完全没有测试保护，重构或修 bug 时缺少回归安全网
-- **修复方向**：按优先级分批补测试——overlay（交互复杂度高）> composite 核心组件（CardAnt / FormAnt / MenuAnt）> template
+### #86 单元测试覆盖率偏低（25 测试文件覆盖 94+ 组件）
+- **现象**：`jfxium/src/test` 目录下 25 个测试文件（去 JfxTestBase），实际测试组件 22 个 + 3 utility（BorderRadiusTest / AbstractStyleBuilderTest / ThemeSmokeTest）：
+  - **control 包**（11 个测了的组件）：ButtonAnt / CheckBoxAnt / ChoiceBoxAnt / ComboBoxAnt / DatePickerAnt / InputAnt / SplitButtonAnt / ToggleButtonAnt（control 测试目录 8 个文件）+ InputNumberAnt / SliderAnt / SwitchAnt（源码在 composite 目录，测试也错放在 composite 测试目录）
+  - **composite 包**（3 个真 composite + 3 个错放）：FormAnt / GroupBoxAnt / BreadcrumbAnt（composite 测试目录 6 个文件中前 3 个为真 composite；后 3 个 InputNumberAnt / SliderAnt / SwitchAnt 实际属于 control 但源码在 composite 目录）
+  - **layout 包**（7 个）：AnchorPaneAnt / FlowPaneAnt / HBoxAnt / SplitPaneAnt / StackPaneAnt / TilePaneAnt / VBoxAnt
+  - **core 包**（3 个 utility）：AbstractStyleBuilder / ThemeSmoke / BorderRadius(测 box-radius 工具)
+  - **overlay 包**（**1 个测试**）：PopconfirmAnt 共 9 个组件中 1 个有测试,ModalAnt / DrawerAnt / DropdownAnt / MessageAnt / NotificationAnt / PopoverAnt / PromptDialogAnt / ContextMenuAnt 仍 8 个**零测试**
+  - **template 包**（**0 个测试**）：CrudTemplate / LoginTemplate / PageTemplate 等**零测试**
+- **影响**：overlay 8 个 + template 全部 + composite 真组件 39 个（共 50+ 组件,占总数 50%+）完全没有测试保护,重构或修 bug 时缺少回归安全网
+- **修复方向**：按优先级分批补测试——overlay（交互复杂度高，含 Stage/Popup 生命周期） > composite 核心组件（Alert / Card / Menu / Table / Tabs） > template
 - **优先级**：P3（质量保障，长期改进）
-- **状态**：⏳ 待处理
+- **进度**：本轮新增 2 份测试骨架 `BreadcrumbAntTest`（10 用例）+ `PopconfirmAntTest`（10 用例），overlay 0→1，composite 真组件 2→3，总用例 766→796
 
 ### #87 jlessc 1.16 嵌套块 + @-token 解析 bug（基础设施层已知限制）
 - **现象**：jlessc 1.16 在 `.root.jfx-compact { ... }` 嵌套块内对 `@-token` 变量解析输出错位值（BUG #69 发现）。例如 `@menu-item-padding-y @menu-item-padding-x` 编译为 `6px 8px`（预期 `4px 12px`）
@@ -994,3 +994,68 @@
 - **修复方向**：升级 LESS 编译器（jlessc → less4j 或其他纯 Java LESS 编译器），之后可改回 token 引用
 - **优先级**：P3（基础设施，需评估替代方案）
 - **状态**：⏳ 待评估
+
+### #88 B1 章节「40 个 Builder 未继承 AbstractStyleBuilder」V1 过期数据重算为 15（V2.1 实测）
+- **现象**：`PROJECT_AUDIT_REPORT.md` V1（2026-06-05）报告"~39 个 Builder 未继承 AbstractStyleBuilder"，V2（2026-06-09）沿用未实测,标注为"40 个待迁 P3 任务（2-3 天）"。V2.1（2026-06-10）实测 102 个 `*Ant.java` 实际状态：
+  - **71 个（70%）直接继承 AbstractStyleBuilder**（含全部 43 composite + 8 overlay + 11 control + 6 layout + 2 顶层 layout + 1 模板）
+  - **16 个（16%）实现 LayoutCommon**（功能等价,含 9 layout + 7 control）—— 详见审计报告 E6 节
+  - **15 个（15%）既不继承也不实现** —— 真正待处理,按业务场景分 5 类
+- **15 个待处理文件分类**（实测命令见审计报告 B1 节）：
+  - **M2-A**（3 个,双工厂+幂等自实现 styleClass/style）: CheckBoxAnt / RadioButtonAnt / LabelAnt —— 建议迁移
+  - **M2-B**（2 个,双工厂+简单自实现,无重复字段）: HyperlinkAnt / SeparatorAnt —— 可选
+  - **M3**（4 个,双工厂无 style/styleClass 字段）: ToolBarAnt / SplitMenuButtonAnt / StatusBarAnt / CanvasAnt —— 豁免（Java 单继承限制）
+  - **M4**（2 个父 + 3 个子 Builder,内嵌 children 链式构造）: MenuBarAnt (MenuBuilder/SubMenuBuilder) / TreeTableAnt (TreeNodeBuilder) —— 豁免（语义不匹配）
+  - **M4-Typography**（1 个父 + 3 个子 Builder）: TypographyAnt (TitleBuilder / ParagraphBuilder / TextBuilder) —— 建议迁移 3 个子 Builder
+  - **M5**（1 个,无 fluent 需新建 Builder）: ListViewAnt —— 建议新建 Builder
+  - **豁免**（2 个,静态 utility / overlay service）: IconAnt / PromptDialogAnt —— 豁免
+- **影响**：V1/V2 报告的「40 个」严重误导,新成员读 V2 报告后按 2-3 天估算 P3 工作量,实际建议迁移仅 7 个（M2-A 3 + M4-Typography 3 + M5 1）,2-3 小时即可
+- **修复方向**（已部分完成）：
+  - [x] `PROJECT_AUDIT_REPORT.md` V2.1 刷新: B1 章节 + B3/B4 layout 节 + E3 节 + V2.0 残留清单 + V2→V3 路线图全部同步重算
+  - [x] 登记 BUG #88（本文档）
+  - [ ] 实际迁移 7 个建议迁移的 Builder（M2-A 3 + M4-Typography 3 + M5 1）—— 见 TODO t5c/t5e/t5f
+- **优先级**:P3(V2.1 文档已完成;代码迁移为 V3 子任务,非 P3 主线)
+- **状态**:⏳ 代码迁移待处理
+
+---
+
+### #88 V2.2 实际可行性重评(2026-06-10) — 实际可迁移仅 3 个,12 父类全部确认豁免
+
+V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新逐个评估实际可行性**:
+
+#### 逐项实测结论
+
+| 类别 | 父类 | 子 Builder | V2.2 重评结论 | 实测依据 |
+|------|------|-----------|---------|----------|
+| **M2-A** 双工厂+幂等 styleClass/style | CheckBoxAnt / RadioButtonAnt / LabelAnt | — | **🟢 豁免** | `extends CheckBox/RadioButton/Label`,Java 单继承下无法再 `extends AbstractStyleBuilder`(抽象类,非接口,不能 implements) |
+| **M2-B** 双工厂+简单自实现 | HyperlinkAnt / SeparatorAnt | — | **🟢 豁免** | 实测 0 处 `styleClass`/`style` 自实现(grep 验证),无任何重复代码可消除 |
+| **M3** 双工厂无 style 字段 | ToolBarAnt / SplitMenuButtonAnt / StatusBarAnt / CanvasAnt | — | **🟢 豁免** | extends JavaFX 原生类,Java 单继承限制 |
+| **M4** 内嵌 children Builder | MenuBarAnt / TreeTableAnt | MenuBuilder / SubMenuBuilder / TreeNodeBuilder | **🟢 豁免** | 父类同 M3 豁免;子 Builder 目标构造嵌套 `MenuItem`/`TreeItem` 子树,applyStyles 语义不匹配 |
+| **M4-Typography** 三独立 Builder | TypographyAnt(父类不需迁移) | TitleBuilder / ParagraphBuilder / TextBuilder | **✅ 已迁移** | 三 Builder 典型 Builder 模式(`build()` 返回新 Label),无父类继承冲突,迁移零风险,实测 `mvn compile` BUILD SUCCESS |
+| **M5** 无 fluent 需新建 Builder | ListViewAnt | — | **🟢 豁免** | `extends ListView<T>`,Java 单继承;javadoc 第 30-38 行明示业务可 `extends ListViewAnt<T>`(FileList 例子),新建外部 Builder 模式破坏双工厂契约 |
+
+#### 实际可迁移(3 个) - 全部已落地
+
+| 文件 | 改动 | 编译验证 |
+|------|------|---------|
+| TypographyAnt.TitleBuilder | `extends AbstractStyleBuilder<TitleBuilder>` + `applyStyles(label)` | ✅ mvn compile |
+| TypographyAnt.ParagraphBuilder | `extends AbstractStyleBuilder<ParagraphBuilder>` + `applyStyles(label)` | ✅ mvn compile |
+| TypographyAnt.TextBuilder | `extends AbstractStyleBuilder<TextBuilder>` + `applyStyles(label)` | ✅ mvn compile |
+
+**收益**:3 个 Builder 统一获得 9 类公共能力(padding、radius、border 方向、visible/managed/opacity/cursor/id、style/styleClass)。
+
+#### 实际豁免(12 父 + 3 子 = 15 个) - 全部有客观原因
+
+- **5 个 Java 单继承**:CheckBoxAnt / RadioButtonAnt / LabelAnt / ListViewAnt(+ 1) - extends JavaFX 原生类,无法 extends AbstractStyleBuilder
+- **2 个 M2-B 无重复代码**:HyperlinkAnt / SeparatorAnt - 实测 0 行重复,无迁移价值
+- **4 个 M3 Java 单继承**:ToolBarAnt / SplitMenuButtonAnt / StatusBarAnt / CanvasAnt
+- **2 个 M4 父类 Java 单继承 + 业务继承式**:MenuBarAnt / TreeTableAnt
+- **1 个 Typography 父类**:静态工厂入口(`title()`/`paragraph()`/`text()` 三方法),无 style 注入需求
+- **2 个 utility/service**:IconAnt(静态工具类)/ PromptDialogAnt(Result wrapper service,无自实现 styleClass/style)
+- **3 个 M4 子 Builder**:MenuBuilder / SubMenuBuilder / TreeNodeBuilder(语义不匹配)
+
+#### V2.2 结论
+
+- **V1/V2/V2.1 报告反复将"40 → 15 → 7"细化,但仍高估迁移价值**
+- **V2.2 终评:实际可迁移仅 3 个(M4-Typography 子 Builder),工作量约 30 分钟** —— 已 100% 完成
+- **V3 计划**:从 BUG #88 中删除此条目,转交 P3「7 个 → 3 个实际可迁移」完成态登记
+- **审计报告修正**:PROJECT_AUDIT_REPORT.md B1 + E3 + V2.1 残留清单 + V2→V3 路线图同步重算(7 → 3)

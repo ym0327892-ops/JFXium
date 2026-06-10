@@ -687,7 +687,7 @@ JFXForm.create().item("Label", control).onSubmit(data -> {}).build();
 - **M21.2** bindValue API 补完 ChoiceBox：`ChoiceBoxAnt<T>.bindValue(Property<T>)`
   - **21 个数据输入控件**（control 11 + composite 10）全支持
   - 4 个 bindValue 系列单测：InputNumberAntTest（141 行）/ SliderAntTest（174 行）/ SwitchAntTest（134 行）/ ChoiceBoxAntTest（329 行），共 778 行
-- **M21.3** 测试矩阵：23 个测试文件 / 766 用例 / 0 失败
+- **M21.3** 测试矩阵：25 个测试文件 / 796 用例 / 0 失败
 
 
 ---
@@ -719,4 +719,4 @@ JFXForm.create().item("Label", control).onSubmit(data -> {}).build();
 - **M21.2** bindValue API 补完 ChoiceBox：`ChoiceBoxAnt<T>.bindValue(Property<T>)`
   - **21 个数据输入控件**（control 11 + composite 10）全支持
   - 4 个 bindValue 系列单测：InputNumberAntTest（141 行）/ SliderAntTest（174 行）/ SwitchAntTest（134 行）/ ChoiceBoxAntTest（329 行），共 778 行
-- **M21.3** 测试矩阵：23 个测试文件 / 766 用例 / 0 失败
+- **M21.3** 测试矩阵：25 个测试文件 / 796 用例 / 0 失败
