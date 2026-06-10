@@ -1,5 +1,14 @@
 # JFXium 组件文档
 
+> ⚠️ **文档归档说明**：本文档为 M18 早期版本（命名沿用初版 demo 的 `JFX*` 前缀：JFXButton / JFXInput / JFXCard / JFXForm / JFXMenu / JFXTabs / JFXTree / JFXDatePicker / JFXSlider / JFXProgress / JFXAlert）。
+>
+> **当前主命名已统一为 `*Ant` 后缀**（ButtonAnt / InputAnt / CardAnt / FormAnt / MenuAnt / TabsAnt / TreeAnt / DatePickerAnt / SliderAnt / ProgressAnt / AlertAnt 等），请以最新文档为准：
+> - 对外参考：[docs/cn/组件参考.md](../docs/cn/组件参考.md)
+> - 主跟踪文档：[PROJECT_PLAN.md](../PROJECT_PLAN.md)（含 M19/M20/M21 全部里程碑）
+> - 内部速查：[SKILL.md](./SKILL.md)
+>
+> 本文件保留作为历史快照，M19.46 之后的新功能 / API 变更 **不在此处追踪**。
+
 ## 目录
 
 - [JFXButton](#jfxbutton) - 按钮组件
@@ -648,3 +657,66 @@ JFXTable.<Type>create().column("Name", Type::getName).data(list).build();
 ```java
 JFXForm.create().item("Label", control).onSubmit(data -> {}).build();
 ```
+
+---
+
+## M19.46 之后的新功能追踪
+
+> 本节为 M19.46（jlessc 替换 npx lessc）之后的**关键里程碑**快速指针，详细内容请见 [PROJECT_PLAN.md](../PROJECT_PLAN.md)。
+
+### M19.46 — LESS 编译迁移
+- LESS 编译从 `npx lessc` 改为 `jlessc`（纯 Java），**不再依赖 Node.js**
+- 修复 BUG #64：groovy-maven-plugin "假成功" 问题
+
+### M19.53 — 组件按类型分包
+- `component/control`（23 原子型，继承 JavaFX 原生控件）
+- `component/composite`（42 组合型，自定义容器）
+- `component/overlay`（7 浮层型，Popup/Stage/ContextMenu）
+- `component/layout`（13）+ `component/base`（9）
+
+### M20 — 测试覆盖增强（2026-06-08）
+- **M20.1** BorderRadius 下沉到 `AbstractStyleBuilder<SELF>`：`BorderRadiusTest` 28 用例 / 6 @Nested
+- **M20.2** 三个核心组件单测骨架：
+  - `GroupBoxAntTest`（391 行 / 6 @Nested）
+  - `ToggleButtonAntTest`（329 行 / 6 @Nested，含 BUG #48 mandatoryGroup）
+  - `SplitButtonAntTest`（358 行 / 6 @Nested，含 BUG #43 边线连续性）
+
+### M21 — FormAnt 增强 + bindValue API 全补完（2026-06-09）
+- **M21.1** `FormAnt.Builder` 单测 `FormAntTest`（1071 行 / 66 用例 / 9 @Nested）
+  - 覆盖 FormContext 21 / Result 5 / Rule 9 / Named 11 / Legacy 4 / Section 3 / Footer 6 / Header 3 / Layout 4
+- **M21.2** bindValue API 补完 ChoiceBox：`ChoiceBoxAnt<T>.bindValue(Property<T>)`
+  - **21 个数据输入控件**（control 11 + composite 10）全支持
+  - 4 个 bindValue 系列单测：InputNumberAntTest（141 行）/ SliderAntTest（174 行）/ SwitchAntTest（134 行）/ ChoiceBoxAntTest（329 行），共 778 行
+- **M21.3** 测试矩阵：23 个测试文件 / 766 用例 / 0 失败
+
+
+---
+
+## M19.46 之后的新功能追踪
+
+> 本节为 M19.46（jlessc 替换 npx lessc）之后的**关键里程碑**快速指针，详细内容请见 [PROJECT_PLAN.md](../PROJECT_PLAN.md)。
+
+### M19.46 — LESS 编译迁移
+- LESS 编译从 `npx lessc` 改为 `jlessc`（纯 Java），**不再依赖 Node.js**
+- 修复 BUG #64：groovy-maven-plugin "假成功" 问题
+
+### M19.53 — 组件按类型分包
+- `component/control`（23 原子型，继承 JavaFX 原生控件）
+- `component/composite`（42 组合型，自定义容器）
+- `component/overlay`（7 浮层型，Popup/Stage/ContextMenu）
+- `component/layout`（13）+ `component/base`（9）
+
+### M20 — 测试覆盖增强（2026-06-08）
+- **M20.1** BorderRadius 下沉到 `AbstractStyleBuilder<SELF>`：`BorderRadiusTest` 28 用例 / 6 @Nested
+- **M20.2** 三个核心组件单测骨架：
+  - `GroupBoxAntTest`（391 行 / 6 @Nested）
+  - `ToggleButtonAntTest`（329 行 / 6 @Nested，含 BUG #48 mandatoryGroup）
+  - `SplitButtonAntTest`（358 行 / 6 @Nested，含 BUG #43 边线连续性）
+
+### M21 — FormAnt 增强 + bindValue API 全补完（2026-06-09）
+- **M21.1** `FormAnt.Builder` 单测 `FormAntTest`（1071 行 / 66 用例 / 9 @Nested）
+  - 覆盖 FormContext 21 / Result 5 / Rule 9 / Named 11 / Legacy 4 / Section 3 / Footer 6 / Header 3 / Layout 4
+- **M21.2** bindValue API 补完 ChoiceBox：`ChoiceBoxAnt<T>.bindValue(Property<T>)`
+  - **21 个数据输入控件**（control 11 + composite 10）全支持
+  - 4 个 bindValue 系列单测：InputNumberAntTest（141 行）/ SliderAntTest（174 行）/ SwitchAntTest（134 行）/ ChoiceBoxAntTest（329 行），共 778 行
+- **M21.3** 测试矩阵：23 个测试文件 / 766 用例 / 0 失败

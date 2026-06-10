@@ -2,6 +2,7 @@
 
 > 模仿 Ant Design 组件，与 AtlantaFX（[GitHub](https://github.com/mkpaz/atlantafx)）做对照参考。
 
+
 ## 已归档：示例 UI 验收反馈（第 1–9 条，均已闭环）
 
 > 这批是用户在 demo 验收时手写的原始反馈（曾置顶未编号），现已全部修复并落到下方「已修复问题」表。
@@ -819,11 +820,10 @@
 
 ## 修复统计（更新）
 
-- **总计问题**：83 个（#1–#83）
-- **已修复 / 已完成**：83 个
-- **未修复**：0
-- **本轮 commit**：`fix(p2): 全量规则审计收尾 + 字符串字面量迁移 #80-#83`
-- **最后更新**：2026-06-08
+- **总计问题**：87 个（#1–#87）
+- **已修复 / 已完成**：83 个（#1–#83）
+- **待处理**：4 个（#84–#87，详见「待处理问题」章节）
+- **最后更新**：2026-06-09
 
 ## 修复说明（2026-06-08：BUG #73–#76 P0 红线批量修复 — 全面规则审计第二轮）
 
@@ -944,3 +944,53 @@
 
 ### #80–#83 整体验证
 - 编译：`./mvnw compile -pl jfxium` → BUILD SUCCESS
+
+---
+
+# 待处理问题
+
+> 以下问题经 grep 验证确认仍存在，按优先级排列。
+
+### #84 PROJECT_PLAN.md 第六章「文件结构」描述与项目实情不符（文档过时）
+- **现象**：`PROJECT_PLAN.md` 第六章（line 2029-2074）三处描述仍引用已废弃的构建方式：
+  1. Line 2040：`pom.xml # 含 8 个 lessc execution` → 实际已迁到 `groovy-maven-plugin + jlessc 1.16` 单 execution（BUG #59）
+  2. Line 2065：`theme-*.css # 编译产物（generate-resources 阶段由 npx lessc 生成）` → 实际由 jlessc（纯 Java）生成
+  3. Line 2073：`LESS 编译强依赖宿主机 Node.js（pom 中 8 个 execution 调 npx lessc）` → Node.js 依赖已在 BUG #59 中彻底去除
+- **影响**：新人按文档描述配置 Node.js 环境，实际完全不需要；且「8 个 execution」的数量会误导对构建流程的理解
+- **修复方向**：将三处描述更新为当前实情（groovy-maven-plugin + jlessc 1.16、纯 Java、零 Node 依赖）
+- **优先级**：P1（文档准确性）
+- **状态**：⏳ 待修复
+
+### #85 PROJECT_AUDIT_REPORT.md 审计评分与发现已过时（与 #70–#83 修复不同步）
+- **现象**：审计报告日期 2026-06-05，评分 B+（78/100），但 BUG #70–#83（2026-06-08）的批量修复已解决了报告中标记的大部分 Warning/Critical：
+  - A3 `-fx-transition` 残留（Critical）→ BUG #60 已修复，grep 确认 0 残留
+  - A5 TabsAnt 硬编码颜色（Warning）→ 已验证 0 残留
+  - A4/A5 `Color.web()` 硬编码（Warning）→ 已验证 0 残留
+  - B1 Builder 未继承 AbstractStyleBuilder（Warning）→ overlay 8 + composite 25+ 全部已继承
+  - B5 TabsAnt setStyle 动态拼接（Warning）→ 已验证 0 残留
+  - C1/C2 字符串字面量 styleClass → 已验证 0 残留
+- **影响**：报告的 B+（78 分）不再反映项目当前健康度；新开发者阅读报告会产生错误印象
+- **修复方向**：更新审计评分（预计可达 A-/A 级别），将已修复项标记为「已验证通过」，保留仍有效的问题项
+- **优先级**：P2（文档准确性）
+- **状态**：⏳ 待修复
+
+### #86 单元测试覆盖率偏低（17 测试文件覆盖 94+ 组件）
+- **现象**：`jfxium/src/test` 目录下仅 17 个测试文件（含 `JfxTestBase` 基类），实际测试组件 16 个：
+  - **control 包**（~13 个测试）：ButtonAnt / CheckBoxAnt / ComboBoxAnt / DatePickerAnt / InputAnt / InputNumberAnt / SliderAnt / SwitchAnt
+  - **layout 包**（~7 个测试）：AnchorPaneAnt / FlowPaneAnt / HBoxAnt / SplitPaneAnt / StackPaneAnt / TilePaneAnt / VBoxAnt
+  - **core 包**（1 个）：AbstractStyleBuilder
+  - **composite 包**（0 个测试）：CardAnt / FormAnt / MenuAnt / StepsAnt / TagAnt / TransferAnt / WatermarkAnt 等 ~44 个组件**零测试**
+  - **overlay 包**（0 个测试）：ModalAnt / DrawerAnt / DropdownAnt / MessageAnt 等 ~8 个组件**零测试**
+  - **template 包**（0 个测试）：CrudTemplate / LoginTemplate 等**零测试**
+- **影响**：composite 和 overlay 组件（占总数 55%+）完全没有测试保护，重构或修 bug 时缺少回归安全网
+- **修复方向**：按优先级分批补测试——overlay（交互复杂度高）> composite 核心组件（CardAnt / FormAnt / MenuAnt）> template
+- **优先级**：P3（质量保障，长期改进）
+- **状态**：⏳ 待处理
+
+### #87 jlessc 1.16 嵌套块 + @-token 解析 bug（基础设施层已知限制）
+- **现象**：jlessc 1.16 在 `.root.jfx-compact { ... }` 嵌套块内对 `@-token` 变量解析输出错位值（BUG #69 发现）。例如 `@menu-item-padding-y @menu-item-padding-x` 编译为 `6px 8px`（预期 `4px 12px`）
+- **当前绕行**：嵌套块内改用字面量 px（数值与 token 体系手动同步），已在注释中标注原因
+- **影响**：新增到 `.root.jfx-compact` 嵌套块中的 token 引用可能踩坑；字面量值与 token 覆盖不同步时紧凑模式样式错位
+- **修复方向**：升级 LESS 编译器（jlessc → less4j 或其他纯 Java LESS 编译器），之后可改回 token 引用
+- **优先级**：P3（基础设施，需评估替代方案）
+- **状态**：⏳ 待评估

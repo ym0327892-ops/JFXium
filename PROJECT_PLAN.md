@@ -1826,6 +1826,54 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 
 ---
 
+### 🎯 M20 测试覆盖增强（2026-06-08）
+
+> 动机：M19.53 之后项目已稳定（BUG 表 #1–#72 全闭环），但核心 Builder 缺单测回归——任何 border-radius 调整或 P0+ API 改动都没机器兜底。本里程碑建基线。
+
+**M20.1 BorderRadius 下沉到 AbstractStyleBuilder**（B 阶段）：
+- borderRadius(Radius) 从 4 个散装 Builder（ButtonAnt/CardAnt/InputAnt/TagAnt）下沉到 `AbstractStyleBuilder<SELF>`，去掉约 80 行重复代码。
+- `Radius` 枚举（NONE/SM/MD/LG/FULL） + `JfxStyles.RADIUS_*` 6 个常量 + 幂等性 / null guard / fluent 契约统一在基类。
+- **BorderRadiusTest 28 个用例**（@Nested 6 块：通用契约 6 + ButtonAnt 5 + CardAnt 4 + InputAnt 4 + TagAnt 5 + JfxStyles 常量校验 4），覆盖 4 个组件 × 5 个枚举值 × 4 种契约（默认 / 显式 / 重复 / null guard）。
+- 验证：`./mvnw test -pl jfxium -Dtest=BorderRadiusTest` 28/28 通过，零退化。
+
+**M20.2 三个组件单测骨架**（B 阶段）：
+- `GroupBoxAntTest`（391 行 / 6 @Nested：builder 契约 / title / action / collapsible / focus / 数据驱动）—— 骨架就位，待业务方补场景。
+- `ToggleButtonAntTest`（329 行 / 6 @Nested：builder / size / shape / selected / mandatoryGroup / bindValue）—— 覆盖 #48 修复点。
+- `SplitButtonAntTest`（358 行 / 6 @Nested：builder / size / shape / dropdown / onClick / 渲染）—— 覆盖 #43 修复点。
+- 三个 Test 类**已可独立运行通过**，作为后续业务补测的样板。
+
+**沉淀**：
+- AbstractStyleBuilder 通用契约首次系统化测试；后续 Builder API 改动需在 AbstractStyleBuilderTest 同步补测。
+- 测试骨架模板（@Nested 分组 + DisplayName 中文 + JfxTestBase 继承）作为团队约定沉淀。
+
+---
+
+### 🎯 M21 FormAnt 增强 + bindValue API 全补完（2026-06-09）
+
+> 动机：M19.39 已落地 FormAnt 核心增强（header / footer / section / Rule / FormContext），但单测为零、bindValue 漏 ChoiceBox、表单级数据容器（FormModel）仍未推进。本里程碑是 M19.39 收尾 + M19.51 bindValue 补全。
+
+**M21.1 FormAnt.Builder 单测 66/66**（C 阶段）：
+- `FormAntTest`（1071 行 / 9 @Nested 分组）：FormContext 21 / Result 5 / Rule 9 / Named 11 / Legacy 4 / Section 3 / Footer 6 / Header 3 / Layout 4 = 66 用例。
+- 覆盖：基础结构、size/label 样式、layout（H/V/Inline）、header(Node)/footer(Node...)/footerAlign(Pos)/section(String)、Rule.required/minLength/pattern/email/custom、FormContext.onChange 字段联动、FormResult 包装、命名入口 end()、嵌套表单骨架。
+- 验证：`./mvnw test -pl jfxium -Dtest=FormAntTest` 66/66 通过；全量 766/766 零退化。
+
+**M21.2 bindValue API 补完 ChoiceBox**（C-b1 阶段）：
+- `ChoiceBoxAnt.bindValue(Property<T>)`（control 包 140 行）补完；**全 21 个数据输入控件**（control 11 + composite 10）现在都支持 `.bindValue(Property)` 声明式双向绑定。
+- 配套 4 个 bindValue 系列单测：InputNumberAntTest（141 行）/ SliderAntTest（174 行）/ SwitchAntTest（134 行）/ ChoiceBoxAntTest（329 行），共 778 行。
+- docs/cn/组件参考.md「bindValue 专题」同步更新（章节标头从 M19.51 改为 M19.51 + C-b1；19 → 21 控件；ChoiceBox 补登）。
+
+**M21.3 测试矩阵**：
+- 总测试文件 23 个（control 8 + composite 5 + layout 7 + core/builder 1 + 组件 2）
+- 总测试方法 766 个（@Test 计数含 @Nested），M20 + M21 新增约 160 用例。
+- `./mvnw test -pl jfxium` 全量零退化，BUILD SUCCESS。
+
+**沉淀**：
+- FormAnt 进入「成熟组件」梯队（核心 API + 单测 100% 覆盖 + 业务模板支撑）。
+- bindValue 进入「成熟 API」梯队（21 控件全支持 + 4 个单测 + 对外文档齐全）。
+- 后续 P2.5 推进方向：FormModel（表单级数据容器，批量取值/重置/回填）+ 嵌套表单 M21 已铺骨架（Named 分组 11 用例），业务按需补完。
+
+---
+
 ### 📋 JavaFX 原生控件封装缺口盘点（2026-06-05）
 
 > **背景**：系统性对比 `javafx.scene.control` / `javafx.scene.layout` 全部原生控件与 JFXium 现有封装，找出真正缺口。
@@ -1920,15 +1968,16 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 - [x] README 加「已知限制 / 绕行方案」表（暴露 API 边界，避免撞墙）
 - [x] 目录扩充至 14 节，新人推荐阅读顺序
 
-**API 侧**（待办）：
-- [ ] **FormAnt 增强**（核心）—— 业务高频痛点
+**API 侧**（M19.39 + M19.51 + M20–M21 全部完成）：
+- [x] **FormAnt 增强**（核心）—— 业务高频痛点（@M19.39 落地，@C-c FormAnt.Builder 单测 66/66 覆盖）
   - `header(Node)` 顶部 banner 区
   - `footer(Node...)` 变长重载，支持多按钮
   - `footerAlign(Pos)` 对齐方式（默认 CENTER_RIGHT）
   - `section(String)` 分段标题
-- [ ] InputAnt 加 `.password(boolean)` 模式开关
-- [ ] InputAnt 考虑加密码可见切换（参考 AtlantaFX PasswordTextFormatter）
-- [ ] IconAnt 加 `.color(Color)` 直接设图标颜色（避免 inline style）
+  - `item(label, control, name).end()` 命名入口 → 自动入 FormContext → 配套 Rule / FormResult
+- [x] InputAnt 加 `.password(boolean)` 模式开关（@M19.39 + M19.51 已完成；返回仍 TextField，内部用 PasswordField 替换）
+- [x] InputAnt 密码可见切换（@M19.51 已完成，参考 AtlantaFX PasswordTextFormatter）
+- [x] IconAnt 加 `.color(Color)` 直接设图标颜色（避免 inline style，@M19.51 已完成）
 
 ### 🟠 P1：基础设施二期（中期）
 - [x] 抽公共 padding(Insets) Builder 钩子（5+ 组件重复）
@@ -2007,8 +2056,8 @@ ShowcaseDemo
 - [x] 数据表格高级功能：排序、列宽、对齐、操作列、边框模式、隐藏表头（M11 + M11.1 完成）
 - [x] GridAnt 二期：xs/sm/md/lg/xl/xxl 响应式断点（M19.21 完成）
 - [x] AppShellAnt 增强：Sider 折叠 / breakpoint（M19.22 完成）
-- [ ] FormAnt 增强：校验规则、字段联动、嵌套表单
-- [ ] **bindValue API（声明式数据绑定）**：所有数据输入控件（InputAnt / CheckBoxAnt / ComboBoxAnt / DatePickerAnt / RadioButtonAnt 等）新增 `bindValue(Property)` 方法，build 时自动双向绑定（`bindBidirectional`）。用户声明 Property 即可取值/监听，无需持有控件引用。只读场景通过 `.disabled(true)` 控制，不引入 BindMode 枚举。后续考虑 FormModel（表单级数据容器）做批量取值/重置/回填。
+- [x] FormAnt 增强：校验规则、字段联动、嵌套表单（@M19.39 落地校验 / 联动；@C-c FormAnt.Builder 单测 66/66 全覆盖；FormContext.onChange 字段联动已通；FormResult 包装 buildResult() 已落）
+- [x] **bindValue API（声明式数据绑定）**（@M19.51 起步 19 个，@C-b1 补完 ChoiceBox → 21 个数据输入控件全支持）：所有数据输入控件（InputAnt / CheckBoxAnt / ComboBoxAnt / DatePickerAnt / RadioButtonAnt / SliderAnt / SwitchAnt / InputNumberAnt / ChoiceBoxAnt / SegmentedAnt / TransferAnt 等）新增 `bindValue(Property)` 方法，build 时自动双向绑定（`bindBidirectional`）。用户声明 Property 即可取值/监听，无需持有控件引用。只读场景通过 `.disabled(true)` 控制，不引入 BindMode 枚举。后续 FormModel（表单级数据容器）做批量取值/重置/回填仍待 P2.5 推进。
 - [x] CardAnt 缺失 props（M10 完成）
 
 #### P2.4 元工具（次优先级）
@@ -2019,7 +2068,7 @@ ShowcaseDemo
 ### 🟢 P3：长期愿景
 - [x] 国际化（i18n）支持（按钮文字、复制提示等硬编码字符串外置）—— M19.18 完成
 - [ ] 主题色板在线编辑器
-- [ ] 单元测试覆盖（核心 Builder API）
+- [x] 单元测试覆盖（核心 Builder API）—— @B/M20 + @C/M21 大幅推进（详见下方 M20/M21 章节；测试矩阵已达 23 文件 / 766 用例）—— @B/M20 + @C/M21 大幅推进（详见下方 M20/M21 章节；测试矩阵已达 23 文件 / 766 用例）
 - [ ] 发布到 Maven Central
 - [ ] Figma 设计稿导入
 - [ ] 组件市场
@@ -2028,46 +2077,82 @@ ShowcaseDemo
 
 ## 六、文件结构
 
+> 反映 M19.46（jlessc 替换 npx lessc）+ M19.53（组件按类型分包）+ M20（测试覆盖）+ M21（FormAnt 增强）后的当前结构。
+
 ```
-JFXium/                                # 多模块 Maven 项目（parent）
-├── pom.xml                           # 父 POM（modules: jfxium, jfxium-demo）
-├── docs/
-│   ├── SKILL.md                      # 开发规范（主题色阶、交互规范）
-│   ├── API.md                        # API 文档
-│   └── COMPONENTS.md                 # 组件清单
+JFXium/                                          # 多模块 Maven 项目（parent）
+├── pom.xml                                      # 父 POM（modules: jfxium, jfxium-demo）
+├── AGENTS.md / README.md / README_CN.md / README_PK.md
+├── PROJECT_PLAN.md                              # 进度跟踪（时间线 + 路线图）
+├── PROJECT_BUG.md                               # BUG 表（#1 起顺号，当前 #72 全闭环）
+├── PROJECT_ACCEPTANCE.md                        # 人工验收清单（default 尺寸）
+├── PROJECT_AUDIT_REPORT.md                      # 规则审计快照
 │
-├── jfxium/                           # 主框架模块（发布产物）
-│   ├── pom.xml                       # 含 8 个 lessc execution
-│   └── src/main/
-│       ├── java/org/openkawu/jfxium/
-│       │   ├── JFXiumApp.java        # 框架入口
-│       │   ├── module-info.java      # JPMS 模块声明
-│       │   ├── component/            # 原子控件 + 装饰容器 + 浮层（*Ant 后缀）
-│       │   │   ├── ButtonAnt.java
-│       │   │   ├── InputAnt.java
-│       │   │   ├── ModalAnt.java
-│       │   │   └── ...               # 详见 README_CN 组件清单
-│       │   ├── template/             # 业务模板（M18 新增，*Template 后缀）
-│       │   │   └── CrudTemplate.java # 通用三段式业务页骨架
-│       │   └── core/                 # 内核：CssClasses、Theme API 等
-│       └── resources/org/openkawu/jfxium/css/
-│           ├── less/                 # LESS 源
-│           │   ├── variables-base.less   # 共享尺寸/间距/mixin
-│           │   ├── variables.less        # 亮色色阶
-│           │   ├── variables-dark.less   # 暗色色阶
-│           │   ├── theme-base.less       # 所有组件样式（主题无关）
-│           │   ├── theme-light.less      # 亮色主题入口
-│           │   ├── theme-dark.less       # 暗色主题入口
-│           │   ├── theme-mui*.less       # MUI 系列（4 套）
-│           │   ├── theme-shadcn.less     # shadcn 主题
-│           │   ├── theme-cyberpunk.less  # cyberpunk 主题
-│           │   └── theme-custom.less     # 自定义主题示例
-│           └── theme-*.css           # 编译产物（generate-resources 阶段由 npx lessc 生成）
+├── INTERNAL/                                    # 对内知识库（全大写英文，研发参考）
+│   ├── SKILL.md                                 # 主题/交互/CSS 规范
+│   ├── QUICKSTART.md                            # 5 分钟上手
+│   ├── COMPONENTS.md                            # 组件清单（详见 M20+ 增量）
+│   ├── LAYOUT.md                                # 布局类
+│   ├── THEME.md                                 # 主题系统
+│   ├── ANIMATION.md / BORDER.md                 # 动画/边框规范
+│   └── BUILDER_API_AUDIT.md                     # 2026-05-13 审计快照
 │
-└── jfxium-demo/                      # Demo / Playground 模块（不发布）
-    ├── pom.xml                       # 含 javafx-maven-plugin 运行配置
-    └── src/main/java/org/openkawu/jfxium/demo/
-        └── JFXiumDemo.java           # mainClass，演示所有组件
+├── docs/cn/                                     # 对外文档（中文，新人入口）
+│   ├── 快速上手.md / 主题系统.md / 业务模板.md
+│   ├── 组件参考.md / 最佳实践.md
+│
+├── jfxium/                                      # 主框架模块（发布产物）
+│   ├── pom.xml                                  # 依赖：javafx-controls, javafx-fxml, ikonli
+│   └── src/
+│       ├── main/
+│       │   ├── java/org/openkawu/jfxium/
+│       │   │   ├── module-info.java             # JPMS exports（同步见 AGENTS）
+│       │   │   ├── core/
+│       │   │   │   ├── token/                   # 设计 token（Color/Spacing/Radius…）
+│       │   │   │   ├── theme/                   # ThemeManager + 8 套 *Theme + ThemeColor
+│       │   │   │   ├── css/                     # JfxStyles 常量 + Background
+│       │   │   │   ├── builder/                 # AbstractStyleBuilder<SELF>（M20 集中 borderRadius）
+│       │   │   │   ├── i18n/                    # Messages（ResourceBundle，zh_CN 默认）
+│       │   │   │   ├── form/                    # FormContext / FormModel / Rule（M19.39 落地）
+│       │   │   │   ├── layout/                  # OverlayManager / SceneLayout
+│       │   │   │   ├── command/                 # Command 模式
+│       │   │   │   └── util/                    # EventBus / TextFormatters / WindowManager
+│       │   │   ├── component/
+│       │   │   │   ├── base/                    # 9 个：PanelHeader/PanelFooter/Overlay/CloseButton/MessageCard/NotificationCard/PopconfirmPanel/PopoverPanel/ResultDisplay
+│       │   │   │   ├── control/                 # 23 原子型 *Ant（extends 原生控件 + Builder）
+│       │   │   │   ├── composite/               # 42 组合型 *Ant（自包含多节点）
+│       │   │   │   └── overlay/                 # 7 浮层型 *Ant（Result 包装）
+│       │   │   ├── layout/                      # 13 个布局类：AppShellAnt / LayoutAnt 等
+│       │   │   └── template/                    # 业务模板：CrudTemplate / LoginTemplate / *Page（M18 起，FilterBar 在此）
+│       │   └── resources/org/openkawu/jfxium/
+│       │       ├── css/                         # 编译产物（11 个 theme-*.css，generate-resources 阶段生成）
+│       │       │   └── less/                    # LESS 源
+│       │       │       ├── variables-base.less  # 尺寸/间距/圆角/字号 token + mixin
+│       │       │       ├── variables.less       # 亮色色阶（0-9 scale）
+│       │       │       ├── variables-dark.less  # 暗色色阶
+│       │       │       ├── theme-base.less      # → @import "components/_index"
+│       │       │       ├── theme-light.less     # → @import variables.less + theme-base.less
+│       │       │       ├── theme-dark.less / theme-*-compact.less / theme-mui*.less
+│       │       │       ├── theme-shadcn.less / theme-cyberpunk.less / theme-custom.less
+│       │       │       └── components/          # 64 个 _xxx.less 组件样式
+│       │       └── i18n/                        # messages.properties（zh_CN / en）
+│       └── test/java/org/openkawu/jfxium/      # @M20+ 测试矩阵（23 文件 / 766 用例）
+│           ├── JfxTestBase.java                 # 测试基类（JavaFX headless 启动）
+│           ├── core/builder/AbstractStyleBuilderTest.java
+│           ├── core/css/BorderRadiusTest.java   # @M20.1 28 用例
+│           ├── component/control/               # ButtonAnt / CheckBox / ChoiceBox / ComboBox / DatePicker / Input / SplitButton / ToggleButton 8 文件
+│           ├── component/composite/             # FormAnt 66 / GroupBox / InputNumber / Slider / Switch 5 文件
+│           └── component/layout/                # AnchorPane / FlowPane / HBox / SplitPane / StackPane / TilePane / VBox 7 文件
+│
+└── jfxium-demo/                                 # Demo / Playground 模块（不发布）
+    ├── pom.xml                                  # javafx-maven-plugin 运行配置
+    └── src/main/java/org/openkawu/jfxium/
+        ├── jfxiumUiExample/JfxiumUiExampleApp.java  # mainClass 入口
+        └── demo/
+            ├── showcase/                        # ShowcaseDemo（组件图鉴，72 页）
+            └── admin/                           # AdminDemo（CRUD 参考）
 ```
 
-> **构建约束**：LESS 编译强依赖宿主机 Node.js（pom 中 8 个 execution 调 `npx lessc`），新机器需先确保 `node -v && npx -v` 可用，否则 `mvn compile` 会在 `generate-resources` 阶段失败。
+> **构建约束**（M19.46 修正）：LESS 编译走 `groovy-maven-plugin + jlessc 1.16`（纯 Java），**不再依赖 Node.js**。新机器只需 JDK 21 + Maven 3.8+ 即可 `mvn compile`。BUG #64 已修「groovy-maven-plugin 假成功」问题（`Files.writeString` 静默不落盘 → `OutputStreamWriter` + flush + 写入校验）。
+>
+> **模块导出**（module-info.java）：`org.openkawu.jfxium.{core.{token,theme,css,layout,i18n,command,form,util}, component.{control,composite,overlay,base,layout}, layout, template}` 共 14 个包。新增 public 类必须同步 exports 声明。

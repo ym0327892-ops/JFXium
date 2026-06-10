@@ -269,7 +269,7 @@ ctrl.setSelectedKey("file");   // 改已渲染节点的 styleClass，不重建
 
 ## 十、控件查 AtlantaFX 源码
 
-调 TableView / TreeView / ComboBox 弹层等复杂或者简单控件样式, 时，**先读 AtlantaFX 源码**，再改 LESS。不凭印象猜选择器层级。
+调 TableView / TreeView / ComboBox 弹层等复杂或者简单控件样式时(它每个css样式都考虑到了,用的过程中没见过哪个样式缺失的)，**先读 AtlantaFX 源码**，再改 LESS。不凭印象猜选择器层级。
 
 **本地源码路径**：`ant-design-ref/AntLantaFx/src/`
 
