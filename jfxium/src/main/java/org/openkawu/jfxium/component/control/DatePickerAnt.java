@@ -2,6 +2,7 @@ package org.openkawu.jfxium.component.control;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.DatePicker;
+import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.builder.Radius;
 
@@ -46,7 +47,7 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class DatePickerAnt extends DatePicker {
+public class DatePickerAnt extends DatePicker implements LayoutCommon<DatePickerAnt> {
 
     /** 尺寸枚举，与 InputAnt/ButtonAnt 一致（DEFAULT/SMALL/LARGE）。 */
     public enum Size {
@@ -163,21 +164,6 @@ public class DatePickerAnt extends DatePicker {
     /** inline style（应急用，优先用 styleClass + LESS）。 */
     public DatePickerAnt style(String style) {
         if (style != null) setStyle(style);
-        return this;
-    }
-
-    /**
-     * 设置圆角（精确档位），默认 {@link Radius#SM}。
-     */
-    public DatePickerAnt borderRadius(Radius radius) {
-        getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
-        if (radius == Radius.NONE) {
-            getStyleClass().add(JfxStyles.RADIUS_NONE);
-        } else if (radius == Radius.SM) {
-            getStyleClass().add(JfxStyles.RADIUS_SM);
-        } else if (radius == Radius.LG) {
-            getStyleClass().add(JfxStyles.RADIUS_LG);
-        }
         return this;
     }
 

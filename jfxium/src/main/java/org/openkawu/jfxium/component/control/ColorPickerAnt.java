@@ -3,6 +3,7 @@ package org.openkawu.jfxium.component.control;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
+import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.builder.Radius;
 
@@ -38,7 +39,7 @@ import java.util.function.Consumer;
  *     .build();
  * }</pre>
  */
-public class ColorPickerAnt extends ColorPicker {
+public class ColorPickerAnt extends ColorPicker implements LayoutCommon<ColorPickerAnt> {
 
     /** 尺寸枚举。 */
     public enum Size {
@@ -114,21 +115,6 @@ public class ColorPickerAnt extends ColorPicker {
 
     public ColorPickerAnt promptText(String text) {
         setPromptText(text);
-        return this;
-    }
-
-    /**
-     * 设置圆角（精确档位），默认 {@link Radius#SM}。
-     */
-    public ColorPickerAnt borderRadius(Radius radius) {
-        getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
-        if (radius == Radius.NONE) {
-            getStyleClass().add(JfxStyles.RADIUS_NONE);
-        } else if (radius == Radius.SM) {
-            getStyleClass().add(JfxStyles.RADIUS_SM);
-        } else if (radius == Radius.LG) {
-            getStyleClass().add(JfxStyles.RADIUS_LG);
-        }
         return this;
     }
 

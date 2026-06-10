@@ -1,8 +1,10 @@
 package org.openkawu.jfxium.component.control;
 
+import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
+import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.builder.Radius;
 
@@ -47,7 +49,7 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身</li>
  * </ul>
  */
-public class ChoiceBoxAnt<T> extends ChoiceBox<T> {
+public class ChoiceBoxAnt<T> extends ChoiceBox<T> implements LayoutCommon<ChoiceBoxAnt<T>> {
 
     /** 尺寸枚举，与 InputAnt/ButtonAnt 一致（DEFAULT/SMALL/LARGE）。 */
     public enum Size {
@@ -131,16 +133,13 @@ public class ChoiceBoxAnt<T> extends ChoiceBox<T> {
     }
 
     /**
-     * 设置圆角（精确档位），默认 {@link Radius#SM}。
+     * 双向绑定：控件值 ↔ Property 值实时同步（与 ComboBoxAnt.bindValue 同模式）。
+     * <p>支持任意 {@link Property} 子类型（{@code ObjectProperty} / {@code StringProperty} 等）。
+     * 传入 {@code null} 安全跳过，便于链式末尾无脑调用。</p>
      */
-    public ChoiceBoxAnt<T> borderRadius(Radius radius) {
-        getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
-        if (radius == Radius.NONE) {
-            getStyleClass().add(JfxStyles.RADIUS_NONE);
-        } else if (radius == Radius.SM) {
-            getStyleClass().add(JfxStyles.RADIUS_SM);
-        } else if (radius == Radius.LG) {
-            getStyleClass().add(JfxStyles.RADIUS_LG);
+    public ChoiceBoxAnt<T> bindValue(Property<T> property) {
+        if (property != null) {
+            valueProperty().bindBidirectional(property);
         }
         return this;
     }

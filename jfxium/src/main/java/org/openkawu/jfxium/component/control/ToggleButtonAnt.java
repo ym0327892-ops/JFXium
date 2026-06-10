@@ -95,7 +95,6 @@ public class ToggleButtonAnt {
         private boolean disabled = false;
         private boolean rounded = false;
         private boolean square = false;
-        private Radius borderRadius = Radius.SM;
         private Node icon;
         private ContentDisplay contentDisplay = ContentDisplay.LEFT;
         private ToggleGroup toggleGroup;
@@ -134,14 +133,6 @@ public class ToggleButtonAnt {
             return this;
         }
 
-        /**
-         * 设置圆角（精确档位），默认 {@link Radius#SM}。
-         */
-        public Builder borderRadius(Radius radius) {
-            this.borderRadius = radius;
-            return this;
-        }
-
         public Builder icon(Node icon) {
             this.icon = icon;
             return this;
@@ -177,6 +168,9 @@ public class ToggleButtonAnt {
 
         public ToggleButton build() {
             ToggleButton btn = new ToggleButton(text);
+
+            // 保留原默认 SM 圆角行为（100% 等价原实现）
+            if (this.radius == null) this.radius = Radius.SM;
 
             // Size
             if (size == Size.SMALL) {
@@ -220,14 +214,6 @@ public class ToggleButtonAnt {
 
             btn.setFocusTraversable(true);
             btn.getStyleClass().add("jfx-toggle-button");
-
-            if (borderRadius == Radius.NONE) {
-                btn.getStyleClass().add(JfxStyles.RADIUS_NONE);
-            } else if (borderRadius == Radius.SM) {
-                btn.getStyleClass().add(JfxStyles.RADIUS_SM);
-            } else if (borderRadius == Radius.LG) {
-                btn.getStyleClass().add(JfxStyles.RADIUS_LG);
-            }
 
             applyStyles(btn);
             return btn;

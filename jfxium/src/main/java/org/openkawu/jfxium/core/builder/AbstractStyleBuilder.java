@@ -106,6 +106,13 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
     /** 右侧边框线。默认 false。 */
     protected boolean borderRight = false;
 
+    /**
+     * 用户通过 {@link #radius(Radius)} 设置的圆角档位。null 表示未设置（由子类 build() 决定默认值）。
+     * <p>通过 {@code jfx-radius-*} styleClass 挂载，对应 LESS 变量
+     * {@code @border-radius-none / @border-radius-sm / @border-radius-md / @border-radius-lg}。</p>
+     */
+    protected Radius radius = null;
+
     // ============================================================
     // 高频节点属性
     // ============================================================
@@ -329,6 +336,18 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
     }
 
     /**
+     * 设置圆角档位（NONE/SM/MD/LG），等价挂 {@code jfx-radius-*} styleClass。
+     * <p>MD 为设计默认，不挂 class（走 LESS 变量 {@code @border-radius-md}）。</p>
+     * <p>调用 {@link #build()} 时，{@link #applyStyles(Node)} 会先清旧 RADIUS_* 再挂新，
+     * 因此重复调用后只有最后一次生效，幂等性等价于原生实现。</p>
+     */
+    @SuppressWarnings("unchecked")
+    public SELF radius(Radius radius) {
+        this.radius = radius;
+        return (SELF) this;
+    }
+
+    /**
      * 在 build() 末尾调用，把累积的 extraStyleClasses、inline style 和 padding 应用到目标 Node。
      * 子类负责确保此方法在所有内置 styleClass 添加之后调用，
      * 这样用户通过 {@link #styleClass(String)} 添加的类会出现在内置类之后，方便覆盖。
@@ -362,6 +381,17 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
             if (!Double.isNaN(prefSizeW)) region.setPrefSize(prefSizeW, prefSizeH);
             if (!Double.isNaN(maxSizeW)) region.setMaxSize(maxSizeW, maxSizeH);
             if (!Double.isNaN(minSizeW)) region.setMinSize(minSizeW, minSizeH);
+        }
+        // 圆角档位（清旧挂新，MD 默认不挂走 LESS）
+        if (radius != null) {
+            node.getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
+            if (radius == Radius.NONE) {
+                node.getStyleClass().add(JfxStyles.RADIUS_NONE);
+            } else if (radius == Radius.SM) {
+                node.getStyleClass().add(JfxStyles.RADIUS_SM);
+            } else if (radius == Radius.LG) {
+                node.getStyleClass().add(JfxStyles.RADIUS_LG);
+            }
         }
     }
 

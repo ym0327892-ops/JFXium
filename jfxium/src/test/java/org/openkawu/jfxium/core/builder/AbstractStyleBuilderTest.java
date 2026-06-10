@@ -180,6 +180,65 @@ class AbstractStyleBuilderTest extends JfxTestBase {
         assertFalse(box.getStyleClass().contains(JfxStyles.BORDER_TOP));
     }
 
+    // ---------- 圆角档位（M24 任务：radius 下沉到 AbstractStyleBuilder） ----------
+
+    @Test
+    @DisplayName("radius(NONE) 追加 jfx-radius-none")
+    void radius_none() {
+        VBox box = newBuilder().radius(Radius.NONE).build();
+        assertTrue(box.getStyleClass().contains(JfxStyles.RADIUS_NONE));
+    }
+
+    @Test
+    @DisplayName("radius(SM) 追加 jfx-radius-sm")
+    void radius_sm() {
+        VBox box = newBuilder().radius(Radius.SM).build();
+        assertTrue(box.getStyleClass().contains(JfxStyles.RADIUS_SM));
+    }
+
+    @Test
+    @DisplayName("radius(LG) 追加 jfx-radius-lg")
+    void radius_lg() {
+        VBox box = newBuilder().radius(Radius.LG).build();
+        assertTrue(box.getStyleClass().contains(JfxStyles.RADIUS_LG));
+    }
+
+    @Test
+    @DisplayName("radius(MD) 不追加 class（默认走 LESS @border-radius-md）")
+    void radius_md_noClass() {
+        VBox box = newBuilder().radius(Radius.MD).build();
+        assertFalse(box.getStyleClass().contains(JfxStyles.RADIUS_NONE));
+        assertFalse(box.getStyleClass().contains(JfxStyles.RADIUS_SM));
+        assertFalse(box.getStyleClass().contains(JfxStyles.RADIUS_LG));
+    }
+
+    @Test
+    @DisplayName("未调 radius 时不追加任何 RADIUS_* class（默认 null 语义）")
+    void radius_default_null() {
+        VBox box = newBuilder().build();
+        assertFalse(box.getStyleClass().contains(JfxStyles.RADIUS_NONE));
+        assertFalse(box.getStyleClass().contains(JfxStyles.RADIUS_SM));
+        assertFalse(box.getStyleClass().contains(JfxStyles.RADIUS_LG));
+    }
+
+    @Test
+    @DisplayName("radius 重复调用：清旧挂新（幂等性）")
+    void radius_idempotent() {
+        VBox box = newBuilder()
+                .radius(Radius.SM)
+                .radius(Radius.LG)
+                .build();
+        assertFalse(box.getStyleClass().contains(JfxStyles.RADIUS_SM));
+        assertTrue(box.getStyleClass().contains(JfxStyles.RADIUS_LG));
+    }
+
+    @Test
+    @DisplayName("radius 返回 self，支持链式")
+    void radius_fluent() {
+        TestBuilder b = newBuilder();
+        assertSame(b, b.radius(Radius.MD));
+    }
+
     // ---------- 高频节点属性 ----------
 
     @Test
@@ -240,6 +299,7 @@ class AbstractStyleBuilderTest extends JfxTestBase {
                 .maxSize(600, 500)
                 .minSize(200, 100)
                 .borderTop().borderBottom()
+                .radius(Radius.LG)
                 .visible(true)
                 .disable(false)
                 .managed(true)
@@ -253,6 +313,7 @@ class AbstractStyleBuilderTest extends JfxTestBase {
         assertTrue(box.getStyleClass().contains("bordered"));
         assertTrue(box.getStyleClass().contains(JfxStyles.BORDER_TOP));
         assertTrue(box.getStyleClass().contains(JfxStyles.BORDER_BOTTOM));
+        assertTrue(box.getStyleClass().contains(JfxStyles.RADIUS_LG));
         assertEquals(8, box.getPadding().getTop());
         assertTrue(box.isVisible());
         assertFalse(box.isDisable());

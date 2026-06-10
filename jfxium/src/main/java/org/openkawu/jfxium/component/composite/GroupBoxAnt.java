@@ -106,7 +106,6 @@ public class GroupBoxAnt {
         private boolean headerBackground = true;
         private boolean headerBorder = true;
         private boolean hoverable = true;
-        private Radius borderRadius = Radius.SM;
 
         private Builder() {}
 
@@ -234,21 +233,12 @@ public class GroupBoxAnt {
             return this;
         }
 
-        /**
-         * 设置 GroupBox 圆角大小，默认 {@link Radius#SM}。
-         *
-         * @see Radius#NONE 无圆角（直角）
-         * @see Radius#SM   小圆角 4px
-         * @see Radius#LG   大圆角 8px
-         */
-        public Builder borderRadius(Radius radius) {
-            this.borderRadius = radius;
-            return this;
-        }
-
         public VBox build() {
             VBox group = new VBox();
             group.setSpacing(0);
+
+            // 保留原默认 SM 圆角行为（100% 等价原实现）
+            if (this.radius == null) this.radius = Radius.SM;
 
             // ========== 基础样式类 ==========
             group.getStyleClass().add(JfxStyles.GROUP_BOX);
@@ -268,15 +258,6 @@ public class GroupBoxAnt {
             if (hoverable) {
                 group.getStyleClass().add(JfxStyles.GROUP_BOX_HOVERABLE);
             }
-
-            if (borderRadius == Radius.NONE) {
-                group.getStyleClass().add(JfxStyles.RADIUS_NONE);
-            } else if (borderRadius == Radius.SM) {
-                group.getStyleClass().add(JfxStyles.RADIUS_SM);
-            } else if (borderRadius == Radius.LG) {
-                group.getStyleClass().add(JfxStyles.RADIUS_LG);
-            }
-            // MD 为默认，无需额外 class
 
             // ========== 1. Header（标题行 + 标签栏，可选）==========
             if (shouldShowHeader()) {

@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
+import org.openkawu.jfxium.core.builder.Radius;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
@@ -22,8 +23,8 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *
  * <h2>背景</h2>
  * 此前 7 个继承式 layout 文件各自重复实现了 {@code styleClass / style / background /
- * padding / borderXxx / maxW/H/minW/H/prefW/H / prefSize/maxSize/minSize /
- * visible/disable/managed/opacity/cursor/id} 等 24-29 个方法，总计约 193 行模板代码。
+ * padding / borderXxx / borderRadius / maxW/H/minW/H/prefW/H / prefSize/maxSize/minSize /
+ * visible/disable/managed/opacity/cursor/id} 等 25-30 个方法，总计约 200 行模板代码。
  * 每个 layout 文件改风格时都要动 7 处，不利于统一演进。
  *
  * <h2>设计</h2>
@@ -190,6 +191,31 @@ public interface LayoutCommon<SELF extends LayoutCommon<SELF>> {
     @SuppressWarnings("unchecked")
     default SELF borderRight(boolean on) {
         return on ? borderRight() : (SELF) this;
+    }
+
+    // ============================================================
+    // 圆角（挂 RADIUS_* styleClass；MD 为默认无需挂 class）
+    // ============================================================
+
+    /**
+     * 设置圆角档位（NONE / SM / MD / LG）。
+     * <p>MD 为默认值，无需挂任何 styleClass（与 LESS 端 {@code .jfx-radius-*} 覆盖策略一致）。</p>
+     */
+    @SuppressWarnings("unchecked")
+    default SELF borderRadius(Radius radius) {
+        ((Node) this).getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
+        if (radius == null) {
+            return (SELF) this;
+        }
+        if (radius == Radius.NONE) {
+            ((Node) this).getStyleClass().add(JfxStyles.RADIUS_NONE);
+        } else if (radius == Radius.SM) {
+            ((Node) this).getStyleClass().add(JfxStyles.RADIUS_SM);
+        } else if (radius == Radius.LG) {
+            ((Node) this).getStyleClass().add(JfxStyles.RADIUS_LG);
+        }
+        // MD 为默认，无需额外 class
+        return (SELF) this;
     }
 
     // ============================================================

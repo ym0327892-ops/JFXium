@@ -4,6 +4,7 @@ import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
+import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.builder.Radius;
 
@@ -47,7 +48,7 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class ComboBoxAnt<T> extends ComboBox<T> {
+public class ComboBoxAnt<T> extends ComboBox<T> implements LayoutCommon<ComboBoxAnt<T>> {
 
     /** 尺寸枚举，与 InputAnt/ButtonAnt 一致（DEFAULT/SMALL/LARGE）。 */
     public enum Size {
@@ -173,21 +174,6 @@ public class ComboBoxAnt<T> extends ComboBox<T> {
     /** inline style（应急用，优先用 styleClass + LESS）。 */
     public ComboBoxAnt<T> style(String style) {
         if (style != null) setStyle(style);
-        return this;
-    }
-
-    /**
-     * 设置圆角（精确档位），默认 {@link Radius#SM}。
-     */
-    public ComboBoxAnt<T> borderRadius(Radius radius) {
-        getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
-        if (radius == Radius.NONE) {
-            getStyleClass().add(JfxStyles.RADIUS_NONE);
-        } else if (radius == Radius.SM) {
-            getStyleClass().add(JfxStyles.RADIUS_SM);
-        } else if (radius == Radius.LG) {
-            getStyleClass().add(JfxStyles.RADIUS_LG);
-        }
         return this;
     }
 
