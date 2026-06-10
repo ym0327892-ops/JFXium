@@ -14,6 +14,30 @@ package org.openkawu.jfxium.core.css;
  *       因为它们总是伴随父选择器使用（{@code .jfx-button.small}）</li>
  * </ul>
  *
+ * <h2>裸名 vs {@code jfx-} 前缀 —— P4 术语统一边界表</h2>
+ * <p>本文件 990 行常量中，约 543 个带 {@code jfx-} 前缀（根类 / 容器 / 子结构），约 30 个裸名（修饰类）。</p>
+ * <table border="1" cellpadding="4">
+ *   <tr><th>类别</th><th>裸名（修饰类）</th><th>jfx- 前缀（根类/子结构）</th><th>统一目标</th></tr>
+ *   <tr><td>按钮变体</td><td>{@code default / accent / outlined / dashed / text / link / ghost}</td><td>—</td><td>✅ 裸名（与 LESS 选择器同步）</td></tr>
+ *   <tr><td>尺寸</td><td>{@code small / large}</td><td>{@code jfx-table-small / jfx-table-large / jfx-tag-small / jfx-avatar-small / jfx-steps-small / jfx-statistic-small / jfx-segmented-small / jfx-badge-small / jfx-selectable-text-bordered / jfx-table-compact / jfx-radius-sm/md/lg/none}</td><td>⚠️ 不一致：尺寸 4 套不同前缀（{@code small} 裸名 / {@code jfx-table-small} / {@code jfx-tag-small} / {@code jfx-radius-sm}）</td></tr>
+ *   <tr><td>形状</td><td>{@code rounded / square / shape-rounded / shape-square}</td><td>{@code jfx-tag-rounded / jfx-tag-square / jfx-avatar-square / jfx-image-rounded / jfx-image-circle}</td><td>⚠️ 不一致：{@code SHAPE_*} 用裸名，{@code TAG_*} 用 jfx- 前缀</td></tr>
+ *   <tr><td>边框</td><td>{@code bordered / borderless} (大多错位)</td><td>{@code jfx-table-bordered / jfx-list-bordered / jfx-descriptions-bordered / jfx-crud-template-bordered / jfx-qr-code-bordered / jfx-panel-footer-bordered / jfx-selectable-text-bordered / jfx-tag-borderless}</td><td>⚠️ 不一致：{@code GROUP_BOX_BORDERED} / {@code SURFACE_BORDERED} 用裸名，{@code TABLE_BORDERED} / {@code LIST_BORDERED} 等用 jfx- 前缀</td></tr>
+ *   <tr><td>状态色</td><td>{@code success / warning / error / info / processing / default} (裸名,部分)</td><td>{@code jfx-alert-success/info/warning/error / jfx-tag-success/processing/error/warning/default / jfx-badge-status-success/warning/error/default / jfx-result-status-success/info/warning/error/404/403/500}</td><td>⚠️ 不一致：{@code PROGRESS_SUCCESS/WARNING/ERROR} 裸名, {@code ALERT_SUCCESS} 已 jfx- 前缀</td></tr>
+ *   <tr><td>选中/激活</td><td>{@code active / selected / disabled / hoverable / checkable / checked} (裸名,部分)</td><td>{@code jfx-menu-item-selected / jfx-segmented-item-selected / jfx-collapse-disabled / jfx-steps-finished/current/wait / jfx-tabs-active/disabled / jfx-tag-checkable/checked}</td><td>⚠️ 不一致：{@code SWITCH_SELECTED=switch-selected}、{@code GROUP_BOX_TAB_ITEM_ACTIVE=active}、{@code GROUP_BOX_HOVERABLE=hoverable} 裸名</td></tr>
+ *   <tr><td>方向</td><td>{@code horizontal / vertical / both} (裸名)</td><td>{@code jfx-flex-horizontal/vertical / jfx-flex-wrap / jfx-space-horizontal/vertical/split / jfx-anchor-horizontal/vertical / jfx-divider-horizontal/vertical / jfx-form-horizontal/vertical/inline / jfx-steps-vertical / jfx-collapse-*}</td><td>✅ 一致：{@code RESIZABLE_PANEL_HANDLE_*} 用裸名，{@code FLEX_*} / {@code SPACE_*} 用 jfx- 前缀（不统一但语义清晰）</td></tr>
+ *   <tr><td>阴影</td><td>{@code shadow-sm / shadow-md / shadow-lg}</td><td>—</td><td>✅ 裸名（仅 {@code SURFACE_SHADOW_*} 用）</td></tr>
+ *   <tr><td>类名前缀</td><td>—</td><td>{@code JFX_LIST_VIEW / JFX_CHOICE_BOX / JFX_SEPARATOR / JFX_SPLIT_MENU_BUTTON}</td><td>⚠️ 命名异类：JFX_xxx_yyy 大写 JFX_ 前缀，常量名风格不统一（其他都用 JFX_xxx_yyy 不带连字符 JFX_）</td></tr>
+ * </table>
+ * <p><b>统一建议</b>（不在本次 P4 范围内，仅作未来参考）：</p>
+ * <ol>
+ *   <li>新组件尺寸修饰类统一用 {@code jfx-<comp>-small / jfx-<comp>-large}（参考 {@code jfx-table-small} 范式）</li>
+ *   <li>新组件形状修饰类统一用 {@code jfx-<comp>-rounded / jfx-<comp>-square}（参考 {@code jfx-tag-rounded} 范式）</li>
+ *   <li>新组件边框修饰类统一用 {@code jfx-<comp>-bordered / jfx-<comp>-borderless}（参考 {@code jfx-list-bordered} 范式）</li>
+ *   <li>新组件状态色统一用 {@code jfx-<comp>-success/warning/error/info}（参考 {@code jfx-alert-*} 范式）</li>
+ *   <li>新组件选中/激活统一用 {@code jfx-<comp>-selected/active/disabled}（参考 {@code jfx-menu-item-selected} 范式）</li>
+ *   <li>已有裸名修饰类保留（与 LESS 选择器硬绑定，改名需同步改 11 套主题文件，性价比低）</li>
+ * </ol>
+ *
  * <h2>三步接线（新组件开发必经流程）</h2>
  * <ol>
  *   <li>在此处添加 {@code public static final String} 常量</li>

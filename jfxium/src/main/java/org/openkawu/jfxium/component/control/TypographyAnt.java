@@ -5,6 +5,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -65,7 +66,7 @@ public class TypographyAnt {
         PRIMARY, SECONDARY, SUCCESS, WARNING, DANGER, DISABLED
     }
 
-    public static class TitleBuilder {
+    public static class TitleBuilder extends AbstractStyleBuilder<TitleBuilder> {
         private final String text;
         private final int level;
 
@@ -87,11 +88,13 @@ public class TypographyAnt {
                 default -> 38;
             };
             label.setFont(Font.font("System", FontWeight.BOLD, fontSize));
+            // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加，覆盖优先级最高
+            applyStyles(label);
             return label;
         }
     }
 
-    public static class ParagraphBuilder {
+    public static class ParagraphBuilder extends AbstractStyleBuilder<ParagraphBuilder> {
         private final String text;
         private boolean ellipsis = false;
         private int rows = 0;
@@ -109,11 +112,13 @@ public class TypographyAnt {
                 // 高度限制是结构性属性，留 Java
                 label.setMaxHeight(rows * 20);
             }
+            // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加，覆盖优先级最高
+            applyStyles(label);
             return label;
         }
     }
 
-    public static class TextBuilder {
+    public static class TextBuilder extends AbstractStyleBuilder<TextBuilder> {
         private final String text;
         private Type type = Type.PRIMARY;
         private boolean copyable = false;
@@ -176,6 +181,8 @@ public class TypographyAnt {
                     clipboard.setContent(content);
                 });
             }
+            // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加，覆盖优先级最高
+            applyStyles(label);
             return label;
         }
     }

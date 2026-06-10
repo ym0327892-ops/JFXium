@@ -96,6 +96,9 @@ public class BreadcrumbAnt {
                     breadcrumb.getChildren().add(sepLabel);
                 }
             }
+
+            // 复用 AbstractStyleBuilder 的 styleClass/padding/prefHeight 等公共字段
+            applyStyles(breadcrumb);
             return breadcrumb;
         }
     }
