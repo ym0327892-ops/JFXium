@@ -1134,3 +1134,27 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
   - [`AccordionAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/AccordionAnt.java)：`build()` 委托 `CollapseAnt.create().accordion(true).panel(...)`，返回类型 `Accordion` → `VBox`
   - [`AccordionExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/datadisplay/AccordionExamplePage.java)：描述更新
   - [`TitledPaneAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/TitledPaneAnt.java)：javadoc 引用 `AccordionAnt` → `CollapseAnt`
+
+---
+
+### #95 SpinAnt overlay 挂载能力（2026-06-11）
+
+- **现象**：SpinAnt 只支持 `build()` 返回 Region 插入容器，无法对任意已存在的 Node 添加加载遮罩。用户希望在页面级、表格级等场景做 loading 状态，无需重建内容区。
+- **修复**：
+  - [`SpinAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/SpinAnt.java)：新增 `SpinAnt.Overlay` 内部类 + `overlay(Node target)` 静态工厂。overlay 将 target 从 Parent 拆出、包入 StackPane(target + 遮罩)，放回原位。`show()`/`hide()` 控制显隐。
+  - [`JfxStyles.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/css/JfxStyles.java)：新增 `SPIN_OVERLAY = "jfx-spin-overlay"` 常量
+  - [`_tier1.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_tier1.less)：新增 `.jfx-spin-overlay` 半透明遮罩样式
+  - [`SpinExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/feedback/SpinExamplePage.java)：demo 新增第 4 节 overlay 演示
+
+---
+
+### #96 AdminDemo 管理后台完整示例（2026-06-12）
+
+- **现象**：35 个组件只在各自的 ExamplePage 中有孤立 demo，框架"真实页面"中从未被交叉使用。需要一套管理后台 Demo 展示组件在业务场景中的组合使用。
+- **新增文件**：
+  - [`AdminApp.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/demo/admin/AdminApp.java)：独立入口，LightTheme + AppShell
+  - [`AdminShell.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/demo/admin/AdminShell.java)：骨架，集成 AppShellAnt + ToolBarAnt + StatusBarAnt + BreadcrumbAnt + WatermarkAnt
+  - [`DashboardPage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/demo/admin/pages/DashboardPage.java)：数据概览页，集成 StatisticAnt + SkeletonAnt + TimelineAnt + ProgressAnt + CarouselAnt + FloatButtonAnt + SpinAnt.overlay + SegmentedAnt + GroupBoxAnt
+  - [`UserPage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/demo/admin/pages/UserPage.java)：用户 CRUD 页，集成 TableAnt + TagAnt + BadgeAnt + EmptyAnt + PopconfirmAnt + ModalAnt + InputAnt + ComboBoxAnt + SwitchAnt + UploadAnt + RateAnt + SplitButtonAnt
+  - [`SettingsPage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/demo/admin/pages/SettingsPage.java)：系统设置页，集成 DescriptionsAnt + ColorPickerAnt + ToggleButtonAnt + SegmentedAnt
+- **新增交叉引用**：一次性吃掉 31 个孤儿的首个真实使用场景
