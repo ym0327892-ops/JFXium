@@ -96,6 +96,8 @@
 | 70 | P0 致命红线批量合规修复（commit 6ee94e8）—— PopoverPanel `setStyle("padding: 12px 16px")` 改 `jfx-popover` styleClass + LESS（红线 #1）+ JfxStyles 新增 75 个 jfx- 前缀常量（红线 #8：含 PAGINATION / TAG_* / RESULT_* / CRUD_TEMPLATE_* / POPOVER_CONTENT / SKELETON_SHIMMER / BADGE_TEXT / BUTTON_DANGER_TEXT / CODE_LINE_NUMBERS 等）+ 12 个 LESS 组件 jfx- 前缀化（_accordion / _alert / _alert-enhance / _badge / _badge-enhance / _base-cards / _codeblock / _pagination / _popover / _selectable-text / _sizes / _tier3-batch2）+ 4 个 mui 主题 `.alert-success/info/warning/error` 改 `.jfx-alert-*` + _pagination.less 10 处 `.pagination` → `.jfx-pagination`（保留 modena `.pagination-control`）+ theme-base.less 删 2 块死代码（`.card` / `.panel > .panel-body`，无 Java 端引用）+ module-info.java 新增 `exports org.openkawu.jfxium.core.builder;`（红线 #10）| ✅ 已修复（compile + install BUILD SUCCESS；扫描 0 唯一违规）| 2026-06-08 |
 | 71 | `MuiTheme` 命名混淆（MUI 是 `ThemeManager.Family` 不变量，`light` 才是密度/明暗轴）→ 重命名 `MuiLightTheme`，与 `LightTheme` / `DarkTheme` / `LightCompactTheme` / `DarkCompactTheme` 命名规范一致；git 自动识别为 87% similarity rename（主体 100% 相同，仅类名 + 注释改 1 字符）。同步调整：Theme.getName() `"mui"` → `"mui-light"`、ThemeColor 新增 `MUI_LIGHT` 枚举值、ThemeManager `getTheme(name="mui")` → `getMuiLightTheme()` 工厂方法 + Family 状态机正确表达（MUI 仅有 light 资源）+ 全量 .java 引用 `MuiTheme` → `MuiLightTheme`（Composite / Template / Theme 实现类等）| ✅ 已重构 | 2026-06-08 |
 | 72 | JavaFX 原生控件包装补齐 6 个（commit 6ee94e8）—— control/ChoiceBoxAnt.java (142 行) / control/ListViewAnt.java (153 行) / control/SeparatorAnt.java (100 行) / control/SplitMenuButtonAnt.java (137 行) / layout/BorderPaneAnt.java (136 行) / layout/TextFlowAnt.java (101 行) + less/components/_separator.less (11 行) Separator 样式；继承式 + Builder API + jfx- 前缀 styleClass 全套，零硬编码 | ✅ 已完成 | 2026-06-08 |
+| 89 | ThemeManager.setPrimaryColor() data-URI 注入漏掉 `-color-accent-hover` 和 `-color-accent-active` 两个语义变量 → 换主题色后 DEFAULT 按钮 hover/pressed + PaginationAnt 按钮 armed 仍显示编译期硬编码的蓝色 | ✅ 已修复 | 2026-06-11 |
+| 90 | TimePickerAnt spinner Material 纯底线风格（只底部一条线）视觉断开残缺 → 对齐 AtlantaFX 完整四边边框 + 圆角 + 箭头区左边线分隔；箭头按钮太窄无左右边距 → 14→24px 宽 + 4px padding | ✅ 已修复 | 2026-06-11 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 
@@ -1051,3 +1053,28 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
 - **V2.2 终评:实际可迁移仅 3 个(M4-Typography 子 Builder),工作量约 30 分钟** —— 已 100% 完成
 - **V3 计划**:从 BUG #88 中删除此条目,转交 P3「7 个 → 3 个实际可迁移」完成态登记
 - **审计报告修正**:PROJECT_AUDIT_REPORT.md B1 + E3 + V2.1 残留清单 + V2→V3 路线图同步重算(7 → 3)
+
+---
+
+### #89 ThemeManager.setPrimaryColor() 语义变量注入缺失（2026-06-11）
+
+- **现象**：`setPrimaryColor(GREEN)` 后，DEFAULT 按钮的 `:hover` / `:armed` / `:pressed` 以及 PaginationAnt 按钮 `:armed` 仍显示蓝色。
+- **根因**：`applyPrimaryColorToAll()` 通过 data-URI 补注 `-color-accent-0~9` 色阶，但漏掉了两个关键语义变量：
+  - `-color-accent-hover`（对应 scale[0]）— **未注入**
+  - `-color-accent-active`（对应 scale[6]）— **未注入**
+  而 ButtonAnt (DEFAULT)、PaginationAnt 等组件的 LESS 规则引用的是 `-color-accent-hover` / `-color-accent-active`，这两个值编译后是硬编码的蓝色（`#e6f4ff` / `#0958d9`），运行时 data-URI 无法覆盖。对称注入的 `-color-accent-emphasis`(5)、`-color-accent-muted`(2)、`-color-accent-subtle`(0) 倒是齐全的。
+- **修复**：在 [`ThemeManager.applyPrimaryColorToAll()`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/theme/ThemeManager.java#L222-L223) 补两行注入即可覆盖全部 5 个语义变量。
+- **影响**：DEFAULT 按钮、PaginationAnt、及所有引用 `-color-accent-hover`/`-color-accent-active` 的组件（`.button.default`、`.button.outlined`、`.button.text` 等）的 hover/pressed 状态全部修正。
+
+---
+
+### #90 TimePickerAnt spinner 视觉样式重构（2026-06-11）
+
+- **现象**：spinner 只有底部一条灰线（Material 纯底线风格），箭头按钮区域完全没有边框，视觉上残缺断裂；箭头按钮极窄（14px, padding=0），箭头图标紧贴边缘无呼吸空间。
+- **根因**：M19.55 旧策略（`_tier1.less`）把 spinner 外层 border 设为 transparent，仅靠 text-field 底部 1px 线撑视觉 → 箭头区空无一物。箭头按钮 14px 宽度装不下 7px 箭头 + 0.333em×2 (~9.4px) 水平 padding，被裁切。
+- **修复**（[`_tier1.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_tier1.less)）：
+  - `.jfx-time-picker-spinner`：完整四边边框 + 背景 + 圆角，聚焦态 accent 色边框 + 阴影
+  - `.jfx-time-picker-spinner .text-field`：边框改透明，左半圆角（外层画框避免双框）
+  - `.jfx-time-picker-spinner .increment/decrement-arrow-button`：左 1px 分隔线，24px 宽 + 4px padding，箭头自身水平 padding 从 0.333em 缩到 0.167em
+  - [`TimePickerAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TimePickerAnt.java#L153) spinner 总宽 60→72px 适配
+- **参考**：AtlantaFX `_spinner.scss` — 完整外框 + text-field 左圆角 + arrow-button 右圆角 + 分隔线

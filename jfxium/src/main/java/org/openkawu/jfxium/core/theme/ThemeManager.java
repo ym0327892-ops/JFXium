@@ -219,6 +219,8 @@ public class ThemeManager {
                 rule.append(String.format("-color-accent-%d: %s;", i, scale[i]));
             }
             rule.append("-color-accent-emphasis:").append(scale[5]).append(";");
+            rule.append("-color-accent-hover:").append(scale[0]).append(";");
+            rule.append("-color-accent-active:").append(scale[6]).append(";");
             rule.append("-color-accent-muted:").append(scale[2]).append(";");
             rule.append("-color-accent-subtle:").append(scale[0]).append(";");
             rule.append("}");

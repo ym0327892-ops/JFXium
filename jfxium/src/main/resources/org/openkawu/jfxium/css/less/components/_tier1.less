@@ -113,13 +113,94 @@
   -fx-text-fill: -color-fg-muted;
 }
 
-/* spinner 编辑框：去除默认边框，仅保留底部一根线，对齐 Material 风格 */
+/* spinner 容器：与 .spinner 基类（_spinner.less）对齐，完整四边边框 + 圆角背景。
+   M19.55 旧策略（纯底线 Material 风格）废弃——箭头按钮区域无边线，视觉上残缺断开。 */
+.jfx-time-picker-spinner {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: @border-radius-sm;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: @border-radius-sm;
+  -fx-border-width: @border-width-default;
+  -fx-pref-height: @control-height;
+  -fx-min-height: @control-height;
+}
+
+.jfx-time-picker-spinner:focused,
+.jfx-time-picker-spinner:contains-focus {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+
+.jfx-time-picker-spinner .text-field {
+  /* 编辑框：透明边框（外层 spinner 已画框，避免双框） */
+  -fx-background-color: transparent;
+  -fx-background-radius: @border-radius-sm 0 0 @border-radius-sm;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 4 2 4 2;
+  -fx-pref-width: 40;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+.jfx-time-picker-spinner .increment-arrow-button,
+.jfx-time-picker-spinner .decrement-arrow-button {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1px;
+  -fx-padding: 4px;
+  -fx-pref-width: 24px;
+  -fx-min-width: 24px;
+  -fx-pref-height: 14px;
+  -fx-min-height: 14px;
+}
+
+.jfx-time-picker-spinner .increment-arrow-button:hover,
+.jfx-time-picker-spinner .decrement-arrow-button:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+/* ⚠️ 选择器 specificity 必须 ≥ modena 的
+   .spinner .increment-arrow-button .increment-arrow（3 类，modena.css 第 3252 行），
+   否则 modena 后定义时会覆盖我们的样式（jfxium 主题在 modena 之后加载）。
+   ⚠️ 红线#9：必须显式 -fx-shape + min/pref 尺寸（modena 已有但要保留以防主题不加载）。
+   箭头水平 padding 从 0.333em 缩到 0.167em（~2.3px），给 24px 宽按钮留呼吸空间。 */
+.jfx-time-picker-spinner .increment-arrow-button .increment-arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-shape: "M 0 4 h 7 l -3.5 -4 z";
+  -fx-min-width: 7px;
+  -fx-min-height: 4px;
+  -fx-pref-width: 7px;
+  -fx-pref-height: 4px;
+  -fx-padding: 0.166667em 0.166667em 0.166667em 0.166667em;
+}
+
+.jfx-time-picker-spinner .decrement-arrow-button .decrement-arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+  -fx-min-width: 7px;
+  -fx-min-height: 4px;
+  -fx-pref-width: 7px;
+  -fx-pref-height: 4px;
+  -fx-padding: 0.166667em 0.166667em 0.166667em 0.166667em;
+}
+
+.jfx-time-picker-spinner:hover .increment-arrow-button .increment-arrow,
+.jfx-time-picker-spinner:hover .decrement-arrow-button .decrement-arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* 编辑器独立样式（Java 端 spinner.getEditor() 挂 jfx-time-picker-editor，
+   与上面 .jfx-time-picker-spinner .text-field 选择器互补，单挂也生效）。
+   边框由外层 spinner 容器统一绘制，编辑器自身走透明边框避免双框。 */
 .jfx-time-picker-editor {
   -fx-font-size: @font-size-md;
   -fx-padding: 4 2 4 2;
   -fx-pref-width: 40;
   -fx-background-color: transparent;
-  -fx-border-color: transparent transparent -color-border-muted transparent;
-  -fx-border-width: 0 0 1 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 

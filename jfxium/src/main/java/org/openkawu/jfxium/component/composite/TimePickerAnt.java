@@ -150,9 +150,14 @@ public class TimePickerAnt {
 
         private Spinner<Integer> createTimeSpinner(int min, int max, int value) {
             Spinner<Integer> spinner = new Spinner<>(min, max, value);
-            spinner.setPrefWidth(60);
-            spinner.setMinWidth(60);
-            spinner.setMaxWidth(60);
+            spinner.setPrefWidth(72);
+            spinner.setMinWidth(72);
+            spinner.setMaxWidth(72);
+            // M19.42 修复：给 Spinner 显式高度，避免箭头按钮被裁切（_tier1.less
+            // .jfx-time-picker-spinner 已配套设 -fx-pref-height / -fx-min-height）
+            spinner.setPrefHeight(32);
+            spinner.setMinHeight(32);
+            spinner.setMaxHeight(32);
             spinner.getStyleClass().add(JfxStyles.TIME_PICKER_SPINNER);
             spinner.setDisable(disabled);
 
