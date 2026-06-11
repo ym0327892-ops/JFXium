@@ -57,10 +57,13 @@ public class SpinnerAnt {
 
         public ProgressIndicator build() {
             ProgressIndicator spinner = new ProgressIndicator();
+            // 显式设为不确定进度（旋转模式），防御性确保即使 CSS/layout 触碰后也不退化为 0% 静态
+            spinner.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
             spinner.setPrefSize(size, size);
             spinner.getStyleClass().add("jfx-spinner");
             applyStyles(spinner);
             return spinner;
         }
+
     }
 }

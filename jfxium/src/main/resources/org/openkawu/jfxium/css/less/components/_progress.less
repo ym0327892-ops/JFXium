@@ -51,6 +51,20 @@
 }
 
 /* ============================================
+   jfx-spinner — SpinnerAnt 旋转加载指示器
+   显式覆盖 indeterminate 态样式，确保旋转动画 + 主题色
+   对齐 AtlantaFX _progress.scss indeterminate 段
+   ============================================ */
+.jfx-spinner {
+  -fx-indeterminate-segment-count: 12;
+  -fx-spin-enabled: true;
+}
+
+.jfx-spinner:indeterminate .segment {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* ============================================
    ProgressAnt 百分比文字
    颜色随 status 切换，避免 Java 端拼字符串
    ============================================ */
@@ -62,4 +76,3 @@
 .jfx-progress-info.success { -fx-text-fill: -color-success-emphasis; }
 .jfx-progress-info.warning { -fx-text-fill: -color-warning-emphasis; }
 .jfx-progress-info.error   { -fx-text-fill: -color-danger-emphasis;  }
-

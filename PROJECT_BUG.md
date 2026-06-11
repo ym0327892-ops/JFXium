@@ -99,6 +99,7 @@
 | 89 | ThemeManager.setPrimaryColor() data-URI 注入漏掉 `-color-accent-hover` 和 `-color-accent-active` 两个语义变量 → 换主题色后 DEFAULT 按钮 hover/pressed + PaginationAnt 按钮 armed 仍显示编译期硬编码的蓝色 | ✅ 已修复 | 2026-06-11 |
 | 90 | TimePickerAnt spinner Material 纯底线风格（只底部一条线）视觉断开残缺 → 对齐 AtlantaFX 完整四边边框 + 圆角 + 箭头区左边线分隔；箭头按钮太窄无左右边距 → 14→24px 宽 + 4px padding | ✅ 已修复 | 2026-06-11 |
 | 91 | ChoiceBoxAnt `.open-button` 沿用全尺寸 padding `@input-padding-x: 15px`，箭头离右边太远，与 ComboBox 箭头边距不一致 → 收紧为 `@spacing-xs: 4px` | ✅ 已修复 | 2026-06-11 |
+| 92 | SpinnerAnt `ProgressIndicator` 缺 indeterminate 态 CSS（`-fx-indeterminate-segment-count` / `-fx-spin-enabled` / segment 颜色），且 build() 未显式设 INDETERMINATE_PROGRESS → spinner 可能退化为 0% 静态圆圈不旋转 | ✅ 已修复 | 2026-06-11 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 
@@ -1087,3 +1088,16 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
 - **现象**：`.open-button` 的 padding 用了 `@input-padding-y @input-padding-x`（6px 15px），与 ChoiceBox 自身的全尺寸 padding 相同。这导致箭头按钮区域水平方向有 15px 内边距，箭头被推向内部、离右边界很远，与 ComboBox 的箭头边距明显不一致。
 - **根因**：`_choicebox.less` 中 `.choice-box .open-button` 的 padding 复用了 `@input-padding-x` (15px)，这是文本输入控件的 padding 级别，不适合只含 10px 宽箭头的按钮区域。ComboBox 的 `.arrow-button` 不做显式 padding，走 modena 默认 `~5px 7px`。
 - **修复**：[`_choicebox.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_choicebox.less#L41)：`@input-padding-y @input-padding-x` → `@spacing-xs @spacing-xs`（4px 4px），与 ComboBox 箭头边距视觉一致。
+
+---
+
+### #92 SpinnerAnt indeterminate 态缺失导致无旋转动画（2026-06-11）
+
+- **现象**：`SpinnerAnt.create().build()` 生成的 ProgressIndicator 显示为静态 0% 圆圈，不旋转——"不是动态的"。
+- **根因**（两重）：
+  1. **LESS 缺失**：`_progress.less` 只有 `.progress-indicator { -fx-progress-color }`，完全没有 indeterminate 态的 CSS 规则。缺少 `-fx-indeterminate-segment-count` / `-fx-spin-enabled` 和 `:indeterminate .segment` 颜色覆盖。在无显式 CSS 指导下，JavaFX 的 indeterminate 渲染路径在某些条件下退化为 0% 静态。
+  2. **Java 防御缺失**：`SpinnerAnt.Builder.build()` 未显式调用 `spinner.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS)`，依赖 `new ProgressIndicator()` 构造器默认 -1。若 CSS/layout 中间过程触碰 progress 属性，存在退化为 0 的风险。
+- **修复**：
+  - [`_progress.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_progress.less)：新增 `.jfx-spinner` 规则块 —— `-fx-indeterminate-segment-count: 12; -fx-spin-enabled: true;` + `.jfx-spinner:indeterminate .segment { -fx-background-color: -color-accent-emphasis; }`
+  - [`SpinnerAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/SpinnerAnt.java#L60)：显式 `spinner.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS)`，防御性确保不退化为 0%
+- **参考**：AtlantaFX `_progress.scss` 第 72-130 行 —— `-fx-indeterminate-segment-count: 12` + `:indeterminate .segment` + 逐段 `.segment0~11` shape 定制
