@@ -16,16 +16,25 @@
   
 }
 
-.list-view .list-cell:hover {
+/* hover 变浅蓝：用 -fx-background-color 直接覆盖，包括 :filled 状态（确保 empty/placeholder 不会触发） */
+.list-view .list-cell:hover,
+.list-view .list-cell:filled:hover {
   -fx-background-color: -color-accent-hover;
 }
 
-.list-view .list-cell:armed {
+.list-view .list-cell:armed,
+.list-view .list-cell:filled:armed {
   -fx-background-color: -color-accent-active;
 }
 
 .list-view .list-cell:selected {
   -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，加深一档到 muted */
+.list-view .list-cell:selected:hover {
+  -fx-background-color: -color-accent-muted;
   -fx-text-fill: -color-fg-on-emphasis;
 }
 

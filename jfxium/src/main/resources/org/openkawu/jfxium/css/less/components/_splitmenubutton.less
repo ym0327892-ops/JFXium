@@ -11,7 +11,15 @@
 }
 
 .jfx-split-menu-button:hover {
+  /* 容器整块变浅蓝（子节点 .label / .arrow-button 默认 transparent，容器的颜色"穿透"显示） */
+  -fx-background-color: -color-accent-hover;
   -fx-border-color: -color-accent-muted;
+}
+
+.jfx-split-menu-button:armed {
+  /* 按下时整块变深蓝 */
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
 }
 
 .jfx-split-menu-button:focused {
@@ -22,9 +30,33 @@
   -fx-opacity: 0.6;
 }
 
+.jfx-split-menu-button > .label {
+  /* 让容器背景透出；hover 时单独响应左半点击 */
+  -fx-background-color: transparent;
+}
+
+.jfx-split-menu-button > .label:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.jfx-split-menu-button > .label:armed {
+  -fx-background-color: -color-accent-active;
+}
+
 .jfx-split-menu-button > .arrow-button {
   -fx-background-color: transparent;
   -fx-padding: @input-padding-y @spacing-sm;
+  /* arrow-button 左侧分隔线 hover 时跟着变浅蓝，整块视觉更连贯 */
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1px;
+}
+
+.jfx-split-menu-button:hover > .arrow-button {
+  -fx-border-color: transparent transparent transparent -color-accent-muted;
+}
+
+.jfx-split-menu-button:armed > .arrow-button {
+  -fx-border-color: transparent transparent transparent -color-accent-active;
 }
 
 .jfx-split-menu-button > .arrow-button > .arrow {

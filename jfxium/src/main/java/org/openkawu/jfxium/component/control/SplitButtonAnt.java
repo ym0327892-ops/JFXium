@@ -206,7 +206,6 @@ public class SplitButtonAnt {
             }
 
             btn.setFocusTraversable(true);
-            btn.getStyleClass().add("jfx-split-button");
 
             applyStyles(btn);
             return btn;

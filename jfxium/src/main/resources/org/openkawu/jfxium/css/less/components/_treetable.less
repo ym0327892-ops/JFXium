@@ -30,11 +30,15 @@
   
 }
 
-.tree-table-row-cell:hover {
+/* 行 hover：让行内所有子节点（.tree-table-cell）都跟随变浅蓝，
+   防止 cell 自己的 background 遮住行 hover 颜色 */
+.tree-table-row-cell:hover,
+.tree-table-row-cell:hover > .tree-table-cell {
   -fx-background-color: -color-accent-hover;
 }
 
-.tree-table-row-cell:armed {
+.tree-table-row-cell:armed,
+.tree-table-row-cell:armed > .tree-table-cell {
   -fx-background-color: -color-accent-active;
 }
 
@@ -49,7 +53,8 @@
 /* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，
    背景在 subtle(accent-0) 基础上加深一档到 muted(accent-2)，
    给用户"选中后还能继续交互"的反馈 */
-.tree-table-row-cell:selected:hover {
+.tree-table-row-cell:selected:hover,
+.tree-table-row-cell:selected:hover > .tree-table-cell {
   -fx-background-color: -color-accent-muted;
 }
 
@@ -80,6 +85,14 @@
 
 .tree-table-view.striped .tree-table-row-cell:even {
   -fx-background-color: -color-bg-default;
+}
+
+/* Striped 模式 + hover：让 hover 颜色覆盖 striped 颜色（奇数行也能 hover 变浅蓝） */
+.tree-table-view.striped .tree-table-row-cell:odd:hover,
+.tree-table-view.striped .tree-table-row-cell:odd:hover > .tree-table-cell,
+.tree-table-view.striped .tree-table-row-cell:even:hover,
+.tree-table-view.striped .tree-table-row-cell:even:hover > .tree-table-cell {
+  -fx-background-color: -color-accent-hover;
 }
 
 /* TreeTableView Bordered */

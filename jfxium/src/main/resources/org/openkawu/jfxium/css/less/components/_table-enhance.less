@@ -8,11 +8,17 @@
   
 }
 
-.table-row-cell:hover {
+/* 行 hover：让行内所有子节点（.table-cell / .label）都跟随变浅蓝，
+   防止 cell 自己的 background 遮住行 hover 颜色 */
+.table-row-cell:hover,
+.table-row-cell:hover > .table-cell,
+.table-row-cell:hover > .table-cell > .label {
   -fx-background-color: -color-accent-hover;
 }
 
-.table-row-cell:armed {
+.table-row-cell:armed,
+.table-row-cell:armed > .table-cell,
+.table-row-cell:armed > .table-cell > .label {
   -fx-background-color: -color-accent-active;
 }
 
@@ -27,7 +33,9 @@
 /* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，
    背景在 subtle(accent-0) 基础上加深一档到 muted(accent-2)，
    给用户"选中后还能继续交互"的反馈 */
-.table-row-cell:selected:hover {
+.table-row-cell:selected:hover,
+.table-row-cell:selected:hover > .table-cell,
+.table-row-cell:selected:hover > .table-cell > .label {
   -fx-background-color: -color-accent-muted;
 }
 
@@ -94,6 +102,14 @@
 
 .table-view.jfx-table-striped .table-row-cell:even {
   -fx-background-color: -color-bg-default;
+}
+
+/* Striped 模式 + hover：让 hover 颜色覆盖 striped 颜色（奇数行也能 hover 变浅蓝） */
+.table-view.jfx-table-striped .table-row-cell:odd:hover,
+.table-view.jfx-table-striped .table-row-cell:odd:hover > .table-cell,
+.table-view.jfx-table-striped .table-row-cell:even:hover,
+.table-view.jfx-table-striped .table-row-cell:even:hover > .table-cell {
+  -fx-background-color: -color-accent-hover;
 }
 
 /* Bordered table（兼容老 .bordered API；新代码请用 Border.BOTH） */

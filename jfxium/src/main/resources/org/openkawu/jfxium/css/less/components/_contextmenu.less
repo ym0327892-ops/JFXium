@@ -1,7 +1,9 @@
 /* ============================================
    ContextMenu Component
+   使用 jfx- 前缀以避免与 modena .context-menu 冲突，
+   同时匹配 ContextMenuAnt.java 中实际挂的 styleClass
    ============================================ */
-.context-menu {
+.jfx-context-menu {
   -fx-background-color: -color-bg-overlay;
   -fx-border-color: -color-border-default;
   -fx-border-width: @border-width-default;
@@ -11,29 +13,45 @@
   -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
 }
 
-.context-menu .menu-item {
+.jfx-context-menu-item {
   -fx-padding: @menu-item-padding-y @menu-item-padding-x;
-  
+  -fx-alignment: center-left;
+  -fx-spacing: 8px;
+  -fx-cursor: hand;
 }
 
-.context-menu .menu-item:hover,
-.context-menu .menu-item:focused {
+.jfx-context-menu-item:hover {
   -fx-background-color: -color-accent-hover;
 }
 
-.context-menu .menu-item:armed {
+.jfx-context-menu-item:armed {
   -fx-background-color: -color-accent-active;
 }
 
-.context-menu .menu-item .label {
+.jfx-context-menu-item .label {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: @font-size-md;
 }
 
-.context-menu .separator-menu-item .line {
-  -fx-border-color: -color-border-muted;
-  -fx-border-width: 1px 0 0 0;
+.jfx-context-menu-item-disabled {
+  -fx-opacity: 0.5;
+  -fx-cursor: default;
+}
+
+.jfx-context-menu-item-disabled .label {
+  -fx-text-fill: -color-fg-subtle;
+}
+
+.jfx-context-menu-divider {
+  -fx-min-height: 1px;
+  -fx-pref-height: 1px;
+  -fx-background-color: -color-border-muted;
   -fx-padding: @spacing-xs 0;
+}
+
+.jfx-context-menu-accelerator {
+  -fx-text-fill: -color-fg-subtle;
+  -fx-font-size: @font-size-sm;
 }
 
 /* ============================================
@@ -98,9 +116,79 @@
   -fx-background-color: -color-accent-active;
 }
 
+/* ============================================
+   modena 原生 ContextMenu 容器（被 MenuButton / SplitMenuButton / MenuBar
+   弹出的下拉使用，className 是无前缀的 .context-menu）。
+   对齐 AtlantaFX _menu.scss 第 199-226 行 .context-menu 定义：
+     - 背景 stacking：外层 1px 边框 + 内层 bg-overlay
+     - 阴影 + 圆角
+     - 滚动箭头 + 分隔线子项样式
+   关键：这是「覆盖 modena 默认」，不是新建 styleClass，不触发红线 #8
+   ============================================ */
+.context-menu {
+  -fx-background-color: -color-border-default, -color-bg-overlay;
+  -fx-background-insets: 0, 1px;
+  -fx-padding: @context-menu-padding-y @context-menu-padding-x;
+  -fx-background-radius: @border-radius-md, @border-radius-sm;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+}
+
+.context-menu > .scroll-arrow {
+  -fx-padding: 0.5em;
+  -fx-background-color: transparent;
+}
+
+.context-menu > .scroll-arrow:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-text-fill: -color-fg-default;
+}
+
+.context-menu .separator:horizontal {
+  -fx-padding: @menu-divider-padding-y 0;
+}
+
+.context-menu .separator:horizontal .line {
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-insets: 1px 8px 0 8px;
+}
+
+/* ============================================
+   modena 原生 .menu-item（被所有 .context-menu / .menu 里的 MenuItem 使用，
+   包括 MenuButton / SplitMenuButton / MenuBar 弹出的项）。
+   对齐 AtlantaFX _menu.scss 第 108-154 行：
+     - 自身透明背景（hover 才能看出）
+     - 各 container 子节点 padding
+     - :hover/:focused 主题色
+     - :disabled 半透明
+   ============================================ */
 .menu-item {
+  -fx-background-color: transparent;
   -fx-padding: @menu-item-padding-y @menu-item-padding-x;
-  
+  -fx-background-radius: @border-radius-sm;
+}
+
+.menu-item > .graphic-container {
+  -fx-padding: 0 6px 0 0;
+}
+
+.menu-item > .label {
+  -fx-padding: 0 1em 0 0;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+}
+
+.menu-item > .left-container {
+  -fx-padding: 0 1em 0 0;
+}
+
+.menu-item > .right-container {
+  -fx-padding: 0 0 0 0.5em;
+}
+
+.menu-item > .right-container > .arrow {
+  -fx-shape: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z";
+  -fx-scale-shape: false;
+  -fx-background-color: -color-fg-muted;
 }
 
 .menu-item:hover,
@@ -108,12 +196,39 @@
   -fx-background-color: -color-accent-hover;
 }
 
+.menu-item:hover > .label,
+.menu-item:focused > .label {
+  -fx-text-fill: -color-fg-default;
+}
+
+.menu-item:focused > .right-container > .arrow {
+  -fx-background-color: -color-fg-default;
+}
+
 .menu-item:armed {
   -fx-background-color: -color-accent-active;
 }
 
-.menu-item .label {
-  -fx-text-fill: -color-fg-default;
-  -fx-font-size: @font-size-md;
+.menu-item:disabled {
+  -fx-opacity: 0.4;
+}
+
+/* RadioMenuItem / CheckMenuItem 选中标记（AtlantaFX 风格） */
+.radio-menu-item:checked > .left-container > .radio,
+.check-menu-item:checked > .left-container > .check {
+  -fx-shape: "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z";
+  -fx-scale-shape: true;
+  -fx-background-color: -color-fg-muted;
+  -fx-min-height: 12px;
+  -fx-min-width: 12px;
+  -fx-max-height: 12px;
+  -fx-max-width: 12px;
+}
+
+.radio-menu-item:hover:checked > .left-container > .radio,
+.radio-menu-item:focused:checked > .left-container > .radio,
+.check-menu-item:hover:checked > .left-container > .check,
+.check-menu-item:focused:checked > .left-container > .check {
+  -fx-background-color: -color-fg-default;
 }
 

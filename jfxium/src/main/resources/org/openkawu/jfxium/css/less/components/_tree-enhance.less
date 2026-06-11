@@ -1,37 +1,65 @@
 /* ============================================
-   Tree Cell Enhancements — jfx- 前缀避免全局污染
+   Tree Cell Enhancements
+
+   参考 AtlantaFX _data.scss 中 .tree-cell 定义：
+   - tree-cell 水平 padding 设为 0（让 .tree-disclosure-node 自身处理水平 padding）
+   - disclosure-node 容器必须有 padding + 透明背景，否则箭头会与 cell 内容重叠
+
+   ⚠️ 必须用 `.tree-cell`（无 jfx- 前缀）：JavaFX 的 TreeCell 自带 className
+   "tree-cell"（modena.css 第 2342 行已定义），不能再加 jfx- 前缀，
+   否则选择器不命中任何节点（jfx- 前缀是我们业务标识，跟 TreeCell 自身的
+   className 是两码事）。
    ============================================ */
-.jfx-tree-cell {
-  -fx-padding: @tree-cell-padding-y @tree-cell-padding-x;
+.tree-cell {
+  /* 水平 padding 改 0：AtlantaFX 范式，disclosure-node 自身吃水平 padding。
+     这样箭头 indent 才不会被 cell 自身的 left padding 二次推挤。 */
+  -fx-padding: @tree-cell-padding-y 0;
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
-  
+
 }
 
-.jfx-tree-cell:hover {
+.tree-cell:hover {
   -fx-background-color: -color-accent-hover;
 }
 
-.jfx-tree-cell:armed {
+.tree-cell:armed {
   -fx-background-color: -color-accent-active;
 }
 
-.jfx-tree-cell:selected {
+.tree-cell:selected {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
 }
 
-.jfx-tree-cell .tree-disclosure-node .arrow {
-  /* M19.44 红线#9 修复：显式设 shape + 尺寸（右指三角，对齐 AtlantaFX arrow-right） */
-  -fx-shape: "M5 0l5 5-5 5z";
+/* disclosure-node 容器（M19.55 修复：原实现完全没设样式，箭头被 modena 默认
+   padding 压扁/位置错位 → 视觉"箭头指示有问题"）。M19.55 补充：AtlantaFX
+   范式 — 容器必须 padding-x 留出缩进 + 背景透明。
+   覆盖 modena 默认的 -fx-padding: 4 6 4 8（modena.css 第 2351 行）。 */
+.tree-cell > .tree-disclosure-node {
+  -fx-padding: 0.35em @tree-cell-padding-x 0 @tree-cell-padding-x;
+  -fx-background-color: transparent;
+}
+
+.tree-cell > .tree-disclosure-node > .arrow {
+  /* M19.55 红线#9 修复：显式设 shape + 尺寸（右指三角）。
+     modena 默认 -fx-rotate: 90 在 :expanded 时切到下指，所以折叠态 shape 用右指。
+     对齐 modena shape 风格。 */
+  -fx-shape: "M 0 -3.5 L 4 0 L 0 3.5 z";
   -fx-min-width: 5px;
   -fx-min-height: 10px;
   -fx-pref-width: 5px;
   -fx-pref-height: 10px;
+  -fx-padding: 0.333333em 0.229em 0.333333em 0.229em;
   -fx-background-color: -color-fg-muted;
 }
 
-.jfx-tree-cell:expanded .tree-disclosure-node .arrow {
-  -fx-shape: "M0 5l5 5 5-5z";
+.tree-cell > .tree-disclosure-node:hover > .arrow {
   -fx-background-color: -color-accent-emphasis;
+}
+
+/* 展开态：modena 默认 -fx-rotate: 90 把右指 shape 旋转成下指 */
+.tree-cell:expanded > .tree-disclosure-node > .arrow {
+  -fx-background-color: -color-accent-emphasis;
+  /* 保留 -fx-rotate: 90 让 shape "M 0 -3.5 L 4 0 L 0 3.5 z" 旋转为下指 */
 }

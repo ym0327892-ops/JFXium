@@ -1184,14 +1184,22 @@
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
 }
-.list-view .list-cell:hover {
+/* hover 变浅蓝：用 -fx-background-color 直接覆盖，包括 :filled 状态（确保 empty/placeholder 不会触发） */
+.list-view .list-cell:hover,
+.list-view .list-cell:filled:hover {
   -fx-background-color: -color-accent-hover;
 }
-.list-view .list-cell:armed {
+.list-view .list-cell:armed,
+.list-view .list-cell:filled:armed {
   -fx-background-color: -color-accent-active;
 }
 .list-view .list-cell:selected {
   -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+/* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，加深一档到 muted */
+.list-view .list-cell:selected:hover {
+  -fx-background-color: -color-accent-muted;
   -fx-text-fill: -color-fg-on-emphasis;
 }
 .list-view .list-cell:empty {
@@ -1297,6 +1305,18 @@
 }
 .progress-indicator.error {
   -fx-progress-color: -color-danger-emphasis;
+}
+/* ============================================
+   jfx-spinner — SpinnerAnt 旋转加载指示器
+   显式覆盖 indeterminate 态样式，确保旋转动画 + 主题色
+   对齐 AtlantaFX _progress.scss indeterminate 段
+   ============================================ */
+.jfx-spinner {
+  -fx-indeterminate-segment-count: 12;
+  -fx-spin-enabled: true;
+}
+.jfx-spinner:indeterminate .segment {
+  -fx-background-color: -color-accent-emphasis;
 }
 /* ============================================
    ProgressAnt 百分比文字
@@ -1882,8 +1902,10 @@
 }
 /* ============================================
    ContextMenu Component
+   使用 jfx- 前缀以避免与 modena .context-menu 冲突，
+   同时匹配 ContextMenuAnt.java 中实际挂的 styleClass
    ============================================ */
-.context-menu {
+.jfx-context-menu {
   -fx-background-color: -color-bg-overlay;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -1892,24 +1914,38 @@
   -fx-padding: 4px 0;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
-.context-menu .menu-item {
+.jfx-context-menu-item {
   -fx-padding: 8px 16px;
+  -fx-alignment: center-left;
+  -fx-spacing: 8px;
+  -fx-cursor: hand;
 }
-.context-menu .menu-item:hover,
-.context-menu .menu-item:focused {
+.jfx-context-menu-item:hover {
   -fx-background-color: -color-accent-hover;
 }
-.context-menu .menu-item:armed {
+.jfx-context-menu-item:armed {
   -fx-background-color: -color-accent-active;
 }
-.context-menu .menu-item .label {
+.jfx-context-menu-item .label {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
 }
-.context-menu .separator-menu-item .line {
-  -fx-border-color: -color-border-muted;
-  -fx-border-width: 1px 0 0 0;
+.jfx-context-menu-item-disabled {
+  -fx-opacity: 0.5;
+  -fx-cursor: default;
+}
+.jfx-context-menu-item-disabled .label {
+  -fx-text-fill: -color-fg-subtle;
+}
+.jfx-context-menu-divider {
+  -fx-min-height: 1px;
+  -fx-pref-height: 1px;
+  -fx-background-color: -color-border-muted;
   -fx-padding: 4px 0;
+}
+.jfx-context-menu-accelerator {
+  -fx-text-fill: -color-fg-subtle;
+  -fx-font-size: 12px;
 }
 /* ============================================
    MenuBar 顶级菜单（对齐 AtlantaFX _menu.scss）
@@ -1965,19 +2001,103 @@
 .menu-bar > .container > .menu-button:armed {
   -fx-background-color: -color-accent-active;
 }
+/* ============================================
+   modena 原生 ContextMenu 容器（被 MenuButton / SplitMenuButton / MenuBar
+   弹出的下拉使用，className 是无前缀的 .context-menu）。
+   对齐 AtlantaFX _menu.scss 第 199-226 行 .context-menu 定义：
+     - 背景 stacking：外层 1px 边框 + 内层 bg-overlay
+     - 阴影 + 圆角
+     - 滚动箭头 + 分隔线子项样式
+   关键：这是「覆盖 modena 默认」，不是新建 styleClass，不触发红线 #8
+   ============================================ */
+.context-menu {
+  -fx-background-color: -color-border-default, -color-bg-overlay;
+  -fx-background-insets: 0, 1px;
+  -fx-padding: 4px 0;
+  -fx-background-radius: 6px, 4px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+}
+.context-menu > .scroll-arrow {
+  -fx-padding: 0.5em;
+  -fx-background-color: transparent;
+}
+.context-menu > .scroll-arrow:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-text-fill: -color-fg-default;
+}
+.context-menu .separator:horizontal {
+  -fx-padding: 3px 0;
+}
+.context-menu .separator:horizontal .line {
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-insets: 1px 8px 0 8px;
+}
+/* ============================================
+   modena 原生 .menu-item（被所有 .context-menu / .menu 里的 MenuItem 使用，
+   包括 MenuButton / SplitMenuButton / MenuBar 弹出的项）。
+   对齐 AtlantaFX _menu.scss 第 108-154 行：
+     - 自身透明背景（hover 才能看出）
+     - 各 container 子节点 padding
+     - :hover/:focused 主题色
+     - :disabled 半透明
+   ============================================ */
 .menu-item {
+  -fx-background-color: transparent;
   -fx-padding: 8px 16px;
+  -fx-background-radius: 4px;
+}
+.menu-item > .graphic-container {
+  -fx-padding: 0 6px 0 0;
+}
+.menu-item > .label {
+  -fx-padding: 0 1em 0 0;
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 14px;
+}
+.menu-item > .left-container {
+  -fx-padding: 0 1em 0 0;
+}
+.menu-item > .right-container {
+  -fx-padding: 0 0 0 0.5em;
+}
+.menu-item > .right-container > .arrow {
+  -fx-shape: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z";
+  -fx-scale-shape: false;
+  -fx-background-color: -color-fg-muted;
 }
 .menu-item:hover,
 .menu-item:focused {
   -fx-background-color: -color-accent-hover;
 }
+.menu-item:hover > .label,
+.menu-item:focused > .label {
+  -fx-text-fill: -color-fg-default;
+}
+.menu-item:focused > .right-container > .arrow {
+  -fx-background-color: -color-fg-default;
+}
 .menu-item:armed {
   -fx-background-color: -color-accent-active;
 }
-.menu-item .label {
-  -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+.menu-item:disabled {
+  -fx-opacity: 0.4;
+}
+/* RadioMenuItem / CheckMenuItem 选中标记（AtlantaFX 风格） */
+.radio-menu-item:checked > .left-container > .radio,
+.check-menu-item:checked > .left-container > .check {
+  -fx-shape: "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z";
+  -fx-scale-shape: true;
+  -fx-background-color: -color-fg-muted;
+  -fx-min-height: 12px;
+  -fx-min-width: 12px;
+  -fx-max-height: 12px;
+  -fx-max-width: 12px;
+}
+.radio-menu-item:hover:checked > .left-container > .radio,
+.radio-menu-item:focused:checked > .left-container > .radio,
+.check-menu-item:hover:checked > .left-container > .check,
+.check-menu-item:focused:checked > .left-container > .check {
+  -fx-background-color: -color-fg-default;
 }
 /* ============================================
    Dialog / Modal Overlay
@@ -2214,6 +2334,13 @@
 }
 /* ============================================
    ChoiceBox
+
+   ⚠️ 重要：modena.css 第 1609 行定义的 ChoiceBox 弹层是
+   `.choice-box > .context-menu`（不是 `.choice-box-popup`！modena 根本没有
+   .choice-box-popup 这个 className——只有 .combo-box-popup）。
+   M19.55 修复：把之前的 .choice-box-popup 全改为 .context-menu 并限定 scope 到
+   .choice-box 内部，避免影响 jfxium 其他地方（MenuBarAnt / SplitMenuButtonAnt
+   等）使用的 .context-menu。
    ============================================ */
 .choice-box {
   -fx-background-color: -color-border-default, -color-bg-default;
@@ -2223,15 +2350,16 @@
   -fx-alignment: CENTER;
   -fx-content-display: LEFT;
   -fx-padding: 6px 11px;
-  -fx-border-color: -color-border-default;
-  -fx-border-width: 1px;
-  -fx-border-radius: 6px;
+  /* ⚠️ 不再单独设 -fx-border-color / -fx-border-width：与上方 -fx-background-color
+     stacking 重复会形成"双边框"（M19.42 #7 修复同款）。边框已由
+     -fx-background-color: -color-border-default, -color-bg-default 配合
+     -fx-background-insets: 0, 1px 表达。 */
 }
 .choice-box:hover {
-  -fx-border-color: -color-accent-muted;
+  -fx-background-color: -color-accent-muted, -color-bg-default;
 }
 .choice-box:focused {
-  -fx-border-color: -color-accent-emphasis;
+  -fx-background-color: -color-accent-emphasis, -color-bg-default;
   -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
 }
 .choice-box:disabled {
@@ -2239,16 +2367,60 @@
 }
 .choice-box .open-button {
   -fx-background-color: transparent;
-  -fx-padding: 6px 11px;
+  -fx-padding: 4px 4px;
 }
 .choice-box .open-button .arrow {
-  /* M19.44 红线#9 修复：显式设 shape + 尺寸 */
+  /* M19.44 红线#9 修复：显式设 shape + 尺寸（对齐 AtlantaFX arrow-drop-down） */
   -fx-shape: "M7 10l5 5 5-5z";
   -fx-min-width: 10px;
   -fx-min-height: 5px;
   -fx-pref-width: 10px;
   -fx-pref-height: 5px;
   -fx-background-color: -color-fg-muted;
+}
+.choice-box:hover .open-button .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+/* ============================================
+   ChoiceBox 弹层
+   ---------------------------------------------------------
+   实际 className 是 modena 原生 `.choice-box > .context-menu`
+   （不是 `.choice-box-popup`！modena 根本无此 className）。
+   用 .choice-box > .context-menu 限定 scope，避免影响 jfxium 其他
+   组件使用的 .context-menu（MenuBarAnt / SplitMenuButtonAnt 等）。
+   ============================================ */
+/* 弹层容器：覆盖 modena .context-menu 默认的渐变背景 + 4px padding
+   （modena.css 第 1444-1453 行），改成扁平化 Ant Design 风格 */
+.choice-box > .context-menu {
+  -fx-background-color: -color-bg-overlay;
+  -fx-background-insets: 0;
+  -fx-background-radius: 6px;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: 6px;
+  -fx-padding: 0;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+}
+/* 弹层内部 ListView（如果存在）：背景透明、滚动条让 context-menu 自身控制 */
+.choice-box > .context-menu > .list-view {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+.choice-box > .context-menu > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
+  -fx-padding: 8px 12px;
+  -fx-text-fill: -color-fg-default;
+  -fx-background-color: transparent;
+}
+.choice-box > .context-menu > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:hover {
+  -fx-background-color: -color-accent-hover;
+}
+.choice-box > .context-menu > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+.choice-box > .context-menu > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
 }
 /* ============================================
    Spinner (Number/Text Spinner)
@@ -2377,7 +2549,14 @@
   -fx-padding: 0;
 }
 .jfx-split-menu-button:hover {
+  /* 容器整块变浅蓝（子节点 .label / .arrow-button 默认 transparent，容器的颜色"穿透"显示） */
+  -fx-background-color: -color-accent-hover;
   -fx-border-color: -color-accent-muted;
+}
+.jfx-split-menu-button:armed {
+  /* 按下时整块变深蓝 */
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
 }
 .jfx-split-menu-button:focused {
   -fx-border-color: -color-accent-emphasis;
@@ -2385,9 +2564,28 @@
 .jfx-split-menu-button:disabled {
   -fx-opacity: 0.6;
 }
+.jfx-split-menu-button > .label {
+  /* 让容器背景透出；hover 时单独响应左半点击 */
+  -fx-background-color: transparent;
+}
+.jfx-split-menu-button > .label:hover {
+  -fx-background-color: -color-accent-hover;
+}
+.jfx-split-menu-button > .label:armed {
+  -fx-background-color: -color-accent-active;
+}
 .jfx-split-menu-button > .arrow-button {
   -fx-background-color: transparent;
   -fx-padding: 6px 8px;
+  /* arrow-button 左侧分隔线 hover 时跟着变浅蓝，整块视觉更连贯 */
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1px;
+}
+.jfx-split-menu-button:hover > .arrow-button {
+  -fx-border-color: transparent transparent transparent -color-accent-muted;
+}
+.jfx-split-menu-button:armed > .arrow-button {
+  -fx-border-color: transparent transparent transparent -color-accent-active;
 }
 .jfx-split-menu-button > .arrow-button > .arrow {
   /* M19.44 红线#9 修复：显式设 shape + 尺寸 */
@@ -2406,10 +2604,16 @@
   -fx-border-color: transparent transparent -color-border-subtle transparent;
   -fx-border-width: 0 0 1px 0;
 }
-.table-row-cell:hover {
+/* 行 hover：让行内所有子节点（.table-cell / .label）都跟随变浅蓝，
+   防止 cell 自己的 background 遮住行 hover 颜色 */
+.table-row-cell:hover,
+.table-row-cell:hover > .table-cell,
+.table-row-cell:hover > .table-cell > .label {
   -fx-background-color: -color-accent-hover;
 }
-.table-row-cell:armed {
+.table-row-cell:armed,
+.table-row-cell:armed > .table-cell,
+.table-row-cell:armed > .table-cell > .label {
   -fx-background-color: -color-accent-active;
 }
 .table-row-cell:selected {
@@ -2421,7 +2625,9 @@
 /* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，
    背景在 subtle(accent-0) 基础上加深一档到 muted(accent-2)，
    给用户"选中后还能继续交互"的反馈 */
-.table-row-cell:selected:hover {
+.table-row-cell:selected:hover,
+.table-row-cell:selected:hover > .table-cell,
+.table-row-cell:selected:hover > .table-cell > .label {
   -fx-background-color: -color-accent-muted;
 }
 .table-cell {
@@ -2479,6 +2685,13 @@
 }
 .table-view.jfx-table-striped .table-row-cell:even {
   -fx-background-color: -color-bg-default;
+}
+/* Striped 模式 + hover：让 hover 颜色覆盖 striped 颜色（奇数行也能 hover 变浅蓝） */
+.table-view.jfx-table-striped .table-row-cell:odd:hover,
+.table-view.jfx-table-striped .table-row-cell:odd:hover > .table-cell,
+.table-view.jfx-table-striped .table-row-cell:even:hover,
+.table-view.jfx-table-striped .table-row-cell:even:hover > .table-cell {
+  -fx-background-color: -color-accent-hover;
 }
 /* Bordered table（兼容老 .bordered API；新代码请用 Border.BOTH） */
 .table-view.bordered .table-cell {
@@ -2556,9 +2769,6 @@
   -fx-background-color: transparent;
   -fx-padding: 8px 12px;
 }
-.tab-pane .tab:hover {
-  -fx-background-color: -color-bg-subtle;
-}
 .tab-pane .tab .tab-label {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 14px;
@@ -2592,35 +2802,61 @@
   -fx-stroke: -color-danger-emphasis;
 }
 /* ============================================
-   Tree Cell Enhancements — jfx- 前缀避免全局污染
+   Tree Cell Enhancements
+
+   参考 AtlantaFX _data.scss 中 .tree-cell 定义：
+   - tree-cell 水平 padding 设为 0（让 .tree-disclosure-node 自身处理水平 padding）
+   - disclosure-node 容器必须有 padding + 透明背景，否则箭头会与 cell 内容重叠
+
+   ⚠️ 必须用 `.tree-cell`（无 jfx- 前缀）：JavaFX 的 TreeCell 自带 className
+   "tree-cell"（modena.css 第 2342 行已定义），不能再加 jfx- 前缀，
+   否则选择器不命中任何节点（jfx- 前缀是我们业务标识，跟 TreeCell 自身的
+   className 是两码事）。
    ============================================ */
-.jfx-tree-cell {
-  -fx-padding: 8px 12px;
+.tree-cell {
+  /* 水平 padding 改 0：AtlantaFX 范式，disclosure-node 自身吃水平 padding。
+     这样箭头 indent 才不会被 cell 自身的 left padding 二次推挤。 */
+  -fx-padding: 8px 0;
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
 }
-.jfx-tree-cell:hover {
+.tree-cell:hover {
   -fx-background-color: -color-accent-hover;
 }
-.jfx-tree-cell:armed {
+.tree-cell:armed {
   -fx-background-color: -color-accent-active;
 }
-.jfx-tree-cell:selected {
+.tree-cell:selected {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
 }
-.jfx-tree-cell .tree-disclosure-node .arrow {
-  /* M19.44 红线#9 修复：显式设 shape + 尺寸（右指三角，对齐 AtlantaFX arrow-right） */
-  -fx-shape: "M5 0l5 5-5 5z";
+/* disclosure-node 容器（M19.55 修复：原实现完全没设样式，箭头被 modena 默认
+   padding 压扁/位置错位 → 视觉"箭头指示有问题"）。M19.55 补充：AtlantaFX
+   范式 — 容器必须 padding-x 留出缩进 + 背景透明。
+   覆盖 modena 默认的 -fx-padding: 4 6 4 8（modena.css 第 2351 行）。 */
+.tree-cell > .tree-disclosure-node {
+  -fx-padding: 0.35em 12px 0 12px;
+  -fx-background-color: transparent;
+}
+.tree-cell > .tree-disclosure-node > .arrow {
+  /* M19.55 红线#9 修复：显式设 shape + 尺寸（右指三角）。
+     modena 默认 -fx-rotate: 90 在 :expanded 时切到下指，所以折叠态 shape 用右指。
+     对齐 modena shape 风格。 */
+  -fx-shape: "M 0 -3.5 L 4 0 L 0 3.5 z";
   -fx-min-width: 5px;
   -fx-min-height: 10px;
   -fx-pref-width: 5px;
   -fx-pref-height: 10px;
+  -fx-padding: 0.333333em 0.229em 0.333333em 0.229em;
   -fx-background-color: -color-fg-muted;
 }
-.jfx-tree-cell:expanded .tree-disclosure-node .arrow {
-  -fx-shape: "M0 5l5 5 5-5z";
+.tree-cell > .tree-disclosure-node:hover > .arrow {
   -fx-background-color: -color-accent-emphasis;
+}
+/* 展开态：modena 默认 -fx-rotate: 90 把右指 shape 旋转成下指 */
+.tree-cell:expanded > .tree-disclosure-node > .arrow {
+  -fx-background-color: -color-accent-emphasis;
+  /* 保留 -fx-rotate: 90 让 shape "M 0 -3.5 L 4 0 L 0 3.5 z" 旋转为下指 */
 }
 /* ============================================
    MenuBar Submenu Enhancements
@@ -3052,14 +3288,87 @@
   -fx-font-size: 16px;
   -fx-text-fill: -color-fg-muted;
 }
-/* spinner 编辑框：去除默认边框，仅保留底部一根线，对齐 Material 风格 */
+/* spinner 容器：与 .spinner 基类（_spinner.less）对齐，完整四边边框 + 圆角背景。
+   M19.55 旧策略（纯底线 Material 风格）废弃——箭头按钮区域无边线，视觉上残缺断开。 */
+.jfx-time-picker-spinner {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: 4px;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: 4px;
+  -fx-border-width: 1px;
+  -fx-pref-height: 32px;
+  -fx-min-height: 32px;
+}
+.jfx-time-picker-spinner:focused,
+.jfx-time-picker-spinner:contains-focus {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+.jfx-time-picker-spinner .text-field {
+  /* 编辑框：透明边框（外层 spinner 已画框，避免双框） */
+  -fx-background-color: transparent;
+  -fx-background-radius: 4px 0 0 4px;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 4 2 4 2;
+  -fx-pref-width: 40;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+.jfx-time-picker-spinner .increment-arrow-button,
+.jfx-time-picker-spinner .decrement-arrow-button {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1px;
+  -fx-padding: 4px;
+  -fx-pref-width: 24px;
+  -fx-min-width: 24px;
+  -fx-pref-height: 14px;
+  -fx-min-height: 14px;
+}
+.jfx-time-picker-spinner .increment-arrow-button:hover,
+.jfx-time-picker-spinner .decrement-arrow-button:hover {
+  -fx-background-color: -color-accent-hover;
+}
+/* ⚠️ 选择器 specificity 必须 ≥ modena 的
+   .spinner .increment-arrow-button .increment-arrow（3 类，modena.css 第 3252 行），
+   否则 modena 后定义时会覆盖我们的样式（jfxium 主题在 modena 之后加载）。
+   ⚠️ 红线#9：必须显式 -fx-shape + min/pref 尺寸（modena 已有但要保留以防主题不加载）。
+   箭头水平 padding 从 0.333em 缩到 0.167em（~2.3px），给 24px 宽按钮留呼吸空间。 */
+.jfx-time-picker-spinner .increment-arrow-button .increment-arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-shape: "M 0 4 h 7 l -3.5 -4 z";
+  -fx-min-width: 7px;
+  -fx-min-height: 4px;
+  -fx-pref-width: 7px;
+  -fx-pref-height: 4px;
+  -fx-padding: 0.166667em 0.166667em 0.166667em 0.166667em;
+}
+.jfx-time-picker-spinner .decrement-arrow-button .decrement-arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+  -fx-min-width: 7px;
+  -fx-min-height: 4px;
+  -fx-pref-width: 7px;
+  -fx-pref-height: 4px;
+  -fx-padding: 0.166667em 0.166667em 0.166667em 0.166667em;
+}
+.jfx-time-picker-spinner:hover .increment-arrow-button .increment-arrow,
+.jfx-time-picker-spinner:hover .decrement-arrow-button .decrement-arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+/* 编辑器独立样式（Java 端 spinner.getEditor() 挂 jfx-time-picker-editor，
+   与上面 .jfx-time-picker-spinner .text-field 选择器互补，单挂也生效）。
+   边框由外层 spinner 容器统一绘制，编辑器自身走透明边框避免双框。 */
 .jfx-time-picker-editor {
   -fx-font-size: 14px;
   -fx-padding: 4 2 4 2;
   -fx-pref-width: 40;
   -fx-background-color: transparent;
-  -fx-border-color: transparent transparent -color-border-muted transparent;
-  -fx-border-width: 0 0 1 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
 }
 /* ============================================
    通用 Popup 菜单
@@ -3370,13 +3679,13 @@
   -fx-cursor: hand;
 }
 .jfx-segmented-item:hover {
-  -fx-background-color: -color-bg-overlay;
+  -fx-background-color: -color-accent-subtle;
 }
 .jfx-segmented-item.jfx-segmented-item-selected {
   -fx-background-color: -color-bg-default;
 }
 .jfx-segmented-item.jfx-segmented-item-selected:hover {
-  -fx-background-color: -color-bg-default;
+  -fx-background-color: -color-accent-muted;
 }
 .jfx-segmented-item-label {
   -fx-font-size: 14px;
@@ -3430,7 +3739,7 @@
 .jfx-input-number-btn:hover,
 .jfx-input-number-btn:armed,
 .jfx-input-number-btn:pressed {
-  -fx-background-color: -color-bg-subtle;
+  -fx-background-color: -color-accent-subtle;
 }
 .jfx-input-number-arrow {
   -fx-stroke: -color-fg-muted;
@@ -4393,18 +4702,6 @@
   -fx-pref-height: 0;
   -fx-background-color: transparent;
 }
-/* MenuButton Popup */
-.menu-button .menu-item {
-  -fx-padding: 8px 16px;
-}
-.menu-button .menu-item:hover,
-.menu-button .menu-item:focused {
-  -fx-background-color: -color-accent-subtle;
-}
-.menu-button .menu-item .label {
-  -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
-}
 /* ============================================
    SplitMenuButton Component（M19.6 修复 — 对齐 AtlantaFX）
    关键：padding=0 在容器；左 .label 拿水平 padding；右 .arrow-button 拿水平 padding；
@@ -4419,13 +4716,28 @@
   -fx-padding: 0;
   -fx-cursor: hand;
 }
+/* 容器整块 hover：变浅蓝（子节点默认 transparent，容器的颜色"穿透"显示） */
+.split-menu-button:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-border-color: -color-accent-muted;
+}
+/* 容器 armed：按下时变深蓝 */
+.split-menu-button:armed {
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
+}
+.split-menu-button:disabled {
+  -fx-opacity: 0.4;
+  -fx-cursor: default;
+}
 .split-menu-button > .label {
   -fx-padding: 6px 15px 6px 15px;
-  -fx-background-color: -color-bg-default;
+  -fx-background-color: transparent;
   -fx-text-fill: -color-fg-default;
   /* 左侧两角跟随容器圆角，避免方角盖住容器圆角露出"缺角"（M19.42 #3） */
   -fx-background-radius: 6px 0 0 6px;
 }
+/* 子节点单独 hover 也要响应：保留"半边 hover 单独反馈" */
 .split-menu-button > .label:hover {
   -fx-background-color: -color-accent-hover;
   -fx-background-radius: 6px 0 0 6px;
@@ -4437,7 +4749,8 @@
 .split-menu-button > .arrow-button {
   /* 水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），避免箭头区过宽 */
   -fx-padding: 6px 8px 6px 8px;
-  -fx-background-color: -color-bg-default;
+  -fx-background-color: transparent;
+  /* 左侧分隔线默认 = border-muted；hover 时变 accent-muted 跟整块变蓝更协调 */
   -fx-border-color: transparent transparent transparent -color-border-muted;
   -fx-border-width: 0 0 0 1px;
   /* 右侧两角跟随容器圆角 */
@@ -4446,10 +4759,13 @@
 .split-menu-button > .arrow-button:hover {
   -fx-background-color: -color-accent-hover;
   -fx-background-radius: 0 6px 6px 0;
+  /* hover 时中间分隔线跟着变浅蓝，整块视觉更连贯 */
+  -fx-border-color: transparent transparent transparent -color-accent-muted;
 }
 .split-menu-button > .arrow-button:armed {
   -fx-background-color: -color-accent-active;
   -fx-background-radius: 0 6px 6px 0;
+  -fx-border-color: transparent transparent transparent -color-accent-active;
 }
 .split-menu-button > .arrow-button > .arrow {
   /* 默认 Ant Design chevron 样式（细 V 形描边） */
@@ -4607,10 +4923,14 @@
   -fx-border-color: transparent transparent -color-border-subtle transparent;
   -fx-border-width: 0 0 1px 0;
 }
-.tree-table-row-cell:hover {
+/* 行 hover：让行内所有子节点（.tree-table-cell）都跟随变浅蓝，
+   防止 cell 自己的 background 遮住行 hover 颜色 */
+.tree-table-row-cell:hover,
+.tree-table-row-cell:hover > .tree-table-cell {
   -fx-background-color: -color-accent-hover;
 }
-.tree-table-row-cell:armed {
+.tree-table-row-cell:armed,
+.tree-table-row-cell:armed > .tree-table-cell {
   -fx-background-color: -color-accent-active;
 }
 .tree-table-row-cell:selected {
@@ -4622,7 +4942,8 @@
 /* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，
    背景在 subtle(accent-0) 基础上加深一档到 muted(accent-2)，
    给用户"选中后还能继续交互"的反馈 */
-.tree-table-row-cell:selected:hover {
+.tree-table-row-cell:selected:hover,
+.tree-table-row-cell:selected:hover > .tree-table-cell {
   -fx-background-color: -color-accent-muted;
 }
 .tree-table-cell {
@@ -4647,6 +4968,13 @@
 }
 .tree-table-view.striped .tree-table-row-cell:even {
   -fx-background-color: -color-bg-default;
+}
+/* Striped 模式 + hover：让 hover 颜色覆盖 striped 颜色（奇数行也能 hover 变浅蓝） */
+.tree-table-view.striped .tree-table-row-cell:odd:hover,
+.tree-table-view.striped .tree-table-row-cell:odd:hover > .tree-table-cell,
+.tree-table-view.striped .tree-table-row-cell:even:hover,
+.tree-table-view.striped .tree-table-row-cell:even:hover > .tree-table-cell {
+  -fx-background-color: -color-accent-hover;
 }
 /* TreeTableView Bordered */
 .tree-table-view.bordered .tree-table-cell {
