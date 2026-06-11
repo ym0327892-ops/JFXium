@@ -1,23 +1,28 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
+import javafx.animation.PauseTransition;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
+import org.openkawu.jfxium.component.composite.SpinAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.component.composite.SpinAnt;
 
 /**
- * Spin 加载 —— 基础 / 尺寸 / 提示文字。
+ * Spin 加载 —— 基础 / 尺寸 / 提示文字 / overlay 挂载。
  */
 public class SpinExamplePage extends VBoxAnt {
 
     public SpinExamplePage() {
         spacing(0).children(PageTemplate.create()
                 .title("Spin 加载中")
-                .description("用于页面或区域的加载状态指示，支持多种动画形态。")
-                .sections(basicSection(), sizeSection(), tipSection())
+                .description("用于页面或区域的加载状态指示，支持多种动画形态。overlay() 可挂载到任意节点实现区域加载覆盖。")
+                .sections(basicSection(), sizeSection(), tipSection(), overlaySection())
                 .padding(24)
                 .build());
     }
@@ -68,5 +73,40 @@ public class SpinExamplePage extends VBoxAnt {
                 """;
         return Demos.sectionWithCode("3. 提示文字",
                 "tip() 在动画下方显示文字说明。", code, demo);
+    }
+
+    private Node overlaySection() {
+        VBox content = new VBox(8,
+                new Label("用户列表区域"),
+                new Label("这里可以是表格、表单等任意内容"),
+                new Label("点击下方按钮模拟加载状态")
+        );
+        content.setStyle("-fx-padding: 20px; -fx-background-color: -color-bg-container; -fx-min-height: 120px;");
+
+        StackPane demoArea = new StackPane(content);
+        demoArea.setStyle("-fx-border-color: -color-border-muted; -fx-border-radius: 8px; -fx-background-radius: 8px;");
+
+        // overlay 创建一次，可反复 show/hide
+        SpinAnt.Overlay loading = SpinAnt.overlay(content);
+
+        ButtonAnt triggerBtn = ButtonAnt.create("模拟加载").build();
+        triggerBtn.setOnAction(e -> {
+            loading.show("数据加载中...");
+            PauseTransition pt = new PauseTransition(Duration.seconds(2));
+            pt.setOnFinished(ev -> loading.hide());
+            pt.play();
+        });
+
+        VBox demo = new VBox(12, demoArea, triggerBtn);
+
+        String code = """
+                SpinAnt.Overlay loading = SpinAnt.overlay(content);
+                loading.show("数据加载中...");
+                // ... 异步操作 ...
+                loading.hide();
+                """;
+        return Demos.sectionWithCode("4. overlay 挂载",
+                "SpinAnt.overlay(target) 将加载遮罩挂载到任意节点上方，show()/hide() 控制显示。2 秒后自动消失。",
+                code, demo);
     }
 }

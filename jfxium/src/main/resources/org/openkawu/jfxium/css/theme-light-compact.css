@@ -3258,6 +3258,11 @@
 .jfx-spin.jfx-spin-fullscreen {
   -fx-background-color: rgba(255, 255, 255, 0.7);
 }
+/* overlay 挂载模式：遮罩层盖在内容上 */
+.jfx-spin-overlay {
+  -fx-background-color: rgba(255, 255, 255, 0.65);
+  -fx-alignment: center;
+}
 .jfx-spin-tip {
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;

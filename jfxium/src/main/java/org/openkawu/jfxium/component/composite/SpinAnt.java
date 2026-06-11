@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -208,5 +209,81 @@ public class SpinAnt {
 
     public static Builder create() {
         return new Builder();
+    }
+
+    // ---- Overlay 挂载 ---- //
+
+    /**
+     * 挂载加载遮罩到目标节点。把 target 包进 StackPane，上层叠加载层。
+     * 传 scene.getRoot() 即覆盖全窗口。
+     */
+    public static Overlay overlay(Node target) {
+        return new Overlay(target);
+    }
+
+    public static class Overlay {
+        private final Node target;
+        private final Parent originalParent;
+        private final int originalIndex;
+        private final StackPane wrapper;
+        private final StackPane overlay;
+
+        private Overlay(Node target) {
+            this.target = target;
+            this.originalParent = target.getParent();
+            if (originalParent == null) {
+                throw new IllegalArgumentException("SpinAnt.overlay() requires a node already in a scene graph");
+            }
+
+            // 找到 target 在父容器中的位置
+            if (originalParent instanceof javafx.scene.layout.Pane pane) {
+                this.originalIndex = pane.getChildren().indexOf(target);
+                pane.getChildren().remove(originalIndex);
+
+                // 包裹层
+                overlay = new StackPane();
+                overlay.getStyleClass().add(JfxStyles.SPIN_OVERLAY);
+                overlay.setVisible(false);
+
+                wrapper = new StackPane(target, overlay);
+                pane.getChildren().add(originalIndex, wrapper);
+            } else {
+                // Parent 但不是 Pane（如 Group），直接替换子节点列表
+                this.originalIndex = 0;
+                this.wrapper = null;
+                this.overlay = null;
+                throw new IllegalArgumentException("SpinAnt.overlay() target parent must be a Pane subclass");
+            }
+        }
+
+        /** 显示默认加载器。 */
+        public void show() {
+            show((String) null);
+        }
+
+        /** 显示带提示文字的默认加载器。 */
+        public void show(String tip) {
+            show(buildDefault(tip));
+        }
+
+        /** 显示自定义加载器节点（可用 SpinAnt.create().build() 构建）。 */
+        public void show(Node spinner) {
+            overlay.getChildren().setAll(spinner);
+            overlay.setVisible(true);
+            target.setDisable(true);
+        }
+
+        /** 隐藏加载器。 */
+        public void hide() {
+            overlay.setVisible(false);
+            overlay.getChildren().clear();
+            target.setDisable(false);
+        }
+
+        private Node buildDefault(String tip) {
+            Builder b = SpinAnt.create().size(Size.LARGE);
+            if (tip != null) b.tip(tip);
+            return b.build();
+        }
     }
 }

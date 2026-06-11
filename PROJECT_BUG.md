@@ -102,6 +102,7 @@
 | 92 | SpinnerAnt `ProgressIndicator` 缺 indeterminate 态 CSS + 效果不如 SpinAnt 自建动画 ⚡ 重构为内部委托 SpinAnt SPINNER 模式，消除重复，动画一致 | ✅ 已重构 | 2026-06-11 |
 | 93 | SpinnerAnt 与 SpinAnt 功能重复 —— SpinnerAnt 只有 size()，SpinAnt 覆盖 SPINNER/DOTS/BARS + tip + fullscreen；且 SpinnerAnt 依赖不可靠的 ProgressIndicator indeterminate CSS → SpinnerAnt 改为 SpinAnt 简化入口 | ✅ 已解决 | 2026-06-11 |
 | 94 | AccordionAnt 与 CollapseAnt 功能重叠 ~75% —— CollapseAnt.accordion(true) = AccordionAnt 且多了动画/单面板禁用；AccordionAnt 仅 89 行薄包装 JavaFX Accordion → 改为 CollapseAnt 委托入口 | ✅ 已重构 | 2026-06-11 |
+| 95 | SpinAnt 缺内容挂载能力 —— fullscreen() 只能全屏、缺区域加载；javadoc 写了 content() 但没实现 → 新增 overlay(Node) 组合挂载：替换目标节点为 StackPane + 遮罩层，show/hide 控制 | ✅ 已新增 | 2026-06-11 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 

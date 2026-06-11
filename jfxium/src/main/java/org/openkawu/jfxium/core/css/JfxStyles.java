@@ -352,6 +352,7 @@ public final class JfxStyles {
     /** SpinAnt 加载中 */
     public static final String SPIN = "jfx-spin";
     public static final String SPIN_FULLSCREEN = "jfx-spin-fullscreen";
+    public static final String SPIN_OVERLAY = "jfx-spin-overlay";
     public static final String SPIN_TIP = "jfx-spin-tip";
     public static final String SPIN_INDICATOR_SPINNER = "jfx-spin-indicator-spinner";
     public static final String SPIN_INDICATOR_DOT = "jfx-spin-indicator-dot";
