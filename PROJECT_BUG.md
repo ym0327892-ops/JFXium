@@ -98,6 +98,7 @@
 | 72 | JavaFX 原生控件包装补齐 6 个（commit 6ee94e8）—— control/ChoiceBoxAnt.java (142 行) / control/ListViewAnt.java (153 行) / control/SeparatorAnt.java (100 行) / control/SplitMenuButtonAnt.java (137 行) / layout/BorderPaneAnt.java (136 行) / layout/TextFlowAnt.java (101 行) + less/components/_separator.less (11 行) Separator 样式；继承式 + Builder API + jfx- 前缀 styleClass 全套，零硬编码 | ✅ 已完成 | 2026-06-08 |
 | 89 | ThemeManager.setPrimaryColor() data-URI 注入漏掉 `-color-accent-hover` 和 `-color-accent-active` 两个语义变量 → 换主题色后 DEFAULT 按钮 hover/pressed + PaginationAnt 按钮 armed 仍显示编译期硬编码的蓝色 | ✅ 已修复 | 2026-06-11 |
 | 90 | TimePickerAnt spinner Material 纯底线风格（只底部一条线）视觉断开残缺 → 对齐 AtlantaFX 完整四边边框 + 圆角 + 箭头区左边线分隔；箭头按钮太窄无左右边距 → 14→24px 宽 + 4px padding | ✅ 已修复 | 2026-06-11 |
+| 91 | ChoiceBoxAnt `.open-button` 沿用全尺寸 padding `@input-padding-x: 15px`，箭头离右边太远，与 ComboBox 箭头边距不一致 → 收紧为 `@spacing-xs: 4px` | ✅ 已修复 | 2026-06-11 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 
@@ -1078,3 +1079,11 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
   - `.jfx-time-picker-spinner .increment/decrement-arrow-button`：左 1px 分隔线，24px 宽 + 4px padding，箭头自身水平 padding 从 0.333em 缩到 0.167em
   - [`TimePickerAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TimePickerAnt.java#L153) spinner 总宽 60→72px 适配
 - **参考**：AtlantaFX `_spinner.scss` — 完整外框 + text-field 左圆角 + arrow-button 右圆角 + 分隔线
+
+---
+
+### #91 ChoiceBoxAnt 箭头边距过大（2026-06-11）
+
+- **现象**：`.open-button` 的 padding 用了 `@input-padding-y @input-padding-x`（6px 15px），与 ChoiceBox 自身的全尺寸 padding 相同。这导致箭头按钮区域水平方向有 15px 内边距，箭头被推向内部、离右边界很远，与 ComboBox 的箭头边距明显不一致。
+- **根因**：`_choicebox.less` 中 `.choice-box .open-button` 的 padding 复用了 `@input-padding-x` (15px)，这是文本输入控件的 padding 级别，不适合只含 10px 宽箭头的按钮区域。ComboBox 的 `.arrow-button` 不做显式 padding，走 modena 默认 `~5px 7px`。
+- **修复**：[`_choicebox.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_choicebox.less#L41)：`@input-padding-y @input-padding-x` → `@spacing-xs @spacing-xs`（4px 4px），与 ComboBox 箭头边距视觉一致。

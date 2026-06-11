@@ -1,5 +1,12 @@
 /* ============================================
    ChoiceBox
+
+   ⚠️ 重要：modena.css 第 1609 行定义的 ChoiceBox 弹层是
+   `.choice-box > .context-menu`（不是 `.choice-box-popup`！modena 根本没有
+   .choice-box-popup 这个 className——只有 .combo-box-popup）。
+   M19.55 修复：把之前的 .choice-box-popup 全改为 .context-menu 并限定 scope 到
+   .choice-box 内部，避免影响 jfxium 其他地方（MenuBarAnt / SplitMenuButtonAnt
+   等）使用的 .context-menu。
    ============================================ */
 .choice-box {
   -fx-background-color: -color-border-default, -color-bg-default;
@@ -9,18 +16,19 @@
   -fx-alignment: CENTER;
   -fx-content-display: LEFT;
   -fx-padding: @input-padding-y @input-padding-x;
-  -fx-border-color: -color-border-default;
-  -fx-border-width: @border-width-default;
-  -fx-border-radius: @border-radius-md;
-  
+  /* ⚠️ 不再单独设 -fx-border-color / -fx-border-width：与上方 -fx-background-color
+     stacking 重复会形成"双边框"（M19.42 #7 修复同款）。边框已由
+     -fx-background-color: -color-border-default, -color-bg-default 配合
+     -fx-background-insets: 0, 1px 表达。 */
+
 }
 
 .choice-box:hover {
-  -fx-border-color: -color-accent-muted;
+  -fx-background-color: -color-accent-muted, -color-bg-default;
 }
 
 .choice-box:focused {
-  -fx-border-color: -color-accent-emphasis;
+  -fx-background-color: -color-accent-emphasis, -color-bg-default;
   -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
 }
 
@@ -30,16 +38,69 @@
 
 .choice-box .open-button {
   -fx-background-color: transparent;
-  -fx-padding: @input-padding-y @input-padding-x;
+  -fx-padding: @spacing-xs @spacing-xs;
 }
 
 .choice-box .open-button .arrow {
-  /* M19.44 红线#9 修复：显式设 shape + 尺寸 */
+  /* M19.44 红线#9 修复：显式设 shape + 尺寸（对齐 AtlantaFX arrow-drop-down） */
   -fx-shape: "M7 10l5 5 5-5z";
   -fx-min-width: 10px;
   -fx-min-height: 5px;
   -fx-pref-width: 10px;
   -fx-pref-height: 5px;
   -fx-background-color: -color-fg-muted;
+
 }
 
+.choice-box:hover .open-button .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* ============================================
+   ChoiceBox 弹层
+   ---------------------------------------------------------
+   实际 className 是 modena 原生 `.choice-box > .context-menu`
+   （不是 `.choice-box-popup`！modena 根本无此 className）。
+   用 .choice-box > .context-menu 限定 scope，避免影响 jfxium 其他
+   组件使用的 .context-menu（MenuBarAnt / SplitMenuButtonAnt 等）。
+   ============================================ */
+
+/* 弹层容器：覆盖 modena .context-menu 默认的渐变背景 + 4px padding
+   （modena.css 第 1444-1453 行），改成扁平化 Ant Design 风格 */
+.choice-box > .context-menu {
+  -fx-background-color: -color-bg-overlay;
+  -fx-background-insets: 0;
+  -fx-background-radius: @border-radius-md;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: @border-width-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-padding: 0;
+  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+}
+
+/* 弹层内部 ListView（如果存在）：背景透明、滚动条让 context-menu 自身控制 */
+.choice-box > .context-menu > .list-view {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.choice-box > .context-menu > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
+  -fx-padding: @list-cell-padding-y @list-cell-padding-x;
+  -fx-text-fill: -color-fg-default;
+  -fx-background-color: transparent;
+
+}
+
+.choice-box > .context-menu > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.choice-box > .context-menu > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:armed {
+  -fx-background-color: -color-accent-active;
+}
+
+.choice-box > .context-menu > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:selected {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
