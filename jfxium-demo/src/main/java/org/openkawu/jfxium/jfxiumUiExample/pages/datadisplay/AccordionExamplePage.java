@@ -12,14 +12,14 @@ import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 
 /**
- * Accordion 手风琴 —— 基础 / 多面板 / 自定义内容。
+ * Accordion 手风琴 —— CollapseAnt 的互斥折叠快捷入口。
  */
 public class AccordionExamplePage extends VBoxAnt {
 
     public AccordionExamplePage() {
         spacing(0).children(PageTemplate.create()
                 .title("Accordion 手风琴")
-                .description("可折叠面板容器，多个面板同时只展开一个（互斥折叠），常用于 FAQ、设置面板等场景。")
+                .description("CollapseAnt accordion 模式的快捷入口，始终互斥展开（同时只开一个）。内部 100% 委托 CollapseAnt。")
                 .sections(
                         basicSection(),
                         advancedSection()

@@ -101,6 +101,7 @@
 | 91 | ChoiceBoxAnt `.open-button` 沿用全尺寸 padding `@input-padding-x: 15px`，箭头离右边太远，与 ComboBox 箭头边距不一致 → 收紧为 `@spacing-xs: 4px` | ✅ 已修复 | 2026-06-11 |
 | 92 | SpinnerAnt `ProgressIndicator` 缺 indeterminate 态 CSS + 效果不如 SpinAnt 自建动画 ⚡ 重构为内部委托 SpinAnt SPINNER 模式，消除重复，动画一致 | ✅ 已重构 | 2026-06-11 |
 | 93 | SpinnerAnt 与 SpinAnt 功能重复 —— SpinnerAnt 只有 size()，SpinAnt 覆盖 SPINNER/DOTS/BARS + tip + fullscreen；且 SpinnerAnt 依赖不可靠的 ProgressIndicator indeterminate CSS → SpinnerAnt 改为 SpinAnt 简化入口 | ✅ 已解决 | 2026-06-11 |
+| 94 | AccordionAnt 与 CollapseAnt 功能重叠 ~75% —— CollapseAnt.accordion(true) = AccordionAnt 且多了动画/单面板禁用；AccordionAnt 仅 89 行薄包装 JavaFX Accordion → 改为 CollapseAnt 委托入口 | ✅ 已重构 | 2026-06-11 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 
@@ -1114,3 +1115,21 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
 - **修复**：
   - [`SpinnerAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/SpinnerAnt.java)：`build()` 内部调用 `SpinAnt.create().indicator(SPINNER).size(...).build()`
   - [`SpinnerExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/feedback/SpinnerExamplePage.java)：新增第 3 节「与 SpinAnt 对比」，直观展示效果一致
+
+---
+
+### #94 AccordionAnt 委托 CollapseAnt 消除重叠（2026-06-11）
+
+- **现象**：组件去重扫描发现 AccordionAnt 与 CollapseAnt 功能重叠约 75%。CollapseAnt.accordion(true) 的行为完全覆盖 AccordionAnt，且 CollapseAnt 额外提供展开动画、单面板禁用、箭头旋转动画。
+- **对比**：
+  | 维度 | AccordionAnt（旧） | CollapseAnt |
+  |------|-------------------|-------------|
+  | 实现 | 包装 JavaFX Accordion（89 行） | 自定义 VBox + Timeline 动画（196 行） |
+  | 动画 | 无（走 TitledPane 原生） | 内容区高度动画 + 箭头旋转 |
+  | 面板控制 | 单 pane | per-panel disable |
+  | 返回值 | Accordion | VBox |
+- **决策**：AccordionAnt 改为 CollapseAnt 的委托包装（始终 accordion=true），`pane(title, content)` 内部映射到 `CollapseAnt.panel(key, title, content)`。
+- **修复**：
+  - [`AccordionAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/AccordionAnt.java)：`build()` 委托 `CollapseAnt.create().accordion(true).panel(...)`，返回类型 `Accordion` → `VBox`
+  - [`AccordionExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/datadisplay/AccordionExamplePage.java)：描述更新
+  - [`TitledPaneAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/TitledPaneAnt.java)：javadoc 引用 `AccordionAnt` → `CollapseAnt`

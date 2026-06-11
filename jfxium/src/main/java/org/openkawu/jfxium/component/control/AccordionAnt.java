@@ -1,57 +1,34 @@
 package org.openkawu.jfxium.component.control;
 
 import javafx.scene.Node;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.TitledPane;
+import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.component.composite.CollapseAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JFXium 手风琴组件 - 对标 Ant Design Collapse（组合式，Builder 模式）。
+ * JFXium 手风琴组件 - 对标 Ant Design Collapse accordion 模式。
  *
- * <p><b>定位</b>：可折叠面板容器，包装 JavaFX {@link Accordion}，
- * 多个 {@link TitledPane} 同时只展开一个（互斥折叠）。</p>
+ * <p><b>定位</b>：CollapseAnt 的互斥折叠快捷入口。始终以 accordion 模式运行
+ * （同时只展开一个面板），内部 100% 委托 {@link CollapseAnt}。</p>
  *
- * <h2>功能特性</h2>
- * <ul>
- *   <li>添加多个折叠面板（标题 + 内容）</li>
- *   <li>支持直接传入自定义 {@link TitledPane}（用 {@link TitledPaneAnt} 构建）</li>
- *   <li>自动互斥展开（同时只开一个面板）</li>
- *   <li>继承 {@link AbstractStyleBuilder}，支持 {@code .styleClass()} / {@code .style()}</li>
- * </ul>
- *
- * <h2>典型场景</h2>
- * <ul>
- *   <li>FAQ 问答列表（问题折叠展开）</li>
- *   <li>设置面板（分组折叠高级选项）</li>
- *   <li>侧边栏导航（分类折叠子菜单）</li>
- * </ul>
+ * <p>如需多面板同时展开 / 禁用单面板 / 展开动画定制，请直接使用 {@link CollapseAnt}。</p>
  *
  * <h2>用法</h2>
  * <pre>{@code
- * // 基础用法
- * Accordion accordion = AccordionAnt.create()
+ * VBox accordion = AccordionAnt.create()
  *     .pane("面板一", new Label("内容一"))
  *     .pane("面板二", new Label("内容二"))
  *     .pane("面板三", new Label("内容三"))
  *     .build();
- *
- * // 结合 TitledPaneAnt 自定义面板
- * Accordion advanced = AccordionAnt.create()
- *     .pane(TitledPaneAnt.create()
- *         .title("高级设置")
- *         .content(settingsForm)
- *         .expanded(false)
- *         .build())
- *     .build();
  * }</pre>
  *
- * <h2>与 CollapseAnt 的区别</h2>
+ * <h2>与 CollapseAnt 的关系</h2>
  * <ul>
- *   <li>{@code AccordionAnt} —— JavaFX 原生互斥折叠（同时只开一个）</li>
- *   <li>{@code CollapseAnt} —— 对标 Ant Design Collapse，支持多个同时展开（accordion 模式可选）</li>
+ *   <li>{@code AccordionAnt.create().pane("A", contentA).build()} ≈ {@code CollapseAnt.create().accordion(true).panel("a", "A", contentA).build()}</li>
+ *   <li>AccordionAnt 是 CollapseAnt 的委托包装，输出完全一致（VBox + Timeline 动画）</li>
  * </ul>
  */
 public class AccordionAnt {
@@ -61,28 +38,29 @@ public class AccordionAnt {
     }
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
-        private final List<TitledPane> panes = new ArrayList<>();
+        private record PaneEntry(String key, String title, Node content) {}
+        private final List<PaneEntry> entries = new ArrayList<>();
+        private int keyCounter = 1;
 
         private Builder() {}
 
         public Builder pane(String title, Node content) {
-            TitledPane pane = new TitledPane(title, content);
-            panes.add(pane);
+            entries.add(new PaneEntry("accordion-" + keyCounter++, title, content));
             return this;
         }
 
-        public Builder pane(TitledPane pane) {
-            panes.add(pane);
-            return this;
-        }
-
-        public Accordion build() {
-            Accordion accordion = new Accordion();
-            accordion.getPanes().addAll(panes);
-            accordion.getStyleClass().add("jfx-accordion");
-            // 用户 style/styleClass 在内置类后应用，便于覆盖
-            applyStyles(accordion);
-            return accordion;
+        /**
+         * 内部委托 CollapseAnt accordion 模式构建。
+         * 返回 {@link VBox}（与 CollapseAnt 一致），不再返回 JavaFX Accordion。
+         */
+        public VBox build() {
+            CollapseAnt.Builder collapseBuilder = CollapseAnt.create().accordion(true);
+            for (PaneEntry entry : entries) {
+                collapseBuilder.panel(entry.key(), entry.title(), entry.content());
+            }
+            VBox collapse = collapseBuilder.build();
+            applyStyles(collapse);
+            return collapse;
         }
     }
 }

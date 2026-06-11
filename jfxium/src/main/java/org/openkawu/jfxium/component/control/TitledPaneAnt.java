@@ -8,7 +8,7 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
  * JFXium 标题面板组件 - 对标 Ant Design Collapse Panel（组合式，Builder 模式）。
  *
  * <p><b>定位</b>：可折叠的标题 + 内容面板，包装 JavaFX {@link TitledPane}，
- * 可单独使用或组合到 {@link AccordionAnt} 中。</p>
+ * 可单独使用或组合到 {@link org.openkawu.jfxium.component.composite.CollapseAnt} 中。</p>
  *
  * <h2>功能特性</h2>
  * <ul>
@@ -21,7 +21,7 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
  * <h2>典型场景</h2>
  * <ul>
  *   <li>单个可折叠详情区域</li>
- *   <li>嵌入 AccordionAnt 作为子面板</li>
+ *   <li>嵌入 CollapseAnt 作为子面板</li>
  *   <li>表单分组（点击展开高级选项）</li>
  * </ul>
  *
