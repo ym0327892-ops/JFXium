@@ -99,7 +99,8 @@
 | 89 | ThemeManager.setPrimaryColor() data-URI 注入漏掉 `-color-accent-hover` 和 `-color-accent-active` 两个语义变量 → 换主题色后 DEFAULT 按钮 hover/pressed + PaginationAnt 按钮 armed 仍显示编译期硬编码的蓝色 | ✅ 已修复 | 2026-06-11 |
 | 90 | TimePickerAnt spinner Material 纯底线风格（只底部一条线）视觉断开残缺 → 对齐 AtlantaFX 完整四边边框 + 圆角 + 箭头区左边线分隔；箭头按钮太窄无左右边距 → 14→24px 宽 + 4px padding | ✅ 已修复 | 2026-06-11 |
 | 91 | ChoiceBoxAnt `.open-button` 沿用全尺寸 padding `@input-padding-x: 15px`，箭头离右边太远，与 ComboBox 箭头边距不一致 → 收紧为 `@spacing-xs: 4px` | ✅ 已修复 | 2026-06-11 |
-| 92 | SpinnerAnt `ProgressIndicator` 缺 indeterminate 态 CSS（`-fx-indeterminate-segment-count` / `-fx-spin-enabled` / segment 颜色），且 build() 未显式设 INDETERMINATE_PROGRESS → spinner 可能退化为 0% 静态圆圈不旋转 | ✅ 已修复 | 2026-06-11 |
+| 92 | SpinnerAnt `ProgressIndicator` 缺 indeterminate 态 CSS + 效果不如 SpinAnt 自建动画 ⚡ 重构为内部委托 SpinAnt SPINNER 模式，消除重复，动画一致 | ✅ 已重构 | 2026-06-11 |
+| 93 | SpinnerAnt 与 SpinAnt 功能重复 —— SpinnerAnt 只有 size()，SpinAnt 覆盖 SPINNER/DOTS/BARS + tip + fullscreen；且 SpinnerAnt 依赖不可靠的 ProgressIndicator indeterminate CSS → SpinnerAnt 改为 SpinAnt 简化入口 | ✅ 已解决 | 2026-06-11 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 
@@ -1094,10 +1095,22 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
 ### #92 SpinnerAnt indeterminate 态缺失导致无旋转动画（2026-06-11）
 
 - **现象**：`SpinnerAnt.create().build()` 生成的 ProgressIndicator 显示为静态 0% 圆圈，不旋转——"不是动态的"。
-- **根因**（两重）：
-  1. **LESS 缺失**：`_progress.less` 只有 `.progress-indicator { -fx-progress-color }`，完全没有 indeterminate 态的 CSS 规则。缺少 `-fx-indeterminate-segment-count` / `-fx-spin-enabled` 和 `:indeterminate .segment` 颜色覆盖。在无显式 CSS 指导下，JavaFX 的 indeterminate 渲染路径在某些条件下退化为 0% 静态。
-  2. **Java 防御缺失**：`SpinnerAnt.Builder.build()` 未显式调用 `spinner.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS)`，依赖 `new ProgressIndicator()` 构造器默认 -1。若 CSS/layout 中间过程触碰 progress 属性，存在退化为 0 的风险。
+- **根因**：ProgressIndicator 的 indeterminate 动画依赖 CSS `-fx-indeterminate-segment-count` + `-fx-spin-enabled` + `:indeterminate .segment` 颜色，但在 JFXium CSS 环境下效果不稳定，容易退化为 0% 静态圆圈。底层原因是 JavaFX 的 indeterminate 渲染受多重因素影响（CSS 覆盖层级、Scene 样式表加载时序等），不如纯 Java Timeline 动画可靠。
+- **修复**：[`SpinnerAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/SpinnerAnt.java#L53-L59) 不再创建 ProgressIndicator，改为内部委托 `SpinAnt` 的 SPINNER 模式（`Region` + `Rotate` + `Timeline` 自驱动动画）。`size()` 参数自动映射到 SpinAnt 三档：≤24→SMALL, ≥48→LARGE, 其余→DEFAULT。
+- **影响**：`build()` 返回类型从 `ProgressIndicator` 变为 `VBox`（与 SpinAnt 一致），消除了组件重复，动画效果与 SpinAnt 完全一致。
+
+---
+
+### #93 SpinnerAnt 与 SpinAnt 功能重复合并（2026-06-11）
+
+- **现象**：用户问"是不是重复了？SpinnerAnt 看不出效果"。对比发现确实重复。
+- **对比**：
+  | 维度 | SpinnerAnt（旧） | SpinAnt |
+  |------|-----------------|---------|
+  | 动画 | ProgressIndicator indeterminate CSS（不稳定） | Region + Rotate + Timeline（100%可控） |
+  | 功能 | 只有 size() | SPINNER/DOTS/BARS + tip() + fullscreen + 3档size |
+  | 返回值 | ProgressIndicator | VBox |
+- **决策**：保留 SpinnerAnt 作为 SpinAnt 的简化入口（仅暴露 size()），内部 100% 委托 SpinAnt。用户需要更多功能时直接使用 SpinAnt。
 - **修复**：
-  - [`_progress.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_progress.less)：新增 `.jfx-spinner` 规则块 —— `-fx-indeterminate-segment-count: 12; -fx-spin-enabled: true;` + `.jfx-spinner:indeterminate .segment { -fx-background-color: -color-accent-emphasis; }`
-  - [`SpinnerAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/SpinnerAnt.java#L60)：显式 `spinner.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS)`，防御性确保不退化为 0%
-- **参考**：AtlantaFX `_progress.scss` 第 72-130 行 —— `-fx-indeterminate-segment-count: 12` + `:indeterminate .segment` + 逐段 `.segment0~11` shape 定制
+  - [`SpinnerAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/SpinnerAnt.java)：`build()` 内部调用 `SpinAnt.create().indicator(SPINNER).size(...).build()`
+  - [`SpinnerExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/feedback/SpinnerExamplePage.java)：新增第 3 节「与 SpinAnt 对比」，直观展示效果一致

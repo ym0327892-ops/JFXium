@@ -1,43 +1,27 @@
 package org.openkawu.jfxium.component.control;
 
-import javafx.scene.control.ProgressIndicator;
+import javafx.scene.Node;
+import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.component.composite.SpinAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 
 /**
- * JFXium 加载旋转组件 - 对标 Ant Design Spin（组合式，Builder 模式）。
+ * JFXium 简单加载旋转组件 - 对标 Ant Design Spin 的 SPINNER 模式。
  *
- * <p><b>定位</b>：加载指示器，包装 JavaFX {@link ProgressIndicator}（不确定进度旋转模式），
- * 用于表示后台操作正在进行中。</p>
+ * <p><b>定位</b>：SpinAnt 的简化入口，仅暴露 {@code size()} 一个参数，
+ * 内部委托 {@link SpinAnt} 的 SPINNER 指示器 + Timeline 自驱动动画，
+ * 确保动画效果与 SpinAnt 完全一致。</p>
  *
- * <h2>功能特性</h2>
- * <ul>
- *   <li>可自定义尺寸（默认 32×32）</li>
- *   <li>继承 {@link AbstractStyleBuilder}，支持 {@code .styleClass()} / {@code .style()}</li>
- * </ul>
- *
- * <h2>典型场景</h2>
- * <ul>
- *   <li>页面加载占位（居中显示）</li>
- *   <li>按钮加载状态（配合 ButtonAnt.loading）</li>
- *   <li>对话框内容加载中（嵌入 ModalAnt/DrawerAnt）</li>
- * </ul>
+ * <p>如需 tip 文字 / DOTS/BARS 指示器 / fullscreen / 内容包裹，请直接使用 {@link SpinAnt}。</p>
  *
  * <h2>用法</h2>
  * <pre>{@code
  * // 默认尺寸（32×32）
- * ProgressIndicator spinner = SpinnerAnt.create().build();
+ * Node spinner = SpinnerAnt.create().build();
  *
  * // 自定义尺寸
- * ProgressIndicator large = SpinnerAnt.create()
- *     .size(64)
- *     .build();
+ * Node large = SpinnerAnt.create().size(64).build();
  * }</pre>
- *
- * <h2>与 SpinAnt 的区别</h2>
- * <ul>
- *   <li>{@code SpinnerAnt} —— 简单加载旋转（包装原生 ProgressIndicator）</li>
- *   <li>{@code SpinAnt} —— 对标 Ant Design Spin，支持加载内容包裹、自定义指示器</li>
- * </ul>
  */
 public class SpinnerAnt {
 
@@ -55,14 +39,22 @@ public class SpinnerAnt {
             return this;
         }
 
-        public ProgressIndicator build() {
-            ProgressIndicator spinner = new ProgressIndicator();
-            // 显式设为不确定进度（旋转模式），防御性确保即使 CSS/layout 触碰后也不退化为 0% 静态
-            spinner.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-            spinner.setPrefSize(size, size);
-            spinner.getStyleClass().add("jfx-spinner");
-            applyStyles(spinner);
-            return spinner;
+        /**
+         * 委托 {@link SpinAnt} 的 SPINNER 模式构建旋转指示器。
+         * 返回 {@link VBox}（与 SpinAnt 一致），不是 ProgressIndicator。
+         */
+        public VBox build() {
+            SpinAnt.Size spinSize;
+            if (size <= 24)       spinSize = SpinAnt.Size.SMALL;
+            else if (size >= 48)  spinSize = SpinAnt.Size.LARGE;
+            else                  spinSize = SpinAnt.Size.DEFAULT;
+
+            VBox spin = SpinAnt.create()
+                    .indicator(SpinAnt.Indicator.SPINNER)
+                    .size(spinSize)
+                    .build();
+            applyStyles(spin);
+            return spin;
         }
 
     }
