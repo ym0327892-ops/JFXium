@@ -1,7 +1,11 @@
 /* ============================================
-   ToolBar
+   ToolBar — 工具栏
+   系统化高度设计：@tool-bar-height = @control-height (32px)
+   :vertical 伪类控制侧边栏宽度，对齐 AtlantaFX .tool-bar:vertical
    ============================================ */
-.tool-bar {
+.jfx-tool-bar {
+  -fx-pref-height: @tool-bar-height;
+  -fx-min-height: @tool-bar-height;
   -fx-background-color: -color-border-muted, -color-bg-subtle;
   -fx-background-insets: 0, 0 0 1px 0;
   -fx-border-color: transparent;
@@ -10,14 +14,25 @@
   -fx-alignment: CENTER_LEFT;
 }
 
-.tool-bar > .container > .button,
-.tool-bar > .container > .menu-button,
-.tool-bar > .container > .split-menu-button {
+/* 垂直工具栏：pref-width 替代 pref-height */
+.jfx-tool-bar:vertical {
+  -fx-pref-height: -1;  /* 取消高度约束，改由内容决定 */
+  -fx-min-height: 0;
+  -fx-pref-width: @tool-bar-height;
+  -fx-min-width: @tool-bar-height;
+  -fx-background-insets: 0, 1px 0 0 0;
+  -fx-padding: @toolbar-padding-x @toolbar-padding-y;
+  -fx-alignment: TOP_LEFT;
+}
+
+.jfx-tool-bar > .container > .button,
+.jfx-tool-bar > .container > .menu-button,
+.jfx-tool-bar > .container > .split-menu-button {
   -fx-background-insets: 0;
   -fx-effect: none;
 }
 
-.tool-bar > .container > .toggle-button {
+.jfx-tool-bar > .container > .toggle-button {
   -fx-background-insets: 0;
   -fx-effect: none;
 }

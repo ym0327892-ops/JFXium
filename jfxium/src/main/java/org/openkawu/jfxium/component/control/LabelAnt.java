@@ -50,11 +50,6 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  */
 public class LabelAnt extends Label {
 
-    /** 文字语义色（复用 TypographyAnt.Type 同款语义）。 */
-    public enum Type {
-        PRIMARY, SECONDARY, SUCCESS, WARNING, DANGER, DISABLED
-    }
-
     // ============================================================
     // 工厂入口
     // ============================================================
@@ -100,8 +95,8 @@ public class LabelAnt extends Label {
         return this;
     }
 
-    /** 设置文字语义色。 */
-    public LabelAnt type(Type type) {
+    /** 设置文字语义色（直接收 {@link TypographyAnt.Type}，不拷贝枚举）。 */
+    public LabelAnt type(TypographyAnt.Type type) {
         // 先清掉可能已挂的语义色修饰类，避免多次调用叠加
         getStyleClass().removeAll(
                 JfxStyles.TYPOGRAPHY_SECONDARY, JfxStyles.TYPOGRAPHY_SUCCESS,
@@ -119,11 +114,11 @@ public class LabelAnt extends Label {
     }
 
     /** 语义色快捷方法。 */
-    public LabelAnt secondary() { return type(Type.SECONDARY); }
-    public LabelAnt success()   { return type(Type.SUCCESS); }
-    public LabelAnt warning()   { return type(Type.WARNING); }
-    public LabelAnt danger()    { return type(Type.DANGER); }
-    public LabelAnt disabledColor() { return type(Type.DISABLED); }
+    public LabelAnt secondary() { return type(TypographyAnt.Type.SECONDARY); }
+    public LabelAnt success()   { return type(TypographyAnt.Type.SUCCESS); }
+    public LabelAnt warning()   { return type(TypographyAnt.Type.WARNING); }
+    public LabelAnt danger()    { return type(TypographyAnt.Type.DANGER); }
+    public LabelAnt disabledColor() { return type(TypographyAnt.Type.DISABLED); }
 
     /** 文本是否换行。 */
     public LabelAnt wrap(boolean wrap) {

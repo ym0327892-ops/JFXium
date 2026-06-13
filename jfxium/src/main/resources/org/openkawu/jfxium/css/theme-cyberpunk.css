@@ -549,6 +549,29 @@
   -fx-padding: 9px 15px;
   -fx-font-size: 16px;
 }
+/* Inline text button — 剥皮按钮，视觉上是内联文字，行为上是真按钮
+   适用于：StatusBar action、表格行操作、面包屑链接等嵌入文本流的场景 */
+.button.inline {
+  -fx-padding: 1px 4px 1px 4px;
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: 2px;
+  -fx-border-color: transparent;
+  -fx-cursor: hand;
+  -fx-font-size: 12px;
+  -fx-effect: none;
+}
+.button.inline:hover {
+  -fx-background-color: -color-accent-0;
+}
+.button.inline:pressed,
+.button.inline:armed {
+  -fx-background-color: -color-accent-2;
+}
+.button.inline:focused {
+  -fx-background-color: -color-accent-0;
+  -fx-background-insets: 0;
+}
 /* ============================================
    Input Component
    ============================================ */
@@ -2312,9 +2335,13 @@
   -fx-opacity: 0.3;
 }
 /* ============================================
-   ToolBar
+   ToolBar — 工具栏
+   系统化高度设计：@tool-bar-height = @control-height (32px)
+   :vertical 伪类控制侧边栏宽度，对齐 AtlantaFX .tool-bar:vertical
    ============================================ */
-.tool-bar {
+.jfx-tool-bar {
+  -fx-pref-height: 32px;
+  -fx-min-height: 32px;
   -fx-background-color: -color-border-muted, -color-bg-subtle;
   -fx-background-insets: 0, 0 0 1px 0;
   -fx-border-color: transparent;
@@ -2322,15 +2349,51 @@
   -fx-spacing: 4px;
   -fx-alignment: CENTER_LEFT;
 }
-.tool-bar > .container > .button,
-.tool-bar > .container > .menu-button,
-.tool-bar > .container > .split-menu-button {
+/* 垂直工具栏：pref-width 替代 pref-height */
+.jfx-tool-bar:vertical {
+  -fx-pref-height: -1;
+  /* 取消高度约束，改由内容决定 */
+  -fx-min-height: 0;
+  -fx-pref-width: 32px;
+  -fx-min-width: 32px;
+  -fx-background-insets: 0, 1px 0 0 0;
+  -fx-padding: 12px 8px;
+  -fx-alignment: TOP_LEFT;
+}
+.jfx-tool-bar > .container > .button,
+.jfx-tool-bar > .container > .menu-button,
+.jfx-tool-bar > .container > .split-menu-button {
   -fx-background-insets: 0;
   -fx-effect: none;
 }
-.tool-bar > .container > .toggle-button {
+.jfx-tool-bar > .container > .toggle-button {
   -fx-background-insets: 0;
   -fx-effect: none;
+}
+/* ============================================
+   StatusBar — 底部状态栏（对标 VS Code / IDEA 底栏）
+   ============================================ */
+.jfx-status-bar {
+  -fx-pref-height: 28px;
+  -fx-min-height: 28px;
+  -fx-max-height: 28px;
+  -fx-background-color: -color-border-muted, -color-bg-subtle;
+  -fx-background-insets: 0, 1px 0 0 0;
+  -fx-padding: 0 12px;
+  -fx-font-size: 12px;
+}
+.jfx-status-bar-left {
+  -fx-alignment: CENTER_LEFT;
+}
+.jfx-status-bar-center {
+  -fx-alignment: CENTER;
+}
+.jfx-status-bar-right {
+  -fx-alignment: CENTER_RIGHT;
+}
+/* 可点击操作项 — 行为委托给 .button.inline（剥皮按钮），此处仅保留状态条内间距微调 */
+.jfx-status-bar-action {
+  /* 所有视觉剥离已由 .button.inline 承担，此处无额外样式 */
 }
 /* ============================================
    ChoiceBox

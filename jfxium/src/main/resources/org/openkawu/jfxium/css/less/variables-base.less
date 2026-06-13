@@ -317,11 +317,19 @@
 // 影响组件：TabsAnt 关闭按钮
 @close-btn-padding: 2px;
 
-// ToolBar Padding
-// 使用位置：.tool-bar
-// 影响组件：ToolBar
+// ToolBar
+// 使用位置：.jfx-tool-bar / .jfx-tool-bar:vertical
+// 影响组件：ToolBarAnt
+// 垂直方向用 :vertical 伪类（JavaFX ToolBar 原生支持）
+// 系统化设计：顶栏 32px（@control-height） > 底栏 28px（@control-height-sm）
+@tool-bar-height: @control-height;              // horizontal pref-height / vertical pref-width
 @toolbar-padding-y: @spacing-sm;
 @toolbar-padding-x: @spacing-md;
+
+// StatusBar Height — PC §11: 底部状态栏，对标 VS Code / IDEA 底栏
+// 使用位置：.jfx-status-bar
+// 影响组件：StatusBarAnt
+@status-bar-height: @control-height-sm;  // 28px (compact → 24px)
 
 // ContextMenu Padding
 // 使用位置：.context-menu（菜单容器内边距）

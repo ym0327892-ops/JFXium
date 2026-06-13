@@ -129,3 +129,30 @@
   -fx-font-size: @font-size-lg;
 }
 
+/* Inline text button — 剥皮按钮，视觉上是内联文字，行为上是真按钮
+   适用于：StatusBar action、表格行操作、面包屑链接等嵌入文本流的场景 */
+.button.inline {
+  -fx-padding: 1px @spacing-xs 1px @spacing-xs;
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: @border-radius-sm;
+  -fx-border-color: transparent;
+  -fx-cursor: hand;
+  -fx-font-size: @font-size-sm;
+  -fx-effect: none;
+}
+
+.button.inline:hover {
+  -fx-background-color: -color-accent-0;
+}
+
+.button.inline:pressed,
+.button.inline:armed {
+  -fx-background-color: -color-accent-2;
+}
+
+.button.inline:focused {
+  -fx-background-color: -color-accent-0;
+  -fx-background-insets: 0;
+}
+

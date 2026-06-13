@@ -94,6 +94,8 @@ public final class JfxStyles {
     public static final String BUTTON_LINK = "link";
     /** Ghost 修饰类：透明背景 + 反色边框/文字，与 type 类组合使用（M19.28 改用 styleClass 取代 inline style）。 */
     public static final String BUTTON_GHOST = "ghost";
+    /** 内联文字按钮：透明背景、无边框、微 padding、12px 字号，适合嵌入状态栏/文本行。 */
+    public static final String BUTTON_INLINE = "inline";
 
     /** 按钮尺寸 */
     public static final String SIZE_SMALL = "small";
@@ -679,6 +681,7 @@ public final class JfxStyles {
     public static final String STATUS_BAR_LEFT = "jfx-status-bar-left";
     public static final String STATUS_BAR_CENTER = "jfx-status-bar-center";
     public static final String STATUS_BAR_RIGHT = "jfx-status-bar-right";
+    public static final String STATUS_BAR_ACTION = "jfx-status-bar-action";
 
     /* ============================================
        ContextMenuAnt（PC 软件刚需）— 右键菜单
