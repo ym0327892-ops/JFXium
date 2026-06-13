@@ -6,6 +6,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.TagAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * Tag 标签 —— 类型 / 尺寸 / 形状 / 可关闭。
@@ -76,9 +77,9 @@ public class TagExamplePage extends VBoxAnt {
 
     private Node closableSection() {
         Node demo = Demos.row(
-                TagAnt.create().text("可关闭").closable(true).onClose(() -> {}).build(),
+                TagAnt.create().text("可关闭").closable(true).onClose(() -> MessageAnt.info("Tag 已关闭")).build(),
                 TagAnt.create().text("Success 可关闭")
-                        .type(TagAnt.Type.SUCCESS).closable(true).onClose(() -> {}).build()
+                        .type(TagAnt.Type.SUCCESS).closable(true).onClose(() -> MessageAnt.success("Success Tag 已关闭")).build()
         );
         String code = """
                 TagAnt.create().text("可关闭")

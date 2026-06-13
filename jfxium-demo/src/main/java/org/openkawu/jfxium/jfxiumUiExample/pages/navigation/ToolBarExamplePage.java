@@ -37,7 +37,8 @@ public class ToolBarExamplePage extends VBoxAnt {
         Node demo = ToolBarAnt.create()
                 .button(newIcon, "新建", () -> System.out.println("新建"))
                 .button(openIcon, "打开", () -> System.out.println("打开"))
-                .button(saveIcon, "保存", () -> System.out.println("保存"));
+                .button(saveIcon, "保存", () -> System.out.println("保存"))
+                .build();
         String code = """
                 ToolBarAnt.create()
                     .button(newIcon, "新建", () -> ...)
@@ -58,7 +59,8 @@ public class ToolBarExamplePage extends VBoxAnt {
         Node demo = ToolBarAnt.create()
                 .button("新建", newIcon, "新建文件", () -> System.out.println("新建"))
                 .button("打开", openIcon, "打开文件", () -> System.out.println("打开"))
-                .button("保存", saveIcon, "保存文件", () -> System.out.println("保存"));
+                .button("保存", saveIcon, "保存文件", () -> System.out.println("保存"))
+                .build();
         String code = """
                 ToolBarAnt.create()
                     .button("新建", newIcon, "新建文件", () -> ...)
@@ -84,7 +86,8 @@ public class ToolBarExamplePage extends VBoxAnt {
                 .divider()
                 .button(settingsIcon, "设置", () -> System.out.println("设置"))
                 .spacer()
-                .button(TypographyAnt.text("❓").build(), "帮助", () -> System.out.println("帮助"));
+                .button(TypographyAnt.text("❓").build(), "帮助", () -> System.out.println("帮助"))
+                .build();
         String code = """
                 ToolBarAnt.create()
                     .button(cutIcon, "剪切", () -> ...)
@@ -113,7 +116,8 @@ public class ToolBarExamplePage extends VBoxAnt {
                 .button(penIcon, "画笔", () -> System.out.println("画笔"))
                 .button(eraserIcon, "橡皮", () -> System.out.println("橡皮"))
                 .divider()
-                .button(fillIcon, "填充", () -> System.out.println("填充"));
+                .button(fillIcon, "填充", () -> System.out.println("填充"))
+                .build();
         String code = """
                 ToolBarAnt.create()
                     .orientation(Orientation.VERTICAL)

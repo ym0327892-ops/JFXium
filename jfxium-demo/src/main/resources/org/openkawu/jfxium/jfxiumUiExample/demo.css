@@ -58,6 +58,15 @@
   -fx-background-radius: 4px;
 }
 
+/* ContextMenu / Spin 等组件演示区：虚线边框目标区域 */
+.jfx-demo-dashed-border {
+  -fx-border-style: dashed;
+  -fx-border-color: -color-border;
+  -fx-border-radius: 8;
+  -fx-background-radius: 8;
+  -fx-alignment: center;
+}
+
 /* BarAnt 自定义演示：白色卡片背景 */
 .jfx-demo-bar-card {
   -fx-background-color: -color-bg-default;

@@ -33,10 +33,11 @@ public class AdminShell {
         breadcrumbRow.setPadding(new Insets(8, 16, 4, 16));
         breadcrumbRow.getStyleClass().add(Background.DEFAULT.styleClass());
 
-        ToolBarAnt toolbar = ToolBarAnt.create();
-        toolbar.item(new Label("JFXium Admin Demo"));
-        toolbar.spacer();
-        toolbar.item(new Label("v1.0-SNAPSHOT"));
+        ToolBarAnt toolbar = ToolBarAnt.create()
+                .item(new Label("JFXium Admin Demo"))
+                .spacer()
+                .item(new Label("v1.0-SNAPSHOT"))
+                .build();
         HBox toolbarRow = new HBox(toolbar);
         toolbarRow.setPadding(new Insets(0, 16, 8, 16));
         toolbarRow.getStyleClass().add(Background.DEFAULT.styleClass());
@@ -53,9 +54,10 @@ public class AdminShell {
         showPage("home");
 
         // ---- Footer ----
-        StatusBarAnt statusBar = StatusBarAnt.create();
-        statusBar.info("就绪");
-        statusBar.status("JFXium Admin Demo | Java 21 | JavaFX 21");
+        StatusBarAnt statusBar = StatusBarAnt.create()
+                .info("就绪")
+                .status("JFXium Admin Demo | Java 21 | JavaFX 21")
+                .build();
 
         // ---- AppShell ----
         BorderPane shell = AppShellAnt.create()

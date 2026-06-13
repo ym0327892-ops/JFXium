@@ -19,7 +19,7 @@ public class DashboardPage extends StackPane {
 
     private final VBox loadedContent;
     private final StackPane skeletonPlaceholder;
-    private SpinAnt.Overlay spinOverlay;
+    private SpinAnt.Overlay spinOverlay; // lazy init — overlay needs node already in scene graph
 
     public DashboardPage() {
         setPadding(new Insets(24));
@@ -103,13 +103,13 @@ public class DashboardPage extends StackPane {
 
         root.getChildren().addAll(timeRange, statsRow, lowerRow);
 
-        // Spin overlay
-        spinOverlay = SpinAnt.overlay(root);
-
         // FloatButton
         StackPane wrapper = new StackPane(root);
         StackPane fb = FloatButtonAnt.create()
                 .onClick(() -> {
+                    if (spinOverlay == null) {
+                        spinOverlay = SpinAnt.overlay(loadedContent);
+                    }
                     spinOverlay.show("刷新数据中...");
                     PauseTransition p = new PauseTransition(Duration.seconds(1.5));
                     p.setOnFinished(e2 -> spinOverlay.hide());

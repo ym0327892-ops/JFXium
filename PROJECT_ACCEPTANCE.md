@@ -2,7 +2,7 @@
 
 > 生成日期：2026-06-09　｜　对应进度：**M20（测试覆盖增强）+ M21（FormAnt 增强 + bindValue API 全补完）**，BUG 表 #1–#72 全闭环
 > 验收基准：**default 尺寸**（SKILL 密度约束——large 不验收，compact 需可用）
-> 代码层 / 编译层已实测通过（jfxium + jfxium-demo 双零报错，**全量 766 用例 / 0 失败**）；本清单为 **UI 层人工验收**。
+> 代码层 / 编译层已实测通过（jfxium + jfxium-demo 双零报错，**全量 796 用例 / 0 失败**）；本清单为 **UI 层人工验收**。
 
 ## 0. 启动
 
@@ -13,7 +13,7 @@
 
 - [ ] demo 正常启动，进入「首页」无异常
 - [ ] 左侧菜单 7 大分类齐全（通用 / 布局 / 导航 / 数据录入 / 数据展示 / 反馈），共 72 个示例页（M19.54 新增 6 个原生控件包装：ChoiceBox / ListView / Separator / SplitMenuButton / BorderPane / TextFlow）
-- [ ] **M21 备注**：本期未新增 demo 页，仅补 API（FormAnt 增强 + bindValue 全 21 控件）+ 单测 766/766。如需新增 FormAnt 21 控件综合 demo 页请按 PROJECT_PLAN.md P2.5 路线图提单
+- [ ] **M21 备注**：本期未新增 demo 页，仅补 API（FormAnt 增强 + bindValue 全 21 控件）+ 单测 796/796。如需新增 FormAnt 21 控件综合 demo 页请按 PROJECT_PLAN.md P2.5 路线图提单
 - [ ] 顶栏「亮/暗」「紧凑」「退出」按钮可点
 
 ## 1. 全局主题切换（每套都扫一遍核心页）
@@ -89,7 +89,7 @@
 | 维度 | 结果 |
 |---|---|
 | 编译 / 代码层 | ✅ 已通过（自动实测，jfxium + jfxium-demo 双零报错） |
-| 测试矩阵（M20 + M21 新增） | ✅ 已通过（**766 用例 / 0 失败**，@M20.1 BorderRadiusTest 28 + 3 组件单测骨架 + @M21.1 FormAnt.Builder 66 + @M21.2 bindValue 4 控件系列测试） |
+| 测试矩阵（M20 + M21 新增） | ✅ 已通过（**796 用例 / 0 失败**，@M20.1 BorderRadiusTest 28 + 3 组件单测骨架 + @M21.1 FormAnt.Builder 66 + @M21.2 bindValue 4 控件系列测试） |
 | 主题切换（11 套） | ⏳ 待勾 |
 | 重点回归页（#41–#72） | ⏳ 待勾 |
 | 逐分类浏览（72 页） | ⏳ 待勾 |
@@ -134,7 +134,7 @@
 
 ### 5.5 M21 总体验证
 
-- [ ] `./mvnw test -pl jfxium` 全量 766 用例 0 失败、BUILD SUCCESS
+- [ ] `./mvnw test -pl jfxium` 全量 796 用例 0 失败、BUILD SUCCESS
 - [ ] `./mvnw install -pl jfxium -DskipTests -q` 主框架打包 + LESS 编译（含 11 套主题）正常
 - [ ] jfxium-demo `./mvnw javafx:run` 启动正常，无新增启动异常
 

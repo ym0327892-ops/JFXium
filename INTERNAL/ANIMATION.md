@@ -1,5 +1,11 @@
 # JFXium 动画系统文档
 
+> ⚠️ **文档归档说明**：本文档为 M18 早期版本，全篇使用 `JFXAnimation` 命名。
+> 当前动画工具类已更名为 **`AnimationAnt`**（`org.openkawu.jfxium.component.AnimationAnt`）。
+> API 方法名基本一致（`fadeIn` / `fadeOut` / `slideInFromBottom` 等），仅类名变更。
+>
+> 本文件保留作为历史快照，阅读时请将 `JFXAnimation` 替换为 `AnimationAnt`。
+
 ## 概述
 
 JFXium 动画系统提供了一套常用的 UI 动画效果，对标 Ant Design 动画规范。所有动画都使用了合适的缓动函数和时长，确保流畅自然的用户体验。

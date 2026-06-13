@@ -10,6 +10,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 
 
@@ -103,6 +104,7 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.PaginationExamplePag
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.StepsExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.TabsExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.ToolBarExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.StatusBarExamplePage;
 import org.openkawu.jfxium.layout.AppShellAnt;
 
 import java.util.LinkedHashMap;
@@ -112,6 +114,8 @@ import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.control.ComboBoxAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.MenuBarAnt;
+import org.openkawu.jfxium.component.control.StatusBarAnt;
 import org.openkawu.jfxium.component.composite.MenuAnt;
 import org.openkawu.jfxium.component.composite.BarAnt;
 import org.openkawu.jfxium.component.composite.AvatarAnt;
@@ -188,8 +192,6 @@ public class MainView {
                 PageRegistry.Category.GENERAL, IconExamplePage::new);
         registry.register("general.segmented", "Segmented 分段器",
                 PageRegistry.Category.GENERAL, SegmentedExamplePage::new);
-        registry.register("general.watermark", "Watermark 水印",
-                PageRegistry.Category.GENERAL, WatermarkExamplePage::new);
         registry.register("general.selectabletext", "SelectableText 可选文本",
                 PageRegistry.Category.GENERAL, SelectableTextExamplePage::new);
         registry.register("general.menubutton", "MenuButton 菜单按钮",
@@ -208,6 +210,10 @@ public class MainView {
                 PageRegistry.Category.LAYOUT, FlexExamplePage::new);
         registry.register("layout.bar", "Bar 横向栏",
                 PageRegistry.Category.LAYOUT, BarExamplePage::new);
+        registry.register("layout.divider", "Divider 分割线",
+                PageRegistry.Category.LAYOUT, DividerExamplePage::new);
+        registry.register("layout.separator", "Separator 分隔符",
+                PageRegistry.Category.LAYOUT, SeparatorExamplePage::new);
 
         // ============ 导航（Navigation）============
         registry.register("navigation.menu", "Menu 菜单",
@@ -228,6 +234,8 @@ public class MainView {
                 PageRegistry.Category.NAVIGATION, MenuBarExamplePage::new);
         registry.register("navigation.toolbar", "ToolBar 工具栏",
                 PageRegistry.Category.NAVIGATION, ToolBarExamplePage::new);
+        registry.register("navigation.statusbar", "StatusBar 状态栏",
+                PageRegistry.Category.NAVIGATION, StatusBarExamplePage::new);
         registry.register("navigation.backtop", "BackTop 回到顶部",
                 PageRegistry.Category.NAVIGATION, BackTopExamplePage::new);
 
@@ -308,14 +316,10 @@ public class MainView {
                 PageRegistry.Category.DATA_DISPLAY, ImageExamplePage::new);
         registry.register("datadisplay.calendar", "Calendar 日历",
                 PageRegistry.Category.DATA_DISPLAY, CalendarExamplePage::new);
+        registry.register("datadisplay.watermark", "Watermark 水印",
+                PageRegistry.Category.DATA_DISPLAY, WatermarkExamplePage::new);
         registry.register("datadisplay.skeleton", "Skeleton 骨架屏",
                 PageRegistry.Category.DATA_DISPLAY, SkeletonExamplePage::new);
-        registry.register("datadisplay.popover", "Popover 气泡卡片",
-                PageRegistry.Category.DATA_DISPLAY, PopoverExamplePage::new);
-        registry.register("datadisplay.divider", "Divider 分割线",
-                PageRegistry.Category.DATA_DISPLAY, DividerExamplePage::new);
-        registry.register("datadisplay.separator", "Separator 分隔符",
-                PageRegistry.Category.DATA_DISPLAY, SeparatorExamplePage::new);
         registry.register("datadisplay.accordion", "Accordion 手风琴",
                 PageRegistry.Category.DATA_DISPLAY, AccordionExamplePage::new);
         registry.register("datadisplay.titledpane", "TitledPane 标题面板",
@@ -354,6 +358,8 @@ public class MainView {
                 PageRegistry.Category.FEEDBACK, PromptDialogExamplePage::new);
         registry.register("feedback.spinner",      "Spinner 旋转加载",
                 PageRegistry.Category.FEEDBACK, SpinnerExamplePage::new);
+        registry.register("feedback.popover",      "Popover 气泡卡片",
+                PageRegistry.Category.FEEDBACK, PopoverExamplePage::new);
     }
 
     /** 构建主页 root —— App 拿去 setScene。 */
@@ -367,9 +373,10 @@ public class MainView {
         contentScroll.getStyleClass().add(Background.LAYOUT.styleClass());
 
         return AppShellAnt.create()
-                .header(buildHeader())
+                .header(buildHeaderComposite())
                 .sider(buildSider(), 240)
                 .content(contentScroll)
+                .footer(buildStatusBar())
                 .collapsible()
                 .build();
     }
@@ -452,6 +459,38 @@ public class MainView {
     /** 密度切换按钮的 label 文案，反映当前生效的密度。 */
     private static String densityLabel(ThemeDensity d) {
         return d == ThemeDensity.COMPACT ? "密度: 紧凑" : "密度: 默认";
+    }
+
+    /** Header 组合：MenuBar + 品牌/主题/用户栏。 */
+    private VBox buildHeaderComposite() {
+        return new VBox(0, buildMenuBar(), buildHeader());
+    }
+
+    /** 顶部菜单栏（File / Edit / View / Help）。 */
+    private MenuBarAnt buildMenuBar() {
+        return MenuBarAnt.create()
+            .menu("文件")
+                .item("首页", () -> navigate("home"))
+                .item("退出", () -> doLogout())
+                .endMenu()
+            .menu("编辑")
+                .item("撤销", () -> {})
+                .item("重做", () -> {})
+                .endMenu()
+            .menu("视图")
+                .item("切换侧栏", () -> {})
+                .endMenu()
+            .menu("帮助")
+                .item("关于", () -> {})
+                .endMenu();
+    }
+
+    /** 底部状态栏。 */
+    private StatusBarAnt buildStatusBar() {
+        return StatusBarAnt.create()
+                .info("就绪")
+                .status("JFXium v1.0-SNAPSHOT | Java 21 | JavaFX 21")
+                .build();
     }
 
     // ============================================================

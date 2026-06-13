@@ -38,7 +38,7 @@ public class MyAdminApp extends Application {
         var login = LoginTemplate.create()
                 .brandName("My Admin")
                 .tagline("企业管理系统")
-                .features("60+ 内置组件", "8 套主题", "Builder API")
+                .features("102+ 内置组件", "11 套主题", "Builder API")
                 .onSubmit((u, p) -> {
                     if ("admin".equals(u) && "1234".equals(p)) {
                         showMainStage(stage);
@@ -153,7 +153,6 @@ mvn javafx:run -pl jfxium-demo -q
 
 ## 六、下一步
 
-- **想换主题**：见 [README_CN.md > 主题系统](../README_CN.md#主题系统)（8 套内置主题，运行时切换）
+- **想换主题**：见 [README_CN.md > 主题系统](../README_CN.md#主题系统)（11 套内置主题，运行时切换）
 - **想自定义颜色**：见 [README_CN.md > 自定义主题](../README_CN.md#自定义主题)
-- **想造组件**：见 [README_CN.md > 自定义组件](../README_CN.md#自定义组件) + [组件组合规范 SKILL](../.kiro/steering/组件组合规范/SKILL.md)
-- **常见踩坑**：见 [项目约束与计划 SKILL](../.kiro/steering/项目约束与计划/SKILL.md)（18 条强约束）
+- **想造组件**：见 [docs/cn/主题系统.md > 自定义组件](../docs/cn/主题系统.md#自定义组件)

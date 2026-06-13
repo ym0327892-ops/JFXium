@@ -1,5 +1,19 @@
 # JFXium 布局 DSL 文档
 
+> ⚠️ **文档归档说明**：本文档为 M18 早期版本，全篇使用已废弃的 `JFX*` 前缀命名（JFXButton / JFXInput / JFXCard / JFXForm）和 `Layouts.*` 工厂 API。
+>
+> **当前主命名已统一为 `*Ant` 后缀**（ButtonAnt / InputAnt / CardAnt / FormAnt 等），布局 API 已升级为：
+> - **继承式容器**：`VBoxAnt` / `HBoxAnt` / `BorderPaneAnt` 等（推荐新代码使用）
+> - **Builder 容器**：`VBoxBuilder` / `HBoxBuilder` 等（兼容旧代码）
+> - **弹性占位**：`Spacers.grow()` / `Spacers.spacer(w, h)`
+>
+> 最新文档请见：
+> - 对外参考：[docs/cn/组件参考.md](../docs/cn/组件参考.md)（布局组件章节）
+> - 最佳实践：[docs/cn/最佳实践.md](../docs/cn/最佳实践.md)（§6 页面骨架继承式写法）
+> - 主跟踪文档：[PROJECT_PLAN.md](../PROJECT_PLAN.md)
+>
+> 本文件保留作为历史快照，M19 之后的新布局 API 变更 **不在此处追踪**。
+
 ## 概述
 
 JFXium 提供了一套流式 API 用于创建常见布局，简化 JavaFX 布局代码，提高可读性和开发效率。

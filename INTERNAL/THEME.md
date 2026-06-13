@@ -1,5 +1,19 @@
 # JFXium 主题系统文档
 
+> ⚠️ **文档归档说明**：本文档为 M18 早期版本，部分 API 和命名已过时：
+> - **主题数量**：当前为 **11 套**（含 shadcn / cyberpunk / custom），非本文档的 2 套
+> - **Theme 接口**：`ThemeType` 枚举已废弃，现为 `ThemeManager.Family`（ANT_DESIGN / MUI）+ 密度正交维度
+> - **密度系统**：§15.6 起密度从主题子类拆分，通过 `ThemeManager.setDensity(ThemeDensity)` 独立控制
+> - **CSS 类名**：本文档的 `.button.primary` 等旧命名已统一为 `jfx-` 前缀（见 `JfxStyles.java`）
+> - **LESS 编译**：M19.46 起使用 `jlessc`（纯 Java），不再需要 Node.js
+>
+> 最新文档请见：
+> - 对外参考：[docs/cn/主题系统.md](../docs/cn/主题系统.md)
+> - 内部规范：[SKILL.md](./SKILL.md)
+> - 主跟踪文档：[PROJECT_PLAN.md](../PROJECT_PLAN.md)
+>
+> 本文件保留作为历史快照，M19 之后的主题变更 **不在此处追踪**。
+
 ## 概述
 
 JFXium 主题系统参考 AtlantaFX 和 Ant Design 的设计理念，采用 CSS 文件驱动的方式，支持 Light/Dark 主题切换。

@@ -1,12 +1,17 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.composite.ProgressAnt;
 
 /**
@@ -18,7 +23,7 @@ public class ProgressExamplePage extends VBoxAnt {
         spacing(0).children(PageTemplate.create()
                 .title("Progress 进度条")
                 .description("展示操作的当前进度，支持条形和圆形两种形态。")
-                .sections(basicSection(), statusSection(), circleSection())
+                .sections(basicSection(), statusSection(), circleSection(), dynamicSection())
                 .padding(24)
                 .build());
     }
@@ -62,5 +67,71 @@ public class ProgressExamplePage extends VBoxAnt {
                 """;
         return Demos.sectionWithCode("3. 圆形进度",
                 "circle() 创建圆形进度指示器，size() 控制直径。", code, demo);
+    }
+
+    private Node dynamicSection() {
+        Node[] barHolder = {ProgressAnt.bar().progress(0.0).build()};
+        Node[] circleHolder = {ProgressAnt.circle().progress(0.0).size(80).build()};
+
+        ButtonAnt playBtn = ButtonAnt.create("开始演示")
+                .type(ButtonAnt.Type.PRIMARY)
+                .build();
+        ButtonAnt resetBtn = ButtonAnt.create("重置").build();
+
+        double[] progress = {0.0};
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(30), e -> {
+                    progress[0] += 0.01;
+                    if (progress[0] > 1.0) progress[0] = 1.0;
+                    double p = progress[0];
+                    VBox parent = (VBox) barHolder[0].getParent();
+                    if (parent != null) {
+                        int idx = parent.getChildren().indexOf(barHolder[0]);
+                        parent.getChildren().set(idx, ProgressAnt.bar().progress(p).build());
+                        barHolder[0] = parent.getChildren().get(idx);
+                    }
+                    VBox circleParent = (VBox) circleHolder[0].getParent();
+                    if (circleParent != null) {
+                        int cIdx = circleParent.getChildren().indexOf(circleHolder[0]);
+                        circleParent.getChildren().set(cIdx, ProgressAnt.circle().progress(p).size(80).build());
+                        circleHolder[0] = circleParent.getChildren().get(cIdx);
+                    }
+                })
+        );
+        timeline.setCycleCount(100);
+        timeline.setOnFinished(ev -> MessageAnt.success("演示完成"));
+
+        playBtn.setOnAction(e -> {
+            progress[0] = 0.0;
+            timeline.playFromStart();
+        });
+        resetBtn.setOnAction(e -> {
+            timeline.stop();
+            progress[0] = 0.0;
+            VBox parent = (VBox) barHolder[0].getParent();
+            if (parent != null) {
+                parent.getChildren().set(
+                        parent.getChildren().indexOf(circleHolder[0]) - 1,
+                        ProgressAnt.bar().progress(0.0).build());
+            }
+            VBox circleParent = (VBox) circleHolder[0].getParent();
+            if (circleParent != null) {
+                circleParent.getChildren().set(
+                        circleParent.getChildren().indexOf(barHolder[0]) + 1,
+                        ProgressAnt.circle().progress(0.0).size(80).build());
+            }
+        });
+
+        VBox barRow = Demos.column(barHolder[0], playBtn, resetBtn);
+        Node demo = Demos.row(barRow, circleHolder[0]);
+        String code = """
+                // 动态创建：不断 rebuild 新进度条替换容器中的旧 Node
+                Node bar = ProgressAnt.bar().progress(0.0).build();
+                // ... Timeline 或业务回调
+                parent.getChildren().set(idx, ProgressAnt.bar().progress(p).build());
+                """;
+        return Demos.sectionWithCode("4. 动态演示",
+                "点击按钮模拟进度从 0% → 100% 的动画效果，实际业务通过 rebuild + replace 更新进度。",
+                code, demo);
     }
 }

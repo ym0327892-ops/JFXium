@@ -7,6 +7,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.FloatButtonAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * FloatButton 悬浮按钮 —— 基础 / 类型 / 尺寸 / 提示。
@@ -31,7 +32,7 @@ public class FloatButtonExamplePage extends VBoxAnt {
                 FloatButtonAnt.create()
                         .icon(new Label("+"))
                         .tooltip("添加")
-                        .onClick(() -> System.out.println("点击悬浮按钮"))
+                        .onClick(() -> MessageAnt.info("点击悬浮按钮"))
                         .build(),
                 FloatButtonAnt.create()
                         .icon(new Label("↑"))

@@ -6,6 +6,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.PaginationAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * Pagination 分页 —— 基础 / 当前页 / 翻页回调。
@@ -56,7 +57,7 @@ public class PaginationExamplePage extends VBoxAnt {
     private Node onChangeSection() {
         Node demo = PaginationAnt.create()
                 .pageCount(10)
-                .onChange(page -> {})
+                .onChange(page -> MessageAnt.info("切换到第 " + (page + 1) + " 页"))
                 .build();
         String code = """
                 PaginationAnt.create()

@@ -1,5 +1,18 @@
 # Builder API 与命名约定检查报告
 
+> ⚠️ **文档归档说明**：本报告为 2026-05-13 历史快照，仅覆盖 M18 之前 72 个组件。以下内容已严重过时：
+> - **组件数量**：当前已达 **102 个**（97 *Ant + 5 Template），本报告仅覆盖 72 个
+> - **已删除组件**：`PageAnt`、`ActionBarAnt` 已在 M18/M19 删除（改用 BarAnt / CrudTemplate）
+> - **命名规范**：M19.46 后统一 `jfx-` 前缀 styleClass，本报告的 `.button.primary` 等旧命名已替换
+> - **组件分包**：M19.53 起拆为 `control/` `composite/` `overlay/` `layout/` 四包，本报告未体现
+>
+> 最新对照请见：
+> - 组件参考：[docs/cn/组件参考.md](../docs/cn/组件参考.md)
+> - 架构审计：[PROJECT_AUDIT_REPORT.md](../PROJECT_AUDIT_REPORT.md)（V2.2, 2026-06-10）
+> - 主跟踪文档：[PROJECT_PLAN.md](../PROJECT_PLAN.md)
+>
+> 本文件保留作为历史快照，M19 之后的组件/API 变更 **不在此处追踪**。
+
 **检查日期**: 2026-05-13
 **最后更新**: 2026-05-13（已修复所有问题）
 **检查依据**: PLAN.md 第 139-148 行定义的 Builder API 规范

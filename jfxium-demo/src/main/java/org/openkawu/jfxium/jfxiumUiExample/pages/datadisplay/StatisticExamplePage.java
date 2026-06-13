@@ -1,11 +1,14 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
+import javafx.scene.layout.VBox;
 
+import java.util.Random;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.StatisticAnt;
 
@@ -18,7 +21,7 @@ public class StatisticExamplePage extends VBoxAnt {
         spacing(0).children(PageTemplate.create()
                 .title("Statistic 统计数值")
                 .description("展示统计类数值，常用于仪表盘的关键指标。")
-                .sections(basicSection(), affixSection(), trendSection())
+                .sections(basicSection(), affixSection(), trendSection(), dynamicSection())
                 .padding(24)
                 .build());
     }
@@ -70,5 +73,49 @@ public class StatisticExamplePage extends VBoxAnt {
                 """;
         return Demos.sectionWithCode("3. 趋势",
                 "suffix 支持 Node，传入带颜色的 Typography 文本即可表达涨跌。", code, Demos.row(up, down));
+    }
+
+    private Node dynamicSection() {
+        Random rand = new Random();
+        VBox[] statHolder = new VBox[1];
+
+        statHolder[0] = StatisticAnt.create()
+                .title("实时数据")
+                .value(rand.nextInt(10000, 99999))
+                .suffix("条")
+                .build();
+
+        ButtonAnt refreshBtn = ButtonAnt.create("刷新数据")
+                .type(ButtonAnt.Type.PRIMARY)
+                .onClick(e -> {
+                    VBox parent = (VBox) statHolder[0].getParent();
+                    if (parent != null) {
+                        VBox newStat = StatisticAnt.create()
+                                .title("实时数据")
+                                .value(rand.nextInt(10000, 99999))
+                                .suffix("条")
+                                .build();
+                        int idx = parent.getChildren().indexOf(statHolder[0]);
+                        parent.getChildren().set(idx, newStat);
+                        statHolder[0] = newStat;
+                    }
+                })
+                .build();
+
+        Node demo = Demos.column(statHolder[0], refreshBtn);
+        String code = """
+                // 初始构建
+                StatisticAnt.create().title("实时数据").value(12345).suffix("条").build();
+                // 更新：重新 build + replace 旧节点
+                VBox newStat = StatisticAnt.create()
+                        .title("实时数据")
+                        .value(newValue)
+                        .suffix("条")
+                        .build();
+                parent.getChildren().set(idx, newStat);
+                """;
+        return Demos.sectionWithCode("4. 动态刷新",
+                "点击按钮刷新数据，演示 Statistic 数值的动态更新：rebuild + replace。",
+                code, demo);
     }
 }

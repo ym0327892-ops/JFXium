@@ -6,6 +6,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.overlay.PromptDialogAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
@@ -33,7 +34,7 @@ public class PromptDialogExamplePage extends VBoxAnt {
                         .title("请输入名称")
                         .message("输入后点击确认保存")
                         .placeholder("例如：张三")
-                        .onConfirm(name -> System.out.println("输入：" + name))
+                        .onConfirm(name -> MessageAnt.success("输入：" + name))
                         .build())
                 .build();
 
@@ -59,7 +60,7 @@ public class PromptDialogExamplePage extends VBoxAnt {
                         .title("修改备注")
                         .message("当前备注内容如下，可直接修改")
                         .defaultValue("原始备注信息")
-                        .onConfirm(text -> System.out.println("修改为：" + text))
+                        .onConfirm(text -> MessageAnt.success("修改为：" + text))
                         .build())
                 .build();
 
@@ -86,8 +87,8 @@ public class PromptDialogExamplePage extends VBoxAnt {
                                 .placeholder("输入 DELETE 确认")
                                 .okText("确认删除")
                                 .cancelText("我再想想")
-                                .onConfirm(text -> System.out.println("确认：" + text))
-                                .onCancel(() -> System.out.println("取消删除"))
+                                .onConfirm(text -> MessageAnt.warning("确认：" + text))
+                                .onCancel(() -> MessageAnt.info("取消删除"))
                                 .build())
                         .build(),
                 ButtonAnt.create("仅确认按钮")
@@ -96,7 +97,7 @@ public class PromptDialogExamplePage extends VBoxAnt {
                                 .title("温馨提示")
                                 .message("这是一个只有确认按钮的弹框")
                                 .okText("我知道了")
-                                .onConfirm(text -> System.out.println("收到"))
+                                .onConfirm(text -> MessageAnt.success("收到"))
                                 .build())
                         .build()
         );

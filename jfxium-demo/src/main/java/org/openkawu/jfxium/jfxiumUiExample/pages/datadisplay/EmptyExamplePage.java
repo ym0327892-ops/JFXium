@@ -7,6 +7,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.EmptyAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * Empty 空状态 —— 默认 / 自定义描述。
@@ -37,7 +38,7 @@ public class EmptyExamplePage extends VBoxAnt {
     private Node customSection() {
         VBox empty = EmptyAnt.create()
                 .description("暂无搜索结果，请尝试其他关键词")
-                .extraButton("重新搜索", () -> System.out.println("重新搜索"))
+                .extraButton("重新搜索", () -> MessageAnt.info("重新搜索"))
                 .build();
         String code = """
                 VBox empty = EmptyAnt.create()

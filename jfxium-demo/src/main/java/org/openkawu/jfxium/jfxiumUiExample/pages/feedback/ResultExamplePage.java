@@ -10,6 +10,7 @@ import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.composite.ResultAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * Result 结果页 —— 成功 / 错误警告 / 带额外内容。
@@ -53,8 +54,8 @@ public class ResultExamplePage extends VBoxAnt {
 
     private Node extraSection() {
         HBox buttons = Demos.row(
-                ButtonAnt.create("返回首页").type(ButtonAnt.Type.PRIMARY).build(),
-                ButtonAnt.create("查看详情").build()
+                ButtonAnt.create("返回首页").type(ButtonAnt.Type.PRIMARY).onClick(e -> MessageAnt.success("返回首页")).build(),
+                ButtonAnt.create("查看详情").onClick(e -> MessageAnt.info("查看详情")).build()
         );
         VBox result = ResultAnt.create()
                 .status(ResultAnt.Status.SUCCESS)

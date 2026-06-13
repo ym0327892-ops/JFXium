@@ -1855,7 +1855,7 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 **M21.1 FormAnt.Builder 单测 66/66**（C 阶段）：
 - `FormAntTest`（1071 行 / 9 @Nested 分组）：FormContext 21 / Result 5 / Rule 9 / Named 11 / Legacy 4 / Section 3 / Footer 6 / Header 3 / Layout 4 = 66 用例。
 - 覆盖：基础结构、size/label 样式、layout（H/V/Inline）、header(Node)/footer(Node...)/footerAlign(Pos)/section(String)、Rule.required/minLength/pattern/email/custom、FormContext.onChange 字段联动、FormResult 包装、命名入口 end()、嵌套表单骨架。
-- 验证：`./mvnw test -pl jfxium -Dtest=FormAntTest` 66/66 通过；全量 766/766 零退化。
+- 验证：`./mvnw test -pl jfxium -Dtest=FormAntTest` 66/66 通过；全量 796/796 零退化。
 
 **M21.2 bindValue API 补完 ChoiceBox**（C-b1 阶段）：
 - `ChoiceBoxAnt.bindValue(Property<T>)`（control 包 140 行）补完；**全 21 个数据输入控件**（control 11 + composite 10）现在都支持 `.bindValue(Property)` 声明式双向绑定。
@@ -1864,7 +1864,7 @@ JavaFX CSS 里 `-fx-background-radius` 控背景圆角、`-fx-border-radius` 控
 
 **M21.3 测试矩阵**：
 - 总测试文件 25 个（control 9 + composite 6 + layout 7 + overlay 1 + core/builder 1 + core/theme 1）
-- 总测试方法 766 个（@Test 计数含 @Nested），M20 + M21 新增约 160 用例。
+- 总测试方法 796 个（@Test 计数含 @Nested），M20 + M21 新增约 190 用例。
 - `./mvnw test -pl jfxium` 全量零退化，BUILD SUCCESS。
 
 **沉淀**：
@@ -2047,9 +2047,9 @@ ShowcaseDemo
 
 - [x] **FilterBarAnt** —— 筛选+搜索+操作工具栏（M12.4 已沉淀）
 - [x] **CrudTemplate** —— admin 通用三段式业务页骨架（M18 已沉淀，覆盖 CRUD 列表/表单/仪表盘/详情）
-- [ ] **LoginPageTemplate** —— LoginStage 已是参考实现
+- [x] **LoginTemplate** —— 双栏 banner 登录页模板（M19.16 已沉淀）
+- [x] **DashboardTemplate** —— 仪表盘网格模板（M19.16 已沉淀）
 - [ ] **DetailPageTemplate** —— 详情/编辑页模板（左表单 + 右辅助信息）
-- [ ] **DashboardTemplate** —— 仪表盘网格模板（DashboardPage 已是参考实现）
 
 #### P2.3 控件层查漏补缺（被 P2.1' Showcase 倒逼，按需推进）
 

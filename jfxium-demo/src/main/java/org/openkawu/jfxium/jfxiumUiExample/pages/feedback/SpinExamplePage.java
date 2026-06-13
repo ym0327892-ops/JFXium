@@ -10,6 +10,7 @@ import javafx.util.Duration;
 import org.openkawu.jfxium.component.composite.SpinAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
+import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 
@@ -76,15 +77,20 @@ public class SpinExamplePage extends VBoxAnt {
     }
 
     private Node overlaySection() {
-        VBox content = new VBox(8,
-                new Label("用户列表区域"),
-                new Label("这里可以是表格、表单等任意内容"),
-                new Label("点击下方按钮模拟加载状态")
-        );
-        content.setStyle("-fx-padding: 20px; -fx-background-color: -color-bg-container; -fx-min-height: 120px;");
+        VBox content = VBoxAnt.create()
+                .spacing(8)
+                .children(
+                        new Label("用户列表区域"),
+                        new Label("这里可以是表格、表单等任意内容"),
+                        new Label("点击下方按钮模拟加载状态")
+                )
+                .padding(20)
+                .background(Background.DEFAULT)
+                .build();
+        content.setMinHeight(120);
 
         StackPane demoArea = new StackPane(content);
-        demoArea.setStyle("-fx-border-color: -color-border-muted; -fx-border-radius: 8px; -fx-background-radius: 8px;");
+        demoArea.getStyleClass().add("jfx-demo-dashed-border");
 
         // overlay 创建一次，可反复 show/hide
         SpinAnt.Overlay loading = SpinAnt.overlay(content);

@@ -8,6 +8,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.overlay.ContextMenuAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 
 /**
@@ -31,17 +32,16 @@ public class ContextMenuExamplePage extends VBoxAnt {
     private Node basicSection() {
         Label target = new Label("在此区域右键点击");
         target.setPrefSize(300, 120);
-        target.setStyle("-fx-border-style: dashed; -fx-border-color: -color-border; "
-                + "-fx-border-radius: 8px; -fx-alignment: center;");
+        target.getStyleClass().add("jfx-demo-dashed-border");
 
         ContextMenuAnt.ContextMenuResult ctx = ContextMenuAnt.create()
-                .item("view", "查看详情", () -> System.out.println("查看详情"))
-                .item("edit", "编辑", () -> System.out.println("编辑"))
+                .item("view", "查看详情", () -> MessageAnt.info("查看详情"))
+                .item("edit", "编辑", () -> MessageAnt.info("编辑"))
                 .divider()
-                .item("copy", "复制", () -> System.out.println("复制"))
-                .item("paste", "粘贴", () -> System.out.println("粘贴"))
+                .item("copy", "复制", () -> MessageAnt.info("复制"))
+                .item("paste", "粘贴", () -> MessageAnt.info("粘贴"))
                 .divider()
-                .item("delete", "删除", () -> System.out.println("删除"))
+                .item("delete", "删除", () -> MessageAnt.warning("删除"))
                 .target(target)
                 .build();
 
@@ -65,18 +65,17 @@ public class ContextMenuExamplePage extends VBoxAnt {
     private Node iconSection() {
         Label target = new Label("右键此区域查看带图标的菜单");
         target.setPrefSize(300, 120);
-        target.setStyle("-fx-border-style: dashed; -fx-border-color: -color-border; "
-                + "-fx-border-radius: 8px; -fx-alignment: center;");
+        target.getStyleClass().add("jfx-demo-dashed-border");
 
         Node editIcon = TypographyAnt.text("✏️").build();
         Node copyIcon = TypographyAnt.text("📋").build();
         Node deleteIcon = TypographyAnt.text("🗑").build();
 
         ContextMenuAnt.create()
-                .item("edit", "编辑", editIcon, () -> System.out.println("编辑"))
-                .item("copy", "复制", copyIcon, () -> System.out.println("复制"))
+                .item("edit", "编辑", editIcon, () -> MessageAnt.info("编辑"))
+                .item("copy", "复制", copyIcon, () -> MessageAnt.info("复制"))
                 .divider()
-                .item("delete", "删除", deleteIcon, () -> System.out.println("删除"))
+                .item("delete", "删除", deleteIcon, () -> MessageAnt.warning("删除"))
                 .target(target)
                 .build();
 
@@ -97,18 +96,17 @@ public class ContextMenuExamplePage extends VBoxAnt {
     private Node acceleratorSection() {
         Label target = new Label("右键此区域查看快捷键提示");
         target.setPrefSize(300, 120);
-        target.setStyle("-fx-border-style: dashed; -fx-border-color: -color-border; "
-                + "-fx-border-radius: 8px; -fx-alignment: center;");
+        target.getStyleClass().add("jfx-demo-dashed-border");
 
         ContextMenuAnt.create()
-                .item("save", "保存", () -> System.out.println("保存"))
+                .item("save", "保存", () -> MessageAnt.success("保存"))
                 .accelerator("Ctrl+S")
-                .item("undo", "撤销", () -> System.out.println("撤销"))
+                .item("undo", "撤销", () -> MessageAnt.info("撤销"))
                 .accelerator("Ctrl+Z")
-                .item("redo", "重做", () -> System.out.println("重做"))
+                .item("redo", "重做", () -> MessageAnt.info("重做"))
                 .accelerator("Ctrl+Shift+Z")
                 .divider()
-                .item("selectAll", "全选", () -> System.out.println("全选"))
+                .item("selectAll", "全选", () -> MessageAnt.info("全选"))
                 .accelerator("Ctrl+A")
                 .target(target)
                 .build();

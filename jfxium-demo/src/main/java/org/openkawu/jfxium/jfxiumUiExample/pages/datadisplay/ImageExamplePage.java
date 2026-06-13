@@ -1,10 +1,12 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
+import javafx.scene.layout.VBox;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.composite.ImageAnt;
 
 /**
@@ -19,7 +21,7 @@ public class ImageExamplePage extends VBoxAnt {
         spacing(0).children(PageTemplate.create()
                 .title("Image 图片")
                 .description("图片容器，支持占位、尺寸约束与圆角裁剪。")
-                .sections(placeholderSection(), sizeSection())
+                .sections(placeholderSection(), sizeSection(), dynamicSection())
                 .padding(24)
                 .build());
     }
@@ -54,5 +56,40 @@ public class ImageExamplePage extends VBoxAnt {
                 """;
         return Demos.sectionWithCode("2. 尺寸与圆角",
                 "width / height 约束尺寸，borderRadius 裁剪圆角。", code, demo);
+    }
+
+    private Node dynamicSection() {
+        Node[] imgHolder = {ImageAnt.create().width(160).height(100).placeholder("占位图").build()};
+
+        ButtonAnt toggleBtn = ButtonAnt.create("切换样式")
+                .type(ButtonAnt.Type.PRIMARY)
+                .onClick(e -> {
+                    VBox parent = (VBox) imgHolder[0].getParent();
+                    if (parent != null) {
+                        int idx = parent.getChildren().indexOf(imgHolder[0]);
+                        boolean isRounded = imgHolder[0].getStyleClass().contains("jfx-image-rounded");
+                        if (isRounded) {
+                            parent.getChildren().set(idx,
+                                    ImageAnt.create().width(160).height(100).placeholder("占位图").build());
+                        } else {
+                            parent.getChildren().set(idx,
+                                    ImageAnt.create().width(160).height(100).borderRadius(16).placeholder("圆角").build());
+                        }
+                        imgHolder[0] = parent.getChildren().get(idx);
+                    }
+                })
+                .build();
+
+        Node demo = Demos.column(imgHolder[0], toggleBtn);
+        String code = """
+                // 初始构建
+                ImageAnt.create().width(160).height(100).placeholder("占位图").build();
+                // 动态切换：rebuild + replace
+                parent.getChildren().set(idx,
+                        ImageAnt.create().width(160).height(100).borderRadius(16).placeholder("圆角").build());
+                """;
+        return Demos.sectionWithCode("3. 动态切换",
+                "点击按钮在默认样式和圆角样式之间切换，演示 rebuild + replace。",
+                code, demo);
     }
 }
