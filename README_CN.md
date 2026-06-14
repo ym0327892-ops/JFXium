@@ -89,9 +89,11 @@ VBox layout = VBoxBuilder.create().spacing(16).padding(24).children(input, btn).
 | **页面骨架基类**（业务继承）| extends VBoxAnt / BorderPaneAnt |
 | **响应式 24 栅格** | GridAnt（不是 GridPaneAnt！）|
 | **简单二维网格** | GridPaneAnt（cell/row/column 链式 API）|
-| **垂直滚动长内容** | ScrollPaneAnt 或 ScrollContainerAnt |
+| **垂直滚动长内容** | ScrollPaneAnt |
 | **拖拽分屏 IDE 风格** | SplitPaneAnt |
 | **顶部三段式工具栏**（左/中/右）| BarAnt |
+| **水平工具条**（图标按钮 + 分隔线 + 弹性填充）| ToolBarAnt |
+| **底部状态栏**（信息 + 进度 + 操作项）| StatusBarAnt |
 | **背景色分层**（容器 vs 内容）| Background.LAYOUT / SUBTLE / DEFAULT |
 | **输入限制**（数字/手机号/邮箱）| TextFormatters.integerOnly() 等 12 种 |
 | **跨平台 OS 判断** | PlatformUtils.isMac() / isWindows() |

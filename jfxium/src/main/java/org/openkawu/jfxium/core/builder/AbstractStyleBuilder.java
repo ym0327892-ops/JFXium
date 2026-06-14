@@ -15,7 +15,7 @@ import java.util.List;
  *
  * <h2>背景</h2>
  * 之前 {@code ButtonAnt / AppShellAnt / PageAnt / SurfaceAnt / ActionBarAnt /
- * GroupBoxAnt / SplitPaneAnt / ResizablePanelAnt / ScrollContainerAnt / GroupBoxAnt} 等 9+ 个 Builder
+ * GroupBoxAnt / SplitPaneAnt / ResizablePanelAnt / ScrollPaneAnt / GroupBoxAnt} 等 9+ 个 Builder
  * 各自重复实现：
  * <pre>{@code
  * private String style = "";
@@ -30,7 +30,7 @@ import java.util.List;
  *
  * <h2>M7 新增：padding 支持</h2>
  * 添加 {@code padding(Insets)} 和 {@code padding(double)} 方法，统一管理内边距设置。
- * 5+ 个组件（SurfaceAnt/ActionBarAnt/ScrollContainerAnt/PageAnt/ResizablePanelAnt）
+ * 5+ 个组件（SurfaceAnt/ActionBarAnt/ScrollPaneAnt/PageAnt/ResizablePanelAnt）
  * 重复实现了相同的 padding 逻辑，现在统一到基类。
  *
  * <h2>self-bounded 泛型</h2>

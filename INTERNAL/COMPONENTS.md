@@ -94,7 +94,7 @@ HBox header = BarAnt.create()
 
 > 老 `ActionBarAnt` 已在 M19 删除，请用 BarAnt 替代。
 
-### SplitPaneAnt / ResizablePanelAnt / ScrollContainerAnt
+### SplitPaneAnt / ResizablePanelAnt / ScrollPaneAnt
 
 ```java
 SplitPane split = SplitPaneAnt.create()
@@ -108,7 +108,7 @@ StackPane panel = ResizablePanelAnt.create()
     .prefWidth(320)
     .build();
 
-ScrollPane scroll = ScrollContainerAnt.create()
+ScrollPaneAnt scroll = ScrollPaneAnt.create()
     .content(page)
     .fitToWidth(true)
     .build();

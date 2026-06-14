@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
 
 
 
-import org.openkawu.jfxium.component.layout.ScrollContainerAnt;
+import org.openkawu.jfxium.component.layout.ScrollPaneAnt;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.theme.ThemeColor;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
@@ -366,7 +366,7 @@ public class MainView {
     public BorderPane build() {
         navigate("home");
 
-        ScrollPane contentScroll = ScrollContainerAnt.create()
+        ScrollPane contentScroll = ScrollPaneAnt.create()
                 .content(contentHost)
                 .fitToWidth(true)
                 .build();

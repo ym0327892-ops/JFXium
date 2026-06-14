@@ -59,7 +59,7 @@
 | — | `DividerAnt` | 分割线（增强版 Separator）| 带文本、文本位置、垂直/水平 |
 | — | `FlexAnt` | 弹性布局（CSS Flexbox） | justify/align/wrap/gap、两端对齐 |
 | — | `GridAnt` | 24 列栅格系统 | 响应式断点（xs/sm/md/lg/xl/xxl） |
-| — | `ScrollContainerAnt` | 统一滚动容器 | 自动 viewport 包装、padding 控制 |
+| — | `ScrollPaneAnt` | 统一滚动容器 | 自动 viewport 包装、padding 控制 |
 | — | `SpaceAnt` | 间距组件 | 水平/垂直间距、分隔线、对齐 |
 
 ---

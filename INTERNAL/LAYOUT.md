@@ -77,10 +77,10 @@ StackPane details = ResizablePanelAnt.create()
     .build();
 ```
 
-### ScrollContainerAnt 滚动容器
+### ScrollPaneAnt 滚动容器
 
 ```java
-ScrollPane scroll = ScrollContainerAnt.create()
+ScrollPaneAnt scroll = ScrollPaneAnt.create()
     .content(page)
     .fitToWidth(true)
     .padding(new Insets(24))

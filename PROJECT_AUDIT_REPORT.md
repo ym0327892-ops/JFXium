@@ -126,7 +126,7 @@ LESS 组件文件中**未发现非 token 定义行的硬编码 hex 颜色**。�
 - composite/ 下的组件正确使用了组合模式（CardAnt 使用 VBox 容器, AlertAnt 使用 HBox 组合等）
 - 未发现分层错误
 
-**layout 组件的统一 API 纳入情况**：`component.layout/` 下 14 个组件中，5 个 extends `AbstractStyleBuilder`（DividerAnt / FlexAnt / GridAnt / ScrollContainerAnt / SpaceAnt），9 个 implements `LayoutCommon` 接口（AnchorPaneAnt / BorderPaneAnt / FlowPaneAnt / HBoxAnt / SplitPaneAnt / StackPaneAnt / TextFlowAnt / TilePaneAnt / VBoxAnt）。**全部 14 个**已通过 `AbstractStyleBuilder` 或 `LayoutCommon` 接口纳入统一 API 体系（详见 B1 + E6），本节不再重复计数。
+**layout 组件的统一 API 纳入情况**：`component.layout/` 下 14 个组件中，4 个 extends `AbstractStyleBuilder`（DividerAnt / FlexAnt / GridAnt / SpaceAnt），10 个 implements `LayoutCommon` 接口（AnchorPaneAnt / BorderPaneAnt / FlowPaneAnt / HBoxAnt / ScrollPaneAnt / SplitPaneAnt / StackPaneAnt / TextFlowAnt / TilePaneAnt / VBoxAnt）。**全部 14 个**已通过 `AbstractStyleBuilder` 或 `LayoutCommon` 接口纳入统一 API 体系（详见 B1 + E6），本节不再重复计数。
 
 ---
 
