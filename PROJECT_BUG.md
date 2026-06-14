@@ -1567,3 +1567,25 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
   - `./mvnw -q -pl jfxium -DskipTests compile` ✅
   - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
   - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+
+---
+
+### #119 十九轮审计修复：AutoCompleteAnt / MentionsAnt Builder 样式接线（2026-06-15）
+
+- **现象**：
+  1. `AutoCompleteAnt.Builder` 继承 `AbstractStyleBuilder`，但 `build()` 返回 `HBox` 前没有调用 `applyStyles(container)`，导致 `.styleClass()` / `.prefWidth()` 等通用 Builder 能力无效。
+  2. `MentionsAnt.Builder` 同样继承 `AbstractStyleBuilder`，但返回 `TextArea` 前没有应用通用 Builder 样式。
+  3. `AutoCompleteAnt` 点击建议项时先 `field.setText(text)` 触发 text listener 里的 `onChange`，随后又手动 `onChange.accept(text)`，业务侧可能收到重复 change 事件。
+
+- **修复**：
+  - [`AutoCompleteAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/AutoCompleteAnt.java)：补 `applyStyles(container)`
+  - [`AutoCompleteAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/AutoCompleteAnt.java)：删除建议项点击后的重复 `onChange.accept(text)`，保留 `field.setText(text)` 触发的标准 text listener
+  - [`MentionsAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/MentionsAnt.java)：补 `applyStyles(textArea)`
+  - [`AutoCompleteAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/AutoCompleteAntTest.java)、[`MentionsAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/control/MentionsAntTest.java)：新增 Builder 样式接线测试
+
+- **结果**：两个输入类组件的通用 Builder 样式能力恢复，AutoComplete 选中建议项不再重复触发 change 回调。
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅

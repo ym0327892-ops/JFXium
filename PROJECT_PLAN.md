@@ -2418,3 +2418,16 @@ JFXium/                                          # 多模块 Maven 项目（pare
 - [x] `SegmentedAnt.Builder.build()` 补 `applyStyles(segmented)`
 - [x] 新增 `CalendarAntTest / SegmentedAntTest`
 - [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+### 🎯 M21.19 十九轮审计修复（2026-06-15）
+
+**动机**：继续推进 `org.openkawu.jfxium.component` 包内部 P2 Builder 合同审计。`AutoCompleteAnt` 与 `MentionsAnt` 都是输入类直接节点组件，暴露通用 Builder API 但未应用；`AutoCompleteAnt` 还存在选中建议项重复触发 `onChange` 的行为风险。
+
+**产出**：恢复两个输入组件的 Builder 样式接线，并消除 AutoComplete 重复 change 回调。
+
+**关键改动**：
+- [x] `AutoCompleteAnt.Builder.build()` 补 `applyStyles(container)`
+- [x] `AutoCompleteAnt` 删除建议项点击后的重复 `onChange.accept(text)`
+- [x] `MentionsAnt.Builder.build()` 补 `applyStyles(textArea)`
+- [x] 新增 `AutoCompleteAntTest / MentionsAntTest`
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过

@@ -130,6 +130,7 @@ public class AutoCompleteAnt {
                 // disabled opacity 走 LESS .jfx-auto-complete:disabled
                 container.setDisable(true);
             }
+            applyStyles(container);
             return container;
         }
 
@@ -165,7 +166,6 @@ public class AutoCompleteAnt {
                     field.setText(text);
                     popup.hide();
                     if (onSelect != null) onSelect.accept(option);
-                    if (onChange != null) onChange.accept(text);
                 });
                 suggestionsBox.getChildren().add(label);
             }
