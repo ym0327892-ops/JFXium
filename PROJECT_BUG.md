@@ -1541,3 +1541,29 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
   - `./mvnw -q -pl jfxium -DskipTests compile` ✅
   - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
   - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+
+---
+
+### #118 十八轮审计修复：CalendarAnt / SegmentedAnt 运行时状态刷新（2026-06-15）
+
+- **现象**：
+  1. `CalendarAnt` 上/下一月按钮、年份视图月份按钮、日期 cell 点击只修改 Builder 字段并触发回调，不刷新 header / body / selected 样式。
+  2. `SegmentedAnt` 点击选项只更新 `selectedValue` / bindProperty / onChange，不会把 `jfx-segmented-item-selected` 从旧项迁移到新项。
+  3. 两个组件都继承 `AbstractStyleBuilder`，但直接返回 Node 的 `build()` 未调用 `applyStyles(...)`，通用 Builder 样式能力不会生效。
+
+- **根因**：组件的运行时状态只停留在 Builder 字段层面，没有把状态变化重新投射到已构建的节点树；同时遗漏了 Builder 公共样式收尾流程。
+
+- **修复**：
+  - [`CalendarAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/CalendarAnt.java)：新增内部 `rebuild()`，翻页、选月、选日期时刷新 header/body，外部根 `VBox` 不替换
+  - [`CalendarAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/CalendarAnt.java)：新增 `CalendarAnt.Controller` 与 `controllerOf(Node)`，支持 `setValue`、`setSelectedDate`、`setMode`
+  - [`CalendarAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/CalendarAnt.java)：补 `applyStyles(calendar)`
+  - [`SegmentedAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/SegmentedAnt.java)：新增 `SegmentedAnt.Controller` 与 `controllerOf(Node)`，保存 value→optionPane 映射，点击或 bindValue 外部变化时迁移 selected styleClass
+  - [`SegmentedAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/SegmentedAnt.java)：补 `applyStyles(segmented)`
+  - [`CalendarAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/CalendarAntTest.java)、[`SegmentedAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/SegmentedAntTest.java)：新增运行时刷新与 Builder 样式接线测试
+
+- **结果**：Calendar 和 Segmented 的运行时交互不再“只改字段不改 UI”，通用 Builder 样式能力恢复。
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅

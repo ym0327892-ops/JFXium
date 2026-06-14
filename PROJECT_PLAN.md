@@ -2402,3 +2402,19 @@ JFXium/                                          # 多模块 Maven 项目（pare
 - [x] `demo.css` 新增趋势语义色和伪边框 background stacking 样式
 - [x] 扫描确认 demo `setStyle(...)` 清零，核心仅剩 `AbstractStyleBuilder / LayoutCommon / TooltipAnt` 受控入口
 - [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+### 🎯 M21.18 十八轮审计修复（2026-06-15）
+
+**动机**：转向 `org.openkawu.jfxium.component` 包内部审计，优先修 P1 运行时交互缺陷。`CalendarAnt` 与 `SegmentedAnt` 都存在“字段变了，节点树没刷新”的问题。
+
+**产出**：为 Calendar 和 Segmented 补运行时刷新能力，恢复 Builder 样式接线，并新增回归测试。
+
+**关键改动**：
+- [x] `CalendarAnt` 新增 `rebuild()`，翻页、选月、选日期时刷新内部 header/body
+- [x] `CalendarAnt` 新增 `Controller` 与 `controllerOf(Node)`
+- [x] `CalendarAnt.Builder.build()` 补 `applyStyles(calendar)`
+- [x] `SegmentedAnt` 新增 `Controller` 与 value→optionPane 映射
+- [x] `SegmentedAnt` 点击和 bindValue 外部变化会迁移 `jfx-segmented-item-selected`
+- [x] `SegmentedAnt.Builder.build()` 补 `applyStyles(segmented)`
+- [x] 新增 `CalendarAntTest / SegmentedAntTest`
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过

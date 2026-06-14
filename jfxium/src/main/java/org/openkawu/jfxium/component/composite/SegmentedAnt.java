@@ -41,6 +41,7 @@ import java.util.function.Consumer;
  * }</pre>
  */
 public class SegmentedAnt {
+    private static final String CONTROLLER_KEY = SegmentedAnt.class.getName() + ".controller";
 
     public enum Size {
         SMALL, DEFAULT, LARGE
@@ -108,6 +109,7 @@ public class SegmentedAnt {
 
             // padding 仍由 size 决定（结构性 inset）
             double padding = size == Size.SMALL ? 4 : size == Size.LARGE ? 12 : 8;
+            Controller controller = new Controller();
 
             for (Option option : options) {
                 boolean isSelected = selectedValue != null && selectedValue.equals(option.getValue());
@@ -118,6 +120,7 @@ public class SegmentedAnt {
                 if (isSelected) {
                     optionPane.getStyleClass().add(JfxStyles.SEGMENTED_ITEM_SELECTED);
                 }
+                controller.register(option.getValue(), optionPane);
 
                 HBox content = new HBox(4);
                 content.setAlignment(Pos.CENTER);
@@ -134,6 +137,7 @@ public class SegmentedAnt {
                 if (!disabled) {
                     optionPane.setOnMouseClicked(e -> {
                         selectedValue = option.getValue();
+                        controller.setSelected(option.getValue());
                         if (bindProperty != null) {
                             bindProperty.set(option.getValue());
                         }
@@ -145,11 +149,54 @@ public class SegmentedAnt {
                 }
                 segmented.getChildren().add(optionPane);
             }
+            controller.setSelected(selectedValue);
+            if (bindProperty != null) {
+                bindProperty.addListener((obs, oldVal, newVal) -> {
+                    selectedValue = newVal;
+                    controller.setSelected(newVal);
+                });
+            }
+            segmented.getProperties().put(CONTROLLER_KEY, controller);
+            applyStyles(segmented);
             return segmented;
         }
     }
 
     public static Builder create() {
         return new Builder();
+    }
+
+    public static Controller controllerOf(Node node) {
+        if (node == null) {
+            throw new IllegalArgumentException("SegmentedAnt.controllerOf(node) 的 node 不能为 null");
+        }
+        Object controller = node.getProperties().get(CONTROLLER_KEY);
+        if (controller instanceof Controller segmentedController) {
+            return segmentedController;
+        }
+        throw new IllegalArgumentException("node 不是 SegmentedAnt.build() 返回的分段控件");
+    }
+
+    public static class Controller {
+        private final java.util.Map<String, StackPane> optionNodes = new java.util.LinkedHashMap<>();
+        private String selected;
+
+        private void register(String value, StackPane node) {
+            optionNodes.put(value, node);
+        }
+
+        public String getSelected() {
+            return selected;
+        }
+
+        public void setSelected(String value) {
+            selected = value;
+            optionNodes.forEach((key, node) -> {
+                node.getStyleClass().remove(JfxStyles.SEGMENTED_ITEM_SELECTED);
+                if (key != null && key.equals(value)) {
+                    node.getStyleClass().add(JfxStyles.SEGMENTED_ITEM_SELECTED);
+                }
+            });
+        }
     }
 }
