@@ -116,60 +116,60 @@
 /* Switch 形状变体（M19.20）：默认 PILL（11px 半径），其他覆盖
    关键：必须同时覆盖 -fx-background-radius 和 -fx-border-radius，
    否则 thumb/track 边框还会按 modena 默认圆形渲染（M19.20 实证） */
-.jfx-switch.shape-rounded,
-.jfx-switch.shape-rounded .jfx-switch-track {
+.jfx-switch.jfx-shape-rounded,
+.jfx-switch.jfx-shape-rounded .jfx-switch-track {
   -fx-background-radius: 4px;
   -fx-border-radius: 4px;
 }
-.jfx-switch.shape-rounded .jfx-switch-thumb {
+.jfx-switch.jfx-shape-rounded .jfx-switch-thumb {
   -fx-background-radius: 3px;
   -fx-border-radius: 3px;
 }
 
-.jfx-switch.shape-square,
-.jfx-switch.shape-square .jfx-switch-track {
+.jfx-switch.jfx-shape-square,
+.jfx-switch.jfx-shape-square .jfx-switch-track {
   -fx-background-radius: 0;
   -fx-border-radius: 0;
 }
-.jfx-switch.shape-square .jfx-switch-thumb {
+.jfx-switch.jfx-shape-square .jfx-switch-thumb {
   -fx-background-radius: 0;
   -fx-border-radius: 0;
 }
 
 /* CheckBox 形状变体（M19.20）：默认方形小圆角（modena 默认），其他覆盖
    关键：选择器要带 .check-box 提优先级，否则被默认 .check-box .box 覆盖 */
-.check-box.shape-circle .box {
+.check-box.jfx-shape-circle .box {
   -fx-background-radius: @border-radius-full;
   -fx-border-radius: @border-radius-full;
 }
-.check-box.shape-circle .box .mark {
+.check-box.jfx-shape-circle .box .mark {
   -fx-background-radius: @border-radius-full;
 }
 
-.check-box.shape-square .box {
+.check-box.jfx-shape-square .box {
   -fx-background-radius: 0;
   -fx-border-radius: 0;
 }
 
-.check-box.shape-rounded .box {
+.check-box.jfx-shape-rounded .box {
   -fx-background-radius: 6px;
   -fx-border-radius: 6px;
 }
 
 /* RadioButton 形状变体（M19.20）：默认圆形（modena 默认），SQUARE/ROUNDED 覆盖 */
-.radio-button.shape-square .radio {
+.radio-button.jfx-shape-square .radio {
   -fx-background-radius: 0;
   -fx-border-radius: 0;
 }
-.radio-button.shape-square .radio .dot {
+.radio-button.jfx-shape-square .radio .dot {
   -fx-background-radius: 0;
 }
 
-.radio-button.shape-rounded .radio {
+.radio-button.jfx-shape-rounded .radio {
   -fx-background-radius: 4px;
   -fx-border-radius: 4px;
 }
-.radio-button.shape-rounded .radio .dot {
+.radio-button.jfx-shape-rounded .radio .dot {
   -fx-background-radius: 2px;
 }
 

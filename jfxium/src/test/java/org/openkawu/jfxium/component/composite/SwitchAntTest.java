@@ -53,7 +53,7 @@ class SwitchAntTest extends JfxTestBase {
     void shape_square() {
         HBox sw = SwitchAnt.create()
                 .shape(SwitchAnt.Shape.SQUARE).build();
-        // shape-square 应挂到内部的 switchPane 上，验证不抛异常即可
+        // jfx-shape-square 应挂到内部的 switchPane 上，验证不抛异常即可
         assertNotNull(sw);
     }
 

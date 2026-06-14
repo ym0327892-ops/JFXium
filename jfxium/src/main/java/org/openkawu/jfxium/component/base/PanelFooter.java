@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.base;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
@@ -29,7 +30,7 @@ public class PanelFooter {
     public static class Builder {
         private Node left = null;
         private Node right = null;
-        private String padding = "16px 24px";
+        private Insets padding = null;
         private boolean hasBorder = true;
         private Pos alignment = Pos.CENTER_RIGHT;
 
@@ -43,8 +44,13 @@ public class PanelFooter {
             return this;
         }
 
-        public Builder padding(String padding) {
+        public Builder padding(Insets padding) {
             this.padding = padding;
+            return this;
+        }
+
+        public Builder padding(String padding) {
+            this.padding = parsePadding(padding);
             return this;
         }
 
@@ -65,7 +71,9 @@ public class PanelFooter {
             if (hasBorder) {
                 footer.getStyleClass().add(JfxStyles.PANEL_FOOTER_BORDERED);
             }
-            footer.setStyle("-fx-padding: " + padding + ";");
+            if (padding != null) {
+                footer.setPadding(padding);
+            }
 
             if (left != null) {
                 HBox leftBox = new HBox(left);
@@ -78,6 +86,35 @@ public class PanelFooter {
             }
 
             return footer;
+        }
+
+        private Insets parsePadding(String value) {
+            if (value == null || value.isBlank()) {
+                return null;
+            }
+            String[] parts = value.trim().split("\\s+");
+            if (parts.length < 1 || parts.length > 4) {
+                throw new IllegalArgumentException("padding 仅支持 1 到 4 个值: " + value);
+            }
+            double[] values = new double[parts.length];
+            for (int i = 0; i < parts.length; i++) {
+                values[i] = parseCssLength(parts[i]);
+            }
+            return switch (values.length) {
+                case 1 -> new Insets(values[0]);
+                case 2 -> new Insets(values[0], values[1], values[0], values[1]);
+                case 3 -> new Insets(values[0], values[1], values[2], values[1]);
+                case 4 -> new Insets(values[0], values[1], values[2], values[3]);
+                default -> throw new IllegalStateException("Unexpected padding length: " + values.length);
+            };
+        }
+
+        private double parseCssLength(String token) {
+            String normalized = token.trim().toLowerCase();
+            if (normalized.endsWith("px")) {
+                normalized = normalized.substring(0, normalized.length() - 2);
+            }
+            return Double.parseDouble(normalized);
         }
     }
 }

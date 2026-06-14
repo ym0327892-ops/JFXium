@@ -266,32 +266,6 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
         return this;
     }
 
-    // ============================================================
-    // 视觉钩子
-    // ============================================================
-
-    /** 追加一个 styleClass（幂等）。 */
-    public ButtonAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** 批量挂多个 styleClass。 */
-    public ButtonAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先用 styleClass + LESS）。 */
-    public ButtonAnt style(String style) {
-        if (style != null) setStyle(style);
-        return this;
-    }
-
     /** Builder 模式终结调用——返回自身（向后兼容）。 */
     public ButtonAnt build() {
         return this;
@@ -307,13 +281,13 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
                 JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_ACCENT,
                 JfxStyles.BUTTON_OUTLINED, JfxStyles.BUTTON_DASHED,
                 JfxStyles.BUTTON_TEXT, JfxStyles.BUTTON_LINK,
-                "success", "warning", "danger"
+                JfxStyles.BUTTON_SUCCESS, JfxStyles.BUTTON_WARNING, JfxStyles.BUTTON_DANGER
         );
         switch (type) {
             case PRIMARY, ACCENT -> getStyleClass().add(JfxStyles.BUTTON_ACCENT);
-            case SUCCESS -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "success");
-            case WARNING -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "warning");
-            case DANGER -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "danger");
+            case SUCCESS -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_SUCCESS);
+            case WARNING -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_WARNING);
+            case DANGER -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_DANGER);
             case OUTLINED -> getStyleClass().add(JfxStyles.BUTTON_OUTLINED);
             case DASHED -> getStyleClass().add(JfxStyles.BUTTON_DASHED);
             case TEXT -> getStyleClass().add(JfxStyles.BUTTON_TEXT);
@@ -335,14 +309,14 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
                 JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_ACCENT,
                 JfxStyles.BUTTON_OUTLINED, JfxStyles.BUTTON_DASHED,
                 JfxStyles.BUTTON_TEXT, JfxStyles.BUTTON_LINK,
-                "success", "warning", "danger"
+                JfxStyles.BUTTON_SUCCESS, JfxStyles.BUTTON_WARNING, JfxStyles.BUTTON_DANGER
         );
         Type t = type != null ? type : Type.DEFAULT;
         switch (t) {
             case PRIMARY, ACCENT -> button.getStyleClass().add(JfxStyles.BUTTON_ACCENT);
-            case SUCCESS -> button.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "success");
-            case WARNING -> button.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "warning");
-            case DANGER -> button.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, "danger");
+            case SUCCESS -> button.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_SUCCESS);
+            case WARNING -> button.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_WARNING);
+            case DANGER -> button.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_DANGER);
             case OUTLINED -> button.getStyleClass().add(JfxStyles.BUTTON_OUTLINED);
             case DASHED -> button.getStyleClass().add(JfxStyles.BUTTON_DASHED);
             case TEXT -> button.getStyleClass().add(JfxStyles.BUTTON_TEXT);

@@ -1,8 +1,6 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
-import javafx.scene.layout.VBox;
-
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -55,33 +53,25 @@ public class QRCodeExamplePage extends VBoxAnt {
     }
 
     private Node dynamicSection() {
-        Node[] qrHolder = new Node[1];
-        qrHolder[0] = QRCodeAnt.create().value("JFXium").size(160).build();
+        Node qr = QRCodeAnt.create().value("JFXium").size(160).build();
+        QRCodeAnt.Controller controller = QRCodeAnt.controllerOf(qr);
 
         ButtonAnt regenBtn = ButtonAnt.create("重新生成")
                 .type(ButtonAnt.Type.PRIMARY)
                 .onClick(e -> {
-                    VBox parent = (VBox) qrHolder[0].getParent();
-                    if (parent != null) {
-                        int idx = parent.getChildren().indexOf(qrHolder[0]);
-                        String newValue = "JFXium-" + System.currentTimeMillis() % 10000;
-                        parent.getChildren().set(idx,
-                                QRCodeAnt.create().value(newValue).size(160).build());
-                        qrHolder[0] = parent.getChildren().get(idx);
-                    }
+                    String newValue = "JFXium-" + System.currentTimeMillis() % 10000;
+                    controller.setValue(newValue);
                 })
                 .build();
 
-        Node demo = Demos.column(qrHolder[0], regenBtn);
+        Node demo = Demos.column(qr, regenBtn);
         String code = """
-                // 初始构建
-                QRCodeAnt.create().value("JFXium").size(160).build();
-                // 动态更新：rebuild + replace
-                parent.getChildren().set(idx,
-                        QRCodeAnt.create().value(newValue).size(160).build());
+                Node qr = QRCodeAnt.create().value("JFXium").size(160).build();
+                QRCodeAnt.Controller controller = QRCodeAnt.controllerOf(qr);
+                controller.setValue(newValue);
                 """;
         return Demos.sectionWithCode("3. 动态重新生成",
-                "点击按钮更换编码内容，演示 rebuild + replace 动态更新二维码。",
+                "点击按钮更换编码内容，通过 Controller 重绘同一个二维码节点。",
                 code, demo);
     }
 }

@@ -70,12 +70,12 @@ public class ComboBoxAnt<T> extends ComboBox<T> implements LayoutCommon<ComboBox
 
     public ComboBoxAnt() {
         super();
-        getStyleClass().add("jfx-combo-box");
+        getStyleClass().add(JfxStyles.JFX_COMBO_BOX);
     }
 
     public ComboBoxAnt(ObservableList<T> items) {
         super(items);
-        getStyleClass().add("jfx-combo-box");
+        getStyleClass().add(JfxStyles.JFX_COMBO_BOX);
     }
 
     // ============================================================
@@ -148,32 +148,6 @@ public class ComboBoxAnt<T> extends ComboBox<T> implements LayoutCommon<ComboBox
         if (property != null) {
             valueProperty().bindBidirectional(property);
         }
-        return this;
-    }
-
-    // ============================================================
-    // 视觉钩子（跟 *Ant 风格一致）
-    // ============================================================
-
-    /** 追加一个 styleClass（幂等——重复调不会重复挂）。 */
-    public ComboBoxAnt<T> styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** 批量挂多个 styleClass。 */
-    public ComboBoxAnt<T> styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先用 styleClass + LESS）。 */
-    public ComboBoxAnt<T> style(String style) {
-        if (style != null) setStyle(style);
         return this;
     }
 

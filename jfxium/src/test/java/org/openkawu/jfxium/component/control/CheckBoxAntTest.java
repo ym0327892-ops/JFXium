@@ -19,7 +19,8 @@ class CheckBoxAntTest extends JfxTestBase {
     @DisplayName("create() 挂默认 styleClass")
     void create_hasDefaultClass() {
         CheckBoxAnt cb = CheckBoxAnt.create().build();
-        assertTrue(cb.getStyleClass().contains("jfx-check-box"));
+        // 父类 CheckBox 默认挂 modena "check-box" class（jfx-check-box 是死代码已删，BUG #104）
+        assertTrue(cb.getStyleClass().contains("check-box"));
     }
 
     @Test
@@ -73,10 +74,10 @@ class CheckBoxAntTest extends JfxTestBase {
     // ---------- shape ----------
 
     @Test
-    @DisplayName("shape(CIRCLE) 挂 shape-circle")
+    @DisplayName("shape(CIRCLE) 挂 jfx-shape-circle")
     void shape_circle() {
         CheckBoxAnt cb = CheckBoxAnt.create().shape(CheckBoxAnt.Shape.CIRCLE).build();
-        assertTrue(cb.getStyleClass().contains("shape-circle"));
+        assertTrue(cb.getStyleClass().contains(JfxStyles.CHECKBOX_SHAPE_CIRCLE));
     }
 
     @Test
@@ -86,8 +87,8 @@ class CheckBoxAntTest extends JfxTestBase {
                 .shape(CheckBoxAnt.Shape.CIRCLE)
                 .shape(CheckBoxAnt.Shape.ROUNDED)
                 .build();
-        assertFalse(cb.getStyleClass().contains("shape-circle"));
-        assertTrue(cb.getStyleClass().contains("shape-rounded"));
+        assertFalse(cb.getStyleClass().contains(JfxStyles.CHECKBOX_SHAPE_CIRCLE));
+        assertTrue(cb.getStyleClass().contains(JfxStyles.CHECKBOX_SHAPE_ROUNDED));
     }
 
     // ---------- onChange ----------

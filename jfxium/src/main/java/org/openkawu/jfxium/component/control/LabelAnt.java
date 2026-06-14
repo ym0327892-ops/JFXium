@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -48,7 +49,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时仍保留链式。</li>
  * </ul>
  */
-public class LabelAnt extends Label {
+public class LabelAnt extends Label implements LayoutCommon<LabelAnt> {
 
     // ============================================================
     // 工厂入口
@@ -141,20 +142,6 @@ public class LabelAnt extends Label {
     /** 文本对齐方式。 */
     public LabelAnt align(Pos alignment) {
         setAlignment(alignment);
-        return this;
-    }
-
-    /** 追加一个 styleClass（幂等——重复调不会重复挂）。 */
-    public LabelAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先 styleClass + LESS）。 */
-    public LabelAnt style(String style) {
-        if (style != null) setStyle(style);
         return this;
     }
 

@@ -21,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * <p><b>分组</b>：</p>
  * <ul>
- *   <li>基本：create + build 返回 SplitMenuButton + 默认 jfx-split-button class</li>
+ *   <li>基本：create + build 返回 SplitMenuButton + 默认 jfx-split-menu-button class</li>
  *   <li>size / shape：SMALL/LARGE/ROUNDED/SQUARE 互斥</li>
- *   <li>arrowStyle：CHEVRON 默认 / TRIANGLE 追加 arrow-triangle class</li>
+ *   <li>arrowStyle：CHEVRON 默认 / TRIANGLE 追加 JfxStyles.JFX_ARROW_TRIANGLE class</li>
  *   <li>disabled / icon / contentDisplay</li>
  *   <li>onClick：主按钮点击事件</li>
  *   <li>items：item(item,item,item,itemDisabled) / separator / add(MenuItem)</li>
@@ -38,12 +38,12 @@ class SplitButtonAntTest extends JfxTestBase {
     // ============================================================
 
     @Test
-    @DisplayName("create(text).build() 返回 SplitMenuButton 且挂 jfx-split-button")
+    @DisplayName("create(text).build() 返回 SplitMenuButton 且挂 jfx-split-menu-button")
     void build_returnsSplitMenuButton() {
         SplitMenuButton btn = SplitButtonAnt.create("保存").build();
         assertNotNull(btn);
         assertEquals("保存", btn.getText());
-        assertTrue(btn.getStyleClass().contains("jfx-split-button"));
+        assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_SPLIT_MENU_BUTTON));
     }
 
     @Test
@@ -132,18 +132,18 @@ class SplitButtonAntTest extends JfxTestBase {
     class Arrow {
 
         @Test
-        @DisplayName("arrowStyle(CHEVRON) 默认不挂 arrow-triangle")
+        @DisplayName("arrowStyle(CHEVRON) 默认不挂 JfxStyles.JFX_ARROW_TRIANGLE")
         void chevron_default() {
             SplitMenuButton btn = SplitButtonAnt.create().build();
-            assertFalse(btn.getStyleClass().contains("arrow-triangle"));
+            assertFalse(btn.getStyleClass().contains(JfxStyles.JFX_ARROW_TRIANGLE));
         }
 
         @Test
-        @DisplayName("arrowStyle(TRIANGLE) 挂 arrow-triangle class")
+        @DisplayName("arrowStyle(TRIANGLE) 挂 JfxStyles.JFX_ARROW_TRIANGLE class")
         void triangle() {
             SplitMenuButton btn = SplitButtonAnt.create()
                     .arrowStyle(SplitButtonAnt.ArrowStyle.TRIANGLE).build();
-            assertTrue(btn.getStyleClass().contains("arrow-triangle"));
+            assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_ARROW_TRIANGLE));
         }
     }
 
@@ -352,7 +352,7 @@ class SplitButtonAntTest extends JfxTestBase {
         assertEquals("保存", btn.getText());
         assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_LARGE));
         assertTrue(btn.getStyleClass().contains(JfxStyles.SHAPE_ROUNDED));
-        assertTrue(btn.getStyleClass().contains("arrow-triangle"));
+        assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_ARROW_TRIANGLE));
         assertEquals(5, btn.getItems().size());
     }
 }

@@ -306,7 +306,7 @@ public class AppShellAnt {
         /** 内置触发按钮：折叠时显示 ›, 展开时显示 ‹。 */
         private Button createTriggerButton(BooleanProperty collapsedProp) {
             Button btn = new Button(collapsedProp.get() ? "›" : "‹");
-            btn.getStyleClass().addAll(JfxStyles.APP_SHELL_SIDER + "-trigger", "button");
+            btn.getStyleClass().addAll(JfxStyles.APP_SHELL_SIDER_TRIGGER, JfxStyles.BUTTON_BASE);
             btn.setMaxWidth(Double.MAX_VALUE);
             btn.setOnAction(e -> collapsedProp.set(!collapsedProp.get()));
             // 同步按钮文字与折叠状态

@@ -4,9 +4,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -127,14 +133,14 @@ public class AvatarAnt {
             avatar.setMinSize(s, s);
             avatar.setMaxSize(s, s);
 
-            // ── 红线#1 必要例外 ─────────────────────────────
-            // 用户自定义背景颜色（hex/rgb），无法预定义 LESS；
-            // CSS 变量路径通过 isCssVar() 已正确走 styleClass。
             String bg = backgroundColor != null ? backgroundColor : null;
             if (bg == null || isCssVar(bg)) {
                 avatar.getStyleClass().add(JfxStyles.AVATAR_BG_DEFAULT);
             } else {
-                avatar.setStyle("-fx-background-color: " + bg + ";");
+                avatar.setBackground(new Background(new BackgroundFill(
+                        Paint.valueOf(bg),
+                        CornerRadii.EMPTY,
+                        javafx.geometry.Insets.EMPTY)));
             }
 
             // Clip shape
@@ -163,20 +169,13 @@ public class AvatarAnt {
                 // 文字根类：weight 600 + font-size 走 LESS 修饰类
                 label.getStyleClass().add(JfxStyles.AVATAR_TEXT);
                 if (customSize > 0) {
-                    // ── 红线#1 必要例外 ─────────────────────
-                    // 自定义尺寸为运行时计算值（s * 0.4），
-                    // 无法预定义为 LESS 静态选择器。
-                    label.setStyle("-fx-font-size: " + (s * 0.4) + "px;");
+                    label.setFont(Font.font(label.getFont().getFamily(), FontWeight.SEMI_BOLD, s * 0.4));
                 } else {
                     // enum 尺寸走 LESS 修饰类（避免 setStyle 拼 -fx-font-size）
                     label.getStyleClass().add(textSizeClass(size));
                 }
-                // ── 红线#1 必要例外 ─────────────────────
-                // 用户自定义文字颜色（hex），无法预定义 LESS；
-                // CSS 变量路径已正确走 styleClass。
                 if (!isCssVar(textColor)) {
-                    String existing = label.getStyle();
-                    label.setStyle((existing == null ? "" : existing) + " -fx-text-fill: " + textColor + ";");
+                    label.setTextFill(Paint.valueOf(textColor));
                 } else {
                     label.getStyleClass().add(JfxStyles.AVATAR_FG_DEFAULT);
                 }

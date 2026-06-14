@@ -33,6 +33,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * }</pre>
  */
 public class StatisticAnt {
+    private static final String CONTROLLER_KEY = StatisticAnt.class.getName() + ".controller";
 
     public enum Size {
         SMALL, DEFAULT, LARGE
@@ -68,20 +69,22 @@ public class StatisticAnt {
             if (size == Size.SMALL) statistic.getStyleClass().add(JfxStyles.STATISTIC_SMALL);
             else if (size == Size.LARGE) statistic.getStyleClass().add(JfxStyles.STATISTIC_LARGE);
 
-            if (!title.isEmpty()) {
-                Label titleLabel = new Label(title);
-                titleLabel.getStyleClass().add(JfxStyles.STATISTIC_TITLE);
-                statistic.getChildren().add(titleLabel);
-            }
+            Label titleLabel = new Label(title);
+            titleLabel.getStyleClass().add(JfxStyles.STATISTIC_TITLE);
+            titleLabel.setVisible(!title.isEmpty());
+            titleLabel.setManaged(!title.isEmpty());
+            statistic.getChildren().add(titleLabel);
 
             HBox valueRow = new HBox(4);
             valueRow.setAlignment(Pos.CENTER_LEFT);
 
+            Label prefixLabel = new Label(prefix != null ? prefix : "");
+            prefixLabel.getStyleClass().add(JfxStyles.STATISTIC_PREFIX);
             if (prefixNode != null) {
                 valueRow.getChildren().add(prefixNode);
-            } else if (prefix != null && !prefix.isEmpty()) {
-                Label prefixLabel = new Label(prefix);
-                prefixLabel.getStyleClass().add(JfxStyles.STATISTIC_PREFIX);
+            } else {
+                prefixLabel.setVisible(prefix != null && !prefix.isEmpty());
+                prefixLabel.setManaged(prefix != null && !prefix.isEmpty());
                 valueRow.getChildren().add(prefixLabel);
             }
 
@@ -89,20 +92,109 @@ public class StatisticAnt {
             valueLabel.getStyleClass().add(JfxStyles.STATISTIC_VALUE);
             valueRow.getChildren().add(valueLabel);
 
+            Label suffixLabel = new Label(suffix != null ? suffix : "");
+            suffixLabel.getStyleClass().add(JfxStyles.STATISTIC_SUFFIX);
             if (suffixNode != null) {
                 valueRow.getChildren().add(suffixNode);
-            } else if (suffix != null && !suffix.isEmpty()) {
-                Label suffixLabel = new Label(suffix);
-                suffixLabel.getStyleClass().add(JfxStyles.STATISTIC_SUFFIX);
+            } else {
+                suffixLabel.setVisible(suffix != null && !suffix.isEmpty());
+                suffixLabel.setManaged(suffix != null && !suffix.isEmpty());
                 valueRow.getChildren().add(suffixLabel);
             }
 
             statistic.getChildren().add(valueRow);
+            statistic.getProperties().put(CONTROLLER_KEY,
+                    new Controller(titleLabel, valueLabel,
+                            prefixNode == null ? prefixLabel : null,
+                            suffixNode == null ? suffixLabel : null));
+            applyStyles(statistic);
             return statistic;
         }
     }
 
     public static Builder create() {
         return new Builder();
+    }
+
+    public static Controller controllerOf(Node node) {
+        if (node == null) {
+            throw new IllegalArgumentException("StatisticAnt.controllerOf(node) 的 node 不能为 null");
+        }
+        Object controller = node.getProperties().get(CONTROLLER_KEY);
+        if (controller instanceof Controller c) {
+            return c;
+        }
+        throw new IllegalArgumentException("node 不是 StatisticAnt.build() 返回的统计组件");
+    }
+
+    public static class Controller {
+        private final Label titleLabel;
+        private final Label valueLabel;
+        private final Label prefixLabel;
+        private final Label suffixLabel;
+
+        private Controller(Label titleLabel, Label valueLabel, Label prefixLabel, Label suffixLabel) {
+            this.titleLabel = titleLabel;
+            this.valueLabel = valueLabel;
+            this.prefixLabel = prefixLabel;
+            this.suffixLabel = suffixLabel;
+        }
+
+        public void setTitle(String title) {
+            String text = title != null ? title : "";
+            titleLabel.setText(text);
+            titleLabel.setVisible(!text.isEmpty());
+            titleLabel.setManaged(!text.isEmpty());
+        }
+
+        public String getTitle() {
+            return titleLabel.getText();
+        }
+
+        public void setValue(String value) {
+            valueLabel.setText(value != null ? value : "");
+        }
+
+        public void setValue(double value) {
+            setValue(String.valueOf(value));
+        }
+
+        public void setValue(int value) {
+            setValue(String.valueOf(value));
+        }
+
+        public void setValue(long value) {
+            setValue(String.valueOf(value));
+        }
+
+        public String getValue() {
+            return valueLabel.getText();
+        }
+
+        public void setPrefix(String prefix) {
+            setOptionalText(prefixLabel, prefix);
+        }
+
+        public String getPrefix() {
+            return prefixLabel != null ? prefixLabel.getText() : "";
+        }
+
+        public void setSuffix(String suffix) {
+            setOptionalText(suffixLabel, suffix);
+        }
+
+        public String getSuffix() {
+            return suffixLabel != null ? suffixLabel.getText() : "";
+        }
+
+        private static void setOptionalText(Label label, String text) {
+            if (label == null) {
+                return;
+            }
+            String value = text != null ? text : "";
+            label.setText(value);
+            label.setVisible(!value.isEmpty());
+            label.setManaged(!value.isEmpty());
+        }
     }
 }

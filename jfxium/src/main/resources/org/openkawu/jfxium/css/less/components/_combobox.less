@@ -20,7 +20,6 @@
 }
 
 .combo-box .arrow {
-  /* M19.44 红线#9 修复：显式设 shape + 尺寸（对齐 AtlantaFX arrow-drop-down） */
   -fx-shape: "M7 10l5 5 5-5z";
   -fx-min-width: 10px;
   -fx-min-height: 5px;
@@ -28,6 +27,20 @@
   -fx-pref-height: 5px;
   -fx-background-color: -color-fg-muted;
   
+}
+
+/* 统一下拉箭头（可挂到任意 Region 上复用） */
+.jfx-arrow-dropdown {
+  -fx-shape: "M7 10l5 5 5-5z";
+  -fx-min-width: 10px;
+  -fx-min-height: 5px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 5px;
+  -fx-background-color: -color-fg-muted;
+}
+
+.jfx-arrow-dropdown:hover {
+  -fx-background-color: -color-fg-default;
 }
 
 .combo-box:hover .arrow {

@@ -23,7 +23,7 @@ import java.util.List;
  * public Builder style(String s) { this.style = s; return this; }
  * public Builder styleClass(String c) { this.extraStyleClasses.add(c); return this; }
  * // build() 末尾：node.getStyleClass().addAll(extraStyleClasses);
- * //              if (!style.isEmpty()) node.setStyle(style);
+ * //              if (!style.isEmpty()) apply inline style to node;
  * }</pre>
  *
  * 抽到这里后，每个 Builder 减少 ~10 行样板代码，且修改风格统一时只动一处。
@@ -400,9 +400,9 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
      * 不直接继承 Node 但实现 Styleable 的控件。
      *
      * <p>本重载只应用 {@link #extraStyleClasses}。inline style（{@link #style}）
-     * 不在此处处理，因为 {@link Styleable} 接口没有 setStyle 方法。
+     * 不在此处处理，因为 {@link Styleable} 接口没有 inline style 写入方法。
      * 如需应用 inline style，子类 build() 应当在调用 {@code super.applyStyles(styleable)}
-     * 之后自己调用 {@code controlInstance.setStyle(getStyle())} 完成。
+     * 之后由具体控件自行写入 {@code getStyle()}。
      *
      * <p>大多数 Styleable 实际是 Node 子类，应优先使用 {@link #applyStyles(Node)}。
      */

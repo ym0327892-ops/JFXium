@@ -3,6 +3,7 @@ package org.openkawu.jfxium.component.control;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
@@ -47,7 +48,7 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class RadioButtonAnt extends RadioButton {
+public class RadioButtonAnt extends RadioButton implements LayoutCommon<RadioButtonAnt> {
 
     /** 尺寸枚举，与 ButtonAnt/InputAnt 一致（DEFAULT/SMALL/LARGE）。 */
     public enum Size {
@@ -86,12 +87,10 @@ public class RadioButtonAnt extends RadioButton {
 
     public RadioButtonAnt() {
         super();
-        getStyleClass().add("jfx-radio-button");
     }
 
     public RadioButtonAnt(String text) {
         super(text);
-        getStyleClass().add("jfx-radio-button");
     }
 
     // ============================================================
@@ -135,11 +134,11 @@ public class RadioButtonAnt extends RadioButton {
      * DEFAULT 仅清不挂。
      */
     public RadioButtonAnt shape(Shape shape) {
-        getStyleClass().removeAll("shape-square", "shape-rounded");
+        getStyleClass().removeAll(JfxStyles.CHECKBOX_SHAPE_SQUARE, JfxStyles.CHECKBOX_SHAPE_ROUNDED);
         if (shape == Shape.SQUARE) {
-            getStyleClass().add("shape-square");
+            getStyleClass().add(JfxStyles.CHECKBOX_SHAPE_SQUARE);
         } else if (shape == Shape.ROUNDED) {
-            getStyleClass().add("shape-rounded");
+            getStyleClass().add(JfxStyles.CHECKBOX_SHAPE_ROUNDED);
         }
         return this;
     }
@@ -165,32 +164,6 @@ public class RadioButtonAnt extends RadioButton {
         if (property != null) {
             selectedProperty().bindBidirectional(property);
         }
-        return this;
-    }
-
-    // ============================================================
-    // 视觉钩子
-    // ============================================================
-
-    /** 追加一个 styleClass（幂等）。 */
-    public RadioButtonAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** 批量挂多个 styleClass。 */
-    public RadioButtonAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先用 styleClass + LESS）。 */
-    public RadioButtonAnt style(String style) {
-        if (style != null) setStyle(style);
         return this;
     }
 

@@ -3,6 +3,7 @@ package org.openkawu.jfxium.component.control;
 import javafx.scene.Node;
 import javafx.scene.control.TitledPane;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 标题面板组件 - 对标 Ant Design Collapse Panel（组合式，Builder 模式）。
@@ -81,7 +82,7 @@ public class TitledPaneAnt {
             titledPane.setExpanded(expanded);
             titledPane.setAnimated(animated);
             titledPane.setCollapsible(collapsible);
-            titledPane.getStyleClass().add("jfx-titled-pane");
+            titledPane.getStyleClass().add(JfxStyles.JFX_TITLED_PANE);
             applyStyles(titledPane);
             return titledPane;
         }

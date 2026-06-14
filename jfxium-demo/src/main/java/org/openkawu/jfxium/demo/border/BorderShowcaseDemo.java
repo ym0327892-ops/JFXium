@@ -60,7 +60,11 @@ public class BorderShowcaseDemo extends Application {
 
         Scene scene = new Scene(root, 1000, 760);
 
-        // [Quick Test] inline CSS via data: URI — 改一个数字重跑即可, 不用碰 .css 文件
+        scene.getStylesheets().add(getClass()
+                .getResource("/org/openkawu/jfxium/jfxiumUiExample/demo.css")
+                .toExternalForm());
+
+        // [Quick Test] demo.css styleClass — 改一个数字重跑即可, 不用碰库内主题文件
         // -----------------------------------------------------------------------
         // 修复前(看不出边框):  background-radius: 4px, 3px   ← Layer 0 比基础 6px 还小, Layer 1 几乎吞掉 Layer 0
         // 修复后(本版本):      background-radius: 6px, 3px   ← Layer 0 = 基础 6px, 内缩 2px 露 2px 边
@@ -321,19 +325,14 @@ public class BorderShowcaseDemo extends Application {
 
     private Node sectionLayeredDemo() {
         // ✅ 伪边框: 走 background-stacking, 圆角处无接缝
-        //   demo 内联快速验证：用两层背景代替 -fx-border-*，并用 padding 占位 1px
+        //   demo.css 快速验证：用两层背景代替 -fx-border-*，并用 padding 占位 1px
         //   （background-insets 不占布局空间，否则有底色的 header/body 会盖住边框）
         Node pseudoBox = GroupBoxAnt.create()
             .title("✅ 伪边框(background-stacking) — 圆角无接缝")
             .content(simpleContent("两层背景: 底=边框色 顶=填充色内缩1px, 内外圆角同心无接缝"))
             .bordered(false)   // 关闭原生边框，避免与背景叠加产生双线
             .build();
-        pseudoBox.setStyle(
-            "-fx-background-color: -color-border-default, -color-bg-default;"
-            + "-fx-background-insets: 0, 1;"
-            + "-fx-background-radius: 6, 5;"
-            + "-fx-padding: 1;"
-        );
+        pseudoBox.getStyleClass().add("jfx-demo-border-pseudo");
 
         // 内层: 两个子 GroupBoxAnt(分别用不同边框实现, 用 VBoxAnt 装成一列)
         Node innerColumn = VBoxAnt.create()

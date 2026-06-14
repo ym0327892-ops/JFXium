@@ -1,7 +1,12 @@
 package org.openkawu.jfxium.component.base;
 
 import javafx.geometry.Pos;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 import org.openkawu.jfxium.core.css.JfxStyles;
 
@@ -46,16 +51,12 @@ public class Overlay {
 
         public StackPane build() {
             StackPane pane = new StackPane();
-            // ── 红线#1 必要例外 ────────────────────────────────────────
-            // alpha 通道必须在 background-color 内（-fx-opacity 会同时影响
-            // 子节点透明度——参见 _component-aux.less:475 注释）。CSS 变量
-            // 体系无法支持 "rgba(var(--color), N)" 动态 alpha 替换，且 opacity
-            // 是 Builder 入参的连续值（非有限离散值，不能映射为 styleClass）。
-            // 此处的 setStyle("-fx-background-color: rgba(...)") 是 JavaFX 技术
-            // 限制下的硬豁免，与 AtlantaFX 的 overlay 处理策略一致。
-            // ─────────────────────────────────────────────────────────
             pane.getStyleClass().add(JfxStyles.OVERLAY);
-            pane.setStyle("-fx-background-color: rgba(0, 0, 0, " + opacity + ");");
+            // 用 JavaFX BackgroundFill 承载 alpha，避免 -fx-opacity 连子节点一起变透明。
+            pane.setBackground(new Background(new BackgroundFill(
+                    Color.color(0, 0, 0, opacity),
+                    CornerRadii.EMPTY,
+                    Insets.EMPTY)));
             pane.setAlignment(Pos.CENTER);
             
             if (closable && onClick != null) {

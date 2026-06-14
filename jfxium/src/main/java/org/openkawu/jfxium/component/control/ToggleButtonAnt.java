@@ -213,7 +213,7 @@ public class ToggleButtonAnt {
             }
 
             btn.setFocusTraversable(true);
-            btn.getStyleClass().add("jfx-toggle-button");
+            btn.getStyleClass().add(JfxStyles.JFX_TOGGLE_BUTTON);
 
             applyStyles(btn);
             return btn;

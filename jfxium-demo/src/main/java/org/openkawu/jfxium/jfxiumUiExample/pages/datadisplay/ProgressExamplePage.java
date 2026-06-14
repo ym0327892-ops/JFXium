@@ -70,8 +70,10 @@ public class ProgressExamplePage extends VBoxAnt {
     }
 
     private Node dynamicSection() {
-        Node[] barHolder = {ProgressAnt.bar().progress(0.0).build()};
-        Node[] circleHolder = {ProgressAnt.circle().progress(0.0).size(80).build()};
+        HBox bar = ProgressAnt.bar().progress(0.0).build();
+        VBox circle = ProgressAnt.circle().progress(0.0).size(80).build();
+        ProgressAnt.Controller barController = ProgressAnt.controllerOf(bar);
+        ProgressAnt.Controller circleController = ProgressAnt.controllerOf(circle);
 
         ButtonAnt playBtn = ButtonAnt.create("开始演示")
                 .type(ButtonAnt.Type.PRIMARY)
@@ -84,18 +86,8 @@ public class ProgressExamplePage extends VBoxAnt {
                     progress[0] += 0.01;
                     if (progress[0] > 1.0) progress[0] = 1.0;
                     double p = progress[0];
-                    VBox parent = (VBox) barHolder[0].getParent();
-                    if (parent != null) {
-                        int idx = parent.getChildren().indexOf(barHolder[0]);
-                        parent.getChildren().set(idx, ProgressAnt.bar().progress(p).build());
-                        barHolder[0] = parent.getChildren().get(idx);
-                    }
-                    VBox circleParent = (VBox) circleHolder[0].getParent();
-                    if (circleParent != null) {
-                        int cIdx = circleParent.getChildren().indexOf(circleHolder[0]);
-                        circleParent.getChildren().set(cIdx, ProgressAnt.circle().progress(p).size(80).build());
-                        circleHolder[0] = circleParent.getChildren().get(cIdx);
-                    }
+                    barController.setProgress(p);
+                    circleController.setProgress(p);
                 })
         );
         timeline.setCycleCount(100);
@@ -108,30 +100,20 @@ public class ProgressExamplePage extends VBoxAnt {
         resetBtn.setOnAction(e -> {
             timeline.stop();
             progress[0] = 0.0;
-            VBox parent = (VBox) barHolder[0].getParent();
-            if (parent != null) {
-                parent.getChildren().set(
-                        parent.getChildren().indexOf(circleHolder[0]) - 1,
-                        ProgressAnt.bar().progress(0.0).build());
-            }
-            VBox circleParent = (VBox) circleHolder[0].getParent();
-            if (circleParent != null) {
-                circleParent.getChildren().set(
-                        circleParent.getChildren().indexOf(barHolder[0]) + 1,
-                        ProgressAnt.circle().progress(0.0).size(80).build());
-            }
+            barController.setProgress(0.0);
+            circleController.setProgress(0.0);
         });
 
-        VBox barRow = Demos.column(barHolder[0], playBtn, resetBtn);
-        Node demo = Demos.row(barRow, circleHolder[0]);
+        VBox barRow = Demos.column(bar, playBtn, resetBtn);
+        Node demo = Demos.row(barRow, circle);
         String code = """
-                // 动态创建：不断 rebuild 新进度条替换容器中的旧 Node
-                Node bar = ProgressAnt.bar().progress(0.0).build();
+                HBox bar = ProgressAnt.bar().progress(0.0).build();
+                ProgressAnt.Controller ctrl = ProgressAnt.controllerOf(bar);
                 // ... Timeline 或业务回调
-                parent.getChildren().set(idx, ProgressAnt.bar().progress(p).build());
+                ctrl.setProgress(p);
                 """;
         return Demos.sectionWithCode("4. 动态演示",
-                "点击按钮模拟进度从 0% → 100% 的动画效果，实际业务通过 rebuild + replace 更新进度。",
+                "点击按钮模拟进度从 0% → 100% 的动画效果，运行时通过 Controller 更新进度。",
                 code, demo);
     }
 }

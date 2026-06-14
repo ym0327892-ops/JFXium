@@ -134,8 +134,6 @@ public class PopoverAnt {
             panel = new PopoverPanel.Builder()
                 .title(config.title)
                 .content(config.content)
-                .closable(true)
-                .onClose(() -> hide())
                 .build();
 
             panel.setOnMouseClicked(e -> {

@@ -11,6 +11,7 @@
 .jfx-panel-footer {
   -fx-alignment: center-right;
   -fx-spacing: @spacing-sm;
+  -fx-padding: @spacing-lg @spacing-xl;
 }
 
 .jfx-panel-footer-bordered {
@@ -240,9 +241,10 @@
   -fx-font-size: @font-size-md;
 }
 
+/* 显式 inherit text-fill（HBox→Label 不在 Labeled 体系内，必须靠 inherit 透传父级颜色），
+   不写 font-size: inherit —— JavaFX 派生 -fx-font 简写时会因子属性为 inherit 而 ClassCastException。 */
 .jfx-tag-label {
   -fx-text-fill: inherit;
-  -fx-font-size: inherit;
 }
 
 .jfx-tag-close {

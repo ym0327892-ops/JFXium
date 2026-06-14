@@ -50,6 +50,7 @@ import java.util.function.Supplier;
  * @since 1.0
  */
 public class WatermarkAnt {
+    private static final String CONTROLLER_KEY = WatermarkAnt.class.getName() + ".controller";
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
         // ============================================================
@@ -154,6 +155,7 @@ public class WatermarkAnt {
             Region watermarkLayer = createWatermarkLayer();
             watermarkLayer.setMouseTransparent(true);
             root.getChildren().add(watermarkLayer);
+            root.getProperties().put(CONTROLLER_KEY, new Controller(this, watermarkLayer));
 
             // 3. 防删除保护
             if (preventRemoval) {
@@ -169,7 +171,11 @@ public class WatermarkAnt {
         private Region createWatermarkLayer() {
             Region layer = new Region();
             layer.getStyleClass().add(JfxStyles.WATERMARK_LAYER);
+            refreshWatermarkLayer(layer);
+            return layer;
+        }
 
+        private void refreshWatermarkLayer(Region layer) {
             // 异步加载图片：图片水印需要等 Image 加载完成才能 snapshot
             if (imagePath != null) {
                 Image img = new Image(imagePath, imageWidth, imageHeight, true, true, true);
@@ -188,8 +194,6 @@ public class WatermarkAnt {
             } else {
                 applyTileBackground(layer, null);
             }
-
-            return layer;
         }
 
         /**
@@ -428,5 +432,106 @@ public class WatermarkAnt {
 
     public static Builder create() {
         return new Builder();
+    }
+
+    public static Controller controllerOf(Node node) {
+        if (node == null) {
+            throw new IllegalArgumentException("WatermarkAnt.controllerOf(node) 的 node 不能为 null");
+        }
+        Object controller = node.getProperties().get(CONTROLLER_KEY);
+        if (controller instanceof Controller watermarkController) {
+            return watermarkController;
+        }
+        throw new IllegalArgumentException("node 不是 WatermarkAnt.build() 返回的水印组件");
+    }
+
+    public static class Controller {
+        private final Builder builder;
+        private final Region watermarkLayer;
+
+        private Controller(Builder builder, Region watermarkLayer) {
+            this.builder = builder;
+            this.watermarkLayer = watermarkLayer;
+        }
+
+        public void setText(String text) {
+            setTextLines(text);
+        }
+
+        public void setTextLines(String... lines) {
+            builder.textLines = lines;
+            builder.imagePath = null;
+            builder.customNodeSupplier = null;
+            refresh();
+        }
+
+        public String[] getTextLines() {
+            return builder.textLines != null ? builder.textLines.clone() : new String[0];
+        }
+
+        public void setImage(String imagePath) {
+            builder.imagePath = imagePath;
+            builder.textLines = null;
+            builder.customNodeSupplier = null;
+            refresh();
+        }
+
+        public String getImagePath() {
+            return builder.imagePath;
+        }
+
+        public void setRotate(double rotate) {
+            builder.rotate = rotate;
+            refresh();
+        }
+
+        public double getRotate() {
+            return builder.rotate;
+        }
+
+        public void setOpacity(double opacity) {
+            builder.opacity = Math.max(0, Math.min(1, opacity));
+            refresh();
+        }
+
+        public double getOpacity() {
+            return builder.opacity;
+        }
+
+        public void setFontSize(double fontSize) {
+            builder.fontSize = fontSize;
+            refresh();
+        }
+
+        public double getFontSize() {
+            return builder.fontSize;
+        }
+
+        public void setColor(Color color) {
+            builder.textColor = color;
+            refresh();
+        }
+
+        public Color getColor() {
+            return builder.textColor;
+        }
+
+        public void setGap(double gapX, double gapY) {
+            builder.gapX = gapX;
+            builder.gapY = gapY;
+            refresh();
+        }
+
+        public double getGapX() {
+            return builder.gapX;
+        }
+
+        public double getGapY() {
+            return builder.gapY;
+        }
+
+        private void refresh() {
+            builder.refreshWatermarkLayer(watermarkLayer);
+        }
     }
 }

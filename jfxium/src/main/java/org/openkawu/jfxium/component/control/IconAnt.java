@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
@@ -15,7 +16,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * </ul>
  *
  * <p>SVG path 数据来自 Material Icons / Ant Design Icons（MIT），24x24 viewBox。
- * 通过 JavaFX {@code -fx-shape} 渲染，零依赖、矢量缩放清晰。</p>
+ * 通过 JavaFX {@link Region#setShape(javafx.scene.shape.Shape)} 渲染，零依赖、矢量缩放清晰。</p>
  *
  * <h3>使用</h3>
  * <pre>{@code
@@ -145,16 +146,16 @@ public class IconAnt {
     /**
      * SVG 业务图标，自定义尺寸。
      *
-     * <p>实现说明：用 {@code Region} + {@code -fx-shape} 渲染 SVG path。
+     * <p>实现说明：用 {@code Region#setShape(SVGPath)} 渲染矢量轮廓。
      * 颜色由 LESS {@code .jfx-icon-path} 控制（默认 {@code -color-fg-default}）。
-     * shape 字符串太长，无法用 styleClass 维护，故 {@code -fx-shape} 写在 inline style；
-     * 颜色不在 inline，避免硬编码（符合 SKILL #1 变量优先原则）。</p>
+     * path 数据保留在 Java 侧，颜色仍完全走 LESS，不在 Java 端硬编码。</p>
      */
     public static Region path(Path icon, int size) {
         Region node = new Region();
         node.getStyleClass().add(JfxStyles.ICON_PATH);
-        // -fx-shape 是结构性属性（图形定义），不是颜色，可以走 inline
-        node.setStyle("-fx-shape: \"" + icon.getPath() + "\";");
+        SVGPath shape = new SVGPath();
+        shape.setContent(icon.getPath());
+        node.setShape(shape);
         node.setPrefSize(size, size);
         node.setMinSize(size, size);
         node.setMaxSize(size, size);

@@ -15,6 +15,100 @@
   -fx-background-radius: @border-radius-md;
 }
 
+/* Builder.theme() 局部主题变体：
+   - light/dark 只影响代码块自身，不切换全局 ThemeManager
+   - 颜色走专属语义变量，避免 Java 端挂 class 却没有对应 LESS（历史回归） */
+.jfx-codeblock.jfx-code-theme-light {
+  -fx-background-color: @color-code-light-bg;
+  -fx-border-color: @color-code-light-border;
+}
+
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-header {
+  -fx-background-color: @color-code-light-header;
+}
+
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-title,
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-content,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea {
+  -fx-text-fill: @color-code-light-fg;
+}
+
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-lang,
+.jfx-codeblock.jfx-code-theme-light .jfx-code-line-number {
+  -fx-text-fill: @color-code-light-fg-muted;
+}
+
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-content .jfx-code-comment,
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-content .jfx-code-text {
+  -fx-fill: @color-code-light-fg-muted;
+}
+
+.jfx-codeblock.jfx-code-theme-light .jfx-code-line-numbers,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea .content,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea > .scroll-pane,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea > .scroll-pane > .viewport,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea > .scroll-pane .content {
+  -fx-background-color: @color-code-light-bg;
+}
+
+.jfx-codeblock.jfx-code-theme-light .jfx-code-line-numbers {
+  -fx-border-color: transparent @color-code-light-border transparent transparent;
+}
+
+.jfx-codeblock.jfx-code-theme-dark {
+  -fx-background-color: @color-code-dark-bg;
+  -fx-border-color: @color-code-dark-border;
+}
+
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-header {
+  -fx-background-color: @color-code-dark-header;
+}
+
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-title,
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-content,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea {
+  -fx-text-fill: @color-code-dark-fg;
+}
+
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-lang,
+.jfx-codeblock.jfx-code-theme-dark .jfx-code-line-number {
+  -fx-text-fill: @color-code-dark-fg-muted;
+}
+
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-content .jfx-code-comment {
+  -fx-fill: @color-code-dark-fg-muted;
+}
+
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-content .jfx-code-text {
+  -fx-fill: @color-code-dark-fg;
+}
+
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-copy-btn {
+  -fx-background-color: @color-code-dark-bg;
+  -fx-border-color: @color-code-dark-border;
+  -fx-text-fill: @color-code-dark-fg-muted;
+}
+
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-copy-btn:hover {
+  -fx-background-color: @color-code-dark-header;
+  -fx-border-color: @color-code-dark-fg-muted;
+  -fx-text-fill: @color-code-dark-fg;
+}
+
+.jfx-codeblock.jfx-code-theme-dark .jfx-code-line-numbers,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea .content,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea > .scroll-pane,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea > .scroll-pane > .viewport,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea > .scroll-pane .content {
+  -fx-background-color: @color-code-dark-bg;
+}
+
+.jfx-codeblock.jfx-code-theme-dark .jfx-code-line-numbers {
+  -fx-border-color: transparent @color-code-dark-border transparent transparent;
+}
+
 .jfx-codeblock-header {
   -fx-background-color: -color-border-muted;
   -fx-padding: 8 12 8 12;
@@ -45,6 +139,7 @@
   -fx-border-radius: @border-radius-sm;
   -fx-background-radius: @border-radius-sm;
   -fx-cursor: hand;
+  -fx-text-fill: -color-fg-default;
 }
 
 .jfx-codeblock-copy-btn:hover {
@@ -114,25 +209,25 @@
 }
 
 /* 代码语法高亮（用于 CodeBlockAnt 只读显示） */
-.jfx-codeblock-content .code-keyword {
+.jfx-codeblock-content .jfx-code-keyword {
   -fx-fill: -color-accent-emphasis;
   -fx-font-weight: bold;
 }
 
-.jfx-codeblock-content .code-string {
+.jfx-codeblock-content .jfx-code-string {
   -fx-fill: -color-success-emphasis;
 }
 
-.jfx-codeblock-content .code-comment {
+.jfx-codeblock-content .jfx-code-comment {
   -fx-fill: -color-fg-muted;
   -fx-font-style: italic;
 }
 
-.jfx-codeblock-content .code-number {
+.jfx-codeblock-content .jfx-code-number {
   -fx-fill: -color-warning-emphasis;
 }
 
-.jfx-codeblock-content .code-text {
+.jfx-codeblock-content .jfx-code-text {
   -fx-fill: -color-fg-default;
 }
 
@@ -154,4 +249,7 @@
 
 /* Temporary highlight on double-click selection */
 .jfx-codeblock-highlight { -fx-background-color: -color-bg-subtle; }
+
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-highlight { -fx-background-color: @color-code-light-header; }
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-highlight { -fx-background-color: @color-code-dark-header; }
 

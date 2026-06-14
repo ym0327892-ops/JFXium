@@ -30,6 +30,22 @@
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);
 }
 .jfx-message-card-content { -fx-text-fill: -color-fg-default; -fx-font-size: 14px; }
+.jfx-close-button {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-background-radius: @border-radius-sm;
+  -fx-border-radius: @border-radius-sm;
+  -fx-padding: @spacing-xs;
+  -fx-font-size: @font-size-lg;
+  -fx-text-fill: -color-fg-muted;
+  -fx-cursor: hand;
+}
+
+.jfx-close-button:hover {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-fg-default;
+}
 
 /* Notification */
 .jfx-notification-card {

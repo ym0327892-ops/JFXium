@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.demo.admin;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -90,7 +91,7 @@ public class AdminShell {
     private Node navBtn(String label, String pageKey) {
         ButtonAnt btn = ButtonAnt.create(label).type(ButtonAnt.Type.TEXT).build();
         btn.setMaxWidth(Double.MAX_VALUE);
-        btn.setStyle("-fx-alignment: CENTER_LEFT;");
+        btn.setAlignment(Pos.CENTER_LEFT);
         btn.setOnAction(e -> {
             showPage(pageKey);
             updateBreadcrumb(pageKey);

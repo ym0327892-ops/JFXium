@@ -156,3 +156,59 @@
   -fx-background-insets: 0;
 }
 
+/* Button Status Color Variants
+   对标 AntLantaFx antdesign-light.css 行 1259-1306（.button.success / .danger）
+   状态色独立存在，与 .button.default 叠加时靠选择器顺序实现覆盖
+   状态：base / :hover / :armed+:pressed（disabled 走 .button:disabled 行 25-28 统一 opacity 0.6）
+   fix #102 */
+.button.success {
+  -fx-background-color: @color-success-5;
+  -fx-border-color: @color-success-5;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.success:hover {
+  -fx-background-color: @color-success-4;
+  -fx-border-color: @color-success-4;
+}
+
+.button.success:armed,
+.button.success:pressed {
+  -fx-background-color: @color-success-6;
+  -fx-border-color: @color-success-6;
+}
+
+.button.warning {
+  -fx-background-color: @color-warning-5;
+  -fx-border-color: @color-warning-5;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.warning:hover {
+  -fx-background-color: @color-warning-4;
+  -fx-border-color: @color-warning-4;
+}
+
+.button.warning:armed,
+.button.warning:pressed {
+  -fx-background-color: @color-warning-6;
+  -fx-border-color: @color-warning-6;
+}
+
+.button.danger {
+  -fx-background-color: @color-danger-5;
+  -fx-border-color: @color-danger-5;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+.button.danger:hover {
+  -fx-background-color: @color-danger-4;
+  -fx-border-color: @color-danger-4;
+}
+
+.button.danger:armed,
+.button.danger:pressed {
+  -fx-background-color: @color-danger-6;
+  -fx-border-color: @color-danger-6;
+}
+

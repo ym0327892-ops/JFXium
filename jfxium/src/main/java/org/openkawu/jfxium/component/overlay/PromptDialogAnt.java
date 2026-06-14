@@ -8,50 +8,49 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
 /**
- * JFXium 快速输入/选择弹框组件 - 对标 Ant Design Modal.confirm / prompt。
+ * JFXium 快速输入弹框组件 - 对标 Ant Design Modal.confirm / prompt。
  *
- * <p><b>定位</b>：轻量级弹框，用于快速获取用户输入（文本/选择）。
+ * <p><b>定位</b>：轻量级弹框，用于快速获取用户输入（文本）。
  * 基于 {@link ModalAnt} 封装，提供单行输入、确认/取消按钮、回调机制。</p>
  *
- * <h2>功能特性</h2>
+ * <h2>设计要点</h2>
  * <ul>
- *   <li><b>标题</b>：title(String) 弹框标题</li>
- *   <li><b>提示文本</b>：message(String) 输入框上方说明文字</li>
- *   <li><b>默认值</b>：defaultValue(String) 输入框默认值</li>
- *   <li><b>占位符</b>：placeholder(String) 输入框占位提示</li>
- *   <li><b>回调</b>：onConfirm(String) / onCancel() 确认/取消回调</li>
- *   <li><b>按钮文字</b>：okText(String) / cancelText(String) 自定义按钮文案</li>
+ *   <li><b>API 范式</b>：{@code PromptDialogAnt.create()...build().open(ownerNode)} —— 与 {@link ModalAnt} 完全一致</li>
+ *   <li><b>build() 不含副作用</b>：仅构建 {@link PromptDialogResult}，需要显式 {@code .open(Node)} 才显示</li>
+ *   <li><b>owner 必须是已挂载到 Scene 的 Node</b>：用于定位所属 Stage（取 {@code owner.getScene().getWindow()}）</li>
+ *   <li><b>回调</b>：onConfirm(String) / onCancel() 确认/取消时触发</li>
  *   <li><b>视觉</b>：走 {@link JfxStyles#PROMPT_DIALOG} LESS 样式</li>
  * </ul>
  *
  * <h2>用法</h2>
  * <pre>{@code
  * // 基础 prompt
- * PromptDialogAnt.show(stage)
+ * PromptDialogAnt.create()
  *     .title("请输入名称")
  *     .message("输入后点击确认保存")
  *     .placeholder("例如：张三")
  *     .onConfirm(name -> System.out.println("输入：" + name))
- *     .build();
+ *     .build()
+ *     .open(ownerNode);
  *
  * // 带默认值 + 自定义按钮
- * PromptDialogAnt.show(stage)
+ * PromptDialogAnt.create()
  *     .title("修改备注")
  *     .defaultValue("旧备注")
  *     .okText("保存")
  *     .cancelText("放弃")
  *     .onConfirm(text -> saveRemark(text))
  *     .onCancel(() -> System.out.println("取消"))
- *     .build();
+ *     .build()
+ *     .open(ownerNode);
  * }</pre>
+ *
+ * @see ModalAnt 标准对话框（PromptDialogAnt 的底层）
  */
 public class PromptDialogAnt {
 
@@ -64,22 +63,22 @@ public class PromptDialogAnt {
     private Consumer<String> onConfirm;
     private Runnable onCancel;
 
-    private final Stage owner;
-
     // ============================================================
     // 工厂入口
     // ============================================================
 
-    public static PromptDialogAnt show(Stage owner) {
-        return new PromptDialogAnt(owner);
+    /**
+     * 入口工厂。与 {@link ModalAnt#create()} 保持完全一致的范式。
+     */
+    public static PromptDialogAnt create() {
+        return new PromptDialogAnt();
     }
 
     // ============================================================
     // 构造函数
     // ============================================================
 
-    private PromptDialogAnt(Stage owner) {
-        this.owner = owner;
+    private PromptDialogAnt() {
     }
 
     // ============================================================
@@ -127,12 +126,14 @@ public class PromptDialogAnt {
     }
 
     // ============================================================
-    // 构建并显示
+    // 构建
     // ============================================================
 
     /**
-     * 构建弹框并返回 {@link PromptDialogResult}，调用方可通过 {@code result.close()} 程序化关闭。
-     * @return PromptDialogResult（可关闭弹框）
+     * 构建弹框并返回 {@link PromptDialogResult}。
+     * <p><b>不产生显示副作用</b>——必须再调 {@code result.open(ownerNode)} 才会弹出。</p>
+     *
+     * @return PromptDialogResult（持有内部 ModalResult，可通过 {@code .close()} 程序化关闭）
      */
     public PromptDialogResult build() {
         VBox content = new VBox(12);
@@ -160,6 +161,7 @@ public class PromptDialogAnt {
         buttons.setAlignment(Pos.CENTER_RIGHT);
         buttons.getStyleClass().add(JfxStyles.PROMPT_DIALOG_FOOTER);
 
+        // 先创建 Result 占位（modalResult 稍后注入），按钮直接调 result.close() 保证点完即关
         PromptDialogResult result = new PromptDialogResult();
 
         Button cancelBtn = new Button(cancelText);
@@ -179,27 +181,49 @@ public class PromptDialogAnt {
         buttons.getChildren().addAll(cancelBtn, okBtn);
         content.getChildren().add(buttons);
 
-        // 使用 ModalAnt 显示
+        // 使用 ModalAnt 构建（不打开，等 .open() 显式触发）
         ModalAnt.ModalResult modalResult = ModalAnt.create()
             .title(title)
             .content(content)
             .width(400)
             .build();
 
-        result.modalResult = modalResult;
-
-        // 需要 owner Node，这里用空 Label 占位（实际使用时需要传入）
-        javafx.scene.Node ownerNode = new javafx.scene.control.Label();
-        modalResult.open(ownerNode);
+        result.setModalResult(modalResult);
 
         return result;
     }
 
+    // ============================================================
+    // Result
+    // ============================================================
+
     /**
-     * Prompt 弹框结果封装，提供程序化关闭能力。
+     * Prompt 弹框结果封装。{@link #open(Node)} 显式显示；{@link #close()} 程序化关闭。
      */
     public static class PromptDialogResult {
         private ModalAnt.ModalResult modalResult;
+
+        PromptDialogResult() {
+        }
+
+        void setModalResult(ModalAnt.ModalResult modalResult) {
+            this.modalResult = modalResult;
+        }
+
+        /**
+         * 显示弹框。owner 必须是已挂载到 Scene 的任意 Node（用于定位所属 Window）。
+         * 典型用法：{@code .open((Node) e.getSource())}。
+         *
+         * @param owner 触发弹框的 Node（按钮 / 菜单项等）
+         */
+        public void open(Node owner) {
+            if (owner == null) {
+                throw new IllegalArgumentException(
+                        "PromptDialogAnt.open(owner) 的 owner 不能为 null —— "
+                                + "请传入当前已挂载到 Scene 的 Node（通常是触发按钮）");
+            }
+            modalResult.open(owner);
+        }
 
         /** 程序化关闭弹框。 */
         public void close() {

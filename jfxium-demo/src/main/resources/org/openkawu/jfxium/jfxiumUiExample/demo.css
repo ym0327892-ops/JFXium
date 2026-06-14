@@ -71,3 +71,20 @@
 .jfx-demo-bar-card {
   -fx-background-color: -color-bg-default;
 }
+
+/* Admin dashboard: trend indicators */
+.jfx-demo-trend-up {
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.jfx-demo-trend-down {
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+/* Border showcase: pseudo border via background stacking */
+.jfx-demo-border-pseudo {
+  -fx-background-color: -color-border-default, -color-bg-default;
+  -fx-background-insets: 0, 1;
+  -fx-background-radius: 6, 5;
+  -fx-padding: 1;
+}

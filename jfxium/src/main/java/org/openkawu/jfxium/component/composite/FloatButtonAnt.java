@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
@@ -81,14 +82,10 @@ public class FloatButtonAnt {
                 type == Type.PRIMARY ? JfxStyles.FLOAT_BUTTON_PRIMARY : JfxStyles.FLOAT_BUTTON_DEFAULT
             );
 
-            // ── 红线#1 必要例外 ───────────────────────────────────
-            // 圆角 = size / 2 是运行时计算值（size 是 Builder 入参），
-            // LESS 无法预定义所有可能的动态值。此处只设纯几何属性
-            // （border-radius），颜色/背景完全由 LESS styleClass 控制。
-            button.setStyle(
-                "-fx-background-radius: " + (size / 2) + "px;" +
-                "-fx-border-radius: " + (size / 2) + "px;"
-            );
+            Rectangle clip = new Rectangle(size, size);
+            clip.setArcWidth(size);
+            clip.setArcHeight(size);
+            button.setClip(clip);
 
             if (icon != null) {
                 button.setGraphic(icon);

@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * JFXium 工具提示组件 - 对标 Ant Design Tooltip（组合式，Builder 模式）。
@@ -77,7 +78,7 @@ public class TooltipAnt {
             tooltip.setShowDelay(showDelay);
             tooltip.setShowDuration(showDuration);
             tooltip.setHideDelay(hideDelay);
-            tooltip.getStyleClass().add("jfx-tooltip");
+            tooltip.getStyleClass().add(JfxStyles.TOOLTIP);
             // Tooltip 是 Styleable 但不是 Node。applyStyles(Styleable) 只挂 styleClass，
             // inline style 由这里读取 protected 字段 style 后自己 setStyle。
             applyStyles((javafx.css.Styleable) tooltip);

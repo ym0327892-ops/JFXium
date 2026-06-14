@@ -2,6 +2,7 @@ package org.openkawu.jfxium.component.control;
 
 import javafx.scene.control.Pagination;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
 
@@ -73,7 +74,7 @@ public class PaginationAnt {
         public Pagination build() {
             Pagination pagination = new Pagination(pageCount, currentPage);
             pagination.setMaxPageIndicatorCount(maxPageIndicatorCount);
-            pagination.getStyleClass().add("jfx-pagination");
+            pagination.getStyleClass().add(JfxStyles.PAGINATION);
 
             if (onChange != null) {
                 pagination.currentPageIndexProperty().addListener((obs, oldVal, newVal) -> {

@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component.composite;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -27,6 +28,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * }</pre>
  */
 public class ProgressAnt {
+    private static final String CONTROLLER_KEY = ProgressAnt.class.getName() + ".controller";
 
     public enum Size {
         SMALL, DEFAULT, LARGE
@@ -100,14 +102,17 @@ public class ProgressAnt {
             container.getChildren().add(progressBar);
 
             // 百分比 Label：颜色由 LESS .jfx-progress-info.{success/warning/error} 切换
+            Label infoLabel = null;
             if (showInfo) {
-                Label infoLabel = new Label(String.format("%.0f%%", progress * 100));
+                infoLabel = new Label(formatPercent(progress));
                 infoLabel.getStyleClass().add(JfxStyles.PROGRESS_INFO);
                 if (statusClass != null) {
                     infoLabel.getStyleClass().add(statusClass);
                 }
                 container.getChildren().add(infoLabel);
             }
+
+            container.getProperties().put(CONTROLLER_KEY, new Controller(progressBar, infoLabel, status));
 
             // 用户 style/styleClass 在内置类后应用，便于覆盖
             applyStyles(container);
@@ -158,8 +163,9 @@ public class ProgressAnt {
 
             container.getChildren().add(indicator);
 
+            Label infoLabel = null;
             if (showInfo) {
-                Label infoLabel = new Label(String.format("%.0f%%", progress * 100));
+                infoLabel = new Label(formatPercent(progress));
                 infoLabel.getStyleClass().add(JfxStyles.PROGRESS_INFO);
                 if (statusClass != null) {
                     infoLabel.getStyleClass().add(statusClass);
@@ -167,8 +173,71 @@ public class ProgressAnt {
                 container.getChildren().add(infoLabel);
             }
 
+            container.getProperties().put(CONTROLLER_KEY, new Controller(indicator, infoLabel, status));
+
             applyStyles(container);
             return container;
+        }
+    }
+
+    public static Controller controllerOf(Node node) {
+        if (node == null) {
+            throw new IllegalArgumentException("ProgressAnt.controllerOf(node) 的 node 不能为 null");
+        }
+        Object controller = node.getProperties().get(CONTROLLER_KEY);
+        if (controller instanceof Controller c) {
+            return c;
+        }
+        throw new IllegalArgumentException("node 不是 ProgressAnt.build() 返回的进度组件");
+    }
+
+    public static class Controller {
+        private final ProgressIndicator progressNode;
+        private final Label infoLabel;
+        private Status status;
+
+        private Controller(ProgressIndicator progressNode, Label infoLabel, Status status) {
+            this.progressNode = progressNode;
+            this.infoLabel = infoLabel;
+            this.status = status != null ? status : Status.NORMAL;
+        }
+
+        public double getProgress() {
+            return progressNode.getProgress();
+        }
+
+        public void setProgress(double progress) {
+            double clamped = clamp(progress);
+            progressNode.setProgress(clamped);
+            if (infoLabel != null) {
+                infoLabel.setText(formatPercent(clamped));
+            }
+        }
+
+        public Status getStatus() {
+            return status;
+        }
+
+        public void setStatus(Status status) {
+            this.status = status != null ? status : Status.NORMAL;
+            progressNode.getStyleClass().removeAll(
+                    JfxStyles.PROGRESS_SUCCESS,
+                    JfxStyles.PROGRESS_WARNING,
+                    JfxStyles.PROGRESS_ERROR);
+            if (infoLabel != null) {
+                infoLabel.getStyleClass().removeAll(
+                        JfxStyles.PROGRESS_SUCCESS,
+                        JfxStyles.PROGRESS_WARNING,
+                        JfxStyles.PROGRESS_ERROR);
+            }
+
+            String statusClass = statusClassFor(this.status);
+            if (statusClass != null) {
+                progressNode.getStyleClass().add(statusClass);
+                if (infoLabel != null) {
+                    infoLabel.getStyleClass().add(statusClass);
+                }
+            }
         }
     }
 
@@ -181,5 +250,13 @@ public class ProgressAnt {
             case ERROR -> JfxStyles.PROGRESS_ERROR;
             case NORMAL -> null;
         };
+    }
+
+    private static double clamp(double progress) {
+        return Math.max(0, Math.min(1, progress));
+    }
+
+    private static String formatPercent(double progress) {
+        return String.format("%.0f%%", clamp(progress) * 100);
     }
 }

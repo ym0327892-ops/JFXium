@@ -20,7 +20,7 @@ class ComboBoxAntTest extends JfxTestBase {
     @DisplayName("create() 挂默认 styleClass 且无可选值")
     void create_defaults() {
         ComboBoxAnt<String> cb = ComboBoxAnt.<String>create().build();
-        assertTrue(cb.getStyleClass().contains("jfx-combo-box"));
+        assertTrue(cb.getStyleClass().contains(JfxStyles.JFX_COMBO_BOX));
         assertNull(cb.getValue());
     }
 

@@ -29,6 +29,8 @@ ant-design-ref/
 /dist/
 /nbdist/
 /.nb-gradle/
+# jpackage 打包产物（scripts/build-app.sh 输出）
+/dist/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/

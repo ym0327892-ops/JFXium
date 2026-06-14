@@ -2156,3 +2156,249 @@ JFXium/                                          # 多模块 Maven 项目（pare
 > **构建约束**（M19.46 修正）：LESS 编译走 `groovy-maven-plugin + jlessc 1.16`（纯 Java），**不再依赖 Node.js**。新机器只需 JDK 21 + Maven 3.8+ 即可 `mvn compile`。BUG #64 已修「groovy-maven-plugin 假成功」问题（`Files.writeString` 静默不落盘 → `OutputStreamWriter` + flush + 写入校验）。
 >
 > **模块导出**（module-info.java）：`org.openkawu.jfxium.{core.{token,theme,css,layout,i18n,command,form,util}, component.{control,composite,overlay,base,layout}, layout, template}` 共 14 个包。新增 public 类必须同步 exports 声明。
+
+### 🎯 M21.1 审计回归闭环（2026-06-14）
+
+**动机**：按 `.qoder` 红线做项目审核时，发现仓库整体方向虽已对齐，但仍有几处“规则存在、代码未完全落地”的回归点，主要集中在 JPMS 导出、styleClass 接线一致性，以及个别 base 组件的 inline padding 残留。
+
+**产出**：完成一轮低风险规范化修复，重点清理“API 看起来存在，但 LESS 接不上”与“public 类可见性缺口”。
+
+**关键改动**：
+- [x] `module-info.java` 新增 `exports org.openkawu.jfxium;`，恢复 `JFXiumApp` 的 JPMS 可见性
+- [x] `CodeBlockAnt` 的 `theme(LIGHT/DARK)` 从死 class 改为真实 LESS 变体；行号 styleClass 改回 `jfx-` 命名空间
+- [x] `FormAnt` 尺寸修饰类与 LESS 对齐：`jfx-form-size-small/large`
+- [x] `TableAnt` 危险动作按钮改挂 `JfxStyles.BUTTON_DANGER_TEXT`，恢复 `.jfx-button-danger-text` 命中
+- [x] `PanelFooter` 删除 `setStyle("-fx-padding: ...")`，默认 padding 下放到 LESS token，自定义 padding 改走 `Insets`
+- [x] `./mvnw -q -pl jfxium -DskipTests compile` 通过，确认 LESS 与 Java 两侧接线都成立
+
+### 🎯 M21.2 二轮审计修复（2026-06-14）
+
+**动机**：第一轮审计后，主干问题已收口，但仓库里仍残留少量“内部 styleClass 裸名”问题。这些点不一定立刻造成功能 bug，但会持续削弱命名空间一致性，也容易让后续组件照着旧模式继续复制。
+
+**产出**：完成一轮命名空间收口，把基础件、表格对齐类、代码块 token 类、CheckBox circle 形状类统一到 `jfx-` 体系。
+
+**关键改动**：
+- [x] `CloseButton` 改挂 `jfx-close-button`，并补基础 hover 样式
+- [x] `TableAnt` 对齐类 `align-*` / `align-header-*` / `align-content-*` 全量迁到 `jfx-align-*`
+- [x] `CodeBlockAnt` 语法 token 从 `code-*` 迁到 `jfx-code-*`
+- [x] `CheckBoxAnt.shape(CIRCLE)` 从 `shape-circle` 迁到 `jfx-shape-circle`
+- [x] `CheckBoxAntTest` 同步断言
+- [x] 再次验证 `./mvnw -q -pl jfxium -DskipTests compile` 通过
+
+### 🎯 M21.3 三轮审计修复（2026-06-14）
+
+**动机**：二轮之后，仓库剩余的 `setStyle()` 已大多不是“明显违规”，而是历史上为了动态颜色/动态几何直接拼出来的 inline CSS。第三轮目标是把这些还能改成 JavaFX 原生属性的点再往下压一层。
+
+**产出**：完成一轮“动态样式下放”，把透明遮罩、动态背景色、SVG 填充色、动态圆角等从字符串 CSS 迁移到 `BackgroundFill` / `Paint` / `Clip` / `Font`。
+
+**关键改动**：
+- [x] `Overlay` 遮罩透明背景改用 `BackgroundFill(Color.color(..., opacity))`
+- [x] `QRCodeAnt` 自定义背景色改用 `BackgroundFill`
+- [x] `ImageAnt` 圆角改用 `Rectangle` clip 绑定容器宽高
+- [x] `AvatarAnt` 自定义背景/文字色/字号改走 JavaFX 原生属性
+- [x] `RateAnt` SVG 星色改用 `setFill(Paint.valueOf(...))`
+- [x] `FloatButtonAnt` 动态圆角改用 `Rectangle` clip
+- [x] `rg -n "setStyle\\(" jfxium/src/main/java` 命中收敛到 17 处
+- [x] 再次验证 `./mvnw -q -pl jfxium -DskipTests compile` 通过
+
+### 🎯 M21.4 四轮审计修复（2026-06-14）
+
+**动机**：第三轮后继续做尾扫，发现真正还值得收口的内部实现只剩 `IconAnt.Path` 的 `-fx-shape` 内联 CSS。其余命中多数已经是公共 `style(String)` 能力或 `Tooltip` 这种 JavaFX `Styleable` 特例，不能简单按“零命中”思路粗暴删除。
+
+**产出**：完成一轮“最后一个可安全替换的结构样式”清理，并把剩余 `setStyle()` 命中正式归类，避免后续审计把受控 API 误判成同级问题。
+
+**关键改动**：
+- [x] `IconAnt.Path` 从 `setStyle("-fx-shape: ...")` 改为 `Region#setShape(new SVGPath())`
+- [x] `IconAnt` 文档同步更新为 Shape API 渲染说明，消除实现/注释漂移
+- [x] `TooltipAnt` 的 `"jfx-tooltip"` 裸字符串收口到 `JfxStyles.TOOLTIP`
+- [x] `rg -n "setStyle\\(" jfxium/src/main/java` 命中进一步收敛到 16 处
+- [x] 再次验证 `./mvnw -q -pl jfxium -DskipTests compile` 通过
+
+### 🎯 M21.5 五轮审计修复（2026-06-14）
+
+**动机**：第四轮后剩余 `setStyle()` 已基本是受控 API，但继承式基础控件仍各自复制 `styleClass/style` 模板方法。第五轮目标是把这些重复实现收到 `LayoutCommon` 一个公共入口里，让审计边界更清楚。
+
+**产出**：完成继承式控件视觉钩子的统一，减少重复代码，也让 `LabelAnt / CheckBoxAnt / RadioButtonAnt` 与其它双工厂控件共享同一套 layout/visual 链式能力。
+
+**关键改动**：
+- [x] `InputAnt / ButtonAnt / ComboBoxAnt / TextAreaAnt / DatePickerAnt` 删除本地重复 `styleClass/style` 方法，改用 `LayoutCommon` 默认实现
+- [x] `LabelAnt / CheckBoxAnt / RadioButtonAnt` 接入 `LayoutCommon<SELF>`，删除重复视觉钩子
+- [x] `rg -n "setStyle\\(" jfxium/src/main/java` 文本命中从 16 处降到 8 处
+- [x] 真正运行时 `setStyle()` 写入点集中到 `AbstractStyleBuilder`、`LayoutCommon`、`TooltipAnt` 三个受控入口
+- [x] 再次验证 `./mvnw -q -pl jfxium -DskipTests compile` 通过
+
+### 🎯 M21.6 六轮审计修复（2026-06-14）
+
+**动机**：第五轮后转向 LESS 红线复扫，重点检查 JavaFX CSS 禁项和 `.arrow` 规范。扫描显示实际 CSS 属性层面已经基本干净，但 Table / ContextMenu 仍有两个箭头节点没有显式尺寸钳制。
+
+**产出**：补齐剩余箭头 shape 规范，让菜单子项箭头和表格排序箭头都满足“shape + min/pref 尺寸”要求。
+
+**关键改动**：
+- [x] `ContextMenu` 子菜单右箭头补 `min/pref/max` 宽高
+- [x] `TableView` 表头排序箭头补 `min/pref/max` 宽高
+- [x] 保留原有 hover/focused/sorted 颜色和 padding 行为，不改变交互语义
+- [x] 精扫 `box-shadow / :active / :focus / -fx-transition / 裸 padding/border` 后仅剩注释文本命中
+- [x] 再次验证 `./mvnw -q -pl jfxium -DskipTests compile` 通过
+
+### 🎯 M21.7 七轮审计修复（2026-06-14）
+
+**动机**：第六轮后实际 CSS 红线已清，但扫描仍会命中注释文本。继续保留这些误报，会让后续每轮审计都多一层人工过滤。
+
+**产出**：完成红线扫描噪声归零，保留注释表达的历史语义，但避开会触发审计规则的 Web/CSS 关键词。
+
+**关键改动**：
+- [x] `theme-base.less` compact 注释里的 `padding:` 改为“内距”
+- [x] `_tier1.less` 圆点注释里的 `border-radius` 改为 JavaFX `background radius`
+- [x] Java 历史注释里的 `setStyle(` 文本改为“inline style / 尺寸 API”等描述
+- [x] LESS 红线精扫达到 0 命中
+- [x] Java `setStyle()` 扫描只剩 3 个真实受控入口
+- [x] 再次验证 `./mvnw -q -pl jfxium -DskipTests compile` 通过
+
+### 🎯 M21.8 八轮审计修复（2026-06-14）
+
+**动机**：红线面清理完成后，进入 `JfxStyles ↔ LESS` 接线反查。重点检查核心代码是否仍直接硬编码 `jfx-*` styleClass，以及测试是否继续固化字符串断言。
+
+**产出**：完成一轮核心 styleClass 常量化，把组件身份类和 ContextMenu accelerator 类统一收到 `JfxStyles`。
+
+**关键改动**：
+- [x] 新增 `CONTEXT_MENU_ACCELERATOR`
+- [x] 新增 `JFX_COMBO_BOX / JFX_DATE_PICKER / JFX_TITLED_PANE / JFX_TOGGLE_BUTTON`
+- [x] `ContextMenuAnt / ComboBoxAnt / DatePickerAnt / TitledPaneAnt / ToggleButtonAnt / TableAnt` 改用 `JfxStyles` 常量
+- [x] `ComboBoxAntTest / DatePickerAntTest / ToggleButtonAntTest` 断言改用常量
+- [x] 核心代码硬编码 `getStyleClass().add("jfx-*")` 扫描清零
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile` 与 `test-compile` 通过
+
+### 🎯 M21.9 九轮审计修复（2026-06-14）
+
+**动机**：进入 build/API 合同审计后，demo 中的 `rebuild + replace` 是最强信号之一。`ProgressExamplePage` 不仅用重建方式更新进度，reset 分支还存在父容器索引错配风险，说明框架侧缺少运行时状态控制 API。
+
+**产出**：为 `ProgressAnt` 补 Controller 模式，并把 demo 改为稳定的运行时更新写法。
+
+**关键改动**：
+- [x] `ProgressAnt` 新增 `Controller`
+- [x] 新增 `ProgressAnt.controllerOf(Node)` 获取 build 后控制器
+- [x] Controller 支持 `setProgress/getProgress` 和 `setStatus/getStatus`
+- [x] Bar / Circle build 时把 Controller 绑定到返回容器
+- [x] `ProgressExamplePage` 动态演示从 rebuild/replace 改为 Controller 更新
+- [x] 修掉 demo reset 分支父容器索引错配风险
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+### 🎯 M21.10 十轮审计修复（2026-06-14）
+
+**动机**：继续沿 demo `rebuild + replace` 信号做 API 合同审计。`StatisticExamplePage` 的动态刷新属于高频业务场景，适合补 Controller；同时发现 `StatisticAnt.Builder` 没调用 `applyStyles`，通用 Builder 样式能力没有真正生效。
+
+**产出**：为 `StatisticAnt` 补 Controller 模式，恢复 Builder 样式接线，并把 demo 改为运行时更新写法。
+
+**关键改动**：
+- [x] `StatisticAnt` 新增 `Controller`
+- [x] 新增 `StatisticAnt.controllerOf(Node)` 获取 build 后控制器
+- [x] Controller 支持标题、数值、文本前缀、文本后缀更新
+- [x] `StatisticAnt.Builder.build()` 补 `applyStyles(statistic)`
+- [x] `StatisticExamplePage` 动态刷新从 rebuild/replace 改为 Controller 更新
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+### 🎯 M21.11 十一轮审计修复（2026-06-14）
+
+**动机**：继续做 Builder/API 合同审计时，发现 `InputNumberAnt` 暴露了 `placeholder/readOnly/size` 和 `AbstractStyleBuilder` 通用样式能力，但部分参数没有真正应用到返回节点；测试中还以 NOTE 形式记录了“暂未调用 applyStyles”的缺陷状态。
+
+**产出**：补齐 `InputNumberAnt` 的 Builder 参数接线，恢复通用样式能力，并把单测改为锁定正确行为。
+
+**关键改动**：
+- [x] `InputNumberAnt.Builder.build()` 补 `applyStyles(container)`
+- [x] `placeholder` 接到内部 `TextField#setPromptText`
+- [x] `readOnly` 接到内部 `TextField#setEditable(false)`
+- [x] `size(SMALL/LARGE)` 接到 `jfx-input-number-small/large` 样式类
+- [x] `JfxStyles` 新增 `INPUT_NUMBER_SMALL / INPUT_NUMBER_LARGE`
+- [x] LESS 补 InputNumber small/large token 化字号与内距
+- [x] `InputNumberAntTest` 删除“暂未生效”NOTE，改为断言真实行为
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+### 🎯 M21.12 十二轮审计修复（2026-06-14）
+
+**动机**：继续沿 demo 的 `rebuild + replace` 信号追框架 API 缺口。`QRCodeExamplePage` 动态更新二维码必须替换整个节点，说明 `QRCodeAnt` 缺少 build 后重绘入口；同时发现它也遗漏了 `AbstractStyleBuilder.applyStyles`。
+
+**产出**：为 `QRCodeAnt` 补 Controller 模式，恢复 Builder 样式接线，并把 demo 改为运行时重绘同一 Canvas。
+
+**关键改动**：
+- [x] `QRCodeAnt` 新增 `Controller`
+- [x] 新增 `QRCodeAnt.controllerOf(Node)` 获取 build 后控制器
+- [x] Controller 支持 `setValue/getValue`、`setColor/getColor`、`setBgColor/getBgColor`、`setSize/getSize`
+- [x] 二维码绘制逻辑从 build 内联抽为可复用重绘方法
+- [x] `QRCodeAnt.Builder.build()` 补 `applyStyles(container)`
+- [x] `QRCodeExamplePage` 动态示例从 rebuild/replace 改为 Controller 更新
+- [x] 新增 `QRCodeAntTest` 锁定 Builder 样式和 Controller 契约
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+### 🎯 M21.13 十三轮审计修复（2026-06-14）
+
+**动机**：继续清理 demo 的运行时更新反模式。`WatermarkExamplePage` 切换文字时替换整个 Watermark 根节点，但真实需求只是刷新水印层背景，属于框架侧缺少 Controller 的 API 缺口。
+
+**产出**：为 `WatermarkAnt` 补 Controller 模式，复用原有 tile 渲染算法刷新同一个水印层，并把 demo 改为运行时更新写法。
+
+**关键改动**：
+- [x] `WatermarkAnt` 新增 `Controller`
+- [x] 新增 `WatermarkAnt.controllerOf(Node)` 获取 build 后控制器
+- [x] Controller 支持文字、图片、旋转、透明度、字号、颜色和间距更新
+- [x] 抽出 `refreshWatermarkLayer(Region)`，避免重建根节点
+- [x] `WatermarkExamplePage` 动态示例从 rebuild/replace 改为 Controller 更新
+- [x] 新增 `WatermarkAntTest` 锁定 Builder 样式和 Controller 契约
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+### 🎯 M21.14 十四轮审计修复（2026-06-14）
+
+**动机**：继续清理 demo 的运行时替换反模式。`ImageExamplePage` 只是切换圆角和占位文案，却重建整个 Image 节点；同时 `ImageAnt` 已有 rounded LESS 规则但没有挂对应 styleClass，Builder 通用样式也没有应用。
+
+**产出**：为 `ImageAnt` 补 Controller 模式，恢复 rounded 样式接线和 Builder 样式接线，并把 demo 改为运行时更新写法。
+
+**关键改动**：
+- [x] `ImageAnt` 新增 `Controller`
+- [x] 新增 `ImageAnt.controllerOf(Node)` 获取 build 后控制器
+- [x] Controller 支持 src、placeholder、alt、尺寸、圆角和 preview 更新
+- [x] 抽出 `render(StackPane)`，避免重建根节点
+- [x] `borderRadius > 0` 挂 `JfxStyles.IMAGE_ROUNDED`
+- [x] `ImageAnt.Builder.build()` 补 `applyStyles(container)`
+- [x] `ImageExamplePage` 动态示例从 rebuild/replace 改为 Controller 更新
+- [x] 新增 `ImageAntTest` 锁定 Builder 样式、rounded 接线和 Controller 契约
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+### 🎯 M21.15 十五轮审计修复（2026-06-14）
+
+**动机**：继续清理 demo 的动态替换信号。`SpinnerExamplePage` 的需求只是显示/隐藏，同一个 JavaFX `Node` 已经可以通过 `setVisible/setManaged` 控制，不需要重建 Spinner。
+
+**产出**：把 Spinner 显隐示例从 rebuild/replace 改为稳定的节点显隐控制，并确认这不是框架 API 缺口。
+
+**关键改动**：
+- [x] `SpinnerExamplePage` 删除 `VBox parent` / `indexOf` / `newSpinner` / `getChildren().set(...)`
+- [x] 显示/隐藏分支统一调用 `spinner.setVisible(visible)` 与 `spinner.setManaged(visible)`
+- [x] code 示例保留 `setVisible / setManaged` 最小写法
+- [x] 扫描确认明确 rebuild/replace 队列只剩 `SkeletonExamplePage` 的 loading 占位切换
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+### 🎯 M21.16 十六轮审计修复（2026-06-14）
+
+**动机**：收尾 demo 动态替换队列。`SkeletonExamplePage` 的 loading 示例虽然是合理的内容切换，但无需通过父容器索引替换节点；使用固定容器 + 显隐切换更稳定，也更适合作为示例代码。
+
+**产出**：把 Skeleton loading 示例改为 `StackPane` 承载真实内容和骨架屏，通过 `visible/managed` 切换状态，清零 Showcase 示例页中的明确 rebuild/replace 信号。
+
+**关键改动**：
+- [x] `SkeletonExamplePage` 新增 `StackPane loadingPane = new StackPane(realContent, skeleton)`
+- [x] 骨架屏初始 `visible=false / managed=false`
+- [x] 加载开始隐藏真实内容并显示骨架屏，加载完成反向切换
+- [x] 删除 `parent.getChildren().set(...)` 与父容器索引逻辑
+- [x] 扫描确认 `jfxiumUiExample/pages` 下 `parent.getChildren().set / rebuild + replace / newSpinner` 清零
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+### 🎯 M21.17 十七轮审计修复（2026-06-15）
+
+**动机**：动态替换队列清理后，转向 demo 红线复扫。扫描发现 demo 仍有 4 处 `setStyle(...)`，覆盖按钮对齐、趋势色、伪边框和 spacing 示例，和 `.qoder` 禁止 inline 样式的要求不一致。
+
+**产出**：demo 侧 `setStyle(...)` 清零，颜色迁到 `demo.css` 语义样式类，结构/布局迁到 JavaFX 属性 API。
+
+**关键改动**：
+- [x] `AdminShell` 用 `Button#setAlignment(Pos.CENTER_LEFT)` 替代 inline alignment
+- [x] `DashboardPage` 趋势文本改挂 `jfx-demo-trend-up/down`
+- [x] `BorderShowcaseDemo` 伪边框改挂 `jfx-demo-border-pseudo`，独立 Scene 加载 `demo.css`
+- [x] `ListViewExamplePage` spacing 改用 `HBox#setSpacing(20)`
+- [x] `demo.css` 新增趋势语义色和伪边框 background stacking 样式
+- [x] 扫描确认 demo `setStyle(...)` 清零，核心仅剩 `AbstractStyleBuilder / LayoutCommon / TooltipAnt` 受控入口
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过

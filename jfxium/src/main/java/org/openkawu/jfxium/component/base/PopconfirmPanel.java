@@ -64,7 +64,7 @@ public class PopconfirmPanel {
         public VBox build() {
             VBox panel = new VBox(12);
             panel.getStyleClass().add(JfxStyles.POPCONFIRM_PANEL);
-            // M19.44 红线#1 修复：用 setMinWidth 替代 setStyle("-fx-min-width: ...");
+            // M19.44 红线#1 修复：用尺寸 API 替代 inline CSS 宽度。
             panel.setMinWidth(parsePx(minWidth));
 
             HBox titleBox = new HBox(8);

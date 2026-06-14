@@ -4,6 +4,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -216,12 +217,8 @@ public class RateAnt {
                 star.getStyleClass().removeAll(JfxStyles.RATE_ACTIVE, JfxStyles.RATE_INACTIVE);
                 star.getStyleClass().add(isActive ? JfxStyles.RATE_ACTIVE : JfxStyles.RATE_INACTIVE);
             } else {
-                // ── 红线#1 必要例外 ───────────────────────
-                // 用户自定义颜色（hex），无法预定义 LESS；
-                // 仅设置 -fx-fill（SVG 填充色），
-                // cursor 等交互属性走 LESS 修饰类。
                 String fill = isActive ? activeColor : inactiveColor;
-                star.setStyle("-fx-fill: " + fill + ";");
+                star.setFill(Paint.valueOf(fill));
             }
         }
 

@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.scene.Node;
-import javafx.scene.layout.VBox;
 
 import org.openkawu.jfxium.component.control.SpinnerAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
@@ -81,7 +80,7 @@ public class SpinnerExamplePage extends VBoxAnt {
     }
 
     private Node toggleSection() {
-        Node[] spinnerHolder = {SpinnerAnt.create().size(48).build()};
+        Node spinner = SpinnerAnt.create().size(48).build();
         boolean[] visible = {true};
 
         ButtonAnt[] toggleBtnArr = new ButtonAnt[1];
@@ -89,25 +88,16 @@ public class SpinnerExamplePage extends VBoxAnt {
                 .type(ButtonAnt.Type.PRIMARY)
                 .onClick(e -> {
                     visible[0] = !visible[0];
-                    VBox parent = (VBox) spinnerHolder[0].getParent();
-                    int idx = parent.getChildren().indexOf(spinnerHolder[0]);
-                    if (visible[0]) {
-                        Node newSpinner = SpinnerAnt.create().size(48).build();
-                        parent.getChildren().set(idx, newSpinner);
-                        spinnerHolder[0] = newSpinner;
-                        toggleBtnArr[0].setText("隐藏");
-                    } else {
-                        spinnerHolder[0].setVisible(false);
-                        spinnerHolder[0].setManaged(false);
-                        toggleBtnArr[0].setText("显示");
-                    }
+                    spinner.setVisible(visible[0]);
+                    spinner.setManaged(visible[0]);
+                    toggleBtnArr[0].setText(visible[0] ? "隐藏" : "显示");
                 })
                 .build();
 
-        VBox demo = new VBox(12, spinnerHolder[0], toggleBtnArr[0]);
+        Node demo = Demos.column(spinner, toggleBtnArr[0]);
         String code = """
                 // build 后可通过 setVisible / setManaged 控制显隐
-                SpinnerAnt.create().size(48).build();
+                Node spinner = SpinnerAnt.create().size(48).build();
                 spinner.setVisible(false);
                 spinner.setManaged(false);
                 """;

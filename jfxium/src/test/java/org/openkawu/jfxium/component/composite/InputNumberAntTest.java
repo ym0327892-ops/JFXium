@@ -2,6 +2,7 @@ package org.openkawu.jfxium.component.composite;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ class InputNumberAntTest extends JfxTestBase {
     void precision() {
         HBox box = InputNumberAnt.create()
                 .value(3.14159).precision(2).build();
-        assertNotNull(box);
+        assertEquals("3.14", fieldOf(box).getText());
     }
 
     @Test
@@ -63,7 +64,24 @@ class InputNumberAntTest extends JfxTestBase {
     void placeholder() {
         HBox box = InputNumberAnt.create()
                 .placeholder("输入数量").build();
-        assertNotNull(box);
+        assertEquals("输入数量", fieldOf(box).getPromptText());
+    }
+
+    @Test
+    @DisplayName("readOnly(true) 设置内部输入框不可编辑")
+    void readOnly() {
+        HBox box = InputNumberAnt.create()
+                .readOnly(true).build();
+        assertFalse(fieldOf(box).isEditable());
+    }
+
+    @Test
+    @DisplayName("size 挂载尺寸 styleClass")
+    void size() {
+        HBox small = InputNumberAnt.create().size(InputNumberAnt.Size.SMALL).build();
+        HBox large = InputNumberAnt.create().size(InputNumberAnt.Size.LARGE).build();
+        assertTrue(small.getStyleClass().contains(JfxStyles.INPUT_NUMBER_SMALL));
+        assertTrue(large.getStyleClass().contains(JfxStyles.INPUT_NUMBER_LARGE));
     }
 
     @Test
@@ -97,22 +115,18 @@ class InputNumberAntTest extends JfxTestBase {
     // ---------- AbstractStyleBuilder ----------
 
     @Test
-    @DisplayName("styleClass 追加 — NOTE: build() 暂未调用 applyStyles，styleClass 不会生效")
+    @DisplayName("styleClass 追加")
     void styleClass_applied() {
         HBox box = InputNumberAnt.create()
                 .styleClass("my-num").build();
-        // NOTE: InputNumberAnt.build() 目前未调用 applyStyles(container)，
-        // 所以用户 styleClass 不会实际挂到返回的 HBox 上。此断言反映当前行为。
-        assertNotNull(box);
+        assertTrue(box.getStyleClass().contains("my-num"));
     }
 
     @Test
-    @DisplayName("maxWidth — NOTE: build() 暂未调用 applyStyles")
+    @DisplayName("maxWidth 应用到返回容器")
     void maxWidth_applied() {
         HBox box = InputNumberAnt.create().maxWidth(200).build();
-        // NOTE: InputNumberAnt.build() 目前未调用 applyStyles(container)，
-        // 所以 maxWidth 不会实际设置到返回的 HBox 上。
-        assertNotNull(box);
+        assertEquals(200, box.getMaxWidth());
     }
 
     // ---------- 链式 ----------
@@ -137,5 +151,15 @@ class InputNumberAntTest extends JfxTestBase {
                 .prefWidth(150)
                 .build();
         assertNotNull(box);
+        assertTrue(box.getStyleClass().contains("price-input"));
+        assertEquals(150, box.getPrefWidth());
+    }
+
+    private static TextField fieldOf(HBox box) {
+        return box.getChildren().stream()
+                .filter(TextField.class::isInstance)
+                .map(TextField.class::cast)
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("InputNumberAnt should contain a TextField"));
     }
 }

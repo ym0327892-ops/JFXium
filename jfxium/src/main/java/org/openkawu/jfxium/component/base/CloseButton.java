@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component.base;
 
 import javafx.scene.control.Button;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
  * 可复用的关闭按钮组件
@@ -15,7 +16,7 @@ public class CloseButton extends Button {
 
     public CloseButton(Runnable onClose) {
         setText("\u00d7");
-        getStyleClass().add("close-button");
+        getStyleClass().add(JfxStyles.CLOSE_BUTTON);
         
         setOnAction(e -> {
             if (onClose != null) {

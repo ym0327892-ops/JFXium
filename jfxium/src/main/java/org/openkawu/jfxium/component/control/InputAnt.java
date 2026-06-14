@@ -154,32 +154,6 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt> {
     }
 
     // ============================================================
-    // 视觉钩子（跟 *Ant 风格一致）
-    // ============================================================
-
-    /** 追加一个 styleClass（幂等——重复调不会重复挂）。 */
-    public InputAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** 批量挂多个 styleClass。 */
-    public InputAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先用 styleClass + LESS）。 */
-    public InputAnt style(String style) {
-        if (style != null) setStyle(style);
-        return this;
-    }
-
-    // ============================================================
     // 密码模式（M19.55 新增）
     // ============================================================
 

@@ -15,6 +15,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.HBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -93,9 +94,9 @@ public class TableAnt<T> {
 
     /** 单元格水平对齐 */
     public enum Align {
-        LEFT("align-left"),
-        CENTER("align-center"),
-        RIGHT("align-right");
+        LEFT(JfxStyles.TABLE_ALIGN_LEFT),
+        CENTER(JfxStyles.TABLE_ALIGN_CENTER),
+        RIGHT(JfxStyles.TABLE_ALIGN_RIGHT);
 
         private final String styleClass;
 
@@ -320,27 +321,27 @@ public class TableAnt<T> {
             table.setItems(data);
 
             // 样式
-            table.getStyleClass().add("jfx-table");
-            if (striped)  table.getStyleClass().add("jfx-table-striped");
+            table.getStyleClass().add(JfxStyles.TABLE);
+            if (striped)  table.getStyleClass().add(JfxStyles.TABLE_STRIPED);
 
             // 尺寸（M11.2 新增，对齐 Ant Design size 三态）
             switch (size) {
-                case SMALL  -> table.getStyleClass().add("jfx-table-small");
-                case MIDDLE -> table.getStyleClass().add("jfx-table-middle");
-                case LARGE  -> table.getStyleClass().add("jfx-table-large");
+                case SMALL  -> table.getStyleClass().add(JfxStyles.TABLE_SIZE_SMALL);
+                case MIDDLE -> table.getStyleClass().add(JfxStyles.TABLE_SIZE_MIDDLE);
+                case LARGE  -> table.getStyleClass().add(JfxStyles.TABLE_SIZE_LARGE);
             }
 
             // 内容区分割线模式（独立 styleClass，不与 .bordered 冲突）
             switch (border) {
-                case NONE       -> table.getStyleClass().add("jfx-table-border-none");
-                case HORIZONTAL -> table.getStyleClass().add("jfx-table-border-h");
-                case VERTICAL   -> table.getStyleClass().add("jfx-table-border-v");
-                case BOTH       -> table.getStyleClass().add("jfx-table-border-both");
+                case NONE       -> table.getStyleClass().add(JfxStyles.TABLE_BORDER_NONE);
+                case HORIZONTAL -> table.getStyleClass().add(JfxStyles.TABLE_BORDER_H);
+                case VERTICAL   -> table.getStyleClass().add(JfxStyles.TABLE_BORDER_V);
+                case BOTH       -> table.getStyleClass().add(JfxStyles.TABLE_BORDER_BOTH);
             }
 
             // 是否显示表头：通过 styleClass 让 LESS 把 column-header-background 高度收为 0
             if (!showHeader) {
-                table.getStyleClass().add("jfx-table-no-header");
+                table.getStyleClass().add(JfxStyles.TABLE_NO_HEADER);
             }
 
             applyStyles(table);
@@ -428,23 +429,31 @@ public class TableAnt<T> {
         /** 列对齐（同时设表头和内容，追加 align-* styleClass）。 */
         public ColumnBuilder<T, V> align(Align align) {
             // 移除旧 align-* 类，避免叠加
-            col.getStyleClass().removeIf(s -> s.startsWith("align-")
-                    && !s.startsWith("align-header-") && !s.startsWith("align-content-"));
+            col.getStyleClass().removeIf(s -> s.startsWith("jfx-align-")
+                    && !s.startsWith("jfx-align-header-") && !s.startsWith("jfx-align-content-"));
             col.getStyleClass().add(align.getStyleClass());
             return this;
         }
 
         /** 仅设置表头对齐（不影响行内容）。 */
         public ColumnBuilder<T, V> headerAlign(Align align) {
-            col.getStyleClass().removeIf(s -> s.startsWith("align-header-"));
-            col.getStyleClass().add("align-header-" + align.name().toLowerCase());
+            col.getStyleClass().removeIf(s -> s.startsWith("jfx-align-header-"));
+            col.getStyleClass().add(switch (align) {
+                case LEFT -> JfxStyles.TABLE_ALIGN_HEADER_LEFT;
+                case CENTER -> JfxStyles.TABLE_ALIGN_HEADER_CENTER;
+                case RIGHT -> JfxStyles.TABLE_ALIGN_HEADER_RIGHT;
+            });
             return this;
         }
 
         /** 仅设置行内容对齐（不影响表头）。 */
         public ColumnBuilder<T, V> contentAlign(Align align) {
-            col.getStyleClass().removeIf(s -> s.startsWith("align-content-"));
-            col.getStyleClass().add("align-content-" + align.name().toLowerCase());
+            col.getStyleClass().removeIf(s -> s.startsWith("jfx-align-content-"));
+            col.getStyleClass().add(switch (align) {
+                case LEFT -> JfxStyles.TABLE_ALIGN_CONTENT_LEFT;
+                case CENTER -> JfxStyles.TABLE_ALIGN_CONTENT_CENTER;
+                case RIGHT -> JfxStyles.TABLE_ALIGN_CONTENT_RIGHT;
+            });
             return this;
         }
 
@@ -538,7 +547,7 @@ public class TableAnt<T> {
                 ButtonAnt bb = ButtonAnt.create(a.label).type(a.type);
                 Button btn = bb.build();
                 if (a.danger) {
-                    btn.getStyleClass().add("button-danger-text");
+                    btn.getStyleClass().add(JfxStyles.BUTTON_DANGER_TEXT);
                 }
                 EventHandler<ActionEvent> h = e -> a.handler.accept(row);
                 btn.setOnAction(h);

@@ -5,6 +5,7 @@ module org.openkawu.jfxium {
     requires java.logging;
 
 
+    exports org.openkawu.jfxium;
     exports org.openkawu.jfxium.core.token;
     exports org.openkawu.jfxium.core.theme;
     exports org.openkawu.jfxium.core.builder;

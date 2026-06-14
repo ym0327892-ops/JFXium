@@ -2,6 +2,7 @@ package org.openkawu.jfxium.component.control;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.CheckBox;
+import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
@@ -45,7 +46,7 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class CheckBoxAnt extends CheckBox {
+public class CheckBoxAnt extends CheckBox implements LayoutCommon<CheckBoxAnt> {
 
     /** 尺寸枚举，与 ButtonAnt/InputAnt 一致（DEFAULT/SMALL/LARGE）。 */
     public enum Size {
@@ -85,12 +86,10 @@ public class CheckBoxAnt extends CheckBox {
 
     public CheckBoxAnt() {
         super();
-        getStyleClass().add("jfx-check-box");
     }
 
     public CheckBoxAnt(String text) {
         super(text);
-        getStyleClass().add("jfx-check-box");
     }
 
     // ============================================================
@@ -149,12 +148,15 @@ public class CheckBoxAnt extends CheckBox {
      * DEFAULT 仅清不挂。
      */
     public CheckBoxAnt shape(Shape shape) {
-        getStyleClass().removeAll("shape-circle", "shape-square", "shape-rounded");
+        getStyleClass().removeAll(
+                JfxStyles.CHECKBOX_SHAPE_CIRCLE,
+                JfxStyles.CHECKBOX_SHAPE_SQUARE,
+                JfxStyles.CHECKBOX_SHAPE_ROUNDED);
         if (shape != null) {
             switch (shape) {
-                case CIRCLE  -> getStyleClass().add("shape-circle");
-                case SQUARE  -> getStyleClass().add("shape-square");
-                case ROUNDED -> getStyleClass().add("shape-rounded");
+                case CIRCLE  -> getStyleClass().add(JfxStyles.CHECKBOX_SHAPE_CIRCLE);
+                case SQUARE  -> getStyleClass().add(JfxStyles.CHECKBOX_SHAPE_SQUARE);
+                case ROUNDED -> getStyleClass().add(JfxStyles.CHECKBOX_SHAPE_ROUNDED);
                 default      -> { /* DEFAULT 不挂额外类 */ }
             }
         }
@@ -174,32 +176,6 @@ public class CheckBoxAnt extends CheckBox {
         if (property != null) {
             selectedProperty().bindBidirectional(property);
         }
-        return this;
-    }
-
-    // ============================================================
-    // 视觉钩子（跟 *Ant 风格一致）
-    // ============================================================
-
-    /** 追加一个 styleClass（幂等——重复调不会重复挂）。 */
-    public CheckBoxAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** 批量挂多个 styleClass。 */
-    public CheckBoxAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先用 styleClass + LESS）。 */
-    public CheckBoxAnt style(String style) {
-        if (style != null) setStyle(style);
         return this;
     }
 

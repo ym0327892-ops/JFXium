@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component.composite;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -36,6 +37,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * }</pre>
  */
 public class ImageAnt {
+    private static final String CONTROLLER_KEY = ImageAnt.class.getName() + ".controller";
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private String src = null;
@@ -63,6 +65,16 @@ public class ImageAnt {
             StackPane container = new StackPane();
             container.setAlignment(Pos.CENTER);
             container.getStyleClass().add(JfxStyles.IMAGE);
+            render(container);
+            container.getProperties().put(CONTROLLER_KEY, new Controller(this, container));
+            applyStyles(container);
+            return container;
+        }
+
+        private void render(StackPane container) {
+            container.getChildren().clear();
+            container.getStyleClass().removeAll(JfxStyles.IMAGE_ROUNDED, JfxStyles.IMAGE_CIRCLE);
+            container.setClip(null);
 
             if (width > 0) {
                 container.setPrefWidth(width);
@@ -72,12 +84,14 @@ public class ImageAnt {
                 container.setPrefHeight(height);
                 container.setMaxHeight(height);
             }
-            // ── 红线#1 必要例外 ──────────────────────────────────
-            // borderRadius 是用户传入的实例属性（连续值），
-            // 无法预定义为 LESS 静态选择器。只设纯几何属性
-            // （border-radius），背景颜色/边框完全由 LESS 控制。
             if (borderRadius > 0) {
-                container.setStyle("-fx-background-radius: " + borderRadius + "px;");
+                container.getStyleClass().add(JfxStyles.IMAGE_ROUNDED);
+                Rectangle clip = new Rectangle();
+                clip.widthProperty().bind(container.widthProperty());
+                clip.heightProperty().bind(container.heightProperty());
+                clip.setArcWidth(borderRadius * 2);
+                clip.setArcHeight(borderRadius * 2);
+                container.setClip(clip);
             }
 
             if (src != null && !src.isEmpty()) {
@@ -119,7 +133,6 @@ public class ImageAnt {
             } else {
                 showPlaceholder(container);
             }
-            return container;
         }
 
         private void showFallback(StackPane container) {
@@ -139,5 +152,89 @@ public class ImageAnt {
 
     public static Builder create() {
         return new Builder();
+    }
+
+    public static Controller controllerOf(Node node) {
+        if (node == null) {
+            throw new IllegalArgumentException("ImageAnt.controllerOf(node) 的 node 不能为 null");
+        }
+        Object controller = node.getProperties().get(CONTROLLER_KEY);
+        if (controller instanceof Controller imageController) {
+            return imageController;
+        }
+        throw new IllegalArgumentException("node 不是 ImageAnt.build() 返回的图片组件");
+    }
+
+    public static class Controller {
+        private final Builder builder;
+        private final StackPane container;
+
+        private Controller(Builder builder, StackPane container) {
+            this.builder = builder;
+            this.container = container;
+        }
+
+        public String getSrc() {
+            return builder.src;
+        }
+
+        public void setSrc(String src) {
+            builder.src = src;
+            refresh();
+        }
+
+        public String getPlaceholder() {
+            return builder.placeholder;
+        }
+
+        public void setPlaceholder(String placeholder) {
+            builder.placeholder = placeholder;
+            refresh();
+        }
+
+        public String getAlt() {
+            return builder.alt;
+        }
+
+        public void setAlt(String alt) {
+            builder.alt = alt != null ? alt : "";
+            refresh();
+        }
+
+        public double getWidth() {
+            return builder.width;
+        }
+
+        public double getHeight() {
+            return builder.height;
+        }
+
+        public void setSize(double width, double height) {
+            builder.width = width;
+            builder.height = height;
+            refresh();
+        }
+
+        public double getBorderRadius() {
+            return builder.borderRadius;
+        }
+
+        public void setBorderRadius(double radius) {
+            builder.borderRadius = radius;
+            refresh();
+        }
+
+        public boolean isPreview() {
+            return builder.preview;
+        }
+
+        public void setPreview(boolean preview) {
+            builder.preview = preview;
+            refresh();
+        }
+
+        private void refresh() {
+            builder.render(container);
+        }
     }
 }

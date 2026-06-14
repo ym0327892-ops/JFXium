@@ -78,7 +78,6 @@ public class TextAreaAnt extends TextArea implements LayoutCommon<TextAreaAnt> {
 
     private void init() {
         setWrapText(true);
-        getStyleClass().add("jfx-text-area");
     }
 
     // ============================================================
@@ -137,32 +136,6 @@ public class TextAreaAnt extends TextArea implements LayoutCommon<TextAreaAnt> {
         return this;
     }
 
-    // ============================================================
-    // 视觉钩子
-    // ============================================================
-
-    /** 追加一个 styleClass（幂等）。 */
-    public TextAreaAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** 批量挂多个 styleClass。 */
-    public TextAreaAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先用 styleClass + LESS）。 */
-    public TextAreaAnt style(String style) {
-        if (style != null) setStyle(style);
-        return this;
-    }
-
     /** Builder 模式终结调用——返回自身（向后兼容）。 */
     public TextAreaAnt build() {
         return this;
@@ -179,7 +152,7 @@ public class TextAreaAnt extends TextArea implements LayoutCommon<TextAreaAnt> {
     public static TextArea readOnly(String message) {
         TextAreaAnt ta = new TextAreaAnt(message);
         ta.setEditable(false);
-        ta.getStyleClass().add("jfx-text-area-read-only");
+        ta.getStyleClass().add(JfxStyles.TEXT_AREA_READ_ONLY);
         return ta;
     }
 }

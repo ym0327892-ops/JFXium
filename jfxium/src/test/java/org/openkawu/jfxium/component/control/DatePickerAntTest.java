@@ -21,7 +21,7 @@ class DatePickerAntTest extends JfxTestBase {
     @DisplayName("create() 挂默认 styleClass")
     void create_defaults() {
         DatePickerAnt dp = DatePickerAnt.create().build();
-        assertTrue(dp.getStyleClass().contains("jfx-date-picker"));
+        assertTrue(dp.getStyleClass().contains(JfxStyles.JFX_DATE_PICKER));
     }
 
     @Test

@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
-import javafx.scene.layout.VBox;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
@@ -59,37 +58,28 @@ public class ImageExamplePage extends VBoxAnt {
     }
 
     private Node dynamicSection() {
-        Node[] imgHolder = {ImageAnt.create().width(160).height(100).placeholder("占位图").build()};
+        Node image = ImageAnt.create().width(160).height(100).placeholder("占位图").build();
+        ImageAnt.Controller controller = ImageAnt.controllerOf(image);
+        boolean[] rounded = {false};
 
         ButtonAnt toggleBtn = ButtonAnt.create("切换样式")
                 .type(ButtonAnt.Type.PRIMARY)
                 .onClick(e -> {
-                    VBox parent = (VBox) imgHolder[0].getParent();
-                    if (parent != null) {
-                        int idx = parent.getChildren().indexOf(imgHolder[0]);
-                        boolean isRounded = imgHolder[0].getStyleClass().contains("jfx-image-rounded");
-                        if (isRounded) {
-                            parent.getChildren().set(idx,
-                                    ImageAnt.create().width(160).height(100).placeholder("占位图").build());
-                        } else {
-                            parent.getChildren().set(idx,
-                                    ImageAnt.create().width(160).height(100).borderRadius(16).placeholder("圆角").build());
-                        }
-                        imgHolder[0] = parent.getChildren().get(idx);
-                    }
+                    rounded[0] = !rounded[0];
+                    controller.setBorderRadius(rounded[0] ? 16 : 0);
+                    controller.setPlaceholder(rounded[0] ? "圆角" : "占位图");
                 })
                 .build();
 
-        Node demo = Demos.column(imgHolder[0], toggleBtn);
+        Node demo = Demos.column(image, toggleBtn);
         String code = """
-                // 初始构建
-                ImageAnt.create().width(160).height(100).placeholder("占位图").build();
-                // 动态切换：rebuild + replace
-                parent.getChildren().set(idx,
-                        ImageAnt.create().width(160).height(100).borderRadius(16).placeholder("圆角").build());
+                Node image = ImageAnt.create().width(160).height(100).placeholder("占位图").build();
+                ImageAnt.Controller controller = ImageAnt.controllerOf(image);
+                controller.setBorderRadius(16);
+                controller.setPlaceholder("圆角");
                 """;
         return Demos.sectionWithCode("3. 动态切换",
-                "点击按钮在默认样式和圆角样式之间切换，演示 rebuild + replace。",
+                "点击按钮在默认样式和圆角样式之间切换，通过 Controller 更新同一个图片节点。",
                 code, demo);
     }
 }

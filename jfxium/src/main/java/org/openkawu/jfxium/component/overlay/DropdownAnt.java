@@ -102,10 +102,22 @@ public class DropdownAnt {
         private Consumer<MenuItem> onSelectItem = null;
         private boolean disabled = false;
         private String placement = "bottomLeft";
+        private boolean showArrow = false;
 
         public Builder trigger(Node trigger) {
             this.trigger = trigger;
             return this;
+        }
+
+        /** 在 trigger 右侧自动追加统一下拉箭头。 */
+        public Builder showArrow(boolean showArrow) {
+            this.showArrow = showArrow;
+            return this;
+        }
+
+        /** 在 trigger 右侧自动追加统一下拉箭头。 */
+        public Builder showArrow() {
+            return showArrow(true);
         }
 
         public Builder item(String key, String label) {
@@ -166,6 +178,13 @@ public class DropdownAnt {
         public DropdownResult build() {
             if (trigger == null) {
                 throw new IllegalStateException("Trigger node is required");
+            }
+            if (showArrow) {
+                Region arrow = new Region();
+                arrow.getStyleClass().add(JfxStyles.ARROW_DROPDOWN);
+                HBox wrapper = new HBox(4, trigger, arrow);
+                wrapper.setAlignment(Pos.CENTER_LEFT);
+                trigger = wrapper;
             }
             return new DropdownResult(this);
         }

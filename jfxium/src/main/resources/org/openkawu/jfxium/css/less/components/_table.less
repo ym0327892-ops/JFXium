@@ -85,6 +85,12 @@
   -fx-background-color: -color-fg-muted;
   -fx-padding: 3px 4px 3px 4px;
   -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+  -fx-min-width: 7px;
+  -fx-pref-width: 7px;
+  -fx-max-width: 7px;
+  -fx-min-height: 4px;
+  -fx-pref-height: 4px;
+  -fx-max-height: 4px;
 }
 
 .table-view .column-header.sorted .arrow {
@@ -127,56 +133,56 @@
 /* Column alignment classes
    关键：JavaFX 把 column-header 和 table-cell 自身打上 align-* 类，
    所以选择器必须用".class.class"形式（同节点），不能是空格分隔的后代选择器。 */
-.table-view .column-header.align-left,
-.table-view .table-cell.align-left {
+.table-view .column-header.jfx-align-left,
+.table-view .table-cell.jfx-align-left {
   -fx-alignment: center-left;
 }
 
-.table-view .column-header.align-left .label,
-.table-view .table-cell.align-left .label {
+.table-view .column-header.jfx-align-left .label,
+.table-view .table-cell.jfx-align-left .label {
   -fx-alignment: center-left;
   -fx-text-alignment: left;
 }
 
-.table-view .column-header.align-center,
-.table-view .table-cell.align-center {
+.table-view .column-header.jfx-align-center,
+.table-view .table-cell.jfx-align-center {
   -fx-alignment: center;
 }
 
-.table-view .column-header.align-center .label,
-.table-view .table-cell.align-center .label {
+.table-view .column-header.jfx-align-center .label,
+.table-view .table-cell.jfx-align-center .label {
   -fx-alignment: center;
   -fx-text-alignment: center;
 }
 
-.table-view .column-header.align-right,
-.table-view .table-cell.align-right {
+.table-view .column-header.jfx-align-right,
+.table-view .table-cell.jfx-align-right {
   -fx-alignment: center-right;
 }
 
-.table-view .column-header.align-right .label,
-.table-view .table-cell.align-right .label {
+.table-view .column-header.jfx-align-right .label,
+.table-view .table-cell.jfx-align-right .label {
   -fx-alignment: center-right;
   -fx-text-alignment: right;
 }
 
 /* 表头独立对齐：headerAlign(...) 只影响 column-header */
-.table-view .column-header.align-header-left   { -fx-alignment: center-left; }
-.table-view .column-header.align-header-center { -fx-alignment: center; }
-.table-view .column-header.align-header-right  { -fx-alignment: center-right; }
+.table-view .column-header.jfx-align-header-left   { -fx-alignment: center-left; }
+.table-view .column-header.jfx-align-header-center { -fx-alignment: center; }
+.table-view .column-header.jfx-align-header-right  { -fx-alignment: center-right; }
 
-.table-view .column-header.align-header-left   .label { -fx-alignment: center-left;   -fx-text-alignment: left; }
-.table-view .column-header.align-header-center .label { -fx-alignment: center;        -fx-text-alignment: center; }
-.table-view .column-header.align-header-right  .label { -fx-alignment: center-right;  -fx-text-alignment: right; }
+.table-view .column-header.jfx-align-header-left   .label { -fx-alignment: center-left;   -fx-text-alignment: left; }
+.table-view .column-header.jfx-align-header-center .label { -fx-alignment: center;        -fx-text-alignment: center; }
+.table-view .column-header.jfx-align-header-right  .label { -fx-alignment: center-right;  -fx-text-alignment: right; }
 
 /* 内容独立对齐：contentAlign(...) 只影响 table-cell */
-.table-view .table-cell.align-content-left   { -fx-alignment: center-left; }
-.table-view .table-cell.align-content-center { -fx-alignment: center; }
-.table-view .table-cell.align-content-right  { -fx-alignment: center-right; }
+.table-view .table-cell.jfx-align-content-left   { -fx-alignment: center-left; }
+.table-view .table-cell.jfx-align-content-center { -fx-alignment: center; }
+.table-view .table-cell.jfx-align-content-right  { -fx-alignment: center-right; }
 
-.table-view .table-cell.align-content-left   .label { -fx-alignment: center-left;   -fx-text-alignment: left; }
-.table-view .table-cell.align-content-center .label { -fx-alignment: center;        -fx-text-alignment: center; }
-.table-view .table-cell.align-content-right  .label { -fx-alignment: center-right;  -fx-text-alignment: right; }
+.table-view .table-cell.jfx-align-content-left   .label { -fx-alignment: center-left;   -fx-text-alignment: left; }
+.table-view .table-cell.jfx-align-content-center .label { -fx-alignment: center;        -fx-text-alignment: center; }
+.table-view .table-cell.jfx-align-content-right  .label { -fx-alignment: center-right;  -fx-text-alignment: right; }
 
 /* 表头默认整体居左（保持 Ant 风格），
    单元格内容默认垂直居中（避免内容看起来贴在顶部） */

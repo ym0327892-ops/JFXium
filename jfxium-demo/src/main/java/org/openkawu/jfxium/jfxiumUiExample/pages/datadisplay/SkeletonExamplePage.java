@@ -2,6 +2,7 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.animation.PauseTransition;
 import javafx.scene.Node;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -62,9 +63,7 @@ public class SkeletonExamplePage extends VBoxAnt {
     }
 
     private Node loadingSection() {
-        VBox[] contentHolder = new VBox[1];
-        // 初始：展示真实内容
-        contentHolder[0] = VBoxAnt.create()
+        VBox realContent = VBoxAnt.create()
                 .spacing(8)
                 .children(
                         TypographyAnt.title("用户资料", 5).build(),
@@ -74,29 +73,35 @@ public class SkeletonExamplePage extends VBoxAnt {
                 )
                 .padding(16)
                 .build();
+        Node skeleton = SkeletonAnt.avatarText();
+        skeleton.setVisible(false);
+        skeleton.setManaged(false);
+        StackPane loadingPane = new StackPane(realContent, skeleton);
 
         ButtonAnt loadBtn = ButtonAnt.create("模拟加载")
                 .type(ButtonAnt.Type.PRIMARY)
                 .onClick(e -> {
-                    VBox parent = (VBox) contentHolder[0].getParent();
-                    if (parent == null) return;
-                    int idx = parent.getChildren().indexOf(contentHolder[0]);
-                    // 替换为骨架屏
-                    Node skeleton = SkeletonAnt.avatarText();
-                    parent.getChildren().set(idx, skeleton);
-                    // 2 秒后恢复
+                    realContent.setVisible(false);
+                    realContent.setManaged(false);
+                    skeleton.setVisible(true);
+                    skeleton.setManaged(true);
                     PauseTransition pt = new PauseTransition(Duration.seconds(2));
-                    pt.setOnFinished(ev -> parent.getChildren().set(idx, contentHolder[0]));
+                    pt.setOnFinished(ev -> {
+                        skeleton.setVisible(false);
+                        skeleton.setManaged(false);
+                        realContent.setVisible(true);
+                        realContent.setManaged(true);
+                    });
                     pt.play();
                 })
                 .build();
 
-        Node demo = Demos.column(contentHolder[0], loadBtn);
+        Node demo = Demos.column(loadingPane, loadBtn);
         String code = """
-                // 加载中：显示骨架屏
-                parent.getChildren().set(idx, SkeletonAnt.avatarText());
-                // 加载完成：替换回真实内容
-                parent.getChildren().set(idx, realContent);
+                StackPane loadingPane = new StackPane(realContent, skeleton);
+                skeleton.setVisible(false);
+                skeleton.setManaged(false);
+                // 加载中/完成时只切换 visible + managed，不替换节点
                 """;
         return Demos.sectionWithCode("4. 模拟加载",
                 "点击按钮模拟数据加载：先显示骨架屏占位，2 秒后自动切换为真实内容。",

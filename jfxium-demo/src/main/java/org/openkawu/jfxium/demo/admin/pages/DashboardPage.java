@@ -127,8 +127,9 @@ public class DashboardPage extends StackPane {
     private Node buildStatCard(String title, String value, String trend) {
         Node stat = StatisticAnt.create().title(title).value(value).build();
         Label trendLabel = new Label(trend);
-        trendLabel.setStyle(
-                "-fx-text-fill: " + (trend.contains("↑") ? "#52c41a" : "#ff4d4f") + ";");
+        trendLabel.getStyleClass().add(trend.contains("↑")
+                ? "jfx-demo-trend-up"
+                : "jfx-demo-trend-down");
         VBox card = new VBox(8, stat, trendLabel);
         card.setPrefWidth(220);
         return GroupBoxAnt.create().content(card).build();

@@ -204,8 +204,8 @@ public class MenuButtonAnt {
 
             // Arrow style（M19.6.1）
             switch (arrowStyle) {
-                case TRIANGLE -> btn.getStyleClass().add("arrow-triangle");
-                case NONE -> btn.getStyleClass().add("no-arrow");
+                case TRIANGLE -> btn.getStyleClass().add(JfxStyles.JFX_ARROW_TRIANGLE);
+                case NONE -> btn.getStyleClass().add(JfxStyles.JFX_NO_ARROW);
                 case CHEVRON -> { /* 默认，无需额外 styleClass */ }
             }
 
@@ -216,7 +216,8 @@ public class MenuButtonAnt {
             }
 
             btn.setFocusTraversable(true);
-            btn.getStyleClass().add("jfx-menu-button");
+            // 主题样式类（jfx-menu-button）—— 与 _menubutton.less 选择器对齐（与 SplitButtonAnt #99 同源，规整 hardcode）
+            btn.getStyleClass().add(JfxStyles.JFX_MENU_BUTTON);
             applyStyles(btn);
             return btn;
         }

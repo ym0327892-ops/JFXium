@@ -103,6 +103,16 @@
 | 93 | SpinnerAnt 与 SpinAnt 功能重复 —— SpinnerAnt 只有 size()，SpinAnt 覆盖 SPINNER/DOTS/BARS + tip + fullscreen；且 SpinnerAnt 依赖不可靠的 ProgressIndicator indeterminate CSS → SpinnerAnt 改为 SpinAnt 简化入口 | ✅ 已解决 | 2026-06-11 |
 | 94 | AccordionAnt 与 CollapseAnt 功能重叠 ~75% —— CollapseAnt.accordion(true) = AccordionAnt 且多了动画/单面板禁用；AccordionAnt 仅 89 行薄包装 JavaFX Accordion → 改为 CollapseAnt 委托入口 | ✅ 已重构 | 2026-06-11 |
 | 95 | SpinAnt 缺内容挂载能力 —— fullscreen() 只能全屏、缺区域加载；javadoc 写了 content() 但没实现 → 新增 overlay(Node) 组合挂载：替换目标节点为 StackPane + 遮罩层，show/hide 控制 | ✅ 已新增 | 2026-06-11 |
+| 96 | TagAnt 渲染触发 `ClassCastException: String cannot be cast to [ParsedValue;` while converting `-fx-font` from `*.jfx-tag-label` —— `_component-aux.less` 写了 `-fx-font-size: inherit`，JavaFX 内部派生 `-fx-font` 简写（Labeled 体系）时拿到的子属性是 `inherit` 字符串而非 ParsedValue[]，直接崩溃。font-size 本就 CSS 默认继承，这条规则冗余又踩雷。→ 删 `-fx-font-size: inherit`，保留 `-fx-text-fill: inherit`（HBox→Label 非 Labeled 体系必须靠 inherit 透传父级颜色） | ✅ 已修复 | 2026-06-13 |
+| 97 | PopoverAnt 多了个 Ant Design 不存在的 X 关闭按钮 —— 之前 PopoverAnt.show() 里 hardcode `.closable(true).onClose(hide)`。Ant Design Popover 关闭靠点击外部（PurePanel.tsx 仅有 title+content 两块，无 closeIcon），加 X 是设计偏差。→ 删 PopoverPanel.closable/onClose 字段及 Builder 方法、删 X 渲染分支、删 PopoverAnt.show() 里 .closable/.onClose 透传。CloseButton.java / JfxStyles / _popover.less 不动（Message/Notification/Tag 仍用 CloseButton，且本无 POPOVER_CLOSE 常量） | ✅ 已重构 | 2026-06-13 |
+| 98 | 无法打包发布：`mvn package` 只产普通 jar（含 manifest 无 Main-Class / Class-Path / 运行时），macOS 上无 java -jar 入口、且 jfxium-demo 非模块化（无 module-info.java）拿不到 JavaFX。→ 用 JDK 14+ 的 `jpackage` 工具：1) `mvn clean install -DskipTests` 产出 2 个 jar；2) jpackage 非模块化模式：临时 stage 目录里同时放 jfxium-*.jar + jfxium-demo-*.jar，`--input stage/ --main-jar demo.jar --main-class ...App` 让 jpackage 自动把两个 jar 都写进 cfg classpath；同时 `--module-path JAVA_HOME/jmods:stage/jfxium.jar --add-modules org.openkawu.jfxium` 让 jlink 拿下 jfxium 模块图（其 requires javafx.controls/fxml）；3) `--type app-image` 产 .app，`--type dmg` 产分发镜像。封装为 `scripts/build-app.sh` 脚本，120MB 独立可运行（runtime 118MB + 两 jar 1.5MB）。**前置条件**：JDK 21+ 且 `$JAVA_HOME/jmods/` 含 `javafx.*.jmod`（macOS 官方 OpenJDK/Oracle JDK 不带，需用 Liberica JDK 21 Full / Azul Zulu FX / BellSoft）。**已知 jpackage NPE 告警**（`Cannot invoke "Path.getFileSystem()" because "path" is null`，--module-path 里的 jar 同时也在 --input 里时触发）可忽略，cfg + runtime 都生成正常。 | ✅ 已闭环（脚本 + 文档 + 独立运行验证 17s 内存 126MB 状态 S）| 2026-06-13 |
+| 99 | SplitButtonAnt.build() 没挂 `jfx-split-menu-button` styleClass（_splitmenubutton.less 选择器）→ 全部 60+ 行主题规则 0 命中，组件运行时「裸奔」（继承 modena 默认 SplitMenuButton 外观）→ 与同包 MenuButtonAnt.build() 显式 add `jfx-menu-button` 镜像同漏。`build_returnsSplitMenuButton` 测试期待 `jfx-split-button`（笔误，应为 `jfx-split-menu-button`）也未发现这个真 bug。→ build() 末尾加 `btn.getStyleClass().add(JfxStyles.JFX_SPLIT_MENU_BUTTON)` 与 _splitmenubutton.less 选择器严格对齐 + 测信用 `JfxStyles.JFX_SPLIT_MENU_BUTTON` 常量替代硬编码字符串（与 BorderRadiusTest 系列风格一致） | ✅ 已修复（SplitButtonAntTest 28/28 通过，全量 796/796 通过）| 2026-06-13 |
+| 100 | MenuButtonAnt.build() 行 219 挂的是 hardcode 字符串 `"jfx-menu-button"`（功能正常，与 _menubutton.less 选择器对齐），没用 `JfxStyles.JFX_MENU_BUTTON` 常量——风格与兄弟组件 SplitButtonAnt（#99 修复后已用 JFX_SPLIT_MENU_BUTTON）不一致；JfxStyles.java 行 29 文档表格也已预登记「JFX_MENU_BUTTON」为「类名前缀」组的预期成员。→ 1) JfxStyles.java 紧贴 SplitMenuButtonAnt 分组前插入 `MenuButtonAnt — MenuButton 包装` 分组，定义 `public static final String JFX_MENU_BUTTON = "jfx-menu-button";`；2) MenuButtonAnt.java:219 改用 `JfxStyles.JFX_MENU_BUTTON` 常量。回归全量 796/796 通过 | ✅ 已规整（全量 796/796 通过）| 2026-06-13 |
+| 101 | AppShellAnt.createTriggerButton() 行 309 拼接 hardcode：`JfxStyles.APP_SHELL_SIDER + "-trigger"` + 裸名 `"button"`（_layout.less 行 147 验证 `.button.jfx-app-shell-sider-trigger` 是真实选择器）—— 拼接生成类名 + 裸名未集中管理，风格不一致。→ 1) JfxStyles.java 加 `APP_SHELL_SIDER_TRIGGER = "jfx-app-shell-sider-trigger"`（紧贴 APP_SHELL_SIDER 之后）+ `BUTTON_BASE = "button"`（紧贴 BUTTON_INLINE 之后，跟其他裸名修饰类同组）；2) AppShellAnt.java:309 改用 `JfxStyles.APP_SHELL_SIDER_TRIGGER, JfxStyles.BUTTON_BASE` 替代拼接 + 裸名。回归全量 796/796 通过 | ✅ 已规整（全量 796/796 通过）| 2026-06-13 |
+| 102 | ButtonAnt `Type` enum 有 SUCCESS / WARNING / DANGER 3 个值（`applyTypeStyleClasses` 行 310/314-316、333-338/343-345 均有 hardcode 字符串 `"success"/"warning"/"danger"`），但 `_button.less` 里**只有** `.button.default/.accent/.outlined/.dashed/.text/.link/.small/.large/.inline` 9 个变体选择器，**没有** `.button.success/.warning/.danger`！—— Type.SUCCESS/WARNING/DANGER 按钮创建出来是「挂类但无样式」的死代码：源挂 2 个类（`BUTTON_DEFAULT` + 状态色），LESS 0 命中（无对应规则），运行时颜色就是 modena 默认 Button 蓝（accent 都不是），无状态色视觉反馈。Ant Design 6.x Button 没有 status 颜色 type（只有 `primary/default/dashed/text/link`），Ant Design 5.x `danger` 是独立 type 也不是状态色。→ 待决：a) 删 `Type.SUCCESS/WARNING/DANGER` + 相关 4 处 hardcode（视为设计偏差，迁就 Ant Design 6.x），或 b) 补 `_button.less` 3 条规则（`.button.success/warning/danger` 各 4 个状态：base/hover/pressed/disabled）+ JfxStyles 加 3 个常量（视作 JFXium 扩展） | ⚠️ 待决（独立 bug，示给用户选方向）| 2026-06-13 |
+| 103 | 接 #102，用户选方案 b：补 `_button.less` 状态色规则 + JfxStyles 加 3 个常量 + ButtonAnt 改 hardcode。1) JfxStyles.java 行 102-107 加 3 个常量（`BUTTON_SUCCESS = "success"`、`BUTTON_WARNING = "warning"`、`BUTTON_DANGER = "danger"`，注释引用 AntLantaFx antdesign-light.css 行 1259/1283 + 标 warning 为 JFXium 扩展）；2) `_button.less` 行 159-205 加 9 条规则：`.button.success/warning/danger` 各 base/:hover/:armed+:pressed（disabled 走 `.button:disabled` 行 25-28 统一 opacity 0.6），背景/边框/文字用 `@color-success-4/5/6`、`@color-warning-4/5/6`、`@color-danger-4/5/6` 语义变量（4=hover、5=base、6=pressed），文字 `-fx-text-fill: -color-fg-on-emphasis` 反色；3) ButtonAnt.java 行 310/314-316/338/343-345 共 8 处 hardcode 改 `JfxStyles.BUTTON_SUCCESS/WARNING/DANGER` 常量。回归全量 796/796 通过 | ✅ 已规整（全量 796/796 通过）| 2026-06-13 |
+| 104 | 接 #101/#103 系列裸名规整，用户选方案 C（B + 同步改 LESS 4 个名字选择器）。1) JfxStyles.java 加 3 个常量 `TEXT_AREA_READ_ONLY = "jfx-text-area-read-only"`（行 173）、`JFX_ARROW_TRIANGLE = "jfx-arrow-triangle"`（行 1036）、`JFX_NO_ARROW = "jfx-no-arrow"`（行 1037），改 2 个常量值加 jfx- 前缀 `CHECKBOX_SHAPE_ROUNDED = "jfx-shape-rounded"`（行 268）、`CHECKBOX_SHAPE_SQUARE = "jfx-shape-square"`（行 269）；2) `_menubutton.less` 行 57 `.menu-button.arrow-triangle` → `.menu-button.jfx-arrow-triangle`、行 66/70 `.menu-button.no-arrow` → `.menu-button.jfx-no-arrow`、行 169 `.split-menu-button.arrow-triangle` → `.split-menu-button.jfx-arrow-triangle`（共 4 处选择器改前缀）；3) `_switch.less` 6 处 `.shape-square` → `.jfx-shape-square`（行 129/130/134/149/160/164）、6 处 `.shape-rounded` → `.jfx-shape-rounded`（行 119/120/124/154/168/172），`.shape-circle` 2 处按 C 方案「4 个名字」边界**保留**（共 12 处选择器改前缀）；4) 删 5 处死代码 `add()` —— RadioButtonAnt.java 行 89/94 `add("jfx-radio-button")` × 2、CheckBoxAnt.java 行 88/93 `add("jfx-check-box")` × 2、TextAreaAnt.java 行 81 `add("jfx-text-area")` × 1（LESS 端 0 命中，挂类即无效）；5) 6 组件 Java 端裸名/hardcode → JfxStyles 常量（10 处）—— RadioButtonAnt.java 行 136-140 shape() switch 3 处（CHECKBOX_SHAPE_SQUARE/ROUNDED）、CheckBoxAnt.java 行 150-156 shape() switch 3 处（`shape-circle` 保留裸名）、TextAreaAnt.java 行 181 readOnly() 1 处（TEXT_AREA_READ_ONLY）、MenuButtonAnt.java 行 207-208 arrowStyle switch 2 处（JFX_ARROW_TRIANGLE/JFX_NO_ARROW）、SplitButtonAnt.java 行 199 arrowStyle 1 处（JFX_ARROW_TRIANGLE）、PaginationAnt.java 行 5 加 import + 行 76 1 处（PAGINATION）；6) 3 个测试文件同步断言 —— CheckBoxAntTest.java 行 22 `contains("jfx-check-box")` 死代码断言改验 modena 默认 `"check-box"` class（加注释「jfx-check-box 是死代码已删」）、行 90 `contains("shape-rounded")` → `contains(JfxStyles.CHECKBOX_SHAPE_ROUNDED)`，SplitButtonAntTest.java 行 26 注释 + 行 135 DisplayName + 行 138/146/355 断言 5 处 `arrow-triangle` → `JfxStyles.JFX_ARROW_TRIANGLE`（`contains("JfxStyles.JFX_ARROW_TRIANGLE")` 字符串字面量 → `contains(JfxStyles.JFX_ARROW_TRIANGLE)` 表达式），SwitchAntTest.java 行 56 注释 `shape-square` → `jfx-shape-square`；7) 编译 BUILD SUCCESS，11 套主题 CSS 全部重新生成（target/classes/org/openkawu/jfxium/css/），jfx-shape-rounded 6 处 + jfx-shape-square 6 处 + jfx-arrow-triangle 1 处 + jfx-no-arrow 2 处 = 15 处 jfx- 前缀生效，旧裸名选择器 0 命中，shape-circle 2 处保留。回归全量 796/796 通过 | ✅ 已规整（全量 796/796 通过）| 2026-06-14 |
+| 105 | M19.36 滚动容器重构：ScrollContainerAnt → ScrollPaneAnt —— 继承式 + 命名一致 + 保留 viewport 增强。问题：1) 旧 `ScrollContainerAnt` 是组合式（继承 `AbstractStyleBuilder<Builder>`，build() 内部手动 `new ScrollPane` + viewport 增强），命名暗示组合式，跟其他 9 个继承式 layout 组件（VBoxAnt extends VBox / HBoxAnt extends HBox / BorderPaneAnt / StackPaneAnt / FlowPaneAnt / TilePaneAnt / AnchorPaneAnt / TextFlowAnt / SplitPaneAnt extends SplitPane）规律不一致；2) 文档 `docs/cn/最佳实践.md:166` + `README_CN.md:92` 早已承诺 `ScrollPaneAnt` 存在，但代码里**只有 ScrollContainerAnt**（文档/代码不一致，示例 demo 也用 `ScrollPaneAnt` 名字会编译报错）；3) 组合式 layout 5 个（DividerAnt/FlexAnt/GridAnt/SpaceAnt + 原 ScrollContainerAnt）中，ScrollContainerAnt 唯一有 viewport 增强（StackPane 包裹 + padding 下放）。→ 重构：a) 新建 `ScrollPaneAnt extends ScrollPane implements LayoutCommon<ScrollPaneAnt>`（212 行，模仿 SplitPaneAnt 范式 + 保留 viewport 增强 + 覆盖 padding() 下放）；b) 公开构造 `ScrollPaneAnt()` / `ScrollPaneAnt(Node content)`，工厂入口 `create()` / `create(Node content)`（双工厂模式 4 种用法：create() / new 直接 / 子类继承 / ScrollPaneAntControllerOf 兼容路径）；c) 链式 API：content(Node) / fitToWidth(boolean) / fitToHeight(boolean) / pannable(boolean) / hbarPolicy(ScrollBarPolicy) / vbarPolicy(ScrollBarPolicy) 6 个；d) **覆盖 3 个 LayoutCommon padding() default 方法**下放到 viewport（符合红线 5「防容器吞 padding」—— ScrollPane 内部 viewport 才是真容器，padding 设 ScrollPane 自身会被 clip 掉）—— 用 `pendingPadding` 字段 + `applyPendingPadding()` 方法解决"先调 padding() 后调 content()" vs "先调 content() 后调 padding()"两种顺序问题；e) `build()` 返回 this（继承式终结调用，与 SplitPaneAnt 一致）。→ 配套改动：1) JfxStyles.java 行 184-185 `SCROLL_CONTAINER = "jfx-scroll-container"` → `SCROLL_PANE = "jfx-scroll-pane"`，`SCROLL_CONTAINER_VIEWPORT` → `SCROLL_PANE_VIEWPORT`（2 常量值改名）；2) `_layout.less` 行 185 注释 `ScrollContainerAnt` → `ScrollPaneAnt`、行 233-245 3 个选择器 `.jfx-scroll-container` → `.jfx-scroll-pane`（含 `.jfx-scroll-pane-viewport` 子选择器）；3) 删 ScrollContainerAnt.java 旧文件（91 行）；4) MainView.java 行 17 import + 行 369 调用 `ScrollContainerAnt` → `ScrollPaneAnt`（2 处）；5) AbstractStyleBuilder.java 行 18 + 行 33 javadoc 中 2 处 `ScrollContainerAnt` → `ScrollPaneAnt`；6) 7 个文档同步 —— INTERNAL/COMPONENTS.md 行 97 章节标题 + 行 111 代码、INTERNAL/LAYOUT.md 行 80-88 整段（"滚动容器"改 ScrollPaneAnt 名字 + 代码示例）、README_CN.md 行 92、PROJECT_AUDIT_REPORT.md 行 129（"5 个 extends AbstractStyleBuilder" → "4 个"，"+ScrollPaneAnt" 加到 "10 个 implements LayoutCommon"）、docs/cn/最佳实践.md 删行 425-434 整节「ScrollPaneAnt vs ScrollContainerAnt」（对比节因合并而过时）、docs/cn/组件参考.md 行 514 组件表 + 行 810 详细描述、README_PK.md 行 62；7) module-info.java 不改（已 export component.layout）。→ **layout 组件分布变化**：5 个组合式（Divider/Flex/Grid/Space + 原 ScrollContainerAnt）→ **4 个组合式**（Divider/Flex/Grid/Space）；9 个继承式 → **10 个继承式**（+ ScrollPaneAnt）。→ **回归状态**：mvn install -pl jfxium -DskipTests 编译 BUILD SUCCESS，ScrollPaneAnt.class 4068 字节生成（15:52），ScrollContainerAnt.class 已删除，11 个 CSS 全部重新生成（15:52 全部含 `.jfx-scroll-pane` 新选择器），旧 `.jfx-scroll-container` 选择器 0 命中 | ✅ 已重构（mvn install BUILD SUCCESS + 11 CSS 重新生成，待 mvn test + mvn javafx:run 视觉验收）| 2026-06-14 |
 
 ## 修复说明（2026-05-30 批次：示例项目回归暴露的源头 bug）
 
@@ -1158,3 +1168,376 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
   - [`UserPage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/demo/admin/pages/UserPage.java)：用户 CRUD 页，集成 TableAnt + TagAnt + BadgeAnt + EmptyAnt + PopconfirmAnt + ModalAnt + InputAnt + ComboBoxAnt + SwitchAnt + UploadAnt + RateAnt + SplitButtonAnt
   - [`SettingsPage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/demo/admin/pages/SettingsPage.java)：系统设置页，集成 DescriptionsAnt + ColorPickerAnt + ToggleButtonAnt + SegmentedAnt
 - **新增交叉引用**：一次性吃掉 31 个孤儿的首个真实使用场景
+
+### #97 PromptDialogAnt.show(stage) → create()...build().open(node) API 重构（2026-06-13）
+
+- **现象**：用户反馈"合理的 UI 示例，无法展示效果"——demo 的 code 字符串写 `PromptDialogAnt.show(stage)...build()`，但 `stage` 未定义；同时实际 demo 用 `show(null)`，运行时 `build()` 内部用 `new Label()` 当 owner，**owner 没有 Scene** → `owner.getScene()` 抛 NPE 或弹窗位置/遮罩完全错乱。
+- **根因**（双重违规）：
+  1. **API 不一致**：`ModalAnt` 用 `create()...build().open(Node)` 标准范式，`PromptDialogAnt` 却用 `show(Stage owner)` 旧 API，owner 收 Stage 类型而非 Node，破坏整个 overlay 组件的 API 一致性。
+  2. **build() 含副作用**：`build()` 末尾直接 `modalResult.open(new Label())`，违反"build() 返回什么就是什么"红线，且用假 Label 充 owner 永远拿不到正确的 Window。
+- **修复**：
+  - [`PromptDialogAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/overlay/PromptDialogAnt.java)：删除 `show(Stage owner)` 入口与 `Stage owner` 字段；改 `create()` 工厂；`build()` 不再自动 open，返回 `PromptDialogResult`；`PromptDialogResult.open(Node owner)` 显式打开，对齐 `ModalResult.open`；open 时对 null owner 抛 `IllegalArgumentException` 给出明确指引。
+  - [`PromptDialogExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/feedback/PromptDialogExamplePage.java)：3 处 `show(null)...build()` → `create()...build().open((Node) e.getSource())`；3 处 code 字符串的 `show(stage)` → `create()...build().open(ownerNode)`。
+- **影响**：用户现在能照搬 demo 写代码，弹框正常显示并跟随 owner Window 移动/缩放；点 OK / Cancel 真正关闭弹框（之前因 closeModal 是空 Runnable，点了也不关）。
+- **参考**：[`ModalAnt.create()...build().open(node)`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/overlay/ModalAnt.java) 范式
+
+---
+
+### #98 审计回归修复：exports / styleClass 接线 / PanelFooter 红线清理（2026-06-14）
+
+- **现象**：按 `.qoder` 规则做仓库审计时，发现 4 类回归：
+  1. `JFXiumApp` 是 public 基类，但 `module-info.java` 没导出根包，JPMS 下游无法继承。
+  2. `CodeBlockAnt` 的 `theme(LIGHT/DARK)` 只挂了 `code-theme-*` 类，LESS 没有对应规则；行号栏又挂成 `code-line-number(s)` 裸类，导致主题 API 和行号样式都部分失效。
+  3. `FormAnt` / `TableAnt` 存在 `jfx-` 命名漂移：Java 端挂 `form-size-*`、`button-danger-text`，LESS 实际只认 `.jfx-form-size-*`、`.jfx-button-danger-text`。
+  4. `PanelFooter` 仍用 `setStyle("-fx-padding: ...")` + `"16px 24px"` 字符串默认值，违反红线 #1，也绕过 compact/token 体系。
+
+- **修复**：
+  - [`module-info.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/module-info.java)：新增 `exports org.openkawu.jfxium;`
+  - [`JfxStyles.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/css/JfxStyles.java)：补 `FORM_SIZE_SMALL/LARGE`、`CODE_THEME_LIGHT/DARK`、`CODEBLOCK_TEXTAREA`
+  - [`CodeBlockAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/CodeBlockAnt.java)：`theme()` 改挂 `jfx-code-theme-*`；行号类统一改用 `JfxStyles.CODE_LINE_NUMBERS / CODE_LINE_NUMBER`
+  - [`_codeblock.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_codeblock.less) + [`variables-base.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/variables-base.less)：新增 CodeBlock 局部 light/dark 主题语义变量与对应样式规则
+  - [`FormAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/FormAnt.java)：`DEFAULT` 不再挂死类；`SMALL/LARGE` 改挂 `jfx-form-size-*`
+  - [`TableAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/TableAnt.java)：危险动作按钮改挂 `JfxStyles.BUTTON_DANGER_TEXT`
+  - [`PanelFooter.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/base/PanelFooter.java) + [`_component-aux.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_component-aux.less)：默认 padding 下放到 LESS token；移除 `setStyle("-fx-padding")`，保留 `padding(String)` 兼容入口但内部解析成 `Insets`
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+
+### #99 二轮审计修复：基础件命名空间收口（2026-06-14）
+
+- **现象**：第一轮修完后继续扫描，剩余可落地问题主要集中在“内部子节点 styleClass 仍是裸名”：
+  1. `CloseButton` 仍挂 `"close-button"`，而仓库没有对应 JFXium LESS 命名空间样式。
+  2. `TableAnt` 的 `align-left / align-header-left / align-content-left` 系列仍是裸类，与 `jfx-` 规则不一致。
+  3. `CodeBlockAnt` 语法高亮 token（`code-keyword` / `code-comment` 等）仍是裸类。
+  4. `CheckBoxAnt.shape(CIRCLE)` 仍挂 `"shape-circle"`，和已 jfx- 化的 `shape-square / shape-rounded` 不一致。
+
+- **修复**：
+  - [`CloseButton.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/base/CloseButton.java) + [`_base-cards.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_base-cards.less)：改为 `jfx-close-button`，补 hover/透明背景/前景色样式
+  - [`TableAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/TableAnt.java) + [`_table.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_table.less)：对齐类全部改成 `jfx-align-*`
+  - [`CodeBlockAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/CodeBlockAnt.java) + [`_codeblock.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_codeblock.less)：语法 token 类统一改成 `jfx-code-*`
+  - [`CheckBoxAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/CheckBoxAnt.java) + [`_switch.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_switch.less) + [`CheckBoxAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/control/CheckBoxAntTest.java)：`shape-circle` → `jfx-shape-circle`
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+
+### #100 三轮审计修复：动态样式下放到 JavaFX 原生属性（2026-06-14）
+
+- **现象**：二轮之后继续扫描，剩余 `setStyle()` 已不再是大面积红线残留，而是集中在“动态值但其实可走 JavaFX API”的场景：
+  1. `Overlay` 用 `setStyle("rgba(...)")` 写遮罩透明背景
+  2. `QRCodeAnt` 用 `setStyle("-fx-background-color")` 写自定义背景色
+  3. `ImageAnt` 用 `setStyle("-fx-background-radius")` 做圆角几何
+  4. `AvatarAnt` 用 `setStyle()` 写自定义背景色 / 文字色 / 自定义字号
+  5. `RateAnt` 用 `setStyle("-fx-fill")` 写 SVG 星星颜色
+  6. `FloatButtonAnt` 用 `setStyle()` 写动态圆角
+
+- **修复**：
+  - [`Overlay.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/base/Overlay.java)：改用 `BackgroundFill(Color.color(..., opacity))`
+  - [`QRCodeAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/QRCodeAnt.java)：改用 `BackgroundFill(bgColor)`
+  - [`ImageAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/ImageAnt.java)：容器圆角改用 `Rectangle` clip 绑定容器宽高
+  - [`AvatarAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/AvatarAnt.java)：自定义背景改 `BackgroundFill`，自定义文字色改 `label.setTextFill(...)`，自定义字号改 `Font.font(..., FontWeight.SEMI_BOLD, ...)`
+  - [`RateAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/RateAnt.java)：星星颜色改 `star.setFill(Paint.valueOf(...))`
+  - [`FloatButtonAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/FloatButtonAnt.java)：动态圆角改 `Rectangle` clip
+
+- **结果**：
+  - `rg -n "setStyle\\(" jfxium/src/main/java` 命中收敛到 **17** 处
+  - 剩余命中主要是 3 类：用户主动传入 inline style 的公共 API、`Tooltip` 的显式 inline 透传、`IconAnt` 的 `-fx-shape` 结构属性
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #101 四轮审计修复：IconAnt 结构样式去内联 + 剩余命中归类（2026-06-14）
+
+- **现象**：三轮之后重新扫描，`setStyle()` 剩余命中已主要集中在 3 类：
+  1. 公共 Builder/继承式 layout 的 `style(String)` 逃生口（用户显式要求 inline style 时才触发）
+  2. `TooltipAnt` 这种 `Styleable` 但不是 `Node` 的特殊透传
+  3. `IconAnt.Path` 仍把 SVG 轮廓通过 `setStyle("-fx-shape: ...")` 写进 CSS 字符串，属于“结构属性仍走 inline CSS”的最后一个可安全收敛点
+
+- **修复**：
+  - [`IconAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/IconAnt.java)：`Path` 图标改为 `Region#setShape(new SVGPath())`，移除 `-fx-shape` 内联 CSS；同时修正文档，明确是 Shape API 而不是 CSS 轮廓注入
+  - [`JfxStyles.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/css/JfxStyles.java) + [`TooltipAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/TooltipAnt.java)：补 `TOOLTIP` 常量，去掉裸写 `"jfx-tooltip"` 字符串
+
+- **结果**：
+  - `rg -n "setStyle\\(" jfxium/src/main/java` 文本命中收敛到 **16** 处
+  - 剩余运行时写入点已基本都是“受控公共 API / JavaFX Styleable 特例”，不再是组件内部可直接替换掉的硬编码颜色/px 红线残留
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #105 五轮审计修复：继承式控件视觉钩子统一到 LayoutCommon（2026-06-14）
+
+- **现象**：第四轮后继续审计，`setStyle()` 剩余文本命中虽然已经主要是受控入口，但 `InputAnt / ButtonAnt / ComboBoxAnt / TextAreaAnt / DatePickerAnt` 等继承式控件仍各自复制 `styleClass(String...)` 与 `style(String)`；`LabelAnt / CheckBoxAnt / RadioButtonAnt` 也有同类重复实现，却还未接入 `LayoutCommon`。
+
+- **根因**：M19.50 继承式重构后，部分控件保留了旧模板方法，导致公共 inline style 逃生口散落在多个类里。它们行为一致，但维护面扩大，后续审计也容易把同一类受控 API 重复计为多个风险点。
+
+- **修复**：
+  - [`InputAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/InputAnt.java)、[`ButtonAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/ButtonAnt.java)、[`ComboBoxAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/ComboBoxAnt.java)、[`TextAreaAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/TextAreaAnt.java)、[`DatePickerAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/DatePickerAnt.java)：删除重复 `styleClass/style` 方法，统一继承 `LayoutCommon` 默认实现
+  - [`LabelAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/LabelAnt.java)、[`CheckBoxAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/CheckBoxAnt.java)、[`RadioButtonAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/RadioButtonAnt.java)：接入 `LayoutCommon<SELF>`，删除本地重复视觉钩子
+
+- **结果**：
+  - `rg -n "setStyle\\(" jfxium/src/main/java` 文本命中从 **16** 处收敛到 **8** 处
+  - 真正运行时写入点集中到 3 个公共入口：`AbstractStyleBuilder.applyStyles(Node)`、`LayoutCommon.style(String)`、`TooltipAnt` 的 `Styleable` 特例
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #106 六轮审计修复：Table / ContextMenu 箭头 shape 尺寸钳制（2026-06-14）
+
+- **现象**：继续按 `.qoder` 红线扫描 LESS 时，发现两个 `.arrow` 选择器虽然已经显式设置 `-fx-shape`，但没有同步设置 min/pref 尺寸：
+  1. `ContextMenu` 子菜单右箭头只设 shape + 颜色，没有宽高钳制
+  2. `TableView` 表头排序箭头依赖 padding 撑开形状，没有 min/pref 宽高
+
+- **根因**：JavaFX 的 `.arrow` 内部节点在不同控件 Skin / Modena 状态下尺寸来源不稳定；只设置颜色或 shape，仍可能出现“有色无形”、尺寸漂移或主题覆盖后布局异常。
+
+- **修复**：
+  - [`_contextmenu.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_contextmenu.less)：为 `.menu-item > .right-container > .arrow` 补 `min/pref/max` 宽高
+  - [`_table.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_table.less)：为 `.table-view .column-header .arrow` 补 `min/pref/max` 宽高，保持原有 shape / padding / sorted 颜色逻辑
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `rg --pcre2 "box-shadow|:active|:focus|-fx-transition|..."` 精扫后仅剩注释文本命中，无实际违规 CSS 属性或 Web 伪类
+
+---
+
+### #107 七轮审计修复：红线扫描注释噪声归零（2026-06-14）
+
+- **现象**：第六轮修复后，LESS 红线精扫已无实际违规 CSS，但仍命中 4 处注释文本；Java 侧 `setStyle()` 扫描也仍命中历史说明和示例注释，导致后续审计需要人工二次判断。
+
+- **修复**：
+  - [`theme-base.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/theme-base.less)：将 compact 说明里的 `padding:` 文本改为中文“内距”描述
+  - [`_tier1.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_tier1.less)：将 `border-radius` 注释改为 JavaFX `background radius` 描述
+  - [`AbstractStyleBuilder.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/builder/AbstractStyleBuilder.java)、[`PopoverPanel.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/base/PopoverPanel.java)、[`PopconfirmPanel.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/base/PopconfirmPanel.java)、[`AnchorAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/AnchorAnt.java)：保留历史说明语义，移除注释里的 `setStyle(` 扫描触发词
+
+- **结果**：
+  - LESS 红线精扫 **0 命中**
+  - Java `rg -n "setStyle\\(" jfxium/src/main/java` 从 **8** 处降到 **3** 处，剩余仅为真实受控入口：`AbstractStyleBuilder`、`LayoutCommon`、`TooltipAnt`
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #108 八轮审计修复：JfxStyles 常量接线与硬编码收口（2026-06-14）
+
+- **现象**：进入 `JfxStyles ↔ LESS` 接线反查后，发现核心代码仍有几处直接硬编码 `jfx-*` styleClass：
+  1. `ContextMenuAnt` 的 accelerator 样式有 LESS 选择器，但没有 `JfxStyles` 常量
+  2. `ComboBoxAnt / DatePickerAnt / TitledPaneAnt / ToggleButtonAnt` 的组件身份类直接写字符串
+  3. `TableAnt` 已有完整 `JfxStyles.TABLE_*` 常量，但 build 时仍直接写 `"jfx-table-*"`
+  4. 对应单测仍以字符串断言默认 styleClass，继续固化硬编码模式
+
+- **修复**：
+  - [`JfxStyles.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/css/JfxStyles.java)：新增 `CONTEXT_MENU_ACCELERATOR`、`JFX_COMBO_BOX`、`JFX_DATE_PICKER`、`JFX_TITLED_PANE`、`JFX_TOGGLE_BUTTON`
+  - [`ContextMenuAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/overlay/ContextMenuAnt.java)、[`ComboBoxAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/ComboBoxAnt.java)、[`DatePickerAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/DatePickerAnt.java)、[`TitledPaneAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/TitledPaneAnt.java)、[`ToggleButtonAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/ToggleButtonAnt.java)、[`TableAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/TableAnt.java)：改用 `JfxStyles` 常量
+  - [`ComboBoxAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/control/ComboBoxAntTest.java)、[`DatePickerAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/control/DatePickerAntTest.java)、[`ToggleButtonAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/control/ToggleButtonAntTest.java)：断言改用常量
+
+- **结果**：
+  - `rg 'getStyleClass\\(\\)\\.add\\(\\"jfx-|styleClass\\(\\"jfx-' jfxium/src/main/java/org/openkawu/jfxium` 已无核心代码命中
+  - 默认 styleClass 合同保留，但统一通过 `JfxStyles` 管理
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
+
+---
+
+### #109 九轮审计修复：ProgressAnt 运行时 Controller + demo 去 rebuild（2026-06-14）
+
+- **现象**：按 build/API 合同审计 demo 时，`ProgressExamplePage` 动态演示通过 `rebuild + replace` 不断替换 Progress 节点；reset 分支还混用了 bar/circle 两个不同父容器的索引，存在 `indexOf(...) == -1` 后写错位置甚至抛异常的风险。
+
+- **根因**：`ProgressAnt` 只有 build 阶段的 `progress(...)` 配置，没有 build 后运行时更新入口。demo 为了改进度只能重建整个组件树，违反“运行时状态变化应提供 Controller”的项目约束。
+
+- **修复**：
+  - [`ProgressAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/ProgressAnt.java)：新增 `ProgressAnt.Controller` 与 `controllerOf(Node)`；Bar / Circle build 时把 Controller 挂到返回容器属性；Controller 支持 `setProgress(double)`、`getProgress()`、`setStatus(Status)`、`getStatus()`
+  - [`ProgressExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/datadisplay/ProgressExamplePage.java)：动态演示改为持有 bar/circle Controller，Timeline 和 reset 直接调用 `setProgress(...)`，删除 rebuild/replace 与错误索引逻辑
+
+- **结果**：Progress 的运行时更新有了框架级 API，demo 可照抄为稳定用法；同时修掉动态 reset 潜在异常。
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+
+---
+
+### #110 十轮审计修复：StatisticAnt 运行时 Controller + Builder 样式接线（2026-06-14）
+
+- **现象**：继续清理 demo 中的 `rebuild + replace` 信号时，`StatisticExamplePage` 动态刷新通过重新 build 整个 Statistic 节点再替换旧节点实现；同时审计 `StatisticAnt` 发现其 Builder 继承了 `AbstractStyleBuilder`，但 `build()` 末尾没有调用 `applyStyles(statistic)`，导致用户传入的 `styleClass/style/padding` 等通用 Builder 能力不会生效。
+
+- **根因**：
+  1. `StatisticAnt` 缺少 build 后运行时更新数值的 Controller，只能重建组件树。
+  2. `StatisticAnt.Builder` 未接入公共样式应用流程，违反 Builder 基类契约。
+
+- **修复**：
+  - [`StatisticAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/StatisticAnt.java)：新增 `StatisticAnt.Controller` 与 `controllerOf(Node)`；build 时绑定 Controller；Controller 支持 `setTitle/getTitle`、`setValue/getValue`、`setPrefix/getPrefix`、`setSuffix/getSuffix`
+  - [`StatisticAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/StatisticAnt.java)：补 `applyStyles(statistic)`，恢复 `AbstractStyleBuilder` 通用样式能力
+  - [`StatisticExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/datadisplay/StatisticExamplePage.java)：动态刷新改为 `StatisticAnt.controllerOf(stat).setValue(...)`，移除 rebuild/replace 示例
+
+- **结果**：Statistic 的高频运行时刷新场景有了框架级 API，demo 示例可照抄；Builder 样式合同也恢复生效。
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+
+---
+
+### #111 十一轮审计修复：InputNumberAnt Builder 参数接线补齐（2026-06-14）
+
+- **现象**：`InputNumberAnt.Builder` 继承了 `AbstractStyleBuilder`，但 `build()` 未调用 `applyStyles(container)`，导致 `styleClass/style/padding/width` 等通用 Builder 能力不会应用到返回容器；同时 `placeholder/readOnly/size` 已暴露 API，但没有真正接到内部 `TextField` 或根容器样式类上。既有单测还以 NOTE 方式记录“暂不生效”，没有锁定正确行为。
+
+- **根因**：组合式组件只完成了基础结构拼装，遗漏了公共 Builder 收尾流程和部分 Builder 参数到 JavaFX 节点的映射。
+
+- **修复**：
+  - [`InputNumberAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/InputNumberAnt.java)：`build()` 末尾补 `applyStyles(container)`，恢复通用 Builder 样式能力
+  - [`InputNumberAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/InputNumberAnt.java)：将 `placeholder` 接到内部 `TextField#setPromptText`，将 `readOnly` 接到 `setEditable(false)`，将 `size` 接到根容器尺寸 styleClass
+  - [`JfxStyles.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/css/JfxStyles.java)：新增 `INPUT_NUMBER_SMALL / INPUT_NUMBER_LARGE`
+  - [`_tier2-batch2.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_tier2-batch2.less)：补 InputNumber small/large 字号与内距 token 样式
+  - [`InputNumberAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/InputNumberAntTest.java)：删除“暂未生效”断言，改为验证 precision、placeholder、readOnly、size、styleClass、maxWidth、prefWidth 等真实行为
+
+- **结果**：InputNumber 的 Builder API 与实际节点行为重新对齐，测试也不再固化缺陷状态。
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -Dtest=InputNumberAntTest test` ⚠️ 当前无屏幕 JavaFX 环境卡在 toolkit 初始化，日志为 `Screen.getMainScreen` / `Index 0 out of bounds`
+
+---
+
+### #112 十二轮审计修复：QRCodeAnt 运行时 Controller + demo 去 rebuild（2026-06-14）
+
+- **现象**：继续清理 demo 中的运行时更新反模式时，`QRCodeExamplePage` 动态重新生成二维码通过 `parent.getChildren().set(idx, QRCodeAnt.create()...build())` 替换整棵节点；同时 `QRCodeAnt.Builder` 继承了 `AbstractStyleBuilder`，但 `build()` 没有调用 `applyStyles(container)`，通用 Builder 样式能力不会生效。
+
+- **根因**：
+  1. `QRCodeAnt` 只在 build 阶段把 `value` 绘制到 Canvas，缺少 build 后重绘同一 Canvas 的运行时 API。
+  2. 组合式 Builder 遗漏公共样式应用流程，违反 `AbstractStyleBuilder` 契约。
+
+- **修复**：
+  - [`QRCodeAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/QRCodeAnt.java)：新增 `QRCodeAnt.Controller` 与 `controllerOf(Node)`；build 时将 Controller 绑定到返回容器属性
+  - [`QRCodeAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/QRCodeAnt.java)：抽出 Canvas 重绘逻辑，Controller 支持 `setValue/getValue`、`setColor/getColor`、`setBgColor/getBgColor`、`setSize/getSize`
+  - [`QRCodeAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/QRCodeAnt.java)：补 `applyStyles(container)`，恢复通用 Builder 样式能力
+  - [`QRCodeExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/datadisplay/QRCodeExamplePage.java)：动态示例改为 `QRCodeAnt.controllerOf(qr).setValue(newValue)`，删除 parent/index/rebuild 逻辑
+  - [`QRCodeAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/QRCodeAntTest.java)：新增 Builder 样式接线与 Controller 契约测试
+
+- **结果**：QRCode 的运行时内容更新有了框架级 API，demo 不再示范替换节点；Builder 通用样式也恢复生效。
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+
+---
+
+### #113 十三轮审计修复：WatermarkAnt 运行时 Controller + demo 去 rebuild（2026-06-14）
+
+- **现象**：`WatermarkExamplePage` 动态切换水印文字时，通过 `parent.getChildren().set(idx, WatermarkAnt.create()...build())` 替换整个水印组件；这会迁移原内容节点、丢失组件状态，也继续向使用者示范 rebuild/replace 反模式。
+
+- **根因**：`WatermarkAnt` 的文字、图片、旋转、透明度、间距等渲染参数只保存在 Builder 中，build 后没有公开的运行时刷新入口；实际水印层只是一个 `Region` 背景图，理论上可以重绘同一层而不替换根节点。
+
+- **修复**：
+  - [`WatermarkAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/WatermarkAnt.java)：新增 `WatermarkAnt.Controller` 与 `controllerOf(Node)`；build 时将 Controller 绑定到返回容器属性
+  - [`WatermarkAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/WatermarkAnt.java)：抽出 `refreshWatermarkLayer(Region)`，Controller 复用原 tile 渲染算法刷新同一个水印层
+  - [`WatermarkAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/WatermarkAnt.java)：Controller 支持 `setText/setTextLines`、`setImage`、`setRotate`、`setOpacity`、`setFontSize`、`setColor`、`setGap`
+  - [`WatermarkExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/general/WatermarkExamplePage.java)：动态示例改为 `WatermarkAnt.controllerOf(watermark).setText(...)`，删除 parent/index/rebuild 逻辑
+  - [`WatermarkAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/WatermarkAntTest.java)：新增 Builder 样式接线与 Controller 契约测试
+
+- **结果**：Watermark 的运行时内容和样式刷新有了框架级 API，demo 示例可照抄为稳定写法，原内容节点不再被反复迁移。
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+
+---
+
+### #114 十四轮审计修复：ImageAnt 运行时 Controller + rounded 样式接线（2026-06-14）
+
+- **现象**：`ImageExamplePage` 动态切换默认/圆角图片时，通过 `parent.getChildren().set(idx, ImageAnt.create()...build())` 替换整个图片节点；同时 `ImageAnt` 已有 `JfxStyles.IMAGE_ROUNDED` 与 LESS 选择器，但 `borderRadius(...)` 只设置 JavaFX clip，没有挂 `jfx-image-rounded` styleClass；`ImageAnt.Builder` 也没有调用 `applyStyles(container)`。
+
+- **根因**：
+  1. `ImageAnt` 的 src、placeholder、尺寸、圆角等参数只在 build 阶段消费，缺少 build 后运行时更新 API。
+  2. 组件视觉状态没有完整接到 `JfxStyles ↔ LESS`，导致 rounded 样式规则无法命中。
+  3. 组合式 Builder 遗漏公共样式应用流程。
+
+- **修复**：
+  - [`ImageAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/ImageAnt.java)：新增 `ImageAnt.Controller` 与 `controllerOf(Node)`；build 时将 Controller 绑定到返回容器属性
+  - [`ImageAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/ImageAnt.java)：抽出 `render(StackPane)`，Controller 更新时重绘同一个图片容器
+  - [`ImageAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/ImageAnt.java)：`borderRadius > 0` 时挂 `JfxStyles.IMAGE_ROUNDED`，并补 `applyStyles(container)`
+  - [`ImageExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/datadisplay/ImageExamplePage.java)：动态示例改为 `ImageAnt.controllerOf(image).setBorderRadius(...) / setPlaceholder(...)`，删除 parent/index/rebuild 逻辑
+  - [`ImageAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/ImageAntTest.java)：新增 Builder 样式、rounded 接线与 Controller 契约测试
+
+- **结果**：Image 的运行时占位和圆角切换有了框架级 API，rounded LESS 规则恢复命中，demo 不再替换节点。
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+
+---
+
+### #115 十五轮审计修复：SpinnerExamplePage 去除无意义 rebuild（2026-06-14）
+
+- **现象**：`SpinnerExamplePage` 的“显示/隐藏”示例在隐藏时使用 `setVisible(false) / setManaged(false)`，但再次显示时却重新 `SpinnerAnt.create().size(48).build()` 并 `parent.getChildren().set(idx, newSpinner)` 替换节点；这既和示例说明不一致，也继续保留了不必要的 rebuild/replace 反模式。
+
+- **根因**：这里不是框架 API 缺口，JavaFX `Node` 已经提供稳定的显隐运行时控制。demo 侧误把“显示”分支写成了重建组件，导致使用者照抄时会产生多余节点替换和状态丢失风险。
+
+- **修复**：
+  - [`SpinnerExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/feedback/SpinnerExamplePage.java)：动态示例改为同一个 `spinner` 节点上调用 `setVisible(visible)` / `setManaged(visible)`
+  - [`SpinnerExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/feedback/SpinnerExamplePage.java)：删除 `VBox parent`、`indexOf`、`newSpinner` 和 `getChildren().set(...)` 逻辑
+
+- **结果**：Spinner 显隐示例回到最小、稳定的运行时写法；demo 中明确的 rebuild/replace 信号已清到只剩 `SkeletonExamplePage` 的真实 loading 占位切换，需要后续单独判断是否保留。
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+
+---
+
+### #116 十六轮审计修复：SkeletonExamplePage loading 切换去节点替换（2026-06-14）
+
+- **现象**：`SkeletonExamplePage` 的“模拟加载”示例通过 `parent.getChildren().set(idx, SkeletonAnt.avatarText())` 和 `parent.getChildren().set(idx, realContent)` 在骨架屏与真实内容之间替换节点。虽然 loading 场景允许切换内容，但示例层面仍保留了不必要的父容器索引和节点替换写法。
+
+- **根因**：真实内容和骨架屏是两个稳定节点，可以预先放入同一个 `StackPane`，通过 `visible/managed` 切换展示层；不需要在父容器里替换 child，也无需框架新增 API。
+
+- **修复**：
+  - [`SkeletonExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/datadisplay/SkeletonExamplePage.java)：使用 `StackPane loadingPane = new StackPane(realContent, skeleton)` 同时承载真实内容和骨架屏
+  - [`SkeletonExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/datadisplay/SkeletonExamplePage.java)：加载开始/结束只切换 `setVisible(...)` 与 `setManaged(...)`，删除 parent/index/getChildren().set 逻辑
+
+- **结果**：Showcase 示例页中明确的 `rebuild + replace / parent.getChildren().set(...)` 动态替换信号已清零；loading 示例仍保留原有交互语义。
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+
+---
+
+### #117 十七轮审计修复：demo setStyle 红线清零（2026-06-15）
+
+- **现象**：核心库 `setStyle(...)` 已收敛到受控入口，但 demo 仍有 4 处直接 `setStyle(...)`：
+  1. `AdminShell` 用 inline CSS 设置按钮左对齐
+  2. `DashboardPage` 用 inline 十六进制颜色设置趋势文本
+  3. `BorderShowcaseDemo` 用 inline CSS 演示伪边框 background stacking
+  4. `ListViewExamplePage` 用 inline CSS 设置演示行 spacing
+
+- **根因**：demo 侧绕过了 JavaFX 属性 API 和 `demo.css` 辅助样式，违反“禁止 `setStyle()` 写颜色/px”的红线，也让主题语义色无法统一切换。
+
+- **修复**：
+  - [`AdminShell.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/demo/admin/AdminShell.java)：`btn.setStyle("-fx-alignment...")` 改为 `btn.setAlignment(Pos.CENTER_LEFT)`
+  - [`DashboardPage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/demo/admin/pages/DashboardPage.java)：趋势文本改挂 `jfx-demo-trend-up/down`
+  - [`BorderShowcaseDemo.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/demo/border/BorderShowcaseDemo.java)：伪边框改挂 `jfx-demo-border-pseudo`，并给独立 Scene 加载 `demo.css`
+  - [`ListViewExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/datadisplay/ListViewExamplePage.java)：spacing 改用 `HBox#setSpacing(20)`
+  - [`demo.css`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/resources/org/openkawu/jfxium/jfxiumUiExample/demo.css)：新增趋势语义色与伪边框 demo 样式，颜色走 `-color-success-emphasis / -color-danger-emphasis / -color-border-default / -color-bg-default`
+
+- **结果**：
+  - `rg -n "setStyle\\(" jfxium-demo/src/main/java jfxium/src/main/java -g '*.java'` 只剩核心受控入口：`AbstractStyleBuilder`、`LayoutCommon`、`TooltipAnt`
+  - demo 侧 `setStyle(...)` 清零
+
+- **验证**：
+  - `./mvnw -q -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅

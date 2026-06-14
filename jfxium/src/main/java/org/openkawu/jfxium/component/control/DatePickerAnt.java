@@ -69,12 +69,12 @@ public class DatePickerAnt extends DatePicker implements LayoutCommon<DatePicker
 
     public DatePickerAnt() {
         super();
-        getStyleClass().add("jfx-date-picker");
+        getStyleClass().add(JfxStyles.JFX_DATE_PICKER);
     }
 
     public DatePickerAnt(LocalDate date) {
         super(date);
-        getStyleClass().add("jfx-date-picker");
+        getStyleClass().add(JfxStyles.JFX_DATE_PICKER);
     }
 
     // ============================================================
@@ -138,32 +138,6 @@ public class DatePickerAnt extends DatePicker implements LayoutCommon<DatePicker
         if (property != null) {
             valueProperty().bindBidirectional(property);
         }
-        return this;
-    }
-
-    // ============================================================
-    // 视觉钩子
-    // ============================================================
-
-    /** 追加一个 styleClass（幂等）。 */
-    public DatePickerAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    /** 批量挂多个 styleClass。 */
-    public DatePickerAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String c : classes) styleClass(c);
-        }
-        return this;
-    }
-
-    /** inline style（应急用，优先用 styleClass + LESS）。 */
-    public DatePickerAnt style(String style) {
-        if (style != null) setStyle(style);
         return this;
     }
 

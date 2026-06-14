@@ -229,7 +229,7 @@ public class ContextMenuAnt {
                     HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
                     row.getChildren().add(spacer);
                     Label accelLabel = new Label(item.getAccelerator().getDisplayText());
-                    accelLabel.getStyleClass().add("jfx-context-menu-accelerator");
+                    accelLabel.getStyleClass().add(JfxStyles.CONTEXT_MENU_ACCELERATOR);
                     row.getChildren().add(accelLabel);
                 }
 

@@ -156,7 +156,9 @@ public class CodeBlockAnt {
         public BorderPane build() {
             BorderPane root = new BorderPane();
             root.getStyleClass().add(JfxStyles.CODEBLOCK);
-            root.getStyleClass().add("code-theme-" + theme.name().toLowerCase());
+            root.getStyleClass().add(theme == Theme.DARK
+                    ? JfxStyles.CODE_THEME_DARK
+                    : JfxStyles.CODE_THEME_LIGHT);
 
             // 内容区：selectable 决定用「可选区单色 TextArea」还是「高亮 TextFlow」
             Node center = selectable ? buildSelectableCenter() : buildHighlightedCenter();
@@ -212,7 +214,7 @@ public class CodeBlockAnt {
             javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(code);
             textArea.setEditable(false);
             textArea.setWrapText(false); // 代码不折行，超宽横向滚动
-            textArea.getStyleClass().addAll(JfxStyles.CODEBLOCK_CONTENT, "jfx-codeblock-textarea");
+            textArea.getStyleClass().addAll(JfxStyles.CODEBLOCK_CONTENT, JfxStyles.CODEBLOCK_TEXTAREA);
             // 自适应行数：让 TextArea 撑到全部内容高度，避免内部滚动条与外层 ScrollPane 打架
             int rows = countLines(code);
             textArea.setPrefRowCount(rows);
@@ -411,7 +413,13 @@ public class CodeBlockAnt {
 
             for (CodeFragment frag : fragments) {
                 Text text = new Text(frag.content);
-                text.getStyleClass().add("code-" + frag.type);
+                text.getStyleClass().add(switch (frag.type) {
+                    case "keyword" -> JfxStyles.CODE_TOKEN_KEYWORD;
+                    case "string" -> JfxStyles.CODE_TOKEN_STRING;
+                    case "comment" -> JfxStyles.CODE_TOKEN_COMMENT;
+                    case "number" -> JfxStyles.CODE_TOKEN_NUMBER;
+                    default -> JfxStyles.CODE_TOKEN_TEXT;
+                });
                 flow.getChildren().add(text);
             }
 
@@ -462,13 +470,13 @@ public class CodeBlockAnt {
         /** 创建行号栏。 */
         private VBox createLineNumbers(String code) {
             VBox lineBox = new VBox(0);
-            lineBox.getStyleClass().add("code-line-numbers");
+            lineBox.getStyleClass().add(JfxStyles.CODE_LINE_NUMBERS);
             lineBox.setPadding(new Insets(8, 12, 8, 12));
 
             String[] lines = code.split("\n", -1);
             for (int i = 1; i <= lines.length; i++) {
                 Label lineNum = new Label(String.valueOf(i));
-                lineNum.getStyleClass().add("code-line-number");
+                lineNum.getStyleClass().add(JfxStyles.CODE_LINE_NUMBER);
                 lineBox.getChildren().add(lineNum);
             }
 

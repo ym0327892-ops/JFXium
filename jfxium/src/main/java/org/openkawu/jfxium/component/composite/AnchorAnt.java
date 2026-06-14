@@ -166,7 +166,7 @@ public class AnchorAnt {
                     onChange.accept(item.getKey());
                 }
             });
-            // hover 由 LESS 控制，不再用 setStyle().replace() 字符串替换
+            // hover 由 LESS 控制，不再做 inline style 字符串替换。
             return label;
         }
     }

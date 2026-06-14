@@ -3,7 +3,6 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
@@ -80,36 +79,28 @@ public class WatermarkExamplePage extends VBoxAnt {
         String[] texts = {"JFXium", "机密文档", "内部资料", "DRAFT"};
         int[] textIdx = {0};
 
-        StackPane[] watermarkHolder = new StackPane[1];
-        watermarkHolder[0] = WatermarkAnt.create()
+        StackPane watermark = WatermarkAnt.create()
                 .content(content)
                 .text(texts[0])
                 .build();
+        WatermarkAnt.Controller controller = WatermarkAnt.controllerOf(watermark);
 
         ButtonAnt toggleBtn = ButtonAnt.create("切换水印")
                 .type(ButtonAnt.Type.PRIMARY)
                 .onClick(e -> {
-                    VBox parent = (VBox) watermarkHolder[0].getParent();
-                    if (parent != null) {
-                        textIdx[0] = (textIdx[0] + 1) % texts.length;
-                        int idx = parent.getChildren().indexOf(watermarkHolder[0]);
-                        parent.getChildren().set(idx,
-                                WatermarkAnt.create().content(content).text(texts[textIdx[0]]).build());
-                        watermarkHolder[0] = (StackPane) parent.getChildren().get(idx);
-                    }
+                    textIdx[0] = (textIdx[0] + 1) % texts.length;
+                    controller.setText(texts[textIdx[0]]);
                 })
                 .build();
 
-        Node demo = Demos.column(watermarkHolder[0], toggleBtn);
+        Node demo = Demos.column(watermark, toggleBtn);
         String code = """
-                // 初始构建
-                WatermarkAnt.create().content(node).text("JFXium").build();
-                // 动态切换水印文字：rebuild + replace
-                parent.getChildren().set(idx,
-                        WatermarkAnt.create().content(node).text("机密文档").build());
+                StackPane watermark = WatermarkAnt.create().content(node).text("JFXium").build();
+                WatermarkAnt.Controller controller = WatermarkAnt.controllerOf(watermark);
+                controller.setText("机密文档");
                 """;
         return Demos.sectionWithCode("3. 动态切换",
-                "点击按钮循环切换水印文字，演示 rebuild + replace 动态更新水印内容。",
+                "点击按钮循环切换水印文字，通过 Controller 更新同一个水印层。",
                 code, demo);
     }
 }

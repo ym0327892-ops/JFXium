@@ -2,6 +2,7 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.HBox;
 
 import org.openkawu.jfxium.component.control.ListViewAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
@@ -64,7 +65,9 @@ public class ListViewExamplePage extends VBoxAnt {
                         .fixedCellSize(32)
                         .build()
         );
-        demo.setStyle("-fx-spacing: 20;");
+        if (demo instanceof HBox row) {
+            row.setSpacing(20);
+        }
         String code = """
                 // 多选模式
                 ListViewAnt.<String>create()

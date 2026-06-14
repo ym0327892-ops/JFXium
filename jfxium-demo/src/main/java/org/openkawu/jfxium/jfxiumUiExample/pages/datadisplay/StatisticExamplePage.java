@@ -77,45 +77,30 @@ public class StatisticExamplePage extends VBoxAnt {
 
     private Node dynamicSection() {
         Random rand = new Random();
-        VBox[] statHolder = new VBox[1];
-
-        statHolder[0] = StatisticAnt.create()
+        VBox stat = StatisticAnt.create()
                 .title("实时数据")
                 .value(rand.nextInt(10000, 99999))
                 .suffix("条")
                 .build();
+        StatisticAnt.Controller controller = StatisticAnt.controllerOf(stat);
 
         ButtonAnt refreshBtn = ButtonAnt.create("刷新数据")
                 .type(ButtonAnt.Type.PRIMARY)
-                .onClick(e -> {
-                    VBox parent = (VBox) statHolder[0].getParent();
-                    if (parent != null) {
-                        VBox newStat = StatisticAnt.create()
-                                .title("实时数据")
-                                .value(rand.nextInt(10000, 99999))
-                                .suffix("条")
-                                .build();
-                        int idx = parent.getChildren().indexOf(statHolder[0]);
-                        parent.getChildren().set(idx, newStat);
-                        statHolder[0] = newStat;
-                    }
-                })
+                .onClick(e -> controller.setValue(rand.nextInt(10000, 99999)))
                 .build();
 
-        Node demo = Demos.column(statHolder[0], refreshBtn);
+        Node demo = Demos.column(stat, refreshBtn);
         String code = """
-                // 初始构建
-                StatisticAnt.create().title("实时数据").value(12345).suffix("条").build();
-                // 更新：重新 build + replace 旧节点
-                VBox newStat = StatisticAnt.create()
+                VBox stat = StatisticAnt.create()
                         .title("实时数据")
-                        .value(newValue)
+                        .value(12345)
                         .suffix("条")
                         .build();
-                parent.getChildren().set(idx, newStat);
+                StatisticAnt.Controller ctrl = StatisticAnt.controllerOf(stat);
+                ctrl.setValue(newValue);
                 """;
         return Demos.sectionWithCode("4. 动态刷新",
-                "点击按钮刷新数据，演示 Statistic 数值的动态更新：rebuild + replace。",
+                "点击按钮刷新数据，运行时通过 Controller 更新数值。",
                 code, demo);
     }
 }

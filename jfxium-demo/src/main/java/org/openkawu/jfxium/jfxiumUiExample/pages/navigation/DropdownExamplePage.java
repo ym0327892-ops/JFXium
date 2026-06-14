@@ -28,18 +28,20 @@ public class DropdownExamplePage extends VBoxAnt {
     }
 
     private Node basicSection() {
-        Node trigger = ButtonAnt.create("操作菜单 ▾").build();
+        Node trigger = ButtonAnt.create("操作菜单").build();
         DropdownAnt.create()
                 .trigger(trigger)
+                .showArrow()
                 .item("edit", "编辑")
                 .item("copy", "复制")
                 .item("delete", "删除")
                 .onSelect(key -> MessageAnt.info("选中：" + key))
                 .build();   // 返回 DropdownResult，已把点击事件绑到 trigger
         String code = """
-                Node trigger = ButtonAnt.create("操作菜单 ▾").build();
+                Node trigger = ButtonAnt.create("操作菜单").build();
                 DropdownAnt.create()
                         .trigger(trigger)
+                        .showArrow()           // 自动追加统一下拉箭头
                         .item("edit", "编辑")
                         .item("copy", "复制")
                         .item("delete", "删除")
@@ -52,7 +54,7 @@ public class DropdownExamplePage extends VBoxAnt {
     }
 
     private Node dividerSection() {
-        Node trigger = ButtonAnt.create("更多 ▾").build();
+        Node trigger = ButtonAnt.create("更多").build();
         DropdownAnt.create()
                 .trigger(trigger)
                 .item("profile", "个人资料")
@@ -87,9 +89,10 @@ public class DropdownExamplePage extends VBoxAnt {
      */
     private Node clickedSection() {
         Label result = new Label("点击的菜单项：(未点击)");
-        Node trigger = ButtonAnt.create("操作菜单 ▾").build();
+        Node trigger = ButtonAnt.create("操作菜单").build();
         DropdownAnt.create()
                 .trigger(trigger)
+                .showArrow()
                 .item("edit", "编辑")
                 .item("copy", "复制")
                 .item("delete", "删除")
@@ -100,9 +103,10 @@ public class DropdownExamplePage extends VBoxAnt {
         Node demo = Demos.column(trigger, result);
         String code = """
                 Label result = new Label("点击的菜单项：(未点击)");
-                Node trigger = ButtonAnt.create("操作菜单 ▾").build();
+                Node trigger = ButtonAnt.create("操作菜单").build();
                 DropdownAnt.create()
                         .trigger(trigger)
+                        .showArrow()      // 自动追加统一下拉箭头
                         .item("edit", "编辑")
                         .item("copy", "复制")
                         .item("delete", "删除")

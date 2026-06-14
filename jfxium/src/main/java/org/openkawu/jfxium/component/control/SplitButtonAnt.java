@@ -196,7 +196,7 @@ public class SplitButtonAnt {
 
             // Arrow style（M19.6.1）
             if (arrowStyle == ArrowStyle.TRIANGLE) {
-                btn.getStyleClass().add("arrow-triangle");
+                btn.getStyleClass().add(JfxStyles.JFX_ARROW_TRIANGLE);
             }
 
             // Icon
@@ -206,6 +206,10 @@ public class SplitButtonAnt {
             }
 
             btn.setFocusTraversable(true);
+
+            // 主题样式类（jfx-split-menu-button）—— 与 _splitmenubutton.less 选择器对齐
+            // 不挂这行则 _splitmenubutton.less 全部规则不命中（修复 #99）
+            btn.getStyleClass().add(JfxStyles.JFX_SPLIT_MENU_BUTTON);
 
             applyStyles(btn);
             return btn;

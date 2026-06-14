@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * <p><b>分组</b>：</p>
  * <ul>
- *   <li>基本：create + build 返回 ToggleButton + 默认 jfx-toggle-button class</li>
+ *   <li>基本：create + build 返回 ToggleButton + 默认 styleClass</li>
  *   <li>size / shape：SMALL/LARGE/ROUNDED/SQUARE 幂等与互斥</li>
  *   <li>状态：selected / disabled</li>
  *   <li>事件：onAction / onChange</li>
@@ -38,12 +38,12 @@ class ToggleButtonAntTest extends JfxTestBase {
     // ============================================================
 
     @Test
-    @DisplayName("create(text).build() 返回 ToggleButton 且挂 jfx-toggle-button")
+    @DisplayName("create(text).build() 返回 ToggleButton 且挂默认 styleClass")
     void build_returnsToggleButton() {
         ToggleButton btn = ToggleButtonAnt.create("加粗").build();
         assertNotNull(btn);
         assertEquals("加粗", btn.getText());
-        assertTrue(btn.getStyleClass().contains("jfx-toggle-button"));
+        assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_TOGGLE_BUTTON));
     }
 
     @Test

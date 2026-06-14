@@ -89,6 +89,8 @@ public class InputNumberAnt {
             container.setAlignment(Pos.CENTER_LEFT);
             container.getStyleClass().add(JfxStyles.INPUT_NUMBER);
             if (disabled) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_DISABLED);
+            if (size == Size.SMALL) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_SMALL);
+            if (size == Size.LARGE) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_LARGE);
 
             if (prefix != null && !prefix.isEmpty()) {
                 Label prefixLabel = new Label(prefix);
@@ -98,6 +100,8 @@ public class InputNumberAnt {
 
             TextField field = new TextField(formatValue(value));
             field.setAlignment(Pos.CENTER);
+            field.setPromptText(placeholder != null ? placeholder : "");
+            field.setEditable(!readOnly);
             field.setPrefWidth(80);
             field.getStyleClass().add(JfxStyles.INPUT_NUMBER_FIELD);
             HBox.setHgrow(field, Priority.ALWAYS);
@@ -134,12 +138,6 @@ public class InputNumberAnt {
                 }
             });
 
-            if (suffix != null && !suffix.isEmpty()) {
-                Label suffixLabel = new Label(suffix);
-                suffixLabel.getStyleClass().add(JfxStyles.INPUT_NUMBER_SUFFIX);
-                container.getChildren().add(suffixLabel);
-            }
-
             Button decBtn = createButton("M2 8H14");
             decBtn.setOnAction(e -> adjustValue(-step, field));
             Button incBtn = createButton("M8 2V14 M2 8H14");
@@ -147,11 +145,18 @@ public class InputNumberAnt {
 
             container.getChildren().addAll(decBtn, field, incBtn);
 
+            if (suffix != null && !suffix.isEmpty()) {
+                Label suffixLabel = new Label(suffix);
+                suffixLabel.getStyleClass().add(JfxStyles.INPUT_NUMBER_SUFFIX);
+                container.getChildren().add(suffixLabel);
+            }
+
             if (disabled) {
                 decBtn.setDisable(true);
                 incBtn.setDisable(true);
                 field.setDisable(true);
             }
+            applyStyles(container);
             return container;
         }
 

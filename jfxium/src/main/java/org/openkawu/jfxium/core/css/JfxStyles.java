@@ -96,6 +96,14 @@ public final class JfxStyles {
     public static final String BUTTON_GHOST = "ghost";
     /** 内联文字按钮：透明背景、无边框、微 padding、12px 字号，适合嵌入状态栏/文本行。 */
     public static final String BUTTON_INLINE = "inline";
+    /** JavaFX modena 内置根类名（裸名：与 jfx-* 前缀根类不同，这里指 JavaFX 自带 .button 选择器）。jfx- 修饰类必须搭配此裸名使用，组合为 .button.<modifier> 命中 _*.less 规则 */
+    public static final String BUTTON_BASE = "button";
+    /** 状态色变体：成功（绿）。参考 AntLantaFx antdesign-light.css 行 1259 + Ant Design 6.x Button status color。Color：@color-success-5 */
+    public static final String BUTTON_SUCCESS = "success";
+    /** 状态色变体：警告（黄）。JFXium 扩展（AntLantaFx 未实现 warning 状态）。Color：@color-warning-5 */
+    public static final String BUTTON_WARNING = "warning";
+    /** 状态色变体：危险（红）。参考 AntLantaFx antdesign-light.css 行 1283 + Ant Design 6.x Button danger。Color：@color-danger-5 */
+    public static final String BUTTON_DANGER = "danger";
 
     /** 按钮尺寸 */
     public static final String SIZE_SMALL = "small";
@@ -147,6 +155,8 @@ public final class JfxStyles {
     public static final String APP_SHELL = "jfx-app-shell";
     public static final String APP_SHELL_HEADER = "jfx-app-shell-header";
     public static final String APP_SHELL_SIDER = "jfx-app-shell-sider";
+    /** 折叠/展开触发按钮专用修饰类（搭配 JavaFX modena 内置 .button 根类使用，与 _layout.less 行 147 .button.jfx-app-shell-sider-trigger 严格对齐） */
+    public static final String APP_SHELL_SIDER_TRIGGER = "jfx-app-shell-sider-trigger";
     public static final String APP_SHELL_CONTENT = "jfx-app-shell-content";
     public static final String APP_SHELL_FOOTER = "jfx-app-shell-footer";
 
@@ -159,6 +169,8 @@ public final class JfxStyles {
 
     /** PaginationAnt 分页根容器 */
     public static final String PAGINATION = "jfx-pagination";
+    /** TextAreaAnt 只读形态（M19.6.2） */
+    public static final String TEXT_AREA_READ_ONLY = "jfx-text-area-read-only";
 
     public static final String SPLIT_PANE = "jfx-split-pane-ant";
 
@@ -169,8 +181,8 @@ public final class JfxStyles {
     public static final String RESIZABLE_PANEL_HANDLE_VERTICAL = "vertical";
     public static final String RESIZABLE_PANEL_HANDLE_BOTH = "both";
 
-    public static final String SCROLL_CONTAINER = "jfx-scroll-container";
-    public static final String SCROLL_CONTAINER_VIEWPORT = "jfx-scroll-container-viewport";
+    public static final String SCROLL_PANE = "jfx-scroll-pane";
+    public static final String SCROLL_PANE_VIEWPORT = "jfx-scroll-pane-viewport";
 
     /** AccordionAnt 手风琴（仅作容器选择器，标题/内容走 .titled-pane 内置） */
     public static final String ACCORDION = "jfx-accordion";
@@ -204,6 +216,9 @@ public final class JfxStyles {
     public static final String DIVIDER_TEXT = "jfx-divider-text";
     public static final String DIVIDER_LINE = "jfx-divider-line";
 
+    /** 统一下拉箭头（ComboBox / Dropdown / MenuButton 等） */
+    public static final String ARROW_DROPDOWN = "jfx-arrow-dropdown";
+
     /** FormAnt 表单 */
     public static final String FORM = "jfx-form";
     public static final String FORM_HORIZONTAL = "jfx-form-horizontal";
@@ -219,12 +234,23 @@ public final class JfxStyles {
     public static final String FORM_FOOTER = "jfx-form-footer";
     public static final String FORM_HEADER = "jfx-form-header";
     public static final String FORM_SECTION_TITLE = "jfx-form-section-title";
+    public static final String FORM_SIZE_SMALL = "jfx-form-size-small";
+    public static final String FORM_SIZE_LARGE = "jfx-form-size-large";
 
     /** TableAnt 表格 */
     public static final String TABLE = "jfx-table";
     public static final String TABLE_STRIPED = "jfx-table-striped";
     public static final String TABLE_BORDERED = "jfx-table-bordered";
     public static final String TABLE_COMPACT = "jfx-table-compact";
+    public static final String TABLE_ALIGN_LEFT = "jfx-align-left";
+    public static final String TABLE_ALIGN_CENTER = "jfx-align-center";
+    public static final String TABLE_ALIGN_RIGHT = "jfx-align-right";
+    public static final String TABLE_ALIGN_HEADER_LEFT = "jfx-align-header-left";
+    public static final String TABLE_ALIGN_HEADER_CENTER = "jfx-align-header-center";
+    public static final String TABLE_ALIGN_HEADER_RIGHT = "jfx-align-header-right";
+    public static final String TABLE_ALIGN_CONTENT_LEFT = "jfx-align-content-left";
+    public static final String TABLE_ALIGN_CONTENT_CENTER = "jfx-align-content-center";
+    public static final String TABLE_ALIGN_CONTENT_RIGHT = "jfx-align-content-right";
 
     /** TableAnt 内容区分割线模式（M11.x 增强） */
     public static final String TABLE_BORDER_NONE = "jfx-table-border-none";
@@ -251,8 +277,9 @@ public final class JfxStyles {
     public static final String SWITCH_DISABLED = "switch-disabled";
     public static final String SWITCH_STATUS_LABEL = "jfx-switch-status-label";
     /** CheckBox/Radio shape 修饰类（M19.20） */
-    public static final String CHECKBOX_SHAPE_ROUNDED = "shape-rounded";
-    public static final String CHECKBOX_SHAPE_SQUARE = "shape-square";
+    public static final String CHECKBOX_SHAPE_CIRCLE = "jfx-shape-circle";
+    public static final String CHECKBOX_SHAPE_ROUNDED = "jfx-shape-rounded";
+    public static final String CHECKBOX_SHAPE_SQUARE = "jfx-shape-square";
 
     /* ============================================
        BadgeAnt 徽标
@@ -291,6 +318,7 @@ public final class JfxStyles {
     public static final String ALERT_CLOSE_BTN = "jfx-alert-close-btn";
     public static final String ALERT_WITH_ICON = "jfx-alert-with-icon";
     public static final String ALERT_DESCRIPTION = "jfx-alert-description";
+    public static final String TOOLTIP = "jfx-tooltip";
 
     /* ============================================
        ProgressAnt 进度条
@@ -327,6 +355,14 @@ public final class JfxStyles {
     public static final String CODEBLOCK_COPY_BTN = "jfx-codeblock-copy-btn";
     public static final String CODEBLOCK_SCROLL = "jfx-codeblock-scroll";
     public static final String CODEBLOCK_CONTENT = "jfx-codeblock-content";
+    public static final String CODEBLOCK_TEXTAREA = "jfx-codeblock-textarea";
+    public static final String CODE_THEME_LIGHT = "jfx-code-theme-light";
+    public static final String CODE_THEME_DARK = "jfx-code-theme-dark";
+    public static final String CODE_TOKEN_KEYWORD = "jfx-code-keyword";
+    public static final String CODE_TOKEN_STRING = "jfx-code-string";
+    public static final String CODE_TOKEN_COMMENT = "jfx-code-comment";
+    public static final String CODE_TOKEN_NUMBER = "jfx-code-number";
+    public static final String CODE_TOKEN_TEXT = "jfx-code-text";
     /** 代码块行号容器（左侧侧栏） */
     public static final String CODE_LINE_NUMBERS = "jfx-code-line-numbers";
     /** 代码块单个行号节点 */
@@ -464,6 +500,8 @@ public final class JfxStyles {
     /** InputNumberAnt 数字输入框 */
     public static final String INPUT_NUMBER = "jfx-input-number";
     public static final String INPUT_NUMBER_DISABLED = "jfx-input-number-disabled";
+    public static final String INPUT_NUMBER_SMALL = "jfx-input-number-small";
+    public static final String INPUT_NUMBER_LARGE = "jfx-input-number-large";
     public static final String INPUT_NUMBER_PREFIX = "jfx-input-number-prefix";
     public static final String INPUT_NUMBER_SUFFIX = "jfx-input-number-suffix";
     public static final String INPUT_NUMBER_FIELD = "jfx-input-number-field";
@@ -690,6 +728,7 @@ public final class JfxStyles {
     public static final String CONTEXT_MENU_ITEM = "jfx-context-menu-item";
     public static final String CONTEXT_MENU_ITEM_DISABLED = "jfx-context-menu-item-disabled";
     public static final String CONTEXT_MENU_DIVIDER = "jfx-context-menu-divider";
+    public static final String CONTEXT_MENU_ACCELERATOR = "jfx-context-menu-accelerator";
 
     /* ============================================
        HyperlinkAnt — 超链接
@@ -793,6 +832,7 @@ public final class JfxStyles {
        ============================================ */
     public static final String PANEL_FOOTER          = "jfx-panel-footer";
     public static final String PANEL_FOOTER_BORDERED = "jfx-panel-footer-bordered";
+    public static final String CLOSE_BUTTON          = "jfx-close-button";
 
     /* ============================================
        QRCodeAnt — 二维码
@@ -1006,12 +1046,32 @@ public final class JfxStyles {
     public static final String JFX_CHOICE_BOX = "jfx-choice-box";
 
     /* ============================================
+       ComboBoxAnt / DatePickerAnt — 原生控件包装
+       ============================================ */
+    public static final String JFX_COMBO_BOX = "jfx-combo-box";
+    public static final String JFX_DATE_PICKER = "jfx-date-picker";
+
+    /* ============================================
        SeparatorAnt — Separator 包装
        ============================================ */
     public static final String JFX_SEPARATOR = "jfx-separator";
 
     /* ============================================
+       TitledPaneAnt / ToggleButtonAnt — 原生控件包装
+       ============================================ */
+    public static final String JFX_TITLED_PANE = "jfx-titled-pane";
+    public static final String JFX_TOGGLE_BUTTON = "jfx-toggle-button";
+
+    /* ============================================
+       MenuButtonAnt — MenuButton 包装
+       ============================================ */
+    public static final String JFX_MENU_BUTTON = "jfx-menu-button";
+
+    /* ============================================
        SplitMenuButtonAnt — SplitMenuButton 包装
        ============================================ */
     public static final String JFX_SPLIT_MENU_BUTTON = "jfx-split-menu-button";
+    /** MenuButton/SplitMenuButton arrow style 修饰类（M19.6.1） */
+    public static final String JFX_ARROW_TRIANGLE = "jfx-arrow-triangle";
+    public static final String JFX_NO_ARROW = "jfx-no-arrow";
 }

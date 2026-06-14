@@ -283,7 +283,7 @@
   -fx-border-style: solid;
 }
 /* ============================================
-   SplitPaneAnt / ResizablePanelAnt / ScrollContainerAnt
+   SplitPaneAnt / ResizablePanelAnt / ScrollPaneAnt
    ============================================ */
 .jfx-split-pane-ant {
   -fx-background-color: -color-bg-layout;
@@ -321,15 +321,15 @@
 .jfx-resizable-panel-handle.both:hover {
   -fx-background-color: -color-accent-muted;
 }
-.jfx-scroll-container {
+.jfx-scroll-pane {
   -fx-background-color: -color-bg-layout;
   -fx-background-insets: 0;
   -fx-padding: 0;
 }
-.jfx-scroll-container > .viewport {
+.jfx-scroll-pane > .viewport {
   -fx-background-color: -color-bg-layout;
 }
-.jfx-scroll-container-viewport {
+.jfx-scroll-pane-viewport {
   -fx-background-color: -color-bg-layout;
 }
 /* ============================================
@@ -572,6 +572,53 @@
   -fx-background-color: -color-accent-0;
   -fx-background-insets: 0;
 }
+/* Button Status Color Variants
+   对标 AntLantaFx antdesign-light.css 行 1259-1306（.button.success / .danger）
+   状态色独立存在，与 .button.default 叠加时靠选择器顺序实现覆盖
+   状态：base / :hover / :armed+:pressed（disabled 走 .button:disabled 行 25-28 统一 opacity 0.6）
+   fix #102 */
+.button.success {
+  -fx-background-color: #13c2c2;
+  -fx-border-color: #13c2c2;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.button.success:hover {
+  -fx-background-color: #36cfc9;
+  -fx-border-color: #36cfc9;
+}
+.button.success:armed,
+.button.success:pressed {
+  -fx-background-color: #08979c;
+  -fx-border-color: #08979c;
+}
+.button.warning {
+  -fx-background-color: #faad14;
+  -fx-border-color: #faad14;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.button.warning:hover {
+  -fx-background-color: #ffc53d;
+  -fx-border-color: #ffc53d;
+}
+.button.warning:armed,
+.button.warning:pressed {
+  -fx-background-color: #d48806;
+  -fx-border-color: #d48806;
+}
+.button.danger {
+  -fx-background-color: #eb2f96;
+  -fx-border-color: #eb2f96;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+.button.danger:hover {
+  -fx-background-color: #f759ab;
+  -fx-border-color: #f759ab;
+}
+.button.danger:armed,
+.button.danger:pressed {
+  -fx-background-color: #c41d7f;
+  -fx-border-color: #c41d7f;
+}
 /* ============================================
    Input Component
    ============================================ */
@@ -808,6 +855,12 @@
   -fx-background-color: -color-fg-muted;
   -fx-padding: 3px 4px 3px 4px;
   -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+  -fx-min-width: 7px;
+  -fx-pref-width: 7px;
+  -fx-max-width: 7px;
+  -fx-min-height: 4px;
+  -fx-pref-height: 4px;
+  -fx-max-height: 4px;
 }
 .table-view .column-header.sorted .arrow {
   -fx-background-color: -color-accent-emphasis;
@@ -843,74 +896,74 @@
 /* Column alignment classes
    关键：JavaFX 把 column-header 和 table-cell 自身打上 align-* 类，
    所以选择器必须用".class.class"形式（同节点），不能是空格分隔的后代选择器。 */
-.table-view .column-header.align-left,
-.table-view .table-cell.align-left {
+.table-view .column-header.jfx-align-left,
+.table-view .table-cell.jfx-align-left {
   -fx-alignment: center-left;
 }
-.table-view .column-header.align-left .label,
-.table-view .table-cell.align-left .label {
+.table-view .column-header.jfx-align-left .label,
+.table-view .table-cell.jfx-align-left .label {
   -fx-alignment: center-left;
   -fx-text-alignment: left;
 }
-.table-view .column-header.align-center,
-.table-view .table-cell.align-center {
+.table-view .column-header.jfx-align-center,
+.table-view .table-cell.jfx-align-center {
   -fx-alignment: center;
 }
-.table-view .column-header.align-center .label,
-.table-view .table-cell.align-center .label {
+.table-view .column-header.jfx-align-center .label,
+.table-view .table-cell.jfx-align-center .label {
   -fx-alignment: center;
   -fx-text-alignment: center;
 }
-.table-view .column-header.align-right,
-.table-view .table-cell.align-right {
+.table-view .column-header.jfx-align-right,
+.table-view .table-cell.jfx-align-right {
   -fx-alignment: center-right;
 }
-.table-view .column-header.align-right .label,
-.table-view .table-cell.align-right .label {
+.table-view .column-header.jfx-align-right .label,
+.table-view .table-cell.jfx-align-right .label {
   -fx-alignment: center-right;
   -fx-text-alignment: right;
 }
 /* 表头独立对齐：headerAlign(...) 只影响 column-header */
-.table-view .column-header.align-header-left {
+.table-view .column-header.jfx-align-header-left {
   -fx-alignment: center-left;
 }
-.table-view .column-header.align-header-center {
+.table-view .column-header.jfx-align-header-center {
   -fx-alignment: center;
 }
-.table-view .column-header.align-header-right {
+.table-view .column-header.jfx-align-header-right {
   -fx-alignment: center-right;
 }
-.table-view .column-header.align-header-left .label {
+.table-view .column-header.jfx-align-header-left .label {
   -fx-alignment: center-left;
   -fx-text-alignment: left;
 }
-.table-view .column-header.align-header-center .label {
+.table-view .column-header.jfx-align-header-center .label {
   -fx-alignment: center;
   -fx-text-alignment: center;
 }
-.table-view .column-header.align-header-right .label {
+.table-view .column-header.jfx-align-header-right .label {
   -fx-alignment: center-right;
   -fx-text-alignment: right;
 }
 /* 内容独立对齐：contentAlign(...) 只影响 table-cell */
-.table-view .table-cell.align-content-left {
+.table-view .table-cell.jfx-align-content-left {
   -fx-alignment: center-left;
 }
-.table-view .table-cell.align-content-center {
+.table-view .table-cell.jfx-align-content-center {
   -fx-alignment: center;
 }
-.table-view .table-cell.align-content-right {
+.table-view .table-cell.jfx-align-content-right {
   -fx-alignment: center-right;
 }
-.table-view .table-cell.align-content-left .label {
+.table-view .table-cell.jfx-align-content-left .label {
   -fx-alignment: center-left;
   -fx-text-alignment: left;
 }
-.table-view .table-cell.align-content-center .label {
+.table-view .table-cell.jfx-align-content-center .label {
   -fx-alignment: center;
   -fx-text-alignment: center;
 }
-.table-view .table-cell.align-content-right .label {
+.table-view .table-cell.jfx-align-content-right .label {
   -fx-alignment: center-right;
   -fx-text-alignment: right;
 }
@@ -1159,13 +1212,24 @@
   -fx-background-color: transparent;
 }
 .combo-box .arrow {
-  /* M19.44 红线#9 修复：显式设 shape + 尺寸（对齐 AtlantaFX arrow-drop-down） */
   -fx-shape: "M7 10l5 5 5-5z";
   -fx-min-width: 10px;
   -fx-min-height: 5px;
   -fx-pref-width: 10px;
   -fx-pref-height: 5px;
   -fx-background-color: -color-fg-muted;
+}
+/* 统一下拉箭头（可挂到任意 Region 上复用） */
+.jfx-arrow-dropdown {
+  -fx-shape: "M7 10l5 5 5-5z";
+  -fx-min-width: 10px;
+  -fx-min-height: 5px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 5px;
+  -fx-background-color: -color-fg-muted;
+}
+.jfx-arrow-dropdown:hover {
+  -fx-background-color: -color-fg-default;
 }
 .combo-box:hover .arrow {
   -fx-background-color: -color-accent-emphasis;
@@ -2087,6 +2151,12 @@
   -fx-shape: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z";
   -fx-scale-shape: false;
   -fx-background-color: -color-fg-muted;
+  -fx-min-width: 6px;
+  -fx-pref-width: 6px;
+  -fx-max-width: 6px;
+  -fx-min-height: 10px;
+  -fx-pref-height: 10px;
+  -fx-max-height: 10px;
 }
 .menu-item:hover,
 .menu-item:focused {
@@ -2234,54 +2304,54 @@
 /* Switch 形状变体（M19.20）：默认 PILL（11px 半径），其他覆盖
    关键：必须同时覆盖 -fx-background-radius 和 -fx-border-radius，
    否则 thumb/track 边框还会按 modena 默认圆形渲染（M19.20 实证） */
-.jfx-switch.shape-rounded,
-.jfx-switch.shape-rounded .jfx-switch-track {
+.jfx-switch.jfx-shape-rounded,
+.jfx-switch.jfx-shape-rounded .jfx-switch-track {
   -fx-background-radius: 4px;
   -fx-border-radius: 4px;
 }
-.jfx-switch.shape-rounded .jfx-switch-thumb {
+.jfx-switch.jfx-shape-rounded .jfx-switch-thumb {
   -fx-background-radius: 3px;
   -fx-border-radius: 3px;
 }
-.jfx-switch.shape-square,
-.jfx-switch.shape-square .jfx-switch-track {
+.jfx-switch.jfx-shape-square,
+.jfx-switch.jfx-shape-square .jfx-switch-track {
   -fx-background-radius: 0;
   -fx-border-radius: 0;
 }
-.jfx-switch.shape-square .jfx-switch-thumb {
+.jfx-switch.jfx-shape-square .jfx-switch-thumb {
   -fx-background-radius: 0;
   -fx-border-radius: 0;
 }
 /* CheckBox 形状变体（M19.20）：默认方形小圆角（modena 默认），其他覆盖
    关键：选择器要带 .check-box 提优先级，否则被默认 .check-box .box 覆盖 */
-.check-box.shape-circle .box {
+.check-box.jfx-shape-circle .box {
   -fx-background-radius: 9999px;
   -fx-border-radius: 9999px;
 }
-.check-box.shape-circle .box .mark {
+.check-box.jfx-shape-circle .box .mark {
   -fx-background-radius: 9999px;
 }
-.check-box.shape-square .box {
+.check-box.jfx-shape-square .box {
   -fx-background-radius: 0;
   -fx-border-radius: 0;
 }
-.check-box.shape-rounded .box {
+.check-box.jfx-shape-rounded .box {
   -fx-background-radius: 6px;
   -fx-border-radius: 6px;
 }
 /* RadioButton 形状变体（M19.20）：默认圆形（modena 默认），SQUARE/ROUNDED 覆盖 */
-.radio-button.shape-square .radio {
+.radio-button.jfx-shape-square .radio {
   -fx-background-radius: 0;
   -fx-border-radius: 0;
 }
-.radio-button.shape-square .radio .dot {
+.radio-button.jfx-shape-square .radio .dot {
   -fx-background-radius: 0;
 }
-.radio-button.shape-rounded .radio {
+.radio-button.jfx-shape-rounded .radio {
   -fx-background-radius: 4px;
   -fx-border-radius: 4px;
 }
-.radio-button.shape-rounded .radio .dot {
+.radio-button.jfx-shape-rounded .radio .dot {
   -fx-background-radius: 2px;
 }
 /* ============================================
@@ -3024,6 +3094,83 @@
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
 }
+/* Builder.theme() 局部主题变体：
+   - light/dark 只影响代码块自身，不切换全局 ThemeManager
+   - 颜色走专属语义变量，避免 Java 端挂 class 却没有对应 LESS（历史回归） */
+.jfx-codeblock.jfx-code-theme-light {
+  -fx-background-color: #f6f8fa;
+  -fx-border-color: #d0d7de;
+}
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-header {
+  -fx-background-color: #eaeef2;
+}
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-title,
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-content,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea {
+  -fx-text-fill: #1f2328;
+}
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-lang,
+.jfx-codeblock.jfx-code-theme-light .jfx-code-line-number {
+  -fx-text-fill: #6e7781;
+}
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-content .jfx-code-comment,
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-content .jfx-code-text {
+  -fx-fill: #6e7781;
+}
+.jfx-codeblock.jfx-code-theme-light .jfx-code-line-numbers,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea .content,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea > .scroll-pane,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea > .scroll-pane > .viewport,
+.jfx-codeblock.jfx-code-theme-light .text-area.jfx-codeblock-textarea > .scroll-pane .content {
+  -fx-background-color: #f6f8fa;
+}
+.jfx-codeblock.jfx-code-theme-light .jfx-code-line-numbers {
+  -fx-border-color: transparent #d0d7de transparent transparent;
+}
+.jfx-codeblock.jfx-code-theme-dark {
+  -fx-background-color: #0d1117;
+  -fx-border-color: #30363d;
+}
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-header {
+  -fx-background-color: #161b22;
+}
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-title,
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-content,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea {
+  -fx-text-fill: #e1e4e8;
+}
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-lang,
+.jfx-codeblock.jfx-code-theme-dark .jfx-code-line-number {
+  -fx-text-fill: #8b949e;
+}
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-content .jfx-code-comment {
+  -fx-fill: #8b949e;
+}
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-content .jfx-code-text {
+  -fx-fill: #e1e4e8;
+}
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-copy-btn {
+  -fx-background-color: #0d1117;
+  -fx-border-color: #30363d;
+  -fx-text-fill: #8b949e;
+}
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-copy-btn:hover {
+  -fx-background-color: #161b22;
+  -fx-border-color: #8b949e;
+  -fx-text-fill: #e1e4e8;
+}
+.jfx-codeblock.jfx-code-theme-dark .jfx-code-line-numbers,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea .content,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea > .scroll-pane,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea > .scroll-pane > .viewport,
+.jfx-codeblock.jfx-code-theme-dark .text-area.jfx-codeblock-textarea > .scroll-pane .content {
+  -fx-background-color: #0d1117;
+}
+.jfx-codeblock.jfx-code-theme-dark .jfx-code-line-numbers {
+  -fx-border-color: transparent #30363d transparent transparent;
+}
 .jfx-codeblock-header {
   -fx-background-color: -color-border-muted;
   -fx-padding: 8 12 8 12;
@@ -3051,6 +3198,7 @@
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
   -fx-cursor: hand;
+  -fx-text-fill: -color-fg-default;
 }
 .jfx-codeblock-copy-btn:hover {
   -fx-background-color: -color-accent-subtle;
@@ -3111,21 +3259,21 @@
   -fx-background-insets: 0;
 }
 /* 代码语法高亮（用于 CodeBlockAnt 只读显示） */
-.jfx-codeblock-content .code-keyword {
+.jfx-codeblock-content .jfx-code-keyword {
   -fx-fill: -color-accent-emphasis;
   -fx-font-weight: bold;
 }
-.jfx-codeblock-content .code-string {
+.jfx-codeblock-content .jfx-code-string {
   -fx-fill: -color-success-emphasis;
 }
-.jfx-codeblock-content .code-comment {
+.jfx-codeblock-content .jfx-code-comment {
   -fx-fill: -color-fg-muted;
   -fx-font-style: italic;
 }
-.jfx-codeblock-content .code-number {
+.jfx-codeblock-content .jfx-code-number {
   -fx-fill: -color-warning-emphasis;
 }
-.jfx-codeblock-content .code-text {
+.jfx-codeblock-content .jfx-code-text {
   -fx-fill: -color-fg-default;
 }
 /* 行号样式 */
@@ -3145,6 +3293,12 @@
 /* Temporary highlight on double-click selection */
 .jfx-codeblock-highlight {
   -fx-background-color: -color-bg-subtle;
+}
+.jfx-codeblock.jfx-code-theme-light .jfx-codeblock-highlight {
+  -fx-background-color: #eaeef2;
+}
+.jfx-codeblock.jfx-code-theme-dark .jfx-codeblock-highlight {
+  -fx-background-color: #161b22;
 }
 /* ============================================
    CodeEditor（VS Code 风格演示用）— 配套 TextAreaAnt
@@ -3338,7 +3492,7 @@
   -fx-border-radius: 50%;
   -fx-background-radius: 50%;
 }
-/* Dots：圆点（使用 border-radius: 50% 实现圆形） */
+/* Dots：圆点（使用 JavaFX background radius 实现圆形） */
 .jfx-spin-indicator-dot {
   -fx-background-color: -color-accent-emphasis;
   -fx-background-radius: 50%;
@@ -3797,6 +3951,14 @@
   -fx-font-size: 14px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 8 4 8 4;
+}
+.jfx-input-number.jfx-input-number-small .jfx-input-number-field {
+  -fx-font-size: 12px;
+  -fx-padding: 2px 7px 2px 7px;
+}
+.jfx-input-number.jfx-input-number-large .jfx-input-number-field {
+  -fx-font-size: 16px;
+  -fx-padding: 9px 15px 9px 15px;
 }
 .jfx-input-number-btn {
   -fx-background-color: transparent;
@@ -4644,13 +4806,14 @@
   -fx-background-color: transparent;
 }
 .jfx-divider-text {
-  -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-text-fill: -color-fg-secondary;
+  -fx-font-size: 12px;
   -fx-padding: 0 12 0 12;
 }
 .jfx-divider-line {
   /* 让带文本的 Divider 中线段保持与单独 Separator 一致的视觉粗细 */
   -fx-pref-height: 1px;
+  -fx-background-color: -color-border;
 }
 /* ============================================
    Modal / Dialog Backdrop
@@ -4751,7 +4914,7 @@
   -fx-background-color: -color-fg-default;
 }
 /* MenuButton 箭头样式变体（M19.6.1） */
-.menu-button.arrow-triangle > .arrow-button > .arrow {
+.menu-button.jfx-arrow-triangle > .arrow-button > .arrow {
   -fx-shape: "M7 10l5 5 5-5z";
   -fx-min-width: 8px;
   -fx-min-height: 8px;
@@ -4759,10 +4922,10 @@
   -fx-pref-height: 8px;
 }
 /* 关闭箭头（对齐 AtlantaFX `&.no-arrow`） */
-.menu-button.no-arrow > .arrow-button {
+.menu-button.jfx-no-arrow > .arrow-button {
   -fx-padding: 0;
 }
-.menu-button.no-arrow > .arrow-button > .arrow {
+.menu-button.jfx-no-arrow > .arrow-button > .arrow {
   -fx-shape: null;
   -fx-min-width: 0;
   -fx-min-height: 0;
@@ -4848,7 +5011,7 @@
   -fx-background-color: -color-fg-default;
 }
 /* SplitMenuButton 箭头样式变体（M19.6.1） */
-.split-menu-button.arrow-triangle > .arrow-button > .arrow {
+.split-menu-button.jfx-arrow-triangle > .arrow-button > .arrow {
   -fx-shape: "M7 10l5 5 5-5z";
   -fx-min-width: 8px;
   -fx-min-height: 8px;
@@ -5517,6 +5680,21 @@
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
 }
+.jfx-close-button {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-background-radius: 4px;
+  -fx-border-radius: 4px;
+  -fx-padding: 4px;
+  -fx-font-size: 16px;
+  -fx-text-fill: -color-fg-muted;
+  -fx-cursor: hand;
+}
+.jfx-close-button:hover {
+  -fx-background-color: -color-bg-subtle;
+  -fx-text-fill: -color-fg-default;
+}
 /* Notification */
 .jfx-notification-card {
   -fx-background-color: -color-bg-overlay;
@@ -5906,6 +6084,7 @@
 .jfx-panel-footer {
   -fx-alignment: center-right;
   -fx-spacing: 8px;
+  -fx-padding: 16px 24px;
 }
 .jfx-panel-footer-bordered {
   -fx-border-color: -color-border-muted transparent transparent transparent;
@@ -6096,9 +6275,10 @@
   -fx-min-height: 28;
   -fx-font-size: 14px;
 }
+/* 显式 inherit text-fill（HBox→Label 不在 Labeled 体系内，必须靠 inherit 透传父级颜色），
+   不写 font-size: inherit —— JavaFX 派生 -fx-font 简写时会因子属性为 inherit 而 ClassCastException。 */
 .jfx-tag-label {
   -fx-text-fill: inherit;
-  -fx-font-size: inherit;
 }
 .jfx-tag-close {
   -fx-cursor: hand;
