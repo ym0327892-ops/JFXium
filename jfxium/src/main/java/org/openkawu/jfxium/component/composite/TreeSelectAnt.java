@@ -150,6 +150,7 @@ public class TreeSelectAnt {
                 field.setDisable(true);
                 container.setDisable(true);
             }
+            applyStyles(container);
             return container;
         }
 

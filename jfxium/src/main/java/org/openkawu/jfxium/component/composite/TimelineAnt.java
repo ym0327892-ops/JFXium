@@ -111,6 +111,7 @@ public class TimelineAnt {
             if (pending) {
                 timeline.getChildren().add(buildPendingItem());
             }
+            applyStyles(timeline);
             return timeline;
         }
 
@@ -179,6 +180,7 @@ public class TimelineAnt {
         private HBox buildPendingItem() {
             HBox row = new HBox(0);
             row.setAlignment(Pos.TOP_LEFT);
+            row.getStyleClass().add(JfxStyles.TIMELINE_ITEM);
 
             if (mode == Mode.ALTERNATE || mode == Mode.RIGHT) {
                 VBox leftBox = new VBox();

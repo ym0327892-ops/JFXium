@@ -57,16 +57,16 @@ public class AutoCompleteAnt {
         private int maxSuggestions = 10;
         private StringProperty bindProperty = null;
 
-        public Builder<T> placeholder(String placeholder) { this.placeholder = placeholder; return this; }
-        public Builder<T> value(String value) { this.value = value; return this; }
-        public Builder<T> options(List<T> options) { this.options = options; return this; }
-        public Builder<T> optionToString(Function<T, String> converter) { this.optionToString = converter; return this; }
+        public Builder<T> placeholder(String placeholder) { this.placeholder = placeholder != null ? placeholder : ""; return this; }
+        public Builder<T> value(String value) { this.value = value != null ? value : ""; return this; }
+        public Builder<T> options(List<T> options) { this.options = options != null ? options : new ArrayList<>(); return this; }
+        public Builder<T> optionToString(Function<T, String> converter) { this.optionToString = converter != null ? converter : Object::toString; return this; }
         public Builder<T> filter(Function<String, List<T>> filter) { this.filter = filter; return this; }
         public Builder<T> disabled(boolean disabled) { this.disabled = disabled; return this; }
         public Builder<T> disabled() { return disabled(true); }
         public Builder<T> onChange(Consumer<String> onChange) { this.onChange = onChange; return this; }
         public Builder<T> onSelect(Consumer<T> onSelect) { this.onSelect = onSelect; return this; }
-        public Builder<T> maxSuggestions(int max) { this.maxSuggestions = max; return this; }
+        public Builder<T> maxSuggestions(int max) { this.maxSuggestions = Math.max(0, max); return this; }
 
         /** 双向绑定：控件值 ↔ Property 值实时同步。 */
         public Builder<T> bindValue(StringProperty property) {
@@ -172,7 +172,9 @@ public class AutoCompleteAnt {
 
             if (!popup.isShowing()) {
                 Bounds bounds = field.localToScreen(field.getBoundsInLocal());
-                popup.show(field, bounds.getMinX(), bounds.getMaxY() + 4);
+                if (bounds != null) {
+                    popup.show(field, bounds.getMinX(), bounds.getMaxY() + 4);
+                }
             }
         }
     }

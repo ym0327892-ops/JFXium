@@ -194,6 +194,7 @@ public class RateAnt {
                 rateBox.getChildren().add(star);
             }
 
+            applyStyles(rateBox);
             return rateBox;
         }
 

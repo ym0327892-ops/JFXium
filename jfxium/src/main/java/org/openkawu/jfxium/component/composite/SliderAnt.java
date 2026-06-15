@@ -2,6 +2,7 @@ package org.openkawu.jfxium.component.composite;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -51,7 +52,6 @@ public class SliderAnt {
         private boolean vertical = false;
         private boolean reverse = false;
         private boolean dots = false;
-        private boolean included = true;
         private Map<Double, String> marks = null;
         private Function<Double, String> tipFormatter = null;
         private boolean tooltipVisible = false;
@@ -147,10 +147,13 @@ public class SliderAnt {
         }
 
         public Node build() {
+            normalizeRange();
+            step = step > 0 ? step : 1;
             return range ? buildRangeSlider() : buildSingleSlider();
         }
 
         private Node buildSingleSlider() {
+            value = clamp(value);
             Slider slider = new Slider(min, max, value);
             slider.setBlockIncrement(step);
             // 双向绑定（仅单滑块模式）
@@ -160,6 +163,7 @@ public class SliderAnt {
             slider.setShowTickMarks(marks != null || dots);
             slider.setShowTickLabels(marks != null);
             slider.setOrientation(vertical ? Orientation.VERTICAL : Orientation.HORIZONTAL);
+            applyReverse(slider);
             slider.setDisable(disabled);
             slider.getStyleClass().add(JfxStyles.SLIDER);
             // disabled 通过 styleClass 切换 opacity，不再 inline
@@ -253,6 +257,13 @@ public class SliderAnt {
 
             double startVal = rangeValue != null && rangeValue.length >= 2 ? rangeValue[0] : min;
             double endVal = rangeValue != null && rangeValue.length >= 2 ? rangeValue[1] : max;
+            startVal = clamp(startVal);
+            endVal = clamp(endVal);
+            if (startVal > endVal) {
+                double tmp = startVal;
+                startVal = endVal;
+                endVal = tmp;
+            }
 
             Slider startSlider = new Slider(min, max, startVal);
             Slider endSlider = new Slider(min, max, endVal);
@@ -262,6 +273,7 @@ public class SliderAnt {
                 slider.setBlockIncrement(step);
                 slider.setShowTickMarks(false);
                 slider.setShowTickLabels(false);
+                applyReverse(slider);
                 slider.setDisable(disabled);
                 slider.getStyleClass().add(JfxStyles.SLIDER);
                 if (disabled) {
@@ -310,10 +322,38 @@ public class SliderAnt {
                 }
             });
 
+            if (onChangeComplete != null) {
+                startSlider.setOnMouseReleased(e -> onChangeComplete.accept(startSlider.getValue()));
+                endSlider.setOnMouseReleased(e -> onChangeComplete.accept(endSlider.getValue()));
+            }
+
             rangeBox.getChildren().addAll(startLabel, startSlider, separator, endSlider, endLabel);
 
             applyStyles(rangeBox);
             return rangeBox;
+        }
+
+        private void normalizeRange() {
+            if (max < min) {
+                double oldMin = min;
+                min = max;
+                max = oldMin;
+            }
+        }
+
+        private double clamp(double rawValue) {
+            return Math.max(min, Math.min(max, rawValue));
+        }
+
+        private void applyReverse(Slider slider) {
+            if (!reverse) {
+                return;
+            }
+            if (vertical) {
+                slider.setScaleY(-1);
+            } else {
+                slider.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            }
         }
 
         /** 创建刻度标签行：每个 mark 对应一个 Label，水平等分 */

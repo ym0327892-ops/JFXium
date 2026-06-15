@@ -64,12 +64,12 @@ public class ProgressAnt {
         }
 
         public BarBuilder size(Size size) {
-            this.size = size;
+            this.size = size != null ? size : Size.DEFAULT;
             return this;
         }
 
         public BarBuilder status(Status status) {
-            this.status = status;
+            this.status = status != null ? status : Status.NORMAL;
             return this;
         }
 
@@ -134,12 +134,12 @@ public class ProgressAnt {
         }
 
         public CircleBuilder size(double size) {
-            this.size = size;
+            this.size = Math.max(1, size);
             return this;
         }
 
         public CircleBuilder status(Status status) {
-            this.status = status;
+            this.status = status != null ? status : Status.NORMAL;
             return this;
         }
 

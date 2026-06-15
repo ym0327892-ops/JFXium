@@ -148,8 +148,10 @@ public class SwitchAnt {
             // 用 BooleanProperty 持有可变的当前选中态（支持双向绑定）
             final SimpleBooleanProperty valueProperty = new SimpleBooleanProperty(selected);
             if (bindProperty != null) {
+                valueProperty.set(bindProperty.get());
                 valueProperty.bindBidirectional(bindProperty);
             }
+            selected = valueProperty.get();
 
             if (selected) {
                 switchPane.getStyleClass().add(JfxStyles.SWITCH_SELECTED);
@@ -167,14 +169,17 @@ public class SwitchAnt {
                 default      -> { /* PILL 不挂额外类 */ }
             }
 
+            valueProperty.addListener((obs, oldValue, newValue) -> {
+                boolean next = newValue;
+                updateVisualState(switchPane, thumb, next, true);
+                if (onChange != null && oldValue.booleanValue() != next) {
+                    onChange.accept(next);
+                }
+            });
+
             switchPane.setOnMouseClicked(e -> {
                 if (!disabled) {
-                    boolean next = !valueProperty.get();
-                    valueProperty.set(next);
-                    toggle(switchPane, thumb, next);
-                    if (onChange != null) {
-                        onChange.accept(next);
-                    }
+                    valueProperty.set(!valueProperty.get());
                 }
             });
 
@@ -195,17 +200,21 @@ public class SwitchAnt {
             return container;
         }
 
-        private void toggle(StackPane switchPane, Region thumb, boolean isSelected) {
+        private void updateVisualState(StackPane switchPane, Region thumb, boolean isSelected, boolean animated) {
             if (isSelected) {
                 switchPane.getStyleClass().add(JfxStyles.SWITCH_SELECTED);
             } else {
                 switchPane.getStyleClass().remove(JfxStyles.SWITCH_SELECTED);
             }
 
-            // 从当前实际位置滑到目标位置（不写死 from，避免与初始 translateX 冲突）
-            TranslateTransition slide = new TranslateTransition(Duration.millis(200), thumb);
-            slide.setToX(isSelected ? 24 : 0);
-            slide.play();
+            if (animated) {
+                // 从当前实际位置滑到目标位置（不写死 from，避免与初始 translateX 冲突）
+                TranslateTransition slide = new TranslateTransition(Duration.millis(200), thumb);
+                slide.setToX(isSelected ? 24 : 0);
+                slide.play();
+            } else {
+                thumb.setTranslateX(isSelected ? 24 : 0);
+            }
 
             // 通过 properties 标记定位状态文本，更新成新状态对应的文字
             Label statusLabel = null;

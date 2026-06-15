@@ -61,9 +61,9 @@ public class CalendarAnt {
         private boolean fullscreen = true;
         private VBox root;
 
-        public Builder value(LocalDate value) { this.value = value; return this; }
+        public Builder value(LocalDate value) { this.value = value != null ? value : LocalDate.now(); return this; }
         public Builder selectedDate(LocalDate selectedDate) { this.selectedDate = selectedDate; return this; }
-        public Builder mode(Mode mode) { this.mode = mode; return this; }
+        public Builder mode(Mode mode) { this.mode = mode != null ? mode : Mode.MONTH; return this; }
         public Builder onSelect(Consumer<LocalDate> onSelect) { this.onSelect = onSelect; return this; }
         public Builder onPanelChange(Consumer<LocalDate> onPanelChange) { this.onPanelChange = onPanelChange; return this; }
         public Builder fullscreen(boolean fullscreen) { this.fullscreen = fullscreen; return this; }

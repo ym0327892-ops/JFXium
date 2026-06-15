@@ -152,6 +152,7 @@ public class SkeletonAnt {
                 skeleton.getChildren().add(shimmer);
             }
 
+            applyStyles(skeleton);
             return skeleton;
         }
     }

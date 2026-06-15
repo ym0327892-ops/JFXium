@@ -80,7 +80,9 @@ public class CarouselAnt {
         public StackPane build() {
             if (items.isEmpty()) {
                 StackPane empty = new StackPane(new Label("No items"));
+                empty.getStyleClass().add(JfxStyles.CAROUSEL);
                 empty.setMinHeight(200);
+                applyStyles(empty);
                 return empty;
             }
 
@@ -186,6 +188,7 @@ public class CarouselAnt {
                 carousel.setOnMouseEntered(e -> timeline.pause());
                 carousel.setOnMouseExited(e -> timeline.play());
             }
+            applyStyles(carousel);
             return carousel;
         }
 

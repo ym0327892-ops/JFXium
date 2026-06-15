@@ -79,6 +79,8 @@ public class CascaderAnt {
         private Consumer<List<String>> onChange = null;
         private List<String> selectedPath = new ArrayList<>();
         private ObjectProperty<List<String>> bindProperty = null;
+        private String searchQuery = "";
+        private boolean suppressFieldListener = false;
 
         public Builder options(List<Option> options) { this.options = options; return this; }
         public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
@@ -96,6 +98,10 @@ public class CascaderAnt {
         }
 
         public HBox build() {
+            if ((selectedPath == null || selectedPath.isEmpty()) && bindProperty != null) {
+                selectedPath = resolveLabels(bindProperty.get());
+            }
+
             HBox container = new HBox(0);
             container.setAlignment(Pos.CENTER_LEFT);
             container.getStyleClass().add(JfxStyles.CASCADER);
@@ -118,7 +124,27 @@ public class CascaderAnt {
             cascaderPanel.getStyleClass().add(JfxStyles.POPUP_MENU);
             popup.getContent().add(cascaderPanel);
 
-            buildColumns(cascaderPanel, options, 0, field, popup);
+            Label clearLabel = new Label("×");
+            clearLabel.getStyleClass().add(JfxStyles.CASCADER_CLEAR);
+            updateClearLabel(clearLabel);
+            clearLabel.setOnMouseClicked(e -> {
+                if (disabled || selectedPath.isEmpty()) {
+                    return;
+                }
+                selectedPath = new ArrayList<>();
+                searchQuery = "";
+                updateFieldText(field);
+                rebuildColumns(cascaderPanel, field, popup, clearLabel);
+                syncBoundValue(new ArrayList<>());
+                if (onChange != null) {
+                    onChange.accept(new ArrayList<>());
+                }
+                updateClearLabel(clearLabel);
+                popup.hide();
+                e.consume();
+            });
+
+            rebuildColumns(cascaderPanel, field, popup, clearLabel);
 
             field.setOnMouseClicked(e -> {
                 if (disabled) return;
@@ -132,18 +158,53 @@ public class CascaderAnt {
             field.setOnKeyPressed(e -> {
                 if (e.getCode() == KeyCode.ESCAPE) popup.hide();
             });
+            if (showSearch) {
+                field.textProperty().addListener((obs, oldValue, newValue) -> {
+                    if (suppressFieldListener) {
+                        return;
+                    }
+                    searchQuery = newValue != null ? newValue.trim() : "";
+                    rebuildColumns(cascaderPanel, field, popup, clearLabel);
+                    if (!searchQuery.isEmpty() && !popup.isShowing()) {
+                        Bounds bounds = field.localToScreen(field.getBoundsInLocal());
+                        if (bounds != null) {
+                            popup.show(field, bounds.getMinX(), bounds.getMaxY() + 4);
+                        }
+                    }
+                });
+            }
 
             container.getChildren().add(field);
+            if (allowClear) {
+                container.getChildren().add(clearLabel);
+            }
 
             if (disabled) {
                 field.setDisable(true);
                 container.setDisable(true);
             }
+
+            if (bindProperty != null) {
+                bindProperty.addListener((obs, oldValue, newValue) -> {
+                    selectedPath = resolveLabels(newValue);
+                    searchQuery = "";
+                    updateFieldText(field);
+                    updateClearLabel(clearLabel);
+                    rebuildColumns(cascaderPanel, field, popup, clearLabel);
+                });
+                syncBoundValue(collectSelectedValues());
+            }
+            applyStyles(container);
             return container;
         }
 
-        private void buildColumns(HBox panel, List<Option> currentOptions, int depth, TextField field, Popup popup) {
+        private void rebuildColumns(HBox panel, TextField field, Popup popup, Label clearLabel) {
             panel.getChildren().clear();
+            appendColumns(panel, displayOptions(), 0, field, popup, clearLabel);
+        }
+
+        private void appendColumns(HBox panel, List<Option> currentOptions, int depth, TextField field, Popup popup,
+                                   Label clearLabel) {
             if (currentOptions == null || currentOptions.isEmpty()) return;
 
             VBox column = new VBox(0);
@@ -166,7 +227,8 @@ public class CascaderAnt {
                     SVGPath arrow = new SVGPath();
                     arrow.setContent("M6 4L10 8L6 12");
                     arrow.getStyleClass().add(JfxStyles.CASCADER_ARROW);
-                    HBox spacer = new HBox();
+                    Region spacer = new Region();
+                    spacer.setMaxWidth(Double.MAX_VALUE);
                     HBox.setHgrow(spacer, Priority.ALWAYS);
                     item.getChildren().addAll(spacer, arrow);
                 }
@@ -180,7 +242,8 @@ public class CascaderAnt {
                             }
                             newPath.add(option.getLabel());
                             selectedPath = newPath;
-                            buildColumns(panel, options, 0, field, popup);
+                            searchQuery = "";
+                            rebuildColumns(panel, field, popup, clearLabel);
                         } else {
                             List<String> newPath = new ArrayList<>();
                             for (int i = 0; i < depth && i < selectedPath.size(); i++) {
@@ -188,13 +251,12 @@ public class CascaderAnt {
                             }
                             newPath.add(option.getLabel());
                             selectedPath = newPath;
-                            field.setText(String.join(" / ", selectedPath));
+                            searchQuery = "";
+                            updateFieldText(field);
+                            updateClearLabel(clearLabel);
                             popup.hide();
-                            List<String> values = new ArrayList<>();
-                            collectValues(options, selectedPath, 0, values);
-                            if (bindProperty != null) {
-                                bindProperty.set(values);
-                            }
+                            List<String> values = collectSelectedValues();
+                            syncBoundValue(values);
                             if (onChange != null) {
                                 onChange.accept(values);
                             }
@@ -214,7 +276,7 @@ public class CascaderAnt {
                 String selectedLabel = selectedPath.get(depth);
                 for (Option option : currentOptions) {
                     if (option.getLabel().equals(selectedLabel) && option.hasChildren()) {
-                        buildColumns(panel, option.getChildren(), depth + 1, field, popup);
+                        appendColumns(panel, option.getChildren(), depth + 1, field, popup, clearLabel);
                         break;
                     }
                 }
@@ -234,6 +296,81 @@ public class CascaderAnt {
                 }
             }
             return false;
+        }
+
+        private List<String> collectSelectedValues() {
+            List<String> values = new ArrayList<>();
+            collectValues(options, selectedPath, 0, values);
+            return values;
+        }
+
+        private List<Option> displayOptions() {
+            if (!showSearch || searchQuery == null || searchQuery.isBlank()) {
+                return options;
+            }
+            return filterOptions(options, searchQuery.toLowerCase());
+        }
+
+        private List<Option> filterOptions(List<Option> source, String query) {
+            List<Option> filtered = new ArrayList<>();
+            for (Option option : source) {
+                List<Option> childMatches = filterOptions(option.getChildren(), query);
+                boolean selfMatches = option.getLabel() != null && option.getLabel().toLowerCase().contains(query);
+                if (selfMatches || !childMatches.isEmpty()) {
+                    filtered.add(new Option(option.getValue(), option.getLabel(), childMatches, option.isDisabled()));
+                }
+            }
+            return filtered;
+        }
+
+        private List<String> resolveLabels(List<String> values) {
+            if (values == null || values.isEmpty()) {
+                return new ArrayList<>();
+            }
+            List<String> labels = new ArrayList<>();
+            if (collectLabels(options, values, 0, labels)) {
+                return labels;
+            }
+            return new ArrayList<>();
+        }
+
+        private boolean collectLabels(List<Option> options, List<String> values, int depth, List<String> labels) {
+            if (depth >= values.size()) {
+                return true;
+            }
+            String targetValue = values.get(depth);
+            for (Option option : options) {
+                if (option.getValue().equals(targetValue)) {
+                    labels.add(option.getLabel());
+                    if (option.hasChildren() && depth + 1 < values.size()) {
+                        return collectLabels(option.getChildren(), values, depth + 1, labels);
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void updateFieldText(TextField field) {
+            suppressFieldListener = true;
+            if (selectedPath == null || selectedPath.isEmpty()) {
+                field.clear();
+            } else {
+                field.setText(String.join(" / ", selectedPath));
+            }
+            suppressFieldListener = false;
+        }
+
+        private void updateClearLabel(Label clearLabel) {
+            boolean show = allowClear && !selectedPath.isEmpty();
+            clearLabel.setVisible(show);
+            clearLabel.setManaged(show);
+        }
+
+        private void syncBoundValue(List<String> values) {
+            if (bindProperty != null) {
+                bindProperty.set(values);
+            }
         }
     }
 

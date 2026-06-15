@@ -69,7 +69,6 @@ public class StepsAnt {
         private int current = 0;
         private Direction direction = Direction.HORIZONTAL;
         private Size size = Size.DEFAULT;
-        private boolean responsive = true;
         // runtime 控制器：build() 后装配，支持不重建节点切换当前步骤（BUG #51）
         private Controller controller;
 
@@ -83,7 +82,9 @@ public class StepsAnt {
         public Node build() {
             // 每次 build 装配一个新的 Controller，持有所有状态相关节点引用
             this.controller = new Controller(steps.size(), current);
-            return direction == Direction.HORIZONTAL ? buildHorizontal() : buildVertical();
+            Node root = direction == Direction.HORIZONTAL ? buildHorizontal() : buildVertical();
+            applyStyles(root);
+            return root;
         }
 
         /**

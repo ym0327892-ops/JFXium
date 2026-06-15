@@ -85,6 +85,15 @@ public class InputNumberAnt {
         }
 
         public HBox build() {
+            if (bindProperty != null && !Double.isNaN(bindProperty.get())) {
+                value = normalizeValue(bindProperty.get());
+                if (Double.compare(bindProperty.get(), value) != 0) {
+                    bindProperty.set(value);
+                }
+            } else {
+                value = normalizeValue(value);
+            }
+
             HBox container = new HBox(0);
             container.setAlignment(Pos.CENTER_LEFT);
             container.getStyleClass().add(JfxStyles.INPUT_NUMBER);
@@ -106,17 +115,15 @@ public class InputNumberAnt {
             field.getStyleClass().add(JfxStyles.INPUT_NUMBER_FIELD);
             HBox.setHgrow(field, Priority.ALWAYS);
 
-            // 双向绑定：外部 property 变化时更新输入框
             if (bindProperty != null) {
-                // 初始同步
-                if (!Double.isNaN(bindProperty.get())) {
-                    value = bindProperty.get();
-                    field.setText(formatValue(value));
-                }
                 bindProperty.addListener((obs, oldVal, newVal) -> {
-                    if (newVal.doubleValue() != value) {
-                        value = newVal.doubleValue();
+                    double normalized = normalizeValue(newVal.doubleValue());
+                    if (Double.compare(normalized, value) != 0) {
+                        value = normalized;
                         field.setText(formatValue(value));
+                    }
+                    if (Double.compare(newVal.doubleValue(), normalized) != 0) {
+                        bindProperty.set(normalized);
                     }
                 });
             }
@@ -189,17 +196,23 @@ public class InputNumberAnt {
         }
 
         private void setValue(double newValue, TextField field) {
-            newValue = Math.max(min, Math.min(max, newValue));
-            if (precision >= 0) {
-                double factor = Math.pow(10, precision);
-                newValue = Math.round(newValue * factor) / factor;
-            }
+            newValue = normalizeValue(newValue);
+            boolean changed = Double.compare(value, newValue) != 0;
             value = newValue;
             if (bindProperty != null) {
                 bindProperty.set(value);
             }
             if (field != null) field.setText(formatValue(value));
-            if (onChange != null) onChange.accept(value);
+            if (changed && onChange != null) onChange.accept(value);
+        }
+
+        private double normalizeValue(double rawValue) {
+            double normalized = Math.max(min, Math.min(max, rawValue));
+            if (precision >= 0) {
+                double factor = Math.pow(10, precision);
+                normalized = Math.round(normalized * factor) / factor;
+            }
+            return normalized;
         }
 
         private String formatValue(double val) {

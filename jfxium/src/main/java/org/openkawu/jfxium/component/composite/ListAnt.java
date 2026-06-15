@@ -72,20 +72,26 @@ public class ListAnt {
         private List<ListItem> items = new ArrayList<>();
         private boolean bordered = false;
         private boolean split = true;
-        private String header = null;
-        private String footer = null;
+        private Node header = null;
+        private Node footer = null;
         private boolean loading = false;
 
         public Builder item(String title, String description) { items.add(new ListItem(title, description)); return this; }
         public Builder item(String title, Runnable onClick) { items.add(new ListItem(title, onClick)); return this; }
         public Builder item(Node avatar, String title, String description) { items.add(new ListItem(avatar, title, description)); return this; }
         public Builder item(Node avatar, String title, String description, Node action) { items.add(new ListItem(avatar, title, description, action)); return this; }
+        public Builder item(Node avatar, String title, String description, Node action, Runnable onClick) {
+            items.add(new ListItem(avatar, title, description, action, onClick));
+            return this;
+        }
         public Builder items(List<ListItem> items) { this.items = items; return this; }
         public Builder bordered(boolean bordered) { this.bordered = bordered; return this; }
         public Builder bordered() { return bordered(true); }
         public Builder split(boolean split) { this.split = split; return this; }
-        public Builder header(String header) { this.header = header; return this; }
-        public Builder footer(String footer) { this.footer = footer; return this; }
+        public Builder header(String header) { return header(new Label(header)); }
+        public Builder header(Node header) { this.header = header; return this; }
+        public Builder footer(String footer) { return footer(new Label(footer)); }
+        public Builder footer(Node footer) { this.footer = footer; return this; }
         public Builder loading(boolean loading) { this.loading = loading; return this; }
 
         public VBox build() {
@@ -95,9 +101,8 @@ public class ListAnt {
             if (loading) list.getStyleClass().add(JfxStyles.LIST_LOADING);
 
             if (header != null) {
-                Label headerLabel = new Label(header);
-                headerLabel.getStyleClass().add(JfxStyles.LIST_HEADER);
-                list.getChildren().add(headerLabel);
+                header.getStyleClass().add(JfxStyles.LIST_HEADER);
+                list.getChildren().add(header);
             }
 
             for (int i = 0; i < items.size(); i++) {
@@ -144,10 +149,10 @@ public class ListAnt {
             }
 
             if (footer != null) {
-                Label footerLabel = new Label(footer);
-                footerLabel.getStyleClass().add(JfxStyles.LIST_FOOTER);
-                list.getChildren().add(footerLabel);
+                footer.getStyleClass().add(JfxStyles.LIST_FOOTER);
+                list.getChildren().add(footer);
             }
+            applyStyles(list);
             return list;
         }
     }

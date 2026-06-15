@@ -83,9 +83,9 @@ public class SegmentedAnt {
             return this;
         }
 
-        public Builder options(List<Option> options) { this.options = options; return this; }
+        public Builder options(List<Option> options) { this.options = options != null ? options : new ArrayList<>(); return this; }
         public Builder selected(String value) { this.selectedValue = value; return this; }
-        public Builder size(Size size) { this.size = size; return this; }
+        public Builder size(Size size) { this.size = size != null ? size : Size.DEFAULT; return this; }
         public Builder disabled(boolean disabled) { this.disabled = disabled; return this; }
         public Builder disabled() { return disabled(true); }
         public Builder block(boolean block) { this.block = block; return this; }
@@ -99,6 +99,10 @@ public class SegmentedAnt {
         }
 
         public HBox build() {
+            if ((selectedValue == null || selectedValue.isEmpty()) && bindProperty != null) {
+                selectedValue = bindProperty.get();
+            }
+
             HBox segmented = new HBox(2);
             segmented.setAlignment(Pos.CENTER);
             segmented.getStyleClass().add(JfxStyles.SEGMENTED);
@@ -151,6 +155,9 @@ public class SegmentedAnt {
             }
             controller.setSelected(selectedValue);
             if (bindProperty != null) {
+                if (selectedValue != null && !selectedValue.equals(bindProperty.get())) {
+                    bindProperty.set(selectedValue);
+                }
                 bindProperty.addListener((obs, oldVal, newVal) -> {
                     selectedValue = newVal;
                     controller.setSelected(newVal);

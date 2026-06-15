@@ -77,12 +77,14 @@ public class ResultAnt {
         }
 
         public VBox build() {
-            return new ResultDisplay.Builder()
+            VBox result = new ResultDisplay.Builder()
                 .status(convertStatus(status))
                 .title(title)
                 .subTitle(subTitle)
                 .extra(extra)
                 .build();
+            applyStyles(result);
+            return result;
         }
 
         private ResultDisplay.Status convertStatus(Status status) {

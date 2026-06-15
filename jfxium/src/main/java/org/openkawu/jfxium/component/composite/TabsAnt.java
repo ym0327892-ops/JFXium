@@ -112,7 +112,11 @@ public class TabsAnt {
         public Builder onChange(Consumer<String> c) { this.onChange = c; return this; }
 
         public Node build() {
-            if (tabs.isEmpty()) return new VBox();
+            if (tabs.isEmpty()) {
+                VBox empty = new VBox();
+                applyStyles(empty);
+                return empty;
+            }
 
             // 装配 Controller(每次 build 新建一个,与已构造节点树绑定)
             this.controller = new Controller(tabs.size(), activeIndex);
@@ -198,6 +202,7 @@ public class TabsAnt {
             }
 
             VBox.setVgrow(contentArea, Priority.ALWAYS);
+            applyStyles(root);
             return root;
         }
 

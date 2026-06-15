@@ -103,6 +103,7 @@ public class FloatButtonAnt {
             }
 
             container.getChildren().add(button);
+            applyStyles(container);
             return container;
         }
     }

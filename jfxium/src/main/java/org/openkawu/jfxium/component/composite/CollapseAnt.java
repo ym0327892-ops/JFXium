@@ -161,6 +161,7 @@ public class CollapseAnt {
 
                 collapse.getChildren().add(panelBox);
             }
+            applyStyles(collapse);
             return collapse;
         }
 

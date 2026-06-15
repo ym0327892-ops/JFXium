@@ -1,9 +1,12 @@
 package org.openkawu.jfxium.component.composite;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
@@ -11,15 +14,19 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 /**
@@ -57,14 +64,16 @@ public class UploadAnt {
     }
 
     public static class UploadFile {
+        File file;
         String name;
         double size;
         String status; // "uploading", "done", "error", "removed"
         double percent;
 
-        public UploadFile(String name, double size) {
-            this.name = name;
-            this.size = size;
+        public UploadFile(File file) {
+            this.file = file;
+            this.name = file.getName();
+            this.size = file.length();
             this.status = "done";
             this.percent = 100;
         }
@@ -84,6 +93,8 @@ public class UploadAnt {
         private Consumer<List<File>> onChange = null;
         private Consumer<File> onRemove = null;
         private List<UploadFile> fileList = new ArrayList<>();
+        private VBox uploadRoot;
+        private VBox fileListView;
 
         public Builder type(Type type) { this.type = type; return this; }
         public Builder listType(ListType listType) { this.listType = listType; return this; }
@@ -100,19 +111,28 @@ public class UploadAnt {
         public Builder onRemove(Consumer<File> onRemove) { this.onRemove = onRemove; return this; }
 
         public VBox build() {
-            VBox upload = new VBox(8);
-            upload.getStyleClass().add(JfxStyles.UPLOAD);
+            uploadRoot = new VBox(8);
+            uploadRoot.getStyleClass().add(JfxStyles.UPLOAD);
 
             if (type == Type.SELECT) {
-                upload.getChildren().add(buildSelectUpload());
+                uploadRoot.getChildren().add(buildSelectUpload());
             } else {
-                upload.getChildren().add(buildDragUpload());
+                uploadRoot.getChildren().add(buildDragUpload());
             }
 
             if (showUploadList) {
-                upload.getChildren().add(buildFileList());
+                fileListView = new VBox(4);
+                fileListView.getStyleClass().add(JfxStyles.UPLOAD_LIST);
+                if (listType == ListType.PICTURE) {
+                    fileListView.getStyleClass().add(JfxStyles.UPLOAD_LIST_PICTURE);
+                } else if (listType == ListType.PICTURE_CARD) {
+                    fileListView.getStyleClass().add(JfxStyles.UPLOAD_LIST_PICTURE_CARD);
+                }
+                refreshFileList();
+                uploadRoot.getChildren().add(fileListView);
             }
-            return upload;
+            applyStyles(uploadRoot);
+            return uploadRoot;
         }
 
         private HBox buildSelectUpload() {
@@ -123,20 +143,8 @@ public class UploadAnt {
                     .type(ButtonAnt.Type.PRIMARY)
                     .build();
 
-            FileChooser fileChooser = new FileChooser();
-            if (!accept.equals("*")) {
-                String[] extensions = accept.split(",");
-                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Files", extensions));
-            }
-
             uploadBtn.setOnAction(e -> {
-                List<File> files;
-                if (multiple) {
-                    files = fileChooser.showOpenMultipleDialog(uploadBtn.getScene().getWindow());
-                } else {
-                    File file = fileChooser.showOpenDialog(uploadBtn.getScene().getWindow());
-                    files = file != null ? List.of(file) : null;
-                }
+                List<File> files = chooseFiles(uploadBtn);
                 if (files != null) handleFiles(files);
             });
 
@@ -186,32 +194,32 @@ public class UploadAnt {
 
             // 点击 drag 区域同样触发文件选择
             dragArea.setOnMouseClicked(e -> {
-                FileChooser fileChooser = new FileChooser();
-                if (!accept.equals("*")) {
-                    String[] extensions = accept.split(",");
-                    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Files", extensions));
-                }
-                List<File> files;
-                if (multiple) {
-                    files = fileChooser.showOpenMultipleDialog(dragArea.getScene().getWindow());
-                } else {
-                    File file = fileChooser.showOpenDialog(dragArea.getScene().getWindow());
-                    files = file != null ? List.of(file) : null;
-                }
+                List<File> files = chooseFiles(dragArea);
                 if (files != null) handleFiles(files);
             });
 
             return dragArea;
         }
 
-        private VBox buildFileList() {
-            VBox list = new VBox(4);
-            list.getStyleClass().add(JfxStyles.UPLOAD_LIST);
-
+        private void refreshFileList() {
+            if (fileListView == null) {
+                return;
+            }
+            fileListView.getChildren().clear();
             for (UploadFile file : fileList) {
                 HBox fileItem = new HBox(8);
                 fileItem.setAlignment(Pos.CENTER_LEFT);
                 fileItem.getStyleClass().add(JfxStyles.UPLOAD_FILE_ITEM);
+                if (listType == ListType.PICTURE) {
+                    fileItem.getStyleClass().add(JfxStyles.UPLOAD_FILE_ITEM_PICTURE);
+                } else if (listType == ListType.PICTURE_CARD) {
+                    fileItem.getStyleClass().add(JfxStyles.UPLOAD_FILE_ITEM_PICTURE_CARD);
+                }
+
+                Node preview = createFilePreview(file);
+                if (preview != null) {
+                    fileItem.getChildren().add(preview);
+                }
 
                 Label nameLabel = new Label(file.name);
                 nameLabel.getStyleClass().add(JfxStyles.UPLOAD_FILE_NAME);
@@ -232,20 +240,166 @@ public class UploadAnt {
                 removeBtn.getStyleClass().add(JfxStyles.UPLOAD_REMOVE_BTN);
                 removeBtn.setOnAction(e -> {
                     fileList.remove(file);
-                    if (onRemove != null) onRemove.accept(new File(file.name));
+                    refreshFileList();
+                    if (onRemove != null) onRemove.accept(file.file);
+                    notifyChange();
                 });
                 fileItem.getChildren().add(removeBtn);
 
-                list.getChildren().add(fileItem);
+                fileListView.getChildren().add(fileItem);
             }
-            return list;
         }
 
         private void handleFiles(List<File> files) {
-            for (File file : files) {
-                fileList.add(new UploadFile(file.getName(), file.length()));
+            List<File> acceptedFiles = normalizeSelectedFiles(files);
+            for (File file : acceptedFiles) {
+                fileList.add(new UploadFile(file));
             }
-            if (onChange != null) onChange.accept(files);
+            refreshFileList();
+            notifyChange();
+        }
+
+        private List<File> chooseFiles(Node ownerNode) {
+            if (ownerNode.getScene() == null || ownerNode.getScene().getWindow() == null) {
+                return null;
+            }
+            if (directory) {
+                DirectoryChooser directoryChooser = new DirectoryChooser();
+                File dir = directoryChooser.showDialog(ownerNode.getScene().getWindow());
+                if (dir == null) {
+                    return null;
+                }
+                return normalizeSelectedFiles(List.of(dir));
+            }
+
+            FileChooser fileChooser = new FileChooser();
+            configureFileChooser(fileChooser);
+            if (multiple) {
+                List<File> files = fileChooser.showOpenMultipleDialog(ownerNode.getScene().getWindow());
+                return files != null ? normalizeSelectedFiles(files) : null;
+            }
+            File file = fileChooser.showOpenDialog(ownerNode.getScene().getWindow());
+            return file != null ? normalizeSelectedFiles(List.of(file)) : null;
+        }
+
+        private void configureFileChooser(FileChooser fileChooser) {
+            if (!accept.equals("*")) {
+                String[] extensions = accept.split(",");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Files", extensions));
+            }
+        }
+
+        private List<File> normalizeSelectedFiles(List<File> files) {
+            if (files == null || files.isEmpty()) {
+                return Collections.emptyList();
+            }
+            List<File> expanded = new ArrayList<>();
+            for (File file : files) {
+                collectAcceptedFiles(file, expanded);
+            }
+            return expanded;
+        }
+
+        private void collectAcceptedFiles(File file, List<File> result) {
+            if (file == null || !file.exists()) {
+                return;
+            }
+            if (file.isDirectory()) {
+                if (!directory) {
+                    return;
+                }
+                File[] children = file.listFiles();
+                if (children == null) {
+                    return;
+                }
+                for (File child : children) {
+                    collectAcceptedFiles(child, result);
+                }
+                return;
+            }
+            if (matchesAccept(file)) {
+                result.add(file);
+            }
+        }
+
+        private boolean matchesAccept(File file) {
+            if ("*".equals(accept) || accept.isBlank()) {
+                return true;
+            }
+            String name = file.getName().toLowerCase(Locale.ROOT);
+            for (String rawPattern : accept.split(",")) {
+                String pattern = rawPattern.trim().toLowerCase(Locale.ROOT);
+                if (pattern.isEmpty()) {
+                    continue;
+                }
+                if (pattern.startsWith("*.")) {
+                    if (name.endsWith(pattern.substring(1))) {
+                        return true;
+                    }
+                    continue;
+                }
+                if (pattern.startsWith(".")) {
+                    if (name.endsWith(pattern)) {
+                        return true;
+                    }
+                    continue;
+                }
+                if (name.endsWith("." + pattern)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private Node createFilePreview(UploadFile file) {
+            if (listType == ListType.TEXT) {
+                return null;
+            }
+            if (isImageFile(file.file)) {
+                Image image = new Image(file.file.toURI().toString(), 48, 48, true, true, true);
+                if (!image.isError()) {
+                    ImageView imageView = new ImageView(image);
+                    double size = listType == ListType.PICTURE_CARD ? 64 : 48;
+                    imageView.setFitWidth(size);
+                    imageView.setFitHeight(size);
+                    imageView.setPreserveRatio(true);
+                    StackPane thumb = new StackPane(imageView);
+                    thumb.getStyleClass().add(JfxStyles.UPLOAD_FILE_THUMB);
+                    thumb.setPrefSize(size, size);
+                    thumb.setMinSize(size, size);
+                    thumb.setMaxSize(size, size);
+                    return thumb;
+                }
+            }
+
+            double size = listType == ListType.PICTURE_CARD ? 64 : 48;
+            StackPane placeholder = new StackPane(IconAnt.path(IconAnt.Path.FILE, listType == ListType.PICTURE_CARD ? 24 : 18));
+            placeholder.getStyleClass().add(JfxStyles.UPLOAD_FILE_THUMB);
+            placeholder.setPrefSize(size, size);
+            placeholder.setMinSize(placeholder.getPrefWidth(), placeholder.getPrefHeight());
+            placeholder.setMaxSize(placeholder.getPrefWidth(), placeholder.getPrefHeight());
+            return placeholder;
+        }
+
+        private boolean isImageFile(File file) {
+            String name = file.getName().toLowerCase(Locale.ROOT);
+            return name.endsWith(".png")
+                    || name.endsWith(".jpg")
+                    || name.endsWith(".jpeg")
+                    || name.endsWith(".gif")
+                    || name.endsWith(".bmp")
+                    || name.endsWith(".webp");
+        }
+
+        private void notifyChange() {
+            if (onChange == null) {
+                return;
+            }
+            List<File> currentFiles = new ArrayList<>(fileList.size());
+            for (UploadFile uploadFile : fileList) {
+                currentFiles.add(uploadFile.file);
+            }
+            onChange.accept(currentFiles);
         }
     }
 

@@ -133,6 +133,7 @@ public class AnchorAnt {
                     anchor.getChildren().add(subBox);
                 }
             }
+            applyStyles(anchor);
             return anchor;
         }
 

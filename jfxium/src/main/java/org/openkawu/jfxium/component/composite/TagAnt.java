@@ -182,6 +182,7 @@ public class TagAnt {
                 tag.getChildren().add(closeBtn);
             }
 
+            applyStyles(tag);
             return tag;
         }
 

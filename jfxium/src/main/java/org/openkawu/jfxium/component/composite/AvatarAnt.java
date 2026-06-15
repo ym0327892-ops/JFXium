@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component.composite;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -74,7 +75,8 @@ public class AvatarAnt {
         private Shape shape = Shape.CIRCLE;
         private String text = "";
         private Image image = null;
-        private String icon = null;
+        private Node iconNode = null;
+        private String iconText = null;
         private String backgroundColor = null;
         private String textColor = "-color-fg-on-emphasis";
         private int customSize = 0;
@@ -96,21 +98,47 @@ public class AvatarAnt {
 
         public Builder text(String text) {
             this.text = text;
+            this.image = null;
+            this.iconNode = null;
+            this.iconText = null;
             return this;
         }
 
         public Builder image(Image image) {
             this.image = image;
+            this.iconNode = null;
+            this.iconText = null;
             return this;
+        }
+
+        public Builder src(Image image) {
+            return image(image);
         }
 
         public Builder image(String url) {
             this.image = new Image(url, true);
+            this.iconNode = null;
+            this.iconText = null;
+            return this;
+        }
+
+        public Builder src(String url) {
+            return image(url);
+        }
+
+        public Builder icon(Node icon) {
+            this.iconNode = icon;
+            this.iconText = null;
+            this.image = null;
+            this.text = "";
             return this;
         }
 
         public Builder icon(String icon) {
-            this.icon = icon;
+            this.iconText = icon;
+            this.iconNode = null;
+            this.image = null;
+            this.text = "";
             return this;
         }
 
@@ -129,6 +157,9 @@ public class AvatarAnt {
 
             StackPane avatar = new StackPane();
             avatar.getStyleClass().add(JfxStyles.AVATAR);
+            if (shape == Shape.SQUARE) {
+                avatar.getStyleClass().add(JfxStyles.AVATAR_SQUARE);
+            }
             avatar.setPrefSize(s, s);
             avatar.setMinSize(s, s);
             avatar.setMaxSize(s, s);
@@ -163,6 +194,17 @@ public class AvatarAnt {
                 imageView.setFitHeight(s);
                 imageView.setPreserveRatio(true);
                 avatar.getChildren().add(imageView);
+            } else if (iconNode != null) {
+                avatar.getChildren().add(iconNode);
+            } else if (iconText != null && !iconText.isEmpty()) {
+                Label label = new Label(iconText);
+                label.getStyleClass().add(JfxStyles.AVATAR_TEXT);
+                if (!isCssVar(textColor)) {
+                    label.setTextFill(Paint.valueOf(textColor));
+                } else {
+                    label.getStyleClass().add(JfxStyles.AVATAR_FG_DEFAULT);
+                }
+                avatar.getChildren().add(label);
             } else if (text != null && !text.isEmpty()) {
                 String displayText = text.length() > 2 ? text.substring(0, 2) : text;
                 Label label = new Label(displayText);
@@ -183,6 +225,7 @@ public class AvatarAnt {
             }
 
             avatar.setAlignment(Pos.CENTER);
+            applyStyles(avatar);
             return avatar;
         }
 

@@ -301,6 +301,7 @@ public class MenuAnt {
             // 装 Controller：让 build() 之后还能 runtime 切高亮 / 展开（M19.38）
             this.controller = new Controller(ctx);
             root.getProperties().put(CONTROLLER_KEY, this.controller);
+            applyStyles(root);
             return root;
         }
 

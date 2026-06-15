@@ -53,7 +53,7 @@ public class TimePickerAnt {
         }
 
         public Builder format(String format) {
-            this.format = format;
+            this.format = format != null ? format : "HH:mm:ss";
             return this;
         }
 
@@ -74,6 +74,13 @@ public class TimePickerAnt {
         }
 
         public HBox build() {
+            if (bindProperty != null && bindProperty.get() != null) {
+                value = bindProperty.get();
+            }
+            if (value == null) {
+                value = LocalTime.now();
+            }
+
             HBox container = new HBox(8);
             container.getStyleClass().add(JfxStyles.TIME_PICKER);
             container.setAlignment(Pos.CENTER_LEFT);
@@ -105,7 +112,11 @@ public class TimePickerAnt {
                 final Spinner<Integer> h = hourSpinner;
                 final Spinner<Integer> m = minuteSpinner;
                 final Spinner<Integer> s = secondSpinner;
+                final boolean[] syncingFromProperty = {false};
                 Runnable notify = () -> {
+                    if (syncingFromProperty[0]) {
+                        return;
+                    }
                     int hh = h.getValue();
                     int mm = m != null ? m.getValue() : 0;
                     int ss = s != null ? s.getValue() : 0;
@@ -129,9 +140,11 @@ public class TimePickerAnt {
                 if (bindProperty != null) {
                     bindProperty.addListener((obs, ov, nv) -> {
                         if (nv != null && !nv.equals(ov)) {
+                            syncingFromProperty[0] = true;
                             h.getValueFactory().setValue(nv.getHour());
                             if (m != null) m.getValueFactory().setValue(nv.getMinute());
                             if (s != null) s.getValueFactory().setValue(nv.getSecond());
+                            syncingFromProperty[0] = false;
                         }
                     });
                 }

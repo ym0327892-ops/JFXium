@@ -65,6 +65,7 @@ public class TransferAnt<T> {
         private boolean showSearch = false;
         private boolean disabled = false;
         private ObjectProperty<List<T>> bindProperty = null;
+        private HBox transferRoot;
 
         public Builder<T> dataSource(List<T> dataSource) { this.dataSource = new ArrayList<>(dataSource); return this; }
         public Builder<T> targetKeys(List<T> targetKeys) { this.targetKeys = new ArrayList<>(targetKeys); return this; }
@@ -83,21 +84,33 @@ public class TransferAnt<T> {
         }
 
         public HBox build() {
-            HBox transfer = new HBox(12);
-            transfer.getStyleClass().add(JfxStyles.TRANSFER);
-            transfer.setAlignment(Pos.CENTER);
+            transferRoot = new HBox(12);
+            transferRoot.getStyleClass().add(JfxStyles.TRANSFER);
+            transferRoot.setAlignment(Pos.CENTER);
+            refreshTransferView();
+            applyStyles(transferRoot);
+            return transferRoot;
+        }
+
+        private void refreshTransferView() {
+            if (transferRoot == null) {
+                return;
+            }
+            transferRoot.getChildren().clear();
 
             String[] titleArr = titles != null ? titles.split(";", 2) : new String[0];
             String sourceTitle = titleArr.length > 0 ? titleArr[0] : Messages.get("transfer.source");
             String targetTitle = titleArr.length > 1 ? titleArr[1] : Messages.get("transfer.target");
 
-            // 计算源列表项（dataSource - targetKeys）
             List<T> sourceItems = new ArrayList<>();
             for (T item : dataSource) {
                 if (!targetKeys.contains(item)) {
                     sourceItems.add(item);
                 }
             }
+
+            selectedSourceKeys.retainAll(sourceItems);
+            selectedTargetKeys.retainAll(targetKeys);
 
             VBox sourceBox = buildListBox(sourceTitle, sourceItems, true);
             HBox.setHgrow(sourceBox, Priority.ALWAYS);
@@ -107,8 +120,8 @@ public class TransferAnt<T> {
             VBox targetBox = buildListBox(targetTitle, targetKeys, false);
             HBox.setHgrow(targetBox, Priority.ALWAYS);
 
-            transfer.getChildren().addAll(sourceBox, middleBox, targetBox);
-            return transfer;
+            transferRoot.getChildren().addAll(sourceBox, middleBox, targetBox);
+            transferRoot.setDisable(disabled);
         }
 
         private VBox buildListBox(String title, List<T> items, boolean isSource) {
@@ -129,36 +142,35 @@ public class TransferAnt<T> {
             header.getChildren().addAll(titleLabel, countLabel);
             box.getChildren().add(header);
 
+            ObservableList<T> displayItems = FXCollections.observableArrayList(items);
+
             if (showSearch) {
                 TextField searchField = new TextField();
                 searchField.setPromptText(Messages.get("transfer.search"));
                 searchField.getStyleClass().add(JfxStyles.TRANSFER_LIST_SEARCH);
+                searchField.textProperty().addListener((obs, oldVal, newVal) ->
+                        displayItems.setAll(filterItems(items, newVal)));
                 VBox searchBox = new VBox(searchField);
                 searchBox.getStyleClass().add(JfxStyles.TRANSFER_LIST_SEARCH_WRAPPER);
                 box.getChildren().add(searchBox);
             }
 
-            ObservableList<String> displayItems = FXCollections.observableArrayList();
-            for (T item : items) {
-                displayItems.add(render.apply(item));
-            }
-
-            ListView<String> listView = new ListView<>(displayItems);
+            ListView<T> listView = new ListView<>(displayItems);
             listView.getStyleClass().add(JfxStyles.TRANSFER_LIST_VIEW);
             listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            listView.setCellFactory(ignored -> new ListCell<>() {
+                @Override
+                protected void updateItem(T item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : render.apply(item));
+                }
+            });
             VBox.setVgrow(listView, Priority.ALWAYS);
 
             listView.setOnMouseClicked(e -> {
                 List<T> targetSelection = isSource ? selectedSourceKeys : selectedTargetKeys;
                 targetSelection.clear();
-                for (String selected : listView.getSelectionModel().getSelectedItems()) {
-                    for (T item : items) {
-                        if (render.apply(item).equals(selected)) {
-                            targetSelection.add(item);
-                            break;
-                        }
-                    }
-                }
+                targetSelection.addAll(listView.getSelectionModel().getSelectedItems());
                 if (onSelectChange != null) {
                     List<T> allSelected = new ArrayList<>();
                     allSelected.addAll(selectedSourceKeys);
@@ -183,8 +195,10 @@ public class TransferAnt<T> {
                     selectedSourceKeys.clear();
                     if (bindProperty != null) bindProperty.set(new ArrayList<>(targetKeys));
                     if (onChange != null) onChange.accept(new ArrayList<>(targetKeys));
+                    refreshTransferView();
                 }
             });
+            toRightBtn.setDisable(disabled);
 
             Button toLeftBtn = createTransferButton("<");
             toLeftBtn.setOnAction(e -> {
@@ -193,11 +207,27 @@ public class TransferAnt<T> {
                     selectedTargetKeys.clear();
                     if (bindProperty != null) bindProperty.set(new ArrayList<>(targetKeys));
                     if (onChange != null) onChange.accept(new ArrayList<>(targetKeys));
+                    refreshTransferView();
                 }
             });
+            toLeftBtn.setDisable(disabled);
 
             box.getChildren().addAll(toRightBtn, toLeftBtn);
             return box;
+        }
+
+        private List<T> filterItems(List<T> items, String keyword) {
+            if (keyword == null || keyword.isBlank()) {
+                return new ArrayList<>(items);
+            }
+            String lowerKeyword = keyword.toLowerCase();
+            List<T> filtered = new ArrayList<>();
+            for (T item : items) {
+                if (render.apply(item).toLowerCase().contains(lowerKeyword)) {
+                    filtered.add(item);
+                }
+            }
+            return filtered;
         }
 
         /** Transfer 方向按钮：视觉与 hover 由 LESS 控制 */

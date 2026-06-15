@@ -122,6 +122,7 @@ public class DescriptionsAnt {
             } else {
                 container.getChildren().add(buildVertical());
             }
+            applyStyles(container);
             return container;
         }
 
