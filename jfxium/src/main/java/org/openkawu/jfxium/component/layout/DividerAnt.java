@@ -56,7 +56,7 @@ public class DividerAnt {
         }
 
         public Builder orientation(Orientation orientation) {
-            this.orientation = orientation;
+            this.orientation = orientation != null ? orientation : Orientation.HORIZONTAL;
             return this;
         }
 
@@ -66,7 +66,7 @@ public class DividerAnt {
         }
 
         public Builder position(Position position) {
-            this.position = position;
+            this.position = position != null ? position : Position.CENTER;
             return this;
         }
 
@@ -87,7 +87,7 @@ public class DividerAnt {
         private Separator buildPlainSeparator() {
             Separator separator = new Separator();
             separator.setOrientation(orientation);
-            separator.getStyleClass().add(JfxStyles.DIVIDER);
+            separator.getStyleClass().addAll(JfxStyles.JFX_SEPARATOR, JfxStyles.DIVIDER);
             separator.getStyleClass().add(orientation == Orientation.VERTICAL
                     ? JfxStyles.DIVIDER_VERTICAL : JfxStyles.DIVIDER_HORIZONTAL);
             applyStyles(separator);
@@ -105,11 +105,11 @@ public class DividerAnt {
             box.getStyleClass().addAll(JfxStyles.DIVIDER, JfxStyles.DIVIDER_HORIZONTAL);
 
             Separator left = new Separator(Orientation.HORIZONTAL);
-            left.getStyleClass().add(JfxStyles.DIVIDER_LINE);
+            left.getStyleClass().addAll(JfxStyles.JFX_SEPARATOR, JfxStyles.DIVIDER_LINE);
             Label label = new Label(text);
             label.getStyleClass().add(JfxStyles.DIVIDER_TEXT);
             Separator right = new Separator(Orientation.HORIZONTAL);
-            right.getStyleClass().add(JfxStyles.DIVIDER_LINE);
+            right.getStyleClass().addAll(JfxStyles.JFX_SEPARATOR, JfxStyles.DIVIDER_LINE);
 
             // 左右线段总是一起占据剩余空间。两个 ALWAYS 平均分时是 CENTER；
             // LEFT/RIGHT 时给"短的一侧"min/pref 较小、Hgrow 仍 ALWAYS，让长边自然占大头。

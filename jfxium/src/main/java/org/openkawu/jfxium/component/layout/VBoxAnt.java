@@ -85,7 +85,8 @@ public class VBoxAnt extends VBox implements LayoutCommon<VBoxAnt> {
     }
 
     public VBoxAnt(Node... children) {
-        super(children);
+        super();
+        this.children(children);
     }
 
     public VBoxAnt(double spacing) {
@@ -93,7 +94,8 @@ public class VBoxAnt extends VBox implements LayoutCommon<VBoxAnt> {
     }
 
     public VBoxAnt(double spacing, Node... children) {
-        super(spacing, children);
+        super(spacing);
+        this.children(children);
     }
 
     // ============================================================

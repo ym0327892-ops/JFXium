@@ -63,7 +63,8 @@ public class HBoxAnt extends HBox implements LayoutCommon<HBoxAnt> {
     }
 
     public HBoxAnt(Node... children) {
-        super(children);
+        super();
+        this.children(children);
     }
 
     public HBoxAnt(double spacing) {
@@ -71,7 +72,8 @@ public class HBoxAnt extends HBox implements LayoutCommon<HBoxAnt> {
     }
 
     public HBoxAnt(double spacing, Node... children) {
-        super(spacing, children);
+        super(spacing);
+        this.children(children);
     }
 
     // ============================================================

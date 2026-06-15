@@ -103,6 +103,7 @@ public class FlexAnt {
         private Justify justify = Justify.START;
         private Align align = Align.CENTER;
         private boolean wrap = false;
+        private boolean growRequested = false;
         private double gap = 0;
         private double rowGap = -1;     // -1 表示未单独设置，回退到 gap
         private double columnGap = -1;  // 同上
@@ -157,7 +158,11 @@ public class FlexAnt {
 
         public Builder children(Node... nodes) {
             if (nodes != null) {
-                Collections.addAll(this.children, nodes);
+                for (Node node : nodes) {
+                    if (node != null) {
+                        this.children.add(node);
+                    }
+                }
             }
             return this;
         }
@@ -167,6 +172,7 @@ public class FlexAnt {
             if (node == null) return this;
             this.children.add(node);
             if (grow) {
+                growRequested = true;
                 // 同时设置 H/V grow 是为了让该子节点在任何方向上都生效，
                 // 不需要等到知道 direction 才能决定。无副作用。
                 HBox.setHgrow(node, Priority.ALWAYS);
@@ -184,6 +190,12 @@ public class FlexAnt {
          * </ul>
          */
         public Pane build() {
+            if (wrap && growRequested) {
+                throw new IllegalStateException(
+                        "FlexAnt.child(node, true) 与 wrap(true) 不能同时使用；" +
+                                "FlowPane 不支持主轴 grow，请关闭 wrap 或移除 grow。");
+            }
+
             // 反转方向通过反转 children 列表实现，简单且不依赖 JavaFX 内部
             List<Node> orderedChildren = isReversed() ? reverse(children) : children;
 
@@ -214,9 +226,12 @@ public class FlexAnt {
             flow.setVgap(effectiveRowGap());
 
             // FlowPane 的对齐用 alignment + columnHalignment/rowValignment 组合
-            flow.setAlignment(toFlowPos(justify, align));
-            flow.setColumnHalignment(toHPos(align));
-            flow.setRowValignment(toVPos(align));
+            flow.setAlignment(toFlowPos());
+            if (isVertical()) {
+                flow.setColumnHalignment(toHPos(align));
+            } else {
+                flow.setRowValignment(toVPos(align));
+            }
 
             flow.getChildren().addAll(ordered);
             flow.getStyleClass().addAll(JfxStyles.FLEX, JfxStyles.FLEX_WRAP);
@@ -224,23 +239,22 @@ public class FlexAnt {
         }
 
         private HBox buildHBox(List<Node> ordered) {
-            HBox box = new HBox(gap);
+            HBox box = new HBox(isMainAxisDistributed() ? 0 : gap);
             // BETWEEN/AROUND/EVENLY 通过插入 spacer 实现，剩余对齐通过 setAlignment 处理
             List<Node> withSpacers = injectSpacersIfNeeded(ordered, true);
             box.getChildren().addAll(withSpacers);
             box.setAlignment(resolveAlignmentForBox(true));
+            box.setFillHeight(align == Align.STRETCH);
             box.getStyleClass().addAll(JfxStyles.FLEX, JfxStyles.FLEX_HORIZONTAL);
-            // STRETCH：让子节点交叉轴拉伸（HBox 中即垂直方向）
-            // HBox 默认行为已经会让子节点根据自身 maxHeight 决定，无需额外处理；
-            // 用户如需强制拉伸可对子节点 setMaxHeight(Double.MAX_VALUE)
             return box;
         }
 
         private VBox buildVBox(List<Node> ordered) {
-            VBox box = new VBox(gap);
+            VBox box = new VBox(isMainAxisDistributed() ? 0 : gap);
             List<Node> withSpacers = injectSpacersIfNeeded(ordered, false);
             box.getChildren().addAll(withSpacers);
             box.setAlignment(resolveAlignmentForBox(false));
+            box.setFillWidth(align == Align.STRETCH);
             box.getStyleClass().addAll(JfxStyles.FLEX, JfxStyles.FLEX_VERTICAL);
             return box;
         }
@@ -267,38 +281,37 @@ public class FlexAnt {
             }
 
             List<Node> result = new ArrayList<>();
-            // BETWEEN: spacer 只在子节点之间 → [A, sp, B, sp, C]
-            // AROUND:  spacer 在每个节点两侧，两端的 spacer 是中间 spacer 的一半（用 wrapping spacer 实现复杂，这里用相同权重近似）
-            //          → [sp/2, A, sp, B, sp, C, sp/2]，但 JavaFX 没有"半权重"概念，使用相同 spacer 近似
-            // EVENLY:  spacer 完全均分 → [sp, A, sp, B, sp, C, sp]
-            //
-            // 说明：AROUND 的"半权重"理论上需要使用 fractional grow，JavaFX Priority 只有
-            // ALWAYS/SOMETIMES/NEVER 三档，无法精确表达。当前用与 EVENLY 相同的策略近似 AROUND，
-            // 视觉上两者差异极小，对用户而言 BETWEEN 和 EVENLY 之间的差距才是关键。
-            boolean leadingSpacer = (justify == Justify.AROUND || justify == Justify.EVENLY);
+            boolean leadingSpacer = justify == Justify.AROUND || justify == Justify.EVENLY;
             boolean trailingSpacer = leadingSpacer;
+            double edgeBasis = justify == Justify.AROUND ? gap / 2.0 : gap;
+            double innerBasis = gap;
 
             if (leadingSpacer) {
-                result.add(makeSpacer(horizontal));
+                result.add(makeSpacer(horizontal, edgeBasis));
             }
             for (int i = 0; i < ordered.size(); i++) {
                 result.add(ordered.get(i));
                 if (i < ordered.size() - 1) {
-                    result.add(makeSpacer(horizontal));
+                    result.add(makeSpacer(horizontal, innerBasis));
                 }
             }
             if (trailingSpacer) {
-                result.add(makeSpacer(horizontal));
+                result.add(makeSpacer(horizontal, edgeBasis));
             }
             return result;
         }
 
-        private Region makeSpacer(boolean horizontal) {
+        private Region makeSpacer(boolean horizontal, double basisSize) {
             Region spacer = new Region();
+            double effectiveBasis = Math.max(0, basisSize);
             // 在主轴方向上 ALWAYS 吸收空间，交叉轴方向不需要管
             if (horizontal) {
+                spacer.setMinWidth(effectiveBasis);
+                spacer.setPrefWidth(effectiveBasis);
                 HBox.setHgrow(spacer, Priority.ALWAYS);
             } else {
+                spacer.setMinHeight(effectiveBasis);
+                spacer.setPrefHeight(effectiveBasis);
                 VBox.setVgrow(spacer, Priority.ALWAYS);
             }
             return spacer;
@@ -319,19 +332,24 @@ public class FlexAnt {
             if (horizontal) {
                 // HBox：主轴=水平、交叉轴=垂直
                 HPos h = isMainAxisDistributed() ? HPos.LEFT : toHPos(justify);
-                VPos v = toVPos(align);
+                VPos v = align == Align.STRETCH ? VPos.TOP : toVPos(align);
                 return combine(h, v);
             } else {
                 // VBox：主轴=垂直、交叉轴=水平
                 VPos v = isMainAxisDistributed() ? VPos.TOP : toVPos(justify);
-                HPos h = toHPos(align);
+                HPos h = align == Align.STRETCH ? HPos.LEFT : toHPos(align);
                 return combine(h, v);
             }
         }
 
-        private Pos toFlowPos(Justify j, Align a) {
-            // FlowPane 简化处理：alignment 控制内容整体的对齐
-            return combine(toHPos(j), toVPos(a));
+        private Pos toFlowPos() {
+            // FlowPane 的主轴由 orientation 决定：
+            // - 水平方向：justify 映射到水平，align 映射到垂直
+            // - 垂直方向：justify 映射到垂直，align 映射到水平
+            if (isVertical()) {
+                return combine(toHPos(align), toVPos(justify));
+            }
+            return combine(toHPos(justify), toVPos(align));
         }
 
         private static Pos combine(HPos h, VPos v) {
@@ -375,7 +393,7 @@ public class FlexAnt {
         private static HPos toHPos(Align a) {
             return switch (a) {
                 case END -> HPos.RIGHT;
-                case CENTER, STRETCH -> HPos.CENTER;
+                case CENTER -> HPos.CENTER;
                 // START / BASELINE
                 default -> HPos.LEFT;
             };
@@ -392,7 +410,7 @@ public class FlexAnt {
         private static VPos toVPos(Align a) {
             return switch (a) {
                 case END -> VPos.BOTTOM;
-                case CENTER, STRETCH -> VPos.CENTER;
+                case CENTER -> VPos.CENTER;
                 case BASELINE -> VPos.BASELINE;
                 default -> VPos.TOP;
             };

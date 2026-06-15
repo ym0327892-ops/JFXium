@@ -50,7 +50,8 @@ public class FlowPaneAnt extends FlowPane implements LayoutCommon<FlowPaneAnt> {
     }
 
     public FlowPaneAnt(Node... children) {
-        super(children);
+        super();
+        this.children(children);
     }
 
     public FlowPaneAnt(Orientation orientation) {

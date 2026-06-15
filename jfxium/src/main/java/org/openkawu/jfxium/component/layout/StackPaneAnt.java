@@ -59,7 +59,8 @@ public class StackPaneAnt extends StackPane implements LayoutCommon<StackPaneAnt
     }
 
     public StackPaneAnt(Node... children) {
-        super(children);
+        super();
+        this.children(children);
     }
 
     // ============================================================

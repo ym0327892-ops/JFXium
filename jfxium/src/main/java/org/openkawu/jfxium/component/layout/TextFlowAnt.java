@@ -60,7 +60,8 @@ public class TextFlowAnt extends TextFlow implements LayoutCommon<TextFlowAnt> {
     }
 
     public TextFlowAnt(Node... children) {
-        super(children);
+        super();
+        this.children(children);
     }
 
     // ============================================================
