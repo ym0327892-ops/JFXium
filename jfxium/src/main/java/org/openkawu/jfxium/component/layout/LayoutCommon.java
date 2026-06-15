@@ -157,7 +157,8 @@ public interface LayoutCommon<SELF extends LayoutCommon<SELF>> {
     /** 顶部分割线（开关）。 */
     @SuppressWarnings("unchecked")
     default SELF borderTop(boolean on) {
-        return on ? borderTop() : (SELF) this;
+        toggleStyleClass(JfxStyles.BORDER_TOP, on);
+        return (SELF) this;
     }
 
     /** 底部分割线。 */
@@ -168,7 +169,8 @@ public interface LayoutCommon<SELF extends LayoutCommon<SELF>> {
     /** 底部分割线（开关）。 */
     @SuppressWarnings("unchecked")
     default SELF borderBottom(boolean on) {
-        return on ? borderBottom() : (SELF) this;
+        toggleStyleClass(JfxStyles.BORDER_BOTTOM, on);
+        return (SELF) this;
     }
 
     /** 左侧分割线。 */
@@ -179,7 +181,8 @@ public interface LayoutCommon<SELF extends LayoutCommon<SELF>> {
     /** 左侧分割线（开关）。 */
     @SuppressWarnings("unchecked")
     default SELF borderLeft(boolean on) {
-        return on ? borderLeft() : (SELF) this;
+        toggleStyleClass(JfxStyles.BORDER_LEFT, on);
+        return (SELF) this;
     }
 
     /** 右侧分割线。 */
@@ -190,7 +193,21 @@ public interface LayoutCommon<SELF extends LayoutCommon<SELF>> {
     /** 右侧分割线（开关）。 */
     @SuppressWarnings("unchecked")
     default SELF borderRight(boolean on) {
-        return on ? borderRight() : (SELF) this;
+        toggleStyleClass(JfxStyles.BORDER_RIGHT, on);
+        return (SELF) this;
+    }
+
+    private void toggleStyleClass(String cls, boolean on) {
+        if (cls == null || cls.isEmpty()) {
+            return;
+        }
+        if (on) {
+            if (!((Node) this).getStyleClass().contains(cls)) {
+                ((Node) this).getStyleClass().add(cls);
+            }
+        } else {
+            ((Node) this).getStyleClass().remove(cls);
+        }
     }
 
     // ============================================================

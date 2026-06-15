@@ -61,6 +61,14 @@ public class GridAnt {
     private static final int TOTAL_COLUMNS = 24;
     private static final double COLUMN_PERCENT = 100.0 / TOTAL_COLUMNS;
 
+    private static int clampSpan(int span) {
+        return Math.max(1, Math.min(TOTAL_COLUMNS, span));
+    }
+
+    private static int clampOffset(int offset) {
+        return Math.max(0, Math.min(TOTAL_COLUMNS - 1, offset));
+    }
+
     /** 响应式断点（M19.21）。 */
     public enum Breakpoint {
         XS(0),     // < 576
@@ -123,8 +131,8 @@ public class GridAnt {
         }
 
         public Col(int span, int offset, Node node) {
-            this.span = clamp(span, 1, TOTAL_COLUMNS);
-            this.offset = clamp(offset, 0, TOTAL_COLUMNS - 1);
+            this.span = clampSpan(span);
+            this.offset = clampOffset(offset);
             this.node = node;
             this.xs = this.sm = this.md = this.lg = this.xl = this.xxl = -1;
             this.xsOffset = this.smOffset = this.mdOffset = this.lgOffset = this.xlOffset = this.xxlOffset = -1;
@@ -133,8 +141,8 @@ public class GridAnt {
         Col(int span, int offset, Node node,
             int xs, int sm, int md, int lg, int xl, int xxl,
             int xsOffset, int smOffset, int mdOffset, int lgOffset, int xlOffset, int xxlOffset) {
-            this.span = clamp(span, 1, TOTAL_COLUMNS);
-            this.offset = clamp(offset, 0, TOTAL_COLUMNS - 1);
+            this.span = clampSpan(span);
+            this.offset = clampOffset(offset);
             this.node = node;
             this.xs = xs; this.sm = sm; this.md = md;
             this.lg = lg; this.xl = xl; this.xxl = xxl;
@@ -174,9 +182,6 @@ public class GridAnt {
             return fallback;
         }
 
-        private static int clamp(int v, int min, int max) {
-            return Math.max(min, Math.min(max, v));
-        }
     }
 
     /** 响应式 Col 链式构造器（M19.21）。 */
@@ -192,20 +197,20 @@ public class GridAnt {
         }
 
         /** 默认 span（所有断点未设置时的回退值；不设则默认 24）。 */
-        public ColBuilder span(int span) { this.span = span; return this; }
-        public ColBuilder offset(int offset) { this.offset = offset; return this; }
-        public ColBuilder xs(int span) { this.xs = span; return this; }
-        public ColBuilder sm(int span) { this.sm = span; return this; }
-        public ColBuilder md(int span) { this.md = span; return this; }
-        public ColBuilder lg(int span) { this.lg = span; return this; }
-        public ColBuilder xl(int span) { this.xl = span; return this; }
-        public ColBuilder xxl(int span) { this.xxl = span; return this; }
-        public ColBuilder xsOffset(int o) { this.xsOffset = o; return this; }
-        public ColBuilder smOffset(int o) { this.smOffset = o; return this; }
-        public ColBuilder mdOffset(int o) { this.mdOffset = o; return this; }
-        public ColBuilder lgOffset(int o) { this.lgOffset = o; return this; }
-        public ColBuilder xlOffset(int o) { this.xlOffset = o; return this; }
-        public ColBuilder xxlOffset(int o) { this.xxlOffset = o; return this; }
+        public ColBuilder span(int span) { this.span = clampSpan(span); return this; }
+        public ColBuilder offset(int offset) { this.offset = clampOffset(offset); return this; }
+        public ColBuilder xs(int span) { this.xs = clampSpan(span); return this; }
+        public ColBuilder sm(int span) { this.sm = clampSpan(span); return this; }
+        public ColBuilder md(int span) { this.md = clampSpan(span); return this; }
+        public ColBuilder lg(int span) { this.lg = clampSpan(span); return this; }
+        public ColBuilder xl(int span) { this.xl = clampSpan(span); return this; }
+        public ColBuilder xxl(int span) { this.xxl = clampSpan(span); return this; }
+        public ColBuilder xsOffset(int o) { this.xsOffset = clampOffset(o); return this; }
+        public ColBuilder smOffset(int o) { this.smOffset = clampOffset(o); return this; }
+        public ColBuilder mdOffset(int o) { this.mdOffset = clampOffset(o); return this; }
+        public ColBuilder lgOffset(int o) { this.lgOffset = clampOffset(o); return this; }
+        public ColBuilder xlOffset(int o) { this.xlOffset = clampOffset(o); return this; }
+        public ColBuilder xxlOffset(int o) { this.xxlOffset = clampOffset(o); return this; }
 
         Col toCol() {
             int defaultSpan = span > 0 ? span : TOTAL_COLUMNS;
@@ -237,7 +242,9 @@ public class GridAnt {
         }
 
         public Row align(Pos alignment) {
-            this.alignment = alignment;
+            if (alignment != null) {
+                this.alignment = alignment;
+            }
             return this;
         }
 
@@ -302,7 +309,6 @@ public class GridAnt {
             container.getStyleClass().add(JfxStyles.GRID);
             container.setSpacing(effectiveRowGutter());
 
-            // 用 Breakpoint 一致地构建：非响应式时固定 XXL（确保所有断点配置都被回退到默认 span）
             Breakpoint initialBp = Breakpoint.XXL;
             for (Row row : rows) {
                 container.getChildren().add(buildRow(row, initialBp));
@@ -353,6 +359,11 @@ public class GridAnt {
 
         /** 跨断点时清空容器、用新断点重建所有行。 */
         private void rebuildRows(VBox container, Breakpoint bp) {
+            for (Node child : new ArrayList<>(container.getChildren())) {
+                if (child instanceof GridPane grid) {
+                    grid.getChildren().clear();
+                }
+            }
             container.getChildren().clear();
             for (Row row : rows) {
                 container.getChildren().add(buildRow(row, bp));
@@ -387,8 +398,8 @@ public class GridAnt {
 
             int startColumn = 0;
             for (Col col : row.getCols()) {
-                int effSpan = col.effectiveSpan(bp);
-                int effOffset = col.effectiveOffset(bp);
+                int effSpan = responsive ? col.effectiveSpan(bp) : col.getSpan();
+                int effOffset = responsive ? col.effectiveOffset(bp) : col.getOffset();
                 int target = startColumn + effOffset;
 
                 if (target >= TOTAL_COLUMNS) break;
@@ -408,7 +419,7 @@ public class GridAnt {
         }
 
         private void placeNode(GridPane grid, Node node, int startCol, int span, Row row) {
-            if (node == null) return;
+            if (node == null || span <= 0) return;
             // 确保不会重复挂 styleClass（rebuild 场景下同一节点会被多次挂）
             if (!node.getStyleClass().contains(JfxStyles.GRID_COL)) {
                 node.getStyleClass().add(JfxStyles.GRID_COL);

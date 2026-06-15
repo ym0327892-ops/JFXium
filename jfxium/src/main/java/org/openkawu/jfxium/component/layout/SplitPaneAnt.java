@@ -50,8 +50,9 @@ public class SplitPaneAnt extends SplitPane implements LayoutCommon<SplitPaneAnt
     }
 
     public SplitPaneAnt(Node... items) {
-        super(items);
+        super();
         getStyleClass().add(JfxStyles.SPLIT_PANE);
+        this.items(items);
     }
 
     // ============================================================
@@ -59,8 +60,10 @@ public class SplitPaneAnt extends SplitPane implements LayoutCommon<SplitPaneAnt
     // ============================================================
 
     public SplitPaneAnt direction(Direction direction) {
-        setOrientation(direction == Direction.VERTICAL
-                ? Orientation.VERTICAL : Orientation.HORIZONTAL);
+        if (direction != null) {
+            setOrientation(direction == Direction.VERTICAL
+                    ? Orientation.VERTICAL : Orientation.HORIZONTAL);
+        }
         return this;
     }
 

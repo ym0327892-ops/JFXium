@@ -110,7 +110,9 @@ public class VBoxAnt extends VBox implements LayoutCommon<VBoxAnt> {
 
     /** 设置子节点对齐方式。 */
     public VBoxAnt align(Pos alignment) {
-        setAlignment(alignment);
+        if (alignment != null) {
+            setAlignment(alignment);
+        }
         return this;
     }
 
@@ -132,13 +134,17 @@ public class VBoxAnt extends VBox implements LayoutCommon<VBoxAnt> {
 
     /** 给指定子节点设置垂直拉伸优先级。 */
     public VBoxAnt vgrow(Node child, Priority priority) {
-        VBox.setVgrow(child, priority);
+        if (child != null && priority != null) {
+            VBox.setVgrow(child, priority);
+        }
         return this;
     }
 
     /** 给指定子节点设置外边距。 */
     public VBoxAnt margin(Node child, Insets margin) {
-        VBox.setMargin(child, margin);
+        if (child != null) {
+            VBox.setMargin(child, margin);
+        }
         return this;
     }
 

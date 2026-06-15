@@ -88,7 +88,9 @@ public class HBoxAnt extends HBox implements LayoutCommon<HBoxAnt> {
 
     /** 设置子节点对齐方式（默认 {@code CENTER_LEFT}）。 */
     public HBoxAnt align(Pos alignment) {
-        setAlignment(alignment);
+        if (alignment != null) {
+            setAlignment(alignment);
+        }
         return this;
     }
 
@@ -110,13 +112,17 @@ public class HBoxAnt extends HBox implements LayoutCommon<HBoxAnt> {
 
     /** 给指定子节点设置水平拉伸优先级。 */
     public HBoxAnt hgrow(Node child, Priority priority) {
-        HBox.setHgrow(child, priority);
+        if (child != null && priority != null) {
+            HBox.setHgrow(child, priority);
+        }
         return this;
     }
 
     /** 给指定子节点设置外边距。 */
     public HBoxAnt margin(Node child, Insets margin) {
-        HBox.setMargin(child, margin);
+        if (child != null) {
+            HBox.setMargin(child, margin);
+        }
         return this;
     }
 

@@ -94,13 +94,17 @@ public class FlowPaneAnt extends FlowPane implements LayoutCommon<FlowPaneAnt> {
 
     /** 设置子节点排列方向。 */
     public FlowPaneAnt orientation(Orientation orientation) {
-        setOrientation(orientation);
+        if (orientation != null) {
+            setOrientation(orientation);
+        }
         return this;
     }
 
     /** 设置子节点对齐方式。 */
     public FlowPaneAnt align(Pos alignment) {
-        setAlignment(alignment);
+        if (alignment != null) {
+            setAlignment(alignment);
+        }
         return this;
     }
 
@@ -122,19 +126,25 @@ public class FlowPaneAnt extends FlowPane implements LayoutCommon<FlowPaneAnt> {
 
     /** 行内节点的垂直对齐方式（水平方向时生效）。 */
     public FlowPaneAnt rowValignment(javafx.geometry.VPos vpos) {
-        setRowValignment(vpos);
+        if (vpos != null) {
+            setRowValignment(vpos);
+        }
         return this;
     }
 
     /** 列内节点的水平对齐方式（垂直方向时生效）。 */
     public FlowPaneAnt columnHalignment(javafx.geometry.HPos hpos) {
-        setColumnHalignment(hpos);
+        if (hpos != null) {
+            setColumnHalignment(hpos);
+        }
         return this;
     }
 
     /** 给指定子节点设置外边距。 */
     public FlowPaneAnt margin(Node child, Insets margin) {
-        FlowPane.setMargin(child, margin);
+        if (child != null) {
+            FlowPane.setMargin(child, margin);
+        }
         return this;
     }
 

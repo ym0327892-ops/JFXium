@@ -543,6 +543,7 @@ public final class JfxStyles {
     public static final String CASCADER_ITEM_LABEL = "jfx-cascader-item-label";
     public static final String CASCADER_ARROW = "jfx-cascader-arrow";
     public static final String CASCADER_DIVIDER = "jfx-cascader-divider";
+    public static final String CASCADER_CLEAR = "jfx-cascader-clear";
 
     /** TimelineAnt 时间轴 */
     public static final String TIMELINE = "jfx-timeline";
@@ -612,7 +613,12 @@ public final class JfxStyles {
     public static final String UPLOAD_DRAG_TEXT = "jfx-upload-drag-text";
     public static final String UPLOAD_HINT_TEXT = "jfx-upload-hint-text";
     public static final String UPLOAD_LIST = "jfx-upload-list";
+    public static final String UPLOAD_LIST_PICTURE = "jfx-upload-list-picture";
+    public static final String UPLOAD_LIST_PICTURE_CARD = "jfx-upload-list-picture-card";
     public static final String UPLOAD_FILE_ITEM = "jfx-upload-file-item";
+    public static final String UPLOAD_FILE_ITEM_PICTURE = "jfx-upload-file-item-picture";
+    public static final String UPLOAD_FILE_ITEM_PICTURE_CARD = "jfx-upload-file-item-picture-card";
+    public static final String UPLOAD_FILE_THUMB = "jfx-upload-file-thumb";
     public static final String UPLOAD_FILE_NAME = "jfx-upload-file-name";
     public static final String UPLOAD_FILE_ERROR = "jfx-upload-file-error";
     public static final String UPLOAD_REMOVE_BTN = "jfx-upload-remove-btn";

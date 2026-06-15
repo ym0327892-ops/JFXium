@@ -69,7 +69,9 @@ public class StackPaneAnt extends StackPane implements LayoutCommon<StackPaneAnt
 
     /** 设置子节点对齐方式（StackPane 默认 CENTER）。 */
     public StackPaneAnt align(Pos alignment) {
-        setAlignment(alignment);
+        if (alignment != null) {
+            setAlignment(alignment);
+        }
         return this;
     }
 
@@ -85,13 +87,17 @@ public class StackPaneAnt extends StackPane implements LayoutCommon<StackPaneAnt
 
     /** 设置指定子节点在 StackPane 内的对齐方式（覆盖容器级 align）。 */
     public StackPaneAnt childAlign(Node child, Pos alignment) {
-        StackPane.setAlignment(child, alignment);
+        if (child != null && alignment != null) {
+            StackPane.setAlignment(child, alignment);
+        }
         return this;
     }
 
     /** 给指定子节点设置外边距。 */
     public StackPaneAnt margin(Node child, Insets margin) {
-        StackPane.setMargin(child, margin);
+        if (child != null) {
+            StackPane.setMargin(child, margin);
+        }
         return this;
     }
 

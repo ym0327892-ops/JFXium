@@ -271,9 +271,35 @@
   -fx-background-color: transparent;
 }
 
+.jfx-upload-list.jfx-upload-list-picture,
+.jfx-upload-list.jfx-upload-list-picture-card {
+  -fx-spacing: @spacing-sm;
+}
+
 .jfx-upload-file-item {
   -fx-padding: 8;
   -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.jfx-upload-file-item.jfx-upload-file-item-picture {
+  -fx-padding: 8 12 8 12;
+}
+
+.jfx-upload-file-item.jfx-upload-file-item-picture-card {
+  -fx-padding: 12;
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: @border-width-default;
+  -fx-border-radius: @border-radius-md;
+  -fx-background-radius: @border-radius-md;
+}
+
+.jfx-upload-file-thumb {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: @border-width-default;
+  -fx-border-radius: @border-radius-sm;
   -fx-background-radius: @border-radius-sm;
 }
 

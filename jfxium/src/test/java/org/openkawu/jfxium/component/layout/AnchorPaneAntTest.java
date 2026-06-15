@@ -146,14 +146,14 @@ class AnchorPaneAntTest extends JfxTestBase {
         }
 
         @Test
-        @DisplayName("center 4 边锚定 0")
-        void centerSetsAllZero() {
+        @DisplayName("center 清除四边锚点，改为运行时居中定位")
+        void centerClearsAnchors() {
             Label node = new Label("X");
             AnchorPaneAnt ant = AnchorPaneAnt.create().center(node);
-            assertEquals(0.0, AnchorPane.getTopAnchor(node), 0.0);
-            assertEquals(0.0, AnchorPane.getRightAnchor(node), 0.0);
-            assertEquals(0.0, AnchorPane.getBottomAnchor(node), 0.0);
-            assertEquals(0.0, AnchorPane.getLeftAnchor(node), 0.0);
+            assertNull(AnchorPane.getTopAnchor(node));
+            assertNull(AnchorPane.getRightAnchor(node));
+            assertNull(AnchorPane.getBottomAnchor(node));
+            assertNull(AnchorPane.getLeftAnchor(node));
         }
 
         @Test
@@ -165,6 +165,26 @@ class AnchorPaneAntTest extends JfxTestBase {
             assertEquals(0.0, AnchorPane.getRightAnchor(node), 0.0);
             assertEquals(0.0, AnchorPane.getBottomAnchor(node), 0.0);
             assertEquals(0.0, AnchorPane.getLeftAnchor(node), 0.0);
+        }
+
+        @Test
+        @DisplayName("center 后再 children 也会在节点入树后补做一次定位")
+        void centerBeforeChildrenStillUpdatesPosition() {
+            AnchorPaneAnt ant = AnchorPaneAnt.create();
+            javafx.scene.layout.Region node = new javafx.scene.layout.Region();
+            node.setPrefSize(40, 20);
+
+            runOnFxThreadAndWait(() -> {
+                ant.resize(200, 100);
+                ant.center(node);
+                ant.children(node);
+            });
+            pumpFxEvents();
+
+            runOnFxThreadAndWait(() -> {
+                assertEquals(80.0, node.getLayoutX(), 0.001);
+                assertEquals(40.0, node.getLayoutY(), 0.001);
+            });
         }
 
         @Test

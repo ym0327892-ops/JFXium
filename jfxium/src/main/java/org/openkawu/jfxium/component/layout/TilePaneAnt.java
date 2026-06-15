@@ -65,7 +65,9 @@ public class TilePaneAnt extends TilePane implements LayoutCommon<TilePaneAnt> {
     }
 
     public TilePaneAnt orientation(Orientation orientation) {
-        setOrientation(orientation);
+        if (orientation != null) {
+            setOrientation(orientation);
+        }
         return this;
     }
 
@@ -86,13 +88,19 @@ public class TilePaneAnt extends TilePane implements LayoutCommon<TilePaneAnt> {
     }
 
     public TilePaneAnt alignment(Pos pos) {
-        setAlignment(pos);
+        if (pos != null) {
+            setAlignment(pos);
+        }
         return this;
     }
 
     public TilePaneAnt children(Node... nodes) {
         if (nodes != null) {
-            getChildren().addAll(nodes);
+            for (Node node : nodes) {
+                if (node != null) {
+                    getChildren().add(node);
+                }
+            }
         }
         return this;
     }

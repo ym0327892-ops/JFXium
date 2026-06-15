@@ -4147,6 +4147,15 @@
   -fx-min-width: 1;
   -fx-pref-width: 1;
 }
+.jfx-cascader-clear {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 14px;
+  -fx-cursor: hand;
+  -fx-padding: 0 8 0 8;
+}
+.jfx-cascader-clear:hover {
+  -fx-text-fill: -color-fg-default;
+}
 /* TimelineAnt */
 .jfx-timeline {
   -fx-padding: 16;
@@ -4465,9 +4474,31 @@
   -fx-padding: 8 0 8 0;
   -fx-background-color: transparent;
 }
+.jfx-upload-list.jfx-upload-list-picture,
+.jfx-upload-list.jfx-upload-list-picture-card {
+  -fx-spacing: 8px;
+}
 .jfx-upload-file-item {
   -fx-padding: 8;
   -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: 2px;
+}
+.jfx-upload-file-item.jfx-upload-file-item-picture {
+  -fx-padding: 8 12 8 12;
+}
+.jfx-upload-file-item.jfx-upload-file-item-picture-card {
+  -fx-padding: 12;
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
+}
+.jfx-upload-file-thumb {
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: 2px;
   -fx-background-radius: 2px;
 }
 .jfx-upload-file-name {
@@ -4814,6 +4845,10 @@
   /* 让带文本的 Divider 中线段保持与单独 Separator 一致的视觉粗细 */
   -fx-pref-height: 1px;
   -fx-background-color: -color-border;
+}
+.jfx-divider-line .line {
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 0.5;
 }
 /* ============================================
    Modal / Dialog Backdrop

@@ -86,7 +86,9 @@ public class TextFlowAnt extends TextFlow implements LayoutCommon<TextFlowAnt> {
 
     /** 设置文本对齐方式。 */
     public TextFlowAnt textAlignment(TextAlignment alignment) {
-        setTextAlignment(alignment);
+        if (alignment != null) {
+            setTextAlignment(alignment);
+        }
         return this;
     }
 

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * JavaFX 单元测试基类 —— 在 @BeforeAll 中初始化 JavaFX 工具套件。
@@ -39,5 +40,46 @@ public abstract class JfxTestBase {
                 throw new RuntimeException("JavaFX toolkit init interrupted", e);
             }
         }
+    }
+
+    protected static void runOnFxThreadAndWait(Runnable action) {
+        if (Platform.isFxApplicationThread()) {
+            action.run();
+            return;
+        }
+
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Throwable> errorRef = new AtomicReference<>();
+        Platform.runLater(() -> {
+            try {
+                action.run();
+            } catch (Throwable error) {
+                errorRef.set(error);
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("JavaFX action interrupted", e);
+        }
+
+        Throwable error = errorRef.get();
+        if (error != null) {
+            if (error instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (error instanceof Error fatalError) {
+                throw fatalError;
+            }
+            throw new RuntimeException(error);
+        }
+    }
+
+    protected static void pumpFxEvents() {
+        runOnFxThreadAndWait(() -> {});
     }
 }

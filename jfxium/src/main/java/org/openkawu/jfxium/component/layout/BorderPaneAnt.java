@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 
 /**
  * BorderPaneAnt - 继承式 BorderPane 容器。
@@ -102,25 +103,67 @@ public class BorderPaneAnt extends BorderPane implements LayoutCommon<BorderPane
         return this;
     }
 
-    /** 批量添加子节点（追加到对应区域）。 */
+    /**
+     * BorderPane 只能稳定承载五个命名区域，不能像普通 Pane 一样直接向 children 里塞任意节点。
+     * 请改用 {@link #top(Node)} / {@link #left(Node)} / {@link #center(Node)} /
+     * {@link #right(Node)} / {@link #bottom(Node)} 显式指定区域。
+     *
+     * <p>为兼容历史上把 BorderPaneAnt 当作普通容器使用的代码：
+     * <ul>
+     *   <li>0 个非 null 节点：忽略</li>
+     *   <li>1 个非 null 节点：放到 center</li>
+     *   <li>2+ 个非 null 节点：按传入顺序包进一个零间距 {@link VBox}，整体放到 center</li>
+     * </ul>
+     * 这样至少不会在运行时抛异常；若需要精确五区域布局，仍应改用命名区域 API。</p>
+     */
+    @Deprecated(forRemoval = false)
     public BorderPaneAnt children(Node... nodes) {
-        if (nodes != null) {
-            for (Node n : nodes) {
-                if (n != null) getChildren().add(n);
+        if (nodes == null) {
+            return this;
+        }
+
+        Node onlyNode = null;
+        int nonNullCount = 0;
+        for (Node node : nodes) {
+            if (node != null) {
+                onlyNode = node;
+                nonNullCount++;
             }
         }
+
+        if (nonNullCount == 0) {
+            return this;
+        }
+        if (nonNullCount == 1) {
+            setCenter(onlyNode);
+            return this;
+        }
+
+        // 多节点兼容模式：退化为把节点顺序打包进 center 区，避免运行时 footgun。
+        VBox fallbackCenter = new VBox();
+        fallbackCenter.setSpacing(0);
+        for (Node node : nodes) {
+            if (node != null) {
+                fallbackCenter.getChildren().add(node);
+            }
+        }
+        setCenter(fallbackCenter);
         return this;
     }
 
     /** 设置指定子节点在 BorderPane 内的对齐方式。 */
     public BorderPaneAnt align(Node child, Pos alignment) {
-        BorderPane.setAlignment(child, alignment);
+        if (child != null && alignment != null) {
+            BorderPane.setAlignment(child, alignment);
+        }
         return this;
     }
 
     /** 给指定子节点设置外边距。 */
     public BorderPaneAnt margin(Node child, Insets margin) {
-        BorderPane.setMargin(child, margin);
+        if (child != null) {
+            BorderPane.setMargin(child, margin);
+        }
         return this;
     }
 

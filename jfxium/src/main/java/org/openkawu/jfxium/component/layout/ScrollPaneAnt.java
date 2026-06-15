@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
@@ -112,6 +113,7 @@ public class ScrollPaneAnt extends ScrollPane implements LayoutCommon<ScrollPane
         }
         viewport = new StackPane(content);
         viewport.getStyleClass().add(JfxStyles.SCROLL_PANE_VIEWPORT);
+        viewport.setAlignment(Pos.TOP_LEFT);
         // padding 下放到 viewport（红线 5 防容器吞 padding）
         if (pendingPadding != null) {
             viewport.setPadding(pendingPadding);
