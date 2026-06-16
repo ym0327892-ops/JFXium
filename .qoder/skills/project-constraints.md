@@ -307,3 +307,131 @@ ctrl.setSelectedKey("file");   // 改已渲染节点的 styleClass，不重建
 .button.carousel-arrow-btn { -fx-background-color: rgba(0,0,0,0.4); }
 .button.carousel-arrow-btn:hover { -fx-background-color: rgba(0,0,0,0.6); }
 ```
+
+## 十一、布局组件 API 边界与防复发清单
+
+> 来自 `component/layout` 多轮审计（BUG #120-#122、#128）：layout 包是业务最常直接拼装的基础设施，必须把“外部输入不可信”作为默认前提。
+
+### 11.1 Builder/链式 API 入参归一化
+
+| 入参类型 | 必须行为 | 典型组件 |
+|----------|----------|----------|
+| `gap/spacing/gutter/lineSpacing` | 负数、`NaN`、`Infinity` 归 0 | HBox/VBox/FlowPane/TilePane/Flex/Space/Grid/TextFlow |
+| `size/width/height/prefRows/prefColumns` | 非有限数回默认；计数类最小为 1；尺寸类按组件语义钳制 | TilePane/Grid/Flex/Divider |
+| 枚举参数 | `null` 回默认值，不允许拖到 `switch` 阶段 NPE | Flex/Space/SplitPane/Divider |
+| 文案参数 | `null` 转空字符串，或 build 时 lazy 取 i18n | Divider/Empty/Result/Timeline |
+| 回调参数 | 允许为空；为空时不绑定 handler | Empty/Result/按钮类 extra action |
+| `Node...` / 集合参数 | 容器参数允许为空；逐个过滤 null 节点 | 所有 layout 容器 |
+
+### 11.2 Node parent 生命周期
+
+- JavaFX 同一个 `Node` 只能有一个 parent；任何 `content(...)`、`children(...)`、响应式重建、跨容器移动逻辑，都要先释放旧内部容器里的 children，再重新挂载。
+- 包了内部 viewport/wrapper 的组件（如 `ScrollPaneAnt`）必须把 wrapper 当实现细节管理，`content(null)` 和重复 `content(sameNode)` 都要可安全调用。
+- 响应式重建时不能直接把已有业务节点 add 到新容器；先清旧 `GridPane/VBox/HBox` 的 children，避免 parent 冲突。
+
+### 11.3 响应式与离屏构建
+
+- 响应式组件不能假设首次构建就是桌面宽屏。离屏 build、snapshot、打印、测试测量时没有 Scene 宽度，默认断点应保守，优先用 `XS`，入场景后再根据 `Scene.widthProperty()` 刷新。
+- Grid 类布局超过 24 列时应换到下一条物理行，而不是截断后续节点；`rowGutter` 应同步作用到多行 `GridPane.vgap` 和总高度。
+
+### 11.4 Java 结构与 LESS 视觉分工
+
+- Java 端只负责节点结构、约束关系和必要的布局优先级；视觉间距、padding、线宽、字号必须走 styleClass + LESS token。
+- 禁止在 Java 构造参数或 setter 中写固定视觉 px，例如 `new HBox(8)`、`setMinWidth(8)`、`setMaxWidth(24)` 用来表达组件视觉间距。应改为 `-fx-spacing: @spacing-*`、`-fx-padding: @spacing-*`，或用 `HBox.setHgrow(...)` 表达结构关系。
+- compact 主题只会影响引用 token 的样式；任何写死在 Java 或 CSS 字面 px 的尺寸，都不会自动随密度收紧。
+
+### 11.5 layout 包回归测试最低要求
+
+- 新增或修改 layout 组件时，至少覆盖：null 枚举、负数/非有限数、null 节点、重复 build、重复 content、跨容器移动、响应式断点切换中的相关项。
+- 修复 parent 生命周期问题时，测试必须断言旧 parent 已释放，并验证同一业务节点可再次挂载。
+- 修复主题/密度问题时，测试至少断言 Java 端不再写固定尺寸；视觉 token 是否生效由 LESS 编译和人工验收确认。
+
+## 十二、组合组件 API 边界与防复发清单
+
+> 来自 `component/composite` 多轮审计（BUG #123-#127）：这类组件是业务层最常直接拼装的展示/交互容器，必须把“外部输入不可信”作为默认前提，不能把空值、异常数值或旧字节码兼容问题留到运行时。
+
+### 12.1 Builder/链式 API 入参归一化
+
+| 入参类型 | 必须行为 | 典型组件 |
+|----------|----------|----------|
+| `count/value/size/scale` | 非有限数、负数按语义钳制；计数类最小为 1 | `RateAnt` / `ProgressAnt` / `FloatButtonAnt` |
+| `status/type/mode/layout/shape` 枚举 | `null` 回默认值，不允许拖到 `switch` 阶段 NPE | `ResultAnt` / `FloatButtonAnt` / `RateAnt` / `TimelineAnt` / `DescriptionsAnt` / `TagAnt` |
+| `title/subTitle/text/pending` 文案 | `null` 转空字符串，或 build 时 lazy 取默认文案 | `ResultAnt` / `ResultDisplay` / `TimelineAnt` / `TagAnt` / `EmptyAnt` |
+| 回调参数 | 允许为空；为空时不绑定 handler | `EmptyAnt.extraButton` / `ResultAnt.extraButton` / `FloatButtonAnt.onClick` |
+| `Node...` / 集合参数 | 容器参数允许为空；逐个过滤 null 节点或 null item | `ListAnt` / `DescriptionsAnt` / `TimelineAnt` |
+| `column/span/prefRows/prefColumns` | 计数类最小为 1；span 需限制在合法范围内 | `DescriptionsAnt` / `GridAnt` / `TilePaneAnt` |
+
+### 12.2 运行时状态与 build() 合同
+
+- `build()` 必须返回真实类型，不能“看起来能用但运行时签名不对”。
+- 组合组件如果会在 build 后变更状态，必须提供 Controller 或等价的稳定入口，不能让 demo 通过重建整个节点树来绕过 API 缺口。
+- `build()` 如果可能被重复调用，必须幂等，不能重复追加 spacer、监听器或临时节点。
+- 运行时修改 UI 时，要同时更新已构建节点树和内部状态缓存，不能只改 Builder 字段。
+
+### 12.3 节点生命周期与线程边界
+
+- 同一个 `Node` 只能有一个 parent；所有 content 替换、重复挂载、跨容器移动前都要释放旧容器中的引用。
+- 包了内部 wrapper / viewport / overlay 的组件，`content(null)` 和 `content(sameNode)` 都要安全。
+- 涉及 `snapshot()`、`Canvas`、`Node` 渲染或任何 JavaFX 场景对象的代码，必须明确 FX 线程边界；非 FX 线程要切回 JavaFX Application Thread。
+
+### 12.4 二进制兼容与 API 演化
+
+- 当把旧的具体方法签名改成默认方法、父类实现或泛型链式 API 时，如果外部模块可能还带着旧字节码，必须补桥接方法，避免 `NoSuchMethodError`。
+- 新增 public 方法或 public 类时，要同步检查 `module-info.java` exports，避免 demo 或下游模块看不到新 API。
+- 重构 Builder 继承层次时，要优先验证旧调用点还能编译、还能运行、还能反射到同名方法。
+
+### 12.5 回归测试最低要求
+
+- 新增或修改 composite 组件时，至少覆盖：`null` 枚举、`null` 文案、负数/非有限数、空 action、重复 build、重复 content、跨容器移动、FX 线程、桥接签名。
+- 对于有 controller 的组件，测试必须覆盖 build 后的状态更新，不许只测初始渲染。
+- 对于对外展示组件，测试必须断言“异常输入不抛异常”只是底线，最好再断言默认值和 styleClass 真的落到了返回节点上。
+
+## 十三、全项目高频复发点
+
+> 这些问题不只出现在 `layout` 或 `composite`，而是这个仓库里最容易在新组件、新主题、新 demo 里重新长出来的坑。
+
+### 13.1 module / API 同步
+
+- 新增 `public` 类、`public` 方法或新 package 时，必须同步检查 `module-info.java` exports。
+- 重构 Builder 继承层次、改父类实现、改返回类型时，要先确认外部模块旧字节码是否还会直接调用旧签名；必要时补桥接方法。
+- 任何“源码能编译、旧 demo 跑不起来”的情况，都优先怀疑二进制兼容，而不是先怀疑调用方。
+
+### 13.2 线程与生命周期
+
+- 涉及 JavaFX 场景对象、`snapshot()`、`Canvas`、`Node` 图形计算的逻辑，必须明确 FX 线程边界。
+- 绑定监听器、动画、时间线、定时任务时，要有释放或重建策略，不能让重复 build / 重复挂载产生泄漏。
+- Controller / 监听器 / 回调如果依赖节点生命周期，要保证节点被替换、隐藏、移除后不会继续驱动旧对象。
+
+### 13.3 主题与 token
+
+- 新组件先补 `JfxStyles` 常量，再补 LESS，再注册到 `components/_index.less`；缺一步都算“只做了一半”。
+- 颜色必须走 0-9 色阶和语义映射，不允许新开一把孤立颜色。
+- 尺寸、间距、圆角、阴影优先用 token，不要把视觉值写死在 Java 构造参数、setter 或 CSS 字面量里。
+
+### 13.4 构建与验证
+
+- LESS 编译必须实跑验证，不能只看日志“compiled successfully”；遇到样式不落盘，优先检查构建脚本输出是否真的写入目标文件。
+- 新改动要至少跑对应包的单测，再跑一轮模块级安装/编译，避免本地 `target` 里残留旧产物。
+- demo 的“跑得起来”不等于框架正确，看到 rebuild / replace / 手写样式表 / 手工同步状态时要反向追框架 API 缺口。
+
+### 13.5 审查顺序
+
+- 先看 Builder 入参是否边界归一化，再看 build() 是否幂等，再看节点是否真的落样式和布局，最后才看 demo 层怎么用。
+- 任何“看起来只是 UI 细节”的改动，如果会影响 parent、listener、controller、线程或返回签名，都要按运行时缺陷处理。
+
+## 十四、审查速查清单
+
+> 适合扫任何 `*Ant` 组件时直接过一遍。
+
+- [ ] `public` 新类 / 新方法是否同步 `module-info.java`
+- [ ] Builder 入参是否 `null` 回默认值
+- [ ] 数值入参是否钳制负数、`NaN`、`Infinity`
+- [ ] 文案入参是否 `null` 转空字符串或延迟 i18n
+- [ ] `Node` / 集合参数是否过滤 `null`
+- [ ] 会替换 content 的组件是否释放旧 parent
+- [ ] `build()` 是否幂等，重复调用不叠加 spacer / listener / 临时节点
+- [ ] 有运行时状态变化时，是否提供 Controller 或等价 API
+- [ ] 是否存在旧字节码兼容风险，必要时补桥接方法
+- [ ] 是否调用 `applyStyles(...)`，并且 styleClass 是否落到返回节点
+- [ ] 视觉值是否走 token / LESS，而不是 Java 写死 px
+- [ ] 是否有对应回归测试覆盖边界输入和运行时更新

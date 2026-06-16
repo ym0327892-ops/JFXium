@@ -1784,3 +1784,39 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
 - **验证**：
   - `./mvnw -pl jfxium -Dtest=ResultAntTest,FloatButtonAntTest,RateAntTest,TimelineAntTest,DescriptionsAntTest test` ✅
   - `./mvnw -pl jfxium -Dtest='org.openkawu.jfxium.component.composite.*Test' test` ✅
+
+---
+
+### #128 二十八轮审计修复：layout 包尾部收口与防复发规则沉淀（2026-06-16）
+
+- **现象**：
+  1. `GridAnt.gutter(...)` / `rowGutter(...)` / `columnGutter(...)` 接受负数和非有限数，会把异常间距直接传给 `VBox/GridPane`，造成重叠布局或不可预期布局。
+  2. `GridAnt.responsive()` 首次 `build()` 使用 `XXL` 断点构建，节点入场景前会先呈现超宽布局；在窄屏首帧、snapshot、打印、离屏测量等场景中会看到错误布局。
+  3. `DividerAnt` 带文本时在 Java 里写死 `new HBox(8)`、`minWidth=8`、`maxWidth=24`，绕开 LESS token，compact 主题无法联动收紧。
+  4. layout 包此前同类问题反复出现：空枚举 NPE、负 spacing/gap、content 替换 parent 残留、响应式超过 24 列截断、首帧断点假设过宽。
+
+- **根因**：
+  1. layout 组件是业务最常直接拼装的基础设施，但 API 边界曾长期只覆盖正常路径，没有把“外部输入不可信”落成统一约定。
+  2. 布局组件容易把 JavaFX 原生容器当作透明转发层，忽略 JavaFX 对负 gap、同一 Node 多 parent、非有限 double、离屏构建等场景的实际行为。
+  3. 视觉尺寸一旦写在 Java 构造参数或 setter 中，就天然绕开主题 token 和 compact 主题，后续只能靠人工逐个发现。
+
+- **修复**：
+  - [`GridAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/GridAnt.java)：`gutter/rowGutter/columnGutter` 统一 `clampGap`，负数和非有限数归 0；响应式首次 build 使用 `XS` 断点，入场景后再按 Scene 宽度刷新。
+  - [`DividerAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/DividerAnt.java)：移除 Java 侧硬编码间距/短线宽度，用左右 `HBox.setHgrow(...)` 表达文本位置。
+  - [`_progress-sizes.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_progress-sizes.less)：`DividerAnt` 文本间距改走 `@spacing-sm/@spacing-md` token，让 compact 主题自动收紧。
+  - [`GridAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/layout/GridAntTest.java)、[`DividerAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/layout/DividerAntTest.java)：补负 gutter、响应式首帧、Divider 文本定位无固定像素的回归测试。
+  - [`.qoder/skills/project-constraints.md`](file:///Users/openai/workspace/work_open/JFXium/.qoder/skills/project-constraints.md)：新增“布局组件 API 边界与防复发清单”，把本轮问题沉淀为后续审查规则。
+
+- **防复发清单**：
+  1. 布局组件所有 `gap/spacing/gutter/padding/lineSpacing/size/width/height` 类数值入口必须处理负数、`NaN`、`Infinity`；间距类通常归 0，尺寸类按组件语义给默认值或最小值。
+  2. 所有枚举 Builder 入参必须 `null` 回默认值；所有文案入参 `null` 转空字符串或延迟取 i18n；所有回调入参允许为空且不绑定空回调。
+  3. 会替换/清空 content 的组件必须先释放旧内部容器 children，避免同一 Node 因旧 parent 残留无法复用。
+  4. 响应式组件不能假设首帧是桌面宽屏；离屏构建时必须有保守默认断点，入场景后再按真实 Scene 宽度纠偏。
+  5. Java 端只负责结构和约束，视觉间距、padding、线宽、字体等必须下放 LESS token；禁止在 Java 构造参数或 setter 中写固定 px 作为视觉规则。
+  6. 布局包每修一处边界问题，要补对应单测；优先覆盖 null、负数、非有限数、重复 build、重复 content、跨容器移动、响应式断点切换。
+
+- **结果**：layout 包这一轮结构性问题基本收口，剩余风险主要转入具体页面的视觉/交互细节；后续审查有了固定检查表，避免同类问题按组件重复出现。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -pl jfxium -Dtest=GridAntTest,DividerAntTest test` ✅
