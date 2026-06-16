@@ -188,6 +188,36 @@ class AnchorPaneAntTest extends JfxTestBase {
         }
 
         @Test
+        @DisplayName("跨容器重新 center 会释放旧容器监听，避免旧容器继续驱动节点")
+        void recenterOnAnotherPaneDisposesPreviousBinding() {
+            AnchorPaneAnt firstPane = AnchorPaneAnt.create();
+            AnchorPaneAnt secondPane = AnchorPaneAnt.create();
+            javafx.scene.layout.Region node = new javafx.scene.layout.Region();
+            node.setPrefSize(20, 20);
+
+            runOnFxThreadAndWait(() -> {
+                firstPane.resize(100, 100);
+                firstPane.children(node);
+                firstPane.center(node);
+            });
+            pumpFxEvents();
+
+            runOnFxThreadAndWait(() -> {
+                assertEquals(40.0, node.getLayoutX(), 0.001);
+                assertEquals(40.0, node.getLayoutY(), 0.001);
+
+                secondPane.center(node);
+                firstPane.resize(200, 100);
+            });
+            pumpFxEvents();
+
+            runOnFxThreadAndWait(() -> {
+                assertEquals(40.0, node.getLayoutX(), 0.001);
+                assertEquals(40.0, node.getLayoutY(), 0.001);
+            });
+        }
+
+        @Test
         @DisplayName("children 批量添加")
         void childrenBatchAdd() {
             Label a = new Label("A");

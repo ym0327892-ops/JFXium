@@ -106,6 +106,14 @@ class FlowPaneAntTest extends JfxTestBase {
             assertEquals(8.0, ant.getHgap(), 0.0);
             assertEquals(12.0, ant.getVgap(), 0.0);
         }
+
+        @Test
+        @DisplayName("构造函数负间距钳制为 0")
+        void constructorNegativeGapsAreClamped() {
+            FlowPaneAnt ant = new FlowPaneAnt(-8.0, -12.0);
+            assertEquals(0.0, ant.getHgap(), 0.0);
+            assertEquals(0.0, ant.getVgap(), 0.0);
+        }
     }
 
     // ============================================================
@@ -147,6 +155,16 @@ class FlowPaneAntTest extends JfxTestBase {
         }
 
         @Test
+        @DisplayName("负间距钳制为 0")
+        void negativeGapsAreClamped() {
+            FlowPaneAnt ant = FlowPaneAnt.create()
+                    .hgap(-8)
+                    .vgap(-12);
+            assertEquals(0.0, ant.getHgap(), 0.0);
+            assertEquals(0.0, ant.getVgap(), 0.0);
+        }
+
+        @Test
         @DisplayName("orientation 设置后能读取")
         void orientationRoundTrip() {
             FlowPaneAnt ant = FlowPaneAnt.create().orientation(Orientation.VERTICAL);
@@ -174,6 +192,13 @@ class FlowPaneAntTest extends JfxTestBase {
         void prefWrapLengthRoundTrip() {
             FlowPaneAnt ant = FlowPaneAnt.create().prefWrapLength(300);
             assertEquals(300.0, ant.getPrefWrapLength(), 0.0);
+        }
+
+        @Test
+        @DisplayName("负 prefWrapLength 钳制为 0")
+        void negativePrefWrapLengthIsClamped() {
+            FlowPaneAnt ant = FlowPaneAnt.create().prefWrapLength(-300);
+            assertEquals(0.0, ant.getPrefWrapLength(), 0.0);
         }
 
         @Test

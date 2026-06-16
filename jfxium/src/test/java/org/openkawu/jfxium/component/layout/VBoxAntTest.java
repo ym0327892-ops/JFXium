@@ -110,6 +110,13 @@ class VBoxAntTest extends JfxTestBase {
         }
 
         @Test
+        @DisplayName("负 spacing 构造钳制为 0")
+        void negativeSpacingConstructorIsClamped() {
+            VBoxAnt box = new VBoxAnt(-16);
+            assertEquals(0, box.getSpacing(), 0.01);
+        }
+
+        @Test
         @DisplayName("VBoxAnt(double, Node...) spacing + 子节点")
         void spacingAndChildren() {
             Label a = new Label("a");
@@ -134,6 +141,13 @@ class VBoxAntTest extends JfxTestBase {
             VBoxAnt box = VBoxAnt.create();
             assertSame(box, box.spacing(12), "spacing 必须返回 this 保留链式");
             assertEquals(12, box.getSpacing(), 0.01);
+        }
+
+        @Test
+        @DisplayName("负 spacing 钳制为 0")
+        void negativeSpacingIsClamped() {
+            VBoxAnt box = VBoxAnt.create().spacing(-12);
+            assertEquals(0, box.getSpacing(), 0.01);
         }
 
         @Test

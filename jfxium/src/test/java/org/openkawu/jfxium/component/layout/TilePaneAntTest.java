@@ -104,6 +104,16 @@ class TilePaneAntTest extends JfxTestBase {
         }
 
         @Test
+        @DisplayName("非法行列数钳制到 1")
+        void invalidPrefRowsAndColumnsAreClamped() {
+            TilePaneAnt ant = TilePaneAnt.create()
+                    .prefColumns(0)
+                    .prefRows(-3);
+            assertEquals(1, ant.getPrefColumns());
+            assertEquals(1, ant.getPrefRows());
+        }
+
+        @Test
         @DisplayName("orientation 设置后能读取")
         void orientationRoundTrip() {
             TilePaneAnt ant = TilePaneAnt.create().orientation(Orientation.VERTICAL);
@@ -130,6 +140,16 @@ class TilePaneAntTest extends JfxTestBase {
             TilePaneAnt ant = TilePaneAnt.create().gap(10);
             assertEquals(10.0, ant.getHgap(), 0.0);
             assertEquals(10.0, ant.getVgap(), 0.0);
+        }
+
+        @Test
+        @DisplayName("负间距钳制为 0")
+        void negativeGapsAreClamped() {
+            TilePaneAnt ant = TilePaneAnt.create()
+                    .hgap(-8)
+                    .vgap(-12);
+            assertEquals(0.0, ant.getHgap(), 0.0);
+            assertEquals(0.0, ant.getVgap(), 0.0);
         }
 
         @Test

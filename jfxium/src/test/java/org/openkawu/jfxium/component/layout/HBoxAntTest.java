@@ -94,6 +94,13 @@ class HBoxAntTest extends JfxTestBase {
         }
 
         @Test
+        @DisplayName("负 spacing 构造钳制为 0")
+        void negativeSpacingConstructorIsClamped() {
+            HBoxAnt ant = new HBoxAnt(-12.5);
+            assertEquals(0.0, ant.getSpacing(), 0.0);
+        }
+
+        @Test
         @DisplayName("spacing + children 构造")
         void spacingAndChildrenConstructor() {
             Label a = new Label("A");
@@ -116,6 +123,13 @@ class HBoxAntTest extends JfxTestBase {
         void spacingRoundTrip() {
             HBoxAnt ant = HBoxAnt.create().spacing(8);
             assertEquals(8.0, ant.getSpacing(), 0.0);
+        }
+
+        @Test
+        @DisplayName("负 spacing 钳制为 0")
+        void negativeSpacingIsClamped() {
+            HBoxAnt ant = HBoxAnt.create().spacing(-8);
+            assertEquals(0.0, ant.getSpacing(), 0.0);
         }
 
         @Test

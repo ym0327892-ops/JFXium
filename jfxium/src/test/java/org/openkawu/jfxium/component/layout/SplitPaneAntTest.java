@@ -170,6 +170,36 @@ class SplitPaneAntTest extends JfxTestBase {
         }
 
         @Test
+        @DisplayName("dividerPositions 越界值钳制到 0..1")
+        void dividerPositionsOutOfRangeValuesAreClamped() {
+            Label a = new Label("A");
+            Label b = new Label("B");
+            Label c = new Label("C");
+            SplitPaneAnt ant = SplitPaneAnt.create()
+                    .items(a, b, c)
+                    .dividerPositions(-0.5, 1.5);
+
+            double[] pos = ant.getDividerPositions();
+            assertEquals(2, pos.length);
+            assertEquals(0.0, pos[0], 0.001);
+            assertEquals(1.0, pos[1], 0.001);
+        }
+
+        @Test
+        @DisplayName("dividerPositions 忽略 NaN 和无穷大")
+        void dividerPositionsIgnoreNonFiniteValues() {
+            Label a = new Label("A");
+            Label b = new Label("B");
+            SplitPaneAnt ant = SplitPaneAnt.create()
+                    .items(a, b)
+                    .dividerPositions(Double.NaN, Double.POSITIVE_INFINITY, 0.4);
+
+            double[] pos = ant.getDividerPositions();
+            assertEquals(1, pos.length);
+            assertEquals(0.4, pos[0], 0.001);
+        }
+
+        @Test
         @DisplayName("dividerPositions(null) 安全不抛异常")
         void dividerPositionsNullSafe() {
             SplitPaneAnt ant = SplitPaneAnt.create();

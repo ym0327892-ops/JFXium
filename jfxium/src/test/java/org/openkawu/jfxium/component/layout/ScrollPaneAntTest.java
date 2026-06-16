@@ -34,4 +34,34 @@ class ScrollPaneAntTest extends JfxTestBase {
         StackPane viewport = assertInstanceOf(StackPane.class, ant.getContent());
         assertEquals(new Insets(8, 12, 16, 20), viewport.getPadding());
     }
+
+    @Test
+    @DisplayName("content(null) 会释放旧 viewport 子节点，允许复用同一内容节点")
+    void contentNullReleasesPreviousViewportChild() {
+        Label content = new Label("Hello");
+        ScrollPaneAnt ant = ScrollPaneAnt.create().content(content);
+
+        ant.content(null);
+
+        assertNull(ant.getContent());
+        assertNull(content.getParent());
+        assertDoesNotThrow(() -> ant.content(content));
+        StackPane viewport = assertInstanceOf(StackPane.class, ant.getContent());
+        assertSame(content, viewport.getChildren().get(0));
+    }
+
+    @Test
+    @DisplayName("重复 content(同一节点) 按 setter 语义替换 viewport，不因旧 parent 抛异常")
+    void repeatedContentWithSameNodeReplacesViewportSafely() {
+        Label content = new Label("Hello");
+        ScrollPaneAnt ant = ScrollPaneAnt.create().content(content);
+        StackPane firstViewport = assertInstanceOf(StackPane.class, ant.getContent());
+
+        assertDoesNotThrow(() -> ant.content(content));
+
+        StackPane secondViewport = assertInstanceOf(StackPane.class, ant.getContent());
+        assertNotSame(firstViewport, secondViewport);
+        assertTrue(firstViewport.getChildren().isEmpty());
+        assertSame(content, secondViewport.getChildren().get(0));
+    }
 }

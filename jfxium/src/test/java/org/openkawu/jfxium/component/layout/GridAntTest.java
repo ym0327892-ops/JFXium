@@ -40,6 +40,43 @@ class GridAntTest extends JfxTestBase {
     }
 
     @Test
+    @DisplayName("响应式 span 超过 24 时自动换行，不截断后续列")
+    void responsiveColumnsWrapInsteadOfBeingTruncated() throws Exception {
+        Label first = new Label("1");
+        Label second = new Label("2");
+        Label third = new Label("3");
+        Label fourth = new Label("4");
+
+        GridAnt.Builder builder = GridAnt.create()
+                .responsive()
+                .row(GridAnt.row()
+                        .col(GridAnt.col(first).xs(24).lg(6))
+                        .col(GridAnt.col(second).xs(24).lg(6))
+                        .col(GridAnt.col(third).xs(24).lg(6))
+                        .col(GridAnt.col(fourth).xs(24).lg(6)));
+
+        VBox container = builder.build();
+        Method rebuildRows = GridAnt.Builder.class.getDeclaredMethod(
+                "rebuildRows", VBox.class, GridAnt.Breakpoint.class);
+        rebuildRows.setAccessible(true);
+        rebuildRows.invoke(builder, container, GridAnt.Breakpoint.XS);
+
+        GridPane row = assertInstanceOf(GridPane.class, container.getChildren().get(0));
+        assertEquals(4, row.getChildren().size());
+        assertEquals(4, row.getRowConstraints().size());
+
+        assertEquals(0, GridPane.getRowIndex(first));
+        assertEquals(1, GridPane.getRowIndex(second));
+        assertEquals(2, GridPane.getRowIndex(third));
+        assertEquals(3, GridPane.getRowIndex(fourth));
+
+        assertEquals(24, GridPane.getColumnSpan(first));
+        assertEquals(24, GridPane.getColumnSpan(second));
+        assertEquals(24, GridPane.getColumnSpan(third));
+        assertEquals(24, GridPane.getColumnSpan(fourth));
+    }
+
+    @Test
     @DisplayName("Row.align(null) 安全忽略，不覆盖默认对齐")
     void rowAlignNullIsIgnored() throws Exception {
         GridAnt.Row row = GridAnt.row().align(null);
@@ -48,5 +85,42 @@ class GridAntTest extends JfxTestBase {
         getAlignment.setAccessible(true);
 
         assertEquals(javafx.geometry.Pos.CENTER_LEFT, getAlignment.invoke(row));
+    }
+
+    @Test
+    @DisplayName("gutter 输入会钳制为非负值，避免负间距造成重叠布局")
+    void negativeGuttersAreClampedToZero() {
+        VBox container = GridAnt.create()
+                .gutter(-8)
+                .rowGutter(-4)
+                .columnGutter(-2)
+                .row(GridAnt.row().col(12, new Label("A")).col(12, new Label("B")))
+                .build();
+
+        GridPane row = assertInstanceOf(GridPane.class, container.getChildren().get(0));
+        assertEquals(0, container.getSpacing());
+        assertEquals(0, row.getHgap());
+        assertEquals(0, row.getVgap());
+    }
+
+    @Test
+    @DisplayName("响应式 Grid 首次 build 使用 XS 断点，避免入场景前先按超宽布局渲染")
+    void responsiveGridBuildsWithXsBreakpointBeforeSceneAttachment() {
+        Label left = new Label("L");
+        Label right = new Label("R");
+
+        VBox container = GridAnt.create()
+                .responsive()
+                .row(GridAnt.row()
+                        .col(GridAnt.col(left).xs(24).lg(12))
+                        .col(GridAnt.col(right).xs(24).lg(12)))
+                .build();
+
+        GridPane row = assertInstanceOf(GridPane.class, container.getChildren().get(0));
+        assertEquals(2, row.getRowConstraints().size());
+        assertEquals(24, GridPane.getColumnSpan(left));
+        assertEquals(24, GridPane.getColumnSpan(right));
+        assertEquals(0, GridPane.getRowIndex(left));
+        assertEquals(1, GridPane.getRowIndex(right));
     }
 }

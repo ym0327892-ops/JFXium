@@ -76,4 +76,27 @@ class SpaceAntTest extends JfxTestBase {
                 .build();
         assertEquals(javafx.geometry.Pos.TOP_RIGHT, box.getAlignment());
     }
+
+    @Test
+    @DisplayName("空方向和空对齐回落到默认水平布局")
+    void nullDirectionAndAlignFallbackToDefaults() {
+        HBox box = (HBox) SpaceAnt.create()
+                .direction(null)
+                .align(null)
+                .children(new Label("A"), new Label("B"))
+                .build();
+
+        assertEquals(javafx.geometry.Pos.CENTER_LEFT, box.getAlignment());
+    }
+
+    @Test
+    @DisplayName("负 size 钳制为 0，避免生成负 spacing")
+    void negativeSizeIsClampedToZero() {
+        HBox box = (HBox) SpaceAnt.create()
+                .size(-12)
+                .children(new Label("A"), new Label("B"))
+                .build();
+
+        assertEquals(0, box.getSpacing());
+    }
 }

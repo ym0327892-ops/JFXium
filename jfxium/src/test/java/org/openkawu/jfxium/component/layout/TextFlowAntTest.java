@@ -34,4 +34,12 @@ class TextFlowAntTest extends JfxTestBase {
         assertSame(flow, returned);
         assertEquals(TextAlignment.CENTER, flow.getTextAlignment());
     }
+
+    @Test
+    @DisplayName("负 lineSpacing 钳制为 0")
+    void negativeLineSpacingIsClamped() {
+        TextFlowAnt flow = TextFlowAnt.create().lineSpacing(-6);
+
+        assertEquals(0, flow.getLineSpacing(), 0.0);
+    }
 }
