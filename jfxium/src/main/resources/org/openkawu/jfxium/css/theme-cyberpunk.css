@@ -4835,11 +4835,12 @@
 /* DividerAnt 文本与线条样式 */
 .jfx-divider {
   -fx-background-color: transparent;
+  -fx-spacing: 8px;
 }
 .jfx-divider-text {
   -fx-text-fill: -color-fg-secondary;
   -fx-font-size: 12px;
-  -fx-padding: 0 12 0 12;
+  -fx-padding: 0 12px 0 12px;
 }
 .jfx-divider-line {
   /* 让带文本的 Divider 中线段保持与单独 Separator 一致的视觉粗细 */
