@@ -48,7 +48,7 @@ JFXium is a JavaFX UI framework inspired by Ant Design 6.x. It wraps and enhance
 |----------|---------|
 | [.qoder/skills/project-constraints.md](.qoder/skills/project-constraints.md) | **Primary development specification** — color derivation, LESS rules, JavaFX CSS constraints, component design patterns |
 | [PROJECT_PLAN.md](PROJECT_PLAN.md) | Development plan and progress tracking |
-| [PROJECT_BUG.md](PROJECT_BUG.md) | Bug tracker and fix history (sequentially numbered, currently at #65) |
+| [PROJECT_BUG.md](PROJECT_BUG.md) | Bug tracker and fix history (sequentially numbered, currently at #67) |
 | [PROJECT_ACCEPTANCE.md](PROJECT_ACCEPTANCE.md) | QA acceptance checklist for manual UI verification |
 | [.kiro/steering/](.kiro/steering/) | Steering files with additional design constraints (component composition rules, PC UI standards) |
 
@@ -168,7 +168,7 @@ module org.openkawu.jfxium {
 | Tier | Package | Description |
 |------|---------|-------------|
 | **control** | `component.control` | Thin wrappers over JavaFX native controls (`extends Button`, etc.) with Builder API and styleClass-based theming. Examples: ButtonAnt, InputAnt, ComboBoxAnt, TableAnt. |
-| **composite** | `component.composite` | Custom components built from multiple JavaFX nodes. No inheritance from a single native control. Examples: CardAnt, AlertAnt, MenuAnt, FormAnt, WatermarkAnt. |
+| **composite** | `component.composite` | Custom components built from multiple JavaFX nodes. **Two coexisting patterns**: (1) Builder pattern — mostly for complex / multi-Builder / Controller components (CardAnt, AlertAnt, MenuAnt, FormAnt); (2) Inheritance pattern — for single-container composites that want LayoutCommon capabilities (BarAnt `extends HBoxAnt`). |
 | **overlay** | `component.overlay` | Popup/dialog components using `Stage`, `Popup`, or `ContextMenu`. Examples: ModalAnt, DrawerAnt, DropdownAnt, MessageAnt. |
 
 ### Universal Builder pattern
@@ -181,6 +181,39 @@ MyComponentAnt comp = MyComponentAnt.create()   // static factory
     .onSomeEvent(handler)
     .build();                                     // returns the built Node/Control
 ```
+
+### Inheritance-based composite pattern (M19.36+)
+
+Simple composite components that are "one container + content" can inherit from `*Ant` layout classes to gain LayoutCommon capabilities without Builder boilerplate:
+
+```java
+public class BarAnt extends HBoxAnt {
+    // BarAnt IS-A HBoxAnt — no separate Builder class needed
+    // Auto-inherits LayoutCommon: background, borderRadius, borderXxx, padding, size...
+    
+    public static BarAnt create() { return new BarAnt(); }
+    public BarAnt left(Node... nodes) { ...; return this; }
+    public BarAnt build() {
+        // Assemble children, return this
+        return this;
+    }
+    
+    // Must override ~30 LayoutCommon methods for covariant return (HBoxAnt → BarAnt)
+    @Override public BarAnt background(Background bg) { super.background(bg); return this; }
+    // ...
+}
+```
+
+**When to use inheritance vs Builder**:
+| Criterion | Inheritance (`extends VBoxAnt`) | Builder (`extends AbstractStyleBuilder`) |
+|-----------|-------------------------------|----------------------------------------|
+| Single root node | ✅ | ✅ |
+| Need LayoutCommon | ✅ | ❌ (must go through applyStyles) |
+| Has modify() / Controller | ⚠️ (type signature changes) | ✅ |
+| Multi-Builder (bar/circle) | ❌ | ✅ |
+| Complex Popup/Stage logic | ❌ | ✅ |
+
+The `Abstract*Ant<SELF>` base classes (`AbstractVBoxAnt`, `AbstractHBoxAnt`, etc.) provide the generic self-type foundation. Public `*Ant` classes extend them as `AbstractVBoxAnt<VBoxAnt>` for a clean non-generic API.
 
 ### AbstractStyleBuilder<SELF>
 
@@ -282,9 +315,22 @@ Semantic variables map to scale indices: `@color-accent-emphasis` → index 5, `
 - **No `padding` / `border`** — Always use `-fx-padding`, `-fx-border-color`, `-fx-background-radius`, etc.
 - **Pseudo-class mapping**: Web `:active` → JavaFX `:pressed` or `:armed`; Web `:focus` → JavaFX `:focused`; selection → `:selected`.
 - **SVG icons**: Use `-fx-shape: "M10 20..."` with `-fx-background-color`, never `background-image`.
-- **Borders via background stacking**: Use `-fx-background-color: borderColor, fillColor; -fx-background-insets: -2, 0;` for outline-like effects.
 - **All heights/paddings must use tokens** (e.g., `@control-height`, `@ctrl-padding-y`), not hardcoded px. This is how compact mode works — it overrides tokens.
 - **`@border-radius-full` (9999px) only on size-clamped nodes** (fixed-size thumb, badge). Never on track/progress bars whose width is determined by parent layout.
+- **Use native `-fx-border-*`** requires `-fx-border-style: solid` (modena defaults to `none`). Omit only when inheriting from controls that already define it (e.g., `.button`).
+
+### Border strategy: background-insets vs native border
+
+Two distinct border rendering techniques for different component types:
+
+| Technique | When to use | Examples |
+|-----------|-------------|----------|
+| **`background-insets` layer stacking** | Interactive controls: multi-state (hover/focus/pressed), rounded corners, focus ring | ButtonAnt, InputAnt, ComboBoxAnt |
+| **Native `-fx-border-*`** | Layout containers: 1px straight dividing lines, no rounded corners, no state switching | BarAnt, GroupBoxAnt, Separator |
+
+- **Interactive controls use background-insets**: `-fx-background-color: borderColor, fillColor; -fx-background-insets: 0, 1;` — switching state only changes the first layer color, no redraw needed.
+- **Layout containers use native border**: `-fx-border-color: transparent transparent -color-border-muted transparent; -fx-border-width: 0 0 1 0;` — simple, correct box-model, no anti-aliasing concerns on straight 1px lines.
+- **Java visual structure ≠ CSS visual values**: Java code should only handle node structure and layout constraints (Hgrow, alignment). Visual spacing/padding/line-width must go through styleClass + LESS tokens. E.g., don't write `new HBox(8)` for spacing — use `-fx-spacing: @spacing-sm` in CSS.
 
 ---
 
@@ -312,6 +358,18 @@ ThemeManager maintains a three-axis state machine: **Family** (Ant/MUI) × **dar
 - Uses JDK `ResourceBundle` / `MessageFormat` — zero third-party deps
 - Components with built-in i18n: CodeBlockAnt, TreeSelectAnt, EmptyAnt, ModalAnt, PopconfirmAnt, UploadAnt, TransferAnt
 
+**⚠️ Builder field default trap**: Never initialize i18n fields at declaration time — that locks the locale at class-load time. Use `null` as placeholder and lazy-resolve in `build()`:
+```java
+// ❌ Wrong: field init locks locale forever
+private String placeholder = Messages.get("treeselect.placeholder");
+
+// ✅ Correct: null placeholder + lazy resolve
+private String placeholder = null;
+// In build():
+String effective = placeholder != null ? placeholder : Messages.get("treeselect.placeholder");
+```
+For persistent components (not one-shot popups), register a `localeProperty()` listener when the user hasn't explicitly overridden the value.
+
 ---
 
 ## When Fixing Bugs
@@ -325,7 +383,26 @@ Follow the **dual traceability principle** (SKILL §22): when a demo bug is foun
 - Callbacks declared but never wired in `build()` (→ dead callback bug)
 - Repeated casts like `(VBox) component.build()` (→ `build()` return type not honest)
 
-The bug tracker is `PROJECT_BUG.md` (currently at #65). New issues are numbered sequentially. The acceptance checklist is `PROJECT_ACCEPTANCE.md`.
+The bug tracker is `PROJECT_BUG.md` (currently at #67). New issues are numbered sequentially. The acceptance checklist is `PROJECT_ACCEPTANCE.md`.
+
+### Defensive programming: null-safety & input validation
+
+All Builder setter methods MUST defend against invalid inputs — this is a systematic requirement across all component packages (layout + composite). The rule is: **external input is untrusted by default**.
+
+| Input type | Required behavior |
+|------------|-------------------|
+| Enum parameters | `null` → semantic default (e.g., `Type.DEFAULT`), never let NPE reach `switch` |
+| Text parameters (`title`, `text`) | `null` → `""` empty string |
+| Numeric parameters (`gap`, `size`, `count`) | Negative/NaN/Infinity → clamp to safe value (0 or min); count-like → min 1 |
+| Callback parameters (`onClose`, `onClick`, `action`) | `null` allowed — simply don't bind the handler |
+| `Node...` / collection parameters | Allow empty; filter out null entries one-by-one |
+| `maxSize` when paired with `minSize` | Ensure `max ≥ min` before passing to Region |
+
+Additionally:
+- **`build()` must be idempotent** — repeated calls must not accumulate spacer nodes, listeners, or temporary children.
+- **Node parent lifecycle**: any content replacement must release the old parent before re-mounting (JavaFX single-parent rule).
+- **FX thread boundary**: any code touching `snapshot()`, `Canvas`, or scene-graph Node rendering must check `Platform.isFxApplicationThread()` and switch if needed.
+- **Module exports**: adding a `public` class in any package MUST sync `module-info.java` exports.
 
 ---
 
