@@ -1589,3 +1589,198 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
   - `./mvnw -q -pl jfxium -DskipTests compile` ✅
   - `./mvnw -q -pl jfxium -DskipTests test-compile` ✅
   - `./mvnw -q -pl jfxium-demo -am -DskipTests compile` ✅
+
+---
+
+### #120 二十轮审计修复：layout 包 Grid 响应式换行与负间距边界收口（2026-06-16）
+
+- **现象**：
+  1. `GridAnt` 虽然暴露 24 列和 `xs/sm/md/lg/xl/xxl` 响应式 API，但同一逻辑 Row 下多个 `xs(24)` 列会在首列后被截断，无法形成移动端常见的一列一行布局。
+  2. `FlexAnt` / `SpaceAnt` 的方向、对齐枚举传 `null` 时会拖到 `build()` 阶段触发 NPE。
+  3. `HBoxAnt` / `VBoxAnt` / `FlowPaneAnt` / `TilePaneAnt` / `SpaceAnt` / `FlexAnt` / `TextFlowAnt` 接受负 spacing/gap/lineSpacing，可能产生反常布局。
+  4. `TilePaneAnt.prefRows/prefColumns` 接受 0 或负数，缺少组件层保护。
+
+- **根因**：layout 包此前主要覆盖正常路径，缺少对 Builder/双工厂入口的边界输入统一约定；`GridAnt` 的响应式实现只会截断超出 24 列的节点，没有把“超出 24 列”解释为换行。
+
+- **修复**：
+  - [`GridAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/GridAnt.java)：同一逻辑 Row 内按 24 列累计，超出后自动创建下一条物理行；同步设置 `GridPane` 的 `vgap` 与多行高度。
+  - [`FlexAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/FlexAnt.java)、[`SpaceAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/SpaceAnt.java)：空枚举参数回落到默认值，负间距钳制为 0。
+  - [`AbstractHBoxAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/AbstractHBoxAnt.java)、[`AbstractVBoxAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/AbstractVBoxAnt.java)：在 HBox/VBox 系源头钳制负 spacing，覆盖构造函数与链式 API。
+  - [`FlowPaneAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/FlowPaneAnt.java)、[`TilePaneAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/TilePaneAnt.java)、[`TextFlowAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/TextFlowAnt.java)：钳制负 gap / prefWrapLength / lineSpacing；`TilePaneAnt` 行列数最小为 1。
+  - layout 测试补充响应式换行、空枚举默认值、负间距钳制、非法行列数钳制等回归用例。
+
+- **结果**：`GridAnt` 可以实现 24 列栅格在小屏断点下自动换行；layout 包边界输入行为统一为“空值默认、负间距归零、非法行列数归一”，避免运行时 NPE 或反常布局。
+
+- **验证**：
+  - `./mvnw -pl jfxium -Dtest=FlexAntTest,SpaceAntTest,FlowPaneAntTest,TilePaneAntTest,HBoxAntTest,VBoxAntTest,TextFlowAntTest,GridAntTest test` ✅
+  - `./mvnw -pl jfxium -Dtest='org.openkawu.jfxium.component.layout.*Test' test` ✅
+
+---
+
+### #121 二十一轮审计修复：AnchorPaneAnt.center 跨容器监听器释放（2026-06-16）
+
+- **现象**：同一个节点先被 `firstPane.center(node)` 绑定，再被 `secondPane.center(node)` 重新绑定时，旧的 `firstPane` 宽高监听器可能残留。之后 `firstPane` 尺寸变化仍可能驱动该节点 `relocate(...)`，形成跨容器串扰和监听器泄漏。
+
+- **根因**：`CenterBinding` 存在节点属性里，但 `clearCenterBinding(node)` 使用“当前调用者”的 `widthProperty()/heightProperty()` 去移除监听器；当清理动作发生在另一个 `AnchorPaneAnt` 实例上时，移除目标容器错误。
+
+- **修复**：
+  - [`AnchorPaneAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/AnchorPaneAnt.java)：`CenterBinding` 记录创建它的 owner，并提供 `dispose()` 统一从 owner 和节点上移除监听器。
+  - [`AnchorPaneAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/AnchorPaneAnt.java)：`update()` 改为基于 owner 判断父节点和读取容器尺寸，避免依赖当前调用上下文。
+  - [`AnchorPaneAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/layout/AnchorPaneAntTest.java)：新增跨容器重新 center 后旧容器 resize 不再驱动节点的回归测试。
+
+- **结果**：`AnchorPaneAnt.center()` 的运行时绑定生命周期闭环，节点跨容器重新绑定时不会残留旧容器监听器。
+
+- **验证**：
+  - `./mvnw -pl jfxium -Dtest=AnchorPaneAntTest test` ✅
+  - `./mvnw -pl jfxium -Dtest='org.openkawu.jfxium.component.layout.*Test' test` ✅
+
+---
+
+### #122 二十二轮审计修复：ScrollPaneAnt content 生命周期与 SplitPaneAnt divider 参数收口（2026-06-16）
+
+- **现象**：
+  1. `ScrollPaneAnt.content(null)` 只清空 `ScrollPane#setContent(null)`，旧 viewport 仍持有业务节点；随后再次 `content(同一个节点)` 会因为节点仍有旧 parent 而抛异常。
+  2. `ScrollPaneAnt.content(同一个节点)` 重复调用不符合 setter 直觉，也会被旧 viewport parent 卡住。
+  3. `SplitPaneAnt.dividerPositions(...)` 文档声明 `0.0 ~ 1.0`，但直接把调用方数组传给 JavaFX，缺少对越界值、`NaN`、无穷大的组件层保护。
+
+- **根因**：`ScrollPaneAnt` 内部 viewport 是实现细节，但清空/替换 content 时没有释放旧 viewport 子节点；`SplitPaneAnt` 的参数边界只写在注释里，未落到 API 行为。
+
+- **修复**：
+  - [`ScrollPaneAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/ScrollPaneAnt.java)：新增 `clearViewportChildren()`，在清空或替换 content 前释放旧 viewport 子节点。
+  - [`ScrollPaneAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/layout/ScrollPaneAntTest.java)：新增 `content(null)` 后复用同一节点、重复 `content(同一节点)` 的回归测试。
+  - [`SplitPaneAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/SplitPaneAnt.java)：`dividerPositions(...)` 过滤非有限值，并把有限值钳制到 `0..1`。
+  - [`SplitPaneAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/layout/SplitPaneAntTest.java)：新增越界钳制与非有限值忽略测试。
+
+- **结果**：`ScrollPaneAnt.content(...)` 更符合 setter 语义，清空/替换后节点可安全复用；`SplitPaneAnt.dividerPositions(...)` 的实际行为与文档边界一致。
+
+- **验证**：
+  - `./mvnw -pl jfxium -Dtest=ScrollPaneAntTest,SplitPaneAntTest test` ✅
+  - `./mvnw -pl jfxium -Dtest='org.openkawu.jfxium.component.layout.*Test' test` ✅
+
+---
+
+### #123 二十三轮审计修复：BarAnt 接入 AbstractHBoxAnt 后保留二进制兼容桥接（2026-06-16）
+
+- **现象**：外部业务模块运行时报：
+  `java.lang.NoSuchMethodError: 'org.openkawu.jfxium.component.composite.BarAnt org.openkawu.jfxium.component.composite.BarAnt.background(org.openkawu.jfxium.core.css.Background)'`。
+
+- **根因**：`BarAnt` 改为继承 `AbstractHBoxAnt<BarAnt>` 后，`background(...)` 等流式能力主要来自 `LayoutCommon` 默认方法。源码重新编译可以通过，但旧业务模块字节码里仍按 `BarAnt.background(Background): BarAnt` 的具体类方法签名调用，运行加载新版 `BarAnt.class` 时找不到这个精确方法，触发 `NoSuchMethodError`。
+
+- **修复**：
+  - [`BarAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/BarAnt.java)：补回 `styleClass/style/background/padding/borderRadius/size/visible/disable/managed/opacity/cursor/id` 等具体桥接方法，返回类型保持 `BarAnt`。
+  - [`BarAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/BarAnt.java)：`gap(double)` 按 layout 包约定钳制负值为 0。
+  - [`BarAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/BarAntTest.java)：新增兼容桥接方法返回 `BarAnt` 与负 gap 钳制测试。
+
+- **结果**：`BarAnt.class` 重新导出 `public BarAnt background(Background)` 等旧调用方需要的精确签名，修复外部模块运行时 `NoSuchMethodError`。
+
+- **验证**：
+  - `./mvnw -pl jfxium -Dtest=BarAntTest test` ✅
+  - `javap -classpath jfxium/target/classes org.openkawu.jfxium.component.composite.BarAnt | rg "background|padding|borderRadius|styleClass|gap"` ✅
+  - `./mvnw -pl jfxium-demo -am -DskipTests compile -q` ✅
+
+---
+
+### #124 二十四轮审计修复：BarAnt build 幂等与 WatermarkAnt FX 线程渲染（2026-06-16）
+
+- **现象**：
+  1. `BarAnt.build()` 注释称会防止重复 build，但实际重复调用会继续追加 spacer，导致 children 数量增长。
+  2. `WatermarkAnt.build()` 在生成水印 tile 时调用 `Canvas/Node.snapshot(...)`，该 API 必须在 JavaFX Application Thread 执行；从测试或非 FX 线程构建时会抛 `IllegalStateException: Not on FX application thread`。
+  3. 新增的 `AbstractAnchorPaneAnt` 在泛型外部类的非静态内部类上使用 `instanceof CenterBinding binding`，JDK 21 编译报“不安全转换”。
+
+- **根因**：
+  1. `BarAnt` 构建后清空了三段缓冲列表，却没有清理已有 children；下一次 build 仍会追加 spacer。
+  2. `WatermarkAnt` 把 snapshot 当作普通绘制步骤调用，没有封装 FX 线程边界。
+  3. `AbstractAnchorPaneAnt<SELF>.CenterBinding` 依赖泛型外部类，pattern matching 需要使用通配符外部类型。
+
+- **修复**：
+  - [`BarAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/BarAnt.java)：`build()` 改为每次先清空 children，再按保存的 left/center/right 节点列表重建，支持重复 build 和 build 后追加节点再刷新。
+  - [`BarAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/BarAntTest.java)：新增重复 build 不追加 spacer、build 后追加节点可刷新测试。
+  - [`WatermarkAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/WatermarkAnt.java)：`renderTile(...)` 在非 FX 线程时通过 `Platform.runLater` 同步切回 FX 线程执行完整 tile 渲染。
+  - [`AbstractAnchorPaneAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/layout/AbstractAnchorPaneAnt.java)：`clearCenterBinding(...)` 使用 `AbstractAnchorPaneAnt<?>.CenterBinding` pattern，修复 JDK 21 编译错误。
+
+- **结果**：`BarAnt.build()` 具备幂等/刷新语义；`WatermarkAnt` 可在非 FX 线程测试构建时安全生成 tile；新增 AnchorPane 抽象基类恢复可编译。
+
+- **验证**：
+  - `./mvnw -pl jfxium -Dtest=BarAntTest,GroupBoxAntTest test` ✅
+  - `./mvnw -pl jfxium -Dtest=WatermarkAntTest test` ✅
+  - `./mvnw -pl jfxium -Dtest='org.openkawu.jfxium.component.composite.*Test' test` ✅
+
+---
+
+### #125 二十五轮审计修复：ResizablePanel/BackTop/Statistic/Surface 边界输入收口（2026-06-16）
+
+- **现象**：
+  1. `ResizablePanelAnt.mode(null)` 会在 `build()` 中触发空指针；负数 min/max 尺寸和 max 小于 min 的组合缺少组件层保护。
+  2. `BackTopAnt.bottom(...)` / `right(...)` 配置未真正应用到容器 margin；`duration(null)` 不安全；目标 `ScrollPane` 无 content 时滚动监听会读空 content bounds。
+  3. `StatisticAnt.title(null)` / `value(null)` / `size(null)` 缺少空值保护，调用方传入动态数据时容易在构建或 controller 更新中炸掉。
+  4. `SurfaceAnt.title(null)` / `shadow(null)` 缺少空值保护，负 gap 会把布局状态传给 JavaFX 容器。
+
+- **根因**：这些复合组件的 Builder API 暴露给业务层后，没有按“外部输入不可信”的约定统一做 null fallback、数值钳制和声明配置落地。
+
+- **修复**：
+  - [`ResizablePanelAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/ResizablePanelAnt.java)：`mode(null)` 回退为 `HORIZONTAL`，min/max 尺寸钳制到非负，并在 build/drag 时保证 max 不小于 min。
+  - [`BackTopAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/BackTopAnt.java)：`visibilityHeight/bottom/right` 钳制到非负，`duration(null)` 回退默认时长，build 时应用 `StackPane` margin/alignment，空 content 监听安全返回。
+  - [`StatisticAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/StatisticAnt.java)：`title/value` 空值转空字符串，`size(null)` 回退默认尺寸。
+  - [`SurfaceAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/SurfaceAnt.java)：`title(null)` 转空字符串，`shadow(null)` 回退 `NONE`，`gap` 钳制到非负。
+  - 新增 `ResizablePanelAntTest`、`BackTopAntTest`、`StatisticAntTest`、`SurfaceAntTest` 覆盖上述回归。
+
+- **结果**：四个复合组件的 Builder API 对 null、负数、异常组合输入更稳，声明式参数能真实反映到 JavaFX 节点，避免业务动态数据触发非预期运行时异常。
+
+- **验证**：
+  - `./mvnw -pl jfxium -Dtest=ResizablePanelAntTest,BackTopAntTest,StatisticAntTest,SurfaceAntTest test` ✅
+  - `./mvnw -pl jfxium -Dtest='org.openkawu.jfxium.component.composite.*Test' test` ✅
+
+---
+
+### #126 二十六轮审计修复：Empty/Spin/Tag/List/Progress 动态输入边界收口（2026-06-16）
+
+- **现象**：
+  1. `SpinAnt.size(null)` / `indicator(null)` 会在 build 时触发枚举 switch 空指针。
+  2. `TagAnt.type(null)` / `size(null)` / `shape(null)` 会在 styleClass 映射 switch 中触发空指针；`text(null)` 没有统一转空字符串。
+  3. `ListAnt.items(null)` 会在 build 遍历时触发空指针；列表项本身为 null 或 title 为 null 时缺少保护。
+  4. `EmptyAnt.extraButton(text, null)` 可以构建，但点击按钮时会执行空 action。
+  5. `ProgressAnt.progress(Double.NaN/Infinity)` 和 circle `size(Infinity)` 会把非有限数传入 JavaFX 控件，导致进度状态不可预期。
+
+- **根因**：这些组件面向业务动态数据，但 Builder 入口没有统一做“null 回默认、文本回空、集合回空、非有限数钳制”的 API 边界处理。
+
+- **修复**：
+  - [`EmptyAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/EmptyAnt.java)：`extraButton(..., null)` 不再绑定点击回调。
+  - [`SpinAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/SpinAnt.java)：`size(null)` 回退 `DEFAULT`，`indicator(null)` 回退 `SPINNER`。
+  - [`TagAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TagAnt.java)：Builder 枚举入参 null 回默认值，文本 null 转空字符串，并让 styleClass 映射方法自身具备 null 兜底。
+  - [`ListAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/ListAnt.java)：`items(null)` 按空列表处理，跳过 null item，title null 渲染为空字符串。
+  - [`ProgressAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/ProgressAnt.java)：Builder 与 Controller 统一使用有限数 clamp，非有限 progress 回 0，circle 非有限 size 回默认 60。
+  - 新增 `EmptyAntTest`、`SpinAntTest`、`TagAntTest`、`ListAntTest`、`ProgressAntTest` 覆盖这些回归。
+
+- **结果**：这批基础展示组件面对后端空值、异常数值、条件性回调时不再把 UI 构建链路拖崩，行为更接近稳健 Builder API。
+
+- **验证**：
+  - `./mvnw -pl jfxium -Dtest=EmptyAntTest,SpinAntTest,TagAntTest,ListAntTest,ProgressAntTest test` ✅
+  - `./mvnw -pl jfxium -Dtest='org.openkawu.jfxium.component.composite.*Test' test` ✅
+
+---
+
+### #127 二十七轮审计修复：Result/FloatButton/Rate/Timeline/Descriptions 边界输入收口（2026-06-16）
+
+- **现象**：
+  1. `ResultAnt.status(null)` 与内部 `ResultDisplay.status(null)` 会在状态转换或图标选择 switch 中触发空指针；`extraButton(..., null)` 点击时会执行空 action。
+  2. `FloatButtonAnt.type(null)` 会在类型判断处触发空指针；非有限 size 会传入按钮尺寸和 clip。
+  3. `RateAnt.size(null)`、`count(0/负数)`、`value(NaN/Infinity)` 缺少保护，可能产生空指针、非法数组长度或异常评分状态。
+  4. `TimelineAnt.mode(null)`、`dotColor(null)`、`pending(null)`、`content(null)` 缺少统一 fallback。
+  5. `DescriptionsAnt.layout(null)`、`size(null)`、`column(0)`、负 span、null label/content 缺少保护，可能导致构建异常或无意义布局。
+
+- **根因**：这批展示/交互复合组件的 Builder API 直接信任外部输入，未对枚举、数值、文本、节点做统一边界归一化。
+
+- **修复**：
+  - [`ResultDisplay.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/base/ResultDisplay.java)：状态 null 回退 `INFO`，标题/副标题 null 转空字符串，`iconScale` 非有限值回默认并钳制非负。
+  - [`ResultAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/ResultAnt.java)：状态 null 回退 `INFO`，文案 null 转空字符串，空 action 不绑定点击回调。
+  - [`FloatButtonAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/FloatButtonAnt.java)：`type(null)` 回默认类型，size 非有限回默认 56 且最小为 1。
+  - [`RateAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/RateAnt.java)：`count` 最小为 1，`size(null)` 回默认，评分值统一归一化到 `0..count`，非有限值回 0。
+  - [`TimelineAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TimelineAnt.java)：模式、圆点色、pending 文案、内容文案全部增加 null fallback。
+  - [`DescriptionsAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/DescriptionsAnt.java)：标题/枚举/列数/span/label/content 增加边界保护，null 节点用空 Label 占位。
+  - 新增 `ResultAntTest`、`FloatButtonAntTest`、`RateAntTest`、`TimelineAntTest`、`DescriptionsAntTest` 覆盖这些回归。
+
+- **结果**：这批组件面对业务端动态空值、异常尺寸和异常评分值时不再抛运行时异常，构建行为稳定且默认值一致。
+
+- **验证**：
+  - `./mvnw -pl jfxium -Dtest=ResultAntTest,FloatButtonAntTest,RateAntTest,TimelineAntTest,DescriptionsAntTest test` ✅
+  - `./mvnw -pl jfxium -Dtest='org.openkawu.jfxium.component.composite.*Test' test` ✅
