@@ -254,20 +254,20 @@ public class BarExamplePage extends VBoxAnt {
         Node demo1 = BarAnt.create()
                 .left(new Label("minHeight=48"))
                 .right(ButtonAnt.create("按钮").build())
-                .minHeight(48)
+                .minH(48)
                 .borderBottom()
                 .build();
         Node demo2 = BarAnt.create()
                 .left(new Label("prefHeight=64 + padding"))
                 .right(ButtonAnt.create("按钮").build())
-                .prefHeight(64)
+                .prefH(64)
                 .padding(12, 16, 12, 16)
                 .borderBottom()
                 .build();
         Node demo3 = BarAnt.create()
                 .left(new Label("maxWidth=400"))
                 .right(ButtonAnt.create("按钮").build())
-                .maxWidth(400)
+                .maxW(400)
                 .borderBottom()
                 .build();
 
@@ -280,9 +280,9 @@ public class BarExamplePage extends VBoxAnt {
                 BarAnt.create()
                         .left(new Label("固定高度"))
                         .right(btn)
-                        .minHeight(48)          // 最小高度
-                        .prefHeight(64)         // 首选高度
-                        .maxWidth(400)          // 最大宽度
+                        .minH(48)          // 最小高度
+                        .prefH(64)         // 首选高度
+                        .maxW(400)          // 最大宽度
                         .build();
                 """;
         return Demos.sectionWithCode("7. 尺寸控制",
@@ -297,21 +297,21 @@ public class BarExamplePage extends VBoxAnt {
         Node demo1 = BarAnt.create()
                 .left(new Label("CENTER_LEFT（默认）"))
                 .right(ButtonAnt.create("操作").build())
-                .minHeight(48)
+                .minH(48)
                 .borderBottom()
                 .build();
         Node demo2 = BarAnt.create()
                 .left(new Label("CENTER"))
                 .right(ButtonAnt.create("操作").build())
                 .alignment(Pos.CENTER)
-                .minHeight(48)
+                .minH(48)
                 .borderBottom()
                 .build();
         Node demo3 = BarAnt.create()
                 .left(new Label("BOTTOM_LEFT"))
                 .right(ButtonAnt.create("操作").build())
                 .alignment(Pos.BOTTOM_LEFT)
-                .minHeight(48)
+                .minH(48)
                 .borderBottom()
                 .build();
 
@@ -321,7 +321,7 @@ public class BarExamplePage extends VBoxAnt {
                         .left(new Label("居中对齐"))
                         .right(btn)
                         .alignment(Pos.CENTER)      // 垂直居中（默认 CENTER_LEFT）
-                        .minHeight(48)
+                        .minH(48)
                         .build();
                 """;
         return Demos.sectionWithCode("8. 对齐方式 alignment",
@@ -372,7 +372,7 @@ public class BarExamplePage extends VBoxAnt {
                         IconAnt.path(IconAnt.Path.USERS, 18)
                 )
                 .padding(0, 16, 0, 16)
-                .minHeight(56)
+                .minH(56)
                 .gap(16)
                 .build();
 
@@ -412,7 +412,7 @@ public class BarExamplePage extends VBoxAnt {
                         .left(logoIcon, brandName)
                         .center(searchBtn)
                         .right(notifyIcon, userIcon)
-                        .minHeight(56).gap(16)
+                        .minH(56).gap(16)
                         .build();
 
                 // 卡标题栏：左标题 + 右关闭，底部 1px 线
@@ -452,7 +452,7 @@ public class BarExamplePage extends VBoxAnt {
         // 10c. 仅中段
         Node onlyCenter = BarAnt.create()
                 .center(TypographyAnt.text("← 左右 spacer 对称，内容真正居中 →").build())
-                .minHeight(40)
+                .minH(40)
                 .borderBottom()
                 .build();
 

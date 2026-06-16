@@ -1,18 +1,22 @@
 package org.openkawu.jfxium.component.composite;
 
-import javafx.geometry.Pos;
+import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.component.layout.AbstractHBoxAnt;
+import org.openkawu.jfxium.component.layout.LayoutCommon;
+import org.openkawu.jfxium.core.builder.Radius;
+import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BarAnt - 横向栏布局原子（左 / 中 / 右 三段式）。
+ * BarAnt - 横向栏布局原子（左 / 中 / 右 三段式），基于 {@link AbstractHBoxAnt}。
  *
  * <p><b>定位</b>：项目最底层的「横向栏」布局原子。header / toolbar / footer / appbar
  * 全部基于它。把「左信息 + 弹性 spacer + 右操作」这一 PC admin 高频模式从「用户手写」
@@ -44,7 +48,7 @@ import java.util.List;
  *
  * <h3>三段：左 + 中 + 右</h3>
  * <pre>{@code
- * HBox header = BarAnt.create()
+ * BarAnt header = BarAnt.create()
  *     .left(closeBtn)
  *     .center(titleLabel)
  *     .right(saveBtn, cancelBtn)
@@ -54,195 +58,345 @@ import java.util.List;
  *
  * <h3>二段：左 + 右（不调 center 即可）</h3>
  * <pre>{@code
- * HBox toolbar = BarAnt.create()
+ * BarAnt toolbar = BarAnt.create()
  *     .left(searchField, roleCombo)
  *     .right(refreshBtn, addBtn)
  *     .build();
  * }</pre>
  *
- * <h3>Card header（PC admin 高频）—— 自控高度 + 底部分隔线</h3>
+ * <h3>Card header + 背景色切换</h3>
  * <pre>{@code
- * HBox cardHeader = BarAnt.create()
+ * BarAnt cardHeader = BarAnt.create()
  *     .left(LabelAnt.create("时间范围").build())
  *     .right(settingsBtn)
- *     .padding(8, 12, 8, 12)   // 高度由 padding 自控（PC 思维，见 SKILL PC UI 标准）
- *     .borderBottom()           // 底部 1px 分隔线
+ *     .padding(8, 12, 8, 12)
+ *     .background(Background.SUBTLE)   // 继承自 LayoutCommon
+ *     .borderRadius(Radius.LG)         // 继承自 LayoutCommon
  *     .build();
  * }</pre>
  *
  * <h2>设计取舍</h2>
  * <ul>
- *   <li>build() 诚实返回 HBox（不撒谎）</li>
+ *   <li>继承 {@link AbstractHBoxAnt}，build() 返回自身（BarAnt IS-A HBox，不撒谎）</li>
+ *   <li>自动获得 {@link LayoutCommon} 全部流式能力：background / borderRadius /
+ *       borderXxx / padding / 尺寸 / 可见性等</li>
  *   <li>三段时 center <b>真正居中</b>：左/右两侧用独立 Region 做弹性 spacer，宽度对称分配</li>
  *   <li>受左/右宽度挤压时，center 会向较窄的一侧偏移——这是 flex 标准行为</li>
  *   <li>每段都允许多节点（按添加顺序水平排列），不传节点则该段为空但仅占一个 spacer 槽</li>
  *   <li>高度/边距由 {@code .padding(...)} 自控，不由外壳 CSS 钳死（PC UI 标准 §B.3）</li>
- *   <li>所有 styleClass / style 由 {@link AbstractStyleBuilder} 统一处理</li>
  * </ul>
  *
  * <p><b>替代关系</b>：取代了原 {@code ActionBarAnt}（顺序+spacer 模型）和原
  * {@code core.util.Headers} 工厂（仅 title+extra 二段），两者已于 M19 删除。
  * M19.52 从 {@code SplitBarAnt} 改名而来。</p>
  */
-public class BarAnt {
+public class BarAnt extends AbstractHBoxAnt<BarAnt> {
 
-    public static Builder create() {
-        return new Builder();
+    private final List<Node> leftNodes = new ArrayList<>();
+    private final List<Node> centerNodes = new ArrayList<>();
+    private final List<Node> rightNodes = new ArrayList<>();
+
+    private BarAnt() {
+        setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        setSpacing(8);
+        setPadding(new Insets(4, 10, 4, 10));
+        getStyleClass().add(JfxStyles.SPLIT_BAR);
+        borderBottom(); // 默认开启底部分隔线
     }
 
-    public static class Builder extends AbstractStyleBuilder<Builder> {
-        private final List<Node> left = new ArrayList<>();
-        private final List<Node> center = new ArrayList<>();
-        private final List<Node> right = new ArrayList<>();
+    /** 工厂入口。 */
+    public static BarAnt create() {
+        return new BarAnt();
+    }
 
-        private Builder() {
-            this.borderBottom = true;
-        }
+    // ============================================================
+    // 三段节点
+    // ============================================================
 
-        private double gap = 8;
-        private Pos alignment = Pos.CENTER_LEFT;
-        private javafx.geometry.Insets padding = new javafx.geometry.Insets(4, 10, 4, 10);
-        private double minHeight = -1;
-        private double prefHeight = -1;
-        private double maxWidth = -1;
-
-        // ============================================================
-        // 三段节点
-        // ============================================================
-
-        /** 左侧节点（按添加顺序水平排列）。多次调用累加。 */
-        public Builder left(Node... nodes) {
-            if (nodes != null) {
-                for (Node n : nodes) {
-                    if (n != null) left.add(n);
-                }
+    /** 左侧节点（按添加顺序水平排列）。多次调用累加。 */
+    public BarAnt left(Node... nodes) {
+        if (nodes != null) {
+            for (Node n : nodes) {
+                if (n != null) leftNodes.add(n);
             }
-            return this;
         }
+        return this;
+    }
 
-        /**
-         * 中间节点（可选）。
-         * <p>不调用或传空数组 → 退化为二段（左 + spacer + 右）。<br>
-         * 调用且非空 → 三段（左 + spacer + 中 + spacer + 右），center 真正居中。</p>
-         */
-        public Builder center(Node... nodes) {
-            if (nodes != null) {
-                for (Node n : nodes) {
-                    if (n != null) center.add(n);
-                }
+    /**
+     * 中间节点（可选）。
+     * <p>不调用或传空数组 → 退化为二段（左 + spacer + 右）。<br>
+     * 调用且非空 → 三段（左 + spacer + 中 + spacer + 右），center 真正居中。</p>
+     */
+    public BarAnt center(Node... nodes) {
+        if (nodes != null) {
+            for (Node n : nodes) {
+                if (n != null) centerNodes.add(n);
             }
-            return this;
         }
+        return this;
+    }
 
-        /** 右侧节点（按添加顺序水平排列）。多次调用累加。 */
-        public Builder right(Node... nodes) {
-            if (nodes != null) {
-                for (Node n : nodes) {
-                    if (n != null) right.add(n);
-                }
+    /** 右侧节点（按添加顺序水平排列）。多次调用累加。 */
+    public BarAnt right(Node... nodes) {
+        if (nodes != null) {
+            for (Node n : nodes) {
+                if (n != null) rightNodes.add(n);
             }
-            return this;
         }
+        return this;
+    }
 
-        // ============================================================
-        // 装饰
-        // ============================================================
+    // ============================================================
+    // BarAnt 特有
+    // ============================================================
 
-        /** 子节点间距（默认 8）。 */
-        public Builder gap(double gap) {
-            this.gap = gap;
-            return this;
+    /** 子节点间距（默认 8）。 */
+    public BarAnt gap(double gap) {
+        setSpacing(Math.max(0, gap));
+        return this;
+    }
+
+    /** 整体对齐方式（默认 CENTER_LEFT；通常无需修改）。 */
+    public BarAnt alignment(javafx.geometry.Pos alignment) {
+        if (alignment != null) {
+            setAlignment(alignment);
         }
+        return this;
+    }
 
-        /** 整体对齐方式（默认 CENTER_LEFT；通常无需修改）。 */
-        public Builder alignment(Pos alignment) {
-            this.alignment = alignment;
-            return this;
+    /** 顶部分割线。 */
+    public BarAnt borderTop() {
+        return borderTop(true);
+    }
+
+    /** 顶部分割线（开关）。 */
+    public BarAnt borderTop(boolean on) {
+        toggleStyleClass(JfxStyles.BORDER_TOP, on);
+        return this;
+    }
+
+    /** 底部分割线。 */
+    public BarAnt borderBottom() {
+        return borderBottom(true);
+    }
+
+    /** 底部分割线（开关）。 */
+    public BarAnt borderBottom(boolean on) {
+        toggleStyleClass(JfxStyles.BORDER_BOTTOM, on);
+        return this;
+    }
+
+    /** 左侧分割线。 */
+    public BarAnt borderLeft() {
+        return borderLeft(true);
+    }
+
+    /** 左侧分割线（开关）。 */
+    public BarAnt borderLeft(boolean on) {
+        toggleStyleClass(JfxStyles.BORDER_LEFT, on);
+        return this;
+    }
+
+    /** 右侧分割线。 */
+    public BarAnt borderRight() {
+        return borderRight(true);
+    }
+
+    /** 右侧分割线（开关）。 */
+    public BarAnt borderRight(boolean on) {
+        toggleStyleClass(JfxStyles.BORDER_RIGHT, on);
+        return this;
+    }
+
+    // ============================================================
+    // LayoutCommon 二进制兼容桥接
+    // ============================================================
+
+    /**
+     * BarAnt 早期版本把这些流式 API 暴露为 BarAnt 自身方法。
+     * 现在能力来自 LayoutCommon/AbstractHBoxAnt，但保留具体方法可避免旧业务模块运行时 NoSuchMethodError。
+     */
+    public BarAnt styleClass(String cls) {
+        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
+            getStyleClass().add(cls);
         }
+        return this;
+    }
 
-        /** 设置统一 padding（四边相同）—— 控制横向栏整体高度/边距。 */
-        public Builder padding(double padding) {
-            this.padding = new javafx.geometry.Insets(padding);
-            return this;
-        }
-
-        /** 设置 4 边各自 padding —— 精确控制栏高度（top/bottom 撑高，left/right 缩进）。 */
-        public Builder padding(double top, double right, double bottom, double left) {
-            this.padding = new javafx.geometry.Insets(top, right, bottom, left);
-            return this;
-        }
-
-        /** 最小高度（固定高度 toolbar 场景）。 */
-        public Builder minHeight(double height) {
-            this.minHeight = height;
-            return this;
-        }
-
-        /** 首选高度。 */
-        public Builder prefHeight(double height) {
-            this.prefHeight = height;
-            return this;
-        }
-
-        /** 最大宽度。 */
-        public Builder maxWidth(double width) {
-            this.maxWidth = width;
-            return this;
-        }
-
-        // ============================================================
-        // 构建
-        // ============================================================
-
-        public HBox build() {
-            HBox bar = new HBox(gap);
-            bar.getStyleClass().add(JfxStyles.SPLIT_BAR);
-            bar.setAlignment(alignment);
-
-            // 1. 左段
-            bar.getChildren().addAll(left);
-
-            // 2. 第一个 spacer（左 → 中/右）
-            bar.getChildren().add(makeSpacer());
-
-            // 3. 中段（可选）+ 第二个 spacer
-            if (!center.isEmpty()) {
-                bar.getChildren().addAll(center);
-                // 加第二个 spacer，让 center 真正居中（左右弹性对称）
-                bar.getChildren().add(makeSpacer());
+    public BarAnt styleClass(String... classes) {
+        if (classes != null) {
+            for (String cls : classes) {
+                styleClass(cls);
             }
+        }
+        return this;
+    }
 
-            // 4. 右段
-            bar.getChildren().addAll(right);
+    public BarAnt style(String style) {
+        if (style != null) {
+            setStyle(style);
+        }
+        return this;
+    }
 
-            // 5. 应用 padding / sizing
-            if (padding != null) {
-                bar.setPadding(padding);
-            }
-            if (minHeight >= 0) {
-                bar.setMinHeight(minHeight);
-            }
-            if (prefHeight >= 0) {
-                bar.setPrefHeight(prefHeight);
-            }
-            if (maxWidth >= 0) {
-                bar.setMaxWidth(maxWidth);
-            }
+    public BarAnt background(Background bg) {
+        if (bg != null) {
+            styleClass(bg.styleClass());
+        }
+        return this;
+    }
 
-            applyStyles(bar);
-            return bar;
+    public BarAnt padding(double padding) {
+        setPadding(new Insets(padding));
+        return this;
+    }
+
+    public BarAnt padding(double top, double right, double bottom, double left) {
+        setPadding(new Insets(top, right, bottom, left));
+        return this;
+    }
+
+    public BarAnt padding(Insets padding) {
+        if (padding != null) {
+            setPadding(padding);
+        }
+        return this;
+    }
+
+    public BarAnt borderRadius(Radius radius) {
+        getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
+        if (radius == Radius.NONE) {
+            getStyleClass().add(JfxStyles.RADIUS_NONE);
+        } else if (radius == Radius.SM) {
+            getStyleClass().add(JfxStyles.RADIUS_SM);
+        } else if (radius == Radius.LG) {
+            getStyleClass().add(JfxStyles.RADIUS_LG);
+        }
+        return this;
+    }
+
+    public BarAnt maxW(double width) {
+        setMaxWidth(width);
+        return this;
+    }
+
+    public BarAnt maxH(double height) {
+        setMaxHeight(height);
+        return this;
+    }
+
+    public BarAnt minW(double width) {
+        setMinWidth(width);
+        return this;
+    }
+
+    public BarAnt minH(double height) {
+        setMinHeight(height);
+        return this;
+    }
+
+    public BarAnt prefW(double width) {
+        setPrefWidth(width);
+        return this;
+    }
+
+    public BarAnt prefH(double height) {
+        setPrefHeight(height);
+        return this;
+    }
+
+    public BarAnt prefSize(double width, double height) {
+        setPrefSize(width, height);
+        return this;
+    }
+
+    public BarAnt maxSize(double width, double height) {
+        setMaxSize(width, height);
+        return this;
+    }
+
+    public BarAnt minSize(double width, double height) {
+        setMinSize(width, height);
+        return this;
+    }
+
+    public BarAnt visible(boolean visible) {
+        setVisible(visible);
+        return this;
+    }
+
+    public BarAnt disable(boolean disabled) {
+        setDisable(disabled);
+        return this;
+    }
+
+    public BarAnt managed(boolean managed) {
+        setManaged(managed);
+        return this;
+    }
+
+    public BarAnt opacity(double opacity) {
+        setOpacity(opacity);
+        return this;
+    }
+
+    public BarAnt cursor(Cursor cursor) {
+        setCursor(cursor);
+        return this;
+    }
+
+    public BarAnt id(String id) {
+        setId(id);
+        return this;
+    }
+
+    // ============================================================
+    // 构建
+    // ============================================================
+
+    /** 组装三段式布局并返回自身。 */
+    public BarAnt build() {
+        getChildren().clear();
+
+        // 1. 左段
+        getChildren().addAll(leftNodes);
+
+        // 2. 第一个 spacer（左 → 中/右）
+        getChildren().add(makeSpacer());
+
+        // 3. 中段（可选）+ 第二个 spacer
+        if (!centerNodes.isEmpty()) {
+            getChildren().addAll(centerNodes);
+            getChildren().add(makeSpacer());
         }
 
-        /**
-         * 创建一个弹性 spacer：HBox 内宽度自动撑满剩余空间。
-         * 双重保险（Hgrow + maxWidth）—— 符合组件组合规范 3.1 标准模式。
-         */
-        private static Region makeSpacer() {
-            Region spacer = new Region();
-            spacer.getStyleClass().add(JfxStyles.SPLIT_BAR_SPACER);
-            HBox.setHgrow(spacer, Priority.ALWAYS);
-            spacer.setMaxWidth(Double.MAX_VALUE);
-            return spacer;
+        // 4. 右段
+        getChildren().addAll(rightNodes);
+
+        return this;
+    }
+
+    /**
+     * 创建一个弹性 spacer：HBox 内宽度自动撑满剩余空间。
+     * 双重保险（Hgrow + maxWidth）—— 符合组件组合规范 3.1 标准模式。
+     */
+    private static Region makeSpacer() {
+        Region spacer = new Region();
+        spacer.getStyleClass().add(JfxStyles.SPLIT_BAR_SPACER);
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        spacer.setMaxWidth(Double.MAX_VALUE);
+        return spacer;
+    }
+
+    private void toggleStyleClass(String styleClass, boolean on) {
+        if (on) {
+            if (!getStyleClass().contains(styleClass)) {
+                getStyleClass().add(styleClass);
+            }
+        } else {
+            getStyleClass().remove(styleClass);
         }
     }
+
 }
