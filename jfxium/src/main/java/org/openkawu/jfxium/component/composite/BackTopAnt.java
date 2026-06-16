@@ -45,12 +45,12 @@ public class BackTopAnt {
         private double right = 40;
 
         public Builder visibilityHeight(int visibilityHeight) {
-            this.visibilityHeight = visibilityHeight;
+            this.visibilityHeight = Math.max(0, visibilityHeight);
             return this;
         }
 
         public Builder duration(Duration duration) {
-            this.duration = duration;
+            this.duration = duration != null ? duration : Duration.millis(450);
             return this;
         }
 
@@ -60,12 +60,12 @@ public class BackTopAnt {
         }
 
         public Builder bottom(double bottom) {
-            this.bottom = bottom;
+            this.bottom = Math.max(0, bottom);
             return this;
         }
 
         public Builder right(double right) {
-            this.right = right;
+            this.right = Math.max(0, right);
             return this;
         }
 
@@ -77,6 +77,8 @@ public class BackTopAnt {
             backTop.setVisible(false);
             backTop.setManaged(false);
             backTop.setOpacity(0);
+            StackPane.setAlignment(backTop, Pos.BOTTOM_RIGHT);
+            StackPane.setMargin(backTop, new Insets(0, right, bottom, 0));
 
             // 箭头图标，颜色随主题切换
             SVGPath arrow = new SVGPath();
@@ -98,6 +100,10 @@ public class BackTopAnt {
         private void setupScrollListener(StackPane backTop) {
             if (target instanceof ScrollPane scrollPane) {
                 scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
+                    if (scrollPane.getContent() == null) {
+                        updateVisibility(backTop, 0);
+                        return;
+                    }
                     double scrollY = newVal.doubleValue()
                             * (scrollPane.getContent().getBoundsInLocal().getHeight()
                             - scrollPane.getViewportBounds().getHeight());
@@ -150,8 +156,6 @@ public class BackTopAnt {
     public static StackPane install(ScrollPane scrollPane) {
         StackPane backTop = create().target(scrollPane).build();
         if (scrollPane.getParent() instanceof StackPane parent) {
-            StackPane.setAlignment(backTop, Pos.BOTTOM_RIGHT);
-            StackPane.setMargin(backTop, new Insets(0, 40, 40, 0));
             parent.getChildren().add(backTop);
         }
         return backTop;

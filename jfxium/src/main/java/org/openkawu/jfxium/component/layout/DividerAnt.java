@@ -100,7 +100,7 @@ public class DividerAnt {
          * 这里通过左右 Separator 的 Hgrow 比例近似实现。
          */
         private HBox buildSeparatorWithText() {
-            HBox box = new HBox(8);
+            HBox box = new HBox();
             box.setAlignment(Pos.CENTER);
             box.getStyleClass().addAll(JfxStyles.DIVIDER, JfxStyles.DIVIDER_HORIZONTAL);
 
@@ -118,12 +118,10 @@ public class DividerAnt {
             switch (position) {
                 case LEFT -> {
                     // 左线段尽量短（视觉上文本贴左）
-                    left.setMaxWidth(24);
-                    left.setMinWidth(8);
+                    HBox.setHgrow(left, Priority.SOMETIMES);
                 }
                 case RIGHT -> {
-                    right.setMaxWidth(24);
-                    right.setMinWidth(8);
+                    HBox.setHgrow(right, Priority.SOMETIMES);
                 }
                 case CENTER -> {
                     // 两边等长，使用默认行为

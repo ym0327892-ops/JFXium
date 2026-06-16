@@ -75,17 +75,17 @@ public class SpaceAnt {
         private Builder() {}
 
         public Builder direction(Direction direction) {
-            this.direction = direction;
+            this.direction = direction == null ? Direction.HORIZONTAL : direction;
             return this;
         }
 
         public Builder size(double size) {
-            this.size = size;
+            this.size = Math.max(0, size);
             return this;
         }
 
         public Builder align(Align align) {
-            this.align = align;
+            this.align = align == null ? Align.CENTER : align;
             return this;
         }
 

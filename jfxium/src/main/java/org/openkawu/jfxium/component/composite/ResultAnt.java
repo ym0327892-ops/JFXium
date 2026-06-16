@@ -49,17 +49,17 @@ public class ResultAnt {
         private Node extra = null;
 
         public Builder status(Status status) {
-            this.status = status;
+            this.status = status != null ? status : Status.INFO;
             return this;
         }
 
         public Builder title(String title) {
-            this.title = title;
+            this.title = title != null ? title : "";
             return this;
         }
 
         public Builder subTitle(String subTitle) {
-            this.subTitle = subTitle;
+            this.subTitle = subTitle != null ? subTitle : "";
             return this;
         }
 
@@ -71,7 +71,7 @@ public class ResultAnt {
         public Builder extraButton(String text, Runnable action) {
             this.extra = ButtonAnt.create(text)
                 .type(ButtonAnt.Type.PRIMARY)
-                .onClick(e -> action.run())
+                .onClick(action != null ? e -> action.run() : null)
                 .build();
             return this;
         }
@@ -88,7 +88,8 @@ public class ResultAnt {
         }
 
         private ResultDisplay.Status convertStatus(Status status) {
-            return switch (status) {
+            Status effectiveStatus = status != null ? status : Status.INFO;
+            return switch (effectiveStatus) {
                 case SUCCESS -> ResultDisplay.Status.SUCCESS;
                 case ERROR -> ResultDisplay.Status.ERROR;
                 case INFO -> ResultDisplay.Status.INFO;

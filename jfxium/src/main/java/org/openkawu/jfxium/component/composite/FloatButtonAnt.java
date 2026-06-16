@@ -53,7 +53,7 @@ public class FloatButtonAnt {
         }
 
         public Builder type(Type type) {
-            this.type = type;
+            this.type = type != null ? type : Type.DEFAULT;
             return this;
         }
 
@@ -63,7 +63,7 @@ public class FloatButtonAnt {
         }
 
         public Builder size(double size) {
-            this.size = size;
+            this.size = Double.isFinite(size) ? Math.max(1, size) : 56;
             return this;
         }
 

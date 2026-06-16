@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.composite;
 
+import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -16,6 +17,8 @@ import javafx.stage.Screen;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
@@ -236,6 +239,13 @@ public class WatermarkAnt {
          * </ol>
          */
         private WritableImage renderTile(Image imgOrNull) {
+            if (!Platform.isFxApplicationThread()) {
+                return runOnFxThreadAndWait(() -> renderTileOnFxThread(imgOrNull));
+            }
+            return renderTileOnFxThread(imgOrNull);
+        }
+
+        private WritableImage renderTileOnFxThread(Image imgOrNull) {
             double ratio = dpr();
 
             // -------- 1. 算出 contentWidth, contentHeight --------
@@ -357,6 +367,38 @@ public class WatermarkAnt {
             );
             fCanvas.snapshot(spClear, finalImg);
             return finalImg;
+        }
+
+        private static <T> T runOnFxThreadAndWait(java.util.concurrent.Callable<T> action) {
+            CountDownLatch latch = new CountDownLatch(1);
+            AtomicReference<T> resultRef = new AtomicReference<>();
+            AtomicReference<Throwable> errorRef = new AtomicReference<>();
+            Platform.runLater(() -> {
+                try {
+                    resultRef.set(action.call());
+                } catch (Throwable error) {
+                    errorRef.set(error);
+                } finally {
+                    latch.countDown();
+                }
+            });
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("WatermarkAnt tile render interrupted", e);
+            }
+            Throwable error = errorRef.get();
+            if (error != null) {
+                if (error instanceof RuntimeException runtimeException) {
+                    throw runtimeException;
+                }
+                if (error instanceof Error fatalError) {
+                    throw fatalError;
+                }
+                throw new RuntimeException(error);
+            }
+            return resultRef.get();
         }
 
         /** 从 rotatedImg 裁剪指定区域，画到 fCanvas 的 (targetX, targetY) 位置。 */

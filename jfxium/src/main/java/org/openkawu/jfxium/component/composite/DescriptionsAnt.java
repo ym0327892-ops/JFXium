@@ -71,15 +71,15 @@ public class DescriptionsAnt {
         private boolean bordered = false;
         private List<Item> items = new ArrayList<>();
 
-        public Builder title(String title) { this.title = title; return this; }
-        public Builder layout(Layout layout) { this.layout = layout; return this; }
-        public Builder size(Size size) { this.size = size; return this; }
-        public Builder column(int column) { this.column = column; return this; }
+        public Builder title(String title) { this.title = title != null ? title : ""; return this; }
+        public Builder layout(Layout layout) { this.layout = layout != null ? layout : Layout.HORIZONTAL; return this; }
+        public Builder size(Size size) { this.size = size != null ? size : Size.DEFAULT; return this; }
+        public Builder column(int column) { this.column = Math.max(1, column); return this; }
         public Builder bordered(boolean bordered) { this.bordered = bordered; return this; }
         public Builder bordered() { return bordered(true); }
 
         public Builder item(String label, String content) {
-            items.add(new Item(label, new Label(content), 1));
+            items.add(new Item(label, new Label(content != null ? content : ""), 1));
             return this;
         }
 
@@ -89,7 +89,7 @@ public class DescriptionsAnt {
         }
 
         public Builder item(String label, String content, int span) {
-            items.add(new Item(label, new Label(content), span));
+            items.add(new Item(label, new Label(content != null ? content : ""), span));
             return this;
         }
 
@@ -102,7 +102,8 @@ public class DescriptionsAnt {
             VBox container = new VBox(0);
             container.getStyleClass().add(JfxStyles.DESCRIPTIONS);
             // 尺寸修饰类
-            String sizeClass = switch (size) {
+            Size effectiveSize = size != null ? size : Size.DEFAULT;
+            String sizeClass = switch (effectiveSize) {
                 case SMALL -> JfxStyles.DESCRIPTIONS_SIZE_SMALL;
                 case MIDDLE -> JfxStyles.DESCRIPTIONS_SIZE_MIDDLE;
                 case LARGE -> JfxStyles.DESCRIPTIONS_SIZE_LARGE;
@@ -117,7 +118,8 @@ public class DescriptionsAnt {
                 container.getChildren().add(titleLabel);
             }
 
-            if (layout == Layout.HORIZONTAL) {
+            Layout effectiveLayout = layout != null ? layout : Layout.HORIZONTAL;
+            if (effectiveLayout == Layout.HORIZONTAL) {
                 container.getChildren().add(buildHorizontal());
             } else {
                 container.getChildren().add(buildVertical());
@@ -136,17 +138,20 @@ public class DescriptionsAnt {
             int currentCol = 0;
 
             for (Item item : items) {
-                Label label = new Label(item.label);
+                if (item == null) {
+                    continue;
+                }
+                Label label = new Label(item.label != null ? item.label : "");
                 label.getStyleClass().add(JfxStyles.DESCRIPTIONS_LABEL);
 
-                Node content = item.content;
+                Node content = item.content != null ? item.content : new Label("");
                 // content 如果是 Label，自动挂 styleClass
                 if (content instanceof Label contentLabel) {
                     contentLabel.getStyleClass().add(JfxStyles.DESCRIPTIONS_CONTENT);
                 }
 
                 int labelSpan = 1;
-                int contentSpan = item.span;
+                int contentSpan = Math.max(1, Math.min(column * 2 - 1, item.span));
 
                 if (currentCol + labelSpan + contentSpan > column * 2) {
                     currentRow++;
@@ -175,6 +180,9 @@ public class DescriptionsAnt {
             HBox rowBox = null;
 
             for (Item item : items) {
+                if (item == null) {
+                    continue;
+                }
                 if (currentCol == 0) {
                     rowBox = new HBox(0);
                     rowBox.setAlignment(Pos.TOP_LEFT);
@@ -184,11 +192,11 @@ public class DescriptionsAnt {
                 itemBox.setAlignment(Pos.TOP_LEFT);
                 HBox.setHgrow(itemBox, Priority.ALWAYS);
 
-                Label label = new Label(item.label);
+                Label label = new Label(item.label != null ? item.label : "");
                 label.getStyleClass().add(JfxStyles.DESCRIPTIONS_LABEL);
                 itemBox.getChildren().add(label);
 
-                Node content = item.content;
+                Node content = item.content != null ? item.content : new Label("");
                 if (content instanceof Label contentLabel) {
                     contentLabel.getStyleClass().add(JfxStyles.DESCRIPTIONS_CONTENT);
                 }

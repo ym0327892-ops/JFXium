@@ -12,6 +12,7 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -84,7 +85,10 @@ public class ListAnt {
             items.add(new ListItem(avatar, title, description, action, onClick));
             return this;
         }
-        public Builder items(List<ListItem> items) { this.items = items; return this; }
+        public Builder items(List<ListItem> items) {
+            this.items = items != null ? new ArrayList<>(items) : Collections.emptyList();
+            return this;
+        }
         public Builder bordered(boolean bordered) { this.bordered = bordered; return this; }
         public Builder bordered() { return bordered(true); }
         public Builder split(boolean split) { this.split = split; return this; }
@@ -107,6 +111,9 @@ public class ListAnt {
 
             for (int i = 0; i < items.size(); i++) {
                 ListItem item = items.get(i);
+                if (item == null) {
+                    continue;
+                }
 
                 HBox row = new HBox(12);
                 row.setAlignment(Pos.CENTER_LEFT);
@@ -122,7 +129,7 @@ public class ListAnt {
 
                 VBox content = new VBox(4);
                 content.setAlignment(Pos.CENTER_LEFT);
-                Label titleLabel = new Label(item.getTitle());
+                Label titleLabel = new Label(item.getTitle() != null ? item.getTitle() : "");
                 titleLabel.getStyleClass().add(JfxStyles.LIST_ITEM_TITLE);
                 content.getChildren().add(titleLabel);
                 if (item.getDescription() != null && !item.getDescription().isEmpty()) {

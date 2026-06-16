@@ -49,8 +49,8 @@ public class StatisticAnt {
         private Node prefixNode = null;
         private Node suffixNode = null;
 
-        public Builder title(String title) { this.title = title; return this; }
-        public Builder value(String value) { this.value = value; return this; }
+        public Builder title(String title) { this.title = title != null ? title : ""; return this; }
+        public Builder value(String value) { this.value = value != null ? value : ""; return this; }
         public Builder value(double value) { this.value = String.valueOf(value); return this; }
         public Builder value(int value) { this.value = String.valueOf(value); return this; }
         public Builder value(long value) { this.value = String.valueOf(value); return this; }
@@ -59,7 +59,7 @@ public class StatisticAnt {
         public Builder suffix(String suffix) { this.suffix = suffix; return this; }
         public Builder suffix(Node suffixNode) { this.suffixNode = suffixNode; return this; }
         public Builder precision(int precision) { this.precision = String.valueOf(precision); return this; }
-        public Builder size(Size size) { this.size = size; return this; }
+        public Builder size(Size size) { this.size = size != null ? size : Size.DEFAULT; return this; }
 
         public VBox build() {
             VBox statistic = new VBox(4);

@@ -268,17 +268,17 @@ public class GridAnt {
         private Builder() {}
 
         public Builder gutter(double gutter) {
-            this.gutter = gutter;
+            this.gutter = clampGap(gutter);
             return this;
         }
 
         public Builder rowGutter(double rowGutter) {
-            this.rowGutter = rowGutter;
+            this.rowGutter = clampGap(rowGutter);
             return this;
         }
 
         public Builder columnGutter(double columnGutter) {
-            this.columnGutter = columnGutter;
+            this.columnGutter = clampGap(columnGutter);
             return this;
         }
 
@@ -309,7 +309,7 @@ public class GridAnt {
             container.getStyleClass().add(JfxStyles.GRID);
             container.setSpacing(effectiveRowGutter());
 
-            Breakpoint initialBp = Breakpoint.XXL;
+            Breakpoint initialBp = initialBreakpoint();
             for (Row row : rows) {
                 container.getChildren().add(buildRow(row, initialBp));
             }
@@ -329,7 +329,7 @@ public class GridAnt {
          * 跟容器在哪嵌套无关。
          */
         private void attachResponsiveListener(VBox container) {
-            final Breakpoint[] currentBp = {Breakpoint.XXL};
+            final Breakpoint[] currentBp = {initialBreakpoint()};
 
             ChangeListener<Number> widthListener = (obs, oldVal, newVal) -> {
                 if (newVal == null) return;
@@ -371,18 +371,15 @@ public class GridAnt {
         }
 
         /**
-         * 构建单行：使用 GridPane + 24 个百分比 ColumnConstraints。
-         * 断点参数决定每个 Col 用 effective span/offset。
+         * 构建一个逻辑 Row：使用 GridPane + 24 个百分比 ColumnConstraints。
+         * 当 Col 累计超过 24 列时，自动换到下一条物理行继续放置。
          */
         private GridPane buildRow(Row row, Breakpoint bp) {
             GridPane grid = new GridPane();
             grid.getStyleClass().add(JfxStyles.GRID_ROW);
             grid.setHgap(effectiveColumnGutter());
+            grid.setVgap(effectiveRowGutter());
             grid.setAlignment(row.getAlignment());
-            if (row.getHeight() > 0) {
-                grid.setMinHeight(row.getHeight());
-                grid.setPrefHeight(row.getHeight());
-            }
 
             for (int i = 0; i < TOTAL_COLUMNS; i++) {
                 ColumnConstraints cc = new ColumnConstraints();
@@ -391,41 +388,61 @@ public class GridAnt {
                 grid.getColumnConstraints().add(cc);
             }
 
-            RowConstraints rc = new RowConstraints();
-            rc.setVgrow(Priority.SOMETIMES);
-            rc.setValignment(toVPos(row.getAlignment()));
-            grid.getRowConstraints().add(rc);
-
+            int physicalRow = 0;
             int startColumn = 0;
             for (Col col : row.getCols()) {
                 int effSpan = responsive ? col.effectiveSpan(bp) : col.getSpan();
                 int effOffset = responsive ? col.effectiveOffset(bp) : col.getOffset();
-                int target = startColumn + effOffset;
+                int targetColumn = startColumn + effOffset;
 
-                if (target >= TOTAL_COLUMNS) break;
-
-                if (target + effSpan > TOTAL_COLUMNS) {
-                    int truncated = TOTAL_COLUMNS - target;
-                    if (truncated <= 0) break;
-                    placeNode(grid, col.getNode(), target, truncated, row);
-                    startColumn = TOTAL_COLUMNS;
-                    break;
+                if (targetColumn >= TOTAL_COLUMNS) {
+                    physicalRow++;
+                    targetColumn = effOffset;
                 }
-                placeNode(grid, col.getNode(), target, effSpan, row);
-                startColumn = target + effSpan;
+
+                if (targetColumn + effSpan > TOTAL_COLUMNS) {
+                    physicalRow++;
+                    targetColumn = effOffset;
+                }
+
+                ensureRowConstraint(grid, physicalRow, row);
+                placeNode(grid, col.getNode(), physicalRow, targetColumn, effSpan, row);
+                startColumn = targetColumn + effSpan;
             }
 
+            if (grid.getRowConstraints().isEmpty()) {
+                ensureRowConstraint(grid, 0, row);
+            }
+            if (row.getHeight() > 0) {
+                int rowCount = grid.getRowConstraints().size();
+                double totalHeight = row.getHeight() * rowCount + effectiveRowGutter() * Math.max(0, rowCount - 1);
+                grid.setMinHeight(totalHeight);
+                grid.setPrefHeight(totalHeight);
+            }
             return grid;
         }
 
-        private void placeNode(GridPane grid, Node node, int startCol, int span, Row row) {
+        private void ensureRowConstraint(GridPane grid, int rowIndex, Row row) {
+            while (grid.getRowConstraints().size() <= rowIndex) {
+                RowConstraints rc = new RowConstraints();
+                rc.setVgrow(Priority.SOMETIMES);
+                rc.setValignment(toVPos(row.getAlignment()));
+                if (row.getHeight() > 0) {
+                    rc.setMinHeight(row.getHeight());
+                    rc.setPrefHeight(row.getHeight());
+                }
+                grid.getRowConstraints().add(rc);
+            }
+        }
+
+        private void placeNode(GridPane grid, Node node, int rowIndex, int startCol, int span, Row row) {
             if (node == null || span <= 0) return;
             // 确保不会重复挂 styleClass（rebuild 场景下同一节点会被多次挂）
             if (!node.getStyleClass().contains(JfxStyles.GRID_COL)) {
                 node.getStyleClass().add(JfxStyles.GRID_COL);
             }
             GridPane.setColumnIndex(node, startCol);
-            GridPane.setRowIndex(node, 0);
+            GridPane.setRowIndex(node, rowIndex);
             GridPane.setColumnSpan(node, span);
             GridPane.setHalignment(node, toHPos(row.getAlignment()));
             GridPane.setValignment(node, toVPos(row.getAlignment()));
@@ -439,6 +456,14 @@ public class GridAnt {
 
         private double effectiveColumnGutter() {
             return columnGutter >= 0 ? columnGutter : gutter;
+        }
+
+        private Breakpoint initialBreakpoint() {
+            return responsive ? Breakpoint.XS : Breakpoint.XXL;
+        }
+
+        private static double clampGap(double gap) {
+            return Double.isFinite(gap) ? Math.max(0, gap) : 0;
         }
 
         private static HPos toHPos(Pos pos) {

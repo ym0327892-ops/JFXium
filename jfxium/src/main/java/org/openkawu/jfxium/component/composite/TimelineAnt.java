@@ -69,9 +69,13 @@ public class TimelineAnt {
         private boolean pending = false;
         private String pendingText = "Loading...";
 
-        public Builder mode(Mode mode) { this.mode = mode; return this; }
+        public Builder mode(Mode mode) { this.mode = mode != null ? mode : Mode.LEFT; return this; }
         public Builder pending(boolean pending) { this.pending = pending; return this; }
-        public Builder pending(String pendingText) { this.pending = true; this.pendingText = pendingText; return this; }
+        public Builder pending(String pendingText) {
+            this.pending = true;
+            this.pendingText = pendingText != null ? pendingText : "";
+            return this;
+        }
 
         public Builder item(String content) {
             items.add(new TimelineItem(content, null, null, DotColor.BLUE));
@@ -89,7 +93,7 @@ public class TimelineAnt {
         }
 
         public Builder item(String content, String label, DotColor dotColor) {
-            items.add(new TimelineItem(content, label, null, dotColor));
+            items.add(new TimelineItem(content, label, null, dotColor != null ? dotColor : DotColor.BLUE));
             return this;
         }
 
@@ -116,6 +120,9 @@ public class TimelineAnt {
         }
 
         private HBox buildItem(TimelineItem item, boolean isLast) {
+            if (item == null) {
+                item = new TimelineItem("", null, null, DotColor.BLUE);
+            }
             HBox row = new HBox(0);
             row.setAlignment(Pos.TOP_LEFT);
             row.getStyleClass().add(JfxStyles.TIMELINE_ITEM);
@@ -163,7 +170,7 @@ public class TimelineAnt {
             HBox.setHgrow(rightBox, Priority.ALWAYS);
             rightBox.setPadding(new javafx.geometry.Insets(0, 0, 0, 16));
 
-            Label contentLabel = new Label(item.content);
+            Label contentLabel = new Label(item.content != null ? item.content : "");
             contentLabel.getStyleClass().add(JfxStyles.TIMELINE_CONTENT);
             contentLabel.setWrapText(true);
             rightBox.getChildren().add(contentLabel);
@@ -208,7 +215,8 @@ public class TimelineAnt {
         }
 
         private static String dotColorClassFor(DotColor color) {
-            return switch (color) {
+            DotColor effectiveColor = color != null ? color : DotColor.BLUE;
+            return switch (effectiveColor) {
                 case BLUE -> JfxStyles.TIMELINE_DOT_BLUE;
                 case RED -> JfxStyles.TIMELINE_DOT_RED;
                 case GREEN -> JfxStyles.TIMELINE_DOT_GREEN;

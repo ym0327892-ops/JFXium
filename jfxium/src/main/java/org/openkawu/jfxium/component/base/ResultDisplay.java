@@ -26,17 +26,17 @@ public class ResultDisplay {
         private double iconScale = 3.0;
 
         public Builder status(Status status) {
-            this.status = status;
+            this.status = status != null ? status : Status.INFO;
             return this;
         }
 
         public Builder title(String title) {
-            this.title = title;
+            this.title = title != null ? title : "";
             return this;
         }
 
         public Builder subTitle(String subTitle) {
-            this.subTitle = subTitle;
+            this.subTitle = subTitle != null ? subTitle : "";
             return this;
         }
 
@@ -46,7 +46,7 @@ public class ResultDisplay {
         }
 
         public Builder iconScale(double scale) {
-            this.iconScale = scale;
+            this.iconScale = Double.isFinite(scale) ? Math.max(0, scale) : 3.0;
             return this;
         }
 

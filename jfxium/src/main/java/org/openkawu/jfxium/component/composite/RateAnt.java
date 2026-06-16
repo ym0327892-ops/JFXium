@@ -79,19 +79,19 @@ public class RateAnt {
         private DoubleProperty bindProperty = null;
 
         public Builder count(int count) {
-            this.count = count;
+            this.count = Math.max(1, count);
             return this;
         }
 
         public Builder value(double value) {
-            this.value = value;
-            this.defaultValue = value;
+            this.value = normalizeValue(value);
+            this.defaultValue = this.value;
             return this;
         }
 
         public Builder defaultValue(double defaultValue) {
-            this.defaultValue = defaultValue;
-            this.value = defaultValue;
+            this.defaultValue = normalizeValue(defaultValue);
+            this.value = this.defaultValue;
             return this;
         }
 
@@ -114,7 +114,7 @@ public class RateAnt {
         }
 
         public Builder size(Size size) {
-            this.size = size;
+            this.size = size != null ? size : Size.DEFAULT;
             return this;
         }
 
@@ -145,7 +145,7 @@ public class RateAnt {
 
             // 双向绑定初始同步
             if (bindProperty != null && !Double.isNaN(bindProperty.get())) {
-                value = bindProperty.get();
+                value = normalizeValue(bindProperty.get());
             }
 
             int starSize = size.getValue();
@@ -178,7 +178,7 @@ public class RateAnt {
 
                     star.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                         double newValue = allowHalf ? calculateHalfValue(index, e.getX(), starSize) : starIndex;
-                        value = newValue;
+                        value = normalizeValue(newValue);
                         if (bindProperty != null) {
                             bindProperty.set(value);
                         }
@@ -225,6 +225,13 @@ public class RateAnt {
 
         private double calculateHalfValue(int index, double x, int size) {
             return x < size / 2.0 ? index + 0.5 : index + 1.0;
+        }
+
+        private double normalizeValue(double value) {
+            if (!Double.isFinite(value)) {
+                return 0;
+            }
+            return Math.max(0, Math.min(count, value));
         }
     }
 

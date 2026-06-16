@@ -70,12 +70,12 @@ public class SpinAnt {
         }
 
         public Builder size(Size size) {
-            this.size = size;
+            this.size = size != null ? size : Size.DEFAULT;
             return this;
         }
 
         public Builder indicator(Indicator indicator) {
-            this.indicator = indicator;
+            this.indicator = indicator != null ? indicator : Indicator.SPINNER;
             return this;
         }
 

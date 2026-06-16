@@ -111,17 +111,17 @@ public class FlexAnt {
         private Builder() {}
 
         public Builder direction(Direction direction) {
-            this.direction = direction;
+            this.direction = direction == null ? Direction.ROW : direction;
             return this;
         }
 
         public Builder justify(Justify justify) {
-            this.justify = justify;
+            this.justify = justify == null ? Justify.START : justify;
             return this;
         }
 
         public Builder align(Align align) {
-            this.align = align;
+            this.align = align == null ? Align.CENTER : align;
             return this;
         }
 
@@ -140,19 +140,19 @@ public class FlexAnt {
          * 单独 rowGap/columnGap 设置后会覆盖此值（仅在 wrap 模式下区分）。
          */
         public Builder gap(double gap) {
-            this.gap = gap;
+            this.gap = Math.max(0, gap);
             return this;
         }
 
         /** 行间距，仅在 wrap=true 时生效（FlowPane 才区分行列间距）。*/
         public Builder rowGap(double rowGap) {
-            this.rowGap = rowGap;
+            this.rowGap = Math.max(0, rowGap);
             return this;
         }
 
         /** 列间距，仅在 wrap=true 时生效。*/
         public Builder columnGap(double columnGap) {
-            this.columnGap = columnGap;
+            this.columnGap = Math.max(0, columnGap);
             return this;
         }
 

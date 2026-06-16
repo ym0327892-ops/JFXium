@@ -59,7 +59,7 @@ public class ProgressAnt {
         private BarBuilder() {}
 
         public BarBuilder progress(double progress) {
-            this.progress = Math.max(0, Math.min(1, progress));
+            this.progress = clamp(progress);
             return this;
         }
 
@@ -129,12 +129,12 @@ public class ProgressAnt {
         private CircleBuilder() {}
 
         public CircleBuilder progress(double progress) {
-            this.progress = Math.max(0, Math.min(1, progress));
+            this.progress = clamp(progress);
             return this;
         }
 
         public CircleBuilder size(double size) {
-            this.size = Math.max(1, size);
+            this.size = Double.isFinite(size) ? Math.max(1, size) : 60;
             return this;
         }
 
@@ -253,6 +253,9 @@ public class ProgressAnt {
     }
 
     private static double clamp(double progress) {
+        if (!Double.isFinite(progress)) {
+            return 0;
+        }
         return Math.max(0, Math.min(1, progress));
     }
 

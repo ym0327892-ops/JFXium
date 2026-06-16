@@ -74,17 +74,17 @@ public class ResizablePanelAnt {
         }
 
         public Builder mode(Mode mode) {
-            this.mode = mode;
+            this.mode = mode != null ? mode : Mode.HORIZONTAL;
             return this;
         }
 
         public Builder minWidth(double minWidth) {
-            this.minWidth = minWidth;
+            this.minWidth = Math.max(0, minWidth);
             return this;
         }
 
         public Builder minHeight(double minHeight) {
-            this.minHeight = minHeight;
+            this.minHeight = Math.max(0, minHeight);
             return this;
         }
 
@@ -99,12 +99,12 @@ public class ResizablePanelAnt {
         }
 
         public Builder maxWidth(double maxWidth) {
-            this.maxWidth = maxWidth;
+            this.maxWidth = Math.max(0, maxWidth);
             return this;
         }
 
         public Builder maxHeight(double maxHeight) {
-            this.maxHeight = maxHeight;
+            this.maxHeight = Math.max(0, maxHeight);
             return this;
         }
 
@@ -127,8 +127,10 @@ public class ResizablePanelAnt {
         public StackPane build() {
             StackPane panel = new StackPane();
             panel.getStyleClass().add(JfxStyles.RESIZABLE_PANEL);
+            double safeMaxWidth = Math.max(minWidth, maxWidth);
+            double safeMaxHeight = Math.max(minHeight, maxHeight);
             panel.setMinSize(minWidth, minHeight);
-            panel.setMaxSize(maxWidth, maxHeight);
+            panel.setMaxSize(safeMaxWidth, safeMaxHeight);
             if (prefWidth >= 0) {
                 panel.setPrefWidth(prefWidth);
             }
@@ -148,7 +150,7 @@ public class ResizablePanelAnt {
             }
 
             if (mode != Mode.NONE) {
-                panel.getChildren().add(createHandle(panel));
+                panel.getChildren().add(createHandle(panel, safeMaxWidth, safeMaxHeight));
             }
 
             // 用户 style/styleClass 在内置类后应用，便于覆盖
@@ -156,7 +158,7 @@ public class ResizablePanelAnt {
             return panel;
         }
 
-        private Node createHandle(StackPane panel) {
+        private Node createHandle(StackPane panel, double safeMaxWidth, double safeMaxHeight) {
             StackPane handle = new StackPane();
             handle.getStyleClass().add(JfxStyles.RESIZABLE_PANEL_HANDLE);
 
@@ -201,11 +203,11 @@ public class ResizablePanelAnt {
             });
             handle.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
                 if (mode == Mode.HORIZONTAL || mode == Mode.BOTH) {
-                    double width = clamp(start[2] + event.getSceneX() - start[0], minWidth, maxWidth);
+                    double width = clamp(start[2] + event.getSceneX() - start[0], minWidth, safeMaxWidth);
                     panel.setPrefWidth(width);
                 }
                 if (mode == Mode.VERTICAL || mode == Mode.BOTH) {
-                    double height = clamp(start[3] + event.getSceneY() - start[1], minHeight, maxHeight);
+                    double height = clamp(start[3] + event.getSceneY() - start[1], minHeight, safeMaxHeight);
                     panel.setPrefHeight(height);
                 }
                 event.consume();

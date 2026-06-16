@@ -63,7 +63,7 @@ public class SurfaceAnt {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = title;
+            this.title = title != null ? title : "";
             return this;
         }
 
@@ -94,12 +94,12 @@ public class SurfaceAnt {
         }
 
         public Builder shadow(Shadow shadow) {
-            this.shadow = shadow;
+            this.shadow = shadow != null ? shadow : Shadow.NONE;
             return this;
         }
 
         public Builder gap(double gap) {
-            this.gap = gap;
+            this.gap = Math.max(0, gap);
             return this;
         }
 

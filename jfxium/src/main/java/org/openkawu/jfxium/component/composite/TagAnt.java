@@ -102,22 +102,22 @@ public class TagAnt {
         private Runnable onClose = null;
 
         public Builder text(String text) {
-            this.text = text;
+            this.text = text != null ? text : "";
             return this;
         }
 
         public Builder type(Type type) {
-            this.type = type;
+            this.type = type != null ? type : Type.DEFAULT;
             return this;
         }
 
         public Builder size(Size size) {
-            this.size = size;
+            this.size = size != null ? size : Size.DEFAULT;
             return this;
         }
 
         public Builder shape(Shape shape) {
-            this.shape = shape;
+            this.shape = shape != null ? shape : Shape.DEFAULT;
             return this;
         }
 
@@ -251,7 +251,8 @@ public class TagAnt {
     );
 
     private static String typeStyleClass(Type t) {
-        return switch (t) {
+        Type effectiveType = t != null ? t : Type.DEFAULT;
+        return switch (effectiveType) {
             case PRIMARY    -> JfxStyles.TAG_PRIMARY;
             case SUCCESS    -> JfxStyles.TAG_SUCCESS;
             case WARNING    -> JfxStyles.TAG_WARNING;
@@ -262,7 +263,8 @@ public class TagAnt {
     }
 
     private static String sizeStyleClass(Size s) {
-        return switch (s) {
+        Size effectiveSize = s != null ? s : Size.DEFAULT;
+        return switch (effectiveSize) {
             case SMALL -> JfxStyles.TAG_SMALL;
             case LARGE -> JfxStyles.TAG_LARGE;
             default    -> null;
@@ -270,7 +272,8 @@ public class TagAnt {
     }
 
     private static String shapeStyleClass(Shape sh) {
-        return switch (sh) {
+        Shape effectiveShape = sh != null ? sh : Shape.DEFAULT;
+        return switch (effectiveShape) {
             case ROUND  -> JfxStyles.TAG_ROUNDED;
             case SQUARE -> JfxStyles.TAG_SQUARE;
             default     -> null;

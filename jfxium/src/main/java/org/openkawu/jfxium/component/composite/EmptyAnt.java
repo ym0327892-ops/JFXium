@@ -57,7 +57,7 @@ public class EmptyAnt {
         public Builder extraButton(String text, Runnable action) {
             this.extra = ButtonAnt.create(text)
                     .type(ButtonAnt.Type.PRIMARY)
-                    .onClick(e -> action.run())
+                    .onClick(action != null ? e -> action.run() : null)
                     .build();
             return this;
         }
