@@ -1,10 +1,6 @@
 package org.openkawu.jfxium.component.layout;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 
 /**
  * VBoxAnt - 继承式 VBox 容器（M19.36 引入）。
@@ -64,7 +60,7 @@ import javafx.scene.layout.VBox;
  *   <li><b>跟 *Ant 风格一致</b>：流式方法名跟 {@link VBoxBuilder} 完全对齐（spacing / padding / align / children）</li>
  * </ul>
  */
-public class VBoxAnt extends VBox implements LayoutCommon<VBoxAnt> {
+public class VBoxAnt extends AbstractVBoxAnt<VBoxAnt> {
 
     /** 工厂入口。等价于 {@code new VBoxAnt()}，提供链式风格。 */
     public static VBoxAnt create() {
@@ -99,56 +95,6 @@ public class VBoxAnt extends VBox implements LayoutCommon<VBoxAnt> {
     }
 
     // ============================================================
-    // 流式 API（跟 VBoxBuilder 对齐）
-    // ============================================================
-
-    /** 设置子节点之间的垂直间距。 */
-    public VBoxAnt spacing(double spacing) {
-        setSpacing(spacing);
-        return this;
-    }
-
-    /** 设置子节点对齐方式。 */
-    public VBoxAnt align(Pos alignment) {
-        if (alignment != null) {
-            setAlignment(alignment);
-        }
-        return this;
-    }
-
-    /** 添加子节点（追加，不清旧）。null 节点会被过滤。 */
-    public VBoxAnt children(Node... nodes) {
-        if (nodes != null) {
-            for (Node n : nodes) {
-                if (n != null) getChildren().add(n);
-            }
-        }
-        return this;
-    }
-
-    /** VBox 是否让子节点水平撑满（默认 true）。 */
-    public VBoxAnt fillWidth(boolean fill) {
-        setFillWidth(fill);
-        return this;
-    }
-
-    /** 给指定子节点设置垂直拉伸优先级。 */
-    public VBoxAnt vgrow(Node child, Priority priority) {
-        if (child != null && priority != null) {
-            VBox.setVgrow(child, priority);
-        }
-        return this;
-    }
-
-    /** 给指定子节点设置外边距。 */
-    public VBoxAnt margin(Node child, Insets margin) {
-        if (child != null) {
-            VBox.setMargin(child, margin);
-        }
-        return this;
-    }
-
-    // ============================================================
     // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
     // LayoutCommon<VBoxAnt> 默认实现
     // （节省 ~110 行重复模板代码，行为 100% 等价原 VBoxAnt）
@@ -166,7 +112,4 @@ public class VBoxAnt extends VBox implements LayoutCommon<VBoxAnt> {
      *
      * <p>业务继承场景下不需要调 build()——{@code this} 就是 VBoxAnt。</p>
      */
-    public VBoxAnt build() {
-        return this;
-    }
 }

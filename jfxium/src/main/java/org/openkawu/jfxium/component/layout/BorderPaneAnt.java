@@ -1,10 +1,6 @@
 package org.openkawu.jfxium.component.layout;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 
 /**
  * BorderPaneAnt - 继承式 BorderPane 容器。
@@ -46,7 +42,7 @@ import javafx.scene.layout.VBox;
  *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
  * </ul>
  */
-public class BorderPaneAnt extends BorderPane implements LayoutCommon<BorderPaneAnt> {
+public class BorderPaneAnt extends AbstractBorderPaneAnt<BorderPaneAnt> {
 
     /** 工厂入口。 */
     public static BorderPaneAnt create() {
@@ -70,110 +66,8 @@ public class BorderPaneAnt extends BorderPane implements LayoutCommon<BorderPane
     }
 
     // ============================================================
-    // 流式 API（BorderPane 特有业务方法）
-    // ============================================================
-
-    /** 设置顶部节点。 */
-    public BorderPaneAnt top(Node node) {
-        setTop(node);
-        return this;
-    }
-
-    /** 设置中心节点。 */
-    public BorderPaneAnt center(Node node) {
-        setCenter(node);
-        return this;
-    }
-
-    /** 设置底部节点。 */
-    public BorderPaneAnt bottom(Node node) {
-        setBottom(node);
-        return this;
-    }
-
-    /** 设置左侧节点。 */
-    public BorderPaneAnt left(Node node) {
-        setLeft(node);
-        return this;
-    }
-
-    /** 设置右侧节点。 */
-    public BorderPaneAnt right(Node node) {
-        setRight(node);
-        return this;
-    }
-
-    /**
-     * BorderPane 只能稳定承载五个命名区域，不能像普通 Pane 一样直接向 children 里塞任意节点。
-     * 请改用 {@link #top(Node)} / {@link #left(Node)} / {@link #center(Node)} /
-     * {@link #right(Node)} / {@link #bottom(Node)} 显式指定区域。
-     *
-     * <p>为兼容历史上把 BorderPaneAnt 当作普通容器使用的代码：
-     * <ul>
-     *   <li>0 个非 null 节点：忽略</li>
-     *   <li>1 个非 null 节点：放到 center</li>
-     *   <li>2+ 个非 null 节点：按传入顺序包进一个零间距 {@link VBox}，整体放到 center</li>
-     * </ul>
-     * 这样至少不会在运行时抛异常；若需要精确五区域布局，仍应改用命名区域 API。</p>
-     */
-    @Deprecated(forRemoval = false)
-    public BorderPaneAnt children(Node... nodes) {
-        if (nodes == null) {
-            return this;
-        }
-
-        Node onlyNode = null;
-        int nonNullCount = 0;
-        for (Node node : nodes) {
-            if (node != null) {
-                onlyNode = node;
-                nonNullCount++;
-            }
-        }
-
-        if (nonNullCount == 0) {
-            return this;
-        }
-        if (nonNullCount == 1) {
-            setCenter(onlyNode);
-            return this;
-        }
-
-        // 多节点兼容模式：退化为把节点顺序打包进 center 区，避免运行时 footgun。
-        VBox fallbackCenter = new VBox();
-        fallbackCenter.setSpacing(0);
-        for (Node node : nodes) {
-            if (node != null) {
-                fallbackCenter.getChildren().add(node);
-            }
-        }
-        setCenter(fallbackCenter);
-        return this;
-    }
-
-    /** 设置指定子节点在 BorderPane 内的对齐方式。 */
-    public BorderPaneAnt align(Node child, Pos alignment) {
-        if (child != null && alignment != null) {
-            BorderPane.setAlignment(child, alignment);
-        }
-        return this;
-    }
-
-    /** 给指定子节点设置外边距。 */
-    public BorderPaneAnt margin(Node child, Insets margin) {
-        if (child != null) {
-            BorderPane.setMargin(child, margin);
-        }
-        return this;
-    }
-
-    // ============================================================
     // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
     // LayoutCommon<BorderPaneAnt> 默认实现
     // ============================================================
 
-    /** Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。 */
-    public BorderPaneAnt build() {
-        return this;
-    }
 }

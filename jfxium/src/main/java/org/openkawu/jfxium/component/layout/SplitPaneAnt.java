@@ -1,8 +1,6 @@
 package org.openkawu.jfxium.component.layout;
 
-import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.control.SplitPane;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -28,7 +26,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
  * </ul>
  */
-public class SplitPaneAnt extends SplitPane implements LayoutCommon<SplitPaneAnt> {
+public class SplitPaneAnt extends AbstractSplitPaneAnt<SplitPaneAnt> {
 
     public enum Direction {
         HORIZONTAL,
@@ -45,58 +43,12 @@ public class SplitPaneAnt extends SplitPane implements LayoutCommon<SplitPaneAnt
     // ============================================================
 
     public SplitPaneAnt() {
-        super();
         getStyleClass().add(JfxStyles.SPLIT_PANE);
     }
 
     public SplitPaneAnt(Node... items) {
-        super();
+        super(items);
         getStyleClass().add(JfxStyles.SPLIT_PANE);
-        this.items(items);
-    }
-
-    // ============================================================
-    // 流式 API（SplitPane 特有业务方法）
-    // ============================================================
-
-    public SplitPaneAnt direction(Direction direction) {
-        if (direction != null) {
-            setOrientation(direction == Direction.VERTICAL
-                    ? Orientation.VERTICAL : Orientation.HORIZONTAL);
-        }
-        return this;
-    }
-
-    /** 添加单个窗格。 */
-    public SplitPaneAnt item(Node item) {
-        if (item != null) getItems().add(item);
-        return this;
-    }
-
-    /** 批量添加窗格。 */
-    public SplitPaneAnt items(Node... items) {
-        if (items != null) {
-            for (Node n : items) {
-                if (n != null) getItems().add(n);
-            }
-        }
-        return this;
-    }
-
-    /** 设置分隔条位置（0.0 ~ 1.0 比例，可设多个；items 数 - 1 个分隔条）。 */
-    public SplitPaneAnt dividerPositions(double... positions) {
-        if (positions != null && positions.length > 0) {
-            setDividerPositions(positions);
-        }
-        return this;
-    }
-
-    /** 设置某个子节点是否随父容器调整大小。 */
-    public SplitPaneAnt resizableWithParent(Node node, boolean resizable) {
-        if (node != null) {
-            SplitPane.setResizableWithParent(node, resizable);
-        }
-        return this;
     }
 
     // ============================================================
@@ -105,8 +57,4 @@ public class SplitPaneAnt extends SplitPane implements LayoutCommon<SplitPaneAnt
     // （节省 ~110 行重复模板代码，行为 100% 等价原 SplitPaneAnt）
     // ============================================================
 
-    /** Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。 */
-    public SplitPaneAnt build() {
-        return this;
-    }
 }

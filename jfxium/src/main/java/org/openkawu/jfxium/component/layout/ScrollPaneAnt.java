@@ -1,10 +1,7 @@
 package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.StackPane;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -55,7 +52,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *       （与 {@link #content(Node)} 调用的先后顺序无关）</li>
  * </ul>
  */
-public class ScrollPaneAnt extends ScrollPane implements LayoutCommon<ScrollPaneAnt> {
+public class ScrollPaneAnt extends AbstractScrollPaneAnt<ScrollPaneAnt> {
 
     // ============================================================
     // 工厂入口
@@ -72,16 +69,6 @@ public class ScrollPaneAnt extends ScrollPane implements LayoutCommon<ScrollPane
     }
 
     // ============================================================
-    // 内部状态
-    // ============================================================
-
-    /** 当前 viewport 实例（{@link #content(Node)} 时懒创建）。 */
-    private StackPane viewport;
-
-    /** content() 之前调 padding() 时暂存，content() 时下放。 */
-    private Insets pendingPadding;
-
-    // ============================================================
     // 构造函数（公开，便于业务 extends）
     // ============================================================
 
@@ -91,65 +78,8 @@ public class ScrollPaneAnt extends ScrollPane implements LayoutCommon<ScrollPane
     }
 
     public ScrollPaneAnt(Node content) {
-        super();
+        super(content);
         getStyleClass().add(JfxStyles.SCROLL_PANE);
-        content(content);
-    }
-
-    // ============================================================
-    // 流式 API（ScrollPane 特有业务方法）
-    // ============================================================
-
-    /**
-     * 设置滚动内容（自动包一层 {@link StackPane} 作为 viewport 容器）。
-     *
-     * <p>传 {@code null} 表示清空内容。</p>
-     */
-    public ScrollPaneAnt content(Node content) {
-        if (content == null) {
-            setContent(null);
-            viewport = null;
-            return this;
-        }
-        viewport = new StackPane(content);
-        viewport.getStyleClass().add(JfxStyles.SCROLL_PANE_VIEWPORT);
-        viewport.setAlignment(Pos.TOP_LEFT);
-        // padding 下放到 viewport（红线 5 防容器吞 padding）
-        if (pendingPadding != null) {
-            viewport.setPadding(pendingPadding);
-        }
-        setContent(viewport);
-        return this;
-    }
-
-    /** 设置是否铺满视口宽度（{@link ScrollPane#setFitToWidth}）。 */
-    public ScrollPaneAnt fitToWidth(boolean fit) {
-        setFitToWidth(fit);
-        return this;
-    }
-
-    /** 设置是否铺满视口高度（{@link ScrollPane#setFitToHeight}）。 */
-    public ScrollPaneAnt fitToHeight(boolean fit) {
-        setFitToHeight(fit);
-        return this;
-    }
-
-    /** 设置是否可平移（{@link ScrollPane#setPannable}）。 */
-    public ScrollPaneAnt pannable(boolean pannable) {
-        setPannable(pannable);
-        return this;
-    }
-
-    /** 设置水平滚动条策略。 */
-    public ScrollPaneAnt hbarPolicy(ScrollBarPolicy policy) {
-        if (policy != null) setHbarPolicy(policy);
-        return this;
-    }
-
-    /** 设置垂直滚动条策略。 */
-    public ScrollPaneAnt vbarPolicy(ScrollBarPolicy policy) {
-        if (policy != null) setVbarPolicy(policy);
-        return this;
     }
 
     // ============================================================
@@ -166,9 +96,7 @@ public class ScrollPaneAnt extends ScrollPane implements LayoutCommon<ScrollPane
      */
     @Override
     public ScrollPaneAnt padding(double padding) {
-        pendingPadding = new Insets(padding);
-        applyPendingPadding();
-        return this;
+        return super.padding(padding);
     }
 
     /**
@@ -176,9 +104,7 @@ public class ScrollPaneAnt extends ScrollPane implements LayoutCommon<ScrollPane
      */
     @Override
     public ScrollPaneAnt padding(double top, double right, double bottom, double left) {
-        pendingPadding = new Insets(top, right, bottom, left);
-        applyPendingPadding();
-        return this;
+        return super.padding(top, right, bottom, left);
     }
 
     /**
@@ -188,26 +114,11 @@ public class ScrollPaneAnt extends ScrollPane implements LayoutCommon<ScrollPane
      */
     @Override
     public ScrollPaneAnt padding(Insets padding) {
-        pendingPadding = padding;
-        applyPendingPadding();
-        return this;
-    }
-
-    /** 把 {@code pendingPadding} 应用到当前 viewport（如果有）。 */
-    private void applyPendingPadding() {
-        if (viewport != null && pendingPadding != null) {
-            viewport.setPadding(pendingPadding);
-        }
+        return super.padding(padding);
     }
 
     // ============================================================
     // Builder 终结
     // ============================================================
 
-    /**
-     * Builder 模式终结调用——返回自身。详见 {@link SplitPaneAnt#build()}。
-     */
-    public ScrollPaneAnt build() {
-        return this;
-    }
 }

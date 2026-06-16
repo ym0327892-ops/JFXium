@@ -1,9 +1,5 @@
 package org.openkawu.jfxium.component.layout;
 
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.layout.TilePane;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -30,7 +26,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
  * </ul>
  */
-public class TilePaneAnt extends TilePane implements LayoutCommon<TilePaneAnt> {
+public class TilePaneAnt extends AbstractTilePaneAnt<TilePaneAnt> {
 
     // ============================================================
     // 工厂入口
@@ -51,74 +47,9 @@ public class TilePaneAnt extends TilePane implements LayoutCommon<TilePaneAnt> {
     }
 
     // ============================================================
-    // 流式配置（TilePane 特有业务方法）
-    // ============================================================
-
-    public TilePaneAnt prefColumns(int columns) {
-        setPrefColumns(columns);
-        return this;
-    }
-
-    public TilePaneAnt prefRows(int rows) {
-        setPrefRows(rows);
-        return this;
-    }
-
-    public TilePaneAnt orientation(Orientation orientation) {
-        if (orientation != null) {
-            setOrientation(orientation);
-        }
-        return this;
-    }
-
-    public TilePaneAnt hgap(double gap) {
-        setHgap(gap);
-        return this;
-    }
-
-    public TilePaneAnt vgap(double gap) {
-        setVgap(gap);
-        return this;
-    }
-
-    public TilePaneAnt gap(double gap) {
-        setHgap(gap);
-        setVgap(gap);
-        return this;
-    }
-
-    public TilePaneAnt alignment(Pos pos) {
-        if (pos != null) {
-            setAlignment(pos);
-        }
-        return this;
-    }
-
-    public TilePaneAnt children(Node... nodes) {
-        if (nodes != null) {
-            for (Node node : nodes) {
-                if (node != null) {
-                    getChildren().add(node);
-                }
-            }
-        }
-        return this;
-    }
-
-    public TilePaneAnt add(Node node) {
-        if (node != null) {
-            getChildren().add(node);
-        }
-        return this;
-    }
-
-    // ============================================================
     // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
     // LayoutCommon<TilePaneAnt> 默认实现
     // （节省 ~110 行重复模板代码，行为 100% 等价原 TilePaneAnt）
     // ============================================================
 
-    public TilePaneAnt build() {
-        return this;
-    }
 }

@@ -1,8 +1,6 @@
 package org.openkawu.jfxium.component.layout;
 
 import javafx.scene.Node;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
 
 /**
  * TextFlowAnt - 继承式 TextFlow 容器。
@@ -39,7 +37,7 @@ import javafx.scene.text.TextFlow;
  *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
  * </ul>
  */
-public class TextFlowAnt extends TextFlow implements LayoutCommon<TextFlowAnt> {
+public class TextFlowAnt extends AbstractTextFlowAnt<TextFlowAnt> {
 
     /** 工厂入口。 */
     public static TextFlowAnt create() {
@@ -59,46 +57,11 @@ public class TextFlowAnt extends TextFlow implements LayoutCommon<TextFlowAnt> {
         super();
     }
 
-    public TextFlowAnt(Node... children) {
-        super();
-        this.children(children);
-    }
-
-    // ============================================================
-    // 流式 API（TextFlow 特有业务方法）
-    // ============================================================
-
-    /** 批量添加子节点（追加，不清旧）。null 节点会被过滤。 */
-    public TextFlowAnt children(Node... nodes) {
-        if (nodes != null) {
-            for (Node n : nodes) {
-                if (n != null) getChildren().add(n);
-            }
-        }
-        return this;
-    }
-
-    /** 设置行间距。 */
-    public TextFlowAnt lineSpacing(double lineSpacing) {
-        setLineSpacing(lineSpacing);
-        return this;
-    }
-
-    /** 设置文本对齐方式。 */
-    public TextFlowAnt textAlignment(TextAlignment alignment) {
-        if (alignment != null) {
-            setTextAlignment(alignment);
-        }
-        return this;
-    }
+    public TextFlowAnt(Node... children) { super(children); }
 
     // ============================================================
     // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
     // LayoutCommon<TextFlowAnt> 默认实现
     // ============================================================
 
-    /** Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。 */
-    public TextFlowAnt build() {
-        return this;
-    }
 }

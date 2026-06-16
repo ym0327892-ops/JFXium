@@ -1,9 +1,6 @@
 package org.openkawu.jfxium.component.layout;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.layout.StackPane;
 
 /**
  * StackPaneAnt - 继承式 StackPane 容器（M19.36 引入）。
@@ -38,7 +35,7 @@ import javafx.scene.layout.StackPane;
  *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
  * </ul>
  */
-public class StackPaneAnt extends StackPane implements LayoutCommon<StackPaneAnt> {
+public class StackPaneAnt extends AbstractStackPaneAnt<StackPaneAnt> {
 
     /** 工厂入口。 */
     public static StackPaneAnt create() {
@@ -58,48 +55,7 @@ public class StackPaneAnt extends StackPane implements LayoutCommon<StackPaneAnt
         super();
     }
 
-    public StackPaneAnt(Node... children) {
-        super();
-        this.children(children);
-    }
-
-    // ============================================================
-    // 流式 API（StackPane 特有业务方法）
-    // ============================================================
-
-    /** 设置子节点对齐方式（StackPane 默认 CENTER）。 */
-    public StackPaneAnt align(Pos alignment) {
-        if (alignment != null) {
-            setAlignment(alignment);
-        }
-        return this;
-    }
-
-    /** 批量添加子节点（null 节点会被过滤）。 */
-    public StackPaneAnt children(Node... nodes) {
-        if (nodes != null) {
-            for (Node n : nodes) {
-                if (n != null) getChildren().add(n);
-            }
-        }
-        return this;
-    }
-
-    /** 设置指定子节点在 StackPane 内的对齐方式（覆盖容器级 align）。 */
-    public StackPaneAnt childAlign(Node child, Pos alignment) {
-        if (child != null && alignment != null) {
-            StackPane.setAlignment(child, alignment);
-        }
-        return this;
-    }
-
-    /** 给指定子节点设置外边距。 */
-    public StackPaneAnt margin(Node child, Insets margin) {
-        if (child != null) {
-            StackPane.setMargin(child, margin);
-        }
-        return this;
-    }
+    public StackPaneAnt(Node... children) { super(children); }
 
     // ============================================================
     // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
@@ -107,8 +63,4 @@ public class StackPaneAnt extends StackPane implements LayoutCommon<StackPaneAnt
     // （节省 ~150 行重复模板代码，行为 100% 等价原 StackPaneAnt）
     // ============================================================
 
-    /** Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。 */
-    public StackPaneAnt build() {
-        return this;
-    }
 }

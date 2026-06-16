@@ -1,12 +1,6 @@
 package org.openkawu.jfxium.component.layout;
 
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Region;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
@@ -53,9 +47,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时也保留链式</li>
  * </ul>
  */
-public class AnchorPaneAnt extends AnchorPane implements LayoutCommon<AnchorPaneAnt> {
-
-    private static final String CENTER_BINDING_KEY = AnchorPaneAnt.class.getName() + ".centerBinding";
+public class AnchorPaneAnt extends AbstractAnchorPaneAnt<AnchorPaneAnt> {
 
     // ============================================================
     // 工厂入口
@@ -75,168 +67,9 @@ public class AnchorPaneAnt extends AnchorPane implements LayoutCommon<AnchorPane
     }
 
     // ============================================================
-    // 流式配置（AnchorPane 特有业务方法）
-    // ============================================================
-
-    public AnchorPaneAnt anchor(Node node, Double top, Double right, Double bottom, Double left) {
-        if (node != null) {
-            clearCenterBinding(node);
-            if (top != null) setTopAnchor(node, top);
-            if (right != null) setRightAnchor(node, right);
-            if (bottom != null) setBottomAnchor(node, bottom);
-            if (left != null) setLeftAnchor(node, left);
-        }
-        return this;
-    }
-
-    public AnchorPaneAnt topAnchor(Node node, double value) {
-        if (node != null) {
-            clearCenterBinding(node);
-            setTopAnchor(node, value);
-        }
-        return this;
-    }
-
-    public AnchorPaneAnt bottomAnchor(Node node, double value) {
-        if (node != null) {
-            clearCenterBinding(node);
-            setBottomAnchor(node, value);
-        }
-        return this;
-    }
-
-    public AnchorPaneAnt leftAnchor(Node node, double value) {
-        if (node != null) {
-            clearCenterBinding(node);
-            setLeftAnchor(node, value);
-        }
-        return this;
-    }
-
-    public AnchorPaneAnt rightAnchor(Node node, double value) {
-        if (node != null) {
-            clearCenterBinding(node);
-            setRightAnchor(node, value);
-        }
-        return this;
-    }
-
-    public AnchorPaneAnt center(Node node) {
-        if (node != null) {
-            clearCenterBinding(node);
-            clearAnchors(node);
-
-            CenterBinding binding = new CenterBinding(node);
-            widthProperty().addListener(binding.containerWidthListener);
-            heightProperty().addListener(binding.containerHeightListener);
-            node.layoutBoundsProperty().addListener(binding.nodeBoundsListener);
-            node.parentProperty().addListener(binding.parentListener);
-            node.getProperties().put(CENTER_BINDING_KEY, binding);
-
-            Platform.runLater(binding::update);
-        }
-        return this;
-    }
-
-    public AnchorPaneAnt fill(Node node) {
-        if (node != null) {
-            clearCenterBinding(node);
-            AnchorPane.setTopAnchor(node, 0.0);
-            AnchorPane.setBottomAnchor(node, 0.0);
-            AnchorPane.setLeftAnchor(node, 0.0);
-            AnchorPane.setRightAnchor(node, 0.0);
-        }
-        return this;
-    }
-
-    public AnchorPaneAnt children(Node... nodes) {
-        if (nodes != null) {
-            for (Node node : nodes) {
-                if (node != null) {
-                    getChildren().add(node);
-                }
-            }
-        }
-        return this;
-    }
-
-    public AnchorPaneAnt add(Node node) {
-        if (node != null) {
-            getChildren().add(node);
-        }
-        return this;
-    }
-
-    // ============================================================
     // 视觉钩子、方向性边框线、尺寸、高频节点属性统一继承自
     // LayoutCommon<AnchorPaneAnt> 默认实现
     // （节省 ~110 行重复模板代码，行为 100% 等价原 AnchorPaneAnt）
     // ============================================================
 
-    /** Builder 模式终结调用——返回自身。详见 {@link VBoxAnt#build()}。 */
-    public AnchorPaneAnt build() {
-        return this;
-    }
-
-    private void clearAnchors(Node node) {
-        AnchorPane.setTopAnchor(node, null);
-        AnchorPane.setBottomAnchor(node, null);
-        AnchorPane.setLeftAnchor(node, null);
-        AnchorPane.setRightAnchor(node, null);
-    }
-
-    private void clearCenterBinding(Node node) {
-        Object bindingObj = node.getProperties().remove(CENTER_BINDING_KEY);
-        if (bindingObj instanceof CenterBinding binding) {
-            widthProperty().removeListener(binding.containerWidthListener);
-            heightProperty().removeListener(binding.containerHeightListener);
-            node.layoutBoundsProperty().removeListener(binding.nodeBoundsListener);
-            node.parentProperty().removeListener(binding.parentListener);
-        }
-    }
-
-    private final class CenterBinding {
-        private final Node node;
-        private final ChangeListener<Number> containerWidthListener;
-        private final ChangeListener<Number> containerHeightListener;
-        private final ChangeListener<Bounds> nodeBoundsListener;
-        private final ChangeListener<Parent> parentListener;
-
-        private CenterBinding(Node node) {
-            this.node = node;
-            this.containerWidthListener = (obs, oldValue, newValue) -> update();
-            this.containerHeightListener = (obs, oldValue, newValue) -> update();
-            this.nodeBoundsListener = (obs, oldValue, newValue) -> update();
-            this.parentListener = (obs, oldValue, newValue) -> {
-                if (newValue == AnchorPaneAnt.this) {
-                    Platform.runLater(this::update);
-                } else {
-                    clearCenterBinding(this.node);
-                }
-            };
-        }
-
-        private void update() {
-            if (node.getParent() != AnchorPaneAnt.this) {
-                return;
-            }
-            if (node instanceof Region region) {
-                region.autosize();
-            }
-
-            double nodeWidth = node.prefWidth(-1);
-            if (!Double.isFinite(nodeWidth) || nodeWidth <= 0) {
-                nodeWidth = node.getLayoutBounds().getWidth();
-            }
-
-            double nodeHeight = node.prefHeight(-1);
-            if (!Double.isFinite(nodeHeight) || nodeHeight <= 0) {
-                nodeHeight = node.getLayoutBounds().getHeight();
-            }
-
-            double x = Math.max(0, (getWidth() - nodeWidth) / 2.0);
-            double y = Math.max(0, (getHeight() - nodeHeight) / 2.0);
-            node.relocate(x, y);
-        }
-    }
 }
