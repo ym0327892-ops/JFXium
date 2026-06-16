@@ -23,6 +23,7 @@ This file provides guidance to Qoder (qoder.com) when working with code in this 
 
 | 文件 | 定位 | 何时加载 |
 |------|------|----------|
+| `.qoder/rules/a.md` | AtlantaFX CSS 样式参照规则（always-on） | 始终生效 |
 | `.qoder/rules/red-lines.md` | 致命红线（always-on） | 始终生效 |
 | `.qoder/rules/less-lint.md` | LESS 编写规范 | 编辑 `*.less` 时自动触发 |
 | `.qoder/skills/code-standard.md` | 通用编码技能（跨项目复用） | 编写/审查/重构代码时 |
@@ -48,9 +49,10 @@ JFXium is a JavaFX UI framework inspired by Ant Design 6.x. It wraps and enhance
 |----------|---------|
 | [.qoder/skills/project-constraints.md](.qoder/skills/project-constraints.md) | **Primary development specification** — color derivation, LESS rules, JavaFX CSS constraints, component design patterns |
 | [PROJECT_PLAN.md](PROJECT_PLAN.md) | Development plan and progress tracking |
-| [PROJECT_BUG.md](PROJECT_BUG.md) | Bug tracker and fix history (sequentially numbered, currently at #67) |
+| [PROJECT_BUG.md](PROJECT_BUG.md) | Bug tracker and fix history (sequentially numbered, currently at #128) |
 | [PROJECT_ACCEPTANCE.md](PROJECT_ACCEPTANCE.md) | QA acceptance checklist for manual UI verification |
-| [.kiro/steering/](.kiro/steering/) | Steering files with additional design constraints (component composition rules, PC UI standards) |
+| [.qoder/skills/pc-ui.md](.qoder/skills/pc-ui.md) | PC UI 设计标准（布局/间距/交互规范），涉及页面级布局、响应式设计时加载 |
+| [.qoder/skills/project-init.md](.qoder/skills/project-init.md) | 项目初始化与脚手架指南，项目搭建、环境配置时加载 |
 
 ---
 
@@ -383,7 +385,7 @@ Follow the **dual traceability principle** (SKILL §22): when a demo bug is foun
 - Callbacks declared but never wired in `build()` (→ dead callback bug)
 - Repeated casts like `(VBox) component.build()` (→ `build()` return type not honest)
 
-The bug tracker is `PROJECT_BUG.md` (currently at #67). New issues are numbered sequentially. The acceptance checklist is `PROJECT_ACCEPTANCE.md`.
+The bug tracker is `PROJECT_BUG.md` (currently at #128). New issues are numbered sequentially. The acceptance checklist is `PROJECT_ACCEPTANCE.md`.
 
 ### Defensive programming: null-safety & input validation
 
