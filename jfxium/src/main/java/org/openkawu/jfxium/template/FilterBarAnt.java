@@ -70,13 +70,13 @@ public class FilterBarAnt {
 
         /** 整栏 spacing。 */
         public Builder spacing(double spacing) {
-            this.spacing = spacing;
+            this.spacing = safeSpacing(spacing);
             return this;
         }
 
         /** 整栏 padding。 */
         public Builder padding(double padding) {
-            this.padding = padding;
+            this.padding = safeSpacing(padding);
             return this;
         }
 
@@ -85,8 +85,9 @@ public class FilterBarAnt {
             TextField input = InputAnt.create()
                     .placeholder(placeholder)
                     .build();
-            input.setPrefWidth(width);
-            input.setMinWidth(width);
+            double resolvedWidth = safeSize(width);
+            input.setPrefWidth(resolvedWidth);
+            input.setMinWidth(resolvedWidth);
             // 回车触发
             input.setOnAction(e -> {
                 if (onSearch != null) onSearch.accept(input.getText());
@@ -97,7 +98,11 @@ public class FilterBarAnt {
 
         /** 添加任意筛选控件（ComboBox、DatePicker 等）。带 label 前缀文字。 */
         public Builder filter(String label, Node control) {
-            HBox group = new HBox(8);
+            if (control == null) {
+                return this;
+            }
+            HBox group = new HBox();
+            group.getStyleClass().add(JfxStyles.FILTER_BAR_GROUP);
             group.setAlignment(Pos.CENTER_LEFT);
             if (label != null && !label.isEmpty()) {
                 Label l = new Label(label + ":");
@@ -111,7 +116,9 @@ public class FilterBarAnt {
 
         /** 添加任意筛选控件（无 label 前缀，直接放）。 */
         public Builder filter(Node control) {
-            filters.add(control);
+            if (control != null) {
+                filters.add(control);
+            }
             return this;
         }
 
@@ -127,7 +134,10 @@ public class FilterBarAnt {
 
         /** 添加主操作按钮（PRIMARY 类型，带可选前置文字图标）。 */
         public Builder actionPrimary(String text, String iconPrefix, Runnable onClick) {
-            String label = (iconPrefix == null || iconPrefix.isEmpty()) ? text : (iconPrefix + " " + text);
+            String safeText = text != null ? text : "";
+            String label = (iconPrefix == null || iconPrefix.isEmpty())
+                    ? safeText
+                    : (safeText.isEmpty() ? iconPrefix : iconPrefix + " " + safeText);
             Button btn = ButtonAnt.create(label)
                     .type(ButtonAnt.Type.PRIMARY)
                     .onClick(e -> { if (onClick != null) onClick.run(); })
@@ -143,16 +153,19 @@ public class FilterBarAnt {
 
         /** 添加任意自定义按钮节点（特殊场景，比如 IconButton）。 */
         public Builder actionNode(Button btn) {
-            actions.add(btn);
+            if (btn != null) {
+                actions.add(btn);
+            }
             return this;
         }
 
         public HBox build() {
-            HBox bar = new HBox(spacing);
+            HBox bar = new HBox(safeSpacing(spacing));
             bar.getStyleClass().add(JfxStyles.FILTER_BAR);
             bar.setAlignment(Pos.CENTER_LEFT);
-            if (padding > 0) {
-                bar.setPadding(new javafx.geometry.Insets(padding));
+            double resolvedPadding = safeSpacing(padding);
+            if (resolvedPadding > 0) {
+                bar.setPadding(new javafx.geometry.Insets(resolvedPadding));
             }
 
             // 1. 左侧筛选区（顺序添加）
@@ -171,6 +184,14 @@ public class FilterBarAnt {
             // 用户 style/styleClass 在内置类后应用
             applyStyles(bar);
             return bar;
+        }
+
+        private static double safeSpacing(double value) {
+            return Double.isFinite(value) && value >= 0 ? value : 0;
+        }
+
+        private static double safeSize(double value) {
+            return Double.isFinite(value) && value > 0 ? value : 0;
         }
     }
 }

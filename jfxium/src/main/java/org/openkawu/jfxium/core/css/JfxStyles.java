@@ -227,6 +227,7 @@ public final class JfxStyles {
     public static final String FORM_LABEL = "jfx-form-label";
     public static final String FORM_LABEL_REQUIRED = "jfx-form-label-required";
     public static final String FORM_ITEM_WRAPPER = "jfx-form-item-wrapper";
+    public static final String FORM_ITEM_BOX = "jfx-form-item-box";
     public static final String FORM_HELP_TEXT = "jfx-form-help-text";
     public static final String FORM_HELP_ERROR = "jfx-form-help-error";
     public static final String FORM_HELP_WARNING = "jfx-form-help-warning";
@@ -314,7 +315,9 @@ public final class JfxStyles {
     public static final String ALERT_BANNER = "jfx-alert-banner";
     public static final String ALERT_TITLE = "jfx-alert-title";
     public static final String ALERT_MESSAGE = "jfx-alert-message";
+    public static final String ALERT_MESSAGE_INDENTED = "jfx-alert-message-indented";
     public static final String ALERT_ICON = "jfx-alert-icon";
+    public static final String ALERT_HEADER = "jfx-alert-header";
     public static final String ALERT_CLOSE_BTN = "jfx-alert-close-btn";
     public static final String ALERT_WITH_ICON = "jfx-alert-with-icon";
     public static final String ALERT_DESCRIPTION = "jfx-alert-description";
@@ -367,6 +370,8 @@ public final class JfxStyles {
     public static final String CODE_LINE_NUMBERS = "jfx-code-line-numbers";
     /** 代码块单个行号节点 */
     public static final String CODE_LINE_NUMBER = "jfx-code-line-number";
+    /** 代码块文本流（高亮显示区域） */
+    public static final String CODEBLOCK_TEXT_FLOW = "jfx-codeblock-text-flow";
 
     /* ============================================
        IconAnt / EmptyAnt / BackTopAnt / SpinAnt / TimePickerAnt
@@ -421,6 +426,7 @@ public final class JfxStyles {
     public static final String ANCHOR_VERTICAL = "jfx-anchor-vertical";
     public static final String ANCHOR_LINK = "jfx-anchor-link";
     public static final String ANCHOR_LINK_ACTIVE = "jfx-anchor-link-active";
+    public static final String ANCHOR_SUB_GROUP = "jfx-anchor-sub-group";
 
     public static final String AUTO_COMPLETE = "jfx-auto-complete";
     public static final String AUTO_COMPLETE_FIELD = "jfx-auto-complete-field";
@@ -548,6 +554,9 @@ public final class JfxStyles {
     /** TimelineAnt 时间轴 */
     public static final String TIMELINE = "jfx-timeline";
     public static final String TIMELINE_ITEM = "jfx-timeline-item";
+    public static final String TIMELINE_LABEL_BOX = "jfx-timeline-label-box";
+    public static final String TIMELINE_CENTER_BOX = "jfx-timeline-center-box";
+    public static final String TIMELINE_CONTENT_BOX = "jfx-timeline-content-box";
     public static final String TIMELINE_LABEL = "jfx-timeline-label";
     public static final String TIMELINE_CONTENT = "jfx-timeline-content";
     public static final String TIMELINE_LINE = "jfx-timeline-line";
@@ -568,6 +577,7 @@ public final class JfxStyles {
     public static final String TRANSFER_LIST_SEARCH_WRAPPER = "jfx-transfer-list-search-wrapper";
     public static final String TRANSFER_LIST_SEARCH = "jfx-transfer-list-search";
     public static final String TRANSFER_LIST_VIEW = "jfx-transfer-list-view";
+    public static final String TRANSFER_MIDDLE = "jfx-transfer-middle";
     public static final String TRANSFER_ARROW_BTN = "jfx-transfer-arrow-btn";
 
     /* ============================================
@@ -584,6 +594,7 @@ public final class JfxStyles {
     public static final String LIST_ITEM_CLICKABLE = "jfx-list-item-clickable";
     public static final String LIST_ITEM_TITLE = "jfx-list-item-title";
     public static final String LIST_ITEM_DESCRIPTION = "jfx-list-item-description";
+    public static final String LIST_ITEM_CONTENT = "jfx-list-item-content";
     public static final String LIST_DIVIDER = "jfx-list-divider";
 
     /** MenuAnt 菜单 */
@@ -801,6 +812,9 @@ public final class JfxStyles {
        ============================================ */
     public static final String LOGIN_ROOT            = "jfx-login-template";
     public static final String LOGIN_BANNER          = "jfx-login-template-banner";
+    public static final String LOGIN_BANNER_BRAND_BOX = "jfx-login-template-banner-brand-box";
+    public static final String LOGIN_BANNER_FEATURES  = "jfx-login-template-banner-features";
+    public static final String LOGIN_BANNER_FEATURE_ROW = "jfx-login-template-banner-feature-row";
     public static final String LOGIN_BANNER_LOGO_BOX = "jfx-login-template-banner-logo";
     public static final String LOGIN_BANNER_BRAND    = "jfx-login-template-banner-brand";
     public static final String LOGIN_BANNER_TAGLINE  = "jfx-login-template-banner-tagline";
@@ -812,6 +826,7 @@ public final class JfxStyles {
     public static final String LOGIN_FORM_SUBTITLE   = "jfx-login-template-form-subtitle";
     public static final String LOGIN_FORM_ERROR      = "jfx-login-template-form-error";
     public static final String LOGIN_FORM_INPUT_ROW  = "jfx-login-template-input-row";
+    public static final String LOGIN_FORM_INPUT_ICON_BOX = "jfx-login-template-input-icon-box";
     public static final String LOGIN_FORM_INPUT_FIELD = "jfx-login-template-input-field";
     public static final String LOGIN_FORM_REMEMBER   = "jfx-login-template-remember";
     public static final String LOGIN_FORM_LINK_SMALL = "jfx-login-template-link-small";
@@ -867,6 +882,8 @@ public final class JfxStyles {
     public static final String SKELETON = "jfx-skeleton";
     public static final String SKELETON_RECT = "jfx-skeleton-rect";
     public static final String SKELETON_SHIMMER = "jfx-skeleton-shimmer";
+    public static final String SKELETON_PARAGRAPH = "jfx-skeleton-paragraph";
+    public static final String SKELETON_AVATAR_TEXT = "jfx-skeleton-avatar-text";
 
     /* ============================================
        AvatarAnt — 头像
@@ -904,6 +921,9 @@ public final class JfxStyles {
     public static final String NOTIFICATION_CARD       = "jfx-notification-card";
     public static final String NOTIFICATION_CARD_TITLE = "jfx-notification-card-title";
     public static final String NOTIFICATION_CARD_DESC  = "jfx-notification-card-desc";
+    public static final String NOTIFICATION_CONTAINER  = "jfx-notification-container";
+    public static final String NOTIFICATION_CARD_HEADER  = "jfx-notification-card-header";
+    public static final String NOTIFICATION_CARD_CONTENT = "jfx-notification-card-content";
     public static final String RESULT_TITLE    = "jfx-result-title";
     public static final String RESULT_SUBTITLE = "jfx-result-subtitle";
 
@@ -911,6 +931,7 @@ public final class JfxStyles {
        模板 / 工具类组件
        ============================================ */
     public static final String FILTER_BAR_LABEL = "jfx-filter-bar-label";
+    public static final String FILTER_BAR_GROUP = "jfx-filter-bar-group";
     public static final String DASHBOARD_ROOT         = "jfx-dashboard-root";
     public static final String DASHBOARD_STAT_ICON_BOX = "jfx-dashboard-stat-icon-box";
     public static final String DASHBOARD_STAT_TITLE   = "jfx-dashboard-stat-title";
@@ -1031,6 +1052,8 @@ public final class JfxStyles {
        StepsAnt — 步骤条尺寸修饰类
        ============================================ */
     public static final String STEPS_SMALL       = "jfx-steps-small";
+    /** StepsAnt 垂直布局内容区（标题+描述） */
+    public static final String STEPS_CONTENT     = "jfx-steps-content";
 
     /* ============================================
        TreeSelectAnt — 行内缩进修饰类（深度变体由 Java 端生成 jfx-tree-select-row-N）

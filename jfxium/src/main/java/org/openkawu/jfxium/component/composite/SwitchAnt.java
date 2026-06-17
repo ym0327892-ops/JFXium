@@ -84,12 +84,12 @@ public class SwitchAnt {
         }
 
         public Builder checkedText(String text) {
-            this.checkedText = text;
+            this.checkedText = text != null ? text : "";
             return this;
         }
 
         public Builder uncheckedText(String text) {
-            this.uncheckedText = text;
+            this.uncheckedText = text != null ? text : "";
             return this;
         }
 
@@ -113,7 +113,7 @@ public class SwitchAnt {
         }
 
         public HBox build() {
-            HBox container = new HBox(8);
+            HBox container = new HBox();
             container.setAlignment(Pos.CENTER_LEFT);
             container.getStyleClass().add(JfxStyles.SWITCH_CONTAINER);
 

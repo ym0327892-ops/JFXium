@@ -97,6 +97,6 @@ public abstract class AbstractHBoxAnt<SELF extends AbstractHBoxAnt<SELF>> extend
     }
 
     private static double clampSpacing(double spacing) {
-        return Math.max(0, spacing);
+        return Double.isFinite(spacing) ? Math.max(0, spacing) : 0;
     }
 }

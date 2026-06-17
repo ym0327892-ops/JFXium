@@ -136,8 +136,7 @@ public class PromptDialogAnt {
      * @return PromptDialogResult（持有内部 ModalResult，可通过 {@code .close()} 程序化关闭）
      */
     public PromptDialogResult build() {
-        VBox content = new VBox(12);
-        content.setPadding(new Insets(20));
+        VBox content = new VBox();
         content.setAlignment(Pos.CENTER_LEFT);
         content.getStyleClass().add(JfxStyles.PROMPT_DIALOG);
 
@@ -157,7 +156,7 @@ public class PromptDialogAnt {
         content.getChildren().add(input);
 
         // 按钮区
-        HBox buttons = new HBox(10);
+        HBox buttons = new HBox();
         buttons.setAlignment(Pos.CENTER_RIGHT);
         buttons.getStyleClass().add(JfxStyles.PROMPT_DIALOG_FOOTER);
 

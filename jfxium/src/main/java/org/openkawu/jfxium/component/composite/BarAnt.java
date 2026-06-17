@@ -98,8 +98,6 @@ public class BarAnt extends AbstractHBoxAnt<BarAnt> {
 
     private BarAnt() {
         setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        setSpacing(8);
-        setPadding(new Insets(4, 10, 4, 10));
         getStyleClass().add(JfxStyles.SPLIT_BAR);
         borderBottom(); // 默认开启底部分隔线
     }

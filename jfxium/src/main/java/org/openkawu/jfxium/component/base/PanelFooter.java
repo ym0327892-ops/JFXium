@@ -65,7 +65,7 @@ public class PanelFooter {
         }
 
         public HBox build() {
-            HBox footer = new HBox(8);
+            HBox footer = new HBox();
             footer.setAlignment(alignment);
             footer.getStyleClass().add(JfxStyles.PANEL_FOOTER);
             if (hasBorder) {

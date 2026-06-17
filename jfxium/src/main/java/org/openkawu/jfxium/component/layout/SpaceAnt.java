@@ -80,7 +80,7 @@ public class SpaceAnt {
         }
 
         public Builder size(double size) {
-            this.size = Math.max(0, size);
+            this.size = Double.isFinite(size) ? Math.max(0, size) : 0;
             return this;
         }
 

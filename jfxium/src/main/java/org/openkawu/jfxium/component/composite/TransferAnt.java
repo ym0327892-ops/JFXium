@@ -14,6 +14,7 @@ import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -59,7 +60,7 @@ public class TransferAnt<T> {
         private List<T> selectedTargetKeys = new ArrayList<>();
         // null = 用 i18n 默认值；非 null 走调用方指定（titles(src, tgt) 设置时为 "src;tgt" 形式）
         private String titles = null;
-        private Function<T, String> render = Object::toString;
+        private Function<T, String> render = item -> item == null ? "" : String.valueOf(item);
         private Consumer<List<T>> onChange = null;
         private Consumer<List<T>> onSelectChange = null;
         private boolean showSearch = false;
@@ -67,10 +68,22 @@ public class TransferAnt<T> {
         private ObjectProperty<List<T>> bindProperty = null;
         private HBox transferRoot;
 
-        public Builder<T> dataSource(List<T> dataSource) { this.dataSource = new ArrayList<>(dataSource); return this; }
-        public Builder<T> targetKeys(List<T> targetKeys) { this.targetKeys = new ArrayList<>(targetKeys); return this; }
-        public Builder<T> titles(String sourceTitle, String targetTitle) { this.titles = sourceTitle + ";" + targetTitle; return this; }
-        public Builder<T> render(Function<T, String> render) { this.render = render; return this; }
+        public Builder<T> dataSource(List<T> dataSource) {
+            this.dataSource = dataSource != null ? new ArrayList<>(dataSource) : new ArrayList<>();
+            return this;
+        }
+        public Builder<T> targetKeys(List<T> targetKeys) {
+            this.targetKeys = targetKeys != null ? new ArrayList<>(targetKeys) : new ArrayList<>();
+            return this;
+        }
+        public Builder<T> titles(String sourceTitle, String targetTitle) {
+            this.titles = safeText(sourceTitle) + ";" + safeText(targetTitle);
+            return this;
+        }
+        public Builder<T> render(Function<T, String> render) {
+            this.render = render != null ? render : (item -> item == null ? "" : String.valueOf(item));
+            return this;
+        }
         public Builder<T> onChange(Consumer<List<T>> onChange) { this.onChange = onChange; return this; }
         public Builder<T> onSelectChange(Consumer<List<T>> onSelectChange) { this.onSelectChange = onSelectChange; return this; }
         public Builder<T> showSearch(boolean showSearch) { this.showSearch = showSearch; return this; }
@@ -84,7 +97,7 @@ public class TransferAnt<T> {
         }
 
         public HBox build() {
-            transferRoot = new HBox(12);
+            transferRoot = new HBox();
             transferRoot.getStyleClass().add(JfxStyles.TRANSFER);
             transferRoot.setAlignment(Pos.CENTER);
             refreshTransferView();
@@ -98,9 +111,13 @@ public class TransferAnt<T> {
             }
             transferRoot.getChildren().clear();
 
-            String[] titleArr = titles != null ? titles.split(";", 2) : new String[0];
-            String sourceTitle = titleArr.length > 0 ? titleArr[0] : Messages.get("transfer.source");
-            String targetTitle = titleArr.length > 1 ? titleArr[1] : Messages.get("transfer.target");
+            String[] titleArr = titles != null && !titles.isBlank() ? titles.split(";", 2) : new String[0];
+            String sourceTitle = titleArr.length > 0 && !titleArr[0].isBlank()
+                    ? titleArr[0]
+                    : Messages.get("transfer.source");
+            String targetTitle = titleArr.length > 1 && !titleArr[1].isBlank()
+                    ? titleArr[1]
+                    : Messages.get("transfer.target");
 
             List<T> sourceItems = new ArrayList<>();
             for (T item : dataSource) {
@@ -130,11 +147,11 @@ public class TransferAnt<T> {
             box.setPrefWidth(200);
             box.setPrefHeight(300);
 
-            HBox header = new HBox(8);
+            HBox header = new HBox();
             header.setAlignment(Pos.CENTER_LEFT);
             header.getStyleClass().add(JfxStyles.TRANSFER_LIST_HEADER);
 
-            Label titleLabel = new Label(title);
+            Label titleLabel = new Label(effectiveTitle(title, isSource));
             titleLabel.getStyleClass().add(JfxStyles.TRANSFER_LIST_TITLE);
             Label countLabel = new Label(Messages.get("transfer.items", items.size()));
             countLabel.getStyleClass().add(JfxStyles.TRANSFER_LIST_COUNT);
@@ -162,7 +179,7 @@ public class TransferAnt<T> {
                 @Override
                 protected void updateItem(T item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty || item == null ? null : render.apply(item));
+                    setText(empty || item == null ? null : renderText(item));
                 }
             });
             VBox.setVgrow(listView, Priority.ALWAYS);
@@ -184,9 +201,9 @@ public class TransferAnt<T> {
         }
 
         private VBox buildMiddleButtons() {
-            VBox box = new VBox(8);
+            VBox box = new VBox();
             box.setAlignment(Pos.CENTER);
-            box.setPadding(new javafx.geometry.Insets(8));
+            box.getStyleClass().add(JfxStyles.TRANSFER_MIDDLE);
 
             Button toRightBtn = createTransferButton(">");
             toRightBtn.setOnAction(e -> {
@@ -220,10 +237,10 @@ public class TransferAnt<T> {
             if (keyword == null || keyword.isBlank()) {
                 return new ArrayList<>(items);
             }
-            String lowerKeyword = keyword.toLowerCase();
+            String lowerKeyword = keyword.toLowerCase(Locale.ROOT);
             List<T> filtered = new ArrayList<>();
             for (T item : items) {
-                if (render.apply(item).toLowerCase().contains(lowerKeyword)) {
+                if (renderText(item).toLowerCase(Locale.ROOT).contains(lowerKeyword)) {
                     filtered.add(item);
                 }
             }
@@ -235,6 +252,22 @@ public class TransferAnt<T> {
             Button btn = new Button(text);
             btn.getStyleClass().add(JfxStyles.TRANSFER_ARROW_BTN);
             return btn;
+        }
+
+        private String effectiveTitle(String title, boolean isSource) {
+            if (title != null && !title.isBlank()) {
+                return title;
+            }
+            return isSource ? Messages.get("transfer.source") : Messages.get("transfer.target");
+        }
+
+        private String renderText(T item) {
+            String text = render != null ? render.apply(item) : null;
+            return text != null ? text : "";
+        }
+
+        private static String safeText(String text) {
+            return text != null ? text : "";
         }
     }
 

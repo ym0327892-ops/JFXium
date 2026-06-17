@@ -115,7 +115,7 @@ public class ListAnt {
                     continue;
                 }
 
-                HBox row = new HBox(12);
+                HBox row = new HBox();
                 row.setAlignment(Pos.CENTER_LEFT);
                 row.getStyleClass().add(JfxStyles.LIST_ITEM);
                 if (item.getOnClick() != null) {
@@ -127,7 +127,8 @@ public class ListAnt {
                     row.getChildren().add(item.getAvatar());
                 }
 
-                VBox content = new VBox(4);
+                VBox content = new VBox();
+                content.getStyleClass().add(JfxStyles.LIST_ITEM_CONTENT);
                 content.setAlignment(Pos.CENTER_LEFT);
                 Label titleLabel = new Label(item.getTitle() != null ? item.getTitle() : "");
                 titleLabel.getStyleClass().add(JfxStyles.LIST_ITEM_TITLE);
@@ -149,8 +150,6 @@ public class ListAnt {
                 if (split && i < items.size() - 1) {
                     Region divider = new Region();
                     divider.getStyleClass().add(JfxStyles.LIST_DIVIDER);
-                    // 分隔线左右留出与 item 一致的内边距，结构性 padding 保留 inline
-                    divider.setPadding(new Insets(0, 24, 0, 24));
                     list.getChildren().add(divider);
                 }
             }

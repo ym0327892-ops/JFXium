@@ -90,24 +90,24 @@ public class StatusBarAnt extends HBox {
     // ============================================================
 
     public StatusBarAnt() {
-        super(8);
+        super();
         setAlignment(Pos.CENTER_LEFT);
         getStyleClass().add(JfxStyles.STATUS_BAR);
 
         // 左栏
-        leftBox = new HBox(8);
+        leftBox = new HBox();
         leftBox.setAlignment(Pos.CENTER_LEFT);
         leftBox.getStyleClass().add(JfxStyles.STATUS_BAR_LEFT);
         HBox.setHgrow(leftBox, Priority.SOMETIMES);
 
         // 中栏
-        centerBox = new HBox(8);
+        centerBox = new HBox();
         centerBox.setAlignment(Pos.CENTER);
         centerBox.getStyleClass().add(JfxStyles.STATUS_BAR_CENTER);
         HBox.setHgrow(centerBox, Priority.ALWAYS);
 
         // 右栏
-        rightBox = new HBox(8);
+        rightBox = new HBox();
         rightBox.setAlignment(Pos.CENTER_RIGHT);
         rightBox.getStyleClass().add(JfxStyles.STATUS_BAR_RIGHT);
         HBox.setHgrow(rightBox, Priority.SOMETIMES);
@@ -225,7 +225,9 @@ public class StatusBarAnt extends HBox {
         public Builder action(String text, Runnable onClick) {
             Button btn = new Button(text);
             btn.getStyleClass().addAll(JfxStyles.BUTTON_INLINE, JfxStyles.STATUS_BAR_ACTION);
-            btn.setOnAction(e -> onClick.run());
+            if (onClick != null) {
+                btn.setOnAction(e -> onClick.run());
+            }
             rightNodes.add(btn);
             return this;
         }

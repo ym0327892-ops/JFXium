@@ -123,15 +123,15 @@ public class WatermarkAnt {
             return this;
         }
 
-        public Builder fontSize(double fontSize) { this.fontSize = fontSize; return this; }
-        public Builder gapX(double gapX) { this.gapX = gapX; return this; }
-        public Builder gapY(double gapY) { this.gapY = gapY; return this; }
-        public Builder imageWidth(double width) { this.imageWidth = width; return this; }
-        public Builder imageHeight(double height) { this.imageHeight = height; return this; }
+        public Builder fontSize(double fontSize) { this.fontSize = Double.isFinite(fontSize) && fontSize > 0 ? fontSize : 16; return this; }
+        public Builder gapX(double gapX) { this.gapX = Double.isFinite(gapX) && gapX >= 0 ? gapX : 100; return this; }
+        public Builder gapY(double gapY) { this.gapY = Double.isFinite(gapY) && gapY >= 0 ? gapY : 100; return this; }
+        public Builder imageWidth(double width) { this.imageWidth = Double.isFinite(width) && width > 0 ? width : 120; return this; }
+        public Builder imageHeight(double height) { this.imageHeight = Double.isFinite(height) && height > 0 ? height : 64; return this; }
         public Builder color(Color color) { this.textColor = color; return this; }
-        public Builder fontFamily(String fontFamily) { this.fontFamily = fontFamily; return this; }
-        public Builder fontWeight(FontWeight w) { this.fontWeight = w; return this; }
-        public Builder fontGap(double gap) { this.fontGap = gap; return this; }
+        public Builder fontFamily(String fontFamily) { this.fontFamily = fontFamily != null ? fontFamily : "System"; return this; }
+        public Builder fontWeight(FontWeight w) { this.fontWeight = w != null ? w : FontWeight.NORMAL; return this; }
+        public Builder fontGap(double gap) { this.fontGap = Double.isFinite(gap) && gap >= 0 ? gap : 3; return this; }
 
         public Builder preventRemoval(boolean preventRemoval) {
             this.preventRemoval = preventRemoval;

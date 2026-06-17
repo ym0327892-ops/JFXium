@@ -72,8 +72,8 @@ public class UploadAnt {
 
         public UploadFile(File file) {
             this.file = file;
-            this.name = file.getName();
-            this.size = file.length();
+            this.name = file != null ? file.getName() : "";
+            this.size = file != null ? file.length() : 0;
             this.status = "done";
             this.percent = 100;
         }
@@ -96,14 +96,14 @@ public class UploadAnt {
         private VBox uploadRoot;
         private VBox fileListView;
 
-        public Builder type(Type type) { this.type = type; return this; }
-        public Builder listType(ListType listType) { this.listType = listType; return this; }
+        public Builder type(Type type) { this.type = type != null ? type : Type.SELECT; return this; }
+        public Builder listType(ListType listType) { this.listType = listType != null ? listType : ListType.TEXT; return this; }
         public Builder multiple(boolean multiple) { this.multiple = multiple; return this; }
         public Builder multiple() { return multiple(true); }
         public Builder directory(boolean directory) { this.directory = directory; return this; }
         public Builder showUploadList(boolean show) { this.showUploadList = show; return this; }
         public Builder noUploadList() { return showUploadList(false); }
-        public Builder accept(String accept) { this.accept = accept; return this; }
+        public Builder accept(String accept) { this.accept = accept != null ? accept : "*"; return this; }
         public Builder buttonText(String text) { this.buttonText = text; return this; }
         public Builder dragText(String text) { this.dragText = text; return this; }
         public Builder hintText(String text) { this.hintText = text; return this; }
@@ -111,7 +111,7 @@ public class UploadAnt {
         public Builder onRemove(Consumer<File> onRemove) { this.onRemove = onRemove; return this; }
 
         public VBox build() {
-            uploadRoot = new VBox(8);
+            uploadRoot = new VBox();
             uploadRoot.getStyleClass().add(JfxStyles.UPLOAD);
 
             if (type == Type.SELECT) {
@@ -121,7 +121,7 @@ public class UploadAnt {
             }
 
             if (showUploadList) {
-                fileListView = new VBox(4);
+                fileListView = new VBox();
                 fileListView.getStyleClass().add(JfxStyles.UPLOAD_LIST);
                 if (listType == ListType.PICTURE) {
                     fileListView.getStyleClass().add(JfxStyles.UPLOAD_LIST_PICTURE);
@@ -136,7 +136,7 @@ public class UploadAnt {
         }
 
         private HBox buildSelectUpload() {
-            HBox container = new HBox(8);
+            HBox container = new HBox();
             container.setAlignment(Pos.CENTER_LEFT);
 
             Button uploadBtn = ButtonAnt.create(buttonText != null ? buttonText : Messages.get("upload.button"))
@@ -156,7 +156,7 @@ public class UploadAnt {
             StackPane dragArea = new StackPane();
             dragArea.getStyleClass().add(JfxStyles.UPLOAD_DRAG);
 
-            VBox content = new VBox(12);
+            VBox content = new VBox();
             content.setAlignment(Pos.CENTER);
 
             SVGPath icon = new SVGPath();
@@ -207,7 +207,10 @@ public class UploadAnt {
             }
             fileListView.getChildren().clear();
             for (UploadFile file : fileList) {
-                HBox fileItem = new HBox(8);
+                if (file == null) {
+                    continue;
+                }
+                HBox fileItem = new HBox();
                 fileItem.setAlignment(Pos.CENTER_LEFT);
                 fileItem.getStyleClass().add(JfxStyles.UPLOAD_FILE_ITEM);
                 if (listType == ListType.PICTURE) {
@@ -226,11 +229,11 @@ public class UploadAnt {
                 HBox.setHgrow(nameLabel, Priority.ALWAYS);
                 fileItem.getChildren().add(nameLabel);
 
-                if (file.status.equals("uploading")) {
+                if ("uploading".equals(file.status)) {
                     ProgressBar progressBar = new ProgressBar(file.percent / 100.0);
                     progressBar.setPrefWidth(100);
                     fileItem.getChildren().add(progressBar);
-                } else if (file.status.equals("error")) {
+                } else if ("error".equals(file.status)) {
                     Label errorLabel = new Label(Messages.get("upload.error"));
                     errorLabel.getStyleClass().add(JfxStyles.UPLOAD_FILE_ERROR);
                     fileItem.getChildren().add(errorLabel);
@@ -352,6 +355,9 @@ public class UploadAnt {
         }
 
         private Node createFilePreview(UploadFile file) {
+            if (file == null || file.file == null) {
+                return null;
+            }
             if (listType == ListType.TEXT) {
                 return null;
             }
@@ -397,7 +403,9 @@ public class UploadAnt {
             }
             List<File> currentFiles = new ArrayList<>(fileList.size());
             for (UploadFile uploadFile : fileList) {
-                currentFiles.add(uploadFile.file);
+                if (uploadFile != null && uploadFile.file != null) {
+                    currentFiles.add(uploadFile.file);
+                }
             }
             onChange.accept(currentFiles);
         }

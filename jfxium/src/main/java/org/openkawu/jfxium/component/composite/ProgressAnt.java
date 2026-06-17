@@ -79,7 +79,7 @@ public class ProgressAnt {
         }
 
         public HBox build() {
-            HBox container = new HBox(8);
+            HBox container = new HBox();
             container.setAlignment(Pos.CENTER_LEFT);
 
             ProgressBar progressBar = new ProgressBar(progress);
@@ -149,7 +149,7 @@ public class ProgressAnt {
         }
 
         public VBox build() {
-            VBox container = new VBox(4);
+            VBox container = new VBox();
             container.setAlignment(Pos.CENTER);
 
             ProgressIndicator indicator = new ProgressIndicator(progress);

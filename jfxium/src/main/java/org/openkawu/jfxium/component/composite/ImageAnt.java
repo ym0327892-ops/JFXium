@@ -51,15 +51,15 @@ public class ImageAnt {
         private double borderRadius = 0;
 
         public Builder src(String src) { this.src = src; return this; }
-        public Builder width(double width) { this.width = width; return this; }
-        public Builder height(double height) { this.height = height; return this; }
-        public Builder alt(String alt) { this.alt = alt; return this; }
+        public Builder width(double width) { this.width = Double.isFinite(width) && width >= 0 ? width : 0; return this; }
+        public Builder height(double height) { this.height = Double.isFinite(height) && height >= 0 ? height : 0; return this; }
+        public Builder alt(String alt) { this.alt = alt != null ? alt : ""; return this; }
         public Builder preview(boolean preview) { this.preview = preview; return this; }
         public Builder preview() { return preview(true); }
         public Builder fallback(String fallback) { this.fallback = fallback; return this; }
         public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
-        public Builder objectFit(String fit) { this.objectFit = fit; return this; }
-        public Builder borderRadius(double radius) { this.borderRadius = radius; return this; }
+        public Builder objectFit(String fit) { this.objectFit = fit != null ? fit : "cover"; return this; }
+        public Builder borderRadius(double radius) { this.borderRadius = Double.isFinite(radius) && radius >= 0 ? radius : 0; return this; }
 
         public StackPane build() {
             StackPane container = new StackPane();

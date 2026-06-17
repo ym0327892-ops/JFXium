@@ -82,7 +82,7 @@ public class AvatarAnt {
         private int customSize = 0;
 
         public Builder size(Size size) {
-            this.size = size;
+            this.size = size != null ? size : Size.DEFAULT;
             return this;
         }
 
@@ -92,12 +92,12 @@ public class AvatarAnt {
         }
 
         public Builder shape(Shape shape) {
-            this.shape = shape;
+            this.shape = shape != null ? shape : Shape.CIRCLE;
             return this;
         }
 
         public Builder text(String text) {
-            this.text = text;
+            this.text = text != null ? text : "";
             this.image = null;
             this.iconNode = null;
             this.iconText = null;

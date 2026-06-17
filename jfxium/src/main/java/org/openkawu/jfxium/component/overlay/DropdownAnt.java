@@ -182,7 +182,8 @@ public class DropdownAnt {
             if (showArrow) {
                 Region arrow = new Region();
                 arrow.getStyleClass().add(JfxStyles.ARROW_DROPDOWN);
-                HBox wrapper = new HBox(4, trigger, arrow);
+                HBox wrapper = new HBox(trigger, arrow);
+                wrapper.getStyleClass().add(JfxStyles.DROPDOWN_TRIGGER);
                 wrapper.setAlignment(Pos.CENTER_LEFT);
                 trigger = wrapper;
             }
@@ -224,7 +225,7 @@ public class DropdownAnt {
                     continue;
                 }
 
-                HBox menuItem = new HBox(8);
+                HBox menuItem = new HBox();
                 menuItem.setAlignment(Pos.CENTER_LEFT);
                 menuItem.getStyleClass().add(JfxStyles.POPUP_MENU_ITEM);
                 if (item.isDisabled()) {

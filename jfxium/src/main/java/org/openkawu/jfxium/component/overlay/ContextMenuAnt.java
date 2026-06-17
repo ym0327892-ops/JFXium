@@ -213,11 +213,6 @@ public class ContextMenuAnt {
                 // Icon
                 if (item.getIcon() != null) {
                     row.getChildren().add(item.getIcon());
-                } else {
-                    // Placeholder for alignment
-                    Region placeholder = new Region();
-                    placeholder.setPrefSize(16, 16);
-                    row.getChildren().add(placeholder);
                 }
 
                 // Label

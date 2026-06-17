@@ -119,7 +119,7 @@ public class SelectableTextAnt {
 
         /** 语义类型（影响文字颜色）。 */
         public Builder type(Type type) {
-            this.type = type;
+            this.type = type != null ? type : Type.DEFAULT;
             return this;
         }
 

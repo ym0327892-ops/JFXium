@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
+import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
@@ -141,7 +142,7 @@ public class AlertAnt {
         }
 
         public VBox build() {
-            VBox alert = new VBox(4);
+            VBox alert = new VBox();
             alert.setAlignment(Pos.CENTER_LEFT);
             alert.getStyleClass().add(JfxStyles.ALERT);
             alert.getStyleClass().add(typeClassFor(type));
@@ -152,18 +153,20 @@ public class AlertAnt {
                 HBox.setHgrow(alert, Priority.ALWAYS);
             }
 
-            HBox header = new HBox(8);
+            HBox header = new HBox();
+            header.getStyleClass().add(JfxStyles.ALERT_HEADER);
             header.setAlignment(Pos.CENTER_LEFT);
 
             // 图标 Label：通过 styleClass 控制字号与文字色（LESS 端按 type 切换文字色）
             if (showIcon) {
                 Label iconLabel = new Label(iconFor(type));
                 iconLabel.getStyleClass().add(JfxStyles.ALERT_ICON);
+                iconLabel.getStyleClass().add(type.name().toLowerCase());
                 header.getChildren().add(iconLabel);
             }
 
             // 标题 Label：styleClass 控制字号/字重/文字色
-            Label titleLabel = new Label(title);
+            Label titleLabel = new Label(title != null ? title : "");
             titleLabel.getStyleClass().add(JfxStyles.ALERT_TITLE);
             header.getChildren().add(titleLabel);
             // 把标题 Label 挂到 properties，modify().title(...) 时能找回来
@@ -186,6 +189,7 @@ public class AlertAnt {
 
                 Button closeBtn = new Button("✕");
                 closeBtn.getStyleClass().add(JfxStyles.ALERT_CLOSE_BTN);
+                closeBtn.getStyleClass().add(type.name().toLowerCase());
                 closeBtn.setOnAction(e -> closeWithFade(alert));
                 header.getChildren().add(closeBtn);
             }
@@ -198,8 +202,8 @@ public class AlertAnt {
                 messageLabel.setWrapText(true);
                 messageLabel.getStyleClass().add(JfxStyles.ALERT_MESSAGE);
                 if (showIcon) {
-                    // 描述左侧缩进对齐图标后内容（图标 16 + spacing 8 = 24，仅作为视觉细节保留）
-                    messageLabel.setPadding(new Insets(0, 0, 0, 24));
+                    // 描述左侧缩进对齐图标后内容（图标 16 + spacing 8 = 24，间距走 LESS）
+                    messageLabel.getStyleClass().add(JfxStyles.ALERT_MESSAGE_INDENTED);
                 }
                 alert.getChildren().add(messageLabel);
                 // 把消息 Label 挂到 properties，modify().message(...) 时能找回来
@@ -238,10 +242,10 @@ public class AlertAnt {
 
         private static String iconFor(Type type) {
             return switch (type) {
-                case SUCCESS -> "✓";
-                case INFO -> "ℹ";
-                case WARNING -> "⚠";
-                case ERROR -> "✕";
+                case SUCCESS -> String.valueOf(IconAnt.Symbol.CHECK.getChar());
+                case INFO -> String.valueOf(IconAnt.Symbol.INFO.getChar());
+                case WARNING -> String.valueOf(IconAnt.Symbol.WARNING.getChar());
+                case ERROR -> String.valueOf(IconAnt.Symbol.CLOSE.getChar());
             };
         }
     }

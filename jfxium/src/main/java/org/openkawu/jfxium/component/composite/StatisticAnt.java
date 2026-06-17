@@ -62,7 +62,7 @@ public class StatisticAnt {
         public Builder size(Size size) { this.size = size != null ? size : Size.DEFAULT; return this; }
 
         public VBox build() {
-            VBox statistic = new VBox(4);
+            VBox statistic = new VBox();
             statistic.setAlignment(Pos.CENTER_LEFT);
             statistic.getStyleClass().add(JfxStyles.STATISTIC);
             // 尺寸通过修饰类切换字号
@@ -75,7 +75,7 @@ public class StatisticAnt {
             titleLabel.setManaged(!title.isEmpty());
             statistic.getChildren().add(titleLabel);
 
-            HBox valueRow = new HBox(4);
+            HBox valueRow = new HBox();
             valueRow.setAlignment(Pos.CENTER_LEFT);
 
             Label prefixLabel = new Label(prefix != null ? prefix : "");

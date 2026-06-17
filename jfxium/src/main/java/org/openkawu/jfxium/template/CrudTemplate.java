@@ -126,13 +126,25 @@ public class CrudTemplate {
 
         /** 顶部左侧节点（按添加顺序水平排列；常用于搜索/筛选）。 */
         public Builder topLeft(Node... nodes) {
-            if (nodes != null) for (Node n : nodes) topLeft.add(n);
+            if (nodes != null) {
+                for (Node n : nodes) {
+                    if (n != null) {
+                        topLeft.add(n);
+                    }
+                }
+            }
             return this;
         }
 
         /** 顶部右侧节点（按添加顺序水平排列；常用于操作按钮）。 */
         public Builder topRight(Node... nodes) {
-            if (nodes != null) for (Node n : nodes) topRight.add(n);
+            if (nodes != null) {
+                for (Node n : nodes) {
+                    if (n != null) {
+                        topRight.add(n);
+                    }
+                }
+            }
             return this;
         }
 
@@ -152,13 +164,25 @@ public class CrudTemplate {
 
         /** 底部左侧节点（常用于"共 N 条"等状态文字）。 */
         public Builder bottomLeft(Node... nodes) {
-            if (nodes != null) for (Node n : nodes) bottomLeft.add(n);
+            if (nodes != null) {
+                for (Node n : nodes) {
+                    if (n != null) {
+                        bottomLeft.add(n);
+                    }
+                }
+            }
             return this;
         }
 
         /** 底部右侧节点（常用于分页器、每页条数）。 */
         public Builder bottomRight(Node... nodes) {
-            if (nodes != null) for (Node n : nodes) bottomRight.add(n);
+            if (nodes != null) {
+                for (Node n : nodes) {
+                    if (n != null) {
+                        bottomRight.add(n);
+                    }
+                }
+            }
             return this;
         }
 
@@ -181,18 +205,18 @@ public class CrudTemplate {
         }
 
         public Builder topbarSpacing(double spacing) {
-            this.topbarSpacing = spacing;
+            this.topbarSpacing = safeSpacing(spacing);
             return this;
         }
 
         public Builder bottombarSpacing(double spacing) {
-            this.bottombarSpacing = spacing;
+            this.bottombarSpacing = safeSpacing(spacing);
             return this;
         }
 
         /** title / topbar / body / bottombar 之间的垂直间距（默认 16）。 */
         public Builder sectionGap(double gap) {
-            this.sectionGap = gap;
+            this.sectionGap = safeSpacing(gap);
             return this;
         }
 
@@ -212,7 +236,8 @@ public class CrudTemplate {
             }
 
             // ========== 顶部 = title + topbar（VBox 组合）==========
-            VBox top = new VBox(sectionGap);
+            double resolvedSectionGap = safeSpacing(sectionGap);
+            VBox top = new VBox(resolvedSectionGap);
             top.setAlignment(Pos.TOP_LEFT);
 
             if (title != null && !title.isEmpty()) {
@@ -229,7 +254,7 @@ public class CrudTemplate {
 
             // 仅当顶部有任意内容才设置
             if (!top.getChildren().isEmpty()) {
-                BorderPane.setMargin(top, new Insets(0, 0, sectionGap, 0));
+                BorderPane.setMargin(top, new Insets(0, 0, resolvedSectionGap, 0));
                 root.setTop(top);
             }
 
@@ -245,7 +270,7 @@ public class CrudTemplate {
             if (!bottomLeft.isEmpty() || !bottomRight.isEmpty()) {
                 HBox bottombar = buildBar(bottomLeft, bottomRight, bottombarSpacing);
                 bottombar.getStyleClass().add(JfxStyles.CRUD_TEMPLATE_BOTTOMBAR);
-                BorderPane.setMargin(bottombar, new Insets(sectionGap, 0, 0, 0));
+                BorderPane.setMargin(bottombar, new Insets(resolvedSectionGap, 0, 0, 0));
                 root.setBottom(bottombar);
             }
 
@@ -262,8 +287,12 @@ public class CrudTemplate {
             return BarAnt.create()
                     .left(left.toArray(new Node[0]))
                     .right(right.toArray(new Node[0]))
-                    .gap(spacing)
+                    .gap(safeSpacing(spacing))
                     .build();
+        }
+
+        private static double safeSpacing(double value) {
+            return Double.isFinite(value) && value >= 0 ? value : 0;
         }
     }
 }

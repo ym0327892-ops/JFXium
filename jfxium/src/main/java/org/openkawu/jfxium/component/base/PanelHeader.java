@@ -37,7 +37,7 @@ public class PanelHeader {
         private Insets padding = new Insets(16, 24, 16, 24);
 
         public Builder title(String title) {
-            this.title = title;
+            this.title = title != null ? title : "";
             return this;
         }
 
@@ -55,12 +55,12 @@ public class PanelHeader {
          * 设置内边距（四边独立）。默认 16px 24px。
          */
         public Builder padding(double top, double right, double bottom, double left) {
-            this.padding = new Insets(top, right, bottom, left);
+            this.padding = new Insets(safeSize(top), safeSize(right), safeSize(bottom), safeSize(left));
             return this;
         }
 
         public HBox build() {
-            HBox header = new HBox(8);
+            HBox header = new HBox();
             header.setAlignment(Pos.CENTER_LEFT);
             header.getStyleClass().add(JfxStyles.PANEL_HEADER);
             header.setPadding(padding);
@@ -78,13 +78,16 @@ public class PanelHeader {
 
             // Close Button - 右侧
             if (onClose != null) {
-                javafx.scene.control.Button closeBtn = new javafx.scene.control.Button("×");
+                CloseButton closeBtn = CloseButton.create(onClose);
                 closeBtn.getStyleClass().add(JfxStyles.PANEL_CLOSE_BTN);
-                closeBtn.setOnAction(e -> onClose.run());
                 header.getChildren().add(closeBtn);
             }
 
             return header;
+        }
+
+        private static double safeSize(double value) {
+            return Double.isFinite(value) ? Math.max(0, value) : 0;
         }
     }
 }

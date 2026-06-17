@@ -154,25 +154,25 @@ public class PageTemplate {
 
         /** title 与 description 之间的垂直间距（默认 8）。 */
         public Builder headerGap(double gap) {
-            this.headerGap = gap;
+            this.headerGap = safeSpacing(gap);
             return this;
         }
 
         /** body 内多个 section 之间的垂直间距（默认 20）。 */
         public Builder sectionGap(double gap) {
-            this.sectionGap = gap;
+            this.sectionGap = safeSpacing(gap);
             return this;
         }
 
         /** header 与 body 之间的垂直间距（默认 20）。 */
         public Builder headerToBodyGap(double gap) {
-            this.headerToBodyGap = gap;
+            this.headerToBodyGap = safeSpacing(gap);
             return this;
         }
 
         /** 整体 padding（默认 0；父容器自带 padding 时不要重复设置）。 */
         public Builder padding(double padding) {
-            this.padding = padding;
+            this.padding = safeSpacing(padding);
             return this;
         }
 
@@ -199,8 +199,9 @@ public class PageTemplate {
         public VBox build() {
             VBox root = new VBox();
             root.getStyleClass().add(JfxStyles.PAGE_TEMPLATE);
-            if (padding > 0) {
-                root.setPadding(new Insets(padding));
+            double resolvedPadding = safeSpacing(padding);
+            if (resolvedPadding > 0) {
+                root.setPadding(new Insets(resolvedPadding));
             }
             // M19.35 background：可选，挂上对应的 .jfx-bg-* styleClass
             if (background != null) {
@@ -211,7 +212,7 @@ public class PageTemplate {
             VBox header = buildHeader();
             if (header != null) {
                 root.getChildren().add(header);
-                VBox.setMargin(header, new Insets(0, 0, headerToBodyGap, 0));
+                VBox.setMargin(header, new Insets(0, 0, safeSpacing(headerToBodyGap), 0));
             }
 
             // ========== Body（单节点 + 多个 section 都支持）==========
@@ -231,7 +232,7 @@ public class PageTemplate {
                 // 除最后一个外，每个 section 后加间距（用 setMargin 而非 VBox.spacing，
                 // 因为 spacing 会让 header→body 也变成 sectionGap，破坏 headerToBodyGap 语义）
                 if (i < sections.size() - 1) {
-                    VBox.setMargin(section, new Insets(0, 0, sectionGap, 0));
+                    VBox.setMargin(section, new Insets(0, 0, safeSpacing(sectionGap), 0));
                 }
             }
 
@@ -248,7 +249,7 @@ public class PageTemplate {
             if ((title == null || title.isEmpty()) && (description == null || description.isEmpty())) {
                 return null;
             }
-            VBox header = new VBox(headerGap);
+            VBox header = new VBox(safeSpacing(headerGap));
             header.setAlignment(Pos.TOP_LEFT);
             header.getStyleClass().add(JfxStyles.PAGE_TEMPLATE_HEADER);
 
@@ -264,6 +265,10 @@ public class PageTemplate {
                 header.getChildren().add(descLabel);
             }
             return header;
+        }
+
+        private static double safeSpacing(double value) {
+            return Double.isFinite(value) && value >= 0 ? value : 0;
         }
     }
 }

@@ -89,7 +89,7 @@ public class SpinAnt {
         }
 
         public VBox build() {
-            VBox spin = new VBox(8);
+            VBox spin = new VBox();
             spin.setAlignment(Pos.CENTER);
             spin.getStyleClass().add(JfxStyles.SPIN);
 

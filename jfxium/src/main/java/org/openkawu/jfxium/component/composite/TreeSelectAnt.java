@@ -59,8 +59,8 @@ public class TreeSelectAnt {
         }
 
         public TreeNode(String value, String label, List<TreeNode> children) {
-            this.value = value;
-            this.label = label;
+            this.value = value != null ? value : "";
+            this.label = label != null ? label : "";
             this.children = children != null ? children : new ArrayList<>();
         }
 
@@ -160,7 +160,7 @@ public class TreeSelectAnt {
             VBox rowBox = new VBox();
             rowBox.setFillWidth(true);
 
-            HBox row = new HBox(8);
+            HBox row = new HBox();
             row.setAlignment(Pos.CENTER_LEFT);
             // depth 缩进：左侧插入占位 Region，避免 setStyle 拼 padding 违反红线 #1
             if (depth > 0) {
@@ -260,7 +260,8 @@ public class TreeSelectAnt {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < selectedNodes.size(); i++) {
                 if (i > 0) sb.append("、");
-                sb.append(selectedNodes.get(i).getLabel());
+                String label = selectedNodes.get(i).getLabel();
+                sb.append(label != null ? label : "");
             }
             return sb.toString();
         }

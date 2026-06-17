@@ -94,7 +94,7 @@ public class CalendarAnt {
         }
 
         private HBox buildHeader() {
-            HBox header = new HBox(8);
+            HBox header = new HBox();
             header.setAlignment(Pos.CENTER);
             header.getStyleClass().add(JfxStyles.CALENDAR_HEADER);
             HBox.setHgrow(header, Priority.ALWAYS);
@@ -217,7 +217,7 @@ public class CalendarAnt {
         }
 
         private VBox buildYearView() {
-            VBox yearView = new VBox(8);
+            VBox yearView = new VBox();
             yearView.getStyleClass().add(JfxStyles.CALENDAR_YEAR_VIEW);
 
             GridPane grid = new GridPane();

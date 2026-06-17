@@ -122,7 +122,7 @@ public class MentionsAnt {
                 if (newVal.endsWith(prefix)) {
                     optionsPanel.getChildren().clear();
                     for (Option option : options) {
-                        HBox row = new HBox(8);
+                        HBox row = new HBox();
                         row.setAlignment(Pos.CENTER_LEFT);
                         row.getStyleClass().add(JfxStyles.POPUP_MENU_ITEM);
                         Label label = new Label(option.getLabel());

@@ -103,7 +103,7 @@ public class SegmentedAnt {
                 selectedValue = bindProperty.get();
             }
 
-            HBox segmented = new HBox(2);
+            HBox segmented = new HBox();
             segmented.setAlignment(Pos.CENTER);
             segmented.getStyleClass().add(JfxStyles.SEGMENTED);
             if (disabled) segmented.getStyleClass().add(JfxStyles.SEGMENTED_DISABLED);
@@ -126,7 +126,7 @@ public class SegmentedAnt {
                 }
                 controller.register(option.getValue(), optionPane);
 
-                HBox content = new HBox(4);
+                HBox content = new HBox();
                 content.setAlignment(Pos.CENTER);
                 content.setPadding(new Insets(padding, padding + 4, padding, padding + 4));
                 if (option.getIcon() != null) {

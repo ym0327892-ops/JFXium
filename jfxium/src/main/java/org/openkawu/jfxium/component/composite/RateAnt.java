@@ -135,7 +135,7 @@ public class RateAnt {
         }
 
         public HBox build() {
-            HBox rateBox = new HBox(4);
+            HBox rateBox = new HBox();
             rateBox.setAlignment(Pos.CENTER_LEFT);
             rateBox.getStyleClass().add(JfxStyles.RATE);
 

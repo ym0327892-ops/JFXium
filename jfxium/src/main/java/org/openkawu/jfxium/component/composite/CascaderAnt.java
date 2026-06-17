@@ -18,6 +18,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 /**
@@ -58,8 +59,8 @@ public class CascaderAnt {
         public Option(String value, String label) { this(value, label, null, false); }
         public Option(String value, String label, List<Option> children) { this(value, label, children, false); }
         public Option(String value, String label, List<Option> children, boolean disabled) {
-            this.value = value;
-            this.label = label;
+            this.value = value != null ? value : "";
+            this.label = label != null ? label : "";
             this.children = children != null ? children : new ArrayList<>();
             this.disabled = disabled;
         }
@@ -90,7 +91,7 @@ public class CascaderAnt {
         public Builder allowClear(boolean allowClear) { this.allowClear = allowClear; return this; }
         public Builder showSearch(boolean showSearch) { this.showSearch = showSearch; return this; }
         public Builder onChange(Consumer<List<String>> onChange) { this.onChange = onChange; return this; }
-        public Builder value(List<String> path) { this.selectedPath = path != null ? path : new ArrayList<>(); return this; }
+        public Builder value(List<String> path) { this.selectedPath = normalizePath(path); return this; }
 
         /** 双向绑定：控件值（选中的 values 路径）↔ Property 值实时同步。 */
         public Builder bindValue(ObjectProperty<List<String>> property) {
@@ -276,9 +277,9 @@ public class CascaderAnt {
                 divider.getStyleClass().add(JfxStyles.CASCADER_DIVIDER);
                 panel.getChildren().add(divider);
 
-                String selectedLabel = selectedPath.get(depth);
+                String selectedLabel = safeText(selectedPath.get(depth));
                 for (Option option : currentOptions) {
-                    if (option.getLabel().equals(selectedLabel) && option.hasChildren()) {
+                    if (safeText(option.getLabel()).equals(selectedLabel) && option.hasChildren()) {
                         appendColumns(panel, option.getChildren(), depth + 1, field, popup, clearLabel);
                         break;
                     }
@@ -288,10 +289,10 @@ public class CascaderAnt {
 
         private boolean collectValues(List<Option> options, List<String> path, int depth, List<String> values) {
             if (depth >= path.size()) return true;
-            String targetLabel = path.get(depth);
+            String targetLabel = safeText(path.get(depth));
             for (Option option : options) {
-                if (option.getLabel().equals(targetLabel)) {
-                    values.add(option.getValue());
+                if (safeText(option.getLabel()).equals(targetLabel)) {
+                    values.add(safeText(option.getValue()));
                     if (option.hasChildren() && depth + 1 < path.size()) {
                         return collectValues(option.getChildren(), path, depth + 1, values);
                     }
@@ -311,14 +312,14 @@ public class CascaderAnt {
             if (!showSearch || searchQuery == null || searchQuery.isBlank()) {
                 return options;
             }
-            return filterOptions(options, searchQuery.toLowerCase());
+            return filterOptions(options, searchQuery.toLowerCase(Locale.ROOT));
         }
 
         private List<Option> filterOptions(List<Option> source, String query) {
             List<Option> filtered = new ArrayList<>();
             for (Option option : source) {
                 List<Option> childMatches = filterOptions(option.getChildren(), query);
-                boolean selfMatches = option.getLabel() != null && option.getLabel().toLowerCase().contains(query);
+                boolean selfMatches = safeText(option.getLabel()).toLowerCase(Locale.ROOT).contains(query);
                 if (selfMatches || !childMatches.isEmpty()) {
                     filtered.add(new Option(option.getValue(), option.getLabel(), childMatches, option.isDisabled()));
                 }
@@ -341,10 +342,10 @@ public class CascaderAnt {
             if (depth >= values.size()) {
                 return true;
             }
-            String targetValue = values.get(depth);
+            String targetValue = safeText(values.get(depth));
             for (Option option : options) {
-                if (option.getValue().equals(targetValue)) {
-                    labels.add(option.getLabel());
+                if (safeText(option.getValue()).equals(targetValue)) {
+                    labels.add(safeText(option.getLabel()));
                     if (option.hasChildren() && depth + 1 < values.size()) {
                         return collectLabels(option.getChildren(), values, depth + 1, labels);
                     }
@@ -374,6 +375,21 @@ public class CascaderAnt {
             if (bindProperty != null) {
                 bindProperty.set(values);
             }
+        }
+
+        private static String safeText(String text) {
+            return text != null ? text : "";
+        }
+
+        private static List<String> normalizePath(List<String> path) {
+            if (path == null || path.isEmpty()) {
+                return new ArrayList<>();
+            }
+            List<String> normalized = new ArrayList<>(path.size());
+            for (String item : path) {
+                normalized.add(safeText(item));
+            }
+            return normalized;
         }
     }
 

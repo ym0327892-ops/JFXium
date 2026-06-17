@@ -45,7 +45,7 @@ public class MessageCard {
         }
 
         public HBox build() {
-            HBox card = new HBox(8);
+            HBox card = new HBox();
             card.setAlignment(Pos.CENTER);
             card.getStyleClass().add(JfxStyles.MESSAGE_CARD);
 

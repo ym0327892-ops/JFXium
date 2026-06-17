@@ -74,12 +74,16 @@ public class HyperlinkAnt extends Hyperlink {
     }
 
     public HyperlinkAnt onClick(Runnable action) {
-        setOnAction(e -> action.run());
+        if (action != null) {
+            setOnAction(e -> action.run());
+        }
         return this;
     }
 
     public HyperlinkAnt onClick(Consumer<HyperlinkAnt> action) {
-        setOnAction(e -> action.accept(this));
+        if (action != null) {
+            setOnAction(e -> action.accept(this));
+        }
         return this;
     }
 

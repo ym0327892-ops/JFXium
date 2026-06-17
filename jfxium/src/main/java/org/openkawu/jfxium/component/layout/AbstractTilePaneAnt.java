@@ -81,7 +81,7 @@ public abstract class AbstractTilePaneAnt<SELF extends AbstractTilePaneAnt<SELF>
     }
 
     protected static double clampGap(double gap) {
-        return Math.max(0, gap);
+        return Double.isFinite(gap) ? Math.max(0, gap) : 0;
     }
 
     private void addChildren(Node... nodes) {

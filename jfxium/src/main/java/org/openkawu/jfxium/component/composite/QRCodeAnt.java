@@ -45,22 +45,22 @@ public class QRCodeAnt {
         private boolean bordered = true;
 
         public Builder value(String value) {
-            this.value = value;
+            this.value = value != null ? value : "";
             return this;
         }
 
         public Builder size(int size) {
-            this.size = size;
+            this.size = size > 0 ? size : 160;
             return this;
         }
 
         public Builder color(Color color) {
-            this.color = color;
+            this.color = color != null ? color : Color.BLACK;
             return this;
         }
 
         public Builder bgColor(Color bgColor) {
-            this.bgColor = bgColor;
+            this.bgColor = bgColor != null ? bgColor : Color.WHITE;
             return this;
         }
 

@@ -51,7 +51,7 @@ public class ResultDisplay {
         }
 
         public VBox build() {
-            VBox result = new VBox(16);
+            VBox result = new VBox();
             result.setAlignment(Pos.CENTER);
             result.getStyleClass().add(JfxStyles.RESULT);
 

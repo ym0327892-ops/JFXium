@@ -49,21 +49,23 @@ public class BreadcrumbAnt {
         private List<Item> items = new ArrayList<>();
         private String separator = "/";
 
-        public Builder separator(String separator) { this.separator = separator; return this; }
+        public Builder separator(String separator) { this.separator = separator != null ? separator : "/"; return this; }
 
         public Builder item(String title) { items.add(new Item(title)); return this; }
         public Builder item(String title, String href) { items.add(new Item(title, href)); return this; }
         public Builder item(String title, Consumer<Item> onClick) { items.add(new Item(title, onClick)); return this; }
 
         public Builder items(String... titles) {
-            for (String title : titles) {
-                items.add(new Item(title));
+            if (titles != null) {
+                for (String title : titles) {
+                    items.add(new Item(title));
+                }
             }
             return this;
         }
 
         public HBox build() {
-            HBox breadcrumb = new HBox(4);
+            HBox breadcrumb = new HBox();
             breadcrumb.setAlignment(Pos.CENTER_LEFT);
             breadcrumb.getStyleClass().add(JfxStyles.BREADCRUMB);
 

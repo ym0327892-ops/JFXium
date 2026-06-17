@@ -80,11 +80,11 @@ public class CollapseAnt {
             return this;
         }
 
-        public Builder panels(List<Panel> panels) { this.panels = panels; return this; }
+        public Builder panels(List<Panel> panels) { this.panels = panels != null ? panels : new ArrayList<>(); return this; }
         public Builder accordion(boolean accordion) { this.accordion = accordion; return this; }
         public Builder accordion() { return accordion(true); }
         public Builder activeKey(String key) { this.activeKeys.add(key); return this; }
-        public Builder activeKeys(List<String> keys) { this.activeKeys = keys; return this; }
+        public Builder activeKeys(List<String> keys) { this.activeKeys = keys != null ? keys : new ArrayList<>(); return this; }
 
         public VBox build() {
             VBox collapse = new VBox(0);
@@ -97,7 +97,7 @@ public class CollapseAnt {
                 VBox panelBox = new VBox(0);
                 panelBox.getStyleClass().add(JfxStyles.COLLAPSE_PANEL);
 
-                HBox header = new HBox(8);
+                HBox header = new HBox();
                 header.setAlignment(Pos.CENTER_LEFT);
                 header.getStyleClass().add(JfxStyles.COLLAPSE_HEADER);
                 if (panel.isDisabled()) {

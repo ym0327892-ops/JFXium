@@ -76,8 +76,8 @@ public class StepsAnt {
         public Builder step(String title, String description) { steps.add(new Step(title, description, null)); return this; }
         public Builder step(String title, String description, String icon) { steps.add(new Step(title, description, icon)); return this; }
         public Builder current(int current) { this.current = current; return this; }
-        public Builder direction(Direction direction) { this.direction = direction; return this; }
-        public Builder size(Size size) { this.size = size; return this; }
+        public Builder direction(Direction direction) { this.direction = direction != null ? direction : Direction.HORIZONTAL; return this; }
+        public Builder size(Size size) { this.size = size != null ? size : Size.DEFAULT; return this; }
 
         public Node build() {
             // 每次 build 装配一个新的 Controller，持有所有状态相关节点引用
@@ -112,9 +112,8 @@ public class StepsAnt {
                 State state = stateFor(i);
                 StepNodes sn = controller.stepNodes.get(i);
 
-                VBox stepBox = new VBox(8);
+                VBox stepBox = new VBox();
                 stepBox.setAlignment(Pos.CENTER);
-                stepBox.setPrefWidth(200);
                 stepBox.getStyleClass().add(JfxStyles.STEPS_ITEM);
                 HBox.setHgrow(stepBox, Priority.ALWAYS);
 
@@ -156,7 +155,7 @@ public class StepsAnt {
                 State state = stateFor(i);
                 StepNodes sn = controller.stepNodes.get(i);
 
-                HBox stepBox = new HBox(12);
+                HBox stepBox = new HBox();
                 stepBox.setAlignment(Pos.TOP_LEFT);
                 stepBox.getStyleClass().add(JfxStyles.STEPS_ITEM);
 
@@ -176,7 +175,8 @@ public class StepsAnt {
                 }
                 stepBox.getChildren().add(leftBox);
 
-                VBox contentBox = new VBox(4);
+                VBox contentBox = new VBox();
+                contentBox.getStyleClass().add(JfxStyles.STEPS_CONTENT);
                 contentBox.setAlignment(Pos.TOP_LEFT);
                 contentBox.getChildren().add(makeTitle(step.title, state, sn));
                 if (step.description != null) {

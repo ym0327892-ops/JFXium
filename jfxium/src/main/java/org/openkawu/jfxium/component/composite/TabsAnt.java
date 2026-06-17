@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.scene.layout.Region;
 import javafx.util.Duration;
 
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
@@ -94,18 +95,18 @@ public class TabsAnt {
         private Controller controller;
 
         public Builder tab(String key, String label, Node content) {
-            tabs.add(new TabItem(key, label, content, false));
+            tabs.add(new TabItem(key, safeLabel(label), safeContent(content), false));
             return this;
         }
 
         public Builder tab(String key, String label, Node content, boolean disabled) {
-            tabs.add(new TabItem(key, label, content, disabled));
+            tabs.add(new TabItem(key, safeLabel(label), safeContent(content), disabled));
             return this;
         }
 
-        public Builder type(Type type) { this.type = type; return this; }
-        public Builder size(Size size) { this.size = size; return this; }
-        public Builder tabPlacement(TabPlacement p) { this.placement = p; return this; }
+        public Builder type(Type type) { this.type = type != null ? type : Type.LINE; return this; }
+        public Builder size(Size size) { this.size = size != null ? size : Size.MIDDLE; return this; }
+        public Builder tabPlacement(TabPlacement p) { this.placement = p != null ? p : TabPlacement.TOP; return this; }
         public Builder centered(boolean c) { this.centered = c; return this; }
         public Builder extraLeft(Node n) { this.extraLeft = n; return this; }
         public Builder extraRight(Node n) { this.extraRight = n; return this; }
@@ -252,17 +253,10 @@ public class TabsAnt {
 
                 // 指示条容器 - 使用 Pane 实现绝对定位
                 Pane indicatorPane = new Pane();
-                indicatorPane.setPrefHeight(3);
-                indicatorPane.setMinHeight(3);
-                indicatorPane.setMaxHeight(3);
                 indicatorPane.getStyleClass().add(JfxStyles.TABS_INDICATOR_PANE);
 
                 // 创建指示条
                 Region indicator = new Region();
-                indicator.setPrefHeight(3);
-                indicator.setMinHeight(3);
-                indicator.setMaxHeight(3);
-                indicator.setPrefWidth(100); // 初始宽度
                 indicator.getStyleClass().add(JfxStyles.TABS_INDICATOR_BAR);
                 indicatorPane.getChildren().add(indicator);
 
@@ -386,6 +380,21 @@ public class TabsAnt {
             // 设置指示条宽度和位置
             indicator.setPrefWidth(labelWidth);
             indicator.setLayoutX(labelX);
+        }
+
+        private static String safeLabel(String label) {
+            return label != null ? label : "";
+        }
+
+        private static Node safeContent(Node content) {
+            if (content != null) {
+                return content;
+            }
+            Region placeholder = new Region();
+            placeholder.setMinSize(0, 0);
+            placeholder.setPrefSize(0, 0);
+            placeholder.setMaxSize(0, 0);
+            return placeholder;
         }
     }
 

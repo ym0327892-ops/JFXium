@@ -109,7 +109,8 @@ public class NotificationAnt {
 
         NotificationContainer(Placement placement) {
             this.placement = placement;
-            this.container = new VBox(10);
+            this.container = new VBox();
+            this.container.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.NOTIFICATION_CONTAINER);
             this.container.setAlignment(Pos.TOP_LEFT);
             this.container.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 

@@ -188,7 +188,7 @@ public class DescriptionsAnt {
                     rowBox.setAlignment(Pos.TOP_LEFT);
                 }
 
-                VBox itemBox = new VBox(4);
+                VBox itemBox = new VBox();
                 itemBox.setAlignment(Pos.TOP_LEFT);
                 HBox.setHgrow(itemBox, Priority.ALWAYS);
 

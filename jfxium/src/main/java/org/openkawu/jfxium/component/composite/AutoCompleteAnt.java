@@ -15,6 +15,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -49,7 +50,7 @@ public class AutoCompleteAnt {
         private String placeholder = "";
         private String value = "";
         private List<T> options = new ArrayList<>();
-        private Function<T, String> optionToString = Object::toString;
+        private Function<T, String> optionToString = item -> item == null ? "" : String.valueOf(item);
         private Function<String, List<T>> filter = null;
         private boolean disabled = false;
         private Consumer<String> onChange = null;
@@ -60,7 +61,10 @@ public class AutoCompleteAnt {
         public Builder<T> placeholder(String placeholder) { this.placeholder = placeholder != null ? placeholder : ""; return this; }
         public Builder<T> value(String value) { this.value = value != null ? value : ""; return this; }
         public Builder<T> options(List<T> options) { this.options = options != null ? options : new ArrayList<>(); return this; }
-        public Builder<T> optionToString(Function<T, String> converter) { this.optionToString = converter != null ? converter : Object::toString; return this; }
+        public Builder<T> optionToString(Function<T, String> converter) {
+            this.optionToString = converter != null ? converter : (item -> item == null ? "" : String.valueOf(item));
+            return this;
+        }
         public Builder<T> filter(Function<String, List<T>> filter) { this.filter = filter; return this; }
         public Builder<T> disabled(boolean disabled) { this.disabled = disabled; return this; }
         public Builder<T> disabled() { return disabled(true); }
@@ -139,9 +143,9 @@ public class AutoCompleteAnt {
                 return options.subList(0, Math.min(maxSuggestions, options.size()));
             }
             List<T> filtered = new ArrayList<>();
-            String lowerQuery = query.toLowerCase();
+            String lowerQuery = query.toLowerCase(Locale.ROOT);
             for (T option : options) {
-                if (optionToString.apply(option).toLowerCase().contains(lowerQuery)) {
+                if (safeOptionText(option).toLowerCase(Locale.ROOT).contains(lowerQuery)) {
                     filtered.add(option);
                     if (filtered.size() >= maxSuggestions) break;
                 }
@@ -150,6 +154,9 @@ public class AutoCompleteAnt {
         }
 
         private void updateSuggestions(List<T> filtered, VBox suggestionsBox, Popup popup, TextField field) {
+            if (filtered == null) {
+                filtered = List.of();
+            }
             suggestionsBox.getChildren().clear();
             if (filtered.isEmpty()) {
                 popup.hide();
@@ -157,7 +164,7 @@ public class AutoCompleteAnt {
             }
 
             for (T option : filtered) {
-                String text = optionToString.apply(option);
+                String text = safeOptionText(option);
                 Label label = new Label(text);
                 label.getStyleClass().add(JfxStyles.POPUP_MENU_ITEM);
                 label.setMaxWidth(Double.MAX_VALUE);
@@ -176,6 +183,11 @@ public class AutoCompleteAnt {
                     popup.show(field, bounds.getMinX(), bounds.getMaxY() + 4);
                 }
             }
+        }
+
+        private String safeOptionText(T option) {
+            String text = optionToString != null ? optionToString.apply(option) : null;
+            return text != null ? text : "";
         }
     }
 

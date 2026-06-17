@@ -183,10 +183,10 @@ public class FormAnt {
 
         private Builder() {}
 
-        public Builder layout(Layout layout) { this.layout = layout; return this; }
-        public Builder size(Size size) { this.size = size; return this; }
+        public Builder layout(Layout layout) { this.layout = layout != null ? layout : Layout.HORIZONTAL; return this; }
+        public Builder size(Size size) { this.size = size != null ? size : Size.DEFAULT; return this; }
         public Builder colon(boolean colon) { this.colon = colon; return this; }
-        public Builder labelAlign(Align align) { this.labelAlign = align; return this; }
+        public Builder labelAlign(Align align) { this.labelAlign = align != null ? align : Align.RIGHT; return this; }
         public Builder labelCol(int labelCol) { this.labelCol = labelCol; return this; }
         public Builder wrapperCol(int wrapperCol) { this.wrapperCol = wrapperCol; return this; }
 
@@ -306,7 +306,13 @@ public class FormAnt {
 
             VBox form = new VBox(0);
             form.getStyleClass().add(JfxStyles.FORM);
-            form.getStyleClass().add("form-size-" + size.name().toLowerCase());
+            switch (size) {
+                case SMALL -> form.getStyleClass().add(JfxStyles.FORM_SIZE_SMALL);
+                case LARGE -> form.getStyleClass().add(JfxStyles.FORM_SIZE_LARGE);
+                default -> {
+                    // 默认尺寸由基础 Form 视觉承载，不额外挂无效的 size class。
+                }
+            }
 
             // header 区（M19.39）：位于全部内容之上
             if (header != null) {
@@ -325,7 +331,7 @@ public class FormAnt {
 
             // footer 区（M19.39 增强：支持多节点 + 对齐配置）
             if (!footerNodes.isEmpty()) {
-                HBox footerBox = new HBox(8);
+                HBox footerBox = new HBox();
                 footerBox.setAlignment(footerAlign);
                 footerBox.getStyleClass().add(JfxStyles.FORM_FOOTER);
                 footerBox.getChildren().addAll(footerNodes);
@@ -382,7 +388,8 @@ public class FormAnt {
                     sectionLabel.getStyleClass().add(JfxStyles.FORM_SECTION_TITLE);
                     container.getChildren().add(sectionLabel);
                 } else if (entry instanceof FormItem item) {
-                    VBox itemBox = new VBox(4);
+                    VBox itemBox = new VBox();
+                    itemBox.getStyleClass().add(JfxStyles.FORM_ITEM_BOX);
                     itemBox.getChildren().add(createLabel(item));
                     itemBox.getChildren().add(createWrapper(item, ctx));
                     container.getChildren().add(itemBox);
@@ -392,13 +399,14 @@ public class FormAnt {
         }
 
         private HBox buildInlineForm(FormContext ctx) {
-            HBox container = new HBox(16);
+            HBox container = new HBox();
             container.getStyleClass().add(JfxStyles.FORM_INLINE);
             container.setAlignment(Pos.CENTER_LEFT);
             // INLINE 模式忽略 section markers（spec Req 4 AC 6）
             for (Object entry : entries) {
                 if (entry instanceof FormItem item) {
-                    VBox itemBox = new VBox(4);
+                    VBox itemBox = new VBox();
+                    itemBox.getStyleClass().add(JfxStyles.FORM_ITEM_BOX);
                     if (!item.label.isEmpty()) {
                         itemBox.getChildren().add(createLabel(item));
                     }
@@ -434,7 +442,7 @@ public class FormAnt {
          * Wrapper：控件本体 + 可选 helpText + 动态 errorLabel（M19.23）。
          */
         private VBox createWrapper(FormItem item, FormContext ctx) {
-            VBox wrapper = new VBox(4);
+            VBox wrapper = new VBox();
             wrapper.getStyleClass().add(JfxStyles.FORM_ITEM_WRAPPER);
             wrapper.getChildren().add(item.control);
 

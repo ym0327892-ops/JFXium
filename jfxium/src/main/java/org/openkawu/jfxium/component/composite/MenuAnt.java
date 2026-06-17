@@ -198,13 +198,13 @@ public class MenuAnt {
 
         // ---------------- 表级 API ----------------
         public Builder mode(Mode mode) {
-            this.mode = mode;
+            this.mode = mode != null ? mode : Mode.INLINE;
             return this;
         }
 
         /** 主题（LIGHT/DARK，M14.3）。 */
         public Builder theme(Theme theme) {
-            this.theme = theme;
+            this.theme = theme != null ? theme : Theme.LIGHT;
             return this;
         }
 
@@ -735,7 +735,7 @@ public class MenuAnt {
         // -------- HORIZONTAL 模式：顶级横排 + 子菜单 Popup 下拉 --------
         @Override
         Node buildHorizontal(BuildContext ctx) {
-            HBox header = new HBox(8);
+            HBox header = new HBox();
             header.setAlignment(Pos.CENTER_LEFT);
             // CSS .jfx-menu-horizontal > .jfx-menu-submenu-header 控制 padding + height
             header.getStyleClass().add(JfxStyles.MENU_SUBMENU_HEADER);
@@ -790,7 +790,7 @@ public class MenuAnt {
 
         MenuItem(String key, String text, Node icon, Runnable onClick, int level) {
             this.key = key;
-            this.text = text;
+            this.text = text != null ? text : "";
             this.icon = icon;
             this.onClick = onClick;
             this.level = level;
@@ -839,7 +839,7 @@ public class MenuAnt {
         }
 
         Node buildHorizontal(BuildContext ctx) {
-            HBox row = new HBox(8);
+            HBox row = new HBox();
             row.setAlignment(Pos.CENTER);
             // CSS .jfx-menu-horizontal > .jfx-menu-item 控制 padding + height
             applyItemStyles(row, ctx);

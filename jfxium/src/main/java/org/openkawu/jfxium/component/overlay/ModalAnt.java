@@ -365,7 +365,7 @@ public class ModalAnt {
         }
 
         private HBox createHeader() {
-            HBox header = new HBox(8);
+            HBox header = new HBox();
             header.setAlignment(Pos.CENTER_LEFT);
             header.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_HEADER);
 
@@ -434,7 +434,7 @@ public class ModalAnt {
                         okBtn.setText(Messages.get("modal.ok")));
             }
 
-            HBox footer = new HBox(8, cancelBtn, okBtn);
+            HBox footer = new HBox(cancelBtn, okBtn);
             footer.setAlignment(Pos.CENTER_RIGHT);
             footer.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_FOOTER);
             return footer;

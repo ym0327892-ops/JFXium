@@ -64,7 +64,14 @@ public class CarouselAnt {
         private DotPosition dotPosition = DotPosition.BOTTOM;
 
         public Builder item(Node item) { this.items.add(item); return this; }
-        public Builder items(Node... items) { this.items.addAll(List.of(items)); return this; }
+        public Builder items(Node... items) {
+            if (items != null) {
+                for (Node item : items) {
+                    if (item != null) this.items.add(item);
+                }
+            }
+            return this;
+        }
         public Builder autoplay(boolean autoplay) { this.autoplay = autoplay; return this; }
         public Builder autoplay() { return autoplay(true); }
         public Builder autoplayInterval(Duration interval) { this.autoplayInterval = interval; return this; }
@@ -72,7 +79,7 @@ public class CarouselAnt {
         public Builder noDots() { return dots(false); }
         public Builder arrows(boolean arrows) { this.arrows = arrows; return this; }
         public Builder noArrows() { return arrows(false); }
-        public Builder effect(Effect effect) { this.effect = effect; return this; }
+        public Builder effect(Effect effect) { this.effect = effect != null ? effect : Effect.SCROLL; return this; }
         public Builder initialIndex(int index) { this.initialIndex = index; return this; }
         /** dots 位置：TOP / CENTER / BOTTOM（默认 BOTTOM）。 */
         public Builder dotPosition(DotPosition position) { this.dotPosition = position != null ? position : DotPosition.BOTTOM; return this; }
@@ -136,7 +143,7 @@ public class CarouselAnt {
             }
 
             if (dots && items.size() > 1) {
-                HBox dotsBox = new HBox(8);
+                HBox dotsBox = new HBox();
                 dotsBox.setAlignment(Pos.CENTER);
                 dotsBox.getStyleClass().add(JfxStyles.CAROUSEL_DOTS);
                 // 根据 dotPosition 决定对齐方式与边距（与箭头按钮的 viewOrder 相同，浮在 slide 之上）

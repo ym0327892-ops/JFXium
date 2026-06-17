@@ -60,17 +60,17 @@ public class SkeletonAnt {
         private boolean animated = true;
 
         public Builder variant(Variant variant) {
-            this.variant = variant;
+            this.variant = variant != null ? variant : Variant.TEXT;
             return this;
         }
 
         public Builder width(double width) {
-            this.width = width;
+            this.width = Double.isFinite(width) && width >= 0 ? width : 200;
             return this;
         }
 
         public Builder height(double height) {
-            this.height = height;
+            this.height = Double.isFinite(height) && height >= 0 ? height : 16;
             return this;
         }
 
@@ -169,7 +169,8 @@ public class SkeletonAnt {
     }
 
     public static VBox paragraph(int lines, double width, double lineHeight) {
-        VBox container = new VBox(8);
+        VBox container = new VBox();
+        container.getStyleClass().add(JfxStyles.SKELETON_PARAGRAPH);
         for (int i = 0; i < lines; i++) {
             double lineWidth = (i == lines - 1) ? width * 0.6 : width;
             container.getChildren().add(
@@ -186,7 +187,8 @@ public class SkeletonAnt {
      * Create a skeleton avatar + text combination
      */
     public static HBox avatarText() {
-        HBox container = new HBox(12);
+        HBox container = new HBox();
+        container.getStyleClass().add(JfxStyles.SKELETON_AVATAR_TEXT);
         container.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         container.getChildren().addAll(
             SkeletonAnt.create()

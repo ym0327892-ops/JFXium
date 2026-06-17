@@ -121,7 +121,7 @@ public abstract class AbstractFlowPaneAnt<SELF extends AbstractFlowPaneAnt<SELF>
     }
 
     protected static double clampGap(double gap) {
-        return Math.max(0, gap);
+        return Double.isFinite(gap) ? Math.max(0, gap) : 0;
     }
 
     private void addChildren(Node... nodes) {

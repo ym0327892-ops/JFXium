@@ -357,7 +357,7 @@ public class DrawerAnt {
         }
 
         private HBox createHeader() {
-            HBox header = new HBox(8);
+            HBox header = new HBox();
             header.setAlignment(Pos.CENTER_LEFT);
             header.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_HEADER);
 

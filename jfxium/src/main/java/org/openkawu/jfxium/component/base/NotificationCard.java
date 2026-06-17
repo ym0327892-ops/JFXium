@@ -71,7 +71,7 @@ public class NotificationCard {
         }
 
         public VBox build() {
-            VBox card = new VBox(12);
+            VBox card = new VBox();
             card.setAlignment(Pos.TOP_LEFT);
             card.getStyleClass().add(JfxStyles.NOTIFICATION_CARD);
             // M19.44 红线#1 修复：用 setMinWidth/setMaxWidth 替代 setStyle
@@ -79,7 +79,8 @@ public class NotificationCard {
             card.setMinWidth(w);
             card.setMaxWidth(w);
 
-            HBox headerBox = new HBox(12);
+            HBox headerBox = new HBox();
+            headerBox.getStyleClass().add(JfxStyles.NOTIFICATION_CARD_HEADER);
             headerBox.setAlignment(Pos.TOP_LEFT);
             HBox.setHgrow(headerBox, Priority.ALWAYS);
 
@@ -89,7 +90,8 @@ public class NotificationCard {
             icon.setTranslateY(2);
             headerBox.getChildren().add(icon);
 
-            VBox contentBox = new VBox(4);
+            VBox contentBox = new VBox();
+            contentBox.getStyleClass().add(JfxStyles.NOTIFICATION_CARD_CONTENT);
             HBox.setHgrow(contentBox, Priority.ALWAYS);
 
             if (!title.isEmpty()) {

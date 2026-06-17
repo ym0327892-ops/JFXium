@@ -48,7 +48,7 @@ public class TimePickerAnt {
         private ObjectProperty<LocalTime> bindProperty = null;
 
         public Builder value(LocalTime value) {
-            this.value = value;
+            this.value = value != null ? value : LocalTime.now();
             return this;
         }
 
@@ -81,7 +81,7 @@ public class TimePickerAnt {
                 value = LocalTime.now();
             }
 
-            HBox container = new HBox(8);
+            HBox container = new HBox();
             container.getStyleClass().add(JfxStyles.TIME_PICKER);
             container.setAlignment(Pos.CENTER_LEFT);
 

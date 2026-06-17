@@ -94,13 +94,27 @@ public class LoginTemplate {
 
         public Builder brandName(String name) { this.brandName = name; return this; }
         public Builder tagline(String tagline) { this.tagline = tagline; return this; }
-        public Builder feature(String text) { this.features.add(text); return this; }
+        public Builder feature(String text) {
+            if (text != null) {
+                this.features.add(text);
+            }
+            return this;
+        }
         public Builder features(String... texts) {
-            if (texts != null) for (String t : texts) features.add(t);
+            if (texts != null) {
+                for (String t : texts) {
+                    if (t != null) {
+                        features.add(t);
+                    }
+                }
+            }
             return this;
         }
         public Builder copyright(String text) { this.copyright = text; return this; }
-        public Builder bannerWidth(double width) { this.bannerWidth = width; return this; }
+        public Builder bannerWidth(double width) {
+            this.bannerWidth = Double.isFinite(width) && width > 0 ? width : 360;
+            return this;
+        }
 
         // ============================================================
         // 表单配置
@@ -155,6 +169,7 @@ public class LoginTemplate {
             String resolvedBrand = brandName != null ? brandName : Messages.get("login.brand_name");
             String resolvedTagline = tagline != null ? tagline : Messages.get("login.tagline");
             String resolvedCopyright = copyright != null ? copyright : Messages.get("login.copyright");
+            double resolvedBannerWidth = Double.isFinite(bannerWidth) && bannerWidth > 0 ? bannerWidth : 360;
 
             // Logo box（图标白色，背景半透明白）
             Region logoIcon = IconAnt.path(IconAnt.Path.DASHBOARD, 24);
@@ -192,9 +207,9 @@ public class LoginTemplate {
 
             VBox banner = new VBox(top, s1, featuresBox, s2, copyrightLabel);
             banner.getStyleClass().add(JfxStyles.LOGIN_BANNER);
-            banner.setMinWidth(bannerWidth);
-            banner.setMaxWidth(bannerWidth);
-            banner.setPrefWidth(bannerWidth);
+            banner.setMinWidth(resolvedBannerWidth);
+            banner.setMaxWidth(resolvedBannerWidth);
+            banner.setPrefWidth(resolvedBannerWidth);
             banner.setAlignment(Pos.TOP_LEFT);
             return banner;
         }
@@ -205,7 +220,7 @@ public class LoginTemplate {
             // 给 Node 套个 Class，让 LESS 走 LOGIN_BANNER_FEATURE_CHECK 样式
             check.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_CHECK);
 
-            Label content = new Label(text);
+            Label content = new Label(text != null ? text : "");
             content.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_TEXT);
 
             HBox row = new HBox(check, content);
@@ -325,8 +340,7 @@ public class LoginTemplate {
             Region icon = IconAnt.path(iconPath, 16);
             icon.getStyleClass().add(JfxStyles.ICON_MUTED);
             StackPane iconBox = new StackPane(icon);
-            iconBox.setMinWidth(36);
-            iconBox.setMaxWidth(36);
+            iconBox.getStyleClass().add(JfxStyles.LOGIN_FORM_INPUT_ICON_BOX);
             iconBox.setAlignment(Pos.CENTER);
 
             HBox.setHgrow(field, Priority.ALWAYS);
@@ -337,15 +351,15 @@ public class LoginTemplate {
             HBox row = new HBox(0, iconBox, field);
             row.getStyleClass().add(JfxStyles.LOGIN_FORM_INPUT_ROW);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.setPrefHeight(40);
             return row;
         }
 
         private static Region vSpacer(double h) {
+            double size = Double.isFinite(h) ? Math.max(0, h) : 0;
             Region r = new Region();
-            r.setMinHeight(h);
-            r.setMaxHeight(h);
-            r.setPrefHeight(h);
+            r.setMinHeight(size);
+            r.setMaxHeight(size);
+            r.setPrefHeight(size);
             return r;
         }
     }

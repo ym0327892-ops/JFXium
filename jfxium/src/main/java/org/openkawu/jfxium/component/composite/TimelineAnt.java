@@ -130,9 +130,8 @@ public class TimelineAnt {
             // 左侧 label（alternate / right 模式）
             if (mode == Mode.ALTERNATE || mode == Mode.RIGHT) {
                 VBox leftBox = new VBox();
-                leftBox.setPrefWidth(100);
                 leftBox.setAlignment(Pos.TOP_RIGHT);
-                leftBox.setPadding(new javafx.geometry.Insets(0, 16, 0, 0));
+                leftBox.getStyleClass().add(JfxStyles.TIMELINE_LABEL_BOX);
                 if (item.label != null) {
                     Label label = new Label(item.label);
                     label.getStyleClass().add(JfxStyles.TIMELINE_LABEL);
@@ -144,7 +143,7 @@ public class TimelineAnt {
             // 中间：dot + line
             VBox centerBox = new VBox(0);
             centerBox.setAlignment(Pos.TOP_CENTER);
-            centerBox.setPrefWidth(24);
+            centerBox.getStyleClass().add(JfxStyles.TIMELINE_CENTER_BOX);
 
             Node dot;
             if (item.dot != null) {
@@ -165,10 +164,10 @@ public class TimelineAnt {
             row.getChildren().add(centerBox);
 
             // 右侧 content
-            VBox rightBox = new VBox(4);
+            VBox rightBox = new VBox();
             rightBox.setAlignment(Pos.TOP_LEFT);
             HBox.setHgrow(rightBox, Priority.ALWAYS);
-            rightBox.setPadding(new javafx.geometry.Insets(0, 0, 0, 16));
+            rightBox.getStyleClass().add(JfxStyles.TIMELINE_CONTENT_BOX);
 
             Label contentLabel = new Label(item.content != null ? item.content : "");
             contentLabel.getStyleClass().add(JfxStyles.TIMELINE_CONTENT);
@@ -191,13 +190,13 @@ public class TimelineAnt {
 
             if (mode == Mode.ALTERNATE || mode == Mode.RIGHT) {
                 VBox leftBox = new VBox();
-                leftBox.setPrefWidth(100);
+                leftBox.getStyleClass().add(JfxStyles.TIMELINE_LABEL_BOX);
                 row.getChildren().add(leftBox);
             }
 
             VBox centerBox = new VBox(0);
             centerBox.setAlignment(Pos.TOP_CENTER);
-            centerBox.setPrefWidth(24);
+            centerBox.getStyleClass().add(JfxStyles.TIMELINE_CENTER_BOX);
 
             Circle circle = new Circle(6);
             circle.getStyleClass().add(JfxStyles.TIMELINE_DOT);
@@ -206,7 +205,7 @@ public class TimelineAnt {
             row.getChildren().add(centerBox);
 
             VBox rightBox = new VBox();
-            rightBox.setPadding(new javafx.geometry.Insets(0, 0, 0, 16));
+            rightBox.getStyleClass().add(JfxStyles.TIMELINE_CONTENT_BOX);
             Label contentLabel = new Label(pendingText);
             contentLabel.getStyleClass().add(JfxStyles.TIMELINE_PENDING_TEXT);
             rightBox.getChildren().add(contentLabel);

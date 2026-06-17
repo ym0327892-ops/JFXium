@@ -140,19 +140,19 @@ public class FlexAnt {
          * 单独 rowGap/columnGap 设置后会覆盖此值（仅在 wrap 模式下区分）。
          */
         public Builder gap(double gap) {
-            this.gap = Math.max(0, gap);
+            this.gap = Double.isFinite(gap) ? Math.max(0, gap) : 0;
             return this;
         }
 
         /** 行间距，仅在 wrap=true 时生效（FlowPane 才区分行列间距）。*/
         public Builder rowGap(double rowGap) {
-            this.rowGap = Math.max(0, rowGap);
+            this.rowGap = Double.isFinite(rowGap) ? Math.max(0, rowGap) : 0;
             return this;
         }
 
         /** 列间距，仅在 wrap=true 时生效。*/
         public Builder columnGap(double columnGap) {
-            this.columnGap = Math.max(0, columnGap);
+            this.columnGap = Double.isFinite(columnGap) ? Math.max(0, columnGap) : 0;
             return this;
         }
 

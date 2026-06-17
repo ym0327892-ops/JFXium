@@ -63,7 +63,7 @@ public class EmptyAnt {
         }
 
         public VBox build() {
-            VBox empty = new VBox(16);
+            VBox empty = new VBox();
             empty.setAlignment(Pos.CENTER);
             empty.getStyleClass().add(JfxStyles.EMPTY);
 

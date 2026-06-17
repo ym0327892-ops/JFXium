@@ -111,7 +111,7 @@ public class GroupBoxAnt {
 
         /** 设置标题文本。 */
         public Builder title(String title) {
-            this.title = title;
+            this.title = title != null ? title : "";
             return this;
         }
 
@@ -135,13 +135,13 @@ public class GroupBoxAnt {
 
         /** 设置卡片尺寸。 */
         public Builder size(Size size) {
-            this.size = size;
+            this.size = size != null ? size : Size.MEDIUM;
             return this;
         }
 
         /** 设置卡片类型（内嵌）。 */
         public Builder type(Type type) {
-            this.type = type;
+            this.type = type != null ? type : Type.DEFAULT;
             return this;
         }
 
@@ -340,7 +340,7 @@ public class GroupBoxAnt {
             }
 
             // 普通 Body（VBox）
-            VBox body = new VBox(12);
+            VBox body = new VBox();
             body.getStyleClass().add(JfxStyles.GROUP_BOX_BODY);
 
             if (content != null) {

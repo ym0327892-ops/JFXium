@@ -148,7 +148,7 @@ public class SliderAnt {
 
         public Node build() {
             normalizeRange();
-            step = step > 0 ? step : 1;
+            step = Double.isFinite(step) && step > 0 ? step : 1;
             return range ? buildRangeSlider() : buildSingleSlider();
         }
 
@@ -197,7 +197,7 @@ public class SliderAnt {
                 slider.setPrefHeight(200);
             }
 
-            VBox contentBox = new VBox(4);
+            VBox contentBox = new VBox();
             contentBox.setAlignment(vertical ? Pos.CENTER : Pos.CENTER_LEFT);
             contentBox.getChildren().add(slider);
 
@@ -248,7 +248,7 @@ public class SliderAnt {
         }
 
         private Node buildRangeSlider() {
-            HBox rangeBox = new HBox(8);
+            HBox rangeBox = new HBox();
             rangeBox.setAlignment(Pos.CENTER_LEFT);
             rangeBox.getStyleClass().add(JfxStyles.SLIDER_RANGE);
             // rangeBox 填充父容器宽度（maxWidth=MAX）但内部 slider 各自限宽 160，
@@ -334,15 +334,33 @@ public class SliderAnt {
         }
 
         private void normalizeRange() {
+            if (!Double.isFinite(min)) {
+                min = 0;
+            }
+            if (!Double.isFinite(max)) {
+                max = 100;
+            }
             if (max < min) {
                 double oldMin = min;
                 min = max;
                 max = oldMin;
             }
+            if (!Double.isFinite(value)) {
+                value = min;
+            }
+            if (rangeValue != null && rangeValue.length >= 2) {
+                if (!Double.isFinite(rangeValue[0])) {
+                    rangeValue[0] = min;
+                }
+                if (!Double.isFinite(rangeValue[1])) {
+                    rangeValue[1] = max;
+                }
+            }
         }
 
         private double clamp(double rawValue) {
-            return Math.max(min, Math.min(max, rawValue));
+            double candidate = Double.isFinite(rawValue) ? rawValue : min;
+            return Math.max(min, Math.min(max, candidate));
         }
 
         private void applyReverse(Slider slider) {

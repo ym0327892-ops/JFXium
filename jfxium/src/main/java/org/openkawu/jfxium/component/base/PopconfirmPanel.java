@@ -62,12 +62,12 @@ public class PopconfirmPanel {
         }
 
         public VBox build() {
-            VBox panel = new VBox(12);
+            VBox panel = new VBox();
             panel.getStyleClass().add(JfxStyles.POPCONFIRM_PANEL);
             // M19.44 红线#1 修复：用尺寸 API 替代 inline CSS 宽度。
             panel.setMinWidth(parsePx(minWidth));
 
-            HBox titleBox = new HBox(8);
+            HBox titleBox = new HBox();
             titleBox.setAlignment(Pos.CENTER_LEFT);
 
             SVGPath icon = new SVGPath();
@@ -88,7 +88,7 @@ public class PopconfirmPanel {
                 panel.getChildren().add(descLabel);
             }
 
-            HBox buttonBox = new HBox(8);
+            HBox buttonBox = new HBox();
             buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
             Button cancelBtn = ButtonAnt.create(cancelText)

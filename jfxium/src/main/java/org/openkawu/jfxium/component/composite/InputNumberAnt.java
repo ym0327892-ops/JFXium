@@ -67,12 +67,12 @@ public class InputNumberAnt {
         public Builder value(double value) { this.value = value; return this; }
         public Builder min(double min) { this.min = min; return this; }
         public Builder max(double max) { this.max = max; return this; }
-        public Builder step(double step) { this.step = step; return this; }
-        public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
+        public Builder step(double step) { this.step = Double.isFinite(step) && step > 0 ? step : 1; return this; }
+        public Builder placeholder(String placeholder) { this.placeholder = placeholder != null ? placeholder : ""; return this; }
         public Builder disabled(boolean disabled) { this.disabled = disabled; return this; }
         public Builder disabled() { return disabled(true); }
         public Builder readOnly(boolean readOnly) { this.readOnly = readOnly; return this; }
-        public Builder size(Size size) { this.size = size; return this; }
+        public Builder size(Size size) { this.size = size != null ? size : Size.DEFAULT; return this; }
         public Builder onChange(Consumer<Double> onChange) { this.onChange = onChange; return this; }
         public Builder precision(int precision) { this.precision = precision; return this; }
         public Builder prefix(String prefix) { this.prefix = prefix; return this; }
@@ -85,7 +85,8 @@ public class InputNumberAnt {
         }
 
         public HBox build() {
-            if (bindProperty != null && !Double.isNaN(bindProperty.get())) {
+            normalizeRange();
+            if (bindProperty != null && Double.isFinite(bindProperty.get())) {
                 value = normalizeValue(bindProperty.get());
                 if (Double.compare(bindProperty.get(), value) != 0) {
                     bindProperty.set(value);
@@ -206,11 +207,29 @@ public class InputNumberAnt {
             if (changed && onChange != null) onChange.accept(value);
         }
 
+        private void normalizeRange() {
+            if (!Double.isFinite(min)) {
+                min = Double.NEGATIVE_INFINITY;
+            }
+            if (!Double.isFinite(max)) {
+                max = Double.POSITIVE_INFINITY;
+            }
+            if (max < min) {
+                double oldMin = min;
+                min = max;
+                max = oldMin;
+            }
+        }
+
         private double normalizeValue(double rawValue) {
-            double normalized = Math.max(min, Math.min(max, rawValue));
+            double candidate = Double.isFinite(rawValue) ? rawValue : 0;
+            double normalized = Math.max(min, Math.min(max, candidate));
             if (precision >= 0) {
                 double factor = Math.pow(10, precision);
                 normalized = Math.round(normalized * factor) / factor;
+            }
+            if (!Double.isFinite(normalized)) {
+                normalized = 0;
             }
             return normalized;
         }
