@@ -15,15 +15,15 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *
  * 使用示例：
  * <pre>{@code
- * // 基础悬浮按钮
+ * // 基础悬浮按钮（icon 走 IconAnt，避免 Unicode 字符当图标）
  * Node floatBtn = FloatButtonAnt.create()
- *     .icon(new Label("+"))
+ *     .icon(IconAnt.symbol(IconAnt.Symbol.PLUS, 18))
  *     .onClick(() -> System.out.println("点击了悬浮按钮"))
  *     .build();
  *
  * // 带类型的悬浮按钮
  * Node floatBtn = FloatButtonAnt.create()
- *     .icon(new Label("↑"))
+ *     .icon(IconAnt.symbol(IconAnt.Symbol.ARROW_UP, 18))
  *     .type(FloatButtonAnt.Type.PRIMARY)
  *     .tooltip("回到顶部")
  *     .build();

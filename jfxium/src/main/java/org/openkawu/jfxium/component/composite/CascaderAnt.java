@@ -12,6 +12,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
+import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
@@ -82,8 +83,8 @@ public class CascaderAnt {
         private String searchQuery = "";
         private boolean suppressFieldListener = false;
 
-        public Builder options(List<Option> options) { this.options = options; return this; }
-        public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
+        public Builder options(List<Option> options) { this.options = options != null ? options : new ArrayList<>(); return this; }
+        public Builder placeholder(String placeholder) { this.placeholder = placeholder != null ? placeholder : "Please select"; return this; }
         public Builder disabled(boolean disabled) { this.disabled = disabled; return this; }
         public Builder disabled() { return disabled(true); }
         public Builder allowClear(boolean allowClear) { this.allowClear = allowClear; return this; }
@@ -124,8 +125,10 @@ public class CascaderAnt {
             cascaderPanel.getStyleClass().add(JfxStyles.POPUP_MENU);
             popup.getContent().add(cascaderPanel);
 
-            Label clearLabel = new Label("×");
+            // BUG #132 修复：原来 new Label("×") 是裸 Unicode 字符当图标，现走 IconAnt.symbol 统一收口
+            Label clearLabel = new Label();
             clearLabel.getStyleClass().add(JfxStyles.CASCADER_CLEAR);
+            clearLabel.setGraphic(IconAnt.symbol(IconAnt.Symbol.CLOSE, 12));
             updateClearLabel(clearLabel);
             clearLabel.setOnMouseClicked(e -> {
                 if (disabled || selectedPath.isEmpty()) {
@@ -212,7 +215,7 @@ public class CascaderAnt {
             column.setPrefHeight(200);
 
             for (Option option : currentOptions) {
-                HBox item = new HBox(8);
+                HBox item = new HBox();
                 item.setAlignment(Pos.CENTER_LEFT);
                 item.getStyleClass().add(JfxStyles.CASCADER_ITEM);
                 if (option.isDisabled()) {

@@ -2,6 +2,7 @@ package org.openkawu.jfxium.template;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.openkawu.jfxium.component.control.ButtonAnt;
@@ -170,11 +171,13 @@ public class LoginTemplate {
             Label sub = new Label(resolvedTagline);
             sub.getStyleClass().add(JfxStyles.LOGIN_BANNER_TAGLINE);
 
-            VBox top = new VBox(16, logoBox, name, sub);
+            VBox top = new VBox(logoBox, name, sub);
+            top.getStyleClass().add(JfxStyles.LOGIN_BANNER_BRAND_BOX);
             top.setAlignment(Pos.TOP_LEFT);
 
             // 卖点
-            VBox featuresBox = new VBox(10);
+            VBox featuresBox = new VBox();
+            featuresBox.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURES);
             for (String f : features) {
                 featuresBox.getChildren().add(buildFeature(f));
             }
@@ -187,9 +190,8 @@ public class LoginTemplate {
             Region s1 = new Region(); VBox.setVgrow(s1, Priority.ALWAYS);
             Region s2 = new Region(); VBox.setVgrow(s2, Priority.ALWAYS);
 
-            VBox banner = new VBox(20, top, s1, featuresBox, s2, copyrightLabel);
+            VBox banner = new VBox(top, s1, featuresBox, s2, copyrightLabel);
             banner.getStyleClass().add(JfxStyles.LOGIN_BANNER);
-            banner.setPadding(new Insets(40, 32, 32, 32));
             banner.setMinWidth(bannerWidth);
             banner.setMaxWidth(bannerWidth);
             banner.setPrefWidth(bannerWidth);
@@ -198,13 +200,16 @@ public class LoginTemplate {
         }
 
         private HBox buildFeature(String text) {
-            Label check = new Label("✓");
+            // BUG #132 修复：原来 new Label("✓") 是裸 Unicode 字符当图标，现走 IconAnt.symbol 统一收口
+            Node check = IconAnt.symbol(IconAnt.Symbol.CHECK, 14);
+            // 给 Node 套个 Class，让 LESS 走 LOGIN_BANNER_FEATURE_CHECK 样式
             check.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_CHECK);
 
             Label content = new Label(text);
             content.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_TEXT);
 
-            HBox row = new HBox(10, check, content);
+            HBox row = new HBox(check, content);
+            row.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_ROW);
             row.setAlignment(Pos.CENTER_LEFT);
             return row;
         }
@@ -286,12 +291,10 @@ public class LoginTemplate {
                     .build();
             loginBtn.getStyleClass().add(JfxStyles.LOGIN_FORM_SUBMIT);
             loginBtn.setMaxWidth(Double.MAX_VALUE);
-            loginBtn.setPrefHeight(40);
 
             // 组装
-            VBox panel = new VBox(16);
+            VBox panel = new VBox();
             panel.getStyleClass().add(JfxStyles.LOGIN_FORM);
-            panel.setPadding(new Insets(60, 48, 40, 48));
             panel.setAlignment(Pos.TOP_LEFT);
             panel.getChildren().addAll(title, subtitle, vSpacer(8), usernameRow, passwordRow, errorLabel);
             if (rememberRow != null) panel.getChildren().add(rememberRow);

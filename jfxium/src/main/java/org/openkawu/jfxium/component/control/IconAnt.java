@@ -111,7 +111,13 @@ public class IconAnt {
         EDIT("M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"),
 
         /** 删除（垃圾桶） */
-        DELETE("M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z");
+        DELETE("M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"),
+
+        /** chevron-right（右尖括号，用于 AppShellAnt sider 折叠/展开触发按钮） */
+        CHEVRON_RIGHT("M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"),
+
+        /** chevron-left（左尖括号） */
+        CHEVRON_LEFT("M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z");
 
         private final String svgPath;
 

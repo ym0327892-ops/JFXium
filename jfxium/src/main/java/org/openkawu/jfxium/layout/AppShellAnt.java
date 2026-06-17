@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import org.openkawu.jfxium.component.layout.GridAnt;
+import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -303,15 +304,22 @@ public class AppShellAnt {
             return new Result(shell, collapsedProp);
         }
 
-        /** 内置触发按钮：折叠时显示 ›, 展开时显示 ‹。 */
+        /** 内置触发按钮：折叠时显示右箭头（›），展开时显示左箭头（‹）。 */
         private Button createTriggerButton(BooleanProperty collapsedProp) {
-            Button btn = new Button(collapsedProp.get() ? "›" : "‹");
+            Button btn = new Button();
             btn.getStyleClass().addAll(JfxStyles.APP_SHELL_SIDER_TRIGGER, JfxStyles.BUTTON_BASE);
             btn.setMaxWidth(Double.MAX_VALUE);
             btn.setOnAction(e -> collapsedProp.set(!collapsedProp.get()));
-            // 同步按钮文字与折叠状态
-            collapsedProp.addListener((obs, ov, nv) -> btn.setText(nv ? "›" : "‹"));
+            // BUG #132 修复：原来 setText("›"/"‹") 是裸 Unicode 字符当图标，现走 IconAnt.path 统一收口
+            btn.setGraphic(buildTriggerIcon(collapsedProp.get()));
+            // 同步图标方向与折叠状态
+            collapsedProp.addListener((obs, ov, nv) -> btn.setGraphic(buildTriggerIcon(nv)));
             return btn;
+        }
+
+        /** 按折叠状态构造触发图标：折叠 → 右箭头（点开展开），展开 → 左箭头（点起折叠）。 */
+        private static Node buildTriggerIcon(boolean collapsed) {
+            return IconAnt.path(collapsed ? IconAnt.Path.CHEVRON_RIGHT : IconAnt.Path.CHEVRON_LEFT, 14);
         }
 
         /** 监听 Scene 宽度，跨断点时自动 toggle 折叠状态。 */
