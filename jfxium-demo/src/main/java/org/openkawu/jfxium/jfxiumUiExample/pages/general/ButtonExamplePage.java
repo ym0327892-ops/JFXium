@@ -9,16 +9,16 @@ import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 
 /**
- * Button 按钮 —— 类型 / 尺寸 / 形状 / 状态 / 块级。
+ * Button 按钮 —— 类型 / 四档尺寸 / 形状 / 状态 / 块级。
  *
- * <p>对标 Ant Design Button：10 种 Type × 3 档 Size × 多种 Shape，可叠加 ghost / block / disabled。</p>
+ * <p>对标 Ant Design Button：10 种 Type × 4 档 Size × 多种 Shape，可叠加 ghost / block / disabled。</p>
  */
 public class ButtonExamplePage extends VBoxAnt {
 
     public ButtonExamplePage() {
         spacing(0).children(PageTemplate.create()
                 .title("Button 按钮")
-                .description("可点击的交互元素，支持多种 type / size / shape，组合非常灵活。")
+                .description("可点击的交互元素，支持多种 type / size / shape，组合非常灵活。默认尺寸是 middle；布局模板里常把按钮再压一档，常见是 small 或 xs。")
                 .sections(
                         typeSection(),
                         sizeSection(),
@@ -62,20 +62,42 @@ public class ButtonExamplePage extends VBoxAnt {
                 code, row);
     }
 
-    /** 2. 尺寸 Size —— 三档大小。 */
+    /** 2. 尺寸 Size —— 四档大小。 */
     private Node sizeSection() {
-        Node row = Demos.row(
-                ButtonAnt.create("Small").size(ButtonAnt.Size.SMALL).type(ButtonAnt.Type.PRIMARY).build(),
-                ButtonAnt.create("Default").type(ButtonAnt.Type.PRIMARY).build(),
-                ButtonAnt.create("Large").size(ButtonAnt.Size.LARGE).type(ButtonAnt.Type.PRIMARY).build()
+        Node row = Demos.column(
+                Demos.row(
+                        ButtonAnt.create("Large").size(ButtonAnt.Size.LARGE).type(ButtonAnt.Type.PRIMARY).build(),
+                        ButtonAnt.create("Middle").size(ButtonAnt.Size.MIDDLE).type(ButtonAnt.Type.PRIMARY).build(),
+                        ButtonAnt.create("Small").size(ButtonAnt.Size.SMALL).type(ButtonAnt.Type.PRIMARY).build(),
+                        ButtonAnt.create("XS").size(ButtonAnt.Size.XS).type(ButtonAnt.Type.PRIMARY).build()
+                ),
+                Demos.row(
+                        ButtonAnt.create("Text Large").type(ButtonAnt.Type.TEXT).size(ButtonAnt.Size.LARGE).build(),
+                        ButtonAnt.create("Text Middle").type(ButtonAnt.Type.TEXT).size(ButtonAnt.Size.MIDDLE).build(),
+                        ButtonAnt.create("Text Small").type(ButtonAnt.Type.TEXT).size(ButtonAnt.Size.SMALL).build(),
+                        ButtonAnt.create("Text XS").type(ButtonAnt.Type.TEXT).size(ButtonAnt.Size.XS).build()
+                ),
+                Demos.row(
+                        ButtonAnt.create("Link Large").type(ButtonAnt.Type.LINK).size(ButtonAnt.Size.LARGE).build(),
+                        ButtonAnt.create("Link Middle").type(ButtonAnt.Type.LINK).size(ButtonAnt.Size.MIDDLE).build(),
+                        ButtonAnt.create("Link Small").type(ButtonAnt.Type.LINK).size(ButtonAnt.Size.SMALL).build(),
+                        ButtonAnt.create("Link XS").type(ButtonAnt.Type.LINK).size(ButtonAnt.Size.XS).build()
+                )
         );
         String code = """
-                // 三档：SMALL / DEFAULT（不写即默认）/ LARGE
-                ButtonAnt.create("Small").size(ButtonAnt.Size.SMALL).type(ButtonAnt.Type.PRIMARY).build();
-                ButtonAnt.create("Default").type(ButtonAnt.Type.PRIMARY).build();
+                // 四档：LARGE / MIDDLE / SMALL / XS
                 ButtonAnt.create("Large").size(ButtonAnt.Size.LARGE).type(ButtonAnt.Type.PRIMARY).build();
+                ButtonAnt.create("Middle").size(ButtonAnt.Size.MIDDLE).type(ButtonAnt.Type.PRIMARY).build();
+                ButtonAnt.create("Small").size(ButtonAnt.Size.SMALL).type(ButtonAnt.Type.PRIMARY).build();
+                ButtonAnt.create("XS").size(ButtonAnt.Size.XS).type(ButtonAnt.Type.PRIMARY).build();
+
+                // TEXT / LINK 也沿用同一套四档 size
+                ButtonAnt.create("Text XS").type(ButtonAnt.Type.TEXT).size(ButtonAnt.Size.XS).build();
+                ButtonAnt.create("Link XS").type(ButtonAnt.Type.LINK).size(ButtonAnt.Size.XS).build();
                 """;
-        return Demos.sectionWithCode("2. 尺寸 Size", "三档：SMALL / DEFAULT / LARGE。", code, row);
+        return Demos.sectionWithCode("2. 尺寸 Size",
+                "四档：LARGE / MIDDLE / SMALL / XS。TEXT 和 LINK 也直接复用同一套 size。",
+                code, row);
     }
 
     /** 3. 形状 Shape —— 圆角程度。 */

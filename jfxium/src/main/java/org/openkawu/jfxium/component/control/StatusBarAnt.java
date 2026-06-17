@@ -2,7 +2,6 @@ package org.openkawu.jfxium.component.control;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
@@ -221,10 +220,13 @@ public class StatusBarAnt extends HBox {
         }
 
         /** 添加可点击操作项（内联按钮：透明背景、无边框、微 padding，契合 {@code @status-bar-height} 28px 高度，对标 VS Code 底栏按钮）。
-         *  视觉剥离委托给 {@link JfxStyles#BUTTON_INLINE}，键盘可达/accessibility 由原生 Button 保证。 */
+         *  视觉剥离委托给 {@link JfxStyles#BUTTON_INLINE}，语义与尺寸走 ButtonAnt 的 {@code LINK + XS} 档。 */
         public Builder action(String text, Runnable onClick) {
-            Button btn = new Button(text);
-            btn.getStyleClass().addAll(JfxStyles.BUTTON_INLINE, JfxStyles.STATUS_BAR_ACTION);
+            ButtonAnt btn = ButtonAnt.create(text)
+                    .type(ButtonAnt.Type.LINK)
+                    .size(ButtonAnt.Size.XS)
+                    .styleClass(JfxStyles.BUTTON_INLINE, JfxStyles.STATUS_BAR_ACTION)
+                    .build();
             if (onClick != null) {
                 btn.setOnAction(e -> onClick.run());
             }

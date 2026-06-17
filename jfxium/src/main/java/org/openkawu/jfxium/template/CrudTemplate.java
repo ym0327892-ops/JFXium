@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.openkawu.jfxium.component.composite.BarAnt;
+import org.openkawu.jfxium.component.composite.HBarAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -281,10 +281,10 @@ public class CrudTemplate {
 
         /**
          * 构建一行二段式工具栏：[ left... ]  spacer  [ right... ]
-         * <p>M19 重构：复用 BarAnt 组件（消除内部 buildBar 重复实现）。</p>
+         * <p>M19 重构：复用 HBarAnt 组件（消除内部 buildBar 重复实现）。</p>
          */
         private HBox buildBar(List<Node> left, List<Node> right, double spacing) {
-            return BarAnt.create()
+            return HBarAnt.create()
                     .left(left.toArray(new Node[0]))
                     .right(right.toArray(new Node[0]))
                     .gap(safeSpacing(spacing))

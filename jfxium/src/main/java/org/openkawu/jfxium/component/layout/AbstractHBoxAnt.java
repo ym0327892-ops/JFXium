@@ -9,7 +9,7 @@ import javafx.scene.layout.Priority;
 /**
  * HBox 系继承式组件的自类型基类。
  *
- * <p>给 {@code BarAnt} 这类「基于 HBox，但需要返回自身类型继续链式调用」的组件复用。
+ * <p>给 {@code HBarAnt} 这类「基于 HBox，但需要返回自身类型继续链式调用」的组件复用。
  * 公开的 {@link HBoxAnt} 仍保持无泛型 API，避免普通调用方被 SELF 泛型打扰。</p>
  *
  * @param <SELF> 真实子类类型

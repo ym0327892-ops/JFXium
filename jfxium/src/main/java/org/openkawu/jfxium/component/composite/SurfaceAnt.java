@@ -118,13 +118,13 @@ public class SurfaceAnt {
             }
 
             if (!title.isEmpty() || extra != null) {
-                // 用 BarAnt 二段式（左标题 + 右 extra）
+                // 用 HBarAnt 二段式（左标题 + 右 extra）
                 javafx.scene.control.Label titleLabel = null;
                 if (!title.isEmpty()) {
                     titleLabel = new javafx.scene.control.Label(title);
                     titleLabel.getStyleClass().add(JfxStyles.SURFACE_TITLE);
                 }
-                HBox header = BarAnt.create()
+                HBox header = HBarAnt.create()
                         .left(titleLabel)
                         .right(extra)
                         .gap(8)

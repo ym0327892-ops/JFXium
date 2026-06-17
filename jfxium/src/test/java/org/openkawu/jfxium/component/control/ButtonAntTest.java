@@ -105,10 +105,26 @@ class ButtonAntTest extends JfxTestBase {
     // ---------- size ----------
 
     @Test
+    @DisplayName("size(DEFAULT/MIDDLE) 挂 SIZE_MIDDLE")
+    void size_middle() {
+        ButtonAnt btnDefault = ButtonAnt.create().size(ButtonAnt.Size.DEFAULT).build();
+        ButtonAnt btnMiddle = ButtonAnt.create().size(ButtonAnt.Size.MIDDLE).build();
+        assertTrue(btnDefault.getStyleClass().contains(JfxStyles.SIZE_MIDDLE));
+        assertTrue(btnMiddle.getStyleClass().contains(JfxStyles.SIZE_MIDDLE));
+    }
+
+    @Test
     @DisplayName("size(SMALL) 挂 SIZE_SMALL")
     void size_small() {
         ButtonAnt btn = ButtonAnt.create().size(ButtonAnt.Size.SMALL).build();
         assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));
+    }
+
+    @Test
+    @DisplayName("size(XS) 挂 SIZE_XS")
+    void size_xs() {
+        ButtonAnt btn = ButtonAnt.create().size(ButtonAnt.Size.XS).build();
+        assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_XS));
     }
 
     @Test
@@ -119,12 +135,32 @@ class ButtonAntTest extends JfxTestBase {
     }
 
     @Test
-    @DisplayName("size 幂等：SMALL→LARGE 只挂 LARGE")
+    @DisplayName("size 幂等：SMALL→XS→LARGE 只挂 LARGE")
     void size_idempotent() {
         ButtonAnt btn = ButtonAnt.create().size(ButtonAnt.Size.SMALL)
+                .size(ButtonAnt.Size.XS)
                 .size(ButtonAnt.Size.LARGE).build();
         assertFalse(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));
+        assertFalse(btn.getStyleClass().contains(JfxStyles.SIZE_XS));
         assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_LARGE));
+    }
+
+    @Test
+    @DisplayName("TEXT / LINK 同样支持四档 size")
+    void size_appliesToTextAndLink() {
+        ButtonAnt text = ButtonAnt.create("文字")
+                .type(ButtonAnt.Type.TEXT)
+                .size(ButtonAnt.Size.XS)
+                .build();
+        ButtonAnt link = ButtonAnt.create("链接")
+                .type(ButtonAnt.Type.LINK)
+                .size(ButtonAnt.Size.SMALL)
+                .build();
+
+        assertTrue(text.getStyleClass().contains(JfxStyles.BUTTON_TEXT));
+        assertTrue(text.getStyleClass().contains(JfxStyles.SIZE_XS));
+        assertTrue(link.getStyleClass().contains(JfxStyles.BUTTON_LINK));
+        assertTrue(link.getStyleClass().contains(JfxStyles.SIZE_SMALL));
     }
 
     // ---------- shape ----------
@@ -233,7 +269,7 @@ class ButtonAntTest extends JfxTestBase {
         Rectangle icon = new Rectangle(16, 16);
         ButtonAnt btn = ButtonAnt.create("按钮")
                 .type(ButtonAnt.Type.PRIMARY)
-                .size(ButtonAnt.Size.LARGE)
+                .size(ButtonAnt.Size.MIDDLE)
                 .rounded()
                 .icon(icon)
                 .contentDisplay(ContentDisplay.LEFT)

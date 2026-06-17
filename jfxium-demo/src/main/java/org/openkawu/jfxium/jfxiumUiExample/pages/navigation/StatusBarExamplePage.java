@@ -1,10 +1,10 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.navigation;
 
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
+import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.StatusBarAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -13,6 +13,8 @@ import org.openkawu.jfxium.template.PageTemplate;
 
 /**
  * StatusBar 底部状态栏 —— 基础信息 / 进度条 / 可交互操作项 / 自定义节点。
+ *
+ * <p>默认基准是 28px，操作项使用 inline link 按钮，语义上按 ButtonAnt 的 LINK + XS 档落地。</p>
  */
 public class StatusBarExamplePage extends VBoxAnt {
 
@@ -84,33 +86,45 @@ public class StatusBarExamplePage extends VBoxAnt {
                     .build();
                 """;
         return Demos.sectionWithCode("3. 可点击操作项",
-                "action(text, onClick) 添加内联文字按钮。CSS 剥掉按钮皮（透明背景、无边框），"
-                        + "hover 高亮为 -color-accent-0，契合 28px 底栏高度。",
+                "action(text, onClick) 添加内联 link 按钮。CSS 剥掉按钮皮（透明背景、无边框），"
+                        + "hover 高亮为 -color-accent-0，尺寸走 LINK + XS，契合 28px 底栏高度。",
                 code, demo);
     }
 
     private Node inlineButtonSection() {
-        Button btn1 = new Button("UTF-8");
-        btn1.getStyleClass().add(JfxStyles.BUTTON_INLINE);
+        ButtonAnt btn1 = ButtonAnt.create("UTF-8")
+                .type(ButtonAnt.Type.LINK)
+                .size(ButtonAnt.Size.XS)
+                .styleClass(JfxStyles.BUTTON_INLINE)
+                .build();
         btn1.setOnAction(e -> System.out.println("UTF-8"));
 
-        Button btn2 = new Button("LF");
-        btn2.getStyleClass().add(JfxStyles.BUTTON_INLINE);
+        ButtonAnt btn2 = ButtonAnt.create("LF")
+                .type(ButtonAnt.Type.LINK)
+                .size(ButtonAnt.Size.XS)
+                .styleClass(JfxStyles.BUTTON_INLINE)
+                .build();
         btn2.setOnAction(e -> System.out.println("LF"));
 
-        Button btn3 = new Button("Git: main");
-        btn3.getStyleClass().add(JfxStyles.BUTTON_INLINE);
+        ButtonAnt btn3 = ButtonAnt.create("Git: main")
+                .type(ButtonAnt.Type.LINK)
+                .size(ButtonAnt.Size.XS)
+                .styleClass(JfxStyles.BUTTON_INLINE)
+                .build();
         btn3.setOnAction(e -> System.out.println("Git: main"));
 
         HBox row = new HBox(4, btn1, btn2, btn3);
         String code = """
-                Button btn = new Button("UTF-8");
-                btn.getStyleClass().add(JfxStyles.BUTTON_INLINE);
+                ButtonAnt btn = ButtonAnt.create("UTF-8")
+                        .type(ButtonAnt.Type.LINK)
+                        .size(ButtonAnt.Size.XS)
+                        .styleClass(JfxStyles.BUTTON_INLINE)
+                        .build();
                 btn.setOnAction(e -> chooseEncoding());
                 """;
         return Demos.sectionWithCode("4. 独立内联按钮",
-                "不依赖 StatusBarAnt —— 任何原生 Button 加 {} 就变成剥皮按钮（透明、无边框、微 padding、"
-                        + "hover 高亮），可自由嵌入任意容器：HBox / FlowPane / 文本行等。",
+                "不依赖 StatusBarAnt —— 任何 ButtonAnt + {} 就变成剥皮按钮（透明、无边框、微 padding、"
+                        + "hover 高亮），正好适合 28px 状态栏，也可自由嵌入任意容器：HBox / FlowPane / 文本行等。",
                 code.replace("{}", "JfxStyles.BUTTON_INLINE"),
                 row);
     }

@@ -19,7 +19,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.openkawu.jfxium.component.composite.AlertAnt;
-import org.openkawu.jfxium.component.composite.BarAnt;
+import org.openkawu.jfxium.component.composite.HBarAnt;
 import org.openkawu.jfxium.component.composite.InputNumberAnt;
 import org.openkawu.jfxium.component.composite.SliderAnt;
 import org.openkawu.jfxium.component.composite.SwitchAnt;
@@ -82,7 +82,7 @@ public class BindValueShowcaseDemo extends Application {
     // ============================================================
 
     private Node buildToolbar() {
-        return BarAnt.create()
+        return HBarAnt.create()
             .left(
                 LabelAnt.create().text(" bindValue 双向绑定 — 单 Property 多控件同步 ").build()
             )

@@ -20,11 +20,12 @@ import java.util.List;
  *
  * <h2>跟其他 Template 的边界</h2>
  * <table border="1">
- *   <caption>JFXium 4 个 Template 适用场景对照</caption>
+ *   <caption>JFXium 5 个 Template 适用场景对照</caption>
  *   <tr><th>模板</th><th>结构</th><th>典型场景</th></tr>
  *   <tr><td>{@link PageTemplate}</td><td>title + desc + body</td><td>展示页 / 文档 / 设置 / 任何简单内容页</td></tr>
  *   <tr><td>{@link CrudTemplate}</td><td>title + topbar + body + bottombar</td><td>列表 / 表单 / 仪表盘（带工具栏）</td></tr>
  *   <tr><td>{@link DashboardTemplate}</td><td>welcome + 统计卡矩阵 + 双栏底部</td><td>数据概览首页</td></tr>
+ *   <tr><td>{@link WorkspaceTemplate}</td><td>brand + headerActions + sider + content + footer</td><td>工作台 / 后台壳 / 需要 header + sider 的生产系统</td></tr>
  *   <tr><td>{@link LoginTemplate}</td><td>banner + 表单</td><td>登录 / 注册</td></tr>
  * </table>
  *

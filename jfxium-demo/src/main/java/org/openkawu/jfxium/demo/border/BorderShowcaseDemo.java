@@ -13,7 +13,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.openkawu.jfxium.component.composite.BarAnt;
+import org.openkawu.jfxium.component.composite.HBarAnt;
 import org.openkawu.jfxium.component.composite.GroupBoxAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.LabelAnt;
@@ -30,7 +30,7 @@ import org.openkawu.jfxium.core.theme.ThemeManager;
  * 边线 (Border) 能力展示 Demo。
  *
  * <p>对应规范文档: {@code INTERNAL/BORDER.md}。本 Demo 演示 4 方向独立控制、
- * BarAnt 默认行为、GroupBoxAnt.bordered 模式、嵌套规范场景。</p>
+ * HBarAnt 默认行为、GroupBoxAnt.bordered 模式、嵌套规范场景。</p>
  *
  * <p><b>运行:</b> 在 IDE 跑 {@link #main(String[])},或:
  * <pre>./mvnw javafx:run -pl jfxium-demo \
@@ -92,7 +92,7 @@ public class BorderShowcaseDemo extends Application {
     // ============================================================
 
     private Node buildToolbar() {
-        return BarAnt.create()
+        return HBarAnt.create()
             .left(
                 LabelAnt.create().text(" 主题: ").build(),
                 themeButton("Light", () -> ThemeManager.getInstance().applyTheme(new LightTheme())),
@@ -128,13 +128,13 @@ public class BorderShowcaseDemo extends Application {
                 sectionTitle("1. 4 方向独立控制 — borderTop / borderBottom / borderLeft / borderRight"),
                 sectionDirDemo(),
 
-                sectionTitle("2. BarAnt 边线 4 种组合 — 默认底边线 / 顶线 / 上下双线 / 全关"),
+                sectionTitle("2. HBarAnt 边线 4 种组合 — 默认底边线 / 顶线 / 上下双线 / 全关"),
                 sectionBarDemo(),
 
                 sectionTitle("3. GroupBoxAnt.bordered 模式 — false(默认无外框) vs true(1px 外框)"),
                 sectionGroupBoxBorderedDemo(),
 
-                sectionTitle("4. 嵌套规范 — BarAnt 嵌进 GroupBoxAnt header(必须 .borderBottom(false))"),
+                sectionTitle("4. 嵌套规范 — HBarAnt 嵌进 GroupBoxAnt header(必须 .borderBottom(false))"),
                 sectionNestingDemo(),
 
                 sectionTitle("5. 嵌套层级 + 圆角接缝对比 — 左: 伪边框(.jfx-border-pseudo 修复) | 右: 原生 .bordered (有接缝)"),
@@ -195,22 +195,22 @@ public class BorderShowcaseDemo extends Application {
     }
 
     // ============================================================
-    // Section 2: BarAnt 4 种边线组合
+    // Section 2: HBarAnt 4 种边线组合
     // ============================================================
 
     private Node sectionBarDemo() {
         VBoxAnt col = VBoxAnt.create()
             .spacing(0)
             .children(
-                // ① 默认: borderBottom(true) — BarAnt Builder 构造里默认开启
-                BarAnt.create()
+                // ① 默认: borderBottom(true) — HBarAnt Builder 构造里默认开启
+                HBarAnt.create()
                     .left(LabelAnt.create().text(" 默认 (borderBottom=true) ").build())
                     .gap(0)
                     .padding(8, 12, 8, 12)
                     .build(),
 
                 // ② borderTop(true)
-                BarAnt.create()
+                HBarAnt.create()
                     .left(LabelAnt.create().text(" .borderTop() ").build())
                     .gap(0)
                     .padding(8, 12, 8, 12)
@@ -218,7 +218,7 @@ public class BorderShowcaseDemo extends Application {
                     .build(),
 
                 // ③ 上下双线
-                BarAnt.create()
+                HBarAnt.create()
                     .left(LabelAnt.create().text(" .borderTop() + .borderBottom() ").build())
                     .gap(0)
                     .padding(8, 12, 8, 12)
@@ -227,7 +227,7 @@ public class BorderShowcaseDemo extends Application {
                     .build(),
 
                 // ④ 全关
-                BarAnt.create()
+                HBarAnt.create()
                     .left(LabelAnt.create().text(" .borderBottom(false) (全关) ").build())
                     .gap(0)
                     .padding(8, 12, 8, 12)
@@ -270,12 +270,12 @@ public class BorderShowcaseDemo extends Application {
     }
 
     // ============================================================
-    // Section 4: 嵌套规范 — BarAnt 嵌进 GroupBoxAnt header
+    // Section 4: 嵌套规范 — HBarAnt 嵌进 GroupBoxAnt header
     // ============================================================
 
     /**
      * 演示 GroupBoxAnt.extra() 接收任意 Node 时的边线规范:
-     * 嵌进去的 BarAnt 必须 .borderBottom(false),否则与 GroupBoxAnt 的 header 自带底部分割线叠加。
+     * 嵌进去的 HBarAnt 必须 .borderBottom(false),否则与 GroupBoxAnt 的 header 自带底部分割线叠加。
      */
     private Node sectionNestingDemo() {
         HBoxAnt row = HBoxAnt.create()
@@ -284,9 +284,9 @@ public class BorderShowcaseDemo extends Application {
             .children(
                 // ❌ 反例(故意保留底边线,看效果)
                 GroupBoxAnt.create()
-                    .title("❌ 反例: header 内 BarAnt 未关 borderBottom")
+                    .title("❌ 反例: header 内 HBarAnt 未关 borderBottom")
                     .extra(
-                        BarAnt.create()
+                        HBarAnt.create()
                             .left(LabelAnt.create().text(" 操作 ").build())
                             .right(ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY).build())
                             .gap(8)
@@ -299,9 +299,9 @@ public class BorderShowcaseDemo extends Application {
 
                 // ✅ 正例
                 GroupBoxAnt.create()
-                    .title("✅ 正例: header 内 BarAnt .borderBottom(false)")
+                    .title("✅ 正例: header 内 HBarAnt .borderBottom(false)")
                     .extra(
-                        BarAnt.create()
+                        HBarAnt.create()
                             .left(LabelAnt.create().text(" 操作 ").build())
                             .right(ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY).build())
                             .gap(8)

@@ -213,17 +213,28 @@
 .jfx-surface-content {
   -fx-background-color: transparent;
 }
-/* SplitBarAnt（M19）：横向左/中/右三段式
+/* HBarAnt（M19）：横向左/中/右三段式
    - 自身仅承担布局职责，无视觉装饰（背景透明）
    - spacer 是结构性弹性占位，无外观属性
    - 用户需要装饰（边框/背景）请挂自己的 styleClass
    - M19 之后：取代了老 .action-bar（ActionBarAnt 已删除） */
-.jfx-split-bar {
+.jfx-h-bar {
   -fx-background-color: transparent;
   -fx-spacing: 8px;
   -fx-padding: 4 10 4 10;
 }
-.jfx-split-bar-spacer {
+.jfx-h-bar-spacer {
+  -fx-background-color: transparent;
+}
+/* VBarAnt（Mxx）：纵向上/中/下三段式
+   - 适合卡片 / 侧栏 / 面板类组合
+   - spacer 是结构性弹性占位，无外观属性 */
+.jfx-v-bar {
+  -fx-background-color: transparent;
+  -fx-spacing: 8px;
+  -fx-padding: 8px 12px 8px 12px;
+}
+.jfx-v-bar-spacer {
   -fx-background-color: transparent;
 }
 /* ============================================
@@ -543,8 +554,16 @@
   -fx-text-fill: -color-accent-6;
 }
 /* Button Sizes */
+.button.middle {
+  -fx-padding: 6px 15px;
+  -fx-font-size: 14px;
+}
 .button.small {
   -fx-padding: 2px 7px;
+  -fx-font-size: 12px;
+}
+.button.xs {
+  -fx-padding: 1px 6px;
   -fx-font-size: 12px;
 }
 .button.large {
@@ -702,7 +721,7 @@
   -fx-border-width: 1px;
   -fx-border-style: solid;
 }
-/* Header（标题行）—— padding 由 BarAnt 默认值处理（4px 10px） */
+/* Header（标题行）—— padding 由 HBarAnt 默认值处理（4px 10px） */
 .jfx-group-box .jfx-group-box-header {
   /* 基础样式，具体修饰由下面两个 class 控制 */
 }
@@ -5912,7 +5931,7 @@
   -fx-border-width: 1px;
   -fx-border-style: solid;
 }
-/* BarAnt borders */
+/* HBarAnt borders */
 .jfx-bar-border-bottom {
   -fx-border-color: transparent transparent -color-border-default transparent;
   -fx-border-width: 0 0 1px 0;
@@ -5998,8 +6017,16 @@
    Size Variants (Small / Large)
    ============================================ */
 /* Button sizes */
+.button.middle {
+  -fx-padding: 6px 15px;
+  -fx-font-size: 14px;
+}
 .button.small {
   -fx-padding: 4px 8px;
+  -fx-font-size: 12px;
+}
+.button.xs {
+  -fx-padding: 1px 6px;
   -fx-font-size: 12px;
 }
 .button.large {
@@ -6260,6 +6287,36 @@
 .jfx-dashboard-stat-value {
   -fx-font-size: 28px;
   -fx-font-weight: 700;
+}
+/* ============================================================
+   WorkspaceTemplate
+   ============================================================ */
+.jfx-workspace-template {
+  -fx-background-color: -color-bg-layout;
+}
+/* 由 AppShellAnt 承载的 Header 区：这里仅调工作台模板的节奏感，不改底色 */
+.jfx-h-bar.jfx-workspace-template-header {
+  -fx-padding: 8px 16px;
+}
+.jfx-workspace-template-header-brand {
+  -fx-spacing: 4px;
+}
+.jfx-workspace-template-header-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: 700;
+  -fx-text-fill: -color-fg-default;
+}
+.jfx-workspace-template-header-subtitle {
+  -fx-font-size: 12px;
+  -fx-text-fill: -color-fg-muted;
+}
+.jfx-workspace-template-header-center {
+  -fx-spacing: 8px;
+  -fx-alignment: center-left;
+}
+.jfx-workspace-template-header-actions {
+  -fx-spacing: 4px;
+  -fx-alignment: center-right;
 }
 /* ============================================
    Component Auxiliary Styles

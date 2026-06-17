@@ -102,18 +102,31 @@
   -fx-background-color: transparent;
 }
 
-/* SplitBarAnt（M19）：横向左/中/右三段式
+/* HBarAnt（M19）：横向左/中/右三段式
    - 自身仅承担布局职责，无视觉装饰（背景透明）
    - spacer 是结构性弹性占位，无外观属性
    - 用户需要装饰（边框/背景）请挂自己的 styleClass
    - M19 之后：取代了老 .action-bar（ActionBarAnt 已删除） */
-.jfx-split-bar {
+.jfx-h-bar {
   -fx-background-color: transparent;
   -fx-spacing: @spacing-sm;
   -fx-padding: 4 10 4 10;
 }
 
-.jfx-split-bar-spacer {
+.jfx-h-bar-spacer {
+  -fx-background-color: transparent;
+}
+
+/* VBarAnt（Mxx）：纵向上/中/下三段式
+   - 适合卡片 / 侧栏 / 面板类组合
+   - spacer 是结构性弹性占位，无外观属性 */
+.jfx-v-bar {
+  -fx-background-color: transparent;
+  -fx-spacing: @spacing-sm;
+  -fx-padding: @spacing-sm @spacing-md @spacing-sm @spacing-md;
+}
+
+.jfx-v-bar-spacer {
   -fx-background-color: transparent;
 }
 
@@ -245,4 +258,3 @@
 .jfx-scroll-pane-viewport {
   -fx-background-color: -color-bg-layout;
 }
-

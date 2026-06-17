@@ -11,21 +11,21 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("BarAnt 单元测试")
-class BarAntTest extends JfxTestBase {
+@DisplayName("HBarAnt 单元测试")
+class HBarAntTest extends JfxTestBase {
 
     @Test
-    @DisplayName("BarAnt.class 保留 background(Background): BarAnt 精确签名")
+    @DisplayName("HBarAnt.class 保留 background(Background): HBarAnt 精确签名")
     void backgroundBridgeMethodKeepsBinarySignature() throws Exception {
-        var method = BarAnt.class.getDeclaredMethod("background", Background.class);
+        var method = HBarAnt.class.getDeclaredMethod("background", Background.class);
 
-        assertEquals(BarAnt.class, method.getReturnType());
+        assertEquals(HBarAnt.class, method.getReturnType());
     }
 
     @Test
-    @DisplayName("LayoutCommon 兼容桥接方法返回 BarAnt，避免旧调用方 NoSuchMethodError")
+    @DisplayName("LayoutCommon 兼容桥接方法返回 HBarAnt，避免旧调用方 NoSuchMethodError")
     void layoutCommonBridgeMethodsReturnBarAnt() {
-        BarAnt bar = BarAnt.create();
+        HBarAnt bar = HBarAnt.create();
 
         assertSame(bar, bar.background(Background.SUBTLE));
         assertSame(bar, bar.padding(1, 2, 3, 4));
@@ -39,12 +39,12 @@ class BarAntTest extends JfxTestBase {
     }
 
     @Test
-    @DisplayName("LayoutCommon 方法后仍可继续链 BarAnt 专属 API")
+    @DisplayName("LayoutCommon 方法后仍可继续链 HBarAnt 专属 API")
     void layoutCommonMethodsKeepBarSpecificChain() {
         Label left = new Label("L");
         Label right = new Label("R");
 
-        BarAnt bar = BarAnt.create()
+        HBarAnt bar = HBarAnt.create()
                 .background(Background.SUBTLE)
                 .padding(1, 2, 3, 4)
                 .left(left)
@@ -60,7 +60,7 @@ class BarAntTest extends JfxTestBase {
     @Test
     @DisplayName("负 gap 钳制为 0")
     void negativeGapIsClamped() {
-        BarAnt bar = BarAnt.create().gap(-8);
+        HBarAnt bar = HBarAnt.create().gap(-8);
 
         assertEquals(0, bar.getSpacing(), 0.0);
     }
@@ -68,7 +68,7 @@ class BarAntTest extends JfxTestBase {
     @Test
     @DisplayName("重复 build 不追加多余 spacer")
     void repeatedBuildDoesNotAppendDuplicateChildren() {
-        BarAnt bar = BarAnt.create()
+        HBarAnt bar = HBarAnt.create()
                 .left(new Label("L"))
                 .right(new Label("R"))
                 .build();
@@ -84,7 +84,7 @@ class BarAntTest extends JfxTestBase {
     void buildCanRefreshAfterAddingMoreNodes() {
         Label left = new Label("L");
         Label right = new Label("R");
-        BarAnt bar = BarAnt.create()
+        HBarAnt bar = HBarAnt.create()
                 .left(left)
                 .build();
 

@@ -7,7 +7,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.antdesignicons.AntDesignIconsOutlined;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.openkawu.jfxium.component.composite.BarAnt;
+import org.openkawu.jfxium.component.composite.HBarAnt;
 import org.openkawu.jfxium.component.composite.TabsAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.LabelAnt;
@@ -30,7 +30,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *   <li>侧边栏（Activity Bar + 文件树 {@link TreeAnt}）</li>
  *   <li>代码编辑区（{@link TextAreaAnt} + {@link JfxStyles#CODE_EDITOR}）</li>
  *   <li>底部终端面板（{@link TextAreaAnt} + {@link JfxStyles#CODE_EDITOR_TERMINAL}）</li>
- *   <li>状态栏 {@link BarAnt}</li>
+ *   <li>状态栏 {@link HBarAnt}</li>
  * </ol>
  *
  * <p>整体通过 {@link SplitPaneAnt} 嵌套实现可拖拽分屏。</p>
@@ -145,11 +145,11 @@ public class VsCodeEditor extends BorderPane {
             .build();
         setCenter(mainSplit);
 
-        // ⑥ 状态栏 —— BarAnt 三段式（left + 自动 spacer + right），顶部加 borderTop 分割线
-        // ⚠️ 注意：BarAnt 内部已在 left/right 之间插入弹性 Region spacer（HBox.setHgrow(ALWAYS)），
-        // 不要再额外插 SpaceAnt —— 那样 spacer 会被夹在 right() 段内，且 BarAnt 内部还会再加一次，
+        // ⑥ 状态栏 —— HBarAnt 三段式（left + 自动 spacer + right），顶部加 borderTop 分割线
+        // ⚠️ 注意：HBarAnt 内部已在 left/right 之间插入弹性 Region spacer（HBox.setHgrow(ALWAYS)），
+        // 不要再额外插 SpaceAnt —— 那样 spacer 会被夹在 right() 段内，且 HBarAnt 内部还会再加一次，
         // 结果是右段内部被撑开，left/right 段之间的弹性失效。
-        HBox statusBar = BarAnt.create()
+        HBox statusBar = HBarAnt.create()
             .left(LabelAnt.create().text(" UTF-8 ").build())
             .left(LabelAnt.create().text(" LF ").build())
             .right(LabelAnt.create().text("Ln 1, Col 1 ").build())

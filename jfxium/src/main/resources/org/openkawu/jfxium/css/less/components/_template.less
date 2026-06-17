@@ -151,3 +151,40 @@
 .jfx-dashboard-stat-trend-hint { -fx-font-size: 12px; -fx-text-fill: -color-fg-muted; }
 .jfx-dashboard-welcome     { -fx-font-size: 22px; -fx-font-weight: 700; }
 .jfx-dashboard-stat-value  { -fx-font-size: 28px; -fx-font-weight: 700; }
+
+/* ============================================================
+   WorkspaceTemplate
+   ============================================================ */
+.jfx-workspace-template {
+  -fx-background-color: -color-bg-layout;
+}
+
+/* 由 AppShellAnt 承载的 Header 区：这里仅调工作台模板的节奏感，不改底色 */
+.jfx-h-bar.jfx-workspace-template-header {
+  -fx-padding: @spacing-sm @spacing-lg;
+}
+
+.jfx-workspace-template-header-brand {
+  -fx-spacing: @spacing-xs;
+}
+
+.jfx-workspace-template-header-title {
+  -fx-font-size: @font-size-lg;
+  -fx-font-weight: 700;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-workspace-template-header-subtitle {
+  -fx-font-size: @font-size-sm;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-workspace-template-header-center {
+  -fx-spacing: @spacing-sm;
+  -fx-alignment: center-left;
+}
+
+.jfx-workspace-template-header-actions {
+  -fx-spacing: @spacing-xs;
+  -fx-alignment: center-right;
+}

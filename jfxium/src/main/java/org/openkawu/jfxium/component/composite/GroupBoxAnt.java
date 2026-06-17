@@ -295,7 +295,7 @@ public class GroupBoxAnt {
 
             // 第一行：Title + Extra
             if (!title.isEmpty() || extra != null) {
-                HBox titleRow = BarAnt.create()
+                HBox titleRow = HBarAnt.create()
                         .left(!title.isEmpty() ? buildTitleLabel() : null)
                         .right(extra)
                         .gap(8)

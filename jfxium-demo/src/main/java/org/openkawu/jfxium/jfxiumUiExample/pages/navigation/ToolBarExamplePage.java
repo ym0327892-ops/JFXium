@@ -12,6 +12,9 @@ import org.openkawu.jfxium.template.PageTemplate;
 
 /**
  * ToolBar 工具栏 —— 基础按钮 / 带文本 / 分隔线 + 弹性填充 / 垂直。
+ *
+ * <p>默认基准是 32px；模板本身负责留白，内部按钮默认比容器基准小一档，通常走 SMALL。
+ * 如果是更紧的侧边栏或状态区，再显式切 XS / LINK。</p>
  */
 public class ToolBarExamplePage extends VBoxAnt {
 
@@ -47,7 +50,7 @@ public class ToolBarExamplePage extends VBoxAnt {
                     .build();
                 """;
         return Demos.sectionWithCode("1. 基础图标按钮",
-                "button(icon, tooltip, action) 添加图标按钮，悬停显示 tooltip。",
+                "button(icon, tooltip, action) 添加图标按钮，默认对齐 32px 工具栏高度。",
                 code, demo);
     }
 
@@ -127,7 +130,7 @@ public class ToolBarExamplePage extends VBoxAnt {
                     .build();
                 """;
         return Demos.sectionWithCode("4. 垂直工具栏",
-                "orientation(VERTICAL) 创建垂直方向工具栏，常用于画图/编辑器侧边工具栏。",
+                "orientation(VERTICAL) 创建垂直方向工具栏，侧栏宽度默认 32px；按钮通常比容器小一档，若要更密再显式 small / xs。",
                 code, demo);
     }
 }

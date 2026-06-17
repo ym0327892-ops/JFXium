@@ -91,9 +91,11 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.general.SplitButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SplitMenuButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.TypographyExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.WatermarkExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.layout.BarExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.HBarExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.FlexExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.GridExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.WorkspaceTemplateExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.VBarExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.AnchorExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.BackTopExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.BreadcrumbExamplePage;
@@ -117,7 +119,7 @@ import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.MenuBarAnt;
 import org.openkawu.jfxium.component.control.StatusBarAnt;
 import org.openkawu.jfxium.component.composite.MenuAnt;
-import org.openkawu.jfxium.component.composite.BarAnt;
+import org.openkawu.jfxium.component.composite.HBarAnt;
 import org.openkawu.jfxium.component.composite.AvatarAnt;
 
 /**
@@ -208,8 +210,12 @@ public class MainView {
                 PageRegistry.Category.LAYOUT, GridExamplePage::new);
         registry.register("layout.flex", "Flex 弹性布局",
                 PageRegistry.Category.LAYOUT, FlexExamplePage::new);
-        registry.register("layout.bar", "Bar 横向栏",
-                PageRegistry.Category.LAYOUT, BarExamplePage::new);
+        registry.register("layout.bar", "HBar 横向条状容器",
+                PageRegistry.Category.LAYOUT, HBarExamplePage::new);
+        registry.register("layout.vbar", "VBar 竖向条状容器",
+                PageRegistry.Category.LAYOUT, VBarExamplePage::new);
+        registry.register("layout.workspace", "WorkspaceTemplate 工作台模板",
+                PageRegistry.Category.LAYOUT, WorkspaceTemplateExamplePage::new);
         registry.register("layout.divider", "Divider 分割线",
                 PageRegistry.Category.LAYOUT, DividerExamplePage::new);
         registry.register("layout.separator", "Separator 分隔符",
@@ -446,7 +452,7 @@ public class MainView {
         Button logout = ButtonAnt.create("退出")
                 .type(ButtonAnt.Type.LINK).onClick(e -> doLogout()).build();
 
-        HBox header = BarAnt.create()
+        HBox header = HBarAnt.create()
                 .left(brandBox)
                 .right(styleSelect, modeSelect, densityBtn[0], colorSelect, userLabel, logout)
                 .gap(12).build();

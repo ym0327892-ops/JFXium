@@ -19,7 +19,7 @@ package org.openkawu.jfxium.core.css;
  * <table border="1" cellpadding="4">
  *   <tr><th>类别</th><th>裸名（修饰类）</th><th>jfx- 前缀（根类/子结构）</th><th>统一目标</th></tr>
  *   <tr><td>按钮变体</td><td>{@code default / accent / outlined / dashed / text / link / ghost}</td><td>—</td><td>✅ 裸名（与 LESS 选择器同步）</td></tr>
- *   <tr><td>尺寸</td><td>{@code small / large}</td><td>{@code jfx-table-small / jfx-table-large / jfx-tag-small / jfx-avatar-small / jfx-steps-small / jfx-statistic-small / jfx-segmented-small / jfx-badge-small / jfx-selectable-text-bordered / jfx-table-compact / jfx-radius-sm/md/lg/none}</td><td>⚠️ 不一致：尺寸 4 套不同前缀（{@code small} 裸名 / {@code jfx-table-small} / {@code jfx-tag-small} / {@code jfx-radius-sm}）</td></tr>
+ *   <tr><td>尺寸</td><td>{@code middle / small / xs / large}</td><td>{@code jfx-table-small / jfx-table-large / jfx-tag-small / jfx-avatar-small / jfx-steps-small / jfx-statistic-small / jfx-segmented-small / jfx-badge-small / jfx-selectable-text-bordered / jfx-table-compact / jfx-radius-sm/md/lg/none}</td><td>⚠️ 不一致：尺寸 4 套不同前缀（{@code small} / {@code xs} 裸名 / {@code jfx-table-small} / {@code jfx-tag-small} / {@code jfx-radius-sm}）</td></tr>
  *   <tr><td>形状</td><td>{@code rounded / square / shape-rounded / shape-square}</td><td>{@code jfx-tag-rounded / jfx-tag-square / jfx-avatar-square / jfx-image-rounded / jfx-image-circle}</td><td>⚠️ 不一致：{@code SHAPE_*} 用裸名，{@code TAG_*} 用 jfx- 前缀</td></tr>
  *   <tr><td>边框</td><td>{@code bordered / borderless} (大多错位)</td><td>{@code jfx-table-bordered / jfx-list-bordered / jfx-descriptions-bordered / jfx-crud-template-bordered / jfx-qr-code-bordered / jfx-panel-footer-bordered / jfx-selectable-text-bordered / jfx-tag-borderless}</td><td>⚠️ 不一致：{@code GROUP_BOX_BORDERED} / {@code SURFACE_BORDERED} 用裸名，{@code TABLE_BORDERED} / {@code LIST_BORDERED} 等用 jfx- 前缀</td></tr>
  *   <tr><td>状态色</td><td>{@code success / warning / error / info / processing / default} (裸名,部分)</td><td>{@code jfx-alert-success/info/warning/error / jfx-tag-success/processing/error/warning/default / jfx-badge-status-success/warning/error/default / jfx-result-status-success/info/warning/error/404/403/500}</td><td>⚠️ 不一致：{@code PROGRESS_SUCCESS/WARNING/ERROR} 裸名, {@code ALERT_SUCCESS} 已 jfx- 前缀</td></tr>
@@ -105,8 +105,10 @@ public final class JfxStyles {
     /** 状态色变体：危险（红）。参考 AntLantaFx antdesign-light.css 行 1283 + Ant Design 6.x Button danger。Color：@color-danger-5 */
     public static final String BUTTON_DANGER = "danger";
 
-    /** 按钮尺寸 */
+    /** 按钮尺寸（DEFAULT 为向后兼容别名，语义上等价 MIDDLE） */
+    public static final String SIZE_MIDDLE = "middle";
     public static final String SIZE_SMALL = "small";
+    public static final String SIZE_XS = "xs";
     public static final String SIZE_LARGE = "large";
 
     /** 按钮形状 */
@@ -708,10 +710,16 @@ public final class JfxStyles {
     public static final String PAGE_TEMPLATE_BODY    = "jfx-page-template-body";
 
     /* ============================================
-       BarAnt（M19）— 横向左/中/右三段式布局
+       HBarAnt（由 BarAnt 直接改名）— 横向左/中/右三段式布局
        ============================================ */
-    public static final String SPLIT_BAR        = "jfx-split-bar";
-    public static final String SPLIT_BAR_SPACER = "jfx-split-bar-spacer";
+    public static final String H_BAR        = "jfx-h-bar";
+    public static final String H_BAR_SPACER = "jfx-h-bar-spacer";
+
+    /* ============================================
+       VBarAnt（竖向条状容器）— 竖向上/中/下三段式布局
+       ============================================ */
+    public static final String V_BAR        = "jfx-v-bar";
+    public static final String V_BAR_SPACER = "jfx-v-bar-spacer";
 
     /* ============================================
        MenuBarAnt（PC 软件刚需）— 系统菜单栏
@@ -832,6 +840,17 @@ public final class JfxStyles {
     public static final String LOGIN_FORM_LINK_SMALL = "jfx-login-template-link-small";
     public static final String LOGIN_FORM_SUBMIT     = "jfx-login-template-submit";
     public static final String LOGIN_FORM_NO_ACCOUNT = "jfx-login-template-no-account";
+
+    /* ============================================
+       WorkspaceTemplate（高可用工作台壳）— 生产后台 / 管理台 / 工作台
+       ============================================ */
+    public static final String WORKSPACE_TEMPLATE = "jfx-workspace-template";
+    public static final String WORKSPACE_TEMPLATE_HEADER = "jfx-workspace-template-header";
+    public static final String WORKSPACE_TEMPLATE_HEADER_BRAND = "jfx-workspace-template-header-brand";
+    public static final String WORKSPACE_TEMPLATE_HEADER_TITLE = "jfx-workspace-template-header-title";
+    public static final String WORKSPACE_TEMPLATE_HEADER_SUBTITLE = "jfx-workspace-template-header-subtitle";
+    public static final String WORKSPACE_TEMPLATE_HEADER_CENTER = "jfx-workspace-template-header-center";
+    public static final String WORKSPACE_TEMPLATE_HEADER_ACTIONS = "jfx-workspace-template-header-actions";
 
     /* ============================================
        TabsAnt — 标签页

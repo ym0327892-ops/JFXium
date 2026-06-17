@@ -92,7 +92,7 @@ class GroupBoxAntTest extends JfxTestBase {
         }
 
         @Test
-        @DisplayName("extra 节点挂到 titleRow 右侧（BarAnt 二段布局：left + spacer + right）")
+        @DisplayName("extra 节点挂到 titleRow 右侧（HBarAnt 二段布局：left + spacer + right）")
         void extra_attachedToTitleRow() {
             Label extra = new Label("更多");
             VBox box = GroupBoxAnt.create()
@@ -101,7 +101,7 @@ class GroupBoxAntTest extends JfxTestBase {
                     .build();
             VBox header = (VBox) box.getChildren().get(0);
             HBox titleRow = (HBox) header.getChildren().get(0);
-            // BarAnt 二段布局：left(标题) + spacer(grow) + right(extra)
+            // HBarAnt 二段布局：left(标题) + spacer(grow) + right(extra)
             // —— 最后一项是 extra
             assertEquals(extra, titleRow.getChildren().get(titleRow.getChildren().size() - 1));
         }

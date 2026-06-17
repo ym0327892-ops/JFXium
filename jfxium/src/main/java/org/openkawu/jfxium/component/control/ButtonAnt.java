@@ -23,7 +23,7 @@ import org.openkawu.jfxium.core.builder.Radius;
  * <h2>功能特性</h2>
  * <ul>
  *   <li>多种按钮类型：主按钮、默认按钮、成功/警告/危险、虚线、文字、链接</li>
- *   <li>三种尺寸：小(Small)、中(Default)、大(Large)</li>
+ *   <li>四种尺寸：大(Large)、中(Middle)、小(Small)、超小(XS)</li>
  *   <li>形状变体：圆角(rounded)、方形(square)</li>
  *   <li>加载状态 / 幽灵按钮 / 块级按钮</li>
  *   <li>图标支持 / Command 绑定</li>
@@ -78,7 +78,7 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
     }
 
     public enum Size {
-        DEFAULT, SMALL, LARGE
+        DEFAULT, MIDDLE, SMALL, XS, LARGE
     }
 
     public enum Shape {
@@ -137,13 +137,19 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
 
     /**
      * 设置尺寸。幂等——先清旧 size styleClass，再按需挂新。
-     * DEFAULT 仅清不挂。
+     * DEFAULT / MIDDLE 视为同一档位。
      */
     public ButtonAnt size(Size size) {
-        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
-        if (size == Size.SMALL) {
+        getStyleClass().removeAll(JfxStyles.SIZE_MIDDLE, JfxStyles.SIZE_SMALL,
+                JfxStyles.SIZE_XS, JfxStyles.SIZE_LARGE);
+        Size effective = size != null ? size : Size.DEFAULT;
+        if (effective == Size.DEFAULT || effective == Size.MIDDLE) {
+            getStyleClass().add(JfxStyles.SIZE_MIDDLE);
+        } else if (effective == Size.SMALL) {
             getStyleClass().add(JfxStyles.SIZE_SMALL);
-        } else if (size == Size.LARGE) {
+        } else if (effective == Size.XS) {
+            getStyleClass().add(JfxStyles.SIZE_XS);
+        } else if (effective == Size.LARGE) {
             getStyleClass().add(JfxStyles.SIZE_LARGE);
         }
         return this;
