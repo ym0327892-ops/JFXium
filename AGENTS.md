@@ -30,12 +30,13 @@ This file provides guidance to Qoder (qoder.com) when working with code in this 
 | `.qoder/skills/project-constraints.md` | 项目技术约束（色阶/交互/CSS） | 写组件代码前 |
 | `.qoder/skills/component-pattern.md` | 组件设计模式（微组件/反模式） | 新建/重构组件前 |
 | `.qoder/skills/workflow.md` | 构建/测试/调试工作流 | 执行构建/测试/发布时 |
+| `.qoder/skills/design-reference.md` | 设计风格参考体系（JetBrains/Qt/桌面工具） | 新建组件、调整样式、审查视觉一致性时 |
 
 ---
 
 ## Project Overview
 
-JFXium is a JavaFX UI framework inspired by Ant Design 6.x. It wraps and enhances JavaFX native controls with a Builder-pattern API, LESS-based theming (11 built-in themes), and over 94 components covering controls, composites, overlays, layouts, and business templates. Zero FXML — all UI is constructed in pure Java code.
+JFXium is a JavaFX UI framework inspired by professional desktop tools (JetBrains IDE, Qt Widgets, DBeaver). It wraps and enhances JavaFX native controls with a Builder-pattern API, LESS-based theming (11 built-in themes), and over 94 components covering controls, composites, overlays, layouts, and business templates. Zero FXML — all UI is constructed in pure Java code.
 
 - **Java 21** (pom.xml `<java.version>21</java.version>`), JavaFX 21.0.6, Maven 3.8+
   - Note: README.md mentions Java 17+ but the actual build requires Java 21.
@@ -257,6 +258,16 @@ This avoids rebuilding the entire component tree. **Always add a Controller** wh
 2. **Form components** (InputAnt, CheckBoxAnt, etc.) use an inheritance-based design (`extends` the native control).
 3. **All colors/styles go through styleClass → LESS**, never inline `setStyle()` with hardcoded color values.
 4. **New control** must: (a) add JfxStyles constants in `JfxStyles.java`, (b) add LESS styles in `components/_xxx.less`, (c) register in `components/_index.less`.
+5. **Modifying native JavaFX control CSS** (`.button`, `.combo-box`, etc.): always read AtlantaFX source at `ant-design-ref/AntLantaFx/` first to verify selector hierarchy — never guess.
+
+### New component checklist (6 steps)
+
+1. Add `jfx-`-prefixed styleClass constants to `JfxStyles.java`
+2. Create `components/_xxx.less` with component styles
+3. Register `@import` in `components/_index.less`
+4. Create Java class extending `AbstractStyleBuilder` (or inheriting from `*Ant` layout)
+5. Confirm `module-info.java` exports the package
+6. Add demo showcase in `jfxium-demo`
 
 ### JfxStyles naming convention
 
@@ -347,7 +358,7 @@ ThemeManager.getInstance().registerScene(scene);  // Watch for future theme chan
 ThemeManager.getInstance().setPrimaryColor("#ff5722");
 ```
 
-ThemeManager maintains a three-axis state machine: **Family** (Ant/MUI) × **dark** (boolean) × **compact** (boolean). The `ThemeManager.Family` enum exposes only `ANT_DESIGN` and `MUI`; the eight concrete `*Theme` classes are the 2×2×2 cartesian product of these three axes. Shadcn / Cyberpunk / Custom themes (no dark/compact variants) are intentionally excluded from this state machine — load them via `scene.getStylesheets().add("/org/openkawu/jfxium/css/theme-xxx.css")` instead. Theme switching re-applies the accent color automatically (BUG #62 fix).
+ThemeManager maintains a three-axis state machine: **Family** (Ant/MUI) × **dark** (boolean) × **compact** (boolean). The `ThemeManager.Family` enum exposes only `ANT_DESIGN` and `MUI` (note: `ANT_DESIGN` is a legacy enum name from the project's origin — the project no longer references Ant Design Web; the enum may be renamed to `DEFAULT` or `STANDARD` in a future release); the eight concrete `*Theme` classes are the 2×2×2 cartesian product of these three axes. Shadcn / Cyberpunk / Custom themes (no dark/compact variants) are intentionally excluded from this state machine — load them via `scene.getStylesheets().add("/org/openkawu/jfxium/css/theme-xxx.css")` instead. Theme switching re-applies the accent color automatically (BUG #62 fix).
 
 ---
 
@@ -395,7 +406,7 @@ All Builder setter methods MUST defend against invalid inputs — this is a syst
 |------------|-------------------|
 | Enum parameters | `null` → semantic default (e.g., `Type.DEFAULT`), never let NPE reach `switch` |
 | Text parameters (`title`, `text`) | `null` → `""` empty string |
-| Numeric parameters (`gap`, `size`, `count`) | Negative/NaN/Infinity → clamp to safe value (0 or min); count-like → min 1 |
+| Numeric parameters (`gap`, `size`, `count`) | Negative/NaN/Infinity → clamp to safe value (0 or min); count-like → min 1. Use `Double.isFinite(val) ? Math.max(0, val) : 0` pattern |
 | Callback parameters (`onClose`, `onClick`, `action`) | `null` allowed — simply don't bind the handler |
 | `Node...` / collection parameters | Allow empty; filter out null entries one-by-one |
 | `maxSize` when paired with `minSize` | Ensure `max ≥ min` before passing to Region |

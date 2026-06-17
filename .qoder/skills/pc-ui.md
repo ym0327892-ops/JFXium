@@ -13,16 +13,27 @@
 
 ---
 
-## 2. 参考对象（优先级从高到低）
+## 2. 参考对象（按权重从高到低）
 
-| 级别 | 对象 | 重点 |
-|------|------|------|
-| 1 | JetBrains IDE（IDEA / DataGrip / Rider） | 控件尺寸、工具栏、Tab、Tree、Table、间距 |
-| 2 | Qt 6 Widgets（QPushButton / QLineEdit / QTableView） | 控件风格，不参考 Qt Quick Mobile |
-| 3 | Windows 11（File Explorer / Task Manager / Visual Studio） | 控件高度、间距、圆角、状态栏 |
-| 4 | 专业桌面软件（DBeaver / Navicat / Wireshark / Beyond Compare） | 数据表格密度、工具栏、菜单 |
+| 梯队 | 对象 | 权重 | 重点研究 |
+|------|------|------|----------|
+| 1 | JetBrains New UI | **50%** | Toolbar / Project Tree / Editor Tabs / Settings Dialog / Search Everywhere / Tool Window / Dark Theme / Dense Mode |
+| 1 | Qt 6 Widgets | **25%** | QPushButton / QLineEdit / QComboBox / QTreeView / QTableView / QToolBar / QMenuBar |
+| 2 | Visual Studio | ~5% | Solution Explorer / Toolbar / Property Grid / Dock Panel |
+| 2 | Windows Terminal | ~5% | Tab / Search / Settings |
+| 2 | Task Manager | ~5% | Table / Navigation / Density |
+| 3 | DBeaver | ~3% | Table / Tree / Toolbar / Dense Layout |
+| 3 | Navicat | ~3% | Data Grid / Dialogs / Forms |
+| 3 | Wireshark | ~2% | High Density / Large Data / Filtering |
+| 3 | Beyond Compare | ~2% | Split View / Toolbar / Navigation |
+| 4 | Windows 11 Desktop | ~3% | Spacing / Corner Radius / Dialog / Context Menu |
+| 4 | macOS Desktop | ~2% | Toolbar / Sidebar / SearchField |
+| 辅助 | AtlantaFX | — | PrimerLight / PrimerDark / NordLight / NordDark / Cupertino（JavaFX 原生控件皮肤经验） |
+| 辅助 | ControlsFX | — | PropertySheet / Notifications / MasterDetailPane / SearchableComboBox |
 
-不参考 Web UI 框架（Ant Design Web / Element Plus / Material Design Web / Naive UI / Bootstrap）的尺寸体系——控件过高、信息密度过低，不适合桌面软件。
+不参考 Web UI 框架（Ant Design Web / Element Plus / Material Design Web / Bootstrap）的尺寸体系——控件过高、留白过大、信息密度低、移动端思维，不适合桌面软件（交易软件 / 数据库工具 / 监控平台 / 开发工具）。
+
+详细参考体系见 `.qoder/skills/design-reference.md`。
 
 ---
 
@@ -404,11 +415,11 @@ Large 档（40px / 紧凑 36px）仅用于：开始 / 停止 / 部署 / 导出 /
 
 ## 14. 最终风格目标
 
-**70% JetBrains IDE + 20% Qt Widgets + 10% Windows 11**
+**50% JetBrains New UI + 25% Qt Widgets + 10% 数据软件 + 5% Visual Studio + 5% Windows Terminal / Task Manager + 5% Windows 11 / macOS**
 
 围绕 5 组数字（12/14/16/20 + 4/6/8 + 22/28/32/40 + 4/8/12/16/24 + 16/18/20/24）+ 1 个 Density 维度（Default / Compact）展开。
 
-专业、紧凑、高密度、长时间使用不疲劳的 JavaFX Desktop Design System。
+专业、紧凑、高密度、长时间使用不疲劳的 JavaFX Desktop Design System。风格锚点是专业桌面工具（IDE / 数据库工具 / 监控系统 / 交易软件），不是 Web 后台管理系统。
 
 ---
 

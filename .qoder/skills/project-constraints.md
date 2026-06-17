@@ -435,3 +435,31 @@ ctrl.setSelectedKey("file");   // 改已渲染节点的 styleClass，不重建
 - [ ] 是否调用 `applyStyles(...)`，并且 styleClass 是否落到返回节点
 - [ ] 视觉值是否走 token / LESS，而不是 Java 写死 px
 - [ ] 是否有对应回归测试覆盖边界输入和运行时更新
+
+## 十五、应用壳与模板层
+
+> 来自根包 `org.openkawu.jfxium`、`layout/`、`template/` 的宽扫描结果：这层不是单个控件，而是整页骨架、应用启动、主题装配和业务模板的入口，最容易把底层的坏习惯放大成“全页都坏”。
+
+### 15.1 模板层入参必须先收口
+
+- `Node...`、`List<Node>`、`String...`、`Collection<Node>` 这类入口必须逐个过滤 `null`，不能直接 `addAll(...)`。
+- 公开 Javadoc 如果写了“必须设置”的回调，`build()` 就要 fail fast；如果逻辑上允许为空，就必须把文档改成“可选”，并让 UI 表现与之相符。
+- 对外模板的 `null` 处理要一致：文本转空字符串，节点过滤，集合视为空，回调为空时不绑定。
+
+### 15.2 模板层的尺寸与间距
+
+- 模板层可以承载少量结构尺寸，但不能把大量视觉像素散落在多个 setter 里。
+- `padding`、`bannerWidth`、`iconBox`、`rowHeight`、`spacing` 这类值如果是页面骨架的一部分，要集中管理并优先用 token 或统一常量，不要在多个方法里各写一份。
+- 任何暴露给调用方的尺寸入口都必须做非负和非有限数保护。
+
+### 15.3 应用壳与主题装配
+
+- `Scene` 创建、`ThemeManager.applyTheme(...)`、`ThemeManager.registerScene(...)`、`stage.setScene(...)` 要作为一个闭环处理，不要分散到多个调用点。
+- 切换场景或重建主窗口时，必须按新的 `Scene` 重新注册主题，不能默认旧 scene 还有效。
+- 启动壳层如果持有生命周期资源或监听器，要有清理策略，不能让旧 stage / scene 的引用继续存活。
+
+### 15.4 模板层回归测试最低要求
+
+- 至少补一组 `template/` 的 smoke test，覆盖 `null` 节点、`null` 文案、空集合、重复 build、必需回调缺失、尺寸边界。
+- `AppShellAnt` 一类壳层要补场景注册、折叠切换、宽度断点、非 `Region` sider 兼容等回归。
+- 任何模板改动如果引入新的固定尺寸，都必须同步检查 compact 主题和桌面密度是否还能一致。
