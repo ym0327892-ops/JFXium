@@ -10,6 +10,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.i18n.Messages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public class CodeBlockAnt {
         private Builder() {}
 
         public Builder language(Language language) {
-            this.language = language;
+            this.language = language != null ? language : Language.JAVA;
             return this;
         }
 
@@ -98,12 +99,12 @@ public class CodeBlockAnt {
         }
 
         public Builder theme(Theme theme) {
-            this.theme = theme;
+            this.theme = theme != null ? theme : Theme.LIGHT;
             return this;
         }
 
         public Builder maxHeight(double height) {
-            this.maxHeight = height;
+            this.maxHeight = Double.isFinite(height) && height > 0 ? height : 400;
             return this;
         }
 
@@ -245,7 +246,7 @@ public class CodeBlockAnt {
          * 复制按钮点击后短暂显示「已复制」文案再恢复（PauseTransition），给用户明确反馈。</p>
          */
         private HBox createHeader() {
-            HBox header = new HBox(8);
+            HBox header = new HBox();
             header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
             header.getStyleClass().add(JfxStyles.CODEBLOCK_HEADER);
 
@@ -260,16 +261,16 @@ public class CodeBlockAnt {
             spacer.setMaxWidth(Double.MAX_VALUE);
             header.getChildren().add(spacer);
 
-            // 右侧：复制按钮
-            javafx.scene.control.Button copyBtn = new javafx.scene.control.Button("复制");
+            // 右侧：复制按钮（文案走 i18n，BUG #133 修复——之前中文硬编码）
+            javafx.scene.control.Button copyBtn = new javafx.scene.control.Button(Messages.get("codeblock.copy"));
             copyBtn.getStyleClass().add(JfxStyles.CODEBLOCK_COPY_BTN);
             copyBtn.setOnAction(e -> {
                 copyToClipboard(code);
-                // 「已复制」短暂反馈，再恢复成「复制」
-                copyBtn.setText("已复制");
+                // 「已复制」短暂反馈，再恢复成「复制」（都走 i18n）
+                copyBtn.setText(Messages.get("codeblock.copied"));
                 javafx.animation.PauseTransition pause =
                         new javafx.animation.PauseTransition(javafx.util.Duration.millis(1200));
-                pause.setOnFinished(ev -> copyBtn.setText("复制"));
+                pause.setOnFinished(ev -> copyBtn.setText(Messages.get("codeblock.copy")));
                 pause.play();
             });
             header.getChildren().add(copyBtn);
@@ -409,7 +410,7 @@ public class CodeBlockAnt {
         /** 创建带高亮的显示区域。 */
         private TextFlow createHighlightedDisplay(List<CodeFragment> fragments) {
             TextFlow flow = new TextFlow();
-            flow.setPadding(new Insets(8));
+            flow.getStyleClass().add(JfxStyles.CODEBLOCK_TEXT_FLOW);
 
             for (CodeFragment frag : fragments) {
                 Text text = new Text(frag.content);
@@ -471,7 +472,6 @@ public class CodeBlockAnt {
         private VBox createLineNumbers(String code) {
             VBox lineBox = new VBox(0);
             lineBox.getStyleClass().add(JfxStyles.CODE_LINE_NUMBERS);
-            lineBox.setPadding(new Insets(8, 12, 8, 12));
 
             String[] lines = code.split("\n", -1);
             for (int i = 1; i <= lines.length; i++) {
