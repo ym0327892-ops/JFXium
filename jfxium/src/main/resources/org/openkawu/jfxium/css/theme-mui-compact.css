@@ -220,6 +220,8 @@
    - M19 之后：取代了老 .action-bar（ActionBarAnt 已删除） */
 .jfx-split-bar {
   -fx-background-color: transparent;
+  -fx-spacing: 6px;
+  -fx-padding: 4 10 4 10;
 }
 .jfx-split-bar-spacer {
   -fx-background-color: transparent;
@@ -573,7 +575,7 @@
   -fx-background-insets: 0;
 }
 /* Button Status Color Variants
-   对标 AntLantaFx antdesign-light.css 行 1259-1306（.button.success / .danger）
+   对标 AtlantaFX antdesign-light.css 行 1259-1306（.button.success / .danger）
    状态色独立存在，与 .button.default 叠加时靠选择器顺序实现覆盖
    状态：base / :hover / :armed+:pressed（disabled 走 .button:disabled 行 25-28 统一 opacity 0.6）
    fix #102 */
@@ -717,6 +719,7 @@
 /* Body（内容区） */
 .jfx-group-box .jfx-group-box-body {
   -fx-padding: 2px 8px 8px 8px;
+  -fx-spacing: 8px;
 }
 .jfx-group-box.jfx-group-box-small .jfx-group-box-body {
   -fx-padding: 2px 6px 6px 6px;
@@ -811,7 +814,7 @@
 }
 /* 关键：JavaFX 表头高度由 .column-header-background 控制（外层容器），
    而不是 .column-header（仅控制单列）。
-   Ant Design 默认 56px，这里设 48px（admin 实用感更紧凑）。 */
+   Web 后台框架默认 56px，这里设 48px（admin 实用感更紧凑）。 */
 .table-view .column-header-background {
   -fx-pref-height: 48px;
   /* 整个表头容器的背景：包括最后一列右侧的"剩余空白区" */
@@ -967,7 +970,7 @@
   -fx-alignment: center-right;
   -fx-text-alignment: right;
 }
-/* 表头默认整体居左（保持 Ant 风格），
+/* 表头默认整体居左（保持桌面工具风格），
    单元格内容默认垂直居中（避免内容看起来贴在顶部） */
 .table-view .table-cell {
   -fx-alignment: center-left;
@@ -1069,10 +1072,16 @@
 /* TabsAnt indicator */
 .jfx-tabs-indicator-pane {
   -fx-background-color: -color-border-muted;
+  -fx-pref-height: 3;
+  -fx-min-height: 3;
+  -fx-max-height: 3;
 }
 .jfx-tabs-indicator-bar {
   -fx-background-color: -color-accent-emphasis;
   -fx-background-radius: 2px;
+  -fx-pref-height: 3;
+  -fx-min-height: 3;
+  -fx-max-height: 3;
 }
 /* ============================================
    Tree Component
@@ -1163,7 +1172,7 @@
 }
 .radio-button .radio .dot {
   /* dot 是中间小圆点 —— 必须显式设尺寸（默认是 0 不可见）
-     Ant Design 风格：比 CheckBox 的 mark 略小，约 6×6 */
+     桌面工具风格：比 CheckBox 的 mark 略小，约 6×6 */
   -fx-min-width: 6px;
   -fx-max-width: 6px;
   -fx-min-height: 6px;
@@ -1231,6 +1240,11 @@
 .jfx-arrow-dropdown:hover {
   -fx-background-color: -color-fg-default;
 }
+/* DropdownAnt trigger wrapper：触发节点 + 箭头的横向间距 */
+.jfx-dropdown-trigger {
+  -fx-background-color: transparent;
+  -fx-spacing: 2px;
+}
 .combo-box:hover .arrow {
   -fx-background-color: -color-accent-emphasis;
 }
@@ -1284,7 +1298,7 @@
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
 }
-/* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，加深一档到 muted */
+/* 选中行 hover：对齐桌面工具选中态 hover token，加深一档到 muted */
 .list-view .list-cell:selected:hover {
   -fx-background-color: -color-accent-muted;
   -fx-text-fill: -color-fg-on-emphasis;
@@ -1319,7 +1333,7 @@
   -fx-border-radius: 9999px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 1);
   -fx-snap-to-pixel: false;
-  /* 显式设尺寸——modena 默认 thumb 偏小，对齐 Ant Design 14px 圆点手柄 */
+  /* 显式设尺寸——modena 默认 thumb 偏小，对齐桌面工具 14px 圆点手柄 */
   -fx-min-width: 14px;
   -fx-min-height: 14px;
   -fx-pref-width: 14px;
@@ -1996,9 +2010,11 @@
   -fx-background-color: -color-bg-overlay;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
   -fx-padding: 2px 0;
+  -fx-min-width: 160;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 2);
 }
 .jfx-context-menu-item {
@@ -2250,6 +2266,9 @@
   -fx-cursor: default;
 }
 /* Custom Switch Component (JFXSwitch) */
+.jfx-switch-container {
+  -fx-spacing: 6px;
+}
 .jfx-switch {
   -fx-background-radius: 11px;
   -fx-border-radius: 11px;
@@ -2450,16 +2469,20 @@
   -fx-background-color: -color-border-muted, -color-bg-subtle;
   -fx-background-insets: 0, 1px 0 0 0;
   -fx-padding: 0 8px;
+  -fx-spacing: 6px;
   -fx-font-size: 12px;
 }
 .jfx-status-bar-left {
   -fx-alignment: CENTER_LEFT;
+  -fx-spacing: 6px;
 }
 .jfx-status-bar-center {
   -fx-alignment: CENTER;
+  -fx-spacing: 6px;
 }
 .jfx-status-bar-right {
   -fx-alignment: CENTER_RIGHT;
+  -fx-spacing: 6px;
 }
 /* 可点击操作项 — 行为委托给 .button.inline（剥皮按钮），此处仅保留状态条内间距微调 */
 .jfx-status-bar-action {
@@ -2523,7 +2546,7 @@
    组件使用的 .context-menu（MenuBarAnt / SplitMenuButtonAnt 等）。
    ============================================ */
 /* 弹层容器：覆盖 modena .context-menu 默认的渐变背景 + 4px padding
-   （modena.css 第 1444-1453 行），改成扁平化 Ant Design 风格 */
+   （modena.css 第 1444-1453 行），改成扁平化桌面工具风格 */
 .choice-box > .context-menu {
   -fx-background-color: -color-bg-overlay;
   -fx-background-insets: 0;
@@ -2755,9 +2778,9 @@
 .table-row-cell:selected .table-cell {
   -fx-text-fill: -color-cell-fg-selected;
 }
-/* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，
+/* 选中行 hover：对齐桌面工具选中态 hover token，
    背景在 subtle(accent-0) 基础上加深一档到 muted(accent-2)，
-   给用户"选中后还能继续交互"的反馈 */
+   给用户“选中后还能继续交互”的反馈 */
 .table-row-cell:selected:hover,
 .table-row-cell:selected:hover > .table-cell,
 .table-row-cell:selected:hover > .table-cell > .label {
@@ -2775,7 +2798,7 @@
 .table-view .table-row-cell {
   -fx-min-height: 48px;
 }
-/* M11.2 三档尺寸（对齐 Ant Design Table size：SMALL / MIDDLE / LARGE）
+/* M11.2 三档尺寸（对齐桌面工具 Table size：SMALL / MIDDLE / LARGE）
    ============================================================ */
 /* SMALL：紧凑模式（mini 表格）。表头 40 / 行高 36 / padding 6×8 / 字号 13 */
 .table-view.jfx-table-small .column-header-background {
@@ -3174,6 +3197,7 @@
 .jfx-codeblock-header {
   -fx-background-color: -color-border-muted;
   -fx-padding: 8 12 8 12;
+  -fx-spacing: 6px;
   /* 头部仅保留顶部圆角，与容器圆角配合，底部为直角让上下两段视觉连续 */
   -fx-background-radius: 4px 4px 0 0;
 }
@@ -3282,6 +3306,11 @@
   -fx-border-color: transparent -color-border-muted transparent transparent;
   -fx-border-width: 0 1px 0 0;
   -fx-border-style: solid;
+  -fx-padding: 8 12 8 12;
+}
+/* 代码文本流（高亮显示区域） */
+.jfx-codeblock-text-flow {
+  -fx-padding: 8;
 }
 .jfx-code-line-number {
   -fx-font-family: "Consolas", "Monaco", "Courier New", monospace;
@@ -3412,10 +3441,15 @@
   -fx-background-color: -color-fg-default;
 }
 /* 当 icon 在可交互父容器中（button/menu-item/等）时，hover 自动变主题色 */
+.button:hover .jfx-icon,
 .button:hover .jfx-icon-path,
 .menu-item:hover .jfx-icon-path,
 .toggle-button:hover .jfx-icon-path {
   -fx-background-color: -color-accent-emphasis;
+}
+/* .jfx-icon 是 text Label，需要用 -fx-text-fill 而非 -fx-background-color */
+.button:hover .jfx-icon {
+  -fx-text-fill: -color-accent-emphasis;
 }
 /* 选中态 */
 .button:armed .jfx-icon-path,
@@ -3505,6 +3539,7 @@
 /* TimePickerAnt：时分秒分隔符与 spinner 编辑器 */
 .jfx-time-picker {
   -fx-background-color: transparent;
+  -fx-spacing: 6px;
 }
 .jfx-time-picker-separator {
   -fx-font-size: 16px;
@@ -3608,6 +3643,7 @@
 }
 .jfx-popup-menu-item {
   -fx-padding: 8 12 8 12;
+  -fx-spacing: 6px;
   -fx-cursor: hand;
   -fx-background-color: transparent;
   -fx-font-size: 13px;
@@ -3635,6 +3671,11 @@
 /* AnchorAnt 锚点导航 */
 .jfx-anchor {
   -fx-padding: 8 12 8 0;
+  -fx-spacing: 2px;
+}
+.jfx-anchor-sub-group {
+  -fx-spacing: 2;
+  -fx-padding: 4 0 4 16;
 }
 .jfx-anchor-link {
   -fx-font-size: 13px;
@@ -3878,7 +3919,7 @@
 .jfx-tree-select-row.jfx-tree-select-disabled .jfx-tree-select-label {
   -fx-text-fill: -color-fg-subtle;
 }
-/* 多选模式：选中行高亮（BUG #53，对齐 Ant Design TreeSelect 选中项浅蓝底 + 主色文字） */
+/* 多选模式：选中行高亮（BUG #53，对齐桌面工具 TreeSelect 选中项浅蓝底 + 主色文字） */
 .jfx-tree-select-row.jfx-tree-select-selected {
   -fx-background-color: -color-accent-subtle;
 }
@@ -4017,7 +4058,7 @@
   -fx-border-color: transparent;
   -fx-text-fill: white;
 }
-/* dots 容器：透明背景，仅做布局；干净浮在 slide 之上不喧宾夺主（Ant Design 风格） */
+/* dots 容器：透明背景，仅做布局；干净浮在 slide 之上不喧宾夺主（桌面工具风格） */
 .jfx-carousel-dots {
   -fx-padding: 0;
   -fx-background-color: transparent;
@@ -4052,6 +4093,7 @@
 /* overlay 标题区（顶部边框 + 标题 + 关闭按钮） */
 .jfx-overlay-header {
   -fx-padding: 16 24 16 24;
+  -fx-spacing: 6px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
@@ -4078,7 +4120,7 @@
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
-/* hover 时才显浅色圆形背景，对齐 Ant Design Modal/Drawer × 的微交互 */
+/* hover 时才显浅色圆形背景，对齐桌面工具 Modal/Drawer × 的微交互 */
 .jfx-overlay-close-btn:hover {
   -fx-background-color: -color-accent-subtle;
   -fx-text-fill: -color-fg-default;
@@ -4093,8 +4135,17 @@
 }
 .jfx-overlay-footer {
   -fx-padding: 16 24 16 24;
+  -fx-spacing: 6px;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1 0 0 0;
+}
+/* PromptDialogAnt */
+.jfx-prompt-dialog {
+  -fx-spacing: 8px;
+  -fx-padding: 20;
+}
+.jfx-prompt-dialog-footer {
+  -fx-spacing: 6px;
 }
 /* CascaderAnt */
 .jfx-cascader {
@@ -4163,6 +4214,20 @@
 .jfx-timeline-item {
   -fx-padding: 0 0 16 0;
 }
+.jfx-timeline-label-box {
+  -fx-min-width: 100;
+  -fx-pref-width: 100;
+  -fx-max-width: 100;
+  -fx-padding: 0 16 0 0;
+}
+.jfx-timeline-center-box {
+  -fx-min-width: 24;
+  -fx-pref-width: 24;
+  -fx-max-width: 24;
+}
+.jfx-timeline-content-box {
+  -fx-padding: 0 0 0 16;
+}
 .jfx-timeline-label {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
@@ -4214,6 +4279,7 @@
 }
 .jfx-transfer-list-header {
   -fx-padding: 8 12 8 12;
+  -fx-spacing: 6px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
@@ -4236,6 +4302,11 @@
 .jfx-transfer-list-view {
   -fx-background-color: transparent;
   -fx-border-width: 0;
+}
+/* Transfer 中间方向按钮区域 */
+.jfx-transfer-middle {
+  -fx-spacing: 6px;
+  -fx-padding: 8;
 }
 /* Transfer 中间方向按钮（hover 变主题色） */
 .jfx-transfer-arrow-btn {
@@ -4285,6 +4356,7 @@
 .jfx-list-item {
   -fx-background-color: transparent;
   -fx-padding: 12 24 12 24;
+  -fx-spacing: 8px;
 }
 .jfx-list-item.jfx-list-item-clickable {
   -fx-cursor: hand;
@@ -4301,10 +4373,14 @@
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
+.jfx-list-item-content {
+  -fx-spacing: 2px;
+}
 .jfx-list-divider {
   -fx-background-color: -color-border-default;
   -fx-min-height: 1;
   -fx-pref-height: 1;
+  -fx-padding: 0 24 0 24;
 }
 /* MenuAnt */
 .jfx-menu {
@@ -4324,6 +4400,7 @@
 .jfx-menu-item {
   -fx-background-color: transparent;
   -fx-cursor: hand;
+  -fx-spacing: 6px;
 }
 .jfx-menu-item:hover {
   -fx-background-color: -color-accent-subtle;
@@ -4349,7 +4426,7 @@
   -fx-text-fill: -color-accent-emphasis;
   -fx-font-weight: 600;
 }
-/* HORIZONTAL 顶级 item hover 视觉：底部细线，仿 Ant Design horizontal Menu */
+/* HORIZONTAL 顶级 item hover 视觉：底部细线，仿桌面工具 horizontal Menu */
 .jfx-menu-horizontal .jfx-menu-item:hover,
 .jfx-menu-horizontal .jfx-menu-submenu-header:hover {
   -fx-background-color: transparent;
@@ -4363,6 +4440,7 @@
 .jfx-menu-submenu-header {
   -fx-background-color: transparent;
   -fx-cursor: hand;
+  -fx-spacing: 6px;
 }
 .jfx-menu-submenu-header:hover {
   -fx-background-color: -color-accent-subtle;
@@ -4441,6 +4519,7 @@
 /* UploadAnt */
 .jfx-upload {
   -fx-background-color: transparent;
+  -fx-spacing: 6px;
 }
 .jfx-upload-drag {
   -fx-background-color: -color-bg-subtle;
@@ -4452,6 +4531,7 @@
   -fx-padding: 32;
   -fx-min-height: 180;
   -fx-cursor: hand;
+  -fx-spacing: 8px;
 }
 /* drag 激活态：拖拽进入时切换主题色边框 */
 .jfx-upload-drag.jfx-upload-drag-active {
@@ -4471,6 +4551,7 @@
   -fx-font-size: 12px;
 }
 .jfx-upload-list {
+  -fx-spacing: 2px;
   -fx-padding: 8 0 8 0;
   -fx-background-color: transparent;
 }
@@ -4479,6 +4560,7 @@
   -fx-spacing: 6px;
 }
 .jfx-upload-file-item {
+  -fx-spacing: 6px;
   -fx-padding: 8;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 2px;
@@ -4527,6 +4609,18 @@
 }
 .jfx-steps-item {
   -fx-padding: 8 0 8 0;
+}
+/* 水平布局步骤项：VBox 间距 icon/title/description */
+.jfx-steps .jfx-steps-item {
+  -fx-spacing: 6px;
+}
+/* 垂直布局步骤项：HBox 间距 icon列/content列 */
+.jfx-steps-vertical .jfx-steps-item {
+  -fx-spacing: 8px;
+}
+/* 垂直布局步骤内容区：标题+描述间距 */
+.jfx-steps-content {
+  -fx-spacing: 2px;
 }
 /* steps 圆圈 + 数字 + 标题 + 描述 + 连线，状态用修饰类切换 */
 .jfx-steps-circle {
@@ -4608,6 +4702,12 @@
   -fx-padding: 0 4 0 4;
 }
 /* SkeletonAnt */
+.jfx-skeleton-paragraph {
+  -fx-spacing: 6px;
+}
+.jfx-skeleton-avatar-text {
+  -fx-spacing: 8px;
+}
 .jfx-skeleton-shimmer {
   -fx-fill: -color-bg-default;
 }
@@ -4803,6 +4903,11 @@
   -fx-text-fill: -color-fg-default;
   -fx-padding: 12px 0 6px 0;
 }
+/* Form item：label 与控件之间、控件与 help/error 之间的纵向间距 */
+.jfx-form-item-box,
+.jfx-form-item-wrapper {
+  -fx-spacing: 2px;
+}
 /* Form 尺寸调节：仅控制字号与控件最小高度，间距由 Java 侧 VBox.spacing 负责 */
 .jfx-form-size-small {
   -fx-font-size: 12px;
@@ -4938,7 +5043,7 @@
   -fx-background-color: transparent;
 }
 .menu-button > .arrow-button > .arrow {
-  /* 默认 Ant Design chevron 样式（细 V 形描边） */
+  /* 默认 chevron 样式（细 V 形描边） */
   -fx-shape: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z";
   -fx-min-width: 10px;
   -fx-min-height: 6px;
@@ -5035,7 +5140,7 @@
   -fx-border-color: transparent transparent transparent -color-accent-active;
 }
 .split-menu-button > .arrow-button > .arrow {
-  /* 默认 Ant Design chevron 样式（细 V 形描边） */
+  /* 默认 chevron 样式（细 V 形描边） */
   -fx-shape: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z";
   -fx-min-width: 10px;
   -fx-min-height: 6px;
@@ -5206,9 +5311,9 @@
 .tree-table-row-cell:selected .tree-table-cell {
   -fx-text-fill: -color-cell-fg-selected;
 }
-/* 选中行 hover：对齐 Ant Design controlItemBgActiveHover token，
+/* 选中行 hover：对齐桌面工具选中态 hover token，
    背景在 subtle(accent-0) 基础上加深一档到 muted(accent-2)，
-   给用户"选中后还能继续交互"的反馈 */
+   给用户“选中后还能继续交互”的反馈 */
 .tree-table-row-cell:selected:hover,
 .tree-table-row-cell:selected:hover > .tree-table-cell {
   -fx-background-color: -color-accent-muted;
@@ -5492,7 +5597,7 @@
 }
 /* ============================================
    BadgeAnt status 形态
-   小圆点 + 状态色，对齐 Ant Design Badge#status。
+   小圆点 + 状态色，对齐桌面工具 Badge status 风格。
    颜色由 styleClass 切换，避免在 Java 端拼 -fx-background-color。
    尺寸（8x8）与圆角由 Java 端 setPrefSize / setStyle 配合 LESS 共同控制。
    ============================================ */
@@ -5603,9 +5708,13 @@
    ============================================ */
 .jfx-alert {
   -fx-padding: 12 16 12 16;
+  -fx-spacing: 2px;
   -fx-background-radius: 4px;
   -fx-border-radius: 4px;
   -fx-border-width: 1px;
+}
+.jfx-alert-header {
+  -fx-spacing: 6px;
 }
 /* banner 形态：无圆角、无边框，整条横幅 */
 .jfx-alert.jfx-alert-banner {
@@ -5633,6 +5742,9 @@
 /* Alert 描述/正文 */
 .jfx-alert .jfx-alert-message {
   -fx-font-size: 12px;
+}
+.jfx-alert .jfx-alert-message-indented {
+  -fx-padding: 0 0 0 24;
 }
 .jfx-alert.jfx-alert-success .jfx-alert-message {
   -fx-text-fill: -color-success-emphasis;
@@ -5682,6 +5794,7 @@
 .jfx-popconfirm-panel {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 12px 16px;
+  -fx-spacing: 8px;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
@@ -5705,6 +5818,7 @@
 .jfx-message-card {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 10px 16px;
+  -fx-spacing: 6px;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
@@ -5735,6 +5849,7 @@
 .jfx-notification-card {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 16px 24px;
+  -fx-spacing: 8px;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
@@ -5751,6 +5866,15 @@
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 14px;
 }
+.jfx-notification-container {
+  -fx-spacing: 6px;
+}
+.jfx-notification-card-header {
+  -fx-spacing: 8px;
+}
+.jfx-notification-card-content {
+  -fx-spacing: 2px;
+}
 /* Result */
 .jfx-result-title {
   -fx-font-size: 24px;
@@ -5764,6 +5888,12 @@
 /* FilterBar label */
 .jfx-filter-bar-label {
   -fx-text-fill: -color-fg-muted;
+}
+.jfx-filter-bar {
+  -fx-spacing: 6px;
+}
+.jfx-filter-bar-group {
+  -fx-spacing: 6px;
 }
 /* TableAnt danger action button */
 .jfx-button-danger-text {
@@ -5992,6 +6122,17 @@
 /* ----- 左 Banner（渐变背景 + 卖点） ----- */
 .jfx-login-template-banner {
   -fx-background-color: linear-gradient(to bottom right, -color-accent-4, -color-accent-emphasis 60%, -color-accent-7);
+  -fx-spacing: 20;
+  -fx-padding: 40 32 32 32;
+}
+.jfx-login-template-banner-brand-box {
+  -fx-spacing: 8px;
+}
+.jfx-login-template-banner-features {
+  -fx-spacing: 6px;
+}
+.jfx-login-template-banner-feature-row {
+  -fx-spacing: 6px;
 }
 /* Banner 内部所有文字默认白色（半透明分级） */
 .jfx-login-template-banner-brand {
@@ -6026,6 +6167,10 @@
   -fx-background-color: white;
 }
 /* ----- 右 表单 ----- */
+.jfx-login-template-form {
+  -fx-spacing: 8px;
+  -fx-padding: 60 48 40 48;
+}
 .jfx-login-template-form-title {
   -fx-font-size: 22px;
   -fx-font-weight: 700;
@@ -6045,6 +6190,13 @@
   -fx-border-width: 1;
   -fx-border-radius: 6;
   -fx-background-radius: 6;
+  -fx-pref-height: 40;
+}
+.jfx-login-template-input-icon-box {
+  -fx-min-width: 36;
+  -fx-pref-width: 36;
+  -fx-max-width: 36;
+  -fx-alignment: center;
 }
 /* 行内文本框：抹掉默认边框/背景，让它视觉融入外层 row 边框 */
 .jfx-login-template-input-field {
@@ -6114,6 +6266,12 @@
    NOT in Java setStyle() inline styles.
    所有选择器统一使用 jfx- 前缀，避免与 modena 冲突（红线 #8）。
    ============================================ */
+/* -------------------------------------------
+   PanelHeader
+   ------------------------------------------- */
+.jfx-panel-header {
+  -fx-spacing: 6px;
+}
 /* -------------------------------------------
    PanelFooter
    ------------------------------------------- */
@@ -6245,28 +6403,62 @@
    ------------------------------------------- */
 .jfx-float-button {
   -fx-alignment: center;
+  -fx-background-radius: 9999px;
+  -fx-background-insets: 0;
 }
 .jfx-float-button-primary {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
-  -fx-border-color: transparent;
+  -fx-border-color: -color-accent-emphasis;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
+  -fx-border-radius: 9999px;
   -fx-cursor: hand;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0, 0, 2);
 }
 .jfx-float-button-primary:hover {
+  -fx-background-color: -color-accent-4;
+  -fx-border-color: -color-accent-4;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0, 0, 4);
+}
+.jfx-float-button-primary:armed,
+.jfx-float-button-primary:pressed {
+  -fx-background-color: -color-accent-6;
+  -fx-border-color: -color-accent-6;
 }
 .jfx-float-button-default {
   -fx-background-color: -color-bg-default;
   -fx-text-fill: -color-fg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
+  -fx-border-style: solid;
+  -fx-border-radius: 9999px;
   -fx-cursor: hand;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0, 0, 2);
 }
 .jfx-float-button-default:hover {
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0, 0, 4);
+}
+.jfx-float-button-default:armed,
+.jfx-float-button-default:pressed {
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-accent-active;
+}
+/* FloatButton icon color（Label 作为 graphic 时，-fx-text-fill 不继承，需显式设色） */
+.jfx-float-button-default .label {
+  -fx-text-fill: -color-fg-default;
+}
+.jfx-float-button-default:hover .label {
+  -fx-text-fill: -color-accent-emphasis;
+}
+.jfx-float-button-default:armed .label,
+.jfx-float-button-default:pressed .label {
+  -fx-text-fill: -color-accent-active;
+}
+.jfx-float-button-primary .label {
+  -fx-text-fill: -color-fg-on-emphasis;
 }
 /* -------------------------------------------
    SkeletonAnt — rect fill
@@ -6481,6 +6673,7 @@
    ------------------------------------------- */
 .jfx-result {
   -fx-alignment: center;
+  -fx-spacing: 8px;
   -fx-padding: 48 32 48 32;
 }
 .jfx-result-icon-box {
