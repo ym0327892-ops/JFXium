@@ -22,7 +22,8 @@ public class WatermarkExamplePage extends VBoxAnt {
                 .sections(
                         basicSection(),
                         customSection(),
-                        dynamicSection()
+                        dynamicSection(),
+                        wrapSection()
                 )
                 .padding(24)
                 .build());
@@ -102,5 +103,24 @@ public class WatermarkExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("3. 动态切换",
                 "点击按钮循环切换水印文字，通过 Controller 更新同一个水印层。",
                 code, demo);
+    }
+
+    private Node wrapSection() {
+        Label content = new Label("现有根节点也可以一行包成水印容器。");
+        content.setWrapText(true);
+        content.setMinHeight(150);
+
+        StackPane root = new StackPane(content);
+        root.setMinHeight(220);
+
+        StackPane watermark = WatermarkAnt.wrap(root, builder -> builder.text("JFXium"));
+        String code = """
+                StackPane root = new StackPane(content);
+                StackPane watermark = WatermarkAnt.wrap(root, b -> b.text("JFXium"));
+
+                // 如果 root 已经是 Scene 的根节点，也可以直接：
+                // WatermarkAnt.wrap(scene, b -> b.text("JFXium"));
+                """;
+        return Demos.sectionWithCode("4. 一行接入", "wrap() 可以直接把现有根节点包成水印容器；Scene 根节点也能一行替换。", code, watermark);
     }
 }
