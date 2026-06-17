@@ -2212,3 +2212,35 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
   - `./mvnw -pl jfxium -DskipTests test-compile` ✅
   - `./mvnw -pl jfxium -Dtest=CascaderAntTest,AutoCompleteAntEdgeTest,AutoCompleteAntTest,ComboBoxAntTest test` ✅
 
+### #143 SkeletonAnt 动画超出外部容器边界（shimmer 默认无 clip）（2026-06-17）
+
+- **现象**：
+  1. 以下三个调用默认渲染时，shimmer 动画在 translateX 从 `-width` 到 `2*width` 扫描期间会跳出 StackPane 容器，视觉上“彩色光带”泄露到外部容器边界之外：
+     ```java
+     SkeletonAnt.create().variant(SkeletonAnt.Variant.TEXT).width(160).height(16).build();
+     SkeletonAnt.create().variant(SkeletonAnt.Variant.ROUNDED).width(120).height(48).build();
+     SkeletonAnt.create().variant(SkeletonAnt.Variant.CIRCULAR).width(48).height(48).build();
+     ```
+  2. ROUNDED 变体还会出现直角 shimmer 撞到 StackPane 圆角边缘后“溢出”于背景之外，圆形变体（width≠height）以 Circle clip 会把 StackPane 矩形区域裁出圆角以外的空白。
+  3. `paragraph()` / `avatarText()` 这两个辅助方法多个 skeleton 拼在一起时，动画溢出造成的视觉脏边会堆叠。
+
+- **根因**：
+  - JavaFX `StackPane` 默认不裁剪子节点，`shimmer` Rectangle 的 `translateX` 动画范围是 `[-width, 2*width]`，超出容器宽度两倍范围不被裁剪就会渲染到父容器外面。
+  - 原代码 `rect` 和 `shimmer` 各自维护一套形状参数（CIRCULAR 还要重设 width/height = min(w,h)），DRY 不达标，且未提供任何 clip 来“定位” StackPane 的可视边界。
+
+- **修复**：
+  - [`SkeletonAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/SkeletonAnt.java)：
+    1. `build()` 末尾 `skeleton.setClip(buildClipShape())`，为 4 个 variant 都设上形状匹配的 Rectangle clip（TEXT=4、ROUNDED=8、RECTANGULAR=0、CIRCULAR=`min(w,h)`），让 shimmer 溢出部分被自然裁掉。
+    2. CIRCULAR 使用“min(w,h) 圆角矩形” clip 而不是 `Circle`，确保 width≠height 时也能完整覆盖 StackPane 矩形区域（Circle 会在边缘产生外露空白）。
+    3. 抽 `applyVariantShape(Rectangle r)` 助手，让 `rect` 和 `shimmer` 共用同一套形状逻辑，避免参数漂移。
+  - 新增 [`SkeletonAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/SkeletonAntTest.java)（13 个测试用例）：覆盖 4 个 variant 的 clip 形状 / arc 参数、shimmer 初始 translateX=-width、CIRCULAR 非正方形 clip 仍为软圆角、`noAnimation()` 不创建 shimmer、`variant(null)` 回退 TEXT、`width/height` NaN/Infinity/负数回退 200/16、`paragraph()` 最后一行宽度 60%、`avatarText()` CIRCULAR + paragraph 组合。
+
+- **结果**：
+  - SkeletonAnt 4 个 variant 现在都能正确地 “将动画裁剪在自身边界内”，不再泄出到外部容器。
+  - `rect` 与 `shimmer` 形状参数统一走 `applyVariantShape` 助手，杜绝后续维护中“clip 改了但忘了同步 rect/shimmer”的同步错误。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -pl jfxium -Dtest=SkeletonAntTest test` ✅（13/13 通过）
+  - `./mvnw -pl jfxium test` ✅（全量 938/938 通过）
+

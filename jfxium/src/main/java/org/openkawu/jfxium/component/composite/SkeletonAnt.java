@@ -3,6 +3,7 @@ package org.openkawu.jfxium.component.composite;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -89,31 +90,15 @@ public class SkeletonAnt {
             skeleton.setPrefSize(width, height);
             skeleton.setMaxSize(width, height);
 
+            // Clip：shimmer 动画 translateX 范围 [-width, 2*width]，StackPane 默认不裁剪子节点，
+            // 不设 clip 时 shimmer 会渲染到容器外（视觉上"超出外部容器边界"）。
+            // 按 variant 设置与内容形状匹配的 clip 形状（圆角/圆形），让溢出部分自然裁掉。
+            skeleton.setClip(buildClipShape());
+
             Rectangle rect = new Rectangle(width, height);
             // 填充颜色通过 styleClass 在 LESS 中定义（避免 setStyle 中 CSS 变量导致 ClassCastException）
             rect.getStyleClass().add(JfxStyles.SKELETON_RECT);
-
-            switch (variant) {
-                case CIRCULAR -> {
-                    double size = Math.min(width, height);
-                    rect.setWidth(size);
-                    rect.setHeight(size);
-                    rect.setArcWidth(size);
-                    rect.setArcHeight(size);
-                }
-                case ROUNDED -> {
-                    rect.setArcWidth(8);
-                    rect.setArcHeight(8);
-                }
-                case RECTANGULAR -> {
-                    rect.setArcWidth(0);
-                    rect.setArcHeight(0);
-                }
-                default -> {
-                    rect.setArcWidth(4);
-                    rect.setArcHeight(4);
-                }
-            }
+            applyVariantShape(rect);
 
             skeleton.getChildren().add(rect);
 
@@ -121,24 +106,7 @@ public class SkeletonAnt {
                 Rectangle shimmer = new Rectangle(width, height);
                 shimmer.getStyleClass().add(JfxStyles.SKELETON_SHIMMER);
                 shimmer.setTranslateX(-width);
-
-                switch (variant) {
-                    case CIRCULAR -> {
-                        double size = Math.min(width, height);
-                        shimmer.setWidth(size);
-                        shimmer.setHeight(size);
-                        shimmer.setArcWidth(size);
-                        shimmer.setArcHeight(size);
-                    }
-                    case ROUNDED -> {
-                        shimmer.setArcWidth(8);
-                        shimmer.setArcHeight(8);
-                    }
-                    default -> {
-                        shimmer.setArcWidth(4);
-                        shimmer.setArcHeight(4);
-                    }
-                }
+                applyVariantShape(shimmer);
 
                 Timeline timeline = new Timeline(
                     new KeyFrame(Duration.ZERO,
@@ -154,6 +122,64 @@ public class SkeletonAnt {
 
             applyStyles(skeleton);
             return skeleton;
+        }
+
+        /**
+         * 按 variant 给 Rectangle 设置形状（CIRCULAR / ROUNDED / RECTANGULAR / TEXT 各自的圆角）。
+         * rect 和 shimmer 复用同一套形状规则，避免参数漂移。
+         */
+        private void applyVariantShape(Rectangle r) {
+            switch (variant) {
+                case CIRCULAR -> {
+                    double size = Math.min(width, height);
+                    r.setWidth(size);
+                    r.setHeight(size);
+                    r.setArcWidth(size);
+                    r.setArcHeight(size);
+                }
+                case ROUNDED -> {
+                    r.setArcWidth(8);
+                    r.setArcHeight(8);
+                }
+                case RECTANGULAR -> {
+                    r.setArcWidth(0);
+                    r.setArcHeight(0);
+                }
+                default -> { // TEXT
+                    r.setArcWidth(4);
+                    r.setArcHeight(4);
+                }
+            }
+        }
+
+        /**
+         * 构建 StackPane 的 clip 形状，与 variant 形状一致。
+         * <ul>
+         *   <li>TEXT/RECTANGULAR/ROUNDED：宽度×高度矩形 + 对应圆角（防止 shimmer 越过 StackPane 圆角边缘时显示直角）</li>
+         *   <li>CIRCULAR：用 size 圆角矩形（即使 width≠height 也能完整覆盖 StackPane 矩形区域，
+         *       仅裁剪边为软圆角，符合 CIRCULAR 视觉预期）</li>
+         * </ul>
+         */
+        private Rectangle buildClipShape() {
+            Rectangle clip = new Rectangle(width, height);
+            switch (variant) {
+                case CIRCULAR -> {
+                    double size = Math.min(width, height);
+                    clip.setArcWidth(size);
+                    clip.setArcHeight(size);
+                }
+                case ROUNDED -> {
+                    clip.setArcWidth(8);
+                    clip.setArcHeight(8);
+                }
+                case TEXT -> {
+                    clip.setArcWidth(4);
+                    clip.setArcHeight(4);
+                }
+                default -> { // RECTANGULAR - 直角 clip
+                }
+            }
+            return clip;
         }
     }
 
