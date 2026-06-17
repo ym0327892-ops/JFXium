@@ -1820,3 +1820,251 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
 - **验证**：
   - `./mvnw -pl jfxium -DskipTests test-compile` ✅
   - `./mvnw -pl jfxium -Dtest=GridAntTest,DividerAntTest test` ✅
+
+---
+
+### #129 全量扫描补漏：FormAnt 尺寸修饰类接线错误（2026-06-17）
+
+- **现象**：
+  1. `FormAnt.Builder.buildResult()` 给表单根节点挂的是 `form-size-small/default/large` 裸名。
+  2. `JfxStyles.java` 和 LESS 里真正存在的是 `jfx-form-size-small / jfx-form-size-large`。
+  3. 结果是表单 small / large 尺寸样式完全失联，default 还多挂了一个没有任何选择器的无效 class。
+
+- **根因**：
+  - 迁移到 `jfx-` 命名空间后，`FormAnt` 的动态 size class 没有同步改成 `JfxStyles.FORM_SIZE_SMALL / FORM_SIZE_LARGE`，属于典型“Java 挂 class，LESS 没接上”的回归。
+
+- **修复**：
+  - [`FormAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/FormAnt.java)：small / large 改挂 `JfxStyles.FORM_SIZE_SMALL / JfxStyles.FORM_SIZE_LARGE`，default 不再挂无效 size class。
+  - [`FormAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/FormAntTest.java)：同步改成检查 `jfx-form-size-small / jfx-form-size-large`，并确认 default 不带 size 修饰类。
+
+- **结果**：
+  - FormAnt 的尺寸修饰类重新和 LESS / JfxStyles 对齐，small / large 的视觉规则可以真正生效。
+  - 这类“动态 class 名称拼接”问题已经纳入本轮扫描结论，后续继续优先 grep 交叉验证。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #136 全量扫描补漏：HyperlinkAnt onClick 回调空值未守卫（2026-06-17）
+
+- **现象**：
+  1. `HyperlinkAnt.onClick(Runnable)` 直接 `setOnAction(e -> action.run())`。
+  2. `HyperlinkAnt.onClick(Consumer<HyperlinkAnt>)` 直接 `setOnAction(e -> action.accept(this))`。
+  3. 两个重载都应该允许 null，只是不绑定点击事件，不该在运行时埋 NPE。
+
+- **根因**：
+  - 这和 `StatusBarAnt.action(...)` 是同一类 callback 边界问题：没有在绑定层做 null 守卫。
+
+- **修复**：
+  - [`HyperlinkAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/HyperlinkAnt.java)：两个 `onClick` 重载都加 `action != null` 守卫。
+  - [`HyperlinkAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/control/HyperlinkAntTest.java)：新增测试确认两个重载传 null 都不会绑定空回调。
+
+- **结果**：
+  - HyperlinkAnt 的 callback 边界和项目其它组件一致：null 代表不绑定，而不是埋运行时异常。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #135 全量扫描补漏：StatusBarAnt action 回调空值未守卫（2026-06-17）
+
+- **现象**：
+  1. `StatusBarAnt.Builder.action(String, Runnable)` 里直接 `btn.setOnAction(e -> onClick.run())`。
+  2. 项目约定里 callback 参数允许为 null，应该“只是不要绑定”，不应该在点击时炸掉。
+  3. 这会让业务调用 `action("UTF-8", null)` 时，点击状态栏操作项触发 `NullPointerException`。
+
+- **根因**：
+  - 这里缺了和 `ToolBarAnt` / `MenuBarAnt` 同等级的 null 守卫，违反了 Builder 边界输入约定。
+
+- **修复**：
+  - [`StatusBarAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/StatusBarAnt.java)：只有在 `onClick != null` 时才绑定 `setOnAction(...)`。
+  - [`StatusBarAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/control/StatusBarAntTest.java)：新增测试确认 `action(..., null)` 可以正常 build，且按钮没有空回调。
+
+- **结果**：
+  - 状态栏 action 回调和项目其它组件的 callback 边界约定一致，null 只是不绑定，不再埋运行时炸点。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #131 二十九轮审计：overlay/base/layout/template 死代码与未公开 API 收口（2026-06-17）
+
+- **状态**：✅ FIXED（2026-06-17）
+
+- **现象**：
+  1. [`ContextMenuAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/overlay/ContextMenuAnt.java) 的 `Builder.disabled(boolean)` 函数体只有注释，没有把 disabled 状态同步到任何 `MenuItem`，业务调用后看不到效果，属于死回调。
+  2. [`TagAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TagAnt.java) 的 `Builder` 持有 `customColor` 字段，build 阶段未读、未用、未暴露给 LESS。
+  3. [`AnchorAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/AnchorAnt.java) 的 `Builder` 持有 `affix` 字段+`affix(boolean)` 方法，build 阶段未读、未用、未暴露给 LESS。
+  4. 这三个未公开 API 既污染 Builder 表面（让用户以为能用），也误导后续维护者去追根因。
+
+- **根因**：
+  - 早期设计尝试过 `disabled` / `customColor` / `affix` 能力，但落地时只完成了字段或 stub，忘记了真正把状态写到目标节点或 LESS 上。
+  - 代码审计缺少“未读字段 / 空体方法”扫描。
+
+- **修复**（实际代码改动）：
+  - `ContextMenuAnt.java`：`MenuItem.disabled` 由 `final boolean` 改为 mutable 字段 + 新增 `setDisabled(boolean)`；`Builder.disabled(boolean)` 真正写入 `currentItem.setDisabled(disabled)`，支持菜单构造期间多次切换。
+  - `TagAnt.java`：保留 `customColor` 字段，在 `build()` 末尾调用新增的 `applyCustomColor(tag, customColor)`——挂 `JfxStyles.TAG_HAS_COLOR` class + `setStyle("-fx-background-color: #hex; -fx-text-fill: -color-fg-on-emphasis;")`（颜色是 API 参数不算主题硬编码）。同时 `ModifyBuilder` 加 `color(Color)` 方法 + 持久化到 properties，供 modify 复用。
+  - `AnchorAnt.java`：删除 `affix` 字段 + `affix(boolean)` 方法（不提供该能力，避免表面假 API）。
+
+- **结果**：
+  - `disabled` 状态在右键菜单里真正生效。
+  - `customColor` 在 Tag 上走通，与 LESS 已有的 `.jfx-tag.jfx-tag-has-color` 复合选择器联动。
+  - `affix` 完全从 API 表面清除。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #132 二十九轮审计：Unicode 字符作为图标 / 关闭符 收口（2026-06-17）
+
+- **状态**：✅ FIXED（2026-06-17）
+
+- **现象**：
+  1. `AppShellAnt.createTriggerButton` 用 `setText("›")` / `setText("‹")` 作为 Sider 折叠/展开的箭头，裸 Unicode 字符当图标。
+  2. `LoginTemplate.buildFeature` 用 `new Label("✓")` 作为卖点勾选图标。
+  3. `CascaderAnt` clear 按钮用 `new Label("×")` 作为清除图标。
+  4. `FloatButtonAnt` javadoc 里的示例 `.icon(new Label("↑"))` 是错误的引导。
+  5. 这些“字符当图标”在浅/深主题、小字号、无字体环境下会出现 渲染错位、字宽不一致、找不到字体回退成方块 等问题。
+  6. （注：CloseButton / PanelHeader 在前几轮已用 Ikonli 收口过，本轮未重复。）
+
+- **根因**：
+  - 为图省事用了 Unicode 字符当按钮/标签文字，绕开了 SVG / Ikonli 体系，导致图标不能跟随主题色、不能跟随 compact 尺寸。
+
+- **修复**（实际代码改动）：
+  - [`IconAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/IconAnt.java)：`Path` 枚举新增 `CHEVRON_RIGHT` / `CHEVRON_LEFT` 两条 SVG path（来源 Ant Design Icons MIT License，24×24 viewBox；与 _contextmenu.less/_datepicker.less 中已用的 -fx-shape 一致）。
+  - [`AppShellAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/layout/AppShellAnt.java)：trigger 按钮改为 `new Button()` 不带文字，setGraphic 走 `IconAnt.path(CHEVRON_RIGHT|CHEVRON_LEFT, 14)`；状态变化时调用新私有方法 `buildTriggerIcon(boolean)` 重置 graphic。
+  - [`LoginTemplate.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/template/LoginTemplate.java)：`buildFeature` 的 `Label("✓")` 改用 `IconAnt.symbol(IconAnt.Symbol.CHECK, 14)`（Symbol 模式本就是 IconAnt 文档允许的"基础符号"通道，如 CLOSE/CHECK/ARROW 等），保持 `LOGIN_BANNER_FEATURE_CHECK` styleClass 走 LESS。
+  - [`CascaderAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/CascaderAnt.java)：clear 按钮 `new Label("×")` 改用 `new Label()` + `setGraphic(IconAnt.symbol(Symbol.CLOSE, 12))`，保留 `clearLabel.getStyleClass()` / `setVisible` / `setManaged` / `setOnMouseClicked` 等 API不变。
+  - [`FloatButtonAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/FloatButtonAnt.java)：javadoc 示例 `.icon(new Label("+"))` / `.icon(new Label("↑"))` 改为 `.icon(IconAnt.symbol(Symbol.PLUS, 18))` / `.icon(IconAnt.symbol(Symbol.ARROW_UP, 18))`，避免误导 API 使用者。
+
+- **结果**：AppShellAnt 触发按钮 + LoginTemplate 卖点勾选 全部走 IconAnt 抽象层，跟随主题色 / 尺寸，不再有字符回退问题。
+
+- **验证**：
+  - `grep -rn 'setText("[\u2039\u203a\u2713\u2715\u2190-\u2193\u2022\u00d7\u00b7]")' jfxium/src/main/java/` 返回 0 匹配。
+  - `grep -rn 'new Label("[\u2039\u203a\u2713\u2715\u2190-\u2193\u2022\u00d7\u00b7]")' jfxium/src/main/java/` 只剩 BUG #132 修复说明注释本身。
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #133 二十九轮审计：i18n 违规收口（中文 / 英文硬编码在 base/overlay 节点里）（2026-06-17）
+
+- **状态**：✅ FIXED（2026-06-17）
+
+- **现象**：
+  1. [`CodeBlockAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/CodeBlockAnt.java) 的复制按钮：`new Button("复制")` + 点击后 `setText("已复制")` + 1.2s 后 `setText("复制")`，三处中文硬编码。
+  2. （注：PopconfirmPanel.okText/cancelText 与 PromptDialogAnt 三个文案在之前轮次已用 null 占位 + lazy resolve + localeProperty 监听模式收口，本轮 grep 未发现新违规。）
+
+- **根因**：
+  - 复制按钮的“复制/已复制”是高频文案，但当时只图能跑通，直接写了中文，没走 `Messages` 体系。
+
+- **修复**（实际代码改动）：
+  - [`CodeBlockAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/CodeBlockAnt.java)：import `org.openkawu.jfxium.core.i18n.Messages`；三处硬编码改用 `Messages.get("codeblock.copy")` / `Messages.get("codeblock.copied")`。
+  - i18n 资源 `messages.properties` / `messages_zh_CN.properties` / `messages_en.properties` 早就有 `codeblock.copy` / `codeblock.copied` 键（"复制" / "Copy"；"已复制!" / "Copied!"），无需新增。
+
+- **结果**：复制按钮文案在切换 locale 时自动跟随，不再受 Java 硬编码约束。
+
+- **验证**：
+  - `grep -rn 'setText("复制\|setText("已复制\|new Button("复制"' jfxium/src/main/java/` 返回 0 匹配。
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #134 二十九轮审计：硬编码 px / Duration / 位移 收口（2026-06-17）
+
+- **状态**：🔍 SCANNED（2026-06-17，本轮扫描归类，未修改；后续开专项 ticket）
+
+- **现象**：
+  1. 动画时长 `Duration.millis(200/250/300/400/450/1200)` 在 composite 包里出现 18+ 处，覆盖 9 个组件（MenuAnt / TabsAnt / CollapseAnt / AlertAnt / CarouselAnt / SwitchAnt / BackTopAnt / CodeBlockAnt / DrawerAnt 等）。
+  2. `MessageAnt / ModalAnt / NotificationAnt / PopoverAnt / PopconfirmAnt` 的默认宽高（300 / 384 / 520）、margin (24)、位移 (±8 / ±20)、fade 时长在 Java 侧硬编码。
+  3. `PanelHeader.padding = new Insets(16,24,16,16)`、PageTemplate/CrudTemplate/DashboardTemplate 各种 `sectionGap / padding / headerGap` 默认值写死。
+
+- **根因**：
+  - 动画时长和弹层尺寸早期为了快速落地直接用 Java 常量写死。
+  - 同一类时长（200ms fade、150ms close、300ms slide）在多文件里复制粘贴，没有提炼成 token。
+
+- **本轮扫描结论**（**未修改**）：
+  - `Duration.millis(...)` 中的数值（200/250/300/400/450/1200）全部是 **结构性动画时长**（如 SwitchAnt slide=200ms vs CarouselAnt slide=400ms 是有意不同步），不属于设计 token 应管的范畴（LESS 主题系统通常不管理 animation duration，duration 与设备性能/可访问性 prefers-reduced-motion 相关，惯例外置为常量）。
+  - `layout/template` 包里的 `new Insets(0, 0, sectionGap, 0)` 实际用的是 **Builder 字段**（如 `sectionGap` / `headerToBodyGap`），不是裸常量；调用方通过 `.sectionGap(20)` 覆盖。
+  - 弹层默认宽高（300/384/520）、`Insets(16,24,16,16)` 等写死——这些是 **设计常量**，走 LESS token 需要新增 `@overlay-width-md` / `@overlay-padding-md` 等 token + 11 个主题都补值，工作量较大（50+ 处），需开专项 ticket。
+
+- **建议后续工作**（开专项 PR）：
+  1. 新增 `core/anim/Motion.java` 集中管理常用动画时长（`SHORT=120ms / DEFAULT=200ms / LONG=300ms`）。
+  2. 弹层默认宽高（300/384/520）改读 `JfxStyles` 常量（写入 LESS 变量），不通过 Java 硬编码。
+  3. `PanelHeader.padding` / PageTemplate 各 spacing / padding / gap 全部走 `@spacing-*` / `@control-height` token，compact 主题自动联动。
+
+- **验证**：
+  - `grep -rn 'Duration\.millis(' jfxium/src/main/java/` 共 18 处，已分类记录。
+  - `grep -rn 'new Insets(\d' jfxium/src/main/java/org/openkawu/jfxium/{layout,template}/*.java` 共 4 处，全部为 Builder 字段。
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #130 全量扫描补漏：FormAnt item wrapper 间距 hook 缺失（2026-06-17）
+
+- **现象**：
+  1. `FormAnt` 现在把 vertical / inline 布局里的 item 容器改成了 `jfx-form-item-box`。
+  2. `createWrapper()` 也改成了 `jfx-form-item-wrapper`。
+  3. 但 LESS 里原本没有这两个选择器，导致 item 的 label/控件、控件/helpText 之间没有稳定的 token 化间距。
+
+- **根因**：
+  - 这里原先依赖 `new VBox(4)` 的 Java 侧硬编码间距，迁移成 styleClass 后没有同步补 LESS 规则，属于“结构改了，视觉 hook 没跟上”的漏项。
+
+- **修复**：
+  - [`_progress-sizes.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_progress-sizes.less)：新增 `.jfx-form-item-box` / `.jfx-form-item-wrapper`，统一用 `@spacing-xs` 作为纵向间距 token。
+  - [`FormAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/FormAntTest.java)：补测试确认 vertical form 的 itemBox / wrapper 都挂上了对应 styleClass。
+
+- **结果**：
+  - FormAnt vertical / inline item 结构恢复了稳定的 token 化间距，不再依赖 Java 侧裸写 `4px`。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #131 全量扫描补漏：ModalAnt 默认 footer 间距仍写死在 Java（2026-06-17）
+
+- **现象**：
+  1. `ModalAnt.createDefaultFooter()` 之前用 `new HBox(8, cancelBtn, okBtn)`。
+  2. footer 本身已经挂了 `jfx-overlay-footer`，LESS 里也已有 footer 样式锚点。
+  3. 结果是按钮之间的横向间距被 Java 硬编码，compact / token 体系无法统一接管。
+
+- **根因**：
+  - overlay footer 的 spacing 本该跟 padding/border 一起由 LESS 控制，但实现里沿用了 Java 侧固定 8px 的旧写法。
+
+- **修复**：
+  - [`ModalAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/overlay/ModalAnt.java)：默认 footer 改成普通 `HBox`，不再写死 spacing。
+  - [`_tier3-batch1.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_tier3-batch1.less)：给 `.jfx-overlay-footer` 补 `-fx-spacing: @spacing-sm;`，让按钮间距走 token。
+  - [`ModalAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/overlay/ModalAntTest.java)：补测试确认默认 footer 仍挂 `jfx-overlay-footer` 且结构正常。
+
+- **结果**：
+  - Modal footer 的间距正式回到 LESS token 体系，Java 侧不再持有 8px 视觉规则。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+
+---
+
+### #132 全量扫描补漏：DropdownAnt trigger wrapper 间距与样式接线缺失（2026-06-17）
+
+- **现象**：
+  1. `DropdownAnt.build()` 在 `showArrow()` 分支里用 `new HBox(4, trigger, arrow)`。
+  2. `JfxStyles` 已经预留了 `jfx-dropdown-trigger`，但 LESS 里没有对应样式。
+  3. 结果是 trigger + arrow 的间距写死在 Java 里，且这个预留 class 之前完全没起作用。
+
+- **根因**：
+  - 这是典型的“常量已预留、视觉规则没落地、Java 又先写死兜底”的双层缺口。
+
+- **修复**：
+  - [`DropdownAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/overlay/DropdownAnt.java)：showArrow 分支改成普通 `HBox`，并挂 `JfxStyles.DROPDOWN_TRIGGER`。
+  - [`_combobox.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_combobox.less)：新增 `.jfx-dropdown-trigger`，用 `@spacing-xs` 控制 trigger 与箭头的横向间距。
+  - [`DropdownAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/overlay/DropdownAntTest.java)：补测试确认 showArrow 后触发节点确实被包装为带 `jfx-dropdown-trigger` 的 HBox。
+
+- **结果**：
+  - Dropdown trigger wrapper 的间距回到 token 体系，`jfx-dropdown-trigger` 也真正有了视觉作用。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
