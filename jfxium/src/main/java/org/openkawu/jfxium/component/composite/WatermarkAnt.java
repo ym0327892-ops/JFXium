@@ -3,6 +3,7 @@ package org.openkawu.jfxium.component.composite;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -19,6 +20,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -48,6 +50,8 @@ import java.util.function.Supplier;
  *     .content(myContent)
  *     .text("机密文档")
  *     .build();
+ *
+ * StackPane wrapped = WatermarkAnt.wrap(scene, b -> b.text("JFXium"));
  * }</pre>
  *
  * @since 1.0
@@ -474,6 +478,55 @@ public class WatermarkAnt {
 
     public static Builder create() {
         return new Builder();
+    }
+
+    /**
+     * 将内容节点一行包装成带水印的 {@link StackPane}。
+     * <p>适合把现有根节点直接包一层，例如 {@code WatermarkAnt.wrap(scene.getRoot())}。</p>
+     */
+    public static StackPane wrap(Node content) {
+        return create().content(content).build();
+    }
+
+    /**
+     * 将内容节点一行包装成带水印的 {@link StackPane}，并允许先配置 Builder。
+     *
+     * @param content 要加水印的内容节点
+     * @param customizer Builder 定制器，可为 null
+     */
+    public static StackPane wrap(Node content, Consumer<Builder> customizer) {
+        Builder builder = create().content(content);
+        if (customizer != null) {
+            customizer.accept(builder);
+        }
+        return builder.build();
+    }
+
+    /**
+     * 将 Scene 的根节点替换为带水印的 {@link StackPane}。
+     * <p>适合一行接入整窗根节点：{@code WatermarkAnt.wrap(scene, b -> b.text("JFXium"))}。</p>
+     */
+    public static StackPane wrap(Scene scene) {
+        return wrap(scene, null);
+    }
+
+    /**
+     * 将 Scene 的根节点替换为带水印的 {@link StackPane}，并允许先配置 Builder。
+     *
+     * @param scene 目标 Scene
+     * @param customizer Builder 定制器，可为 null
+     */
+    public static StackPane wrap(Scene scene, Consumer<Builder> customizer) {
+        if (scene == null) {
+            throw new IllegalArgumentException("scene 不能为空");
+        }
+        Node root = scene.getRoot();
+        if (root == null) {
+            throw new IllegalStateException("scene.getRoot() 不能为空");
+        }
+        StackPane wrapped = wrap(root, customizer);
+        scene.setRoot(wrapped);
+        return wrapped;
     }
 
     public static Controller controllerOf(Node node) {
