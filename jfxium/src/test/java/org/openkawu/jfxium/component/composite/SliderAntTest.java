@@ -2,7 +2,9 @@ package org.openkawu.jfxium.component.composite;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.Parent;
 import javafx.scene.Node;
+import javafx.scene.control.Slider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
@@ -35,6 +37,22 @@ class SliderAntTest extends JfxTestBase {
                 .min(10).max(200).value(50).step(10)
                 .build();
         assertNotNull(slider);
+    }
+
+    @Test
+    @DisplayName("NaN / 反转区间构建安全")
+    void invalidRange_safe() {
+        Node slider = SliderAnt.create()
+                .min(Double.NaN)
+                .max(Double.NaN)
+                .value(Double.NaN)
+                .step(Double.NaN)
+                .build();
+
+        Slider inner = findSlider(slider);
+        assertEquals(0.0, inner.getMin(), 0.001);
+        assertEquals(100.0, inner.getMax(), 0.001);
+        assertEquals(0.0, inner.getValue(), 0.001);
     }
 
     @Test
@@ -170,5 +188,21 @@ class SliderAntTest extends JfxTestBase {
                 .padding(4)
                 .build();
         assertNotNull(slider);
+    }
+
+    private static Slider findSlider(Node node) {
+        if (node instanceof Slider slider) {
+            return slider;
+        }
+        if (node instanceof Parent parent) {
+            for (Node child : parent.getChildrenUnmodifiable()) {
+                try {
+                    return findSlider(child);
+                } catch (AssertionError ignored) {
+                    // continue searching
+                }
+            }
+        }
+        throw new AssertionError("SliderAnt should contain a Slider");
     }
 }

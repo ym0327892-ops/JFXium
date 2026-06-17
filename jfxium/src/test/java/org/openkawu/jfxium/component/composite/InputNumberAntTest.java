@@ -35,6 +35,18 @@ class InputNumberAntTest extends JfxTestBase {
     }
 
     @Test
+    @DisplayName("min/max/value 非有限值和反转区间构建安全")
+    void invalidRange_safe() {
+        HBox box = InputNumberAnt.create()
+                .min(100)
+                .max(0)
+                .value(Double.NaN)
+                .step(Double.NaN)
+                .build();
+        assertEquals("0", fieldOf(box).getText());
+    }
+
+    @Test
     @DisplayName("disabled 禁用")
     void disabled() {
         HBox box = InputNumberAnt.create()

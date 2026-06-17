@@ -93,14 +93,35 @@ class FormAntTest extends JfxTestBase {
     }
 
     @Test
-    @DisplayName("size styleClass 随 size 切换：form-size-small/default/large")
+    @DisplayName("size styleClass 随 size 切换：jfx-form-size-small/default/large")
     void size_styleClass_changes() {
         VBox small = FormAnt.create().size(FormAnt.Size.SMALL).build();
         VBox def = FormAnt.create().size(FormAnt.Size.DEFAULT).build();
         VBox large = FormAnt.create().size(FormAnt.Size.LARGE).build();
-        assertTrue(small.getStyleClass().stream().anyMatch(c -> c.contains("form-size-small")));
-        assertTrue(def.getStyleClass().stream().anyMatch(c -> c.contains("form-size-default")));
-        assertTrue(large.getStyleClass().stream().anyMatch(c -> c.contains("form-size-large")));
+        assertTrue(small.getStyleClass().contains(JfxStyles.FORM_SIZE_SMALL));
+        assertFalse(def.getStyleClass().contains(JfxStyles.FORM_SIZE_SMALL));
+        assertFalse(def.getStyleClass().contains(JfxStyles.FORM_SIZE_LARGE));
+        assertTrue(large.getStyleClass().contains(JfxStyles.FORM_SIZE_LARGE));
+    }
+
+    @Test
+    @DisplayName("vertical form item 结构挂载 item-box / item-wrapper styleClass")
+    void vertical_item_hooks_are_present() {
+        VBox form = FormAnt.create()
+                .layout(FormAnt.Layout.VERTICAL)
+                .item("用户名", new TextField())
+                .build();
+
+        assertTrue(form.getStyleClass().contains(JfxStyles.FORM));
+        // FORM_VERTICAL 挂在 body container 上（form.getChildren().get(0)），不是 form 本身
+        VBox body = (VBox) form.getChildren().get(0);
+        assertTrue(body.getStyleClass().contains(JfxStyles.FORM_VERTICAL));
+
+        VBox itemBox = (VBox) body.getChildren().get(0);
+        assertTrue(itemBox.getStyleClass().contains(JfxStyles.FORM_ITEM_BOX));
+
+        VBox wrapper = (VBox) itemBox.getChildren().get(1);
+        assertTrue(wrapper.getStyleClass().contains(JfxStyles.FORM_ITEM_WRAPPER));
     }
 
     // ============================================================
