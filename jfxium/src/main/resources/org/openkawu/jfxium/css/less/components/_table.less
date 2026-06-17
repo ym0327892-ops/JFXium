@@ -35,9 +35,9 @@
 
 /* 关键：JavaFX 表头高度由 .column-header-background 控制（外层容器），
    而不是 .column-header（仅控制单列）。
-   Web 后台框架默认 56px，这里设 48px（admin 实用感更紧凑）。 */
+   对齐 PC UI 规范：表头高 = @table-header-height = @control-height（32px）。 */
 .table-view .column-header-background {
-  -fx-pref-height: 48px;
+  -fx-pref-height: @table-header-height;
   /* 整个表头容器的背景：包括最后一列右侧的"剩余空白区" */
   -fx-background-color: -color-bg-subtle;
   -fx-background-insets: 0;

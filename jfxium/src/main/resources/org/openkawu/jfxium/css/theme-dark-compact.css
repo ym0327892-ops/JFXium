@@ -814,9 +814,9 @@
 }
 /* 关键：JavaFX 表头高度由 .column-header-background 控制（外层容器），
    而不是 .column-header（仅控制单列）。
-   Web 后台框架默认 56px，这里设 48px（admin 实用感更紧凑）。 */
+   对齐 PC UI 规范：表头高 = @table-header-height = @control-height（32px）。 */
 .table-view .column-header-background {
-  -fx-pref-height: 48px;
+  -fx-pref-height: 28px;
   /* 整个表头容器的背景：包括最后一列右侧的"剩余空白区" */
   -fx-background-color: -color-bg-subtle;
   -fx-background-insets: 0;
@@ -2794,21 +2794,22 @@
 }
 /* 行高保护：保证最低行高足以容纳 Avatar(32px)/Tag(24px)/按钮(28px) 等内容，
    同时文字行也有舒适的上下留白。
+   对齐 PC UI 规范：行高 = @table-row-height = @control-height（32px）。
    不用 -fx-cell-size（那个会强制裁切高内容），用 min-height 让行高自适应但有下限。 */
 .table-view .table-row-cell {
-  -fx-min-height: 48px;
+  -fx-min-height: 28px;
 }
 /* M11.2 三档尺寸（对齐桌面工具 Table size：SMALL / MIDDLE / LARGE）
    ============================================================ */
-/* SMALL：紧凑模式（mini 表格）。表头 40 / 行高 36 / padding 6×8 / 字号 13 */
+/* SMALL：紧凑模式。表头/行高 = @control-height-sm（28px）/ padding 6×8 / 字号 13 */
 .table-view.jfx-table-small .column-header-background {
-  -fx-pref-height: 40px;
+  -fx-pref-height: 24px;
 }
 .table-view.jfx-table-small .column-header {
   -fx-padding: 6px 8px;
 }
 .table-view.jfx-table-small .table-row-cell {
-  -fx-min-height: 36px;
+  -fx-min-height: 24px;
 }
 .table-view.jfx-table-small .table-cell {
   -fx-padding: 6px 8px;
@@ -2816,18 +2817,18 @@
 }
 /* MIDDLE：默认（无需重写，使用上方的 .column-header / .table-cell 默认值）
    .jfx-table-middle 仅用于 styleClass 标识，便于用户后续 grep 调试 */
-/* LARGE：宽松模式。表头 56 / 行高 56 / padding 14×16 / 字号 15 */
+/* LARGE：宽松模式。表头/行高 = @control-height-lg（40px）/ padding 12×16 / 字号 15 */
 .table-view.jfx-table-large .column-header-background {
-  -fx-pref-height: 56px;
+  -fx-pref-height: 36px;
 }
 .table-view.jfx-table-large .column-header {
-  -fx-padding: 14px 16px;
+  -fx-padding: 12px 16px;
 }
 .table-view.jfx-table-large .table-row-cell {
-  -fx-min-height: 56px;
+  -fx-min-height: 36px;
 }
 .table-view.jfx-table-large .table-cell {
-  -fx-padding: 14px 16px;
+  -fx-padding: 12px 16px;
   -fx-font-size: 15px;
 }
 /* 老 .jfx-table-compact 兼容（等价 SMALL）。
