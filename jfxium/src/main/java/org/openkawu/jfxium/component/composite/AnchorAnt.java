@@ -69,7 +69,6 @@ public class AnchorAnt {
         private int offsetTop = 0;
         private String activeKey = null;
         private Consumer<String> onChange = null;
-        private boolean affix = false;
         // runtime 控制器：build() 后装配，支持点击/调 API 切换高亮（BUG #52）
         private Controller controller;
 
@@ -108,13 +107,8 @@ public class AnchorAnt {
             return this;
         }
 
-        public Builder affix(boolean affix) {
-            this.affix = affix;
-            return this;
-        }
-
         public VBox build() {
-            VBox anchor = new VBox(4);
+            VBox anchor = new VBox();
             anchor.getStyleClass().add(JfxStyles.ANCHOR);
             anchor.getStyleClass().add(direction == Direction.HORIZONTAL
                     ? JfxStyles.ANCHOR_HORIZONTAL : JfxStyles.ANCHOR_VERTICAL);
@@ -125,8 +119,8 @@ public class AnchorAnt {
             for (AnchorItem item : items) {
                 anchor.getChildren().add(createItemNode(item));
                 if (!item.getChildren().isEmpty()) {
-                    VBox subBox = new VBox(2);
-                    subBox.setPadding(new Insets(4, 0, 4, 16));
+                    VBox subBox = new VBox();
+                    subBox.getStyleClass().add(JfxStyles.ANCHOR_SUB_GROUP);
                     for (AnchorItem child : item.getChildren()) {
                         subBox.getChildren().add(createItemNode(child));
                     }

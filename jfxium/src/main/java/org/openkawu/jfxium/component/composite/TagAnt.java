@@ -64,6 +64,9 @@ public class TagAnt {
     /** 状态键名：把 build() 时的 type/size/shape/bordered 挂到节点 properties，便于 modify() 复用。 */
     private static final String STATE_KEY = "jfxium.tag.state";
 
+    /** 自定义颜色键：用户调 {@code .color(c)} 时把 Color 存到 properties，供 modify 复用。 */
+    private static final String CUSTOM_COLOR_KEY = "jfxium.tag.customColor";
+
     /** 内部状态对象（不可变 record，便于复用 + 日志清晰）。 */
     private record TagState(Type type, Size size, Shape shape, boolean bordered) {}
 
@@ -150,7 +153,7 @@ public class TagAnt {
         }
 
         public HBox build() {
-            HBox tag = new HBox(4);
+            HBox tag = new HBox();
             tag.setAlignment(javafx.geometry.Pos.CENTER);
 
             // 基础类（一次性，modify 不会清掉）
@@ -159,8 +162,16 @@ public class TagAnt {
             // 把当前状态存进 properties，便于 modify() 时无差别重新渲染
             tag.getProperties().put(STATE_KEY, new TagState(type, size, shape, bordered));
 
+            // 自定义颜色：存到 properties 供 modify 复用
+            if (customColor != null) {
+                tag.getProperties().put(CUSTOM_COLOR_KEY, customColor);
+            }
+
             // 应用类型修饰类 + inline 视觉（与 ModifyBuilder.apply() 共享同一段逻辑）
             applyVisualState(tag, type, size, shape, bordered);
+
+            // 应用自定义颜色：BUG #131 修复——customColor 之前是死字段，现挂 TAG_HAS_COLOR 类 + setStyle 覆背景/字色
+            applyCustomColor(tag, customColor);
 
             // Label
             Label label = new Label(text);
@@ -241,6 +252,37 @@ public class TagAnt {
         // 4. 圆角处理也下沉到 .jfx-tag-rounded（红线的 #6 不适用：Tag 是 size-clamped 节点）
     }
 
+    /**
+     * 应用 Tag 的自定义颜色：染背景 + 文本色。
+     *
+     * <p>对标 Ant Design Tag presetColors 语义：用户传任意 Color，把 Tag 染成该色。
+     * 走 TAG_HAS_COLOR class（jfx-tag-has-color）让 LESS 的 text-fill 主题字体色生效，
+     * 背景色通过 inline setStyle 写入（颜色来源是 API 参数，不算主题派生的硬编码）。</p>
+     */
+    private static void applyCustomColor(HBox tag, Color color) {
+        if (color != null) {
+            if (!tag.getStyleClass().contains(JfxStyles.TAG_HAS_COLOR)) {
+                tag.getStyleClass().add(JfxStyles.TAG_HAS_COLOR);
+            }
+            String hex = toHexColor(color);
+            tag.setStyle("-fx-background-color: " + hex + "; -fx-text-fill: -color-fg-on-emphasis;");
+        } else {
+            tag.getStyleClass().remove(JfxStyles.TAG_HAS_COLOR);
+            tag.setStyle(null);
+        }
+    }
+
+    /** Color → CSS hex (#rrggbb)。Alpha 不输出，因为 Tag 是 opaque。 */
+    private static String toHexColor(Color color) {
+        int r = (int) Math.round(color.getRed() * 255);
+        int g = (int) Math.round(color.getGreen() * 255);
+        int b = (int) Math.round(color.getBlue() * 255);
+        r = Math.max(0, Math.min(255, r));
+        g = Math.max(0, Math.min(255, g));
+        b = Math.max(0, Math.min(255, b));
+        return String.format("#%02x%02x%02x", r, g, b);
+    }
+
     /** Tag 所有可能的状态 styleClass 集合（用于清理 applyVisualState 中的旧状态）。 */
     private static final List<String> TAG_STATE_CLASSES = List.of(
             JfxStyles.TAG_DEFAULT, JfxStyles.TAG_PRIMARY, JfxStyles.TAG_SUCCESS,
@@ -297,6 +339,8 @@ public class TagAnt {
         private Boolean bordered;
         private String text;
         private boolean textSet = false;
+        private Color color;
+        private boolean colorSet = false;
 
         ModifyBuilder(HBox tag) {
             this.tag = tag;
@@ -331,6 +375,12 @@ public class TagAnt {
             return this;
         }
 
+        public ModifyBuilder color(Color color) {
+            this.color = color;
+            this.colorSet = true;
+            return this;
+        }
+
         /** 应用所有修改到原 Tag 上。返回原 HBox 实例。 */
         public HBox apply() {
             // 取出 build 时存的状态作为基线（如果不是 TagAnt.create() 出来的节点，State 为 null，按默认值兜底）
@@ -347,6 +397,21 @@ public class TagAnt {
             // 重写视觉状态 + 更新 state
             applyVisualState(tag, effType, effSize, effShape, effBordered);
             tag.getProperties().put(STATE_KEY, new TagState(effType, effSize, effShape, effBordered));
+
+            // 自定义颜色：与 build() 保持一致。优先取 modify 传入，否则从 properties 读出上次的颜色
+            Color effColor;
+            if (colorSet) {
+                effColor = color;
+            } else {
+                Object cached = tag.getProperties().get(CUSTOM_COLOR_KEY);
+                effColor = cached instanceof Color ? (Color) cached : null;
+            }
+            if (effColor != null) {
+                tag.getProperties().put(CUSTOM_COLOR_KEY, effColor);
+            } else {
+                tag.getProperties().remove(CUSTOM_COLOR_KEY);
+            }
+            applyCustomColor(tag, effColor);
 
             // 改文字：直接打到 build 时存的 label 上
             if (textSet) {

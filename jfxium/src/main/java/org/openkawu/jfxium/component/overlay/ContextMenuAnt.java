@@ -66,7 +66,7 @@ public class ContextMenuAnt {
         private final String key;
         private final String label;
         private final Node icon;
-        private final boolean disabled;
+        private boolean disabled;
         private final boolean divider;
         private KeyCombination accelerator;
 
@@ -101,6 +101,7 @@ public class ContextMenuAnt {
         public boolean isDivider() { return divider; }
         public KeyCombination getAccelerator() { return accelerator; }
         public void setAccelerator(KeyCombination accelerator) { this.accelerator = accelerator; }
+        public void setDisabled(boolean disabled) { this.disabled = disabled; }
     }
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
@@ -142,9 +143,9 @@ public class ContextMenuAnt {
         }
 
         public Builder disabled(boolean disabled) {
+            // BUG #131 修复：之前是死代码（函数体只有注释），现在真正写入当前 item。
             if (currentItem != null) {
-                // Note: MenuItem is immutable for disabled, but we track it via wrapper
-                // In real usage, create a new item or use a mutable wrapper
+                currentItem.setDisabled(disabled);
             }
             return this;
         }
@@ -202,7 +203,7 @@ public class ContextMenuAnt {
                     continue;
                 }
 
-                HBox row = new HBox(8);
+                HBox row = new HBox();
                 row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
                 row.getStyleClass().add(JfxStyles.CONTEXT_MENU_ITEM);
                 if (item.isDisabled()) {
