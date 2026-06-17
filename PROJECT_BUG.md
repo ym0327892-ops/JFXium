@@ -2068,3 +2068,147 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
 
 - **验证**：
   - `./mvnw -pl jfxium -DskipTests compile` ✅
+
+### #137 全量扫描补漏：TimelineAnt / PanelHeader / LoginTemplate 高概率点收口（2026-06-17）
+
+- **现象**：
+  1. `TimelineAnt` 里左侧 label 盒、中心点位盒、右侧 content 盒仍有一部分固定宽度 / padding 写在 Java 里，token 体系接不上。
+  2. `PanelHeader.title(null)`、`PanelHeader.padding(...)` 对边界值没有统一归一化，close button 也还在用重复拼装。
+  3. `LoginTemplate.feature(null)`、`bannerWidth(NaN/<=0)`、`vSpacer(负值/非有限)` 这类模板输入还缺少统一防御，模板内部图标盒尺寸也仍在 Java 侧硬写。
+
+- **根因**：
+  - 这几处都属于“视觉/结构常量与外部输入边界”问题，之前优先处理了更明显的 bug，这轮继续向剩余高概率点补漏。
+
+- **修复**：
+  - [`TimelineAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TimelineAnt.java)：把 label box / center box / content box 的固定宽度与 padding 挪到 styleClass 接线。
+  - [`JfxStyles.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/css/JfxStyles.java) + [`_tier3-batch1.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_tier3-batch1.less)：补齐 `jfx-timeline-label-box` / `jfx-timeline-center-box` / `jfx-timeline-content-box` 样式锚点。
+  - [`PanelHeader.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/base/PanelHeader.java)：`title(null)` 回空串，`padding(...)` 归一化到非负有限值，close button 复用 `CloseButton`。
+  - [`LoginTemplate.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/template/LoginTemplate.java)：`feature(null)` 跳过，`bannerWidth(...)` 归一化，`vSpacer(...)` 防负值/非有限值，输入图标盒改走 styleClass。
+  - [`_template.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_template.less)：补 `jfx-login-template-input-icon-box`，把输入行高度回收到 LESS。
+  - 新增 [`TimelineAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/TimelineAntTest.java) 断言 styleClass 接线，新增 [`PanelHeaderTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/base/PanelHeaderTest.java) / [`LoginTemplateTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/template/LoginTemplateTest.java) 兜底边界输入。
+
+- **结果**：
+  - Timeline / Header / Login 模板这组三个高频组件的固定视觉常量和边界输入都回到了统一的 token / null-safe 规则里。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -pl jfxium -DskipTests test-compile` ✅
+
+### #138 全量扫描补漏：PageTemplate / CrudTemplate / DashboardTemplate 数值与空值收口（2026-06-17）
+
+- **现象**：
+  1. `PageTemplate` 的 `headerGap / sectionGap / headerToBodyGap / padding` 仍会原样接受 `NaN`、负数或无限值，`VBox` 间距与 `Insets` 直接吃脏值。
+  2. `CrudTemplate` 的 `topbarSpacing / bottombarSpacing / sectionGap` 也没有做统一归一化，批量节点入口虽然有 BarAnt 兜底，但模板层本身仍会把脏值继续往下传。
+  3. `DashboardTemplate` 的 `leftRatio(NaN)` 会污染列宽百分比，`stat(null, null, null, null, ...)` 也会把空值直接送进图标 / 文案构建链。
+
+- **根因**：
+  - 这几个业务模板都是 admin 高复用骨架，边界输入如果不在模板层收口，就会把“页面级布局常量”变成运行时故障源。
+
+- **修复**：
+  - [`PageTemplate.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/template/PageTemplate.java)：`headerGap / sectionGap / headerToBodyGap / padding` 统一走非负有限值归一化。
+  - [`CrudTemplate.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/template/CrudTemplate.java)：批量节点入口过滤 null，`topbarSpacing / bottombarSpacing / sectionGap` 统一 clamp，`BarAnt.gap(...)` 不再吞脏值。
+  - [`DashboardTemplate.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/template/DashboardTemplate.java)：`stat(null, ...)` 走默认 icon/空字符串，`leftRatio(NaN)` 回退默认比例，`sectionGap / padding` 统一 clamp。
+  - 新增 [`PageTemplateTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/template/PageTemplateTest.java)、[`CrudTemplateTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/template/CrudTemplateTest.java)、[`DashboardTemplateTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/template/DashboardTemplateTest.java)。
+
+- **结果**：
+  - 这批模板的页面级布局输入已经不再直接吃 `NaN` / 负数 / 空值，构建链路更稳。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -pl jfxium -DskipTests test-compile` ✅
+
+### #139 全量扫描补漏：FilterBarAnt 边界输入收口（2026-06-17）
+
+- **现象**：
+  1. `FilterBarAnt.spacing(...)` / `padding(...)` 直接接受 `NaN`、负数或无限值。
+  2. `search(..., width, ...)` 会把异常宽度原样塞进 `TextField` 的 `pref/minWidth`。
+  3. `filter(Node)` / `actionNode(Button)` 对 `null` 没有跳过，`actionPrimary(null, ...)` 还会把 `null` 拼进按钮文案。
+
+- **根因**：
+  - 这是 template 包里剩下的工具条模板边界问题，和前面几个业务模板同源：外部输入没在模板层归一化。
+
+- **修复**：
+  - [`FilterBarAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/template/FilterBarAnt.java)：`spacing / padding / width` 统一归一化，`filter(Node)` / `actionNode(Button)` 跳过空值，`actionPrimary(null, ...)` 只拼安全文本。
+  - 新增 [`FilterBarAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/template/FilterBarAntTest.java) 兜底边界输入。
+
+- **结果**：
+  - FilterBarAnt 的工具条输入现在也符合模板层的 null-safe / 数值 clamp 约定。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -pl jfxium -DskipTests test-compile` ✅
+
+### #140 全量扫描补漏：AlertAnt / TabsAnt / InputNumberAnt / SliderAnt 边界输入收口（2026-06-17）
+
+- **现象**：
+  1. `AlertAnt` 的 `title / description / icon` 入口对空值的收口不完整，type 相关的样式标记也没有显式落到节点上。
+  2. `TabsAnt` 的 `tab(..., label, content)` 在 `label == null` 或 `content == null` 时，后续内容区和标题构建链路容易被脏值打断。
+  3. `InputNumberAnt` 对 `min / max / value / step` 的非法输入容忍度不够，范围反转、`NaN`、无限值会一路污染到内部数值归一化。
+  4. `SliderAnt` 的 `min / max / value / step` 也存在同类边界问题，非法步长和范围会直接影响最终 `Slider` 状态。
+
+- **根因**：
+  - 这几个组件都是高频复用的交互控件，外部输入如果不在组件层先归一化，demo 和业务层都会反复踩到同一类边界故障。
+
+- **修复**：
+  - [`AlertAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/AlertAnt.java)：补齐 title / icon / close 按钮的空值安全与 type 样式标记，并改用 `IconAnt` 的统一图标字符来源。
+  - [`TabsAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TabsAnt.java)：`label` 统一空串化，`content == null` 时注入零尺寸占位节点，避免内容区构建链路断裂。
+  - [`InputNumberAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/InputNumberAnt.java)：`min / max / value / step` 统一做有限值归一化与范围修正，非法输入回退到安全值。
+  - [`SliderAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/SliderAnt.java)：`step` 非法时回退为 `1`，`min / max / value` 统一 clamp，`NaN` / 无限值不再直接污染控件状态。
+  - 新增 [`AlertAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/AlertAntTest.java)、[`TabsAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/TabsAntTest.java)、[`InputNumberAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/InputNumberAntTest.java)、[`SliderAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/SliderAntTest.java)。
+
+- **结果**：
+  - 这四个高频 composite 控件的空值 / 非法数值输入现在都已经在组件层收口，不会再把脏值往内部 JavaFX 控件继续扩散。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -pl jfxium -DskipTests test-compile` ✅
+
+### #141 全量扫描补漏：MenuAnt / TransferAnt / TreeSelectAnt / UploadAnt 边界输入收口（2026-06-17）
+
+- **现象**：
+  1. `MenuAnt` 的 item / submenu / group 文本入口会把 `null` 原样带进菜单节点，折叠与展开渲染链路容易吃到空文本。
+  2. `TransferAnt` 的 `dataSource(null)` / `targetKeys(null)` / `render(null)` / `titles(null, null)` 没有统一防御，搜索过滤里还会把渲染结果直接拿去 `toLowerCase()`。
+  3. `TreeSelectAnt` 的 `TreeNode(null, null, null)` 会把空值一路传到节点标题与多选回填文案里。
+  4. `UploadAnt` 的 `UploadFile(null)` 和文件列表状态读取对空值不够稳，内部列表若混入坏数据会直接影响预览和通知链路。
+
+- **根因**：
+  - 这组都是复用率很高的数据选择 / 上传组件，外部输入如果不在组件层先收口，就会把空值和伪数据带进后续展示与回调链。
+
+- **修复**：
+  - [`MenuAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/MenuAnt.java)：菜单项文本在构造阶段统一回退为 `""`，避免空值传播到折叠 / 横向 / 分组标题节点。
+  - [`TransferAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TransferAnt.java)：`dataSource / targetKeys` 允许 null 安全回退，`titles` 空值化，`render` 为空或返回 null 时走安全空串，搜索过滤不再直接吃脏值。
+  - [`TreeSelectAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TreeSelectAnt.java)：`TreeNode` 的 `value / label` 统一空串化，多选回填时跳过 null 文本污染。
+  - [`UploadAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/UploadAnt.java)：`UploadFile(null)` 退回安全字段，列表刷新与变更通知都跳过坏项，状态判断改为 null-safe 写法。
+  - 新增 [`MenuAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/MenuAntTest.java)、[`TransferAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/TransferAntTest.java)、[`TreeSelectAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/TreeSelectAntTest.java)、[`UploadAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/UploadAntTest.java)。
+
+- **结果**：
+  - 这四个高频数据选择 / 上传组件的空值入口已经统一在组件层收口，渲染和回调链路不会再被 `null` / 坏项轻易打断。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -pl jfxium -DskipTests test-compile` ✅
+
+
+### #142 全量扫描补漏：CascaderAnt / AutoCompleteAnt 选择器边界输入收口（2026-06-17）
+
+- **现象**：
+  1. `CascaderAnt` 的 `Option(null, null, null)`、`value(List<String>)` 含 `null` 路径元素、搜索过滤文本都没有统一收口，层级展开和回填链路容易吃到空值。
+  2. `AutoCompleteAnt` 的候选项文本、`optionToString`、外部 `filter(...)` 返回值都可能带来 `null`，原实现直接把这些值喂进过滤和下拉渲染。
+  3. `Select` 这条链路在仓库里实际对应 [`ComboBoxAnt`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/control/ComboBoxAnt.java)，现有 API 已具备 null-safe 入口，本轮未发现新的高概率缺陷。
+
+- **根因**：
+  - 这组属于“输入框 + 级联/候选建议”型高频选择器，外部输入如果不在组件层先做安全化，后续渲染、搜索、回填和回调都会被脏值拖穿。
+
+- **修复**：
+  - [`CascaderAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/CascaderAnt.java)：`Option` 的 `value / label` 统一空串化，`value(List<String>)` 统一路径安全化，搜索/回填/展开链路改成 null-safe 比较。
+  - [`AutoCompleteAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/AutoCompleteAnt.java)：`optionToString` 和候选项文本统一空串化，`filter(...)` 允许返回 `null`，过滤与渲染都走安全兜底。
+  - 新增 [`CascaderAntTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/CascaderAntTest.java) 和 [`AutoCompleteAntEdgeTest.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/AutoCompleteAntEdgeTest.java)。
+
+- **结果**：
+  - Cascader / AutoComplete 的空值和坏回调现在都被挡在组件层，`Select` 这条链路也已确认由 `ComboBoxAnt` 覆盖，无需额外修复。
+
+- **验证**：
+  - `./mvnw -pl jfxium -DskipTests compile` ✅
+  - `./mvnw -pl jfxium -DskipTests test-compile` ✅
+  - `./mvnw -pl jfxium -Dtest=CascaderAntTest,AutoCompleteAntEdgeTest,AutoCompleteAntTest,ComboBoxAntTest test` ✅
+
