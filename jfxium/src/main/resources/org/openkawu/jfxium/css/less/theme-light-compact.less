@@ -1,9 +1,9 @@
 // ============================================
 // JFXium Light Compact Theme
 // ============================================
-// 紧凑模式 = Light 配色 + Ant Design 官方 compact 尺寸算法
+// 紧凑模式 = Light 配色 + 桌面工具 compact 尺寸算法
 //
-// Ant Design compact 算法（components/theme/themes/compact）：
+// Compact 尺寸算法（减 4 缩一档）：
 //   compactSizeStep = sizeStep - 2 = 4 - 2 = 2
 //   controlHeight   = controlHeight - 4 = 32 - 4 = 28
 //   size 阶梯（sizeUnit=4）：
@@ -17,7 +17,7 @@
 // Step 1: 导入基础尺寸 token（拿到默认定义，下面按需覆盖）
 @import "variables-base.less";
 
-// Step 2: 覆盖为 Ant Design compact 尺寸
+// Step 2: 覆盖为 compact 尺寸
 // --------------------------------------------
 // Spacing（对齐 compact size 阶梯）
 // M19.45 修正：原 xs=4/sm=8 与默认值相同 → 走 @spacing-sm 的组件（Table cell / Menu /
@@ -174,7 +174,7 @@
 
 @color-shadow-default: rgba(0, 0, 0, 0.15);
 
-// Ant Design 别名（theme-base 中部分组件直接引用）
+// 语义别名（theme-base 中部分组件直接引用）
 @color-primary: @color-accent-5;
 @color-primary-hover: @color-accent-4;
 @color-primary-active: @color-accent-6;

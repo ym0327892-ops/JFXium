@@ -6,6 +6,13 @@
    ============================================ */
 
 /* -------------------------------------------
+   PanelHeader
+   ------------------------------------------- */
+.jfx-panel-header {
+  -fx-spacing: @spacing-sm;
+}
+
+/* -------------------------------------------
    PanelFooter
    ------------------------------------------- */
 .jfx-panel-footer {
@@ -164,19 +171,31 @@
    ------------------------------------------- */
 .jfx-float-button {
   -fx-alignment: center;
+  -fx-background-radius: @border-radius-full;
+  -fx-background-insets: 0;
 }
 
 .jfx-float-button-primary {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
-  -fx-border-color: transparent;
+  -fx-border-color: -color-accent-emphasis;
   -fx-border-width: @border-width-default;
+  -fx-border-style: solid;
+  -fx-border-radius: @border-radius-full;
   -fx-cursor: hand;
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
 }
 
 .jfx-float-button-primary:hover {
+  -fx-background-color: -color-accent-4;
+  -fx-border-color: -color-accent-4;
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0, 0, 4);
+}
+
+.jfx-float-button-primary:armed,
+.jfx-float-button-primary:pressed {
+  -fx-background-color: -color-accent-6;
+  -fx-border-color: -color-accent-6;
 }
 
 .jfx-float-button-default {
@@ -184,12 +203,40 @@
   -fx-text-fill: -color-fg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: @border-width-default;
+  -fx-border-style: solid;
+  -fx-border-radius: @border-radius-full;
   -fx-cursor: hand;
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
 }
 
 .jfx-float-button-default:hover {
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0, 0, 4);
+}
+
+.jfx-float-button-default:armed,
+.jfx-float-button-default:pressed {
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-accent-active;
+}
+
+/* FloatButton icon color（Label 作为 graphic 时，-fx-text-fill 不继承，需显式设色） */
+.jfx-float-button-default .label {
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-float-button-default:hover .label {
+  -fx-text-fill: -color-accent-emphasis;
+}
+
+.jfx-float-button-default:armed .label,
+.jfx-float-button-default:pressed .label {
+  -fx-text-fill: -color-accent-active;
+}
+
+.jfx-float-button-primary .label {
+  -fx-text-fill: -color-fg-on-emphasis;
 }
 
 /* -------------------------------------------
@@ -412,6 +459,7 @@
    ------------------------------------------- */
 .jfx-result {
   -fx-alignment: center;
+  -fx-spacing: @spacing-md;
   -fx-padding: 48 32 48 32;
 }
 

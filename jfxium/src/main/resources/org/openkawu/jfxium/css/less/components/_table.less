@@ -35,7 +35,7 @@
 
 /* 关键：JavaFX 表头高度由 .column-header-background 控制（外层容器），
    而不是 .column-header（仅控制单列）。
-   Ant Design 默认 56px，这里设 48px（admin 实用感更紧凑）。 */
+   Web 后台框架默认 56px，这里设 48px（admin 实用感更紧凑）。 */
 .table-view .column-header-background {
   -fx-pref-height: 48px;
   /* 整个表头容器的背景：包括最后一列右侧的"剩余空白区" */
@@ -184,7 +184,7 @@
 .table-view .table-cell.jfx-align-content-center .label { -fx-alignment: center;        -fx-text-alignment: center; }
 .table-view .table-cell.jfx-align-content-right  .label { -fx-alignment: center-right;  -fx-text-alignment: right; }
 
-/* 表头默认整体居左（保持 Ant 风格），
+/* 表头默认整体居左（保持桌面工具风格），
    单元格内容默认垂直居中（避免内容看起来贴在顶部） */
 .table-view .table-cell {
   -fx-alignment: center-left;

@@ -13,10 +13,16 @@
 }
 
 /* 当 icon 在可交互父容器中（button/menu-item/等）时，hover 自动变主题色 */
+.button:hover .jfx-icon,
 .button:hover .jfx-icon-path,
 .menu-item:hover .jfx-icon-path,
 .toggle-button:hover .jfx-icon-path {
   -fx-background-color: -color-accent-emphasis;
+}
+
+/* .jfx-icon 是 text Label，需要用 -fx-text-fill 而非 -fx-background-color */
+.button:hover .jfx-icon {
+  -fx-text-fill: -color-accent-emphasis;
 }
 
 /* 选中态 */
@@ -112,6 +118,7 @@
 /* TimePickerAnt：时分秒分隔符与 spinner 编辑器 */
 .jfx-time-picker {
   -fx-background-color: transparent;
+  -fx-spacing: @spacing-sm;
 }
 
 .jfx-time-picker-separator {

@@ -94,16 +94,16 @@
 // ============================================
 // Component Padding Variables
 // ============================================
-// 控件内边距 = 显式值（对齐 Ant Design），与通用 @spacing-* 解耦。
+// 控件内边距 = 显式值（对齐桌面工具控件高度），与通用 @spacing-* 解耦。
 //
 // 为什么解耦？
 //   控件高度由 padding 决定（JavaFX 无 box-sizing，height = 2*padding-y + 文字高 + 2*border）。
-//   Ant Design 的控件 padding 不是简单跟随间距梯度，而是为了凑出 controlHeight（32/24/40）反推出来的。
-//   若用 @spacing-sm(8) 当 btn-padding-y，按钮会高达 ~37px（应为 32）。故此处用显式 Ant 值。
+//   控件 padding 不是简单跟随间距梯度，而是为了凑出 controlHeight（32/28/40）反推出来的。
+//   若用 @spacing-sm(8) 当 btn-padding-y，按钮会高达 ~37px（应为 32）。故此处用显式反推值。
 //
 // 紧凑模式（theme-*-compact.less）覆盖下面这些 @ctrl-padding-* 即可，不动 @spacing-*。
 //
-// Ant Design 控件高度目标：default 32 / small 24 / large 40（compact: 28/20/36）
+// 桌面工具控件高度目标：default 32 / small 28 / large 40
 // 推导（font 14, JavaFX 文字高 ~19, border 1×2）：padding-y ≈ (目标高 - 19 - 2) / 2
 // --------------------------------------------
 
@@ -141,7 +141,7 @@
 // Card Padding
 // 使用位置：.card
 // 影响组件：GroupBoxAnt
-// 注：Ant Design 官方 Card body padding 默认 24，桌面 admin 信息密度高。
+// 注：桌面 admin Card body padding 不宜过大（信息密度优先）。
 //     M19.41 取 16 → M19.51 再收紧到 12（admin「小卡片配置面板」是核心场景，
 //     16 的留白在桌面 admin 里显大，用户实测反馈"那个大的在哪用"）。
 //     紧凑模式派生 8（已有 compact 覆盖）。
@@ -198,7 +198,7 @@
 // 为什么 inline 行要单独 token？（BUG #68，用户要求 30px/row 极致紧凑）
 //   inline 模式（侧栏菜单）跟下拉菜单/弹层菜单是不同的视觉场景：
 //     - 下拉菜单需要 8px+ 上下 padding 给点击舒适度
-//     - 侧栏菜单要的是"30px/row 极致紧凑"，对标 IntelliJ IDEA（28px）/ Ant Design MenuItem（32px）
+//     - 侧栏菜单要的是“30px/row 极致紧凑”，对标 IntelliJ IDEA（28px）
 //   不能跟 @menu-item-padding（被下拉菜单占用）共用，必须独立。
 //   公式：行高 = @menu-inline-padding-y * 2 + 18px(14px 字号) = 30px（默认极致紧凑）
 //   默认 6px → 30px/row（用户拍板：极致紧凑）
@@ -302,7 +302,7 @@
 @split-divider-padding: 2px;
 
 // Menu Dark Theme (M19.44: 从 _tier3-batch2.less 硬编码色抽取)
-// Ant Design 经典深色侧栏调色板，用于 .jfx-menu-dark
+// 深色侧栏调色板，用于 .jfx-menu-dark
 @color-menu-dark-bg: #001529;
 @color-menu-dark-submenu-bg: #000c17;
 

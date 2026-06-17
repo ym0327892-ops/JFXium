@@ -61,6 +61,12 @@
   -fx-padding: @spacing-lg 0 @spacing-sm 0;
 }
 
+/* Form item：label 与控件之间、控件与 help/error 之间的纵向间距 */
+.jfx-form-item-box,
+.jfx-form-item-wrapper {
+  -fx-spacing: @spacing-xs;
+}
+
 /* Form 尺寸调节：仅控制字号与控件最小高度，间距由 Java 侧 VBox.spacing 负责 */
 .jfx-form-size-small {
   -fx-font-size: @font-size-sm;

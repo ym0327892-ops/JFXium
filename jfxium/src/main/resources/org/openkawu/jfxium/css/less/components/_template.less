@@ -10,6 +10,20 @@
 .jfx-login-template-banner {
   -fx-background-color: linear-gradient(to bottom right,
       -color-accent-4, -color-accent-emphasis 60%, -color-accent-7);
+  -fx-spacing: 20;
+  -fx-padding: 40 32 32 32;
+}
+
+.jfx-login-template-banner-brand-box {
+  -fx-spacing: @spacing-md;
+}
+
+.jfx-login-template-banner-features {
+  -fx-spacing: @spacing-sm;
+}
+
+.jfx-login-template-banner-feature-row {
+  -fx-spacing: @spacing-sm;
 }
 
 /* Banner 内部所有文字默认白色（半透明分级） */
@@ -52,6 +66,11 @@
 }
 
 /* ----- 右 表单 ----- */
+.jfx-login-template-form {
+  -fx-spacing: @spacing-md;
+  -fx-padding: 60 48 40 48;
+}
+
 .jfx-login-template-form-title {
   -fx-font-size: 22px;
   -fx-font-weight: 700;
@@ -74,6 +93,14 @@
   -fx-border-width: 1;
   -fx-border-radius: 6;
   -fx-background-radius: 6;
+  -fx-pref-height: 40;
+}
+
+.jfx-login-template-input-icon-box {
+  -fx-min-width: 36;
+  -fx-pref-width: 36;
+  -fx-max-width: 36;
+  -fx-alignment: center;
 }
 
 /* 行内文本框：抹掉默认边框/背景，让它视觉融入外层 row 边框 */

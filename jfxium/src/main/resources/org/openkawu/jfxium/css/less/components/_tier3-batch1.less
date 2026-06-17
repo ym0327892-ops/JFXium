@@ -22,6 +22,7 @@
 /* overlay 标题区（顶部边框 + 标题 + 关闭按钮） */
 .jfx-overlay-header {
   -fx-padding: 16 24 16 24;
+  -fx-spacing: @spacing-sm;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
@@ -51,7 +52,7 @@
   -fx-faint-focus-color: transparent;
 }
 
-/* hover 时才显浅色圆形背景，对齐 Ant Design Modal/Drawer × 的微交互 */
+/* hover 时才显浅色圆形背景，对齐桌面工具 Modal/Drawer × 的微交互 */
 .jfx-overlay-close-btn:hover {
   -fx-background-color: -color-accent-subtle;
   -fx-text-fill: -color-fg-default;
@@ -69,8 +70,19 @@
 
 .jfx-overlay-footer {
   -fx-padding: 16 24 16 24;
+  -fx-spacing: @spacing-sm;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1 0 0 0;
+}
+
+/* PromptDialogAnt */
+.jfx-prompt-dialog {
+  -fx-spacing: @spacing-md;
+  -fx-padding: 20;
+}
+
+.jfx-prompt-dialog-footer {
+  -fx-spacing: @spacing-sm;
 }
 
 /* CascaderAnt */
@@ -156,6 +168,23 @@
   -fx-padding: 0 0 16 0;
 }
 
+.jfx-timeline-label-box {
+  -fx-min-width: 100;
+  -fx-pref-width: 100;
+  -fx-max-width: 100;
+  -fx-padding: 0 16 0 0;
+}
+
+.jfx-timeline-center-box {
+  -fx-min-width: 24;
+  -fx-pref-width: 24;
+  -fx-max-width: 24;
+}
+
+.jfx-timeline-content-box {
+  -fx-padding: 0 0 0 16;
+}
+
 .jfx-timeline-label {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: @font-size-sm;
@@ -208,6 +237,7 @@
 
 .jfx-transfer-list-header {
   -fx-padding: 8 12 8 12;
+  -fx-spacing: @spacing-sm;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
@@ -235,6 +265,12 @@
 .jfx-transfer-list-view {
   -fx-background-color: transparent;
   -fx-border-width: 0;
+}
+
+/* Transfer 中间方向按钮区域 */
+.jfx-transfer-middle {
+  -fx-spacing: @spacing-sm;
+  -fx-padding: 8;
 }
 
 /* Transfer 中间方向按钮（hover 变主题色） */

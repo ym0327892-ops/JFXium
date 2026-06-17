@@ -112,6 +112,7 @@
 .jfx-codeblock-header {
   -fx-background-color: -color-border-muted;
   -fx-padding: 8 12 8 12;
+  -fx-spacing: @spacing-sm;
   /* 头部仅保留顶部圆角，与容器圆角配合，底部为直角让上下两段视觉连续 */
   -fx-background-radius: @border-radius-md @border-radius-md 0 0;
 }
@@ -237,6 +238,12 @@
   -fx-border-color: transparent -color-border-muted transparent transparent;
   -fx-border-width: 0 1px 0 0;
   -fx-border-style: solid;
+  -fx-padding: 8 12 8 12;
+}
+
+/* 代码文本流（高亮显示区域） */
+.jfx-codeblock-text-flow {
+  -fx-padding: 8;
 }
 
 .jfx-code-line-number {

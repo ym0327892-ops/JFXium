@@ -7,6 +7,7 @@
 .jfx-popconfirm-panel {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 12px 16px;
+  -fx-spacing: @spacing-md;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
@@ -22,6 +23,7 @@
 .jfx-message-card {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 10px 16px;
+  -fx-spacing: @spacing-sm;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
@@ -51,6 +53,7 @@
 .jfx-notification-card {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 16px 24px;
+  -fx-spacing: @spacing-md;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
@@ -60,6 +63,9 @@
 }
 .jfx-notification-card-title { -fx-text-fill: -color-fg-default; -fx-font-size: 16px; -fx-font-weight: 600; }
 .jfx-notification-card-desc  { -fx-text-fill: -color-fg-muted; -fx-font-size: 14px; }
+.jfx-notification-container  { -fx-spacing: @spacing-sm; }
+.jfx-notification-card-header { -fx-spacing: @spacing-md; }
+.jfx-notification-card-content { -fx-spacing: @spacing-xs; }
 
 /* Result */
 .jfx-result-title    { -fx-font-size: 24px; -fx-font-weight: 600; -fx-text-fill: -color-fg-default; }
@@ -67,6 +73,8 @@
 
 /* FilterBar label */
 .jfx-filter-bar-label { -fx-text-fill: -color-fg-muted; }
+.jfx-filter-bar { -fx-spacing: @spacing-sm; }
+.jfx-filter-bar-group { -fx-spacing: @spacing-sm; }
 
 /* TableAnt danger action button */
 .jfx-button-danger-text { -fx-text-fill: -color-danger-emphasis; }

@@ -34,6 +34,7 @@
 .jfx-list-item {
   -fx-background-color: transparent;
   -fx-padding: 12 24 12 24;
+  -fx-spacing: @spacing-md;
 }
 
 .jfx-list-item.jfx-list-item-clickable {
@@ -55,10 +56,15 @@
   -fx-text-fill: -color-fg-muted;
 }
 
+.jfx-list-item-content {
+  -fx-spacing: @spacing-xs;
+}
+
 .jfx-list-divider {
   -fx-background-color: -color-border-default;
   -fx-min-height: 1;
   -fx-pref-height: 1;
+  -fx-padding: 0 24 0 24;
 }
 
 /* MenuAnt */
@@ -82,6 +88,7 @@
 .jfx-menu-item {
   -fx-background-color: transparent;
   -fx-cursor: hand;
+  -fx-spacing: @spacing-sm;
 }
 
 .jfx-menu-item:hover {
@@ -113,7 +120,7 @@
   -fx-font-weight: 600;
 }
 
-/* HORIZONTAL 顶级 item hover 视觉：底部细线，仿 Ant Design horizontal Menu */
+/* HORIZONTAL 顶级 item hover 视觉：底部细线，仿桌面工具 horizontal Menu */
 .jfx-menu-horizontal .jfx-menu-item:hover,
 .jfx-menu-horizontal .jfx-menu-submenu-header:hover {
   -fx-background-color: transparent;
@@ -129,6 +136,7 @@
 .jfx-menu-submenu-header {
   -fx-background-color: transparent;
   -fx-cursor: hand;
+  -fx-spacing: @spacing-sm;
 }
 
 .jfx-menu-submenu-header:hover {
@@ -231,6 +239,7 @@
 /* UploadAnt */
 .jfx-upload {
   -fx-background-color: transparent;
+  -fx-spacing: @spacing-sm;
 }
 
 .jfx-upload-drag {
@@ -243,6 +252,7 @@
   -fx-padding: 32;
   -fx-min-height: 180;
   -fx-cursor: hand;
+  -fx-spacing: @spacing-md;
 }
 
 /* drag 激活态：拖拽进入时切换主题色边框 */
@@ -267,6 +277,7 @@
 }
 
 .jfx-upload-list {
+  -fx-spacing: @spacing-xs;
   -fx-padding: 8 0 8 0;
   -fx-background-color: transparent;
 }
@@ -277,6 +288,7 @@
 }
 
 .jfx-upload-file-item {
+  -fx-spacing: @spacing-sm;
   -fx-padding: 8;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: @border-radius-sm;
@@ -335,6 +347,21 @@
 
 .jfx-steps-item {
   -fx-padding: 8 0 8 0;
+}
+
+/* 水平布局步骤项：VBox 间距 icon/title/description */
+.jfx-steps .jfx-steps-item {
+  -fx-spacing: @spacing-sm;
+}
+
+/* 垂直布局步骤项：HBox 间距 icon列/content列 */
+.jfx-steps-vertical .jfx-steps-item {
+  -fx-spacing: @spacing-md;
+}
+
+/* 垂直布局步骤内容区：标题+描述间距 */
+.jfx-steps-content {
+  -fx-spacing: @spacing-xs;
 }
 
 /* steps 圆圈 + 数字 + 标题 + 描述 + 连线，状态用修饰类切换 */
@@ -436,6 +463,14 @@
 }
 
 /* SkeletonAnt */
+.jfx-skeleton-paragraph {
+  -fx-spacing: @spacing-sm;
+}
+
+.jfx-skeleton-avatar-text {
+  -fx-spacing: @spacing-md;
+}
+
 .jfx-skeleton-shimmer {
   -fx-fill: -color-bg-default;
 }
