@@ -45,6 +45,22 @@ public class ThemeColor {
         public String getDisplayName() {
             return displayName;
         }
+
+        /**
+         * 按 hex 颜色反查预设色板。
+         * <p>用于 UI 回显当前主题色；若不是内置预设则返回 null。</p>
+         */
+        public static Preset fromHex(String hex) {
+            if (hex == null || hex.isBlank()) {
+                return null;
+            }
+            for (Preset preset : values()) {
+                if (preset.hexColor.equalsIgnoreCase(hex)) {
+                    return preset;
+                }
+            }
+            return null;
+        }
     }
 
     private String hexColor;

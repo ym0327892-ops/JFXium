@@ -1,50 +1,57 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages;
 
-import javafx.scene.Node;
-import javafx.scene.layout.VBox;
-
+import java.util.function.Consumer;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
-import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
-import org.openkawu.jfxium.template.DashboardTemplate;
-import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.component.control.TypographyAnt;
-import org.openkawu.jfxium.component.control.IconAnt;
+import org.openkawu.jfxium.jfxiumUiExample.UiExampleConstants;
+import org.openkawu.jfxium.template.ProjectDashboardTemplate;
 
 /**
- * 首页 —— 欢迎 + 4 张统计卡概览。
+ * 首页 —— 工程概览 + 快捷入口。
  *
- * <p>用 {@link DashboardTemplate} 演示"统计卡片 + 多区域"模板的标准用法，
- * 并提示用户从左侧菜单进入各组件示例。</p>
+ * <p>把 JFXium 当成一个真实桌面工程来展示：工程首页、主题联动、
+ * 水印和工作台壳层都收口到一个更成品化的项目展示模板里。</p>
  */
 public class HomePage extends VBoxAnt {
 
+    private final Consumer<String> onNavigate;
+
     public HomePage() {
-        Node intro = TypographyAnt.paragraph(
-                "欢迎使用 JFXium UI Example 示例项目。\n" +
-                "左侧菜单按【容器示例】和【控件示例】两大类组织，每个示例页都是可直接拷贝改用的最小用例。"
-        ).build();
+        this(null);
+    }
 
-        Node hint = Demos.section("快速使用提示",
-                "顶栏右上角可以切换 亮 / 暗 主题、紧凑 / 默认密度。所有示例页面都会跟随主题变化。",
-                TypographyAnt.text("➜ 推荐先看 容器示例 → Card 卡片 / Tabs 标签页，再看 控件示例 → Button / Input。")
-                        .type(TypographyAnt.Type.SECONDARY).build()
-        );
+    public HomePage(Consumer<String> onNavigate) {
+        this.onNavigate = onNavigate;
 
-        VBox dashboard = DashboardTemplate.create()
-                .stat(IconAnt.Path.USERS,    "用户总数",   "1,234", "↑ 12.5%", true)
-                .stat(IconAnt.Path.FILE,     "今日订单",   "89",    "↓ 3.2%",  false)
-                .stat(IconAnt.Path.CHART,    "月销售额",   "¥125k", "↑ 8.4%",  true)
-                .stat(IconAnt.Path.DASHBOARD,"转化率",     "23.4%", "↑ 1.2%",  true)
-                .build();
+        spacing(0).children(ProjectDashboardTemplate.create()
+                .snapshot(ProjectDashboardTemplate.Snapshot.demo())
+                .onAction(this::handleDashboardAction)
+                .build());
+    }
 
-        VBox page = PageTemplate.create()
-                .title("欢迎回来")
-                .description("JFXium UI 库示例集 —— 容器、控件，一项项体验")
-                .body(VBoxAnt.create().spacing(20).children(intro, hint, dashboard))
-                .padding(24)
-                .build();
+    private void navigate(String route) {
+        if (onNavigate != null && route != null) {
+            onNavigate.accept(route);
+        }
+    }
 
-        spacing(0).children(page);
+    private void handleDashboardAction(String action) {
+        if (action == null) {
+            return;
+        }
+
+        switch (action) {
+            case ProjectDashboardTemplate.ACTION_PROJECT_CONSOLE -> navigate(UiExampleConstants.ROUTE_PROJECT_CONSOLE);
+            case ProjectDashboardTemplate.ACTION_WORKSPACE_TEMPLATE -> navigate(UiExampleConstants.ROUTE_WORKSPACE_TEMPLATE);
+            case ProjectDashboardTemplate.ACTION_PROJECT_OVERVIEW -> navigate(UiExampleConstants.ROUTE_PROJECT_OVERVIEW);
+            case ProjectDashboardTemplate.ACTION_PROJECT_RELEASE -> navigate(UiExampleConstants.ROUTE_PROJECT_RELEASE);
+            case ProjectDashboardTemplate.ACTION_PROJECT_SHOWCASE -> navigate(UiExampleConstants.ROUTE_PROJECT_SHOWCASE);
+            case ProjectDashboardTemplate.ACTION_PROJECT_MENU -> navigate(UiExampleConstants.ROUTE_MENU);
+            case ProjectDashboardTemplate.ACTION_PROJECT_MODAL -> navigate(UiExampleConstants.ROUTE_MODAL);
+            case ProjectDashboardTemplate.ACTION_WATERMARK -> navigate(UiExampleConstants.ROUTE_WATERMARK);
+            case "settings" -> navigate(UiExampleConstants.ROUTE_WORKSPACE_TEMPLATE);
+            case "logout" -> navigate(UiExampleConstants.ROUTE_HOME);
+            default -> navigate(action);
+        }
     }
 }

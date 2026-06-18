@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.layout;
 
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 
 import org.openkawu.jfxium.component.composite.HBarAnt;
 import org.openkawu.jfxium.component.composite.VBarAnt;
@@ -39,7 +38,7 @@ public class VBarExamplePage extends VBoxAnt {
     // ============================================================
     private Node twoSegmentSection() {
         Node demo = VBarAnt.create()
-                .top(new Label("顶部标题"))
+                .top(TypographyAnt.text("顶部标题").build())
                 .bottom(ButtonAnt.create("底部操作").type(ButtonAnt.Type.PRIMARY).build())
                 .gap(8)
                 .padding(12, 16, 12, 16)
@@ -49,7 +48,7 @@ public class VBarExamplePage extends VBoxAnt {
                 .build();
         String code = """
                 VBarAnt.create()
-                        .top(new Label("顶部标题"))
+                        .top(TypographyAnt.text("顶部标题").build())
                         .bottom(ButtonAnt.create("底部操作").type(ButtonAnt.Type.PRIMARY).build())
                         .gap(8)
                         .padding(12, 16, 12, 16)
@@ -66,8 +65,8 @@ public class VBarExamplePage extends VBoxAnt {
     // ============================================================
     private Node threeSegmentSection() {
         Node header = HBarAnt.create()
-                .left(new Label("标题"))
-                .right(new Label("状态：可编辑"))
+                .left(TypographyAnt.text("标题").build())
+                .right(TypographyAnt.text("状态：可编辑").build())
                 .gap(8)
                 .build();
 
@@ -78,7 +77,7 @@ public class VBarExamplePage extends VBoxAnt {
 
         Node demo = VBarAnt.create()
                 .top(header)
-                .center(new Label("中间内容"))
+                .center(TypographyAnt.text("中间内容").build())
                 .bottom(footer)
                 .gap(8)
                 .padding(12, 16, 12, 16)
@@ -88,8 +87,8 @@ public class VBarExamplePage extends VBoxAnt {
                 .build();
         String code = """
                 Node header = HBarAnt.create()
-                        .left(new Label("标题"))
-                        .right(new Label("状态：可编辑"))
+                        .left(TypographyAnt.text("标题").build())
+                        .right(TypographyAnt.text("状态：可编辑").build())
                         .gap(8)
                         .build();
 
@@ -100,7 +99,7 @@ public class VBarExamplePage extends VBoxAnt {
 
                 VBarAnt.create()
                         .top(header)
-                        .center(new Label("中间内容"))
+                        .center(TypographyAnt.text("中间内容").build())
                         .bottom(footer)
                         .gap(8)
                         .padding(12, 16, 12, 16)
@@ -186,12 +185,12 @@ public class VBarExamplePage extends VBoxAnt {
         Node demo = VBarAnt.create()
                 .top(
                         TypographyAnt.title("项目概览", 5).build(),
-                        new Label("这里可以继续加一行副标题")
+                        TypographyAnt.text("这里可以继续加一行副标题").build()
                 )
                 .center(
-                        new Label("中间内容 1"),
-                        new Label("中间内容 2"),
-                        new Label("中间内容 3")
+                        TypographyAnt.text("中间内容 1").build(),
+                        TypographyAnt.text("中间内容 2").build(),
+                        TypographyAnt.text("中间内容 3").build()
                 )
                 .bottom(
                         ButtonAnt.create("刷新").build(),
@@ -221,7 +220,7 @@ public class VBarExamplePage extends VBoxAnt {
     // ============================================================
     private Node sizingSection() {
         Node demo1 = VBarAnt.create()
-                .top(new Label("padding(8)"))
+                .top(TypographyAnt.text("padding(8)").build())
                 .bottom(ButtonAnt.create("按钮").build())
                 .padding(8)
                 .minH(140)
@@ -229,7 +228,7 @@ public class VBarExamplePage extends VBoxAnt {
                 .borderRadius(Radius.MD)
                 .build();
         Node demo2 = VBarAnt.create()
-                .top(new Label("padding(12,16,12,16)"))
+                .top(TypographyAnt.text("padding(12,16,12,16)").build())
                 .bottom(ButtonAnt.create("按钮").build())
                 .padding(12, 16, 12, 16)
                 .gap(12)
@@ -238,8 +237,8 @@ public class VBarExamplePage extends VBoxAnt {
                 .borderRadius(Radius.MD)
                 .build();
         Node demo3 = VBarAnt.create()
-                .top(new Label("minH=220"))
-                .center(new Label("中间会被 spacer 撑开"))
+                .top(TypographyAnt.text("minH=220").build())
+                .center(TypographyAnt.text("中间会被 spacer 撑开").build())
                 .bottom(ButtonAnt.create("按钮").build())
                 .padding(12, 16, 12, 16)
                 .gap(8)

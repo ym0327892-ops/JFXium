@@ -1,8 +1,8 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.form.Rule;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
@@ -219,8 +219,8 @@ public class FormExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("6. 三种 layout 对比",
                 "HORIZONTAL（标签左 + 控件右）/ VERTICAL（标签上 + 控件下）/ INLINE（一行内联）。",
                 code, Demos.column(
-                        new Label("HORIZONTAL:"), horizontal,
-                        new Label("VERTICAL:"), vertical,
-                        new Label("INLINE:"), inline));
+                        TypographyAnt.text("HORIZONTAL:").build(), horizontal,
+                        TypographyAnt.text("VERTICAL:").build(), vertical,
+                        TypographyAnt.text("INLINE:").build(), inline));
     }
 }

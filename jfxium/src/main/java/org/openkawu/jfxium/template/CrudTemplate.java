@@ -3,11 +3,11 @@ package org.openkawu.jfxium.template;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.composite.HBarAnt;
+import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -241,7 +241,7 @@ public class CrudTemplate {
             top.setAlignment(Pos.TOP_LEFT);
 
             if (title != null && !title.isEmpty()) {
-                Label titleLabel = new Label(title);
+                LabelAnt titleLabel = LabelAnt.create(title);
                 titleLabel.getStyleClass().add(JfxStyles.CRUD_TEMPLATE_TITLE);
                 top.getChildren().add(titleLabel);
             }

@@ -1,13 +1,11 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 
-import org.openkawu.jfxium.component.layout.VBoxAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.composite.VBarAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.overlay.ModalAnt;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
@@ -88,14 +86,19 @@ public class ModalExamplePage extends VBoxAnt {
     private Node customContentSection() {
         Node btn = ButtonAnt.create("打开登录表单 Modal")
                 .onClick(e -> {
-                    TextField username = InputAnt.create().placeholder("用户名").build();
-                    PasswordField password = new PasswordField();
-                    password.setPromptText("密码");
-                    password.getStyleClass().add("text-field");
-                    VBox form = new VBox(12,
-                            new Label("请输入登录信息："),
-                            username,
-                            password);
+                    InputAnt username = InputAnt.create().placeholder("用户名");
+                    Node password = InputAnt.createPassword()
+                            .placeholder("密码")
+                            .build();
+                    VBarAnt form = VBarAnt.create()
+                            .compact()
+                            .gap(12)
+                            .top(
+                                    TypographyAnt.text("请输入登录信息：").build(),
+                                    username,
+                                    password
+                            )
+                            .build();
 
                     ModalAnt.create()
                             .title("登录")
@@ -108,10 +111,15 @@ public class ModalExamplePage extends VBoxAnt {
                 .build();
         String code = """
                 // content(Node) 重载 —— 可以塞任意复杂控件
-                VBox form = new VBox(12,
-                        new Label("请输入登录信息："),
-                        InputAnt.create().placeholder("用户名").build(),
-                        passwordField);
+                VBarAnt form = VBarAnt.create()
+                        .compact()
+                        .gap(12)
+                        .top(
+                                TypographyAnt.text("请输入登录信息：").build(),
+                                InputAnt.create().placeholder("用户名").build(),
+                                InputAnt.createPassword().placeholder("密码").build()
+                        )
+                        .build();
 
                 ModalAnt.create()
                         .title("登录")

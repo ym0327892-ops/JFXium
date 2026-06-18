@@ -1,9 +1,8 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 
-
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -32,14 +31,14 @@ public class GroupBoxExamplePage extends VBoxAnt {
         Node demo = Demos.row(
                 GroupBoxAnt.create()
                         .title("基本信息")
-                        .content(new Label("这里放置一组相关输入控件。"))
+                        .content(TypographyAnt.text("这里放置一组相关输入控件。").build())
                         .bordered(true)
                         .build()
         );
         String code = """
                 GroupBoxAnt.create()
                         .title("基本信息")
-                        .content(new Label("这里放置一组相关输入控件。"))
+                        .content(TypographyAnt.text("这里放置一组相关输入控件。").build())
                         .bordered(true)
                         .build();
                 """;
@@ -50,14 +49,14 @@ public class GroupBoxExamplePage extends VBoxAnt {
         Node demo = Demos.row(
                 GroupBoxAnt.create()
                         .title("联系方式")
-                        .content(new Label("邮箱、电话等联系信息。"))
+                        .content(TypographyAnt.text("邮箱、电话等联系信息。").build())
                         .bordered(true)
                         .build()
         );
         String code = """
                 GroupBoxAnt.create()
                         .title("联系方式")
-                        .content(new Label("邮箱、电话等联系信息。"))
+                        .content(TypographyAnt.text("邮箱、电话等联系信息。").build())
                         .bordered(true)
                         .build();
                 """;
@@ -72,7 +71,7 @@ public class GroupBoxExamplePage extends VBoxAnt {
                 GroupBoxAnt.create()
                         .title("配置面板")
                         .extra(extraBtn)
-                        .content(new Label("标题右侧可放置额外操作按钮。"))
+                        .content(TypographyAnt.text("标题右侧可放置额外操作按钮。").build())
                         .bordered(true)
                         .build()
         );
@@ -82,7 +81,7 @@ public class GroupBoxExamplePage extends VBoxAnt {
                 GroupBoxAnt.create()
                         .title("配置面板")
                         .extra(extraBtn)
-                        .content(new Label("标题右侧操作区。"))
+                        .content(TypographyAnt.text("标题右侧操作区。").build())
                         .bordered(true)
                         .build();
                 """;

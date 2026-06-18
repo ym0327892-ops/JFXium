@@ -6,8 +6,11 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.CheckBoxAnt;
+import org.openkawu.jfxium.component.control.HyperlinkAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.control.InputAnt;
+import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
@@ -180,10 +183,10 @@ public class LoginTemplate {
             logoBox.setMaxSize(48, 48);
 
             // 品牌名 / 标语
-            Label name = new Label(resolvedBrand);
+            LabelAnt name = LabelAnt.create(resolvedBrand);
             name.getStyleClass().add(JfxStyles.LOGIN_BANNER_BRAND);
 
-            Label sub = new Label(resolvedTagline);
+            LabelAnt sub = LabelAnt.create(resolvedTagline);
             sub.getStyleClass().add(JfxStyles.LOGIN_BANNER_TAGLINE);
 
             VBox top = new VBox(logoBox, name, sub);
@@ -198,7 +201,7 @@ public class LoginTemplate {
             }
 
             // 版权
-            Label copyrightLabel = new Label(resolvedCopyright);
+            LabelAnt copyrightLabel = LabelAnt.create(resolvedCopyright);
             copyrightLabel.getStyleClass().add(JfxStyles.LOGIN_BANNER_COPYRIGHT);
 
             // 弹性占位
@@ -220,7 +223,7 @@ public class LoginTemplate {
             // 给 Node 套个 Class，让 LESS 走 LOGIN_BANNER_FEATURE_CHECK 样式
             check.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_CHECK);
 
-            Label content = new Label(text != null ? text : "");
+            LabelAnt content = LabelAnt.create(text != null ? text : "");
             content.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_TEXT);
 
             HBox row = new HBox(check, content);
@@ -239,10 +242,10 @@ public class LoginTemplate {
             String resolvedPassword = passwordPlaceholder != null ? passwordPlaceholder : Messages.get("login.password_placeholder");
             String resolvedSubmit = submitText != null ? submitText : Messages.get("login.submit");
 
-            Label title = new Label(resolvedFormTitle);
+            LabelAnt title = LabelAnt.create(resolvedFormTitle);
             title.getStyleClass().add(JfxStyles.LOGIN_FORM_TITLE);
 
-            Label subtitle = new Label(resolvedFormSubtitle);
+            LabelAnt subtitle = LabelAnt.create(resolvedFormSubtitle);
             subtitle.getStyleClass().add(JfxStyles.LOGIN_FORM_SUBTITLE);
 
             // 输入框（前置图标 + 文本框，看起来像「集成式输入」）
@@ -254,7 +257,7 @@ public class LoginTemplate {
             HBox passwordRow = inputWithIcon(IconAnt.Path.SETTINGS, passwordField);
 
             // 错误提示（默认隐藏）
-            Label errorLabel = new Label("");
+            LabelAnt errorLabel = LabelAnt.create("");
             errorLabel.getStyleClass().add(JfxStyles.LOGIN_FORM_ERROR);
             errorLabel.setVisible(false);
             errorLabel.setManaged(false);
@@ -262,7 +265,7 @@ public class LoginTemplate {
             // 记住我 + 忘记密码
             HBox rememberRow = null;
             if (showRememberMe || onForgot != null) {
-                CheckBox rememberMe = new CheckBox(Messages.get("login.remember_me"));
+                CheckBoxAnt rememberMe = CheckBoxAnt.create(Messages.get("login.remember_me"));
                 rememberMe.getStyleClass().add(JfxStyles.LOGIN_FORM_REMEMBER);
                 if (!showRememberMe) {
                     rememberMe.setVisible(false);
@@ -278,9 +281,10 @@ public class LoginTemplate {
                 rememberRow.getChildren().addAll(rememberMe, spacer);
 
                 if (onForgot != null) {
-                    Hyperlink forgotLink = new Hyperlink(Messages.get("login.forgot"));
-                    forgotLink.getStyleClass().addAll(JfxStyles.LOGIN_FORM_LINK_SMALL, JfxStyles.HYPERLINK);
-                    forgotLink.setOnAction(e -> onForgot.run());
+                    // HyperlinkAnt 构造默认已加 JfxStyles.HYPERLINK；外层 if 已守卫 onForgot != null
+                    HyperlinkAnt forgotLink = HyperlinkAnt.create(Messages.get("login.forgot"))
+                            .onClick(onForgot);
+                    forgotLink.getStyleClass().add(JfxStyles.LOGIN_FORM_LINK_SMALL);
                     rememberRow.getChildren().add(forgotLink);
                 }
             }
@@ -320,12 +324,13 @@ public class LoginTemplate {
                 Region bottomSpacer = new Region();
                 VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
 
-                Label noAccount = new Label(Messages.get("login.no_account"));
+                LabelAnt noAccount = LabelAnt.create(Messages.get("login.no_account"));
                 noAccount.getStyleClass().add(JfxStyles.LOGIN_FORM_NO_ACCOUNT);
 
-                Hyperlink registerLink = new Hyperlink(Messages.get("login.register"));
-                registerLink.getStyleClass().addAll(JfxStyles.LOGIN_FORM_LINK_SMALL, JfxStyles.HYPERLINK);
-                registerLink.setOnAction(e -> onRegister.run());
+                // HyperlinkAnt 构造默认已加 JfxStyles.HYPERLINK；外层 if 已守卫 onRegister != null
+                HyperlinkAnt registerLink = HyperlinkAnt.create(Messages.get("login.register"))
+                        .onClick(onRegister);
+                registerLink.getStyleClass().add(JfxStyles.LOGIN_FORM_LINK_SMALL);
 
                 HBox registerRow = new HBox(0, noAccount, registerLink);
                 registerRow.setAlignment(Pos.CENTER);

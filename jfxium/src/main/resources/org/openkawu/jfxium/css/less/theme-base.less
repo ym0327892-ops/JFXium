@@ -119,16 +119,16 @@
   // 用字面量（BUG #69 终态）：jlessc 1.16 在嵌套块内对 @-token 解析有 bug，会输出错位值
   // （实测：@menu-item-padding-y @menu-item-padding-x 编译为 6px 8px），所以 5 条 menu 规则
   // 全部用字面量。数值与 token 体系同步：
-  //   y = 4（与 compact 主题覆盖的 @menu-inline-padding-y: 4px 一致）
+  //   y = 5（与 compact 主题覆盖的 @menu-inline-padding-y: 5px 一致）
   //   x = 12（default 16 → 12 缩 25%，与 @spacing-md 一致；BUG #69 起源）
-  //   min-height = 26 = 4 + 18 + 4（与 @menu-inline-row-height 公式一致）
+  //   min-height = 28 = 5 + 18 + 5（与 @menu-inline-row-height 公式一致）
   // 4 个 compact 主题里 @menu-item-padding-x / @menu-inline-padding-x 覆盖已移除
   // （本块不引用这些 token，留着是 dead override）。
   // 后续若升级 LESS 编译器（jlessc → npx lessc / less4j），可改回 token 引用。
 
   // 下拉菜单项（JavaFX 原生 .menu-item 弹层里）
   .menu-item {
-    -fx-padding: 4px 12px;
+    -fx-padding: 5px 12px;
   }
 
   // inline 模式：侧栏菜单行 / 子菜单 header / 分组标题 / 分隔线
@@ -136,12 +136,16 @@
   .jfx-menu-item,
   .jfx-menu-submenu-header,
   .jfx-menu-group {
-    -fx-padding: 4px 12px 4px 0;
-    -fx-min-height: 26px;
+    -fx-padding: 5px 12px 5px 0;
+    -fx-min-height: 28px;
   }
   .jfx-menu-divider {
     -fx-padding: 3px 12px 3px 12px;
     -fx-min-height: 7px;
+  }
+
+  .jfx-menu-submenu-body {
+    -fx-padding: 2px 0 2px 2px;
   }
 
   // 顶级菜单栏（VS Code / IDEA 风格）

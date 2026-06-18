@@ -1,34 +1,32 @@
 package org.openkawu.jfxium.component.control;
 
 import javafx.scene.control.Label;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 /**
- * JFXium 排版组件 - 对标 Ant Design Typography（组合式，Builder 模式）。
+ * JFXium 排版组件 - 对标 Ant Design Typography(组合式,Builder 模式)。
  *
- * <p><b>定位</b>：富文本排版工厂，提供三种 Builder 入口（{@link TitleBuilder} / {@link ParagraphBuilder} / {@link TextBuilder}），
+ * <p><b>定位</b>:富文本排版工厂,提供三种 Builder 入口({@link TitleBuilder} / {@link ParagraphBuilder} / {@link TextBuilder}),
  * 用于构建标题、段落、内联文本等富排版节点。</p>
  *
  * <h2>功能特性</h2>
  * <ul>
- *   <li><b>标题</b>：5 级标题（level 1–5），字号自动计算（38/30/24/20/16）</li>
- *   <li><b>段落</b>：自动换行 + 省略号（ellipsis）+ 行数限制</li>
- *   <li><b>内联文本</b>：type 色彩（SECONDARY/SUCCESS/WARNING/DANGER/DISABLED）
- *       + 装饰（strong/italic/underline/delete/code/mark）+ 可复制（copyable）</li>
- *   <li>所有视觉样式走 LESS（{@code typography-*} 系列），Java 端不再 setStyle</li>
+ *   <li><b>标题</b>:5 级标题(level 1–5),字号自动计算(38/30/24/20/16)</li>
+ *   <li><b>段落</b>:自动换行 + 省略号(ellipsis)+ 行数限制</li>
+ *   <li><b>内联文本</b>:type 色彩(SECONDARY/SUCCESS/WARNING/DANGER/DISABLED)
+ *       + 装饰(strong/italic/underline/delete/code/mark)+ 可复制(copyable)</li>
+ *   <li>所有视觉样式走 LESS({@code typography-*} 系列),Java 端不再 setStyle</li>
  * </ul>
  *
  * <h2>典型场景</h2>
  * <ul>
  *   <li>页面主标题 / 副标题</li>
  *   <li>帮助文本 / 说明段落</li>
- *   <li>带装饰的内联文本（代码片段、删除线、标记高亮）</li>
- *   <li>可复制文本（点击复制 API Key / Token）</li>
+ *   <li>带装饰的内联文本(代码片段、删除线、标记高亮)</li>
+ *   <li>可复制文本(点击复制 API Key / Token)</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -36,7 +34,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * // 1 级标题
  * Label h1 = TypographyAnt.title("系统概览", 1).build();
  *
- * // 段落（2 行省略）
+ * // 段落(2 行省略)
  * Label p = TypographyAnt.paragraph("这是一段很长的描述文本...")
  *     .ellipsis(true)
  *     .rows(2)
@@ -54,10 +52,14 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *     .build();
  * }</pre>
  *
- * <h2>与 LabelAnt 的区别</h2>
+ * <h2>实现策略</h2>
+ * <p>三个 Builder 内部统一委托给 {@link LabelAnt}(继承式 LabelAnt IS-A 原生 Label),
+ * 业务侧的 {@code build()} 返回类型仍是原生 {@link Label}——API 完全兼容。
+ * 委托的好处:</p>
  * <ul>
- *   <li>{@code TypographyAnt} —— 富排版（多 Builder、多装饰、copyable），{@code build()} 返回原生 Label</li>
- *   <li>{@code LabelAnt} —— 轻量链式 Label，{@code extends Label}，支持业务继承</li>
+ *   <li><b>复用</b>:type 色彩、strong/italic/underline/delete/code/mark/copyable 的实现只维护一处</li>
+ *   <li><b>幂等性</b>:LabelAnt.type() 内置 {@code removeAll} 先清后挂,避免多次调 type 叠加 bug</li>
+ *   <li><b>行数限制</b>:TypographyAnt 独有的 title 字号 / paragraph 高度保留在 Java(Font API + maxHeight 是结构性属性)</li>
  * </ul>
  */
 public class TypographyAnt {
@@ -76,9 +78,11 @@ public class TypographyAnt {
         }
 
         public Label build() {
-            Label label = new Label(text);
+            // 委托给 LabelAnt,它默认挂 TYPOGRAPHY_TEXT——Title 不是 Text,先清掉
+            LabelAnt label = LabelAnt.create(text);
+            label.getStyleClass().remove(JfxStyles.TYPOGRAPHY_TEXT);
             label.getStyleClass().add(JfxStyles.TYPOGRAPHY_TITLE);
-            // Title 字号是 level 的函数，结构性属性留 Java；颜色由 LESS 控制
+            // Title 字号是 level 的函数,结构性属性留 Java;颜色由 LESS 控制
             double fontSize = switch (level) {
                 case 1 -> 38;
                 case 2 -> 30;
@@ -88,7 +92,7 @@ public class TypographyAnt {
                 default -> 38;
             };
             label.setFont(Font.font("System", FontWeight.BOLD, fontSize));
-            // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加，覆盖优先级最高
+            // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加,覆盖优先级最高
             applyStyles(label);
             return label;
         }
@@ -104,15 +108,17 @@ public class TypographyAnt {
         public ParagraphBuilder rows(int rows) { this.rows = rows; return this; }
 
         public Label build() {
-            Label label = new Label(text);
+            // 委托给 LabelAnt,Paragraph 也不是 Text
+            LabelAnt label = LabelAnt.create(text);
+            label.getStyleClass().remove(JfxStyles.TYPOGRAPHY_TEXT);
             label.getStyleClass().add(JfxStyles.TYPOGRAPHY_PARAGRAPH);
-            label.setWrapText(true);
+            label.wrap(true);
             label.setFont(Font.font("System", 14));
             if (ellipsis && rows > 0) {
-                // 高度限制是结构性属性，留 Java
+                // 高度限制是结构性属性,留 Java
                 label.setMaxHeight(rows * 20);
             }
-            // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加，覆盖优先级最高
+            // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加,覆盖优先级最高
             applyStyles(label);
             return label;
         }
@@ -147,41 +153,22 @@ public class TypographyAnt {
         public TextBuilder mark() { return mark(true); }
 
         public Label build() {
-            Label label = new Label(text);
-            label.getStyleClass().add(JfxStyles.TYPOGRAPHY_TEXT);
-
-            // type 走修饰类（PRIMARY 是默认无需追加）
-            switch (type) {
-                case SECONDARY -> label.getStyleClass().add(JfxStyles.TYPOGRAPHY_SECONDARY);
-                case SUCCESS -> label.getStyleClass().add(JfxStyles.TYPOGRAPHY_SUCCESS);
-                case WARNING -> label.getStyleClass().add(JfxStyles.TYPOGRAPHY_WARNING);
-                case DANGER -> label.getStyleClass().add(JfxStyles.TYPOGRAPHY_DANGER);
-                case DISABLED -> label.getStyleClass().add(JfxStyles.TYPOGRAPHY_DISABLED);
-                default -> { /* PRIMARY 无修饰 */ }
-            }
-
-            // strong 是 fontWeight 调整，走 Font；其余装饰走 styleClass
-            if (strong) {
-                label.setFont(Font.font("System", FontWeight.BOLD, 14));
-            } else {
-                label.setFont(Font.font("System", 14));
-            }
-            if (italic)    label.getStyleClass().add(JfxStyles.TYPOGRAPHY_ITALIC);
-            if (underline) label.getStyleClass().add(JfxStyles.TYPOGRAPHY_UNDERLINE);
-            if (delete)    label.getStyleClass().add(JfxStyles.TYPOGRAPHY_DELETE);
-            if (code)      label.getStyleClass().add(JfxStyles.TYPOGRAPHY_CODE);
-            if (mark)      label.getStyleClass().add(JfxStyles.TYPOGRAPHY_MARK);
-
-            if (copyable) {
-                label.getStyleClass().add(JfxStyles.TYPOGRAPHY_COPYABLE);
-                label.setOnMouseClicked(e -> {
-                    Clipboard clipboard = Clipboard.getSystemClipboard();
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString(text);
-                    clipboard.setContent(content);
-                });
-            }
-            // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加，覆盖优先级最高
+            // 全部委托给 LabelAnt 链式 API:
+            // - LabelAnt 默认构造挂 TYPOGRAPHY_TEXT
+            // - .type() 内置 removeAll 幂等(已修 type switch 叠加 bug)
+            // - .strong() 走 Font API 设 FontWeight.BOLD
+            // - 其余装饰挂对应 jfx-typography-* styleClass
+            // - .copyable() 挂 TYPOGRAPHY_COPYABLE + 接管 onMouseClicked
+            LabelAnt label = LabelAnt.create(text)
+                    .type(type)
+                    .strong(strong)
+                    .italic(italic)
+                    .underline(underline)
+                    .delete(delete)
+                    .code(code)
+                    .mark(mark)
+                    .copyable(copyable);
+            // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加,覆盖优先级最高
             applyStyles(label);
             return label;
         }

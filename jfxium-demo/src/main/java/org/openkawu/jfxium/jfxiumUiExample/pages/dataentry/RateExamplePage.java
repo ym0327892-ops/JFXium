@@ -7,6 +7,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.RateAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 
 /**
  * Rate 评分 —— 基础 / 半星 / 自定义数量。
@@ -76,7 +77,7 @@ public class RateExamplePage extends VBoxAnt {
      * <p>点击星星即触发 onChange，结果 Label 实时显示当前评分。</p>
      */
     private Node valueSection() {
-        Label result = new Label("当前评分：3");
+        Label result = TypographyAnt.text("当前评分：3").build();
         Node rate = RateAnt.create()
                 .value(3)
                 .allowHalf()
@@ -84,7 +85,7 @@ public class RateExamplePage extends VBoxAnt {
                 .build();
         Node demo = Demos.column(rate, result);
         String code = """
-                Label result = new Label("当前评分：3");
+                Label result = TypographyAnt.text("当前评分：3").build();
                 RateAnt.create()
                         .value(3)
                         .allowHalf()

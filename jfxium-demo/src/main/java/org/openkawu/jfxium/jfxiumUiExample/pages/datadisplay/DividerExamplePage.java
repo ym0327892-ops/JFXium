@@ -87,12 +87,12 @@ public class DividerExamplePage extends VBoxAnt {
                 TypographyAnt.text("项目三").build()
         );
         String code = """
-                HBox box = new HBox(
-                        new Label("项目一"),
+                HBox box = HBoxAnt.create().spacing(12).children(
+                        TypographyAnt.text("项目一").build(),
                         DividerAnt.create().vertical().build(),
-                        new Label("项目二"),
+                        TypographyAnt.text("项目二").build(),
                         DividerAnt.create().vertical().build(),
-                        new Label("项目三")
+                        TypographyAnt.text("项目三").build()
                 );
                 """;
         return Demos.sectionWithCode("4. 垂直分割线",

@@ -6,11 +6,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import org.openkawu.jfxium.component.layout.HBoxAnt;
+import org.openkawu.jfxium.component.composite.VBarAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.CodeBlockAnt;
 import org.openkawu.jfxium.component.composite.GroupBoxAnt;
+import org.openkawu.jfxium.template.ShowcaseSectionTemplate;
 
 /**
  * 示例页面用的小工具集合 —— 把"一段说明 + 一组控件演示"封装成统一外观，
@@ -33,7 +35,16 @@ public final class Demos {
      * <p>底层是一张 GroupBox 分组框，让多个 section 在 PageTemplate 里能形成卡片列表式的视觉。</p>
      */
     public static Node section(String title, String description, Node... demoNodes) {
-        return sectionWithCode(title, description, null, demoNodes);
+        VBox section = ShowcaseSectionTemplate.create()
+                .title(title)
+                .description(description)
+                .body(demoNodes)
+                .build();
+
+        return GroupBoxAnt.create()
+                .content(section)
+                .bordered(true)
+                .build();
     }
 
     /**
@@ -63,32 +74,17 @@ public final class Demos {
      * <p>若 {@code sourceCode} 为 null，行为退化为 {@link #section(String, String, Node...)}（不渲染 toggle）。</p>
      */
     public static Node sectionWithCode(String title, String description, String sourceCode, Node... demoNodes) {
-        Label sectionTitle = TypographyAnt.title(title, 5).build();   // h5 = 16px 粗体
+        VBox content = ShowcaseSectionTemplate.create()
+                .title(title)
+                .description(description)
+                .body(demoNodes)
+                .build();
 
-        Label desc = description == null ? null
-                : TypographyAnt.text(description).type(TypographyAnt.Type.SECONDARY).build();
-
-        VBox header = new VBox(4);
-        header.getChildren().add(sectionTitle);
-        if (desc != null) {
-            desc.setWrapText(true);
-            header.getChildren().add(desc);
+        Node codeToggle = buildCodeToggle(sourceCode);
+        if (codeToggle != null) {
+            content.getChildren().add(codeToggle);
         }
 
-        VBoxAnt body = VBoxAnt.create()
-                .spacing(12)
-                .children(demoNodes);
-
-        VBoxAnt content = VBoxAnt.create()
-                .spacing(12)
-                .children(header, body);
-
-        // 代码区：只在传了 sourceCode 时才渲染，默认折叠
-        if (sourceCode != null && !sourceCode.isBlank()) {
-            content.children(buildCodeToggle(sourceCode));
-        }
-
-        // GroupBoxAnt 的 content() 接受单 Node —— 我们用 VBoxAnt 把 header+body 打包成 1 个 Node
         return GroupBoxAnt.create()
                 .content(content)
                 .bordered(true)
@@ -103,8 +99,12 @@ public final class Demos {
      * CodeBlock 默认 {@code managed=false} + {@code visible=false}，避免折叠态占位。</p>
      */
     private static Node buildCodeToggle(String sourceCode) {
+        if (sourceCode == null || sourceCode.isBlank()) {
+            return null;
+        }
+
         // toggle 文本：箭头 + 文字
-        Label toggle = new Label("〈〉 显示代码");
+        Label toggle = TypographyAnt.text("〈〉 显示代码").build();
         toggle.getStyleClass().add("jfx-demo-code-toggle");
 
         // 代码块（默认隐藏 + 不占布局）
@@ -112,7 +112,7 @@ public final class Demos {
                 .language(CodeBlockAnt.Language.JAVA)
                 .code(sourceCode)
                 .showLineNumbers(true)
-                .theme(CodeBlockAnt.Theme.LIGHT)
+                .theme(CodeBlockAnt.Theme.AUTO)
                 .selectable(true)   // 示例代码：可自由拖选 + Ctrl+C 抄走片段（单色，但选区比高亮重要）
                 .maxHeight(360)
                 .build();
@@ -120,12 +120,10 @@ public final class Demos {
         codeBlock.setManaged(false);
 
         // 容器：toggle 上、code 下
-        VBox box = new VBox(0);
         // 顶部加一条细分隔线（与上方演示区视觉拉开）
         javafx.scene.control.Separator sep = new javafx.scene.control.Separator();
         sep.getStyleClass().add("jfx-demo-code-separator");
         VBox.setMargin(sep, new javafx.geometry.Insets(4, 0, 4, 0));
-        box.getChildren().addAll(sep, toggle, codeBlock);
 
         // 点击切换
         toggle.setOnMouseClicked(e -> {
@@ -135,7 +133,10 @@ public final class Demos {
             toggle.setText(show ? "〈/〉 收起代码" : "〈〉 显示代码");
         });
 
-        return box;
+        return VBarAnt.create()
+                .compact()
+                .top(sep, toggle, codeBlock)
+                .build();
     }
 
     /**
@@ -153,7 +154,11 @@ public final class Demos {
 
     /** 纵向排列的演示列。 */
     public static VBox column(Node... children) {
-        return VBoxAnt.create().spacing(8).children(children);
+        return VBarAnt.create()
+                .compact()
+                .gap(8)
+                .top(children)
+                .build();
     }
 
     /**
@@ -193,7 +198,7 @@ public final class Demos {
      * @param dark  true=深蓝，false=浅蓝
      */
     public static Node colBlock(String text, boolean dark) {
-        Label label = new Label(text);
+        Label label = TypographyAnt.text(text).build();
         VBoxAnt pane = VBoxAnt.create()
                 .align(javafx.geometry.Pos.CENTER)
                 .children(label);

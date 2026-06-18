@@ -212,6 +212,7 @@ public class MenuAnt {
          * 折叠模式（仅 INLINE 有效，M14.4）。
          * 折叠后：宽度 64px、隐藏文字/箭头/group/divider 文字，只显示图标。
          * subMenu 改用 Popup 浮层（点击图标时从右侧弹出）。
+         * <p>可在 build() 后通过 {@link Controller#setCollapsed(boolean)} 运行时切换。</p>
          */
         public Builder collapsed(boolean collapsed) {
             this.collapsed = collapsed;
@@ -275,11 +276,21 @@ public class MenuAnt {
             BuildContext ctx = new BuildContext(mode, theme, effectiveCollapsed, selectedKey, onSelect,
                     expandMode, new java.util.HashSet<>(expandedKeys), onExpandChange);
 
+            Pane root = renderRoot(ctx);
+
+            // 装 Controller：让 build() 之后还能 runtime 切高亮 / 展开 / 折叠（M19.38）
+            this.controller = new Controller(this, root, ctx);
+            root.getProperties().put(CONTROLLER_KEY, this.controller);
+            return root;
+        }
+
+        /** 真正渲染菜单根节点。build() 和 runtime 重建都走这里。 */
+        private Pane renderRoot(BuildContext ctx) {
             Pane root;
-            if (mode == Mode.HORIZONTAL) {
+            if (ctx.mode == Mode.HORIZONTAL) {
                 HBox menu = new HBox(0);
                 menu.getStyleClass().addAll(JfxStyles.MENU, JfxStyles.MENU_HORIZONTAL);
-                if (theme == Theme.DARK) menu.getStyleClass().add(JfxStyles.MENU_DARK);
+                if (ctx.theme == Theme.DARK) menu.getStyleClass().add(JfxStyles.MENU_DARK);
                 menu.setAlignment(Pos.CENTER_LEFT);
                 for (MenuItem item : items) {
                     Node node = item.buildHorizontal(ctx);
@@ -289,8 +300,8 @@ public class MenuAnt {
             } else {
                 VBox menu = new VBox(0);
                 menu.getStyleClass().addAll(JfxStyles.MENU, JfxStyles.MENU_INLINE);
-                if (theme == Theme.DARK)         menu.getStyleClass().add(JfxStyles.MENU_DARK);
-                if (effectiveCollapsed)          menu.getStyleClass().add(JfxStyles.MENU_COLLAPSED);
+                if (ctx.theme == Theme.DARK) menu.getStyleClass().add(JfxStyles.MENU_DARK);
+                if (ctx.collapsed) menu.getStyleClass().add(JfxStyles.MENU_COLLAPSED);
                 for (MenuItem item : items) {
                     Node node = item.buildInline(ctx);
                     if (node != null) menu.getChildren().add(node);
@@ -298,9 +309,6 @@ public class MenuAnt {
                 root = menu;
             }
 
-            // 装 Controller：让 build() 之后还能 runtime 切高亮 / 展开（M19.38）
-            this.controller = new Controller(ctx);
-            root.getProperties().put(CONTROLLER_KEY, this.controller);
             applyStyles(root);
             return root;
         }
@@ -341,15 +349,45 @@ public class MenuAnt {
      * }</pre>
      */
     public static class Controller {
+        private final Builder builder;
+        private final Pane root;
         private final BuildContext ctx;
 
-        Controller(BuildContext ctx) {
+        Controller(Builder builder, Pane root, BuildContext ctx) {
+            this.builder = builder;
+            this.root = root;
             this.ctx = ctx;
         }
 
         /** 当前选中 key（可能为 null）。 */
         public String getSelectedKey() {
             return ctx.selectedKey;
+        }
+
+        /** 当前是否折叠。仅 INLINE 模式有效。 */
+        public boolean isCollapsed() {
+            return ctx.mode == Mode.INLINE && ctx.collapsed;
+        }
+
+        /**
+         * 切换折叠状态。仅 INLINE 模式有效。
+         * <p>会在原 root 上原地重建子节点，保留选中态与已展开状态。</p>
+         */
+        public void setCollapsed(boolean collapsed) {
+            boolean effectiveCollapsed = ctx.mode == Mode.INLINE && collapsed;
+            if (ctx.collapsed == effectiveCollapsed) {
+                return;
+            }
+            ctx.collapsed = effectiveCollapsed;
+            if (ctx.mode != Mode.INLINE) {
+                return;
+            }
+            rebuildRoot();
+        }
+
+        /** 反转折叠状态。 */
+        public void toggleCollapsed() {
+            setCollapsed(!isCollapsed());
         }
 
         /**
@@ -408,6 +446,29 @@ public class MenuAnt {
                 if (!ctx.expandedKeys.contains(k)) expandKey(k);
             }
         }
+
+        /**
+         * 原地重建 root 的子节点，避免 rebuild 后丢失滚动位置 / 外部引用。
+         * 仅在 collapsed 切换时使用。
+         */
+        private void rebuildRoot() {
+            ctx.itemRows.clear();
+            ctx.expandHandles.clear();
+            ctx.topLevelSubMenus.clear();
+
+            Pane rebuilt = builder.renderRoot(ctx);
+            java.util.List<Node> nodes = new java.util.ArrayList<>(rebuilt.getChildren());
+            rebuilt.getChildren().clear();
+            root.getChildren().setAll(nodes);
+
+            if (ctx.collapsed) {
+                if (!root.getStyleClass().contains(JfxStyles.MENU_COLLAPSED)) {
+                    root.getStyleClass().add(JfxStyles.MENU_COLLAPSED);
+                }
+            } else {
+                root.getStyleClass().remove(JfxStyles.MENU_COLLAPSED);
+            }
+        }
     }
 
     /**
@@ -417,7 +478,7 @@ public class MenuAnt {
     static class BuildContext {
         final Mode mode;
         final Theme theme;
-        final boolean collapsed;
+        boolean collapsed;
         // 注：selectedKey 在 Controller.setSelectedKey() 中可被改写，故非 final
         String selectedKey;
         final Consumer<String> onSelect;

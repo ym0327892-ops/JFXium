@@ -4,6 +4,7 @@ import javafx.scene.Node;
 
 import org.openkawu.jfxium.component.control.TitledPaneAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.composite.VBarAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -26,30 +27,34 @@ public class TitledPaneExamplePage extends VBoxAnt {
     }
 
     private Node basicSection() {
-        Node demo = Demos.column(
-                TitledPaneAnt.create()
-                        .title("基础面板")
-                        .content(TypographyAnt.text("这是一个默认展开的面板，内容可以是任意 Node。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
-                        .expanded(true)
-                        .build(),
-                TitledPaneAnt.create()
-                        .title("折叠的面板")
-                        .content(TypographyAnt.text("默认折叠，点击标题展开查看内容。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
-                        .expanded(false)
-                        .build()
-        );
+        Node demo = VBarAnt.create()
+                .compact()
+                .gap(8)
+                .top(
+                        TitledPaneAnt.create()
+                                .title("基础面板")
+                                .content(TypographyAnt.text("这是一个默认展开的面板，内容可以是任意 Node。")
+                                        .type(TypographyAnt.Type.SECONDARY).build())
+                                .expanded(true)
+                                .build(),
+                        TitledPaneAnt.create()
+                                .title("折叠的面板")
+                                .content(TypographyAnt.text("默认折叠，点击标题展开查看内容。")
+                                        .type(TypographyAnt.Type.SECONDARY).build())
+                                .expanded(false)
+                                .build()
+                )
+                .build();
         String code = """
                 TitledPaneAnt.create()
                     .title("基础面板")
-                    .content(new Label("内容..."))
+                    .content(TypographyAnt.text("内容...").build())
                     .expanded(true)
                     .build();
 
                 TitledPaneAnt.create()
                     .title("折叠的面板")
-                    .content(new Label("内容..."))
+                    .content(TypographyAnt.text("内容...").build())
                     .expanded(false)
                     .build();
                 """;
@@ -68,10 +73,14 @@ public class TitledPaneExamplePage extends VBoxAnt {
 
         Node outer = TitledPaneAnt.create()
                 .title("外层面板（展开看嵌套）")
-                .content(Demos.column(
-                        TypographyAnt.text("外层面板的内容区域，下面嵌套了一个子面板：").build(),
-                        inner
-                ))
+                .content(VBarAnt.create()
+                        .compact()
+                        .gap(8)
+                        .top(
+                                TypographyAnt.text("外层面板的内容区域，下面嵌套了一个子面板：").build(),
+                                inner
+                        )
+                        .build())
                 .expanded(true)
                 .build();
 
@@ -84,7 +93,10 @@ public class TitledPaneExamplePage extends VBoxAnt {
 
                 TitledPaneAnt outer = TitledPaneAnt.create()
                     .title("外层面板")
-                    .content(new VBox(new Label("..."), inner))
+                    .content(VBarAnt.create()
+                        .compact()
+                        .top(TypographyAnt.text("...").build(), inner)
+                        .build())
                     .build();
                 """;
         return Demos.sectionWithCode("2. 嵌套使用",

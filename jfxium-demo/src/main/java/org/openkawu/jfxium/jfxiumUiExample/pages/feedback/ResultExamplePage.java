@@ -64,7 +64,7 @@ public class ResultExamplePage extends VBoxAnt {
                 .extra(buttons)
                 .build();
         String code = """
-                HBox buttons = new HBox(12,
+                HBox buttons = Demos.row(
                         ButtonAnt.create("返回首页").type(ButtonAnt.Type.PRIMARY).build(),
                         ButtonAnt.create("查看详情").build()
                 );

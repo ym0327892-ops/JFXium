@@ -16,6 +16,7 @@ This file provides guidance to Qoder (qoder.com) when working with code in this 
 6. **禁止新建 styleClass 不带 `jfx-` 前缀** → 避免与 modena 冲突
 7. **禁止 `.arrow` 只设颜色不设 shape** → 必须显式 `-fx-shape` + min/pref
 8. **禁止新增 public 类不同步 `module-info.java` exports**
+9. **禁止业务代码 `new` 原生 JavaFX 控件** → 统一走 `XxxAnt.create()`（框架内部 `extends XxxAnt` 除外）
 
 ---
 
@@ -31,6 +32,7 @@ This file provides guidance to Qoder (qoder.com) when working with code in this 
 | `.qoder/skills/component-pattern.md` | 组件设计模式（微组件/反模式） | 新建/重构组件前 |
 | `.qoder/skills/workflow.md` | 构建/测试/调试工作流 | 执行构建/测试/发布时 |
 | `.qoder/skills/design-reference.md` | 设计风格参考体系（JetBrains/Qt/桌面工具） | 新建组件、调整样式、审查视觉一致性时 |
+| `.qoder/skills/demo-discipline.md` | jfxium-demo 工程项目展示纪律（JFXium 控件优先 + util 孵化 + 整合评审） | 编写/修改/审查 jfxium-demo 代码时 |
 
 ---
 

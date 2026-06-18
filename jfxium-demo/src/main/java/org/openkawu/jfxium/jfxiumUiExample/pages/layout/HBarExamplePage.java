@@ -2,7 +2,6 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.layout;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
@@ -49,12 +48,12 @@ public class HBarExamplePage extends VBoxAnt {
     // ============================================================
     private Node twoSegmentSection() {
         Node demo = HBarAnt.create()
-                .left(new Label("左侧标题"))
+                .left(TypographyAnt.text("左侧标题").build())
                 .right(ButtonAnt.create("操作").type(ButtonAnt.Type.PRIMARY).build())
                 .build();
         String code = """
                 HBarAnt.create()
-                        .left(new Label("左侧标题"))
+                        .left(TypographyAnt.text("左侧标题").build())
                         .right(ButtonAnt.create("操作").type(ButtonAnt.Type.PRIMARY).build())
                         .build();
                 """;
@@ -68,14 +67,14 @@ public class HBarExamplePage extends VBoxAnt {
     // ============================================================
     private Node threeSegmentSection() {
         Node demo = HBarAnt.create()
-                .left(new Label("品牌"))
-                .center(new Label("居中内容"))
+                .left(TypographyAnt.text("品牌").build())
+                .center(TypographyAnt.text("居中内容").build())
                 .right(ButtonAnt.create("设置").build())
                 .build();
         String code = """
                 HBarAnt.create()
-                        .left(new Label("品牌"))
-                        .center(new Label("居中内容"))
+                        .left(TypographyAnt.text("品牌").build())
+                        .center(TypographyAnt.text("居中内容").build())
                         .right(ButtonAnt.create("设置").build())
                         .build();
                 """;
@@ -121,22 +120,22 @@ public class HBarExamplePage extends VBoxAnt {
     // ============================================================
     private Node gapSection() {
         Node demo1 = HBarAnt.create()
-                .left(new Label("默认 gap=8"))
+                .left(TypographyAnt.text("默认 gap=8").build())
                 .right(ButtonAnt.create("A").build(), ButtonAnt.create("B").build())
                 .build();
         Node demo2 = HBarAnt.create()
-                .left(new Label("gap=24"))
+                .left(TypographyAnt.text("gap=24").build())
                 .right(ButtonAnt.create("A").build(), ButtonAnt.create("B").build())
                 .gap(24)
                 .build();
         Node demo3 = HBarAnt.create()
-                .left(new Label("gap=2（紧凑）"))
+                .left(TypographyAnt.text("gap=2（紧凑）").build())
                 .right(ButtonAnt.create("A").build(), ButtonAnt.create("B").build())
                 .gap(2)
                 .build();
         String code = """
                 HBarAnt.create()
-                        .left(new Label("gap=24"))
+                        .left(TypographyAnt.text("gap=24").build())
                         .right(btn1, btn2)
                         .gap(24)    // 控制各段之间的水平间距（默认 8）
                         .build();
@@ -152,14 +151,14 @@ public class HBarExamplePage extends VBoxAnt {
     private Node borderSection() {
         // 5a. 底部分割线（Card header 风格）
         Node bottomBar = HBarAnt.create()
-                .left(new Label("Card 标题栏"))
+                .left(TypographyAnt.text("Card 标题栏").build())
                 .right(ButtonAnt.create("更多").build())
                 .padding(8, 12, 8, 12)
                 .borderBottom()
                 .build();
         // 5b. 顶部分割线（Dialog footer 风格）
         Node topBar = HBarAnt.create()
-                .left(new Label("已选 3 项"))
+                .left(TypographyAnt.text("已选 3 项").build())
                 .right(
                         ButtonAnt.create("取消").build(),
                         ButtonAnt.create("确认").type(ButtonAnt.Type.PRIMARY).build()
@@ -169,7 +168,7 @@ public class HBarExamplePage extends VBoxAnt {
                 .build();
         // 5c. 上下双线（表格工具栏风格）
         Node bothBar = HBarAnt.create()
-                .left(new Label("数据列表"))
+                .left(TypographyAnt.text("数据列表").build())
                 .right(ButtonAnt.create("刷新").build())
                 .padding(10, 16, 10, 16)
                 .borderTop()
@@ -184,7 +183,7 @@ public class HBarExamplePage extends VBoxAnt {
         String code = """
                 // Card header：底部分割线
                 HBarAnt.create()
-                        .left(new Label("Card 标题栏"))
+                        .left(TypographyAnt.text("Card 标题栏").build())
                         .right(ButtonAnt.create("更多").build())
                         .padding(8, 12, 8, 12)
                         .borderBottom()
@@ -192,7 +191,7 @@ public class HBarExamplePage extends VBoxAnt {
 
                 // Dialog footer：顶部分割线
                 HBarAnt.create()
-                        .left(new Label("已选 3 项"))
+                        .left(TypographyAnt.text("已选 3 项").build())
                         .right(cancelBtn, confirmBtn)
                         .padding(12, 16, 12, 16)
                         .borderTop()
@@ -200,7 +199,7 @@ public class HBarExamplePage extends VBoxAnt {
 
                 // 上下双线
                 HBarAnt.create()
-                        .left(new Label("数据列表"))
+                        .left(TypographyAnt.text("数据列表").build())
                         .right(refreshBtn)
                         .borderTop().borderBottom()
                         .build();
@@ -215,19 +214,19 @@ public class HBarExamplePage extends VBoxAnt {
     // ============================================================
     private Node paddingSection() {
         Node demo1 = HBarAnt.create()
-                .left(new Label("padding(4)"))
+                .left(TypographyAnt.text("padding(4)").build())
                 .right(ButtonAnt.create("按钮").build())
                 .padding(4)
                 .borderBottom()
                 .build();
         Node demo2 = HBarAnt.create()
-                .left(new Label("padding(8,16,8,16)"))
+                .left(TypographyAnt.text("padding(8,16,8,16)").build())
                 .right(ButtonAnt.create("按钮").build())
                 .padding(8, 16, 8, 16)
                 .borderBottom()
                 .build();
         Node demo3 = HBarAnt.create()
-                .left(new Label("padding(16,24,16,24)"))
+                .left(TypographyAnt.text("padding(16,24,16,24)").build())
                 .right(ButtonAnt.create("按钮").build())
                 .padding(16, 24, 16, 24)
                 .borderBottom()
@@ -253,20 +252,20 @@ public class HBarExamplePage extends VBoxAnt {
     // ============================================================
     private Node sizingSection() {
         Node demo1 = HBarAnt.create()
-                .left(new Label("minHeight=48"))
+                .left(TypographyAnt.text("minHeight=48").build())
                 .right(ButtonAnt.create("按钮").build())
                 .minH(48)
                 .borderBottom()
                 .build();
         Node demo2 = HBarAnt.create()
-                .left(new Label("prefHeight=64 + padding"))
+                .left(TypographyAnt.text("prefHeight=64 + padding").build())
                 .right(ButtonAnt.create("按钮").build())
                 .prefH(64)
                 .padding(12, 16, 12, 16)
                 .borderBottom()
                 .build();
         Node demo3 = HBarAnt.create()
-                .left(new Label("maxWidth=400"))
+                .left(TypographyAnt.text("maxWidth=400").build())
                 .right(ButtonAnt.create("按钮").build())
                 .maxW(400)
                 .borderBottom()
@@ -279,7 +278,7 @@ public class HBarExamplePage extends VBoxAnt {
         );
         String code = """
                 HBarAnt.create()
-                        .left(new Label("固定高度"))
+                        .left(TypographyAnt.text("固定高度").build())
                         .right(btn)
                         .minH(48)          // 最小高度
                         .prefH(64)         // 首选高度
@@ -296,20 +295,20 @@ public class HBarExamplePage extends VBoxAnt {
     // ============================================================
     private Node alignmentSection() {
         Node demo1 = HBarAnt.create()
-                .left(new Label("CENTER_LEFT（默认）"))
+                .left(TypographyAnt.text("CENTER_LEFT（默认）").build())
                 .right(ButtonAnt.create("操作").build())
                 .minH(48)
                 .borderBottom()
                 .build();
         Node demo2 = HBarAnt.create()
-                .left(new Label("CENTER"))
+                .left(TypographyAnt.text("CENTER").build())
                 .right(ButtonAnt.create("操作").build())
                 .alignment(Pos.CENTER)
                 .minH(48)
                 .borderBottom()
                 .build();
         Node demo3 = HBarAnt.create()
-                .left(new Label("BOTTOM_LEFT"))
+                .left(TypographyAnt.text("BOTTOM_LEFT").build())
                 .right(ButtonAnt.create("操作").build())
                 .alignment(Pos.BOTTOM_LEFT)
                 .minH(48)
@@ -319,7 +318,7 @@ public class HBarExamplePage extends VBoxAnt {
         Node row = Demos.column(demo1, demo2, demo3);
         String code = """
                 HBarAnt.create()
-                        .left(new Label("居中对齐"))
+                        .left(TypographyAnt.text("居中对齐").build())
                         .right(btn)
                         .alignment(Pos.CENTER)      // 垂直居中（默认 CENTER_LEFT）
                         .minH(48)
@@ -435,7 +434,7 @@ public class HBarExamplePage extends VBoxAnt {
     private Node edgeCaseSection() {
         // 10a. 仅左段
         Node onlyLeft = HBarAnt.create()
-                .left(new Label("仅 left，右侧 spacer 自动撑满"))
+                .left(TypographyAnt.text("仅 left，右侧 spacer 自动撑满").build())
                 .borderBottom()
                 .padding(6, 12, 6, 12)
                 .build();
@@ -459,7 +458,7 @@ public class HBarExamplePage extends VBoxAnt {
 
         // 10d. gap(0) 零间距 + 多按钮
         Node zeroGap = HBarAnt.create()
-                .left(new Label("gap=0"))
+                .left(TypographyAnt.text("gap=0").build())
                 .right(
                         ButtonAnt.create("A").build(),
                         ButtonAnt.create("B").build(),
@@ -472,7 +471,7 @@ public class HBarExamplePage extends VBoxAnt {
 
         // 10e. borderBottom(false) 显式关闭（默认就是 false）
         Node noBorder = HBarAnt.create()
-                .left(new Label("borderBottom(false) —— 无线"))
+                .left(TypographyAnt.text("borderBottom(false) —— 无线").build())
                 .right(ButtonAnt.create("操作").build())
                 .padding(4, 12, 4, 12)
                 .borderBottom(false)
@@ -513,7 +512,7 @@ public class HBarExamplePage extends VBoxAnt {
     private Node styleCustomSection() {
         // 11a. 通过 styleClass 加自定义背景色
         Node customBg = HBarAnt.create()
-                .left(new Label("自定义 styleClass：蓝色背景"))
+                .left(TypographyAnt.text("自定义 styleClass：蓝色背景").build())
                 .right(ButtonAnt.create("操作").build())
                 .padding(8, 16, 8, 16)
                 .styleClass("jfx-demo-bar-accent")
@@ -521,7 +520,7 @@ public class HBarExamplePage extends VBoxAnt {
 
         // 11b. 通过 style 加行内样式（仅非 CSS 变量安全值）
         Node customStyle = HBarAnt.create()
-                .left(new Label("行内 style：圆角 + 背景"))
+                .left(TypographyAnt.text("行内 style：圆角 + 背景").build())
                 .right(ButtonAnt.create("操作").build())
                 .padding(8, 16, 8, 16)
                 .style("-fx-background-radius: 6px; -fx-background-color: #f6f8fa;")
@@ -529,7 +528,7 @@ public class HBarExamplePage extends VBoxAnt {
 
         // 11c. 组合：styleClass + style + borderBottom
         Node combo = HBarAnt.create()
-                .left(new Label("组合：圆角卡片 + 底部分隔线"))
+                .left(TypographyAnt.text("组合：圆角卡片 + 底部分隔线").build())
                 .right(ButtonAnt.create("更多").build())
                 .padding(10, 16, 10, 16)
                 .styleClass("jfx-demo-bar-card")
@@ -574,7 +573,7 @@ public class HBarExamplePage extends VBoxAnt {
     private Node universalBorderSection() {
         // 12a. 左侧分割线
         Node leftBorder = HBarAnt.create()
-                .left(new Label("左侧分割线 (borderLeft)"))
+                .left(TypographyAnt.text("左侧分割线 (borderLeft)").build())
                 .right(ButtonAnt.create("操作").build())
                 .padding(8, 16, 8, 16)
                 .borderLeft()
@@ -582,7 +581,7 @@ public class HBarExamplePage extends VBoxAnt {
 
         // 12b. 右侧分割线
         Node rightBorder = HBarAnt.create()
-                .left(new Label("右侧分割线 (borderRight)"))
+                .left(TypographyAnt.text("右侧分割线 (borderRight)").build())
                 .right(ButtonAnt.create("操作").build())
                 .padding(8, 16, 8, 16)
                 .borderRight()
@@ -590,7 +589,7 @@ public class HBarExamplePage extends VBoxAnt {
 
         // 12c. 左右双线 + 底部线
         Node lrbBorder = HBarAnt.create()
-                .left(new Label("左 + 右 + 底线"))
+                .left(TypographyAnt.text("左 + 右 + 底线").build())
                 .right(ButtonAnt.create("操作").build())
                 .padding(8, 16, 8, 16)
                 .borderLeft()
@@ -600,7 +599,7 @@ public class HBarExamplePage extends VBoxAnt {
 
         // 12d. 四边全开（卡片式）
         Node fourSides = HBarAnt.create()
-                .left(new Label("四边全开（卡片风格）"))
+                .left(TypographyAnt.text("四边全开（卡片风格）").build())
                 .right(ButtonAnt.create("操作").build())
                 .padding(10, 16, 10, 16)
                 .borderTop().borderBottom()

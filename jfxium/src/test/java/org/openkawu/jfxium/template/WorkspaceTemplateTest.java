@@ -9,6 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.component.composite.HBarAnt;
+import org.openkawu.jfxium.component.control.IconAnt;
+import org.openkawu.jfxium.component.overlay.DropdownAnt;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,5 +49,44 @@ class WorkspaceTemplateTest extends JfxTestBase {
         result.toggle();
         assertTrue(result.isCollapsed());
         assertEquals(64.0, sider.getPrefWidth(), 0.001);
+    }
+
+    @Test
+    @DisplayName("headerTop 可承载双层头部")
+    void headerTop_supportsTopBar() {
+        WorkspaceTemplate.Result result = WorkspaceTemplate.create()
+                .brand("Workbench", "高可用模板")
+                .headerTop(new Label("Menu"), new Label("Tools"))
+                .headerCenter(new Label("首页 / 工作台"))
+                .sider(new VBox(), 240)
+                .content(new VBox())
+                .buildResult();
+
+        BorderPane root = result.getRoot();
+        assertNotNull(root.getTop());
+        assertTrue(root.getTop() instanceof VBox, "带 headerTop 时 top 应包装成 VBox");
+    }
+
+    @Test
+    @DisplayName("用户菜单 helper 复用头像下拉")
+    void userMenu_buildsDropdownTrigger() {
+        DropdownAnt.DropdownResult result = WorkspaceTemplate.userMenu(null, key -> {});
+
+        assertNotNull(result);
+        assertTrue(result.getTrigger() instanceof HBox);
+    }
+
+    @Test
+    @DisplayName("brandIcon 可与品牌区组合")
+    void brandIcon_supportsBrandIcon() {
+        WorkspaceTemplate.Result result = WorkspaceTemplate.create()
+                .brand("Workbench", "高可用模板")
+                .brandIcon(IconAnt.Path.DASHBOARD)
+                .sider(new VBox(), 240)
+                .content(new VBox())
+                .buildResult();
+
+        assertNotNull(result.getRoot().getTop());
+        assertTrue(result.getRoot().getTop() instanceof HBarAnt);
     }
 }

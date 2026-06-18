@@ -2,11 +2,12 @@ package org.openkawu.jfxium.template;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.composite.HBarAnt;
+import org.openkawu.jfxium.component.control.IconAnt;
+import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -14,10 +15,15 @@ import org.openkawu.jfxium.layout.AppShellAnt;
 import org.openkawu.jfxium.component.layout.GridAnt;
 
 import javafx.beans.property.BooleanProperty;
+import org.openkawu.jfxium.component.composite.AvatarAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
+import org.openkawu.jfxium.component.overlay.DropdownAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * WorkspaceTemplate - 高可用工作台壳模板。
@@ -29,6 +35,7 @@ import java.util.Objects;
  * <ul>
  *   <li>{@link AppShellAnt} 负责 header / sider / content / footer 的骨架、折叠、响应式。</li>
  *   <li>{@code WorkspaceTemplate} 负责把 header 编排成“品牌 + 导航 + 操作区”的工作台样子。</li>
+ *   <li>{@code headerTop(...)} 可放系统菜单栏或通知条，形成“顶栏 + 工具栏”双层头部。</li>
  *   <li>需要完全自定义 header 时，可直接调用 {@link #header(Node)} 覆盖默认编排。</li>
  * </ul>
  *
@@ -43,6 +50,7 @@ import java.util.Objects;
  * <pre>{@code
  * BorderPane shell = WorkspaceTemplate.create()
  *     .brand("JFXium Workspace", "高可用工作台")
+ *     .headerTop(MenuBarAnt.create().menu("File").item("Exit", this::exit).endMenu())
  *     .headerCenter(BreadcrumbAnt.create().items("首页", "工作台").build())
  *     .headerRight(refreshBtn, collapseBtn)
  *     .sider(nav, 220)
@@ -59,12 +67,54 @@ public class WorkspaceTemplate {
         return new Builder();
     }
 
+    /**
+     * 构建工程壳里常见的“头像 + 用户名 + 下拉菜单”入口。
+     *
+     * <p>这是工程展示页里最常重复的头部动作之一：外观设置、关于、退出。
+     * 把它收口到 WorkspaceTemplate，主窗口和后台壳都能直接复用。</p>
+     */
+    public static DropdownAnt.DropdownResult userMenu(String currentUser, Consumer<String> onAction) {
+        String resolvedUser = currentUser == null || currentUser.isBlank() ? "访客" : currentUser;
+        String avatarText = resolvedUser.isBlank() ? "U" : resolvedUser;
+
+        HBox trigger = HBoxAnt.create()
+                .spacing(8)
+                .align(Pos.CENTER_LEFT)
+                .children(
+                        AvatarAnt.create()
+                                .text(avatarText)
+                                .size(AvatarAnt.Size.DEFAULT)
+                                .build(),
+                        TypographyAnt.text(resolvedUser)
+                                .type(TypographyAnt.Type.SECONDARY)
+                                .build()
+                )
+                .build();
+
+        return DropdownAnt.create()
+                .trigger(trigger)
+                .showArrow()
+                .placement("bottomRight")
+                .item("settings", "外观设置", org.openkawu.jfxium.component.control.IconAnt.path(org.openkawu.jfxium.component.control.IconAnt.Path.SETTINGS, 16))
+                .item("about", "关于", org.openkawu.jfxium.component.control.IconAnt.symbol(org.openkawu.jfxium.component.control.IconAnt.Symbol.INFO, 16))
+                .divider()
+                .item("logout", "退出", org.openkawu.jfxium.component.control.IconAnt.path(org.openkawu.jfxium.component.control.IconAnt.Path.LOGOUT, 16))
+                .onSelect(key -> {
+                    if (onAction != null) {
+                        onAction.accept(key);
+                    }
+                })
+                .build();
+    }
+
     public static final class Builder extends AbstractStyleBuilder<Builder> {
         private String brandTitle;
         private String brandSubtitle;
+        private Node brandIcon;
         private final List<Node> headerLeft = new ArrayList<>();
         private final List<Node> headerCenter = new ArrayList<>();
         private final List<Node> headerRight = new ArrayList<>();
+        private final List<Node> headerTop = new ArrayList<>();
 
         private Node headerOverride;
         private Node sider;
@@ -111,6 +161,24 @@ public class WorkspaceTemplate {
             return this;
         }
 
+        /** 品牌区图标节点。 */
+        public Builder brandIcon(Node icon) {
+            this.brandIcon = icon;
+            return this;
+        }
+
+        /** 品牌区图标，直接传图标路径。 */
+        public Builder brandIcon(IconAnt.Path icon) {
+            this.brandIcon = icon != null
+                    ? AvatarAnt.create()
+                        .icon(IconAnt.path(icon, 18))
+                        .shape(AvatarAnt.Shape.SQUARE)
+                        .size(32)
+                        .build()
+                    : null;
+            return this;
+        }
+
         /** 自定义 header 整体节点。设置后会覆盖品牌 / center / actions 编排。 */
         public Builder header(Node header) {
             this.headerOverride = header;
@@ -120,6 +188,12 @@ public class WorkspaceTemplate {
         /** Header 左侧附加节点。 */
         public Builder headerLeft(Node... nodes) {
             addNodes(headerLeft, nodes);
+            return this;
+        }
+
+        /** Header 顶部附加节点，通常用于系统菜单栏。 */
+        public Builder headerTop(Node... nodes) {
+            addNodes(headerTop, nodes);
             return this;
         }
 
@@ -247,6 +321,15 @@ public class WorkspaceTemplate {
         /** 构建并返回结果包装，便于外部控制 sider 折叠状态。 */
         public Result buildResult() {
             Node header = headerOverride != null ? headerOverride : buildStructuredHeader();
+            Node topHeader = packNodes(headerTop, JfxStyles.WORKSPACE_TEMPLATE_HEADER_CENTER, Pos.CENTER_LEFT);
+            if (topHeader != null) {
+                if (header != null) {
+                    VBox wrapper = new VBox(0, topHeader, header);
+                    header = wrapper;
+                } else {
+                    header = topHeader;
+                }
+            }
             if (header != null) {
                 header.getStyleClass().add(JfxStyles.WORKSPACE_TEMPLATE_HEADER);
             }
@@ -274,7 +357,7 @@ public class WorkspaceTemplate {
         }
 
         private Node buildStructuredHeader() {
-            VBox brandBox = buildBrandBox();
+            Node brandBox = buildBrandBox();
             List<Node> left = new ArrayList<>();
             if (brandBox != null) {
                 left.add(brandBox);
@@ -299,26 +382,37 @@ public class WorkspaceTemplate {
             return bar;
         }
 
-        private VBox buildBrandBox() {
+        private Node buildBrandBox() {
             String resolvedTitle = safeText(brandTitle);
             String resolvedSubtitle = safeText(brandSubtitle);
-            if (resolvedTitle.isEmpty() && resolvedSubtitle.isEmpty()) {
+            if ((resolvedTitle.isEmpty() && resolvedSubtitle.isEmpty()) && brandIcon == null) {
                 return null;
             }
 
-            VBox box = new VBox();
+            HBox box = new HBox();
+            box.setAlignment(Pos.CENTER_LEFT);
+            box.setSpacing(8);
             box.getStyleClass().add(JfxStyles.WORKSPACE_TEMPLATE_HEADER_BRAND);
 
+            if (brandIcon != null) {
+                box.getChildren().add(brandIcon);
+            }
+
+            VBox textBox = new VBox();
             if (!resolvedTitle.isEmpty()) {
-                Label title = new Label(resolvedTitle);
+                LabelAnt title = LabelAnt.create(resolvedTitle);
                 title.getStyleClass().add(JfxStyles.WORKSPACE_TEMPLATE_HEADER_TITLE);
-                box.getChildren().add(title);
+                textBox.getChildren().add(title);
             }
 
             if (!resolvedSubtitle.isEmpty()) {
-                Label subtitle = new Label(resolvedSubtitle);
+                LabelAnt subtitle = LabelAnt.create(resolvedSubtitle);
                 subtitle.getStyleClass().add(JfxStyles.WORKSPACE_TEMPLATE_HEADER_SUBTITLE);
-                box.getChildren().add(subtitle);
+                textBox.getChildren().add(subtitle);
+            }
+
+            if (!textBox.getChildren().isEmpty()) {
+                box.getChildren().add(textBox);
             }
 
             return box;

@@ -3,6 +3,7 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -30,22 +31,22 @@ public class FloatButtonExamplePage extends VBoxAnt {
     private Node basicSection() {
         Node demo = Demos.row(
                 FloatButtonAnt.create()
-                        .icon(new Label("+"))
+                        .icon(TypographyAnt.text("+").build())
                         .tooltip("添加")
                         .onClick(() -> MessageAnt.info("点击悬浮按钮"))
                         .build(),
                 FloatButtonAnt.create()
-                        .icon(new Label("↑"))
+                        .icon(TypographyAnt.text("↑").build())
                         .tooltip("回到顶部")
                         .build(),
                 FloatButtonAnt.create()
-                        .icon(new Label("?"))
+                        .icon(TypographyAnt.text("?").build())
                         .tooltip("帮助")
                         .build()
         );
         String code = """
                 FloatButtonAnt.create()
-                    .icon(new Label("+"))
+                    .icon(TypographyAnt.text("+").build())
                     .tooltip("添加")
                     .onClick(() -> System.out.println("click"))
                     .build();
@@ -58,23 +59,23 @@ public class FloatButtonExamplePage extends VBoxAnt {
     private Node typeSection() {
         Node demo = Demos.row(
                 FloatButtonAnt.create()
-                        .icon(new Label("+"))
+                        .icon(TypographyAnt.text("+").build())
                         .type(FloatButtonAnt.Type.DEFAULT)
                         .tooltip("Default")
                         .build(),
                 FloatButtonAnt.create()
-                        .icon(new Label("✦"))
+                        .icon(TypographyAnt.text("✦").build())
                         .type(FloatButtonAnt.Type.PRIMARY)
                         .tooltip("Primary")
                         .build()
         );
         String code = """
                 FloatButtonAnt.create()
-                    .icon(new Label("+"))
+                    .icon(TypographyAnt.text("+").build())
                     .type(FloatButtonAnt.Type.DEFAULT)
                     .build();
                 FloatButtonAnt.create()
-                    .icon(new Label("✦"))
+                    .icon(TypographyAnt.text("✦").build())
                     .type(FloatButtonAnt.Type.PRIMARY)
                     .build();
                 """;
@@ -86,32 +87,32 @@ public class FloatButtonExamplePage extends VBoxAnt {
     private Node sizeSection() {
         Node demo = Demos.row(
                 FloatButtonAnt.create()
-                        .icon(new Label("S"))
+                        .icon(TypographyAnt.text("S").build())
                         .size(40)
                         .tooltip("Small 40")
                         .build(),
                 FloatButtonAnt.create()
-                        .icon(new Label("M"))
+                        .icon(TypographyAnt.text("M").build())
                         .size(56)
                         .tooltip("Default 56")
                         .build(),
                 FloatButtonAnt.create()
-                        .icon(new Label("L"))
+                        .icon(TypographyAnt.text("L").build())
                         .size(72)
                         .tooltip("Large 72")
                         .build()
         );
         String code = """
                 FloatButtonAnt.create()
-                    .icon(new Label("S"))
+                    .icon(TypographyAnt.text("S").build())
                     .size(40)
                     .build();
                 FloatButtonAnt.create()
-                    .icon(new Label("M"))
+                    .icon(TypographyAnt.text("M").build())
                     .size(56)
                     .build();
                 FloatButtonAnt.create()
-                    .icon(new Label("L"))
+                    .icon(TypographyAnt.text("L").build())
                     .size(72)
                     .build();
                 """;

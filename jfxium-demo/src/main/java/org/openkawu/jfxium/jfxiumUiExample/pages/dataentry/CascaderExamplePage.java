@@ -9,6 +9,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.CascaderAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 
 /**
  * Cascader 级联选择 —— 基础多级 / 自定义占位符。
@@ -81,7 +82,7 @@ public class CascaderExamplePage extends VBoxAnt {
      * 让用户确认拿到的是「值」而不是显示文案。</p>
      */
     private Node valueSection() {
-        Label result = new Label("选中值：(未选择)");
+        Label result = TypographyAnt.text("选中值：(未选择)").build();
         Node cascader = CascaderAnt.create()
                 .options(regionOptions())
                 .placeholder("请选择所在地区")
@@ -89,7 +90,7 @@ public class CascaderExamplePage extends VBoxAnt {
                 .build();
         Node demo = Demos.column(cascader, result);
         String code = """
-                Label result = new Label("选中值：(未选择)");
+                Label result = TypographyAnt.text("选中值：(未选择)").build();
                 CascaderAnt.create()
                         .options(regionOptions())
                         .placeholder("请选择所在地区")

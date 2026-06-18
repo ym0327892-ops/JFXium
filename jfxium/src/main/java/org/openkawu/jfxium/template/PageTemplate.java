@@ -3,8 +3,8 @@ package org.openkawu.jfxium.template;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
@@ -255,12 +255,12 @@ public class PageTemplate {
             header.getStyleClass().add(JfxStyles.PAGE_TEMPLATE_HEADER);
 
             if (title != null && !title.isEmpty()) {
-                Label titleLabel = new Label(title);
+                LabelAnt titleLabel = LabelAnt.create(title);
                 titleLabel.getStyleClass().add(JfxStyles.PAGE_TEMPLATE_TITLE);
                 header.getChildren().add(titleLabel);
             }
             if (description != null && !description.isEmpty()) {
-                Label descLabel = new Label(description);
+                LabelAnt descLabel = LabelAnt.create(description);
                 descLabel.getStyleClass().add(JfxStyles.PAGE_TEMPLATE_DESC);
                 descLabel.setWrapText(true);
                 header.getChildren().add(descLabel);

@@ -30,7 +30,7 @@ public class ContextMenuExamplePage extends VBoxAnt {
     }
 
     private Node basicSection() {
-        Label target = new Label("在此区域右键点击");
+        Label target = TypographyAnt.text("在此区域右键点击").build();
         target.setPrefSize(300, 120);
         target.getStyleClass().add("jfx-demo-dashed-border");
 
@@ -63,7 +63,7 @@ public class ContextMenuExamplePage extends VBoxAnt {
     }
 
     private Node iconSection() {
-        Label target = new Label("右键此区域查看带图标的菜单");
+        Label target = TypographyAnt.text("右键此区域查看带图标的菜单").build();
         target.setPrefSize(300, 120);
         target.getStyleClass().add("jfx-demo-dashed-border");
 
@@ -94,7 +94,7 @@ public class ContextMenuExamplePage extends VBoxAnt {
     }
 
     private Node acceleratorSection() {
-        Label target = new Label("右键此区域查看快捷键提示");
+        Label target = TypographyAnt.text("右键此区域查看快捷键提示").build();
         target.setPrefSize(300, 120);
         target.getStyleClass().add("jfx-demo-dashed-border");
 

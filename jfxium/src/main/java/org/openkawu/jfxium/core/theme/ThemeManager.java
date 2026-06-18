@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -36,6 +37,7 @@ public class ThemeManager {
 
     private Theme currentTheme;
     private ThemeColor currentThemeColor;
+    private ThemeColor.Preset currentPrimaryPreset;
     private final List<Scene> registeredScenes = new ArrayList<>();
     private final List<Region> registeredRegions = new ArrayList<>();
 
@@ -57,7 +59,8 @@ public class ThemeManager {
 
     private ThemeManager() {
         this.currentTheme = LIGHT_THEME;
-        this.currentThemeColor = new ThemeColor(ThemeColor.Preset.BLUE);
+        this.currentPrimaryPreset = ThemeColor.Preset.BLUE;
+        this.currentThemeColor = new ThemeColor(currentPrimaryPreset);
     }
 
     public static ThemeManager getInstance() {
@@ -79,6 +82,11 @@ public class ThemeManager {
     /** 获取当前主题色。 */
     public ThemeColor getCurrentThemeColor() {
         return currentThemeColor;
+    }
+
+    /** 获取当前主色预设；若用户传入了自定义 hex，则返回 null。 */
+    public ThemeColor.Preset getCurrentPrimaryPreset() {
+        return currentPrimaryPreset;
     }
 
     /**
@@ -187,15 +195,28 @@ public class ThemeManager {
      * @param color 十六进制颜色字符串（如 "#1677ff"、"#722ed1"）
      */
     public void setPrimaryColor(String color) {
-        if (color == null || color.equals(currentThemeColor.getHexColor())) return;
-        this.currentThemeColor.setHexColor(color);
-        applyPrimaryColorToAll();
-        notifyListeners();
+        applyPrimaryColor(color, ThemeColor.Preset.fromHex(color));
     }
 
     /** 按预设色板更换主色（accent）。 */
     public void setPrimaryColor(ThemeColor.Preset preset) {
-        setPrimaryColor(preset.getHexColor());
+        if (preset == null) {
+            return;
+        }
+        applyPrimaryColor(preset.getHexColor(), preset);
+    }
+
+    private void applyPrimaryColor(String color, ThemeColor.Preset preset) {
+        if (color == null) {
+            return;
+        }
+        if (Objects.equals(color, currentThemeColor.getHexColor()) && Objects.equals(preset, currentPrimaryPreset)) {
+            return;
+        }
+        this.currentThemeColor.setHexColor(color);
+        this.currentPrimaryPreset = preset;
+        applyPrimaryColorToAll();
+        notifyListeners();
     }
 
     /** 将当前主色应用到所有已注册的 Scene 和 Region。 */

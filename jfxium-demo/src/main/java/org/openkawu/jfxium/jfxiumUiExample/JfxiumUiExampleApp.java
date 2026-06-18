@@ -4,9 +4,11 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import org.openkawu.jfxium.component.composite.WatermarkAnt;
 import org.openkawu.jfxium.core.theme.LightTheme;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.core.util.WindowManager;
+import org.openkawu.jfxium.jfxiumUiExample.UiExampleConstants;
 import org.openkawu.jfxium.jfxiumUiExample.view.LoginView;
 import org.openkawu.jfxium.jfxiumUiExample.view.MainView;
 
@@ -35,6 +37,8 @@ public class JfxiumUiExampleApp extends Application {
 
     /** 全 app 共用的 Stage —— 登录 / 主页都挂在它上面。 */
     private Stage stage;
+    private WatermarkAnt.Controller watermarkController;
+    private boolean watermarkVisible = true;
 
     @Override
     public void start(Stage primaryStage) {
@@ -54,13 +58,20 @@ public class JfxiumUiExampleApp extends Application {
     /** 切到登录页。 */
     private void showLogin() {
         Region root = new LoginView(this::onLoginSuccess).build();
-        switchScene(root, 760, 520, "JFXium UI Example - 登录", false);
+        switchScene(root, UiExampleConstants.LOGIN_SCENE_WIDTH, UiExampleConstants.LOGIN_SCENE_HEIGHT,
+                UiExampleConstants.APP_TITLE + " - 登录", false);
     }
 
     /** 登录成功 → 切到主页（用户名带过去显示在顶栏）。 */
     private void onLoginSuccess(String username) {
-        Region root = new MainView(username, this::showLogin /* 登出回调：切回登录页 */).build();
-        switchScene(root, 1280, 800, "JFXium UI Example - " + username, true);
+        Region root = new MainView(
+                username,
+                this::showLogin,
+                this::setWatermarkVisible,
+                () -> watermarkVisible
+        ).build();
+        switchScene(root, UiExampleConstants.MAIN_SCENE_WIDTH, UiExampleConstants.MAIN_SCENE_HEIGHT,
+                UiExampleConstants.APP_TITLE + " - " + username, true);
     }
 
     /**
@@ -78,6 +89,11 @@ public class JfxiumUiExampleApp extends Application {
         ThemeManager.getInstance().registerScene(scene);
         // 加载 demo 项目自身的辅助样式（仅 demo 用，与库内主题样式叠加）
         scene.getStylesheets().add(getClass().getResource("demo.css").toExternalForm());
+        // 统一包一层水印，整套 demo 更像真实工程壳
+        WatermarkAnt.wrap(scene, b -> b
+                .text(UiExampleConstants.APP_TITLE)
+                .opacity(watermarkVisible ? UiExampleConstants.DEFAULT_WATERMARK_OPACITY : 0.0));
+        watermarkController = WatermarkAnt.controllerOf(scene.getRoot());
 
         stage.setScene(scene);
         stage.setTitle(title);
@@ -89,6 +105,13 @@ public class JfxiumUiExampleApp extends Application {
 
         if (!stage.isShowing()) {
             stage.show();
+        }
+    }
+
+    private void setWatermarkVisible(boolean visible) {
+        this.watermarkVisible = visible;
+        if (watermarkController != null) {
+            watermarkController.setOpacity(visible ? UiExampleConstants.DEFAULT_WATERMARK_OPACITY : 0.0);
         }
     }
 

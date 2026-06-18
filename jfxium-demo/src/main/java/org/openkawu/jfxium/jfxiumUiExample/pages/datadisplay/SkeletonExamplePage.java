@@ -6,6 +6,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import org.openkawu.jfxium.component.layout.StackPaneAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -76,7 +77,7 @@ public class SkeletonExamplePage extends VBoxAnt {
         Node skeleton = SkeletonAnt.avatarText();
         skeleton.setVisible(false);
         skeleton.setManaged(false);
-        StackPane loadingPane = new StackPane(realContent, skeleton);
+        StackPane loadingPane = StackPaneAnt.create().children(realContent, skeleton).build();
 
         ButtonAnt loadBtn = ButtonAnt.create("模拟加载")
                 .type(ButtonAnt.Type.PRIMARY)
@@ -98,7 +99,7 @@ public class SkeletonExamplePage extends VBoxAnt {
 
         Node demo = Demos.column(loadingPane, loadBtn);
         String code = """
-                StackPane loadingPane = new StackPane(realContent, skeleton);
+                StackPane loadingPane = StackPaneAnt.create().children(realContent, skeleton).build();
                 skeleton.setVisible(false);
                 skeleton.setManaged(false);
                 // 加载中/完成时只切换 visible + managed，不替换节点

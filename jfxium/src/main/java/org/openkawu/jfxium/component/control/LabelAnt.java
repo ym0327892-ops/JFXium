@@ -4,6 +4,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.Region;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
@@ -15,9 +20,10 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *
  * <h2>跟 TypographyAnt 的区别</h2>
  * <ul>
- *   <li>{@link TypographyAnt} —— 富排版（title/paragraph/text + copyable/strong/code 等装饰），
- *       Builder 模式，{@code build()} 返回原生 {@link Label}（不可继承）。</li>
+ *   <li>{@link TypographyAnt} —— 富排版快捷工厂（{@code title/paragraph/text}），{@code build()} 返回原生 {@link Label}。
+ *       内部已统一委托给 {@code LabelAnt}，仅做结构性属性封装（标题字号、段落最大高度）。</li>
  *   <li>{@code LabelAnt} —— 轻量「带链式的 Label」，{@code extends Label} 本身，
+ *       支持所有富排版装饰（type/strong/italic/underline/delete/code/mark/copyable/ellipsis），
  *       适合「就想要一个能链式配置、还能继承当基类」的最朴素场景。</li>
  * </ul>
  *
@@ -142,6 +148,136 @@ public class LabelAnt extends Label implements LayoutCommon<LabelAnt> {
     /** 文本对齐方式。 */
     public LabelAnt align(Pos alignment) {
         setAlignment(alignment);
+        return this;
+    }
+
+    // ============================================================
+    // 富排版装饰（与 TypographyAnt.TextBuilder 对齐，委托给同一套 typography-* styleClass）
+    // ============================================================
+
+    /**
+     * 字体加粗 toggle。
+     *
+     * <p>使用 {@link Font} API 设置 FontWeight，保留当前字号与字体族（避免 setStyle 写 -fx-font-weight）。</p>
+     *
+     * @param strong true=加粗（BOLD），false=还原（NORMAL）
+     */
+    public LabelAnt strong(boolean strong) {
+        Font cur = getFont();
+        String family = cur != null ? cur.getFamily() : Font.getDefault().getFamily();
+        double size = cur != null ? cur.getSize() : Font.getDefault().getSize();
+        setFont(Font.font(family, strong ? FontWeight.BOLD : FontWeight.NORMAL, size));
+        return this;
+    }
+
+    /** 字体加粗（强类型快捷）。 */
+    public LabelAnt strong() { return strong(true); }
+
+    /** 斜体 toggle（挂 {@code jfx-typography-italic}）。 */
+    public LabelAnt italic(boolean italic) {
+        if (italic) getStyleClass().add(JfxStyles.TYPOGRAPHY_ITALIC);
+        else getStyleClass().remove(JfxStyles.TYPOGRAPHY_ITALIC);
+        return this;
+    }
+
+    /** 斜体（强类型快捷）。 */
+    public LabelAnt italic() { return italic(true); }
+
+    /** 下划线 toggle（挂 {@code jfx-typography-underline}）。 */
+    public LabelAnt underline(boolean underline) {
+        if (underline) getStyleClass().add(JfxStyles.TYPOGRAPHY_UNDERLINE);
+        else getStyleClass().remove(JfxStyles.TYPOGRAPHY_UNDERLINE);
+        return this;
+    }
+
+    /** 下划线（强类型快捷）。 */
+    public LabelAnt underline() { return underline(true); }
+
+    /** 删除线 toggle（挂 {@code jfx-typography-delete}）。 */
+    public LabelAnt delete(boolean delete) {
+        if (delete) getStyleClass().add(JfxStyles.TYPOGRAPHY_DELETE);
+        else getStyleClass().remove(JfxStyles.TYPOGRAPHY_DELETE);
+        return this;
+    }
+
+    /** 删除线（强类型快捷）。 */
+    public LabelAnt delete() { return delete(true); }
+
+    /** 代码片段样式 toggle（挂 {@code jfx-typography-code}：等宽字体 + 浅灰底 + 圆角边框）。 */
+    public LabelAnt code(boolean code) {
+        if (code) getStyleClass().add(JfxStyles.TYPOGRAPHY_CODE);
+        else getStyleClass().remove(JfxStyles.TYPOGRAPHY_CODE);
+        return this;
+    }
+
+    /** 代码片段样式（强类型快捷）。 */
+    public LabelAnt code() { return code(true); }
+
+    /** 黄色高亮 toggle（挂 {@code jfx-typography-mark}）。 */
+    public LabelAnt mark(boolean mark) {
+        if (mark) getStyleClass().add(JfxStyles.TYPOGRAPHY_MARK);
+        else getStyleClass().remove(JfxStyles.TYPOGRAPHY_MARK);
+        return this;
+    }
+
+    /** 黄色高亮（强类型快捷）。 */
+    public LabelAnt mark() { return mark(true); }
+
+    /**
+     * 可复制 toggle：挂 {@code jfx-typography-copyable} 修饰类 + 接管 {@code onMouseClicked} 复制文本到剪贴板。
+     *
+     * <p><b>注意</b>：copyable=true 时会独占 {@code onMouseClicked}；若业务需要额外的 click 行为，
+     * 请勿同时设置 copyable。</p>
+     *
+     * @param copyable true=启用，false=关闭（同时清掉 click handler）
+     */
+    public LabelAnt copyable(boolean copyable) {
+        if (copyable) {
+            getStyleClass().add(JfxStyles.TYPOGRAPHY_COPYABLE);
+            setOnMouseClicked(e -> {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(getText());
+                clipboard.setContent(content);
+            });
+        } else {
+            getStyleClass().remove(JfxStyles.TYPOGRAPHY_COPYABLE);
+            setOnMouseClicked(null);
+        }
+        return this;
+    }
+
+    /** 可复制（强类型快捷）。 */
+    public LabelAnt copyable() { return copyable(true); }
+
+    /**
+     * 单行省略 toggle。
+     *
+     * <p>启用时关闭换行并钳制最大高度为 1 行（{@code rows * @font-size-md * 1.4 ≈ 20}，与 TypographyAnt 一致）；
+     * 关闭时还原最大高度为 {@link Region#USE_COMPUTED_SIZE}。</p>
+     */
+    public LabelAnt ellipsis(boolean ellipsis) {
+        if (ellipsis) {
+            setWrapText(false);
+            setMaxHeight(20);
+        } else {
+            setMaxHeight(Region.USE_COMPUTED_SIZE);
+        }
+        return this;
+    }
+
+    /**
+     * 多行省略：rows 限制最大显示行数。
+     *
+     * <p>启用时开启换行并钳制最大高度为 {@code rows * 20}（与 TypographyAnt 一致）；rows&lt;=0 等同于关闭省略。</p>
+     */
+    public LabelAnt ellipsis(int rows) {
+        if (rows > 0) {
+            setWrapText(true);
+            setMaxHeight(rows * 20);
+        } else {
+            setMaxHeight(Region.USE_COMPUTED_SIZE);
+        }
         return this;
     }
 

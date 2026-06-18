@@ -1,8 +1,8 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.navigation;
 
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -28,15 +28,15 @@ public class TabsExamplePage extends VBoxAnt {
 
     private Node basicLineSection() {
         Node demo = TabsAnt.create()
-                .tab("tab1", "标签一", new Label("标签一的内容"))
-                .tab("tab2", "标签二", new Label("标签二的内容"))
-                .tab("tab3", "标签三", new Label("标签三的内容"))
+                .tab("tab1", "标签一", TypographyAnt.text("标签一的内容").build())
+                .tab("tab2", "标签二", TypographyAnt.text("标签二的内容").build())
+                .tab("tab3", "标签三", TypographyAnt.text("标签三的内容").build())
                 .build();
         String code = """
                 TabsAnt.create()
-                        .tab("tab1", "标签一", new Label("标签一的内容"))
-                        .tab("tab2", "标签二", new Label("标签二的内容"))
-                        .tab("tab3", "标签三", new Label("标签三的内容"))
+                        .tab("tab1", "标签一", TypographyAnt.text("标签一的内容").build())
+                        .tab("tab2", "标签二", TypographyAnt.text("标签二的内容").build())
+                        .tab("tab3", "标签三", TypographyAnt.text("标签三的内容").build())
                         .build();
                 """;
         return Demos.sectionWithCode("1. 基础线条样式",
@@ -47,15 +47,15 @@ public class TabsExamplePage extends VBoxAnt {
     private Node cardTypeSection() {
         Node demo = TabsAnt.create()
                 .type(TabsAnt.Type.CARD)
-                .tab("card1", "卡片一", new Label("卡片一的内容"))
-                .tab("card2", "卡片二", new Label("卡片二的内容"))
-                .tab("card3", "卡片三", new Label("卡片三的内容"))
+                .tab("card1", "卡片一", TypographyAnt.text("卡片一的内容").build())
+                .tab("card2", "卡片二", TypographyAnt.text("卡片二的内容").build())
+                .tab("card3", "卡片三", TypographyAnt.text("卡片三的内容").build())
                 .build();
         String code = """
                 TabsAnt.create()
                         .type(TabsAnt.Type.CARD)
-                        .tab("card1", "卡片一", new Label("卡片一的内容"))
-                        .tab("card2", "卡片二", new Label("卡片二的内容"))
+                        .tab("card1", "卡片一", TypographyAnt.text("卡片一的内容").build())
+                        .tab("card2", "卡片二", TypographyAnt.text("卡片二的内容").build())
                         .build();
                 """;
         return Demos.sectionWithCode("2. 卡片类型",
@@ -65,9 +65,9 @@ public class TabsExamplePage extends VBoxAnt {
 
     private Node placementSection() {
         Node demo = TabsAnt.create()
-                .tab("t1", "可用标签", new Label("这个标签可以正常切换"))
-                .tab("t2", "禁用标签", new Label("这个标签被禁用了"), true)
-                .tab("t3", "另一个标签", new Label("第三个标签的内容"))
+                .tab("t1", "可用标签", TypographyAnt.text("这个标签可以正常切换").build())
+                .tab("t2", "禁用标签", TypographyAnt.text("这个标签被禁用了").build(), true)
+                .tab("t3", "另一个标签", TypographyAnt.text("第三个标签的内容").build())
                 .onChange(key -> System.out.println("切换到: " + key))
                 .build();
         String code = """

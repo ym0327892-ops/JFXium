@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -74,14 +75,14 @@ public class TimePickerExamplePage extends VBoxAnt {
      * 这里拨动任意步进器，结果 Label 即实时显示当前时间。</p>
      */
     private Node pickedValueSection() {
-        Label result = new Label("当前时间：09:30:00");
+        Label result = TypographyAnt.text("当前时间：09:30:00").build();
         Node picker = TimePickerAnt.create()
                 .value(LocalTime.of(9, 30, 0))
                 .onChange(time -> result.setText("当前时间：" + time))
                 .build();
         Node demo = Demos.column(picker, result);
         String code = """
-                Label result = new Label("当前时间：09:30:00");
+                Label result = TypographyAnt.text("当前时间：09:30:00").build();
                 TimePickerAnt.create()
                         .value(LocalTime.of(9, 30, 0))
                         .onChange(time -> result.setText("当前时间：" + time))

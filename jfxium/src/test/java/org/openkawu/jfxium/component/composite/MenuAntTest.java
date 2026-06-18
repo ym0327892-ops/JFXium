@@ -39,6 +39,32 @@ class MenuAntTest extends JfxTestBase {
         }
     }
 
+    @Test
+    @DisplayName("运行时折叠可切换")
+    void runtimeCollapse_toggle() {
+        MenuAnt.Builder builder = MenuAnt.create()
+                .mode(MenuAnt.Mode.INLINE)
+                .item("home", "首页", () -> {})
+                .subMenu("sub", "导航")
+                    .item("item1", "选项 1", () -> {})
+                    .endSubMenu()
+                .selectedKey("home");
+
+        Pane menu = builder.build();
+        MenuAnt.Controller controller = builder.controller();
+
+        assertFalse(controller.isCollapsed());
+        assertFalse(menu.getStyleClass().contains(JfxStyles.MENU_COLLAPSED));
+
+        controller.setCollapsed(true);
+        assertTrue(controller.isCollapsed());
+        assertTrue(menu.getStyleClass().contains(JfxStyles.MENU_COLLAPSED));
+
+        controller.toggleCollapsed();
+        assertFalse(controller.isCollapsed());
+        assertFalse(menu.getStyleClass().contains(JfxStyles.MENU_COLLAPSED));
+    }
+
     private static List<Label> collectLabels(Node node) {
         List<Label> labels = new ArrayList<>();
         collectLabels(node, labels);

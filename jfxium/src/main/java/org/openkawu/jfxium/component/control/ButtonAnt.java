@@ -99,6 +99,49 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
         return new ButtonAnt(text);
     }
 
+    /** 工厂入口（带文本 + 图标）。 */
+    public static ButtonAnt create(String text, Node graphic) {
+        return new ButtonAnt(text, graphic);
+    }
+
+    /**
+     * 链接按钮：文字链接 + 指定尺寸。
+     *
+     * <p>适合工程页头、卡片操作、列表操作这类高频“小动作”。</p>
+     */
+    public static ButtonAnt link(String text, Size size) {
+        return create(text).type(Type.LINK).size(size != null ? size : Size.DEFAULT);
+    }
+
+    /** 链接按钮（带图标）。 */
+    public static ButtonAnt link(String text, Node graphic, Size size) {
+        return create(text, graphic).type(Type.LINK).size(size != null ? size : Size.DEFAULT);
+    }
+
+    /** 紧凑链接按钮：文字链接 + XS 尺寸。 */
+    public static ButtonAnt compactLink(String text) {
+        return link(text, Size.XS);
+    }
+
+    /** 紧凑链接按钮（带图标）。 */
+    public static ButtonAnt compactLink(String text, Node graphic) {
+        return link(text, graphic, Size.XS);
+    }
+
+    /**
+     * 图标按钮：图形独占 + XS 尺寸 + 方形。
+     *
+     * <p>适合页面右上角设置、工具条按钮等不需要文字的入口。</p>
+     */
+    public static ButtonAnt iconOnly(Node graphic) {
+        return create()
+                .icon(graphic)
+                .contentDisplay(ContentDisplay.GRAPHIC_ONLY)
+                .type(Type.TEXT)
+                .size(Size.XS)
+                .square();
+    }
+
     // ============================================================
     // 构造函数（公开，便于业务 extends）
     // ============================================================

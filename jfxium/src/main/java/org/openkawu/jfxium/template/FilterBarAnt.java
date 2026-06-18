@@ -3,13 +3,13 @@ package org.openkawu.jfxium.template;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.InputAnt;
+import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
@@ -105,7 +105,7 @@ public class FilterBarAnt {
             group.getStyleClass().add(JfxStyles.FILTER_BAR_GROUP);
             group.setAlignment(Pos.CENTER_LEFT);
             if (label != null && !label.isEmpty()) {
-                Label l = new Label(label + ":");
+                LabelAnt l = LabelAnt.create(label + ":");
                 l.getStyleClass().add(JfxStyles.FILTER_BAR_LABEL);
                 group.getChildren().add(l);
             }

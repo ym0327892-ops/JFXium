@@ -1,10 +1,10 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.composite.VBarAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -112,9 +112,14 @@ public class DrawerExamplePage extends VBoxAnt {
 
     /** 内部辅助：打开一个最朴素的 Drawer 演示某个 placement。 */
     private void openSimple(DrawerAnt.Placement placement, String label) {
-        VBox content = new VBox(8,
-                new Label("当前 placement = " + label),
-                new Label("点击外部蒙层、按 ESC、或点击右上角 X 都可关闭。"));
+        VBox content = VBarAnt.create()
+                .compact()
+                .gap(8)
+                .top(
+                        TypographyAnt.text("当前 placement = " + label).build(),
+                        TypographyAnt.text("点击外部蒙层、按 ESC、或点击右上角 X 都可关闭。").build()
+                )
+                .build();
 
         // owner 传 stage 任意节点即可；这里用一个临时 Label 取 scene 即可
         // 实际项目用触发按钮自己作为 owner 更直接，见下面的 sizeSection

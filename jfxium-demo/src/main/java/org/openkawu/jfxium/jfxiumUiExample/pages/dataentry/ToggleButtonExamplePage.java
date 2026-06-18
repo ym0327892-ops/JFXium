@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -65,7 +66,7 @@ public class ToggleButtonExamplePage extends VBoxAnt {
      * 结果 Label 通过每个按钮的 onChange（选中时）显示当前选择。</p>
      */
     private Node mandatorySection() {
-        Label result = new Label("当前视图：列表");
+        Label result = TypographyAnt.text("当前视图：列表").build();
         // 关键：用 mandatoryGroup() 而不是 new ToggleGroup()
         ToggleGroup viewGroup = ToggleButtonAnt.mandatoryGroup();
         Node demo = Demos.column(
@@ -80,7 +81,7 @@ public class ToggleButtonExamplePage extends VBoxAnt {
                 result
         );
         String code = """
-                Label result = new Label("当前视图：列表");
+                Label result = TypographyAnt.text("当前视图：列表").build();
                 // 用 mandatoryGroup() 保证「永远选中一个」，点当前项不会取消
                 ToggleGroup viewGroup = ToggleButtonAnt.mandatoryGroup();
                 ToggleButtonAnt.create("列表").toggleGroup(viewGroup).selected(true)

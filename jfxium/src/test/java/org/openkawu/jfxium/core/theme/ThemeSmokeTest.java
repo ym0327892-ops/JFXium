@@ -13,6 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -150,6 +151,14 @@ class ThemeSmokeTest extends JfxTestBase {
 
             assertEquals(8, applied.size(),
                 "ThemeManager 状态机应有 2 Family × 2 dark × 2 density = 8 组合");
+        }
+
+        @Test
+        @DisplayName("ThemeColor 预设色板可按 hex 回查")
+        void presetLookupByHex() {
+            assertEquals(ThemeColor.Preset.BLUE, ThemeColor.Preset.fromHex("#1677ff"));
+            assertEquals(ThemeColor.Preset.ORANGE, ThemeColor.Preset.fromHex("#fa8c16"));
+            assertNull(ThemeColor.Preset.fromHex("#123456"));
         }
     }
 

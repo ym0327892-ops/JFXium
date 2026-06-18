@@ -5,6 +5,7 @@ import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -58,7 +59,7 @@ public class TreeSelectExamplePage extends VBoxAnt {
     }
 
     private Node multipleSection() {
-        Label result = new Label("已选：(未选择)");
+        Label result = TypographyAnt.text("已选：(未选择)").build();
         Node treeSelect = TreeSelectAnt.create()
                 .tree(deptTree())
                 .multiple(true)
@@ -78,7 +79,7 @@ public class TreeSelectExamplePage extends VBoxAnt {
                 .build();
         Node demo = Demos.column(treeSelect, result);
         String code = """
-                Label result = new Label("已选：(未选择)");
+                Label result = TypographyAnt.text("已选：(未选择)").build();
                 TreeSelectAnt.create()
                         .tree(deptTree())
                         .multiple(true)
@@ -99,7 +100,7 @@ public class TreeSelectExamplePage extends VBoxAnt {
      * 业务侧既能拿到展示文案也能拿到底层值。</p>
      */
     private Node valueSection() {
-        Label result = new Label("选中节点：(未选择)");
+        Label result = TypographyAnt.text("选中节点：(未选择)").build();
         Node treeSelect = TreeSelectAnt.create()
                 .tree(deptTree())
                 .placeholder("请选择部门")
@@ -108,7 +109,7 @@ public class TreeSelectExamplePage extends VBoxAnt {
                 .build();
         Node demo = Demos.column(treeSelect, result);
         String code = """
-                Label result = new Label("选中节点：(未选择)");
+                Label result = TypographyAnt.text("选中节点：(未选择)").build();
                 TreeSelectAnt.create()
                         .tree(deptTree())
                         .placeholder("请选择部门")

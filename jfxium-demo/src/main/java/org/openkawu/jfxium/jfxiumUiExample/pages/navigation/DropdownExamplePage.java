@@ -9,6 +9,7 @@ import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 
 /**
  * Dropdown 下拉菜单 —— 基础菜单 / 带分隔与禁用项。
@@ -88,7 +89,7 @@ public class DropdownExamplePage extends VBoxAnt {
      * 不再需要 demo 侧自己维护一份 key→label 映射。</p>
      */
     private Node clickedSection() {
-        Label result = new Label("点击的菜单项：(未点击)");
+        Label result = TypographyAnt.text("点击的菜单项：(未点击)").build();
         Node trigger = ButtonAnt.create("操作菜单").build();
         DropdownAnt.create()
                 .trigger(trigger)
@@ -102,7 +103,7 @@ public class DropdownExamplePage extends VBoxAnt {
                 .build();
         Node demo = Demos.column(trigger, result);
         String code = """
-                Label result = new Label("点击的菜单项：(未点击)");
+                Label result = TypographyAnt.text("点击的菜单项：(未点击)").build();
                 Node trigger = ButtonAnt.create("操作菜单").build();
                 DropdownAnt.create()
                         .trigger(trigger)

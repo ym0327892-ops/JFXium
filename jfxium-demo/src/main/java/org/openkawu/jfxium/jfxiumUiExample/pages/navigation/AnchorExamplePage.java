@@ -7,6 +7,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.AnchorAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 
 /**
  * Anchor 锚点 —— 基础。
@@ -77,7 +78,7 @@ public class AnchorExamplePage extends VBoxAnt {
      * {@code controller().setActiveKey(key)} 同步高亮。</p>
      */
     private Node activeSection() {
-        Label result = new Label("当前激活：(未点击)");
+        Label result = TypographyAnt.text("当前激活：(未点击)").build();
         Node anchor = AnchorAnt.create()
                 .item("intro", "介绍", "#intro")
                 .item("install", "安装", "#install")
@@ -87,7 +88,7 @@ public class AnchorExamplePage extends VBoxAnt {
                 .build();
         Node demo = Demos.column(anchor, result);
         String code = """
-                Label result = new Label("当前激活：(未点击)");
+                Label result = TypographyAnt.text("当前激活：(未点击)").build();
                 AnchorAnt.create()
                         .item("intro", "介绍", "#intro")
                         .item("install", "安装", "#install")

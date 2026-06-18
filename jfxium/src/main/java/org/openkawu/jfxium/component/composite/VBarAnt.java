@@ -44,6 +44,7 @@ public class VBarAnt extends AbstractVBoxAnt<VBarAnt> {
     private final List<Node> topNodes = new ArrayList<>();
     private final List<Node> centerNodes = new ArrayList<>();
     private final List<Node> bottomNodes = new ArrayList<>();
+    private boolean compact = false;
 
     public VBarAnt() {
         super();
@@ -116,6 +117,22 @@ public class VBarAnt extends AbstractVBoxAnt<VBarAnt> {
         return this;
     }
 
+    /**
+     * 紧凑模式：不插入弹性 spacer，直接按顺序纵向堆叠。
+     *
+     * <p>适合 section、卡片内容、说明块这类“标题 + 内容”的普通纵向布局。
+     * 默认关闭，保留三段式壳布局语义。</p>
+     */
+    public VBarAnt compact() {
+        return compact(true);
+    }
+
+    /** 紧凑模式开关。 */
+    public VBarAnt compact(boolean compact) {
+        this.compact = compact;
+        return this;
+    }
+
     // ============================================================
     // 构建
     // ============================================================
@@ -124,6 +141,13 @@ public class VBarAnt extends AbstractVBoxAnt<VBarAnt> {
     @Override
     public VBarAnt build() {
         getChildren().clear();
+
+        if (compact) {
+            getChildren().addAll(topNodes);
+            getChildren().addAll(centerNodes);
+            getChildren().addAll(bottomNodes);
+            return this;
+        }
 
         // 1. 顶段
         getChildren().addAll(topNodes);

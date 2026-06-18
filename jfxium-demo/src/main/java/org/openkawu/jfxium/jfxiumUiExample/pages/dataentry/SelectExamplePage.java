@@ -3,6 +3,7 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -107,7 +108,7 @@ public class SelectExamplePage extends VBoxAnt {
      * 用一个结果 Label 实时显示，用户一眼看到「我刚选了什么」。</p>
      */
     private Node valueSection() {
-        Label result = new Label("当前值：(未选择)");
+        Label result = TypographyAnt.text("当前值：(未选择)").build();
         Node cb = ComboBoxAnt.<String>create()
                 .items("北京", "上海", "广州", "深圳")
                 .placeholder("请选择城市")
@@ -115,7 +116,7 @@ public class SelectExamplePage extends VBoxAnt {
                 .build();
         Node demo = Demos.column(cb, result);
         String code = """
-                Label result = new Label("当前值：(未选择)");
+                Label result = TypographyAnt.text("当前值：(未选择)").build();
                 ComboBox<String> cb = ComboBoxAnt.<String>create()
                         .items("北京", "上海", "广州", "深圳")
                         .placeholder("请选择城市")

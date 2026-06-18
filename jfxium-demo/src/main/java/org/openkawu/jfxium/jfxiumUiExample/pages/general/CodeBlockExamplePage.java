@@ -17,7 +17,7 @@ import org.openkawu.jfxium.component.composite.CodeBlockAnt;
  *   <li>可复制：Ctrl+C 或右键菜单复制全部内容</li>
  *   <li>不可编辑：只读显示，无光标/输入</li>
  *   <li>行号：可选显示行号</li>
- *   <li>主题：亮色/暗色主题</li>
+ *   <li>主题：亮色/暗色/自动跟随全局主题</li>
  * </ul>
  */
 public class CodeBlockExamplePage extends VBoxAnt {
@@ -116,18 +116,18 @@ public class CodeBlockExamplePage extends VBoxAnt {
                 code, codeBlock);
     }
 
-    /** 3. 暗色主题。 */
+    /** 3. 自动跟随全局主题。 */
     private Node themeSection() {
-        String darkThemeCode = """
+        String autoThemeCode = """
             /*
-             * 暗色主题代码示例
-             * 适合夜间模式或深色背景
+             * AUTO 主题代码示例
+             * 会跟随全局 ThemeManager 的明暗切换
              */
-            public class DarkThemeDemo {
+            public class AutoThemeDemo {
                 private final String name;
                 private final int value;
                 
-                public DarkThemeDemo(String name, int value) {
+                public AutoThemeDemo(String name, int value) {
                     this.name = name;
                     this.value = value;
                 }
@@ -141,9 +141,9 @@ public class CodeBlockExamplePage extends VBoxAnt {
 
         Node codeBlock = CodeBlockAnt.create()
                 .language(org.openkawu.jfxium.component.composite.CodeBlockAnt.Language.JAVA)
-                .code(darkThemeCode)
+                .code(autoThemeCode)
                 .showLineNumbers(true)
-                .theme(org.openkawu.jfxium.component.composite.CodeBlockAnt.Theme.DARK)
+                .theme(org.openkawu.jfxium.component.composite.CodeBlockAnt.Theme.AUTO)
                 .maxHeight(250)
                 .build();
 
@@ -152,12 +152,12 @@ public class CodeBlockExamplePage extends VBoxAnt {
                         .language(CodeBlockAnt.Language.JAVA)
                         .code(sourceCode)
                         .showLineNumbers(true)
-                        .theme(CodeBlockAnt.Theme.DARK)   // 暗色主题
+                        .theme(CodeBlockAnt.Theme.AUTO)   // 跟随全局主题
                         .maxHeight(250)
                         .build();
                 """;
-        return Demos.sectionWithCode("3. 暗色主题",
-                "适合夜间模式或深色界面。",
+        return Demos.sectionWithCode("3. 自动主题",
+                "跟随全局 ThemeManager 的明暗切换。",
                 code, codeBlock);
     }
 

@@ -7,6 +7,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.StepsAnt;
 
 /**
@@ -106,7 +107,7 @@ public class StepsExamplePage extends VBoxAnt {
         Node steps = builder.build();
         StepsAnt.Controller ctrl = builder.controller();
 
-        Label hint = new Label("当前步骤：1 / " + uiTotal[0]);
+        Label hint = TypographyAnt.text("当前步骤：1 / " + uiTotal[0]).build();
 
         Node prevBtn = ButtonAnt.create("上一步").onClick(e -> {
             ctrl.prev();   // runtime 切换，不重建

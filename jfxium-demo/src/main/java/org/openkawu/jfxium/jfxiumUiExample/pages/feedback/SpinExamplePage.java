@@ -2,13 +2,15 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.animation.PauseTransition;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import org.openkawu.jfxium.component.composite.SpinAnt;
+import org.openkawu.jfxium.component.composite.VBarAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.layout.StackPaneAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
@@ -77,19 +79,20 @@ public class SpinExamplePage extends VBoxAnt {
     }
 
     private Node overlaySection() {
-        VBox content = VBoxAnt.create()
-                .spacing(8)
-                .children(
-                        new Label("用户列表区域"),
-                        new Label("这里可以是表格、表单等任意内容"),
-                        new Label("点击下方按钮模拟加载状态")
+        VBox content = VBarAnt.create()
+                .compact()
+                .gap(8)
+                .top(
+                        TypographyAnt.text("用户列表区域").build(),
+                        TypographyAnt.text("这里可以是表格、表单等任意内容").build(),
+                        TypographyAnt.text("点击下方按钮模拟加载状态").build()
                 )
                 .padding(20)
                 .background(Background.DEFAULT)
                 .build();
         content.setMinHeight(120);
 
-        StackPane demoArea = new StackPane(content);
+        StackPane demoArea = StackPaneAnt.create().children(content).build();
         demoArea.getStyleClass().add("jfx-demo-dashed-border");
 
         // overlay 创建一次，可反复 show/hide
@@ -103,7 +106,11 @@ public class SpinExamplePage extends VBoxAnt {
             pt.play();
         });
 
-        VBox demo = new VBox(12, demoArea, triggerBtn);
+        VBox demo = VBarAnt.create()
+                .compact()
+                .gap(12)
+                .top(demoArea, triggerBtn)
+                .build();
 
         String code = """
                 SpinAnt.Overlay loading = SpinAnt.overlay(content);

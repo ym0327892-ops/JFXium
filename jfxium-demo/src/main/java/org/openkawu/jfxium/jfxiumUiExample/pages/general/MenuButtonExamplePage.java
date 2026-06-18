@@ -3,6 +3,7 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -72,7 +73,7 @@ public class MenuButtonExamplePage extends VBoxAnt {
      * 即可显示「用户刚点了哪一项」。</p>
      */
     private Node clickedSection() {
-        Label result = new Label("点击的菜单项：(未点击)");
+        Label result = TypographyAnt.text("点击的菜单项：(未点击)").build();
         Node menu = MenuButtonAnt.create("批量操作")
                 .item("导出", e -> result.setText("点击的菜单项：导出"))
                 .item("删除", e -> result.setText("点击的菜单项：删除"))
@@ -81,7 +82,7 @@ public class MenuButtonExamplePage extends VBoxAnt {
                 .build();
         Node demo = Demos.column(menu, result);
         String code = """
-                Label result = new Label("点击的菜单项：(未点击)");
+                Label result = TypographyAnt.text("点击的菜单项：(未点击)").build();
                 MenuButtonAnt.create("批量操作")
                         .item("导出", e -> result.setText("点击的菜单项：导出"))
                         .item("删除", e -> result.setText("点击的菜单项：删除"))

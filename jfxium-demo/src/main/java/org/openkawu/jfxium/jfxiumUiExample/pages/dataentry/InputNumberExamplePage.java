@@ -7,6 +7,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.InputNumberAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 
 /**
  * InputNumber 数字输入框 —— 步进 / 范围 / 精度 / 前后缀。
@@ -88,14 +89,14 @@ public class InputNumberExamplePage extends VBoxAnt {
      * <p>点 +/- 或输入后回车/失焦，onChange 触发，结果 Label 实时显示当前数值。</p>
      */
     private Node valueSection() {
-        Label result = new Label("当前值：3");
+        Label result = TypographyAnt.text("当前值：3").build();
         Node input = InputNumberAnt.create()
                 .value(3)
                 .onChange(v -> result.setText("当前值：" + v))
                 .build();
         Node demo = Demos.column(input, result);
         String code = """
-                Label result = new Label("当前值：3");
+                Label result = TypographyAnt.text("当前值：3").build();
                 HBox input = InputNumberAnt.create()
                         .value(3)
                         .onChange(v -> result.setText("当前值：" + v))

@@ -1,9 +1,9 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -58,22 +58,22 @@ public class AvatarBadgeExamplePage extends VBoxAnt {
 
     private Node badgeSection() {
         StackPane countBadge = BadgeAnt.create()
-                .content(new Label("消息"))
+                .content(TypographyAnt.text("消息").build())
                 .count(5)
                 .build();
         StackPane dotBadge = BadgeAnt.create()
-                .content(new Label("通知"))
+                .content(TypographyAnt.text("通知").build())
                 .dot(true)
                 .build();
         StackPane statusBadge = BadgeAnt.create()
-                .content(new Label("在线"))
+                .content(TypographyAnt.text("在线").build())
                 .status(BadgeAnt.Status.SUCCESS)
                 .build();
         Node demo = Demos.row(countBadge, dotBadge, statusBadge);
         String code = """
-                BadgeAnt.create().content(new Label("消息")).count(5).build();
-                BadgeAnt.create().content(new Label("通知")).dot(true).build();
-                BadgeAnt.create().content(new Label("在线")).status(BadgeAnt.Status.SUCCESS).build();
+                BadgeAnt.create().content(TypographyAnt.text("消息").build()).count(5).build();
+                BadgeAnt.create().content(TypographyAnt.text("通知").build()).dot(true).build();
+                BadgeAnt.create().content(TypographyAnt.text("在线").build()).status(BadgeAnt.Status.SUCCESS).build();
                 """;
         return Demos.sectionWithCode("3. Badge 徽标",
                 "count 数字徽标；dot 红点；status 状态点（SUCCESS / WARNING / ERROR）。", code, demo);

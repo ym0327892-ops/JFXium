@@ -13,6 +13,7 @@ import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.component.layout.GridAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.template.WorkspaceSettingsTemplate;
 import org.openkawu.jfxium.template.WorkspaceTemplate;
 
 /**
@@ -27,6 +28,7 @@ public class WorkspaceTemplateExamplePage extends VBoxAnt {
                 .sections(
                         overviewSection(),
                         previewSection(),
+                        settingsSection(),
                         codeSection()
                 )
                 .padding(24)
@@ -48,15 +50,14 @@ public class WorkspaceTemplateExamplePage extends VBoxAnt {
                 .type(TypographyAnt.Type.SECONDARY)
                 .build();
 
-        Button refreshBtn = ButtonAnt.create("刷新")
-                .type(ButtonAnt.Type.LINK)
-                .size(ButtonAnt.Size.XS)
+        Button refreshBtn = ButtonAnt.compactLink("刷新")
                 .build();
 
-        Button collapseBtn = ButtonAnt.create("折叠侧栏")
-                .type(ButtonAnt.Type.LINK)
-                .size(ButtonAnt.Size.XS)
+        Button collapseBtn = ButtonAnt.compactLink("折叠侧栏")
                 .build();
+
+        Node userMenu = WorkspaceTemplate.userMenu("开发者", action ->
+                syncState.setText("状态：" + action)).getTrigger();
 
         StatusBarAnt footer = StatusBarAnt.create()
                 .info("就绪")
@@ -84,7 +85,7 @@ public class WorkspaceTemplateExamplePage extends VBoxAnt {
         WorkspaceTemplate.Result shell = WorkspaceTemplate.create()
                 .brand("JFXium Workspace", "高可用工作台模板")
                 .headerCenter(BreadcrumbAnt.create().items("首页", "工作台").build())
-                .headerRight(refreshBtn, collapseBtn)
+                .headerRight(refreshBtn, collapseBtn, userMenu)
                 .sider(sider, 220)
                 .content(content)
                 .footer(footer)
@@ -103,20 +104,19 @@ public class WorkspaceTemplateExamplePage extends VBoxAnt {
                         .type(TypographyAnt.Type.SECONDARY)
                         .build();
 
-                Button refreshBtn = ButtonAnt.create("刷新")
-                        .type(ButtonAnt.Type.LINK)
-                        .size(ButtonAnt.Size.XS)
-                        .build();
+        Button refreshBtn = ButtonAnt.compactLink("刷新")
+                .build();
 
-                Button collapseBtn = ButtonAnt.create("折叠侧栏")
-                        .type(ButtonAnt.Type.LINK)
-                        .size(ButtonAnt.Size.XS)
-                        .build();
+        Button collapseBtn = ButtonAnt.compactLink("折叠侧栏")
+                .build();
+
+                Node userMenu = WorkspaceTemplate.userMenu("开发者", action ->
+                        syncState.setText("状态：" + action)).getTrigger();
 
                 WorkspaceTemplate.Result shell = WorkspaceTemplate.create()
                         .brand("JFXium Workspace", "高可用工作台模板")
                         .headerCenter(BreadcrumbAnt.create().items("首页", "工作台").build())
-                        .headerRight(refreshBtn, collapseBtn)
+                        .headerRight(refreshBtn, collapseBtn, userMenu)
                         .sider(nav, 220)
                         .content(mainArea)
                         .footer(statusBar)
@@ -156,9 +156,41 @@ public class WorkspaceTemplateExamplePage extends VBoxAnt {
                 TypographyAnt.text("• 如果侧栏内容很多，content 自己再包一层 ScrollPane。").type(TypographyAnt.Type.SECONDARY).build()
         );
 
-        return Demos.sectionWithCode("3. 使用代码",
+        return Demos.sectionWithCode("4. 使用代码",
                 "核心就是把品牌、导航、内容、状态栏四件事都收口到模板里，页面里只管提供 Node。",
                 code, notes);
+    }
+
+    private Node settingsSection() {
+        Node settingsPanel = WorkspaceSettingsTemplate.create().build();
+
+        String code = """
+                WorkspaceSettingsTemplate.create()
+                        .themeManager(ThemeManager.getInstance())
+                        .watermarkVisibleSupplier(() -> watermarkVisible)
+                        .onWatermarkVisibleChanged(this::setWatermarkVisible)
+                        .build();
+
+                DrawerAnt.create()
+                        .title("外观设置")
+                        .content(settingsPanel)
+                        .placement(DrawerAnt.Placement.RIGHT)
+                        .build()
+                        .open(owner);
+                """;
+
+        Node notes = Demos.column(
+                TypographyAnt.text("• 这个模板可以直接塞进 DrawerAnt，也可以作为独立页面展示。")
+                        .type(TypographyAnt.Type.SECONDARY).build(),
+                TypographyAnt.text("• 主题、密度、主色、水印都从同一处收口，避免 demo 里反复拼接。")
+                        .type(TypographyAnt.Type.SECONDARY).build(),
+                TypographyAnt.text("• 这一步之后，主窗口右上角头像弹出的面板和文档页里的预览是同一套代码。")
+                        .type(TypographyAnt.Type.SECONDARY).build()
+        );
+
+        return Demos.sectionWithCode("3. 外观设置抽屉模板",
+                "把工作台常用的全局偏好项收成一个可复用模板，主窗口和示例页共用同一套实现。",
+                code, Demos.column(settingsPanel, notes));
     }
 
     private static Button navItem(String text) {

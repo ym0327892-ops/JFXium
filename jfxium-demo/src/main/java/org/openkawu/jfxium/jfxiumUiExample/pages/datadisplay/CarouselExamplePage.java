@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -71,7 +72,7 @@ public class CarouselExamplePage extends VBoxAnt {
 
     /** 创建简单的彩色 slide 占位 */
     private Node slide(String text) {
-        Label label = new Label(text);
+        Label label = TypographyAnt.text(text).build();
         label.getStyleClass().add("jfx-demo-col-block");
         label.getStyleClass().add("jfx-demo-col-dark");
         label.setMinHeight(200);

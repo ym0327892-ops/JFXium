@@ -10,6 +10,7 @@ import org.openkawu.jfxium.template.PageTemplate;
 
 import java.util.List;
 import org.openkawu.jfxium.component.composite.TransferAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 
 /**
  * Transfer 穿梭框 —— 基础 / 带搜索。
@@ -71,7 +72,7 @@ public class TransferExamplePage extends VBoxAnt {
      * <p>每次穿梭（点中间箭头移动项目）触发 onChange，结果 Label 实时显示右侧已选项内容。</p>
      */
     private Node valueSection() {
-        Label result = new Label("已选项：[选项 3]");
+        Label result = TypographyAnt.text("已选项：[选项 3]").build();
         HBox transfer = TransferAnt.<String>create()
                 .dataSource(List.of("选项 1", "选项 2", "选项 3", "选项 4", "选项 5"))
                 .targetKeys(List.of("选项 3"))
@@ -80,7 +81,7 @@ public class TransferExamplePage extends VBoxAnt {
                 .build();
         Node demo = Demos.column(transfer, result);
         String code = """
-                Label result = new Label("已选项：[选项 3]");
+                Label result = TypographyAnt.text("已选项：[选项 3]").build();
                 HBox transfer = TransferAnt.<String>create()
                         .dataSource(List.of("选项 1", "选项 2", "选项 3", "选项 4", "选项 5"))
                         .targetKeys(List.of("选项 3"))

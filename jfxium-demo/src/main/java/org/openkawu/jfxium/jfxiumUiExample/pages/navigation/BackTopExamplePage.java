@@ -6,6 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 
+import org.openkawu.jfxium.component.layout.ScrollPaneAnt;
+import org.openkawu.jfxium.component.layout.StackPaneAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -37,12 +39,12 @@ public class BackTopExamplePage extends VBoxAnt {
         }
         content.padding(16);
 
-        ScrollPane scrollPane = new ScrollPane(content);
+        ScrollPane scrollPane = ScrollPaneAnt.create().content(content).build();
         scrollPane.setPrefHeight(200);
         scrollPane.getStyleClass().add("jfx-demo-scroll-demo");
 
         // 用 StackPane 包裹，放置 BackTop
-        StackPane wrapper = new StackPane(scrollPane);
+        StackPane wrapper = StackPaneAnt.create().children(scrollPane).build();
         StackPane.setAlignment(scrollPane, Pos.TOP_LEFT);
 
         BackTopAnt.install(scrollPane);
@@ -69,10 +71,10 @@ public class BackTopExamplePage extends VBoxAnt {
         }
         content.padding(16);
 
-        ScrollPane scrollPane = new ScrollPane(content);
+        ScrollPane scrollPane = ScrollPaneAnt.create().content(content).build();
         scrollPane.setPrefHeight(180);
 
-        StackPane wrapper = new StackPane(scrollPane);
+        StackPane wrapper = StackPaneAnt.create().children(scrollPane).build();
         StackPane.setAlignment(scrollPane, Pos.TOP_LEFT);
 
         // 手动构造，自定义位置

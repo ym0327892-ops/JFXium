@@ -20,8 +20,8 @@ import org.openkawu.jfxium.core.theme.ThemeManager;
  * BUG #68 探针：测量 MenuAnt INLINE 模式下各 row 的实际渲染高度。
  *
  * 验证目标：
- *   - LIGHT (默认)      item/group row 高度 ≈ 30px
- *   - LIGHT-COMPACT     item/group row 高度 ≈ 26px
+ *   - LIGHT (默认)      item/group row 高度 ≈ 32px
+ *   - LIGHT-COMPACT     item/group row 高度 ≈ 28px
  *   - divider 行高     7px（3+1+3）
  *
  * 用法：修改 jfxium-demo/pom.xml 的 mainClass 为本类，跑 mvn javafx:run。

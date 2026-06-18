@@ -2,6 +2,7 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.navigation;
 
 import javafx.scene.Node;
 
+import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -19,7 +20,8 @@ public class MenuExamplePage extends VBoxAnt {
                 .sections(
                         inlineSection(),
                         horizontalSection(),
-                        darkSection()
+                        darkSection(),
+                        runtimeCollapseSection()
                 )
                 .padding(24)
                 .build());
@@ -97,6 +99,47 @@ public class MenuExamplePage extends VBoxAnt {
                 """;
         return Demos.sectionWithCode("3. 暗色主题",
                 "theme(DARK) 暗色背景菜单，适合深色侧边栏。",
+                code, demo);
+    }
+
+    private Node runtimeCollapseSection() {
+        MenuAnt.Builder builder = MenuAnt.create()
+                .mode(MenuAnt.Mode.INLINE)
+                .item("home", "首页", () -> {})
+                .subMenu("sub1", "导航一")
+                    .item("item1", "选项 1", () -> {})
+                    .item("item2", "选项 2", () -> {})
+                .endSubMenu()
+                .subMenu("sub2", "导航二")
+                    .item("item3", "选项 3", () -> {})
+                    .item("item4", "选项 4", () -> {})
+                .endSubMenu()
+                .selectedKey("home");
+
+        Node menu = builder.build();
+        MenuAnt.Controller controller = builder.controller();
+
+        ButtonAnt toggleBtn = ButtonAnt.create("切换折叠")
+                .type(ButtonAnt.Type.PRIMARY)
+                .onClick(e -> controller.toggleCollapsed())
+                .build();
+
+        Node demo = Demos.column(menu, toggleBtn);
+        String code = """
+                MenuAnt.Builder builder = MenuAnt.create()
+                        .mode(MenuAnt.Mode.INLINE)
+                        .item("home", "首页", () -> {})
+                        .subMenu("sub1", "导航一")
+                            .item("item1", "选项 1", () -> {})
+                            .endSubMenu()
+                        .selectedKey("home");
+
+                Node menu = builder.build();
+                MenuAnt.Controller controller = builder.controller();
+                controller.toggleCollapsed();
+                """;
+        return Demos.sectionWithCode("4. 运行时折叠",
+                "build() 后可以通过 controller.toggleCollapsed() 切换折叠态。",
                 code, demo);
     }
 }

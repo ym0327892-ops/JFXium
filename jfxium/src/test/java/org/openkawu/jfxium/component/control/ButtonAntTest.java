@@ -42,6 +42,36 @@ class ButtonAntTest extends JfxTestBase {
         assertEquals(icon, btn.getGraphic());
     }
 
+    @Test
+    @DisplayName("compactLink() 生成紧凑链接按钮")
+    void compactLink_helper() {
+        ButtonAnt btn = ButtonAnt.compactLink("查看").build();
+        assertEquals("查看", btn.getText());
+        assertTrue(btn.getStyleClass().contains(JfxStyles.BUTTON_LINK));
+        assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_XS));
+    }
+
+    @Test
+    @DisplayName("link(text, size) 生成指定尺寸链接按钮")
+    void link_helperWithSize() {
+        ButtonAnt btn = ButtonAnt.link("查看", ButtonAnt.Size.SMALL).build();
+        assertEquals("查看", btn.getText());
+        assertTrue(btn.getStyleClass().contains(JfxStyles.BUTTON_LINK));
+        assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));
+    }
+
+    @Test
+    @DisplayName("iconOnly() 生成图标按钮")
+    void iconOnly_helper() {
+        Rectangle icon = new Rectangle(16, 16);
+        ButtonAnt btn = ButtonAnt.iconOnly(icon).build();
+        assertEquals(icon, btn.getGraphic());
+        assertEquals(ContentDisplay.GRAPHIC_ONLY, btn.getContentDisplay());
+        assertTrue(btn.getStyleClass().contains(JfxStyles.BUTTON_TEXT));
+        assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_XS));
+        assertTrue(btn.getStyleClass().contains(JfxStyles.SHAPE_SQUARE));
+    }
+
     // ---------- build() 返回自身 ----------
 
     @Test

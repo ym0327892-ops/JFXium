@@ -20,13 +20,13 @@
 /* ============================================
    MenuAnt — 自定义菜单项（INLINE / HORIZONTAL 共用）
    注意：left padding 为 0，由 Java 端 indentation spacer 接管。
-   token：@menu-inline-padding-y → 默认 6px（30px/row 极致紧凑，BUG #68）
-                              → compact 4px（26px/row）
+   token：@menu-inline-padding-y → 默认 7px（32px/row 标准桌面密度，BUG #68）
+                              → compact 5px（28px/row）
          @menu-inline-padding-x → 默认 @spacing-lg（16px，compact 12px）
    ============================================ */
 
-/* INLINE 模式基础行（侧栏菜单项，行高 30px/row 极致紧凑）
-   -fx-min-height 锁死行高：JavaFX font lineHeight 算不出 30px 整（fontSize 14 → ~17.5），
+/* INLINE 模式基础行（侧栏菜单项，行高 32px/row 标准桌面密度）
+   -fx-min-height 锁死行高：JavaFX font lineHeight 算不出 32px 整（fontSize 14 → ~17.5），
    单独靠 padding 撑会差 1-2px。详见 variables-base.less @menu-inline-row-height 注释。 */
 .jfx-menu-item {
   -fx-padding: @menu-inline-padding-y @menu-inline-padding-x @menu-inline-padding-y 0;
@@ -37,6 +37,19 @@
 .jfx-menu-submenu-header {
   -fx-padding: @menu-inline-padding-y @menu-inline-padding-x @menu-inline-padding-y 0;
   -fx-min-height: @menu-inline-row-height;
+}
+
+/* 子菜单标题：比普通 item 稍强一点，帮助建立父子层级感 */
+.jfx-menu-submenu-header > .jfx-menu-item-label {
+  -fx-font-weight: 600;
+}
+
+/* 子菜单内容块：加一条轻微层级轨道，避免父级 / 子级过于平铺 */
+.jfx-menu-submenu-body {
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-style: solid;
+  -fx-border-width: 0 0 0 1px;
+  -fx-padding: @spacing-xs 0 @spacing-xs @spacing-xs;
 }
 
 /* INLINE 模式分组标题（BUG #68，对齐 AtlantaFX .caption-menu-item）
@@ -55,7 +68,7 @@
   -fx-padding: 0 @spacing-lg;
 }
 
-/* COLLAPSED 模式：居中纯图标行（vertical padding 跟 INLINE 一致：30px/row 极致紧凑） */
+/* COLLAPSED 模式：居中纯图标行（vertical padding 跟 INLINE 一致：32px/row 标准桌面密度） */
 .jfx-menu-collapsed > .jfx-menu-item {
   -fx-padding: @menu-inline-padding-y 0;
   -fx-alignment: center;

@@ -8,6 +8,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.ColorPickerAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 
 /**
  * ColorPicker 颜色选择 —— 基础 / 带默认值。
@@ -58,14 +59,14 @@ public class ColorPickerExamplePage extends VBoxAnt {
      * 这里用一个小工具把 Color 转成 hex 并实时显示在结果 Label 上。</p>
      */
     private Node valueSection() {
-        Label result = new Label("当前颜色：#FFFFFF");
+        Label result = TypographyAnt.text("当前颜色：#FFFFFF").build();
         Node picker = ColorPickerAnt.create()
                 .value(Color.web("#1677ff"))
                 .onChange(color -> result.setText("当前颜色：" + toHex(color)))
                 .build();
         Node demo = Demos.column(picker, result);
         String code = """
-                Label result = new Label("当前颜色：#FFFFFF");
+                Label result = TypographyAnt.text("当前颜色：#FFFFFF").build();
                 ColorPickerAnt.create()
                         .value(Color.web("#1677ff"))
                         .onChange(color -> result.setText("当前颜色：" + toHex(color)))

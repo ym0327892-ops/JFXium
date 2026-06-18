@@ -4,8 +4,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.layout.*;
+import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.layout.GridAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
@@ -244,7 +244,7 @@ public class AppShellAnt {
                     siderWrapper.getChildren().add(sider);
 
                     if (trigger) {
-                        Button triggerBtn = createTriggerButton(collapsedProp);
+                        ButtonAnt triggerBtn = createTriggerButton(collapsedProp);
                         siderWrapper.getChildren().add(triggerBtn);
                     }
 
@@ -305,9 +305,12 @@ public class AppShellAnt {
         }
 
         /** 内置触发按钮：折叠时显示右箭头（›），展开时显示左箭头（‹）。 */
-        private Button createTriggerButton(BooleanProperty collapsedProp) {
-            Button btn = new Button();
-            btn.getStyleClass().addAll(JfxStyles.APP_SHELL_SIDER_TRIGGER, JfxStyles.BUTTON_BASE);
+        private ButtonAnt createTriggerButton(BooleanProperty collapsedProp) {
+            ButtonAnt btn = ButtonAnt.create()
+                    .type(ButtonAnt.Type.TEXT)
+                    .size(ButtonAnt.Size.XS)
+                    .square();
+            btn.getStyleClass().add(JfxStyles.APP_SHELL_SIDER_TRIGGER);
             btn.setMaxWidth(Double.MAX_VALUE);
             btn.setOnAction(e -> collapsedProp.set(!collapsedProp.get()));
             // BUG #132 修复：原来 setText("›"/"‹") 是裸 Unicode 字符当图标，现走 IconAnt.path 统一收口

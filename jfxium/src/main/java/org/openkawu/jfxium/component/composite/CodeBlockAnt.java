@@ -1,7 +1,9 @@
 package org.openkawu.jfxium.component.composite;
 
 import javafx.geometry.Insets;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.*;
@@ -11,6 +13,8 @@ import javafx.scene.text.TextFlow;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.theme.ThemeManager;
+import org.openkawu.jfxium.core.theme.Theme.ThemeType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +48,13 @@ import java.util.regex.Pattern;
  *     .code("// 注释\nint x = 42;")
  *     .theme(CodeBlockAnt.Theme.DARK)
  *     .build();
+ *
+ * // 跟随全局主题
+ * Node autoCode = CodeBlockAnt.create()
+ *     .language(CodeBlockAnt.Language.JAVA)
+ *     .code("// 注释\nint x = 42;")
+ *     .theme(CodeBlockAnt.Theme.AUTO)
+ *     .build();
  * }</pre>
  *
  * <h2>设计原则</h2>
@@ -59,12 +70,19 @@ public class CodeBlockAnt {
     /** 支持的语言（目前只实现 JAVA，可扩展）。 */
     public enum Language {
         JAVA,
-        // 预留：JAVASCRIPT, PYTHON, XML, SQL, etc.
+        XML,
+        SHELL,
+        JAVASCRIPT,
+        PYTHON,
+        SQL,
+        PLAIN
     }
 
     /** 代码主题（影响高亮颜色）。 */
     public enum Theme {
-        LIGHT, DARK
+        LIGHT,
+        DARK,
+        AUTO
     }
 
     public static Builder create() {
@@ -157,9 +175,7 @@ public class CodeBlockAnt {
         public BorderPane build() {
             BorderPane root = new BorderPane();
             root.getStyleClass().add(JfxStyles.CODEBLOCK);
-            root.getStyleClass().add(theme == Theme.DARK
-                    ? JfxStyles.CODE_THEME_DARK
-                    : JfxStyles.CODE_THEME_LIGHT);
+            applyThemeClass(root, resolveEffectiveTheme());
 
             // 内容区：selectable 决定用「可选区单色 TextArea」还是「高亮 TextFlow」
             Node center = selectable ? buildSelectableCenter() : buildHighlightedCenter();
@@ -170,8 +186,46 @@ public class CodeBlockAnt {
                 root.setTop(createHeader());
             }
 
+            if (theme == Theme.AUTO) {
+                installAutoThemeBinding(root);
+            }
+
             applyStyles(root);
             return root;
+        }
+
+        /** 将当前应生效的局部主题写入根节点 styleClass。 */
+        private void applyThemeClass(BorderPane root, Theme effectiveTheme) {
+            root.getStyleClass().removeAll(JfxStyles.CODE_THEME_LIGHT, JfxStyles.CODE_THEME_DARK);
+            root.getStyleClass().add(effectiveTheme == Theme.DARK
+                    ? JfxStyles.CODE_THEME_DARK
+                    : JfxStyles.CODE_THEME_LIGHT);
+        }
+
+        /** AUTO 模式下，根据 ThemeManager 当前状态解析局部主题。 */
+        private Theme resolveEffectiveTheme() {
+            if (theme != Theme.AUTO) {
+                return theme;
+            }
+            return ThemeManager.getInstance().getCurrentTheme().getType() == ThemeType.DARK
+                    ? Theme.DARK
+                    : Theme.LIGHT;
+        }
+
+        /** AUTO 模式绑定 ThemeManager 变更，跟随全局明暗切换局部主题。 */
+        private void installAutoThemeBinding(BorderPane root) {
+            ThemeManager mgr = ThemeManager.getInstance();
+            Runnable themeSync = () -> applyThemeClass(root, resolveEffectiveTheme());
+            ChangeListener<Scene> sceneListener = (obs, oldScene, newScene) -> {
+                if (oldScene != null) {
+                    mgr.removeListener(themeSync);
+                }
+                if (newScene != null) {
+                    mgr.addListener(themeSync);
+                    themeSync.run();
+                }
+            };
+            root.sceneProperty().addListener(sceneListener);
         }
 
         /**

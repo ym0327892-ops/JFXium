@@ -1,11 +1,12 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.navigation;
 
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.StatusBarAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
@@ -113,7 +114,7 @@ public class StatusBarExamplePage extends VBoxAnt {
                 .build();
         btn3.setOnAction(e -> System.out.println("Git: main"));
 
-        HBox row = new HBox(4, btn1, btn2, btn3);
+        HBox row = HBoxAnt.create().spacing(4).children(btn1, btn2, btn3);
         String code = """
                 ButtonAnt btn = ButtonAnt.create("UTF-8")
                         .type(ButtonAnt.Type.LINK)
@@ -131,20 +132,20 @@ public class StatusBarExamplePage extends VBoxAnt {
 
     private Node customSection() {
         Node demo = StatusBarAnt.create()
-                .left(new Label("🔍"))
+                .left(TypographyAnt.text("🔍").build())
                 .info("3 个问题")
                 .action("⚠ 2 警告", () -> System.out.println("查看警告"))
                 .action("✉ 通知", () -> System.out.println("查看通知"))
-                .right(new Label("🔔"))
+                .right(TypographyAnt.text("🔔").build())
                 .status("v1.0-SNAPSHOT")
                 .build();
         String code = """
                 StatusBarAnt.create()
-                    .left(new Label("🔍"))
+                    .left(TypographyAnt.text("🔍").build())
                     .info("3 个问题")
                     .action("⚠ 2 警告", () -> showWarnings())
                     .action("✉ 通知", () -> showNotifications())
-                    .right(new Label("🔔"))
+                    .right(TypographyAnt.text("🔔").build())
                     .status("v1.0-SNAPSHOT")
                     .build();
                 """;

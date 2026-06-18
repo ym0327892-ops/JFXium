@@ -4,10 +4,12 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
+import org.openkawu.jfxium.component.layout.StackPaneAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.WatermarkAnt;
 
 /**
@@ -30,7 +32,7 @@ public class WatermarkExamplePage extends VBoxAnt {
     }
 
     private Node basicSection() {
-        Label content = new Label("这里是需要添加水印的内容区域，可以放置任意节点。");
+        Label content = TypographyAnt.text("这里是需要添加水印的内容区域，可以放置任意节点。").build();
         content.setWrapText(true);
         content.setMinHeight(200);
 
@@ -48,7 +50,7 @@ public class WatermarkExamplePage extends VBoxAnt {
     }
 
     private Node customSection() {
-        Label content = new Label("自定义旋转角度和透明度的水印效果展示区域。");
+        Label content = TypographyAnt.text("自定义旋转角度和透明度的水印效果展示区域。").build();
         content.setWrapText(true);
         content.setMinHeight(200);
 
@@ -73,7 +75,7 @@ public class WatermarkExamplePage extends VBoxAnt {
     }
 
     private Node dynamicSection() {
-        Label content = new Label("点击下方按钮切换水印文字。");
+        Label content = TypographyAnt.text("点击下方按钮切换水印文字。").build();
         content.setWrapText(true);
         content.setMinHeight(150);
 
@@ -106,16 +108,16 @@ public class WatermarkExamplePage extends VBoxAnt {
     }
 
     private Node wrapSection() {
-        Label content = new Label("现有根节点也可以一行包成水印容器。");
+        Label content = TypographyAnt.text("现有根节点也可以一行包成水印容器。").build();
         content.setWrapText(true);
         content.setMinHeight(150);
 
-        StackPane root = new StackPane(content);
+        StackPane root = StackPaneAnt.create().children(content).build();
         root.setMinHeight(220);
 
         StackPane watermark = WatermarkAnt.wrap(root, builder -> builder.text("JFXium"));
         String code = """
-                StackPane root = new StackPane(content);
+                StackPane root = StackPaneAnt.create().children(content).build();
                 StackPane watermark = WatermarkAnt.wrap(root, b -> b.text("JFXium"));
 
                 // 如果 root 已经是 Scene 的根节点，也可以直接：
