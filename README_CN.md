@@ -16,8 +16,8 @@
 
 | 文档 | 内容 |
 |------|------|
-| [组件参考](docs/cn/组件参考.md) | 全部 97 组件详述 + bindValue 声明式绑定专题 + 布局/全局浮层管理 |
-| [主题系统](docs/cn/主题系统.md) | ThemeManager + 11 套内置主题 + 自定义主题 + styleClass 体系 + 自定义组件 |
+| [组件参考](docs/cn/组件参考.md) | 全量组件/模板参考 + bindValue 声明式绑定专题 + 布局/全局浮层管理 |
+| [主题系统](docs/cn/主题系统.md) | ThemeManager + 11 套主题入口（7 个 Java Theme 类 + 4 个 compact 变体）+ 自定义主题 + styleClass 体系 |
 | [快速上手](docs/cn/快速上手.md) | 完整入门教程 + 5 个可运行的业务场景示例 |
 | [业务模板](docs/cn/业务模板.md) | PageTemplate / CrudTemplate / LoginTemplate / DashboardTemplate |
 | [最佳实践](docs/cn/最佳实践.md) | Builder 规范 / EventBus + record / 页面骨架继承式写法 |
@@ -65,7 +65,7 @@ public void start(Stage stage) {
 ```java
 Button btn = ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY).onClick(e -> save()).build();
 TextField input = InputAnt.create().placeholder("姓名").build();
-VBox layout = VBoxBuilder.create().spacing(16).padding(24).children(input, btn).build();
+VBox layout = VBoxAnt.create().spacing(16).padding(24).children(input, btn).build();
 ```
 
 > 完整 CRUD 页写法、5 个业务场景示例见 **[快速上手](docs/cn/快速上手.md)**。
@@ -94,11 +94,11 @@ VBox layout = VBoxBuilder.create().spacing(16).padding(24).children(input, btn).
 | **顶部三段式工具栏**（左/中/右）| BarAnt |
 | **水平工具条**（图标按钮 + 分隔线 + 弹性填充）| ToolBarAnt |
 | **底部状态栏**（信息 + 进度 + 操作项）| StatusBarAnt |
-| **背景色分层**（容器 vs 内容）| Background.LAYOUT / SUBTLE / DEFAULT |
+| **背景色分层**（容器 vs 内容）| Background.TRANSPARENT / LAYOUT / SUBTLE / DEFAULT |
 | **输入限制**（数字/手机号/邮箱）| TextFormatters.integerOnly() 等 12 种 |
 | **跨平台 OS 判断** | PlatformUtils.isMac() / isWindows() |
 
-> 全部 102 个组件详情见 **[组件参考](docs/cn/组件参考.md)**。
+> 全部组件/模板详情见 **[组件参考](docs/cn/组件参考.md)**。
 
 ---
 

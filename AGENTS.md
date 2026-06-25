@@ -6,17 +6,19 @@ This file provides guidance to Qoder (qoder.com) when working with code in this 
 
 ## ⚡ 致命红线（违反直接打回）
 
-> 完整红线规则见 `.qoder/rules/red-lines.md`，以下为速查：
+> ⚠️ **速查表必须与 `.qoder/rules/red-lines.md` 严格 1:1 对齐**——11 条独立条目,不可合并。权威来源以该文件为准,本表仅作 AI 上下文快速提醒。
 
 1. **禁止 `setStyle()` 写颜色/px** → 走 styleClass + LESS
-2. **禁止 CSS `box-shadow` / `:active` / `:focus` / `-fx-transition`（动画类除外）** → 用 `-fx-effect` / `:pressed` / `:focused` / 状态伪类
-3. **禁止容器吞 padding** → 组合控件容器 `-fx-padding: 0`，下放到子节点
-4. **禁止 9999px 圆角用于尺寸未钳制节点** → track/进度条用 `@border-radius-md`
-5. **禁止 `build()` 返回类型撒谎** → 返回什么就是什么
-6. **禁止新建 styleClass 不带 `jfx-` 前缀** → 避免与 modena 冲突
-7. **禁止 `.arrow` 只设颜色不设 shape** → 必须显式 `-fx-shape` + min/pref
-8. **禁止新增 public 类不同步 `module-info.java` exports**
-9. **禁止业务代码 `new` 原生 JavaFX 控件** → 统一走 `XxxAnt.create()`（框架内部 `extends XxxAnt` 除外）
+2. **禁止 CSS `box-shadow`** → 用 `-fx-effect: dropshadow(...)`
+3. **禁止 CSS `:active` / `:focus`** → 用 `:pressed`(`:armed`) / `:focused`
+4. **禁止 `-fx-transition` 用于交互状态**（动画类 `.fade-in` 等除外）→ 直接定义状态颜色，用伪类切换
+5. **禁止容器吞 padding** → 组合控件容器 `-fx-padding: 0`，下放到子节点
+6. **禁止 `@border-radius-full`(9999px) 用于尺寸未钳制的节点** → track/进度条用 `@border-radius-md`
+7. **禁止 `build()` 返回类型撒谎** → 返回什么就是什么，不包不装
+8. **禁止新建 styleClass 不带 `jfx-` 前缀** → 避免与 modena 冲突
+9. **禁止 `.arrow` 节点只设颜色不设 shape** → 必须显式 `-fx-shape` + min/pref 尺寸
+10. **禁止新增 public 类不同步 `module-info.java` exports** → 否则下游不可见
+11. **禁止业务代码 `new` 原生 JavaFX 控件**（Label/CheckBox/Hyperlink/Button/TextField/ComboBox/RadioButton/TextArea/Slider/ProgressBar/TableView/TreeView/...） → 统一走 `XxxAnt.create(...)` 链式 API。框架内部 `extends XxxAnt` 的实现类与临时 helper 除外。**理由**:绕过 styleClass + LESS 主题系统 / 失去幂等 toggle / 无法享受封装特性（委托 / Bug 自愈 / i18n 收口）
 
 ---
 
@@ -56,6 +58,10 @@ JFXium is a JavaFX UI framework inspired by professional desktop tools (JetBrain
 | [PROJECT_ACCEPTANCE.md](PROJECT_ACCEPTANCE.md) | QA acceptance checklist for manual UI verification |
 | [.qoder/skills/pc-ui.md](.qoder/skills/pc-ui.md) | PC UI 设计标准（布局/间距/交互规范），涉及页面级布局、响应式设计时加载 |
 | [.qoder/skills/project-init.md](.qoder/skills/project-init.md) | 项目初始化与脚手架指南，项目搭建、环境配置时加载 |
+| [INTERNAL/SKILL.md](INTERNAL/SKILL.md) | 项目内部综合规范（动画/边框/构建/布局/主题），是约束的"宪法"级来源 |
+| [INTERNAL/BUILDER_API_AUDIT.md](INTERNAL/BUILDER_API_AUDIT.md) | Builder API 审计报告——历史问题清单与重构参考 |
+| [INTERNAL/QUICKSTART.md](INTERNAL/QUICKSTART.md) | 框架内部快速上手（与 `docs/cn/快速上手.md` 对偶,AI 视角） |
+| `INTERNAL/{ANIMATION,BORDER,COMPONENTS,LAYOUT,THEME}.md` | 5 个领域专题深度文档,需要时按需加载 |
 
 ---
 
@@ -82,6 +88,30 @@ JFXium is a JavaFX UI framework inspired by professional desktop tools (JetBrain
 ```
 
 The demo `mainClass` is `org.openkawu.jfxium.jfxiumUiExample.JfxiumUiExampleApp` (configured in `jfxium-demo/pom.xml`).
+
+---
+
+## AI Standard Workflow
+
+> 适用于所有"修改代码"类任务的标准操作序列。违反此序列极易留下半成品 bug（如本仓库 P0 修复曾因跳过验证步骤导致 `Write` 工具追加内容未被察觉）。
+
+**完整 6 步流程**:
+
+1. **搜索定位** → 用 `SearchCodebase` + `SearchMemory` 并行检索相关组件、已有 `*Ant` 实现、相关历史 bug
+2. **读权威源** → 改动前必读 `.qoder/rules/red-lines.md`（不可降级为速查表）+ 涉及组件的 INTERNAL 专题文档
+3. **改前快照** → 大文件 `Write` 重写前先 `wc -l` 备份,改后立即 `wc -l` 对比 + `grep -c "^(public class|public static class)"` 检查是否出现双重 class
+4. **最小修改** → 优先用 `SearchReplace` 精准替换,避免大段重写引入未察觉的差异
+5. **红线自检** → 修改完成后立即 `grep` 关键红线(如 `new (Label|Button|TextField|VBox|HBox|ComboBox|RadioButton|CheckBox|TextArea|Slider)\b`),命中即修
+6. **编译验证** → `./mvnw install -pl jfxium -DskipTests -q` 必跑;`jfxium-demo` 也需要编译验证下游可见性
+
+**关键陷阱**(踩过的坑,后续必须避免):
+
+| 陷阱 | 表现 | 规避方法 |
+|------|------|----------|
+| `Write` 工具追加 | `wc -l` 翻倍 + 出现两个 `public class` | 改后三件套:`wc -l` + `grep class` + `grep 红线` |
+| `.less` 改了不生效 | BUG #64:`groovy-maven-plugin` 假成功 | 在 CSS 输出文件中加 marker,重跑 `mvn generate-resources` 验证 |
+| 速查表弱化红线 | 速查表合并了 `-fx-transition` 导致漏检 | 速查表必须与 `.qoder/rules/red-lines.md` 1:1 对齐 |
+| i18n 字段锁死 Locale | `private String x = Messages.get("k")` 锁死 zh_CN | 字段初始化为 `null`,`build()` 中懒解析 + 监听 `Messages.localeProperty()` |
 
 ---
 

@@ -12,9 +12,9 @@
 
 ## Features
 
-- **82 *Ant Components + 3 Templates** — Comprehensive UI library: controls, composites, overlays, layouts, business templates
+- **Comprehensive UI Library** — Controls, composites, overlays, layouts, and business templates
 - **Ant Design 6.x Style** — Pixel-perfect implementation of Ant Design's design language
-- **11 Built-in Themes** — Light/Dark/Compact + MUI + shadcn + Cyberpunk + Custom
+- **11 Built-in Theme Entries** — Light/Dark/MUI + shadcn/Cyberpunk/Custom, with compact density variants
 - **Builder Pattern** — Fluent API for all components: `XxxAnt.create()...build()`
 - **LESS-based Theming** — Modify one LESS file to generate your own theme
 - **i18n** — Built-in Chinese/English with `Messages.get(key)` API
@@ -77,7 +77,7 @@ public void start(Stage stage) {
 | Document | Description |
 |----------|-------------|
 | [快速上手](docs/cn/快速上手.md) | 5 分钟跑通第一个 admin 应用 |
-| [组件参考](docs/cn/组件参考.md) | 全部 97 组件 API + bindValue |
+| [组件参考](docs/cn/组件参考.md) | 全量组件/模板参考 + bindValue |
 | [主题系统](docs/cn/主题系统.md) | 主题切换、自定义主题、styleClass |
 | [业务模板](docs/cn/业务模板.md) | CrudTemplate / LoginTemplate / DashboardTemplate |
 | [最佳实践](docs/cn/最佳实践.md) | Builder 模式、EventBus、页面骨架 |

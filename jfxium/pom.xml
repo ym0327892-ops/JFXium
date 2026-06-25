@@ -7,7 +7,8 @@
     <parent>
         <groupId>org.openkawu</groupId>
         <artifactId>jfxium-parent</artifactId>
-        <version>1.0.0-RC1</version>
+        <version>1.10.0-RC1</version>
+
     </parent>
 
     <artifactId>jfxium</artifactId>
@@ -19,14 +20,17 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-javafx</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
@@ -103,18 +107,18 @@
                                 import com.inet.lib.less.Less
 
                                 def lessDir = new File(project.basedir, 'src/main/resources/org/openkawu/jfxium/css/less')
-                                def cssDir  = new File(project.basedir, 'src/main/resources/org/openkawu/jfxium/css')
+                                def cssDir = new File(project.basedir, 'src/main/resources/org/openkawu/jfxium/css')
 
                                 def themes = [
-                                    'theme-light', 'theme-dark',
-                                    'theme-mui', 'theme-mui-compact', 'theme-mui-dark', 'theme-mui-dark-compact',
-                                    'theme-shadcn', 'theme-cyberpunk', 'theme-custom',
-                                    'theme-light-compact', 'theme-dark-compact'
+                                        'theme-light', 'theme-dark',
+                                        'theme-mui', 'theme-mui-compact', 'theme-mui-dark', 'theme-mui-dark-compact',
+                                        'theme-shadcn', 'theme-cyberpunk', 'theme-custom',
+                                        'theme-light-compact', 'theme-dark-compact'
                                 ]
 
                                 themes.each { name -&gt;
-                                    def input  = new File(lessDir, name + '.less')
-                                    def output = new File(cssDir,  name + '.css')
+                                    def input = new File(lessDir, name + '.less')
+                                    def output = new File(cssDir, name + '.css')
                                     if (!input.exists()) {
                                         log.warn('LESS source not found, skipping: ' + input)
                                         return

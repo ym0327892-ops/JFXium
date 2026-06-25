@@ -122,6 +122,9 @@ node.getStyleClass().add(switch (status) {
 | 11 | 未钳制尺寸节点用 9999px 圆角 | 用 `@border-radius-md` |
 | 12 | 字符串模板里嵌套未转义双引号 | 用「」或转义 `\"` |
 | 13 | 创建与已有组件功能大幅重叠的新组件 | 提取基类或委托已有组件 |
+| 14 | 便捷方法硬编码关键参数（duration / position 等），调用方必须走 Builder 才能定制 | 提供参数重载：便捷版用默认值，完整版暴露全参数；阻塞+非阻塞两种调用路径共存 |
+| 15 | 只提供阻塞式 API 无非阻塞回调 | 同时提供 show()+回调 和 showAndWait() 两种风格，让业务方自由选择 |
+| 16 | 尺寸 API 只覆盖 width，遗漏 height/maxHeight/minHeight | 尺寸四元组：width + height + maxHeight + minHeight 全部提供（-1=未设，内容撑开；maxHeight 启用时自动加 ScrollPane） |
 
 ## 布局约束陷阱
 
@@ -140,6 +143,9 @@ node.getStyleClass().add(switch (status) {
 - [ ] 拆解成微组件树：容器 > 子容器 > 叶子
 - [ ] 状态机列表完整（hover/selected/disabled）
 - [ ] build() 返回类型诚实
+- [ ] **便捷方法是否暴露了 Builder 中的关键参数？**（参见反模式 #14：`success(String)` 必须配套 `success(String, int duration)` 重载）
+- [ ] **是否有阻塞 + 非阻塞两种调用路径？**（参见反模式 #15：`.show() + onOk/onCancel/onResult` 与 `.showAndWait()` 共存）
+- [ ] **尺寸 API 是否四元组齐全？**（参见反模式 #16：width + height + maxHeight + minHeight，-1=未设/内容撑开）
 
 ### 实现阶段
 - [ ] Builder 继承 AbstractStyleBuilder
@@ -147,9 +153,13 @@ node.getStyleClass().add(switch (status) {
 - [ ] 状态切换用 styleClass，不用事件回调
 - [ ] 用独立 Region 做填充
 - [ ] 微组件挂根 styleClass + LESS 后代选择器
+- [ ] **全部关键参数都有对应 setter**（禁止只有 Builder 深参无缝式暴露）
+- [ ] **maxHeight 启用时必须给 body 自动加 ScrollPane**（内容超出出现滚动条）
 
 ### 验收阶段
 - [ ] 切换全部 8 套主题，颜色正常跟随
 - [ ] 极小/极大宽度下布局不破
 - [ ] 禁用状态视觉一致
 - [ ] 无 inline `setStyle("-fx-...: -color-...")` 残留
+- [ ] **所有便捷方法既有零参默认版，也有关键参数重载版**
+- [ ] **阻塞和非阻塞两种调用路径均可正常工作**

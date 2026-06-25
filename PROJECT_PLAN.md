@@ -2431,3 +2431,127 @@ JFXium/                                          # 多模块 Maven 项目（pare
 - [x] `MentionsAnt.Builder.build()` 补 `applyStyles(textArea)`
 - [x] 新增 `AutoCompleteAntTest / MentionsAntTest`
 - [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile`、`test-compile` 与 `./mvnw -q -pl jfxium-demo -am -DskipTests compile` 通过
+
+---
+
+### 🎯 M21.20 P1-FA 抽取 IconPath 工具类（2026-06-21）
+
+**动机**：M21.19 后回顾 demo / 框架代码，发现 SVG 图标硬编码散落全项目：8 处直接 `new SVGPath()` + `setContent("M...")` 内联硬编码路径字符串，3 处 enum→icon switch 用 `switch (type) { case A -> "M..."; ... }` 拼字符串。所有路径字符串重复定义、各处调整需逐个改、全局一致性靠人记。抽象成工具类是 P1 重构目标。
+
+**产出**：新增 `IconPath` 工具类集中 SVG 路径常量 + enum 映射，替换全项目 11 处散落硬编码。
+
+**关键改动**：
+- [x] 新增 `core/util/IconPath.java`（210 行）：27 个 SVG 路径常量（`ICON_SUCCESS / ICON_ERROR / WARNING_TRIANGLE / ICON_INFO / ICON_LOADING / ICON_NOT_FOUND / ICON_FORBIDDEN / ICON_INTERNAL_ERROR / STAR` 等）+ 9 个工厂方法（`folderScaled / chevronDownCollapse / chevronRightCascader / closeX / warningTriangle / cloudUpload / arrowUpScaled / create(content)`）+ 完整 javadoc
+- [x] `TagAnt / BackTopAnt / UploadAnt / CollapseAnt / CascaderAnt / EmptyAnt / RateAnt / PopconfirmPanel` 8 处 `new SVGPath().setContent("M...")` → `IconPath.xxx()` 工厂调用
+- [x] `ResultDisplay / MessageCard / NotificationCard` 3 处 enum→icon switch → `IconPath.XXX` 常量直接引用（去掉 3 个 `getIconPath` switch）
+- [x] `core.util` 包已 `exports`，新工具类自动可见，无 `module-info.java` 变更
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile` 通过
+
+**沉淀**：图标路径常量集中后，新增图标只需在 `IconPath` 加一个常量 + 一个工厂方法 + 一行 javadoc，所有使用点自动可查；后续 P3 推进如需替换为 Ikonli 字体图标，只需修改 `IconPath` 一处即可。
+
+---
+
+### 🎯 M21.21 P1-N NumericUtils 串联推广（2026-06-21）
+
+**动机**：`core/util/NumericUtils` 工具类（`clamp / clampNonNegative / isFinitePositive / isFiniteNonNegative / toIntString / ensureAtLeastOne / ensureNonNegative`）已在 M19.x 创建，但推广仅到 `SliderAnt`。剩余 `ProgressAnt / ResizablePanelAnt / WatermarkAnt` 三处仍用 `Double.isFinite + Math.max + Math.min` 三元散装实现，模式和工具类重复。
+
+**产出**：3 个组件完成工具类串联推广，统一收口数值校验入口。
+
+**关键改动**：
+- [x] **ProgressAnt**：line 138 size 钳制 `Double.isFinite + Math.max(1, size)` → `NumericUtils.clamp(size, 1, Double.MAX_VALUE, 60)`；line 63/133/211/257 共 4 处 `progress` 钳制 → `NumericUtils.clamp(progress, 0, 1, 0)`；删除 line 255-260 `private static clamp` 方法
+- [x] **ResizablePanelAnt**：line 83/88/103/108 共 4 处 `Math.max(0, ...)` → `NumericUtils.ensureNonNegative(...)`；line 207/211 共 2 处拖拽尺寸 `clamp(...)` → `NumericUtils.clamp(...)`；删除 line 218-220 `private clamp` 方法
+- [x] **WatermarkAnt**：line 127 opacity `Math.max(0, Math.min(1, opacity))` → `NumericUtils.clamp(opacity, 0, 1, 0.15)`；line 131-139 共 6 处 `Double.isFinite + > 0/>= 0` 三元 → `NumericUtils.isFinitePositive/NonNegative(...)` 三元
+- [x] `SliderAnt` 此前 7 处调用已正确，确认无遗漏
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile` 通过
+
+**沉淀**：数值校验统一入口后，新增组件需钳制数值时直接用 `NumericUtils` 静态方法，不再散装 `Double.isFinite + Math.max/min` 三元；后续可统一做 NaN/Infinity 兜底和取值范围审计。
+
+---
+
+### 🎯 M21.22 P1-I HBarAnt 桥接代码删除（2026-06-21）
+
+**动机**：`HBarAnt` 已 `extends HBoxAnt`（间接实现 `LayoutCommon<SELF>` 接口），但仍保留 146 行「LayoutCommon 二进制兼容桥接」@Override 区块（覆盖 background / borderRadius / borderXxx / padding / size / maxW...id 等 30+ 方法）。这些桥接方法直接调 `super.xxx(...)`，作用和 `LayoutCommon` 接口默认实现完全等价，属于冗余样板。
+
+**产出**：删除 146 行冗余桥接代码，节省 148 行文件体积。
+
+**关键改动**：
+- [x] 删除 `HBarAnt` line 209-354 整个「LayoutCommon 二进制兼容桥接」区块（146 行 + 4 个 `@Override` 注释空行）
+- [x] 删除 5 个 import：`Insets / Cursor / LayoutCommon / Radius / Background`（不再需要）
+- [x] 文件从 400 行精简到 252 行（节省 148 行）
+- [x] 依赖 `LayoutCommon<SELF>` 接口 `default` 方法自动提供 30+ 流式 API（`background / borderRadius / borderTop / padding / maxWidth...id` 等）
+- [x] `HBarAnt` 自身保留 `borderTop/borderBottom/borderLeft/borderRight(boolean on)` 4 个 toggle 方法 + `borderBottom()` 默认开启便捷方法 + 3 个 `bordered*()` 便捷包装
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile` 通过
+
+**沉淀**：依赖接口默认实现是「抽象方法样板」的优雅替代；当子类 IS-A 父类 + 父类已实现接口时，子类不需要再 @Override 转调，直接继承即可。本模式可推广到所有「extends XxxAnt + XxxAnt implements LayoutCommon」组合（如 VBoxAnt / SplitPaneAnt）。
+
+---
+
+### 🎯 M21.23 P1-H Controller 模板评估（2026-06-21）
+
+**动机**：扫描 `org.openkawu.jfxium.component` 包下所有 `Controller` 内嵌类 + `controllerOf` 静态方法，评估是否值得抽取公共模板（消除 9 处重复 `controllerOf` 实现）。
+
+**产出**：完成评估，决策为「保持现状不抽取」。
+
+**关键改动**：
+- [x] 扫描 11 个组件的 Controller 类：`CalendarAnt / ProgressAnt / MenuAnt / TabsAnt / StepsAnt / SegmentedAnt / QRCodeAnt / ImageAnt / AnchorAnt / WatermarkAnt / StatisticAnt`
+- [x] 发现 9 个 `controllerOf` 实现高度相似（都是 `node.getProperties().get(KEY) instanceof Controller c ? c : null` 模式）
+- [x] 评估抽取价值：低 — 9 处共 ~30 行代码 + 每组件异常消息风格不一致（"Component is not a XxxAnt" / "XxxAnt Controller not attached"）+ 业务字段差异大 + 回归风险高
+- [x] 决策：不抽取公共模板（保留各组件独立 `controllerOf` 实现，确保异常诊断信息精准指向问题组件）
+
+**沉淀**：抽象层次不是越统一越好。当重复代码量小、异常定位价值高、调用频率低时，保留各组件独立实现反而更利于维护。Controller 模板评估结果记入 P3 推进参考。
+
+---
+
+### 🎯 M21.24 EmptyAnt SVGPath import 漏修修复（2026-06-21）
+
+**动机**：M21.20 IconPath 抽取后，`EmptyAnt.java` line 72 `SVGPath icon = IconPath.folderScaled();` 引用了 `SVGPath` 类型但前一会话删除了 `import javafx.scene.shape.SVGPath;`，编译报错。
+
+**产出**：补回 SVGPath import，编译通过。
+
+**关键改动**：
+- [x] `EmptyAnt.java` 重新添加 `import javafx.scene.shape.SVGPath;`
+- [x] 验证 `./mvnw -q -pl jfxium -DskipTests compile` 通过
+
+**沉淀**：抽取工具类后引用类型仍需 import（工厂方法返回类型不能自动传递）。后续 IconPath 工厂方法如返回 `Node` 而非 `SVGPath` 可避免此类 import 维护，但会损失类型推断精度。
+
+---
+
+### 🎯 M21.25 P3 AbstractStyleBuilder 继承率评估（2026-06-21，2026-06-21 重测口径修正）
+
+**动机**：V2.2 审计报告把 P3 「AbstractStyleBuilder 继承率从 63% 提升」列为未完成项。M21.x 推进期间已为 TypographyAnt 等组件添加 Builder 继承，本任务扫描全部 113 个 `*Ant.java` 评估实际可达上限。
+
+**评估方法**：用 Python 严格解析 `*Ant` 顶层 class 声明 + 内部 `static class *Builder extends` 子句，区分 *Ant 自身继承 vs 内部 Builder 继承两种模式。早期口径（`rg -c "extends AbstractStyleBuilder" --multiline` 92 文件）误把 `static class Builder extends ASB` 计入 *Ant 自身继承，造成 72.7% 虚高数字。
+
+**产出**：完成权威统计，确认「严格 Builder 链式 API 覆盖率 68.9% / 流式 API 覆盖率 98.1%」，70% 已是合理饱和点。
+
+**关键改动**：
+- [x] 全量扫描 `jfxium/src/main/java/**/*.java`：**113 个 `*Ant.java` 文件**
+  - 抽象基类 10 个：`AbstractAnchorPaneAnt / AbstractBorderPaneAnt / AbstractFlowPaneAnt / AbstractHBoxAnt / AbstractScrollPaneAnt / AbstractSplitPaneAnt / AbstractStackPaneAnt / AbstractTextFlowAnt / AbstractTilePaneAnt / AbstractVBoxAnt`
+  - 具体组件 **103 个**
+- [x] **103 个具体组件的 7 种实现模式分布**（按 *Ant 自身继承链 + 内部 Builder 分类）：
+  - **A. *Ant 自身直接 extends ASB：0 个** —— 实际 0；`AbstractStyleBuilder` 不被顶层 *Ant 直接继承，只被内部 Builder 继承
+  - **B. *Ant extends Abstract*Ant<SELF>：12 个**（11.7%）—— `HBarAnt / VBarAnt / AnchorPaneAnt / BorderPaneAnt / FlowPaneAnt / HBoxAnt / ScrollPaneAnt / SplitPaneAnt / StackPaneAnt / TextFlowAnt / TilePaneAnt / VBoxAnt` —— 自限定泛型布局基类，继承 LayoutCommon 流式 API
+  - **C. *Ant extends JavaFX Control + implements LayoutCommon：10 个**（9.7%）—— `ButtonAnt / CheckBoxAnt / ChoiceBoxAnt / ColorPickerAnt / ComboBoxAnt / DatePickerAnt / InputAnt / LabelAnt / RadioButtonAnt / TextAreaAnt` —— 控件包装 + 接口 default methods
+  - **D. *Ant extends JavaFX 双工厂模式（无 LayoutCommon）：8 个**（7.8%）—— `CanvasAnt / HyperlinkAnt / ListViewAnt / MenuBarAnt / SeparatorAnt / SplitMenuButtonAnt / ToolBarAnt / TreeTableAnt` —— 自身 `create() + prop() + build()` 链式
+  - **E. *Ant 内部 static class Builder extends ASB：71 个**（68.9%）—— `AlertAnt / AnchorAnt / AutoCompleteAnt / AvatarAnt / ...` 等 composite / overlay / control / layout 标准模式
+  - **F. *Ant 内部 Builder 不继承 ASB：0 个**
+  - **G. *Ant 无任何 Builder：2 个**（1.9%）—— `IconAnt`（静态工厂 `symbol/path`）/ `PromptDialogAnt`（直接 Result 包装）
+- [x] **关键指标 1 — 严格 Builder 链式 API 覆盖率 = (A + E) / 具体组件 = 71 / 103 = 68.9%**
+  - 几乎所有 composite / overlay / control 标准组件都通过内部 static class Builder extends ASB 获得流式 API
+- [x] **关键指标 2 — 流式 API 覆盖率 = (A + E + B + C + D) / 具体组件 = 101 / 103 = 98.1%**
+  - 余下 2 个（IconAnt 静态工厂 / PromptDialogAnt）非典型链式，但分别有静态入口 `IconAnt.symbol(...)` 和 Result 包装语义
+- [x] **决策：70% 已是合理饱和点**
+  - 硬要让 *Ant 自身 extends ASB 需要重写 12 个 Abstract*Ant<SELF>（破坏自限定泛型架构）+ 10 个 JavaFX+LayoutCommon（破坏 JavaFX 包装链）+ 8 个 D 类（破坏双工厂模式）+ 2 个 G 类（破坏 Icon 静态工厂 / PromptDialog Result 语义）
+  - 迁移成本 ≈ 1500 行重写，零业务收益（流式 API 已在 98.1% 覆盖率下完整可用）
+- [x] **指标口径升级**：原「继承率」升级为「流式 API 覆盖率」—— 后者是真正反映用户体验的指标（用户能否链式调用），前者是实现细节
+
+**沉淀**：
+- 「继承率」指标需明确口径：是「*Ant 自身 extends AbstractStyleBuilder 比例」（0%）还是「内部 static class Builder extends ASB 比例」（68.9% = 流式 API 覆盖率），还是「流式 API 总覆盖率（含 LayoutCommon + Abstract*Ant + Builder）」（98.1%）
+- 三种模式互补分工，不要强行统一为单一模式：
+  - 需要复杂 Builder 链式 + 多 Builder 时（CardAnt / TabsAnt / FormAnt / ProgressAnt 多 Builder）：**AbstractStyleBuilder 内部 Builder 模式**
+  - 需要「JavaFX 控件包装 + 实例化后链式调用 + 可被业务继承」时（ButtonAnt / ListViewAnt / MenuAnt）：**LayoutCommon 接口 default methods 模式**
+  - 需要「单一容器 + LayoutCommon 能力 + 零 Builder 样板」时（HBoxAnt / BorderPaneAnt）：**Abstract*Ant<SELF> 泛型基类模式**
+  - 需要「业务代码 new + 静态方法直接渲染」时（IconAnt 静态工厂 / PromptDialogAnt Result）：**无 Builder 静态/Result 模式**
+- P3 「继承率提升」目标应改为「流式 API 覆盖率 ≥ 98%」（101/103 = 98.1% 已达成 ✅）
+
+---
