@@ -6,6 +6,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,12 +132,26 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
     protected String id = null;
 
     /**
+     * 占位提示文本。null 表示未被用户设置（子类可基于此叠加 i18n 或控件默认值）。
+     * <p>P2-S8 抽取：原 6 个组件（InputNumberAnt / CascaderAnt / AutoCompleteAnt /
+     * TreeSelectAnt / ImageAnt / MentionsAnt）各自重复实现占位符字段与 setter，
+     * 统一到父类，子类零成本获得 {@code placeholder(String)} 链式调用。</p>
+     * <p>使用建议：
+     * <ul>
+     *   <li>子类 build() 中：{@code String ph = placeholder != null ? placeholder : <subclassDefault>;}</li>
+     *   <li>{@code null} 输入会被 setter 转为 {@code ""}（避免 JavaFX setPromptText 报错）。</li>
+     * </ul>
+     * </p>
+     */
+    protected String placeholder = null;
+
+    /**
      * 设置 inline 样式。慎用，建议优先使用 {@link #styleClass(String)} + LESS。
      * 多次调用会覆盖前一次（与 setter 一贯语义保持一致）。
      */
     @SuppressWarnings("unchecked")
     public SELF style(String style) {
-        this.style = style != null ? style : "";
+        this.style = TextUtils.safeText(style);
         return (SELF) this;
     }
 
@@ -300,11 +315,36 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
         return (SELF) this;
     }
 
-    /** 设置禁用状态。 */
+    /** 设置禁用状态。
+     * <p>P2-S7 抽取：与 {@link #disable(boolean)} 同义，{@code disabled} 是面向用户的业务 API 命名。
+     * 两者共用 {@link #disable} 字段，build() 时通过 {@link #applyStyles(Node)} 自动应用。</p>
+     */
+    @SuppressWarnings("unchecked")
+    public SELF disabled(boolean disabled) {
+        this.disable = disabled;
+        return (SELF) this;
+    }
+
+    /** 设置禁用状态（无参语法糖，等价 {@code disabled(true)}）。P2-S7 抽取。 */
+    public SELF disabled() {
+        return disabled(true);
+    }
+
+    /** 设置禁用状态（底层 API，与 {@link #disabled(boolean)} 等价）。 */
     @SuppressWarnings("unchecked")
     public SELF disable(boolean disable) {
         this.disable = disable;
         return (SELF) this;
+    }
+
+    /**
+     * 查询当前是否处于禁用状态。
+     * <p>P2-S7.4 抽取：子类中若有独立的内部类（非 Builder 子类，例如 {@code DropdownAnt.DropdownResult}）
+     * 需要判断是否禁用，可通过本方法访问（避免暴露 {@link #disable} 字段的修改入口）。</p>
+     * <p>{@code disable == null} 时返回 {@code false}（未设置 ≠ 禁用）。</p>
+     */
+    public boolean isDisabled() {
+        return disable != null && disable;
     }
 
     /** 设置是否受布局管理。 */
@@ -333,6 +373,28 @@ public abstract class AbstractStyleBuilder<SELF extends AbstractStyleBuilder<SEL
     public SELF id(String id) {
         this.id = id;
         return (SELF) this;
+    }
+
+    /**
+     * 设置占位提示文本。
+     * <p>P2-S8 抽取：统一占位符入口。{@code null} 输入会被规范化为 {@code ""}（避免
+     * {@link javafx.scene.control.TextInputControl#setPromptText(String)} 的隐性
+     * 空指针陷阱）。如需表达“未设置以走 i18n/控件默认”，不应调用本方法。</p>
+     */
+    @SuppressWarnings("unchecked")
+    public SELF placeholder(String placeholder) {
+        this.placeholder = TextUtils.safeText(placeholder);
+        return (SELF) this;
+    }
+
+    /** 当前占位文本（未被用户设置时返回 {@code null}）。 */
+    public String getPlaceholder() {
+        return placeholder;
+    }
+
+    /** 是否被用户显式设置过占位文本。 */
+    public boolean hasPlaceholder() {
+        return placeholder != null;
     }
 
     /**

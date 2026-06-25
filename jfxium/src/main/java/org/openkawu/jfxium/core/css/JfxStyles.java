@@ -255,6 +255,21 @@ public final class JfxStyles {
     public static final String TABLE_ALIGN_CONTENT_CENTER = "jfx-align-content-center";
     public static final String TABLE_ALIGN_CONTENT_RIGHT = "jfx-align-content-right";
 
+    /**
+     * TableAnt 对齐类名前缀（P0-F2 修复：消除 TableAnt 列对齐代码中
+     * {@code startsWith("jfx-align-")} 等硬编码前缀魔法值）。
+     *
+     * <p>前缀语义：</p>
+     * <ul>
+     *   <li>{@link #ALIGN_PREFIX} —— 总前缀，匹配全部 align-* 类</li>
+     *   <li>{@link #ALIGN_HEADER_PREFIX} —— 表头专用 align-header-*</li>
+     *   <li>{@link #ALIGN_CONTENT_PREFIX} —— 内容区专用 align-content-*</li>
+     * </ul>
+     */
+    public static final String ALIGN_PREFIX = "jfx-align-";
+    public static final String ALIGN_HEADER_PREFIX = "jfx-align-header-";
+    public static final String ALIGN_CONTENT_PREFIX = "jfx-align-content-";
+
     /** TableAnt 内容区分割线模式（M11.x 增强） */
     public static final String TABLE_BORDER_NONE = "jfx-table-border-none";
     public static final String TABLE_BORDER_H    = "jfx-table-border-h";
@@ -306,24 +321,40 @@ public final class JfxStyles {
     public static final String BADGE_LARGE = "jfx-badge-large";
 
     /* ============================================
-       AlertAnt 警告提示
+       AlertAnt 警告提示（独立 Stage 模态弹窗，继承 javafx.scene.control.Alert）
        ============================================ */
-    public static final String ALERT = "jfx-alert";
-    public static final String ALERT_SUCCESS = "jfx-alert-success";
-    public static final String ALERT_INFO = "jfx-alert-info";
-    public static final String ALERT_WARNING = "jfx-alert-warning";
-    public static final String ALERT_ERROR = "jfx-alert-error";
-    /** banner 形态：占满宽度、无圆角 */
-    public static final String ALERT_BANNER = "jfx-alert-banner";
-    public static final String ALERT_TITLE = "jfx-alert-title";
-    public static final String ALERT_MESSAGE = "jfx-alert-message";
-    public static final String ALERT_MESSAGE_INDENTED = "jfx-alert-message-indented";
-    public static final String ALERT_ICON = "jfx-alert-icon";
-    public static final String ALERT_HEADER = "jfx-alert-header";
-    public static final String ALERT_CLOSE_BTN = "jfx-alert-close-btn";
-    public static final String ALERT_WITH_ICON = "jfx-alert-with-icon";
-    public static final String ALERT_DESCRIPTION = "jfx-alert-description";
+    /** AlertAnt 根 styleClass：挂在 Alert 实例的 DialogPane 上 */
+    public static final String ALERT_DIALOG = "jfx-alert-dialog";
+    /** AlertDialog 内容容器（dialog-pane） */
+    public static final String ALERT_DIALOG_PANE = "jfx-alert-dialog-pane";
+    /** AlertDialog header 区域 */
+    public static final String ALERT_DIALOG_HEADER = "jfx-alert-dialog-header";
+    /** AlertDialog 内容区域 */
+    public static final String ALERT_DIALOG_CONTENT = "jfx-alert-dialog-content";
+    /** AlertDialog 按钮区 */
+    public static final String ALERT_DIALOG_BUTTON_BAR = "jfx-alert-dialog-button-bar";
+    /** AlertDialog 图形容器（左侧 icon 区） */
+    public static final String ALERT_DIALOG_GRAPHIC = "jfx-alert-dialog-graphic";
+    /** AlertDialog 默认图形节点（Ikonli 字符 Label），仅 .jfx-alert-dialog-info/warning/error/confirm 作用域内生效 */
+    public static final String ALERT_DIALOG_GRAPHIC_DEFAULT = "jfx-alert-dialog-default-graphic";
+    /** AlertDialog 类型修饰类 */
+    public static final String ALERT_DIALOG_INFO = "jfx-alert-dialog-info";
+    public static final String ALERT_DIALOG_WARNING = "jfx-alert-dialog-warning";
+    public static final String ALERT_DIALOG_ERROR = "jfx-alert-dialog-error";
+    public static final String ALERT_DIALOG_CONFIRM = "jfx-alert-dialog-confirm";
+
+    /* ============================================
+       TooltipAnt 工具提示
+       ============================================ */
     public static final String TOOLTIP = "jfx-tooltip";
+    /** Tooltip 状态色修饰类：成功（绿）—— 配 _tooltip.less 中 .tooltip.jfx-tooltip-success */
+    public static final String TOOLTIP_SUCCESS = "jfx-tooltip-success";
+    /** Tooltip 状态色修饰类：警告（黄）—— 配 _tooltip.less 中 .tooltip.jfx-tooltip-warning */
+    public static final String TOOLTIP_WARNING = "jfx-tooltip-warning";
+    /** Tooltip 状态色修饰类：错误 / 危险（红）—— 配 _tooltip.less 中 .tooltip.jfx-tooltip-error */
+    public static final String TOOLTIP_ERROR = "jfx-tooltip-error";
+    /** Tooltip 状态色修饰类：信息（蓝）—— 配 _tooltip.less 中 .tooltip.jfx-tooltip-info */
+    public static final String TOOLTIP_INFO = "jfx-tooltip-info";
 
     /* ============================================
        ProgressAnt 进度条
@@ -598,6 +629,9 @@ public final class JfxStyles {
     public static final String LIST_ITEM_DESCRIPTION = "jfx-list-item-description";
     public static final String LIST_ITEM_CONTENT = "jfx-list-item-content";
     public static final String LIST_DIVIDER = "jfx-list-divider";
+
+    /** ProjectFeatureTemplate 特性卡片（template/）— 项目首页/产品介绍页的特性网格 */
+    public static final String FEATURE_CARD_CLICKABLE = "jfx-feature-card-clickable";
 
     /** MenuAnt 菜单 */
     public static final String MENU = "jfx-menu";
