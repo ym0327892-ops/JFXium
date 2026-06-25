@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -134,13 +135,13 @@ class ChoiceBoxAntTest extends JfxTestBase {
 
     @Nested
     @DisplayName("size")
-    class Size {
+    class SizeTests {
 
         @Test
         @DisplayName("size(SMALL) 挂 SIZE_SMALL")
         void small() {
             ChoiceBoxAnt<String> cb = ChoiceBoxAnt.<String>create()
-                    .size(ChoiceBoxAnt.Size.SMALL).build();
+                    .size(Size.SMALL).build();
             assertTrue(cb.getStyleClass().contains(JfxStyles.SIZE_SMALL));
         }
 
@@ -148,7 +149,7 @@ class ChoiceBoxAntTest extends JfxTestBase {
         @DisplayName("size(LARGE) 挂 SIZE_LARGE")
         void large() {
             ChoiceBoxAnt<String> cb = ChoiceBoxAnt.<String>create()
-                    .size(ChoiceBoxAnt.Size.LARGE).build();
+                    .size(Size.LARGE).build();
             assertTrue(cb.getStyleClass().contains(JfxStyles.SIZE_LARGE));
         }
 
@@ -156,7 +157,7 @@ class ChoiceBoxAntTest extends JfxTestBase {
         @DisplayName("size(DEFAULT) 不挂额外 size 类")
         void default_() {
             ChoiceBoxAnt<String> cb = ChoiceBoxAnt.<String>create()
-                    .size(ChoiceBoxAnt.Size.DEFAULT).build();
+                    .size(Size.DEFAULT).build();
             assertFalse(cb.getStyleClass().contains(JfxStyles.SIZE_SMALL));
             assertFalse(cb.getStyleClass().contains(JfxStyles.SIZE_LARGE));
         }
@@ -165,8 +166,8 @@ class ChoiceBoxAntTest extends JfxTestBase {
         @DisplayName("size 切换幂等：重复 small/large 不重复挂")
         void idempotent() {
             ChoiceBoxAnt<String> cb = ChoiceBoxAnt.<String>create()
-                    .size(ChoiceBoxAnt.Size.SMALL)
-                    .size(ChoiceBoxAnt.Size.LARGE)
+                    .size(Size.SMALL)
+                    .size(Size.LARGE)
                     .build();
             long largeCount = cb.getStyleClass().stream()
                     .filter(JfxStyles.SIZE_LARGE::equals).count();
@@ -314,7 +315,7 @@ class ChoiceBoxAntTest extends JfxTestBase {
         ChoiceBoxAnt<String> cb = ChoiceBoxAnt.<String>create()
                 .items("light", "dark", "compact")
                 .value("dark")
-                .size(ChoiceBoxAnt.Size.LARGE)
+                .size(Size.LARGE)
                 .disabled(false)
                 .onSelect(v -> {})
                 .bindValue(prop)

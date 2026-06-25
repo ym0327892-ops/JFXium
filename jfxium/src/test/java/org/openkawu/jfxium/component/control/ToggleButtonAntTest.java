@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,19 +60,19 @@ class ToggleButtonAntTest extends JfxTestBase {
 
     @Nested
     @DisplayName("size（SMALL / LARGE / DEFAULT）")
-    class Size {
+    class SizeTests {
 
         @Test
         @DisplayName("size(SMALL) 挂 SIZE_SMALL")
         void size_small() {
-            ToggleButton btn = ToggleButtonAnt.create().size(ToggleButtonAnt.Size.SMALL).build();
+            ToggleButton btn = ToggleButtonAnt.create().size(Size.SMALL).build();
             assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));
         }
 
         @Test
         @DisplayName("size(LARGE) 挂 SIZE_LARGE")
         void size_large() {
-            ToggleButton btn = ToggleButtonAnt.create().size(ToggleButtonAnt.Size.LARGE).build();
+            ToggleButton btn = ToggleButtonAnt.create().size(Size.LARGE).build();
             assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_LARGE));
         }
 
@@ -310,7 +311,7 @@ class ToggleButtonAntTest extends JfxTestBase {
         BooleanProperty prop = new SimpleBooleanProperty(true);
         Rectangle icon = new Rectangle(12, 12);
         ToggleButton btn = ToggleButtonAnt.create("切换")
-                .size(ToggleButtonAnt.Size.LARGE)
+                .size(Size.LARGE)
                 .selected(true)
                 .disabled(false)
                 .rounded()

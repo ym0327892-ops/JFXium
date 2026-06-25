@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,7 +69,7 @@ class InputAntTest extends JfxTestBase {
     @Test
     @DisplayName("size(SMALL) 挂 SIZE_SMALL")
     void size_small() {
-        InputAnt input = InputAnt.create().size(InputAnt.Size.SMALL).build();
+        InputAnt input = InputAnt.create().size(Size.SMALL).build();
         assertTrue(input.getStyleClass().contains(JfxStyles.SIZE_SMALL));
     }
 
@@ -76,8 +77,8 @@ class InputAntTest extends JfxTestBase {
     @DisplayName("size 幂等")
     void size_idempotent() {
         InputAnt input = InputAnt.create()
-                .size(InputAnt.Size.SMALL)
-                .size(InputAnt.Size.LARGE)
+                .size(Size.SMALL)
+                .size(Size.LARGE)
                 .build();
         assertFalse(input.getStyleClass().contains(JfxStyles.SIZE_SMALL));
         assertTrue(input.getStyleClass().contains(JfxStyles.SIZE_LARGE));
@@ -152,7 +153,7 @@ class InputAntTest extends JfxTestBase {
         StringProperty prop = new SimpleStringProperty("initial");
         InputAnt input = InputAnt.create("默认值")
                 .placeholder("请输入")
-                .size(InputAnt.Size.LARGE)
+                .size(Size.LARGE)
                 .disabled(false)
                 .readOnly(false)
                 .bindValue(prop)

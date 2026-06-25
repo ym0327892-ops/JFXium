@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.form.FormContext;
 import org.openkawu.jfxium.core.form.Rule;
 
@@ -95,9 +96,9 @@ class FormAntTest extends JfxTestBase {
     @Test
     @DisplayName("size styleClass 随 size 切换：jfx-form-size-small/default/large")
     void size_styleClass_changes() {
-        VBox small = FormAnt.create().size(FormAnt.Size.SMALL).build();
-        VBox def = FormAnt.create().size(FormAnt.Size.DEFAULT).build();
-        VBox large = FormAnt.create().size(FormAnt.Size.LARGE).build();
+        VBox small = FormAnt.create().size(Size.SMALL).build();
+        VBox def = FormAnt.create().size(Size.DEFAULT).build();
+        VBox large = FormAnt.create().size(Size.LARGE).build();
         assertTrue(small.getStyleClass().contains(JfxStyles.FORM_SIZE_SMALL));
         assertFalse(def.getStyleClass().contains(JfxStyles.FORM_SIZE_SMALL));
         assertFalse(def.getStyleClass().contains(JfxStyles.FORM_SIZE_LARGE));
@@ -1059,7 +1060,7 @@ class FormAntTest extends JfxTestBase {
         TextField phone = new TextField();
         VBox form = FormAnt.create()
                 .layout(FormAnt.Layout.HORIZONTAL)
-                .size(FormAnt.Size.LARGE)
+                .size(Size.LARGE)
                 .colon(false)
                 .labelAlign(FormAnt.Align.LEFT)
                 .labelCol(4)

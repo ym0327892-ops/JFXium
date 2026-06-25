@@ -11,6 +11,7 @@ import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.component.composite.HBarAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt;
+import org.openkawu.jfxium.component.overlay.DropdownAnt.DropdownResult;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,7 +71,7 @@ class WorkspaceTemplateTest extends JfxTestBase {
     @Test
     @DisplayName("用户菜单 helper 复用头像下拉")
     void userMenu_buildsDropdownTrigger() {
-        DropdownAnt.DropdownResult result = WorkspaceTemplate.userMenu(null, key -> {});
+        DropdownResult result = WorkspaceTemplate.userMenu(null, key -> {});
 
         assertNotNull(result);
         assertTrue(result.getTrigger() instanceof HBox);

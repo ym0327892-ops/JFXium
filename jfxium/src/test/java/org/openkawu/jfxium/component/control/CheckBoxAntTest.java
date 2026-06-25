@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,7 +68,7 @@ class CheckBoxAntTest extends JfxTestBase {
     @Test
     @DisplayName("size(SMALL) 挂 SIZE_SMALL")
     void size_small() {
-        CheckBoxAnt cb = CheckBoxAnt.create().size(CheckBoxAnt.Size.SMALL).build();
+        CheckBoxAnt cb = CheckBoxAnt.create().size(Size.SMALL).build();
         assertTrue(cb.getStyleClass().contains(JfxStyles.SIZE_SMALL));
     }
 
@@ -137,7 +138,7 @@ class CheckBoxAntTest extends JfxTestBase {
         BooleanProperty prop = new SimpleBooleanProperty(true);
         CheckBoxAnt cb = CheckBoxAnt.create("同意")
                 .selected(false)
-                .size(CheckBoxAnt.Size.LARGE)
+                .size(Size.LARGE)
                 .shape(CheckBoxAnt.Shape.CIRCLE)
                 .indeterminate(false)
                 .disabled(false)

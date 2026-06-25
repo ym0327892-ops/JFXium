@@ -2,6 +2,7 @@ package org.openkawu.jfxium.component.composite;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.layout.Pane;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("MenuAnt")
@@ -63,6 +65,26 @@ class MenuAntTest extends JfxTestBase {
         controller.toggleCollapsed();
         assertFalse(controller.isCollapsed());
         assertFalse(menu.getStyleClass().contains(JfxStyles.MENU_COLLAPSED));
+    }
+
+    @Test
+    @DisplayName("INLINE 菜单文本允许收缩并省略，避免撑出横向滚动条")
+    void inlineLabelsCanShrink() {
+        Pane menu = MenuAnt.create()
+                .item("home", "一个很长很长很长很长的首页标题", () -> {})
+                .subMenu("group", "一个很长很长很长很长的分类标题")
+                    .item("child", "一个很长很长很长很长的子项标题", () -> {})
+                    .endSubMenu()
+                .build();
+
+        for (Label label : collectLabels(menu)) {
+            if (!label.getStyleClass().contains(JfxStyles.MENU_ITEM_LABEL)) {
+                continue;
+            }
+            assertEquals(0.0, label.getMinWidth());
+            assertEquals(Double.MAX_VALUE, label.getMaxWidth());
+            assertEquals(OverrunStyle.ELLIPSIS, label.getTextOverrun());
+        }
     }
 
     private static List<Label> collectLabels(Node node) {

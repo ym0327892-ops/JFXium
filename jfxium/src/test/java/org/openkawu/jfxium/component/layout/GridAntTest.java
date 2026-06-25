@@ -40,7 +40,7 @@ class GridAntTest extends JfxTestBase {
     }
 
     @Test
-    @DisplayName("响应式 span 超过 24 时自动换行，不截断后续列")
+    @DisplayName("响应式快捷 span 写法可自动换行并随断点恢复分栏")
     void responsiveColumnsWrapInsteadOfBeingTruncated() throws Exception {
         Label first = new Label("1");
         Label second = new Label("2");
@@ -50,10 +50,10 @@ class GridAntTest extends JfxTestBase {
         GridAnt.Builder builder = GridAnt.create()
                 .responsive()
                 .row(GridAnt.row()
-                        .col(GridAnt.col(first).xs(24).lg(6))
-                        .col(GridAnt.col(second).xs(24).lg(6))
-                        .col(GridAnt.col(third).xs(24).lg(6))
-                        .col(GridAnt.col(fourth).xs(24).lg(6)));
+                        .col(GridAnt.col(first).responsive(24, 12, 12, 6, 6, 6))
+                        .col(GridAnt.col(second).responsive(24, 12, 12, 6, 6, 6))
+                        .col(GridAnt.col(third).responsive(24, 12, 12, 6, 6, 6))
+                        .col(GridAnt.col(fourth).responsive(24, 12, 12, 6, 6, 6)));
 
         VBox container = builder.build();
         Method rebuildRows = GridAnt.Builder.class.getDeclaredMethod(
@@ -74,6 +74,18 @@ class GridAntTest extends JfxTestBase {
         assertEquals(24, GridPane.getColumnSpan(second));
         assertEquals(24, GridPane.getColumnSpan(third));
         assertEquals(24, GridPane.getColumnSpan(fourth));
+
+        rebuildRows.invoke(builder, container, GridAnt.Breakpoint.LG);
+        GridPane largeRow = assertInstanceOf(GridPane.class, container.getChildren().get(0));
+        assertEquals(1, largeRow.getRowConstraints().size());
+        assertEquals(6, GridPane.getColumnSpan(first));
+        assertEquals(6, GridPane.getColumnSpan(second));
+        assertEquals(6, GridPane.getColumnSpan(third));
+        assertEquals(6, GridPane.getColumnSpan(fourth));
+        assertEquals(0, GridPane.getRowIndex(first));
+        assertEquals(0, GridPane.getRowIndex(second));
+        assertEquals(0, GridPane.getRowIndex(third));
+        assertEquals(0, GridPane.getRowIndex(fourth));
     }
 
     @Test

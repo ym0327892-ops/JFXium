@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,7 +64,7 @@ class ComboBoxAntTest extends JfxTestBase {
     @DisplayName("size(SMALL) 挂 SIZE_SMALL")
     void size_small() {
         ComboBoxAnt<String> cb = ComboBoxAnt.<String>create()
-                .size(ComboBoxAnt.Size.SMALL).build();
+                .size(Size.SMALL).build();
         assertTrue(cb.getStyleClass().contains(JfxStyles.SIZE_SMALL));
     }
 
@@ -144,7 +145,7 @@ class ComboBoxAntTest extends JfxTestBase {
                 .items("A", "B", "C")
                 .value("B")
                 .placeholder("选一个")
-                .size(ComboBoxAnt.Size.LARGE)
+                .size(Size.LARGE)
                 .editable(false)
                 .disabled(false)
                 .onChange(v -> {})

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,8 +91,8 @@ class InputNumberAntTest extends JfxTestBase {
     @Test
     @DisplayName("size 挂载尺寸 styleClass")
     void size() {
-        HBox small = InputNumberAnt.create().size(InputNumberAnt.Size.SMALL).build();
-        HBox large = InputNumberAnt.create().size(InputNumberAnt.Size.LARGE).build();
+        HBox small = InputNumberAnt.create().size(Size.SMALL).build();
+        HBox large = InputNumberAnt.create().size(Size.LARGE).build();
         assertTrue(small.getStyleClass().contains(JfxStyles.INPUT_NUMBER_SMALL));
         assertTrue(large.getStyleClass().contains(JfxStyles.INPUT_NUMBER_LARGE));
     }

@@ -11,6 +11,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.openkawu.jfxium.component.overlay.DropdownAnt.DropdownResult;
 
 @DisplayName("DropdownAnt")
 class DropdownAntTest extends JfxTestBase {
@@ -18,7 +19,7 @@ class DropdownAntTest extends JfxTestBase {
     @Test
     @DisplayName("showArrow 时 trigger 包装节点挂 jfx-dropdown-trigger")
     void showArrow_wrapsTriggerWithStyleClass() throws Exception {
-        DropdownAnt.DropdownResult result = DropdownAnt.create()
+        DropdownResult result = DropdownAnt.create()
                 .trigger(new Label("操作"))
                 .showArrow()
                 .item("edit", "编辑")

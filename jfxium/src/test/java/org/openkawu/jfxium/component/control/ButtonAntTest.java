@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,7 +55,7 @@ class ButtonAntTest extends JfxTestBase {
     @Test
     @DisplayName("link(text, size) 生成指定尺寸链接按钮")
     void link_helperWithSize() {
-        ButtonAnt btn = ButtonAnt.link("查看", ButtonAnt.Size.SMALL).build();
+        ButtonAnt btn = ButtonAnt.link("查看", Size.SMALL).build();
         assertEquals("查看", btn.getText());
         assertTrue(btn.getStyleClass().contains(JfxStyles.BUTTON_LINK));
         assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));
@@ -137,8 +138,8 @@ class ButtonAntTest extends JfxTestBase {
     @Test
     @DisplayName("size(DEFAULT/MIDDLE) 挂 SIZE_MIDDLE")
     void size_middle() {
-        ButtonAnt btnDefault = ButtonAnt.create().size(ButtonAnt.Size.DEFAULT).build();
-        ButtonAnt btnMiddle = ButtonAnt.create().size(ButtonAnt.Size.MIDDLE).build();
+        ButtonAnt btnDefault = ButtonAnt.create().size(Size.DEFAULT).build();
+        ButtonAnt btnMiddle = ButtonAnt.create().size(Size.MIDDLE).build();
         assertTrue(btnDefault.getStyleClass().contains(JfxStyles.SIZE_MIDDLE));
         assertTrue(btnMiddle.getStyleClass().contains(JfxStyles.SIZE_MIDDLE));
     }
@@ -146,30 +147,30 @@ class ButtonAntTest extends JfxTestBase {
     @Test
     @DisplayName("size(SMALL) 挂 SIZE_SMALL")
     void size_small() {
-        ButtonAnt btn = ButtonAnt.create().size(ButtonAnt.Size.SMALL).build();
+        ButtonAnt btn = ButtonAnt.create().size(Size.SMALL).build();
         assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));
     }
 
     @Test
     @DisplayName("size(XS) 挂 SIZE_XS")
     void size_xs() {
-        ButtonAnt btn = ButtonAnt.create().size(ButtonAnt.Size.XS).build();
+        ButtonAnt btn = ButtonAnt.create().size(Size.XS).build();
         assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_XS));
     }
 
     @Test
     @DisplayName("size(LARGE) 挂 SIZE_LARGE")
     void size_large() {
-        ButtonAnt btn = ButtonAnt.create().size(ButtonAnt.Size.LARGE).build();
+        ButtonAnt btn = ButtonAnt.create().size(Size.LARGE).build();
         assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_LARGE));
     }
 
     @Test
     @DisplayName("size 幂等：SMALL→XS→LARGE 只挂 LARGE")
     void size_idempotent() {
-        ButtonAnt btn = ButtonAnt.create().size(ButtonAnt.Size.SMALL)
-                .size(ButtonAnt.Size.XS)
-                .size(ButtonAnt.Size.LARGE).build();
+        ButtonAnt btn = ButtonAnt.create().size(Size.SMALL)
+                .size(Size.XS)
+                .size(Size.LARGE).build();
         assertFalse(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));
         assertFalse(btn.getStyleClass().contains(JfxStyles.SIZE_XS));
         assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_LARGE));
@@ -180,11 +181,11 @@ class ButtonAntTest extends JfxTestBase {
     void size_appliesToTextAndLink() {
         ButtonAnt text = ButtonAnt.create("文字")
                 .type(ButtonAnt.Type.TEXT)
-                .size(ButtonAnt.Size.XS)
+                .size(Size.XS)
                 .build();
         ButtonAnt link = ButtonAnt.create("链接")
                 .type(ButtonAnt.Type.LINK)
-                .size(ButtonAnt.Size.SMALL)
+                .size(Size.SMALL)
                 .build();
 
         assertTrue(text.getStyleClass().contains(JfxStyles.BUTTON_TEXT));
@@ -299,7 +300,7 @@ class ButtonAntTest extends JfxTestBase {
         Rectangle icon = new Rectangle(16, 16);
         ButtonAnt btn = ButtonAnt.create("按钮")
                 .type(ButtonAnt.Type.PRIMARY)
-                .size(ButtonAnt.Size.MIDDLE)
+                .size(Size.MIDDLE)
                 .rounded()
                 .icon(icon)
                 .contentDisplay(ContentDisplay.LEFT)
@@ -342,12 +343,12 @@ class ButtonAntTest extends JfxTestBase {
             PrimarySubmit() {
                 text("提交");
                 type(ButtonAnt.Type.PRIMARY);
-                size(ButtonAnt.Size.LARGE);
+                size(Size.LARGE);
             }
         }
         PrimarySubmit btn = new PrimarySubmit();
         // 继承后构建，再链式改属性
-        btn.size(ButtonAnt.Size.SMALL).disabled(true);
+        btn.size(Size.SMALL).disabled(true);
         assertEquals("提交", btn.getText());
         assertTrue(btn.isDisable());
         assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));

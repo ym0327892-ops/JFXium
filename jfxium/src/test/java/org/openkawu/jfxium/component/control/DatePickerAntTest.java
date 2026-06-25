@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import java.time.LocalDate;
 
@@ -81,7 +82,7 @@ class DatePickerAntTest extends JfxTestBase {
     @DisplayName("size(SMALL) 挂 SIZE_SMALL")
     void size_small() {
         DatePickerAnt dp = DatePickerAnt.create()
-                .size(DatePickerAnt.Size.SMALL).build();
+                .size(Size.SMALL).build();
         assertTrue(dp.getStyleClass().contains(JfxStyles.SIZE_SMALL));
     }
 
@@ -137,7 +138,7 @@ class DatePickerAntTest extends JfxTestBase {
                 .editable(false)
                 .disabled(false)
                 .showWeekNumbers(false)
-                .size(DatePickerAnt.Size.DEFAULT)
+                .size(Size.DEFAULT)
                 .onChange(d -> {})
                 .bindValue(prop)
                 .styleClass("my-dp")

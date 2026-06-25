@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -147,7 +148,7 @@ class GroupBoxAntTest extends JfxTestBase {
         @DisplayName("size(SMALL) 挂 GROUP_BOX_SMALL")
         void size_small() {
             VBox box = GroupBoxAnt.create()
-                    .size(GroupBoxAnt.Size.SMALL).build();
+                    .size(Size.SMALL).build();
             assertTrue(box.getStyleClass().contains(JfxStyles.GROUP_BOX_SMALL));
         }
 
@@ -372,7 +373,7 @@ class GroupBoxAntTest extends JfxTestBase {
                 .extra(new Label("+"))
                 .content(new Region())
                 .bordered(true)
-                .size(GroupBoxAnt.Size.SMALL)
+                .size(Size.SMALL)
                 .type(GroupBoxAnt.Type.DEFAULT)
                 .actions(new Region(), new Region())
                 .tab("a", "A", new Region())

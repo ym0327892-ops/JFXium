@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,7 +33,7 @@ class TagAntTest extends JfxTestBase {
     void modifyNullValues_fallbackToDefaults() {
         HBox tag = TagAnt.create("待处理")
                 .type(TagAnt.Type.SUCCESS)
-                .size(TagAnt.Size.LARGE)
+                .size(Size.LARGE)
                 .shape(TagAnt.Shape.ROUND)
                 .build();
 

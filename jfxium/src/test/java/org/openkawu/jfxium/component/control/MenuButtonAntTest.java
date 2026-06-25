@@ -1,11 +1,9 @@
 package org.openkawu.jfxium.component.control;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.SplitMenuButton;
 import javafx.scene.shape.Rectangle;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,48 +15,83 @@ import org.openkawu.jfxium.core.token.Size;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * SplitButtonAnt 单元测试 —— 覆盖 Builder 创建、size/shape、arrowStyle、icon、
- * onClick 事件、item 变长/带图标/禁用、separator 分隔、add 原生 MenuItem。
+ * MenuButtonAnt 单元测试 —— 覆盖 Builder 创建、text/size/shape、arrowStyle（含 NONE）、
+ * icon/contentDisplay、disabled、菜单项 item / item(item,icon,handler) / itemDisabled / separator / add。
  *
  * <p><b>分组</b>：</p>
  * <ul>
- *   <li>基本：create + build 返回 SplitMenuButton + 默认 jfx-split-menu-button class</li>
- *   <li>size / shape：SMALL/LARGE/ROUNDED/SQUARE 互斥</li>
- *   <li>arrowStyle：CHEVRON 默认 / TRIANGLE 追加 JfxStyles.JFX_ARROW_TRIANGLE class</li>
- *   <li>disabled / icon / contentDisplay</li>
- *   <li>onClick：主按钮点击事件</li>
- *   <li>items：item(item,item,item,itemDisabled) / separator / add(MenuItem)</li>
- *   <li>链式串联</li>
+ *   <li>基本：create + build 返回 MenuButton 且挂 jfx-menu-button class</li>
+ *   <li>text：链式设文本 + null 安全</li>
+ *   <li>size：SMALL/LARGE/DEFAULT</li>
+ *   <li>shape：rounded/square 互斥</li>
+ *   <li>arrowStyle：CHEVRON / TRIANGLE / NONE（含 noArrow 语法糖）</li>
+ *   <li>disabled / icon / contentDisplay / focusTraversable</li>
+ *   <li>items：item / itemDisabled / separator / add</li>
+ *   <li>链式串联 + 继承式核心契约（build returnsSelf / 多态）</li>
  * </ul>
  */
-@DisplayName("SplitButtonAnt")
-class SplitButtonAntTest extends JfxTestBase {
+@DisplayName("MenuButtonAnt")
+class MenuButtonAntTest extends JfxTestBase {
 
     // ============================================================
     // 基本
     // ============================================================
 
     @Test
-    @DisplayName("create(text).build() 返回 SplitMenuButton 且挂 jfx-split-menu-button")
-    void build_returnsSplitMenuButton() {
-        SplitMenuButton btn = SplitButtonAnt.create("保存").build();
+    @DisplayName("create(text).build() 返回 MenuButton 且挂 jfx-menu-button")
+    void build_returnsMenuButton() {
+        MenuButton btn = MenuButtonAnt.create("批量操作").build();
         assertNotNull(btn);
-        assertEquals("保存", btn.getText());
-        assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_SPLIT_MENU_BUTTON));
+        assertEquals("批量操作", btn.getText());
+        assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_MENU_BUTTON));
     }
 
     @Test
     @DisplayName("create() 无参默认空文本")
     void create_emptyText() {
-        SplitMenuButton btn = SplitButtonAnt.create().build();
+        MenuButton btn = MenuButtonAnt.create().build();
+        assertEquals("", btn.getText());
+    }
+
+    @Test
+    @DisplayName("create(null) 兜底空字符串，不抛 NPE")
+    void create_nullText_safeText() {
+        MenuButton btn = MenuButtonAnt.create(null).build();
         assertEquals("", btn.getText());
     }
 
     @Test
     @DisplayName("默认 items 列表为空")
     void defaultItemsEmpty() {
-        SplitMenuButton btn = SplitButtonAnt.create("主操作").build();
+        MenuButton btn = MenuButtonAnt.create("菜单").build();
         assertEquals(0, btn.getItems().size());
+    }
+
+    // ============================================================
+    // text 流式 API
+    // ============================================================
+
+    @Nested
+    @DisplayName("text 流式 API")
+    class TextApi {
+
+        @Test
+        @DisplayName("text(String) 链式设文本（覆盖初始值）")
+        void text_chained() {
+            MenuButton btn = MenuButtonAnt.create("初始")
+                    .text("最终")
+                    .build();
+            assertEquals("最终", btn.getText());
+        }
+
+        @Test
+        @DisplayName("text(null) 兜底空字符串，不抛 NPE")
+        void text_nullSafe() {
+            MenuButton btn = MenuButtonAnt.create("初始")
+                    .text(null)
+                    .build();
+            assertEquals("", btn.getText());
+        }
     }
 
     // ============================================================
@@ -72,23 +105,40 @@ class SplitButtonAntTest extends JfxTestBase {
         @Test
         @DisplayName("size(SMALL) 挂 SIZE_SMALL")
         void size_small() {
-            SplitMenuButton btn = SplitButtonAnt.create().size(Size.SMALL).build();
+            MenuButton btn = MenuButtonAnt.create().size(Size.SMALL).build();
             assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));
         }
 
         @Test
         @DisplayName("size(LARGE) 挂 SIZE_LARGE")
         void size_large() {
-            SplitMenuButton btn = SplitButtonAnt.create().size(Size.LARGE).build();
+            MenuButton btn = MenuButtonAnt.create().size(Size.LARGE).build();
             assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_LARGE));
         }
 
         @Test
         @DisplayName("size(DEFAULT) 不挂 SMALL/LARGE")
         void size_default() {
-            SplitMenuButton btn = SplitButtonAnt.create().build();
+            MenuButton btn = MenuButtonAnt.create().build();
             assertFalse(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));
             assertFalse(btn.getStyleClass().contains(JfxStyles.SIZE_LARGE));
+        }
+
+        @Test
+        @DisplayName("size(null) 等价 DEFAULT，不抛 NPE")
+        void size_null_safe() {
+            assertDoesNotThrow(() -> MenuButtonAnt.create().size(null).build());
+        }
+
+        @Test
+        @DisplayName("size 互斥：SMALL → LARGE 仅保留 LARGE")
+        void size_mutuallyExclusive() {
+            MenuButton btn = MenuButtonAnt.create()
+                    .size(Size.SMALL)
+                    .size(Size.LARGE)
+                    .build();
+            assertFalse(btn.getStyleClass().contains(JfxStyles.SIZE_SMALL));
+            assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_LARGE));
         }
     }
 
@@ -103,24 +153,33 @@ class SplitButtonAntTest extends JfxTestBase {
         @Test
         @DisplayName("rounded() 挂 SHAPE_ROUNDED")
         void rounded() {
-            SplitMenuButton btn = SplitButtonAnt.create().rounded().build();
+            MenuButton btn = MenuButtonAnt.create().rounded().build();
             assertTrue(btn.getStyleClass().contains(JfxStyles.SHAPE_ROUNDED));
         }
 
         @Test
         @DisplayName("square() 挂 SHAPE_SQUARE")
         void square() {
-            SplitMenuButton btn = SplitButtonAnt.create().square().build();
+            MenuButton btn = MenuButtonAnt.create().square().build();
             assertTrue(btn.getStyleClass().contains(JfxStyles.SHAPE_SQUARE));
         }
 
         @Test
         @DisplayName("rounded() → square() 互斥切换：仅保留 SQUARE")
         void roundedThenSquare_mutuallyExclusive() {
-            SplitMenuButton btn = SplitButtonAnt.create()
+            MenuButton btn = MenuButtonAnt.create()
                     .rounded().square().build();
             assertFalse(btn.getStyleClass().contains(JfxStyles.SHAPE_ROUNDED));
             assertTrue(btn.getStyleClass().contains(JfxStyles.SHAPE_SQUARE));
+        }
+
+        @Test
+        @DisplayName("square() → rounded() 互斥切换：仅保留 ROUNDED")
+        void squareThenRounded_mutuallyExclusive() {
+            MenuButton btn = MenuButtonAnt.create()
+                    .square().rounded().build();
+            assertFalse(btn.getStyleClass().contains(JfxStyles.SHAPE_SQUARE));
+            assertTrue(btn.getStyleClass().contains(JfxStyles.SHAPE_ROUNDED));
         }
     }
 
@@ -129,22 +188,51 @@ class SplitButtonAntTest extends JfxTestBase {
     // ============================================================
 
     @Nested
-    @DisplayName("arrowStyle（CHEVRON / TRIANGLE）")
+    @DisplayName("arrowStyle（CHEVRON / TRIANGLE / NONE，含 noArrow 语法糖）")
     class Arrow {
 
         @Test
-        @DisplayName("arrowStyle(CHEVRON) 默认不挂 JfxStyles.JFX_ARROW_TRIANGLE")
+        @DisplayName("arrowStyle(CHEVRON) 默认不挂额外箭头 class")
         void chevron_default() {
-            SplitMenuButton btn = SplitButtonAnt.create().build();
+            MenuButton btn = MenuButtonAnt.create().build();
             assertFalse(btn.getStyleClass().contains(JfxStyles.JFX_ARROW_TRIANGLE));
+            assertFalse(btn.getStyleClass().contains(JfxStyles.JFX_NO_ARROW));
         }
 
         @Test
-        @DisplayName("arrowStyle(TRIANGLE) 挂 JfxStyles.JFX_ARROW_TRIANGLE class")
+        @DisplayName("arrowStyle(TRIANGLE) 挂 JFX_ARROW_TRIANGLE")
         void triangle() {
-            SplitMenuButton btn = SplitButtonAnt.create()
-                    .arrowStyle(SplitButtonAnt.ArrowStyle.TRIANGLE).build();
+            MenuButton btn = MenuButtonAnt.create()
+                    .arrowStyle(MenuButtonAnt.ArrowStyle.TRIANGLE).build();
             assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_ARROW_TRIANGLE));
+            assertFalse(btn.getStyleClass().contains(JfxStyles.JFX_NO_ARROW));
+        }
+
+        @Test
+        @DisplayName("arrowStyle(NONE) 挂 JFX_NO_ARROW")
+        void none() {
+            MenuButton btn = MenuButtonAnt.create()
+                    .arrowStyle(MenuButtonAnt.ArrowStyle.NONE).build();
+            assertFalse(btn.getStyleClass().contains(JfxStyles.JFX_ARROW_TRIANGLE));
+            assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_NO_ARROW));
+        }
+
+        @Test
+        @DisplayName("noArrow() 等价 arrowStyle(NONE)")
+        void noArrow_sugar() {
+            MenuButton btn = MenuButtonAnt.create().noArrow().build();
+            assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_NO_ARROW));
+        }
+
+        @Test
+        @DisplayName("arrowStyle 三态互斥：TRIANGLE → NONE 仅保留 JFX_NO_ARROW")
+        void arrowStyle_mutuallyExclusive() {
+            MenuButton btn = MenuButtonAnt.create()
+                    .arrowStyle(MenuButtonAnt.ArrowStyle.TRIANGLE)
+                    .arrowStyle(MenuButtonAnt.ArrowStyle.NONE)
+                    .build();
+            assertFalse(btn.getStyleClass().contains(JfxStyles.JFX_ARROW_TRIANGLE));
+            assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_NO_ARROW));
         }
     }
 
@@ -155,14 +243,14 @@ class SplitButtonAntTest extends JfxTestBase {
     @Test
     @DisplayName("disabled(true) 设置 isDisable")
     void disabled_true() {
-        SplitMenuButton btn = SplitButtonAnt.create().disabled(true).build();
+        MenuButton btn = MenuButtonAnt.create().disabled(true).build();
         assertTrue(btn.isDisable());
     }
 
     @Test
     @DisplayName("disabled(false) 默认不禁用")
     void disabled_defaultFalse() {
-        SplitMenuButton btn = SplitButtonAnt.create().build();
+        MenuButton btn = MenuButtonAnt.create().build();
         assertFalse(btn.isDisable());
     }
 
@@ -174,15 +262,22 @@ class SplitButtonAntTest extends JfxTestBase {
     @DisplayName("icon 设置 graphic")
     void icon_setsGraphic() {
         Rectangle icon = new Rectangle(16, 16);
-        SplitMenuButton btn = SplitButtonAnt.create().icon(icon).build();
+        MenuButton btn = MenuButtonAnt.create().icon(icon).build();
         assertEquals(icon, btn.getGraphic());
+    }
+
+    @Test
+    @DisplayName("icon(null) 不抛 NPE，不修改 graphic")
+    void icon_nullSafe() {
+        MenuButton btn = MenuButtonAnt.create().icon(null).build();
+        assertNull(btn.getGraphic());
     }
 
     @Test
     @DisplayName("contentDisplay 设置图标位置（仅 icon != null 时生效）")
     void contentDisplay_sets() {
         Rectangle icon = new Rectangle(12, 12);
-        SplitMenuButton btn = SplitButtonAnt.create()
+        MenuButton btn = MenuButtonAnt.create()
                 .icon(icon)
                 .contentDisplay(ContentDisplay.RIGHT)
                 .build();
@@ -190,35 +285,21 @@ class SplitButtonAntTest extends JfxTestBase {
     }
 
     @Test
-    @DisplayName("contentDisplay 默认 LEFT")
-    void contentDisplay_defaultLeft() {
-        SplitMenuButton btn = SplitButtonAnt.create().build();
+    @DisplayName("contentDisplay(null) 不抛 NPE，保持原值")
+    void contentDisplay_nullSafe() {
+        MenuButton btn = MenuButtonAnt.create().build();
         assertEquals(ContentDisplay.LEFT, btn.getContentDisplay());
     }
 
     // ============================================================
-    // onClick 事件
+    // focusTraversable
     // ============================================================
 
     @Test
-    @DisplayName("onClick 注册 ActionEvent handler（主按钮点击）")
-    void onClick_registersHandler() {
-        boolean[] fired = {false};
-        SplitMenuButton btn = SplitButtonAnt.create()
-                .onClick(e -> fired[0] = true)
-                .build();
-        assertNotNull(btn.getOnAction());
-        btn.getOnAction().handle(new ActionEvent());
-        assertTrue(fired[0]);
-    }
-
-    @Test
-    @DisplayName("onClick(null) 不抛异常，且不再有 handler")
-    void onClick_null() {
-        SplitMenuButton btn = SplitButtonAnt.create()
-                .onClick(null)
-                .build();
-        assertNull(btn.getOnAction());
+    @DisplayName("focusTraversable() 设置可聚焦（键盘 Enter/Space 触发下拉）")
+    void focusTraversable_sets() {
+        MenuButton btn = MenuButtonAnt.create("菜单").focusTraversable().build();
+        assertTrue(btn.isFocusTraversable());
     }
 
     // ============================================================
@@ -226,44 +307,45 @@ class SplitButtonAntTest extends JfxTestBase {
     // ============================================================
 
     @Nested
-    @DisplayName("下拉菜单项（item / itemDisabled / separator / add）")
+    @DisplayName("下拉菜单项（item / item(item,icon,handler) / itemDisabled / separator / add）")
     class Items {
 
         @Test
         @DisplayName("item(label, handler) 单个追加")
         void item_single() {
-            SplitMenuButton btn = SplitButtonAnt.create()
-                    .item("保存并新建", e -> {})
+            MenuButton btn = MenuButtonAnt.create()
+                    .item("导出", e -> {})
                     .build();
             assertEquals(1, btn.getItems().size());
-            assertEquals("保存并新建", btn.getItems().get(0).getText());
+            assertEquals("导出", btn.getItems().get(0).getText());
         }
 
         @Test
         @DisplayName("item(label, icon, handler) 带图标追加")
         void item_withIcon() {
             Rectangle icon = new Rectangle(12, 12);
-            SplitMenuButton btn = SplitButtonAnt.create()
-                    .item("选项", icon, e -> {})
+            MenuButton btn = MenuButtonAnt.create()
+                    .item("导入", icon, e -> {})
                     .build();
             MenuItem mi = btn.getItems().get(0);
-            assertEquals("选项", mi.getText());
+            assertEquals("导入", mi.getText());
             assertEquals(icon, mi.getGraphic());
         }
 
         @Test
         @DisplayName("item(label, null, handler) icon 为 null 不抛异常")
         void item_nullIcon() {
-            SplitMenuButton btn = SplitButtonAnt.create()
+            MenuButton btn = MenuButtonAnt.create()
                     .item("选项", null, e -> {})
                     .build();
             assertEquals(1, btn.getItems().size());
+            assertNull(btn.getItems().get(0).getGraphic());
         }
 
         @Test
         @DisplayName("item(label, null handler) onAction 为 null 不挂 handler")
         void item_nullHandler() {
-            SplitMenuButton btn = SplitButtonAnt.create()
+            MenuButton btn = MenuButtonAnt.create()
                     .item("选项", null)
                     .build();
             assertNull(btn.getItems().get(0).getOnAction());
@@ -272,20 +354,21 @@ class SplitButtonAntTest extends JfxTestBase {
         @Test
         @DisplayName("item(label, handler) 多次追加保持顺序")
         void item_multiple() {
-            SplitMenuButton btn = SplitButtonAnt.create()
+            MenuButton btn = MenuButtonAnt.create()
                     .item("a", e -> {})
                     .item("b", e -> {})
                     .item("c", e -> {})
                     .build();
             assertEquals(3, btn.getItems().size());
             assertEquals("a", btn.getItems().get(0).getText());
+            assertEquals("b", btn.getItems().get(1).getText());
             assertEquals("c", btn.getItems().get(2).getText());
         }
 
         @Test
         @DisplayName("itemDisabled(label) 追加禁用菜单项")
         void itemDisabled() {
-            SplitMenuButton btn = SplitButtonAnt.create()
+            MenuButton btn = MenuButtonAnt.create()
                     .itemDisabled("不可用")
                     .build();
             MenuItem mi = btn.getItems().get(0);
@@ -296,7 +379,7 @@ class SplitButtonAntTest extends JfxTestBase {
         @Test
         @DisplayName("separator() 追加 SeparatorMenuItem")
         void separator() {
-            SplitMenuButton btn = SplitButtonAnt.create()
+            MenuButton btn = MenuButtonAnt.create()
                     .item("a", e -> {})
                     .separator()
                     .item("b", e -> {})
@@ -309,7 +392,7 @@ class SplitButtonAntTest extends JfxTestBase {
         @DisplayName("add(MenuItem) 直接追加原生项")
         void add_menuItem() {
             MenuItem custom = new MenuItem("自定义");
-            SplitMenuButton btn = SplitButtonAnt.create()
+            MenuButton btn = MenuButtonAnt.create()
                     .add(custom)
                     .build();
             assertEquals(1, btn.getItems().size());
@@ -319,7 +402,7 @@ class SplitButtonAntTest extends JfxTestBase {
         @Test
         @DisplayName("add(null) 静默忽略")
         void add_nullIgnored() {
-            SplitMenuButton btn = SplitButtonAnt.create()
+            MenuButton btn = MenuButtonAnt.create()
                     .add((MenuItem) null)
                     .build();
             assertEquals(0, btn.getItems().size());
@@ -327,33 +410,50 @@ class SplitButtonAntTest extends JfxTestBase {
     }
 
     // ============================================================
-    // 链式串联
+    // 链式串联 + 继承式核心契约
     // ============================================================
 
     @Test
-    @DisplayName("全链式串联不抛异常")
+    @DisplayName("全链式串联不抛异常，所有配置生效")
     void fullChain_noException() {
         Rectangle icon = new Rectangle(14, 14);
-        EventHandler<ActionEvent> handler = e -> {};
-        SplitMenuButton btn = SplitButtonAnt.create("保存")
+        MenuButton btn = MenuButtonAnt.create("批量操作")
                 .size(Size.LARGE)
-                .arrowStyle(SplitButtonAnt.ArrowStyle.TRIANGLE)
-                .disabled(false)
                 .rounded()
+                .arrowStyle(MenuButtonAnt.ArrowStyle.TRIANGLE)
                 .icon(icon)
                 .contentDisplay(ContentDisplay.LEFT)
-                .onClick(handler)
-                .item("保存并新建", e -> {})
-                .item("保存并退出", new Rectangle(8, 8), e -> {})
+                .focusTraversable()
+                .disabled(false)
+                .item("导出", e -> {})
+                .item("删除", new Rectangle(8, 8), e -> {})
                 .itemDisabled("不可用")
                 .separator()
                 .add(new MenuItem("自定义"))
                 .build();
+
         assertNotNull(btn);
-        assertEquals("保存", btn.getText());
+        assertEquals("批量操作", btn.getText());
         assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_LARGE));
         assertTrue(btn.getStyleClass().contains(JfxStyles.SHAPE_ROUNDED));
         assertTrue(btn.getStyleClass().contains(JfxStyles.JFX_ARROW_TRIANGLE));
+        assertEquals(icon, btn.getGraphic());
+        assertTrue(btn.isFocusTraversable());
         assertEquals(5, btn.getItems().size());
+    }
+
+    @Test
+    @DisplayName("build() 返回自身（继承式核心契约）")
+    void build_returnsSelf() {
+        MenuButtonAnt btn = MenuButtonAnt.create();
+        assertSame(btn, btn.build());
+    }
+
+    @Test
+    @DisplayName("继承式：父类 MenuButton 引用可接收（多态兼容）")
+    void parentReference_polymorphism() {
+        MenuButton btn = MenuButtonAnt.create("通过父类接收").build();
+        assertInstanceOf(MenuButtonAnt.class, btn);
+        assertEquals("通过父类接收", btn.getText());
     }
 }
