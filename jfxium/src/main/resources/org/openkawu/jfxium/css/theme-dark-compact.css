@@ -223,6 +223,22 @@
   -fx-spacing: 6px;
   -fx-padding: 4 10 4 10;
 }
+/* 显式背景层级要压过透明基底，保证 .background(Background.*) 生效 */
+.jfx-h-bar.jfx-bg-default {
+  -fx-background-color: -color-bg-default;
+}
+.jfx-h-bar.jfx-bg-subtle {
+  -fx-background-color: -color-bg-subtle;
+}
+.jfx-h-bar.jfx-bg-layout {
+  -fx-background-color: -color-bg-layout;
+}
+.jfx-h-bar.jfx-bg-inset {
+  -fx-background-color: -color-bg-inset;
+}
+.jfx-h-bar.jfx-bg-transparent {
+  -fx-background-color: transparent;
+}
 .jfx-h-bar-spacer {
   -fx-background-color: transparent;
 }
@@ -233,6 +249,21 @@
   -fx-background-color: transparent;
   -fx-spacing: 6px;
   -fx-padding: 6px 8px 6px 8px;
+}
+.jfx-v-bar.jfx-bg-default {
+  -fx-background-color: -color-bg-default;
+}
+.jfx-v-bar.jfx-bg-subtle {
+  -fx-background-color: -color-bg-subtle;
+}
+.jfx-v-bar.jfx-bg-layout {
+  -fx-background-color: -color-bg-layout;
+}
+.jfx-v-bar.jfx-bg-inset {
+  -fx-background-color: -color-bg-inset;
+}
+.jfx-v-bar.jfx-bg-transparent {
+  -fx-background-color: transparent;
 }
 .jfx-v-bar-spacer {
   -fx-background-color: transparent;
@@ -1467,41 +1498,6 @@
   -fx-text-fill: -color-danger-emphasis;
 }
 /* ============================================
-   Alert / Notification Styles
-   ============================================ */
-.jfx-alert-success {
-  -fx-background-color: -color-success-subtle;
-  -fx-border-color: -color-success-muted;
-  -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
-  -fx-padding: 8px 12px;
-}
-.jfx-alert-info {
-  -fx-background-color: -color-accent-subtle;
-  -fx-border-color: -color-accent-muted;
-  -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
-  -fx-padding: 8px 12px;
-}
-.jfx-alert-warning {
-  -fx-background-color: -color-warning-subtle;
-  -fx-border-color: -color-warning-muted;
-  -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
-  -fx-padding: 8px 12px;
-}
-.jfx-alert-error {
-  -fx-background-color: -color-danger-subtle;
-  -fx-border-color: -color-danger-muted;
-  -fx-border-width: 1px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
-  -fx-padding: 8px 12px;
-}
-/* ============================================
    Badge Component
    ============================================ */
 .jfx-badge {
@@ -1936,6 +1932,31 @@
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
+}
+/* ============================================
+   Tooltip 状态色变体（对标 Ant Design Tooltip success/warning/error/info）
+   修饰类挂载逻辑由 TooltipStyleHelper.install(node, text, Type) 触发。
+   颜色语义与 _alert-enhance.less 的 success/info/warning/error 一致。
+   ============================================ */
+.tooltip.jfx-tooltip-success {
+  -fx-background-color: -color-success-subtle;
+  -fx-border-color: -color-success-muted;
+  -fx-text-fill: -color-success-emphasis;
+}
+.tooltip.jfx-tooltip-warning {
+  -fx-background-color: -color-warning-subtle;
+  -fx-border-color: -color-warning-muted;
+  -fx-text-fill: -color-warning-emphasis;
+}
+.tooltip.jfx-tooltip-error {
+  -fx-background-color: -color-danger-subtle;
+  -fx-border-color: -color-danger-muted;
+  -fx-text-fill: -color-danger-emphasis;
+}
+.tooltip.jfx-tooltip-info {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-accent-emphasis;
 }
 /* ============================================
    Pagination Component
@@ -3506,6 +3527,7 @@
 /* EmptyAnt：空状态 */
 .jfx-empty {
   -fx-padding: 48;
+  -fx-spacing: 6px;
 }
 .jfx-empty-icon {
   -fx-fill: -color-fg-subtle;
@@ -3884,6 +3906,7 @@
   -fx-background-color: transparent;
 }
 .jfx-collapse-header {
+  -fx-spacing: 6px;
   -fx-padding: 12 16 12 16;
   -fx-cursor: hand;
 }
@@ -4883,17 +4906,57 @@
   -fx-text-fill: -color-fg-on-emphasis;
 }
 /* ============================================
-   ProgressBar Sizes
+   FormAnt — 表单组件样式
+   根容器 .jfx-form 覆盖 modena .vbox 默认背景，
+   间距/hgap/vgap 全部走 token，尺寸变体通过后代选择器覆盖。
    ============================================ */
-.progress-bar.small {
-  -fx-pref-height: 4px;
+/* 根容器：透明背景（覆盖 modena .vbox 默认背景）+ 零间距 */
+.jfx-form {
+  -fx-background-color: transparent;
+  -fx-spacing: 0;
 }
-.progress-bar.large {
-  -fx-pref-height: 12px;
+/* 水平布局（GridPane）：label 列 + control 列 */
+.jfx-form-horizontal {
+  -fx-hgap: 12px;
+  /* 16px — label 与 control 水平间距 */
+  -fx-vgap: 12px;
+  /* 16px — 行间垂直间距（DEFAULT） */
 }
-/* ============================================
-   Form Layout Helpers
-   ============================================ */
+/* 垂直布局（VBox）：item 之间的垂直间距 */
+.jfx-form-vertical {
+  -fx-spacing: 12px;
+  /* 16px — DEFAULT */
+}
+/* 内联布局（HBox）：item 之间的水平间距 */
+.jfx-form-inline {
+  -fx-spacing: 12px;
+  /* 16px */
+}
+/* 尺寸变体：覆盖 vgap / spacing */
+.jfx-form-size-small .jfx-form-horizontal {
+  -fx-vgap: 8px;
+  /* 12px */
+}
+.jfx-form-size-small .jfx-form-vertical {
+  -fx-spacing: 8px;
+  /* 12px */
+}
+.jfx-form-size-large .jfx-form-horizontal {
+  -fx-vgap: 18px;
+  /* 24px */
+}
+.jfx-form-size-large .jfx-form-vertical {
+  -fx-spacing: 18px;
+  /* 24px */
+}
+/* 尺寸调节：仅控制字号 */
+.jfx-form-size-small {
+  -fx-font-size: 12px;
+}
+.jfx-form-size-large {
+  -fx-font-size: 16px;
+}
+/* Label */
 .jfx-form-label {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 13px;
@@ -4903,11 +4966,12 @@
   -fx-content: " *";
   -fx-text-fill: -color-danger-emphasis;
 }
+/* Help text */
 .jfx-form-help-text {
   -fx-text-fill: -color-fg-subtle;
   -fx-font-size: 12px;
 }
-/* 校验状态色：通过修饰类切换 helpText 颜色，避免在 Java 端拼 inline style */
+/* 校验状态色：通过修饰类切换 helpText 颜色 */
 .jfx-form-help-text.jfx-form-help-error {
   -fx-text-fill: -color-danger-emphasis;
 }
@@ -4917,34 +4981,37 @@
 .jfx-form-help-text.jfx-form-help-success {
   -fx-text-fill: -color-success-emphasis;
 }
-/* Form footer：padding 通过 LESS 控制，对齐"组件不在 Java 注入样式"原则 */
-.jfx-form-footer {
-  -fx-padding: 16 0 0 0;
+/* Form item：label 与控件之间、控件与 help/error 之间的纵向间距 */
+.jfx-form-item-box,
+.jfx-form-item-wrapper {
+  -fx-spacing: 2px;
 }
-/* Form header 区（M19.39）：顶部 banner 区，底部加分隔线与表单体拉开 */
+/* Footer：顶部留间距 + 按钮间间距 */
+.jfx-form-footer {
+  -fx-padding: 12px 0 0 0;
+  -fx-spacing: 6px;
+}
+/* Header 区：顶部 banner，底部加分隔线与表单体拉开 */
 .jfx-form-header {
   -fx-padding: 0 0 8px 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
-/* Form section 分段标题（M19.39）：长表单分组标题，上方留间距与前一组拉开 */
+/* Section 分段标题：长表单分组标题，上方留间距与前一组拉开 */
 .jfx-form-section-title {
   -fx-font-size: 16px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 12px 0 6px 0;
 }
-/* Form item：label 与控件之间、控件与 help/error 之间的纵向间距 */
-.jfx-form-item-box,
-.jfx-form-item-wrapper {
-  -fx-spacing: 2px;
+/* ============================================
+   ProgressBar Sizes
+   ============================================ */
+.progress-bar.small {
+  -fx-pref-height: 4px;
 }
-/* Form 尺寸调节：仅控制字号与控件最小高度，间距由 Java 侧 VBox.spacing 负责 */
-.jfx-form-size-small {
-  -fx-font-size: 12px;
-}
-.jfx-form-size-large {
-  -fx-font-size: 16px;
+.progress-bar.large {
+  -fx-pref-height: 12px;
 }
 /* ============================================
    Layout Primitive 命名空间挂载点
@@ -5362,6 +5429,11 @@
   -fx-pref-height: 10px;
   -fx-background-color: -color-fg-muted;
 }
+.tree-table-view .tree-table-row-cell > .tree-disclosure-node {
+  /* TreeTable 的展开箭头需要和第一列内容拉开间距，避免箭头和文本贴死 */
+  -fx-padding: 0.35em 8px 0 8px;
+  -fx-background-color: transparent;
+}
 .tree-table-view .tree-disclosure-node:hover .arrow {
   -fx-background-color: -color-accent-emphasis;
 }
@@ -5681,143 +5753,6 @@
   -fx-border-color: -color-accent-muted;
 }
 /* ============================================
-   Alert Enhancements with Icons
-   ============================================ */
-.jfx-alert-with-icon {
-  -fx-padding: 8px 12px;
-  -fx-border-radius: 6px;
-  -fx-background-radius: 6px;
-  -fx-border-width: 1px;
-}
-.jfx-alert-with-icon.success {
-  -fx-background-color: -color-success-subtle;
-  -fx-border-color: -color-success-muted;
-}
-.jfx-alert-with-icon.info {
-  -fx-background-color: -color-accent-subtle;
-  -fx-border-color: -color-accent-muted;
-}
-.jfx-alert-with-icon.warning {
-  -fx-background-color: -color-warning-subtle;
-  -fx-border-color: -color-warning-muted;
-}
-.jfx-alert-with-icon.error {
-  -fx-background-color: -color-danger-subtle;
-  -fx-border-color: -color-danger-muted;
-}
-.jfx-alert-icon {
-  -fx-font-size: 20px;
-  -fx-font-weight: bold;
-}
-.jfx-alert-icon.success {
-  -fx-text-fill: -color-success-emphasis;
-}
-.jfx-alert-icon.info {
-  -fx-text-fill: -color-accent-emphasis;
-}
-.jfx-alert-icon.warning {
-  -fx-text-fill: -color-warning-emphasis;
-}
-.jfx-alert-icon.error {
-  -fx-text-fill: -color-danger-emphasis;
-}
-.jfx-alert-title {
-  -fx-font-size: 13px;
-  -fx-font-weight: 600;
-  -fx-text-fill: -color-fg-default;
-}
-.jfx-alert-description {
-  -fx-font-size: 12px;
-  -fx-text-fill: -color-fg-muted;
-}
-/* ============================================
-   AlertAnt 完整状态机：
-   - 容器形态：默认（带边框圆角） / banner（无边框、占满宽度）
-   - 文本三件套：alert-title / alert-message / alert-icon，颜色由 type 修饰类切换
-   - 关闭按钮：alert-close-btn，文字色随 type 变化
-   原 Java 端 inline setStyle 的所有视觉样式现已搬入此 section。
-   ============================================ */
-.jfx-alert {
-  -fx-padding: 12 16 12 16;
-  -fx-spacing: 2px;
-  -fx-background-radius: 6px;
-  -fx-border-radius: 6px;
-  -fx-border-width: 1px;
-}
-.jfx-alert-header {
-  -fx-spacing: 6px;
-}
-/* banner 形态：无圆角、无边框，整条横幅 */
-.jfx-alert.jfx-alert-banner {
-  -fx-background-radius: 0;
-  -fx-border-radius: 0;
-  -fx-border-width: 0;
-}
-/* Alert 标题 + 各 type 文字色 */
-.jfx-alert .jfx-alert-title {
-  -fx-font-size: 13px;
-  -fx-font-weight: 600;
-}
-.jfx-alert.jfx-alert-success .jfx-alert-title {
-  -fx-text-fill: -color-success-emphasis;
-}
-.jfx-alert.jfx-alert-info .jfx-alert-title {
-  -fx-text-fill: -color-accent-emphasis;
-}
-.jfx-alert.jfx-alert-warning .jfx-alert-title {
-  -fx-text-fill: -color-warning-emphasis;
-}
-.jfx-alert.jfx-alert-error .jfx-alert-title {
-  -fx-text-fill: -color-danger-emphasis;
-}
-/* Alert 描述/正文 */
-.jfx-alert .jfx-alert-message {
-  -fx-font-size: 12px;
-}
-.jfx-alert .jfx-alert-message-indented {
-  -fx-padding: 0 0 0 24;
-}
-.jfx-alert.jfx-alert-success .jfx-alert-message {
-  -fx-text-fill: -color-success-emphasis;
-}
-.jfx-alert.jfx-alert-info .jfx-alert-message {
-  -fx-text-fill: -color-accent-emphasis;
-}
-.jfx-alert.jfx-alert-warning .jfx-alert-message {
-  -fx-text-fill: -color-warning-emphasis;
-}
-.jfx-alert.jfx-alert-error .jfx-alert-message {
-  -fx-text-fill: -color-danger-emphasis;
-}
-/* Alert 状态图标（容器内）字号 */
-.jfx-alert .jfx-alert-icon {
-  -fx-font-size: 16px;
-}
-/* Alert 关闭按钮：透明背景，文字色随 type，hover 浅化通过 opacity 控制 */
-.jfx-alert .jfx-alert-close-btn {
-  -fx-background-color: transparent;
-  -fx-font-size: 12px;
-  -fx-padding: 0;
-  -fx-min-width: 20px;
-  -fx-min-height: 20px;
-  -fx-cursor: hand;
-}
-.jfx-alert.jfx-alert-success .jfx-alert-close-btn {
-  -fx-text-fill: -color-success-emphasis;
-}
-.jfx-alert.jfx-alert-info .jfx-alert-close-btn {
-  -fx-text-fill: -color-accent-emphasis;
-}
-.jfx-alert.jfx-alert-warning .jfx-alert-close-btn {
-  -fx-text-fill: -color-warning-emphasis;
-}
-.jfx-alert.jfx-alert-error .jfx-alert-close-btn {
-  -fx-text-fill: -color-danger-emphasis;
-}
-.jfx-alert .jfx-alert-close-btn:hover {
-  -fx-opacity: 0.7;
-}
-/* ============================================
    Base Cards — Popover / Popconfirm / Message / Notification / Result
    Overlay card surface + text styles shared by base/ components
    ============================================ */
@@ -5977,6 +5912,106 @@
   -fx-border-style: solid;
 }
 /* ============================================
+   AlertAnt 独立 Stage 模态弹窗样式
+   ============================================
+   定位：覆盖 JavaFX 原生 Alert（javafx.scene.control.Alert<ButtonType>）
+   的 DialogPane 视觉，按 4 种 AlertType（INFO / WARNING / ERROR / CONFIRM）
+   切换配色。JFXium 的 AlertAnt 在 Java 端已挂上 jfx-alert-dialog 根 class +
+   jfx-alert-dialog-{info|warning|error|confirm} 修饰类 + header/content/
+   button-bar/graphic 子结构细化 class，本文件按这些 class 写视觉。
+
+   关键设计：
+   1. 整体圆角 + 阴影（独立 Stage 浮层感）
+   2. header 区域配色按 type 切换（subtle 色背景 + emphasis 色 icon）
+   3. 默认图形用 Ikonli 字符 Label（非 PNG），颜色由 text-fill 控制
+   4. 按钮区底部次级色背景，与 header 形成上下对称视觉锚点
+   ============================================ */
+/* 根容器：覆盖基础 .dialog-pane（_overlay.less 中已有的通用样式） */
+.dialog-pane.jfx-alert-dialog {
+  -fx-padding: 0;
+  -fx-max-width: 560px;
+  -fx-background-color: -color-bg-overlay;
+  -fx-background-radius: 8px;
+  -fx-border-color: -color-border-muted;
+  -fx-border-width: 1px;
+  -fx-border-radius: 8px;
+  -fx-effect: dropshadow(gaussian, -color-shadow-default, 24, 0, 0, 8);
+  /* header：图标 + 标题 */
+  /* 图形容器（左侧 icon 区，Java 端已钳制 48 宽） */
+  /* content：正文 */
+  /* button-bar：底部按钮区 */
+}
+.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-header {
+  -fx-padding: 20 24;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: 8px 8px 0 0;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-header .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-wrap-text: true;
+}
+.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-graphic {
+  -fx-padding: 0;
+  -fx-alignment: CENTER;
+}
+.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-graphic .jfx-alert-dialog-default-graphic {
+  -fx-alignment: CENTER;
+  -fx-font-size: 28px;
+}
+.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-content {
+  -fx-padding: 20 24;
+}
+.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-content .label {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 13px;
+  -fx-wrap-text: true;
+}
+.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-button-bar {
+  -fx-padding: 12 24;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-radius: 0 0 8px 8px;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1 0 0 0;
+}
+.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-button-bar .button {
+  -fx-min-width: 80;
+}
+/* ============================================
+   类型配色：info / warning / error / confirm
+   ============================================ */
+/* INFO：蓝色主题（accent） */
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-info .jfx-alert-dialog-header {
+  -fx-background-color: -color-accent-subtle;
+}
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-info .jfx-alert-dialog-default-graphic {
+  -fx-text-fill: -color-accent-emphasis;
+}
+/* WARNING：黄色主题（warning） */
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-warning .jfx-alert-dialog-header {
+  -fx-background-color: -color-warning-subtle;
+}
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-warning .jfx-alert-dialog-default-graphic {
+  -fx-text-fill: -color-warning-emphasis;
+}
+/* ERROR：红色主题（danger） */
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-error .jfx-alert-dialog-header {
+  -fx-background-color: -color-danger-subtle;
+}
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-error .jfx-alert-dialog-default-graphic {
+  -fx-text-fill: -color-danger-emphasis;
+}
+/* CONFIRM：success 绿色（语义：确认=OK 操作） */
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-confirm .jfx-alert-dialog-header {
+  -fx-background-color: -color-success-subtle;
+}
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-confirm .jfx-alert-dialog-default-graphic {
+  -fx-text-fill: -color-success-emphasis;
+}
+/* ============================================
    Popover Component
    ============================================ */
 .jfx-popover-panel {
@@ -6026,36 +6061,25 @@
 }
 /* ============================================
    Size Variants (Small / Large)
+   ============================================
+   注：Button sizes（.button.middle / .small / .xs / .large）已在 _button.less 中定义，
+   使用 @btn-padding-* token，不再在此重复（旧版用 @spacing-* 导致高度不一致）。
    ============================================ */
-/* Button sizes */
-.button.middle {
-  -fx-padding: 5px 11px;
-  -fx-font-size: 13px;
-}
-.button.small {
-  -fx-padding: 2px 6px;
-  -fx-font-size: 12px;
-}
-.button.xs {
-  -fx-padding: 0px 5px;
-  -fx-font-size: 12px;
-}
-.button.large {
-  -fx-padding: 6px 12px;
-  -fx-font-size: 13px;
-}
-/* Input/TextField sizes */
+/* Input / TextField / PasswordField sizes — 统一 @input-padding-* token 体系
+   （与 ComboBox / ChoiceBox / DatePicker / ColorPicker 保持一致）
+   注：_input-sizes.less 和 _passwordfield.less 各自也定义了这些规则，
+   此处作为 single source of truth 保留，旧版误用 @spacing-* 已被修正。 */
 .text-field.small,
 .text-area.small,
 .password-field.small {
-  -fx-padding: 2px 8px;
+  -fx-padding: 1px 7px;
   -fx-font-size: 12px;
 }
 .text-field.large,
 .text-area.large,
 .password-field.large {
-  -fx-padding: 6px 8px;
-  -fx-font-size: 13px;
+  -fx-padding: 7px 8px;
+  -fx-font-size: 16px;
 }
 /* ComboBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
 .combo-box.small {
@@ -6328,6 +6352,16 @@
 .jfx-workspace-template-header-actions {
   -fx-spacing: 2px;
   -fx-alignment: center-right;
+}
+/* ============================================================
+   ProjectFeatureTemplate（M19.40 LESS 化）
+   特性卡片：点击态增加 hover 反馈
+   ============================================================ */
+.jfx-feature-card-clickable {
+  -fx-cursor: hand;
+}
+.jfx-feature-card-clickable:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, 4);
 }
 /* ============================================
    Component Auxiliary Styles

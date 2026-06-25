@@ -74,6 +74,12 @@
   
 }
 
+.tree-table-view .tree-table-row-cell > .tree-disclosure-node {
+  /* TreeTable 的展开箭头需要和第一列内容拉开间距，避免箭头和文本贴死 */
+  -fx-padding: 0.35em @tree-cell-padding-x 0 @tree-cell-padding-x;
+  -fx-background-color: transparent;
+}
+
 .tree-table-view .tree-disclosure-node:hover .arrow {
   -fx-background-color: -color-accent-emphasis;
 }
@@ -100,4 +106,3 @@
   -fx-border-color: transparent -color-border-muted -color-border-muted transparent;
   -fx-border-width: 0 1px 1px 0;
 }
-

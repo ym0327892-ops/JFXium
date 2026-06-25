@@ -1,41 +1,26 @@
 /* ============================================
    Size Variants (Small / Large)
+   ============================================
+   注：Button sizes（.button.middle / .small / .xs / .large）已在 _button.less 中定义，
+   使用 @btn-padding-* token，不再在此重复（旧版用 @spacing-* 导致高度不一致）。
    ============================================ */
 
-/* Button sizes */
-.button.middle {
-  -fx-padding: @btn-padding-y @btn-padding-x;
-  -fx-font-size: @font-size-md;
-}
-
-.button.small {
-  -fx-padding: @spacing-xs @spacing-sm;
-  -fx-font-size: @font-size-sm;
-}
-
-.button.xs {
-  -fx-padding: @btn-padding-y-xs @btn-padding-x-xs;
-  -fx-font-size: @font-size-sm;
-}
-
-.button.large {
-  -fx-padding: @spacing-sm @spacing-lg;
-  -fx-font-size: @font-size-md;
-}
-
-/* Input/TextField sizes */
+/* Input / TextField / PasswordField sizes — 统一 @input-padding-* token 体系
+   （与 ComboBox / ChoiceBox / DatePicker / ColorPicker 保持一致）
+   注：_input-sizes.less 和 _passwordfield.less 各自也定义了这些规则，
+   此处作为 single source of truth 保留，旧版误用 @spacing-* 已被修正。 */
 .text-field.small,
 .text-area.small,
 .password-field.small {
-  -fx-padding: @spacing-xs @input-padding-x;
+  -fx-padding: @input-padding-y-sm @input-padding-x-sm;
   -fx-font-size: @font-size-sm;
 }
 
 .text-field.large,
 .text-area.large,
 .password-field.large {
-  -fx-padding: @spacing-sm @input-padding-x;
-  -fx-font-size: @font-size-md;
+  -fx-padding: @input-padding-y-lg @input-padding-x-lg;
+  -fx-font-size: @font-size-lg;
 }
 
 /* ComboBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */

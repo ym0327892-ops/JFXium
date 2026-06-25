@@ -188,3 +188,14 @@
   -fx-spacing: @spacing-xs;
   -fx-alignment: center-right;
 }
+
+/* ============================================================
+   ProjectFeatureTemplate（M19.40 LESS 化）
+   特性卡片：点击态增加 hover 反馈
+   ============================================================ */
+.jfx-feature-card-clickable {
+  -fx-cursor: hand;
+}
+.jfx-feature-card-clickable:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, 4);
+}

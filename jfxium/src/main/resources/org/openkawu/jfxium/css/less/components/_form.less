@@ -1,0 +1,104 @@
+/* ============================================
+   FormAnt — 表单组件样式
+   根容器 .jfx-form 覆盖 modena .vbox 默认背景，
+   间距/hgap/vgap 全部走 token，尺寸变体通过后代选择器覆盖。
+   ============================================ */
+
+/* 根容器：透明背景（覆盖 modena .vbox 默认背景）+ 零间距 */
+.jfx-form {
+  -fx-background-color: transparent;
+  -fx-spacing: 0;
+}
+
+/* 水平布局（GridPane）：label 列 + control 列 */
+.jfx-form-horizontal {
+  -fx-hgap: @spacing-lg;   /* 16px — label 与 control 水平间距 */
+  -fx-vgap: @spacing-lg;   /* 16px — 行间垂直间距（DEFAULT） */
+}
+
+/* 垂直布局（VBox）：item 之间的垂直间距 */
+.jfx-form-vertical {
+  -fx-spacing: @spacing-lg;   /* 16px — DEFAULT */
+}
+
+/* 内联布局（HBox）：item 之间的水平间距 */
+.jfx-form-inline {
+  -fx-spacing: @spacing-lg;   /* 16px */
+}
+
+/* 尺寸变体：覆盖 vgap / spacing */
+.jfx-form-size-small .jfx-form-horizontal {
+  -fx-vgap: @spacing-md;   /* 12px */
+}
+.jfx-form-size-small .jfx-form-vertical {
+  -fx-spacing: @spacing-md;   /* 12px */
+}
+.jfx-form-size-large .jfx-form-horizontal {
+  -fx-vgap: @spacing-lg + @spacing-sm;   /* 24px */
+}
+.jfx-form-size-large .jfx-form-vertical {
+  -fx-spacing: @spacing-lg + @spacing-sm;   /* 24px */
+}
+
+/* 尺寸调节：仅控制字号 */
+.jfx-form-size-small {
+  -fx-font-size: @font-size-sm;
+}
+.jfx-form-size-large {
+  -fx-font-size: @font-size-lg;
+}
+
+/* Label */
+.jfx-form-label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-md;
+  -fx-font-weight: 500;
+}
+.jfx-form-label-required::after {
+  -fx-content: " *";
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+/* Help text */
+.jfx-form-help-text {
+  -fx-text-fill: -color-fg-subtle;
+  -fx-font-size: @font-size-sm;
+}
+
+/* 校验状态色：通过修饰类切换 helpText 颜色 */
+.jfx-form-help-text.jfx-form-help-error {
+  -fx-text-fill: -color-danger-emphasis;
+}
+.jfx-form-help-text.jfx-form-help-warning {
+  -fx-text-fill: -color-warning-emphasis;
+}
+.jfx-form-help-text.jfx-form-help-success {
+  -fx-text-fill: -color-success-emphasis;
+}
+
+/* Form item：label 与控件之间、控件与 help/error 之间的纵向间距 */
+.jfx-form-item-box,
+.jfx-form-item-wrapper {
+  -fx-spacing: @spacing-xs;
+}
+
+/* Footer：顶部留间距 + 按钮间间距 */
+.jfx-form-footer {
+  -fx-padding: @spacing-lg 0 0 0;
+  -fx-spacing: @spacing-sm;
+}
+
+/* Header 区：顶部 banner，底部加分隔线与表单体拉开 */
+.jfx-form-header {
+  -fx-padding: 0 0 @spacing-md 0;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+/* Section 分段标题：长表单分组标题，上方留间距与前一组拉开 */
+.jfx-form-section-title {
+  -fx-font-size: @font-size-lg;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: @spacing-lg 0 @spacing-sm 0;
+}

@@ -13,3 +13,32 @@
   -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
 }
 
+/* ============================================
+   Tooltip 状态色变体（对标 Ant Design Tooltip success/warning/error/info）
+   修饰类挂载逻辑由 TooltipStyleHelper.install(node, text, Type) 触发。
+   颜色语义与 _alert-enhance.less 的 success/info/warning/error 一致。
+   ============================================ */
+.tooltip.jfx-tooltip-success {
+  -fx-background-color: -color-success-subtle;
+  -fx-border-color: -color-success-muted;
+  -fx-text-fill: -color-success-emphasis;
+}
+
+.tooltip.jfx-tooltip-warning {
+  -fx-background-color: -color-warning-subtle;
+  -fx-border-color: -color-warning-muted;
+  -fx-text-fill: -color-warning-emphasis;
+}
+
+.tooltip.jfx-tooltip-error {
+  -fx-background-color: -color-danger-subtle;
+  -fx-border-color: -color-danger-muted;
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.tooltip.jfx-tooltip-info {
+  -fx-background-color: -color-accent-subtle;
+  -fx-border-color: -color-accent-muted;
+  -fx-text-fill: -color-accent-emphasis;
+}
+

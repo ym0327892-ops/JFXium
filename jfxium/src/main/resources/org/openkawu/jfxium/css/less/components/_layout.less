@@ -113,6 +113,27 @@
   -fx-padding: 4 10 4 10;
 }
 
+/* 显式背景层级要压过透明基底，保证 .background(Background.*) 生效 */
+.jfx-h-bar.jfx-bg-default {
+  -fx-background-color: -color-bg-default;
+}
+
+.jfx-h-bar.jfx-bg-subtle {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.jfx-h-bar.jfx-bg-layout {
+  -fx-background-color: -color-bg-layout;
+}
+
+.jfx-h-bar.jfx-bg-inset {
+  -fx-background-color: -color-bg-inset;
+}
+
+.jfx-h-bar.jfx-bg-transparent {
+  -fx-background-color: transparent;
+}
+
 .jfx-h-bar-spacer {
   -fx-background-color: transparent;
 }
@@ -124,6 +145,26 @@
   -fx-background-color: transparent;
   -fx-spacing: @spacing-sm;
   -fx-padding: @spacing-sm @spacing-md @spacing-sm @spacing-md;
+}
+
+.jfx-v-bar.jfx-bg-default {
+  -fx-background-color: -color-bg-default;
+}
+
+.jfx-v-bar.jfx-bg-subtle {
+  -fx-background-color: -color-bg-subtle;
+}
+
+.jfx-v-bar.jfx-bg-layout {
+  -fx-background-color: -color-bg-layout;
+}
+
+.jfx-v-bar.jfx-bg-inset {
+  -fx-background-color: -color-bg-inset;
+}
+
+.jfx-v-bar.jfx-bg-transparent {
+  -fx-background-color: transparent;
 }
 
 .jfx-v-bar-spacer {
