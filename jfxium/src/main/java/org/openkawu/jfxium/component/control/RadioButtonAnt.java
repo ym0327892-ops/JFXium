@@ -4,7 +4,12 @@ import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.ApplySizeUtil;
+import org.openkawu.jfxium.core.util.Bindings;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 
@@ -48,12 +53,9 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class RadioButtonAnt extends RadioButton implements LayoutCommon<RadioButtonAnt> {
+public class RadioButtonAnt extends RadioButton implements LayoutCommon<RadioButtonAnt>, DisabledSupport<RadioButtonAnt> {
 
-    /** 尺寸枚举，与 ButtonAnt/InputAnt 一致（DEFAULT/SMALL/LARGE）。 */
-    public enum Size {
-        DEFAULT, SMALL, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     /**
      * 形状枚举。
@@ -99,7 +101,7 @@ public class RadioButtonAnt extends RadioButton implements LayoutCommon<RadioBut
 
     /** 设置文本（链式包装 setText）。 */
     public RadioButtonAnt text(String text) {
-        setText(text != null ? text : "");
+        setText(TextUtils.safeText(text));
         return this;
     }
 
@@ -109,24 +111,14 @@ public class RadioButtonAnt extends RadioButton implements LayoutCommon<RadioBut
         return this;
     }
 
-    /** 设置禁用状态。 */
-    public RadioButtonAnt disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
 
     /**
      * 设置尺寸。幂等——先清旧 size styleClass，再按需挂新。
      * DEFAULT 仅清不挂。
      */
     public RadioButtonAnt size(Size size) {
-        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
-        if (size == Size.SMALL) {
-            getStyleClass().add(JfxStyles.SIZE_SMALL);
-        } else if (size == Size.LARGE) {
-            getStyleClass().add(JfxStyles.SIZE_LARGE);
-        }
-        return this;
+        return ApplySizeUtil.apply(this, size);
     }
 
     /**
@@ -153,17 +145,13 @@ public class RadioButtonAnt extends RadioButton implements LayoutCommon<RadioBut
 
     /** 监听选中状态变化。 */
     public RadioButtonAnt onChange(Consumer<Boolean> handler) {
-        if (handler != null) {
-            selectedProperty().addListener((obs, oldVal, newVal) -> handler.accept(newVal));
-        }
+        Bindings.onChange(selectedProperty(), handler);
         return this;
     }
 
     /** 双向绑定：控件值 ↔ Property 值实时同步。 */
     public RadioButtonAnt bindValue(BooleanProperty property) {
-        if (property != null) {
-            selectedProperty().bindBidirectional(property);
-        }
+        Bindings.bindBidirectional(selectedProperty(), property);
         return this;
     }
 

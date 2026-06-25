@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.logging.Logger;
 
@@ -51,7 +52,7 @@ public class DividerAnt {
         private Builder() {}
 
         public Builder text(String text) {
-            this.text = text != null ? text : "";
+            this.text = TextUtils.safeText(text);
             return this;
         }
 

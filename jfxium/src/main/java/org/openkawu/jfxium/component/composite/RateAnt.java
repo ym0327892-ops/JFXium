@@ -8,6 +8,9 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.IconPath;
+import org.openkawu.jfxium.core.util.NumericUtils;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 
@@ -45,6 +48,19 @@ import java.util.function.Consumer;
  */
 public class RateAnt {
 
+    /**
+     * 评分尺寸枚举（保留内部定义）。
+     *
+     * <p>P1-S1 抽取阶段未与顶级 {@link org.openkawu.jfxium.core.token.Size} 合并，原因：
+     * <ul>
+     *   <li>本枚举携带专属 token（{@code SMALL=16 / DEFAULT=24 / LARGE=32}），
+     *       作为 SVGPath 的缩放基数（{@code scale = size / 24.0}）使用；</li>
+     *   <li>{@link #getValue()} 在 {@code build()} 中提供实际像素尺寸，
+     *       是评分组件 layout 约束的一部分（图标大小 + 间距对齐），非纯枚举语义。</li>
+     * </ul>
+     * 后续如需统一，应由 {@code org.openkawu.jfxium.core.token.Size} 扩展 token 字段
+     * 并升级各组件再做合并。本枚举维持现状。
+     */
     public enum Size {
         SMALL(16), DEFAULT(24), LARGE(32);
 
@@ -64,7 +80,7 @@ public class RateAnt {
         private double value = 0;
         private double defaultValue = 0;
         private boolean allowHalf = false;
-        private boolean disabled = false;
+        // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取）
         private Size size = Size.DEFAULT;
         private String activeColor = "-color-warning-emphasis";
         private String inactiveColor = "-color-border-default";
@@ -79,7 +95,7 @@ public class RateAnt {
         private DoubleProperty bindProperty = null;
 
         public Builder count(int count) {
-            this.count = Math.max(1, count);
+            this.count = TextUtils.ensureAtLeastOne(count);
             return this;
         }
 
@@ -102,15 +118,6 @@ public class RateAnt {
 
         public Builder allowHalf() {
             return allowHalf(true);
-        }
-
-        public Builder disabled(boolean disabled) {
-            this.disabled = disabled;
-            return this;
-        }
-
-        public Builder disabled() {
-            return disabled(true);
         }
 
         public Builder size(Size size) {
@@ -139,7 +146,7 @@ public class RateAnt {
             rateBox.setAlignment(Pos.CENTER_LEFT);
             rateBox.getStyleClass().add(JfxStyles.RATE);
 
-            if (disabled) {
+            if (Boolean.TRUE.equals(disable)) {
                 rateBox.setOpacity(0.6);
             }
 
@@ -158,7 +165,7 @@ public class RateAnt {
 
                 updateStarColor(star, starIndex, value, inactiveColor, activeColor);
 
-                if (!disabled) {
+                if (!Boolean.TRUE.equals(disable)) {
                     final int index = i;
                     star.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
                         double hoverValue = allowHalf ? calculateHalfValue(index, e.getX(), starSize) : starIndex;
@@ -199,8 +206,7 @@ public class RateAnt {
         }
 
         private SVGPath createStar(int size) {
-            SVGPath star = new SVGPath();
-            star.setContent("M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z");
+            SVGPath star = IconPath.create(IconPath.STAR);
             star.setScaleX(size / 24.0);
             star.setScaleY(size / 24.0);
             star.getStyleClass().add(JfxStyles.RATE_STAR);
@@ -228,10 +234,7 @@ public class RateAnt {
         }
 
         private double normalizeValue(double value) {
-            if (!Double.isFinite(value)) {
-                return 0;
-            }
-            return Math.max(0, Math.min(count, value));
+            return NumericUtils.clamp(value, 0, count, 0);
         }
     }
 

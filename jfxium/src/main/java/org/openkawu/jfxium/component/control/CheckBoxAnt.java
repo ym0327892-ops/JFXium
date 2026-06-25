@@ -3,7 +3,12 @@ package org.openkawu.jfxium.component.control;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.CheckBox;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.ApplySizeUtil;
+import org.openkawu.jfxium.core.util.Bindings;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 
@@ -46,12 +51,9 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class CheckBoxAnt extends CheckBox implements LayoutCommon<CheckBoxAnt> {
+public class CheckBoxAnt extends CheckBox implements LayoutCommon<CheckBoxAnt>, DisabledSupport<CheckBoxAnt> {
 
-    /** 尺寸枚举，与 ButtonAnt/InputAnt 一致（DEFAULT/SMALL/LARGE）。 */
-    public enum Size {
-        DEFAULT, SMALL, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     /**
      * 形状枚举。
@@ -98,7 +100,7 @@ public class CheckBoxAnt extends CheckBox implements LayoutCommon<CheckBoxAnt> {
 
     /** 设置文本（链式包装 setText）。 */
     public CheckBoxAnt text(String text) {
-        setText(text != null ? text : "");
+        setText(TextUtils.safeText(text));
         return this;
     }
 
@@ -108,11 +110,7 @@ public class CheckBoxAnt extends CheckBox implements LayoutCommon<CheckBoxAnt> {
         return this;
     }
 
-    /** 设置禁用状态。 */
-    public CheckBoxAnt disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
 
     /** 设置不确定状态（"半选"）。 */
     public CheckBoxAnt indeterminate(boolean indeterminate) {
@@ -134,13 +132,7 @@ public class CheckBoxAnt extends CheckBox implements LayoutCommon<CheckBoxAnt> {
      * DEFAULT 仅清不挂（与 ButtonAnt 行为一致）。
      */
     public CheckBoxAnt size(Size size) {
-        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
-        if (size == Size.SMALL) {
-            getStyleClass().add(JfxStyles.SIZE_SMALL);
-        } else if (size == Size.LARGE) {
-            getStyleClass().add(JfxStyles.SIZE_LARGE);
-        }
-        return this;
+        return ApplySizeUtil.apply(this, size);
     }
 
     /**
@@ -165,17 +157,13 @@ public class CheckBoxAnt extends CheckBox implements LayoutCommon<CheckBoxAnt> {
 
     /** 选中状态变化回调。 */
     public CheckBoxAnt onChange(Consumer<Boolean> handler) {
-        if (handler != null) {
-            selectedProperty().addListener((obs, oldVal, newVal) -> handler.accept(newVal));
-        }
+        Bindings.onChange(selectedProperty(), handler);
         return this;
     }
 
     /** 双向绑定：控件值 ↔ Property 值实时同步。 */
     public CheckBoxAnt bindValue(BooleanProperty property) {
-        if (property != null) {
-            selectedProperty().bindBidirectional(property);
-        }
+        Bindings.bindBidirectional(selectedProperty(), property);
         return this;
     }
 

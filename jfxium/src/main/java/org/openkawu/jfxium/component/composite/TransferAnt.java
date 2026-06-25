@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ public class TransferAnt<T> {
         private Consumer<List<T>> onChange = null;
         private Consumer<List<T>> onSelectChange = null;
         private boolean showSearch = false;
-        private boolean disabled = false;
+        // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取）
         private ObjectProperty<List<T>> bindProperty = null;
         private HBox transferRoot;
 
@@ -77,7 +78,7 @@ public class TransferAnt<T> {
             return this;
         }
         public Builder<T> titles(String sourceTitle, String targetTitle) {
-            this.titles = safeText(sourceTitle) + ";" + safeText(targetTitle);
+            this.titles = TextUtils.safeText(sourceTitle) + ";" + TextUtils.safeText(targetTitle);
             return this;
         }
         public Builder<T> render(Function<T, String> render) {
@@ -88,7 +89,6 @@ public class TransferAnt<T> {
         public Builder<T> onSelectChange(Consumer<List<T>> onSelectChange) { this.onSelectChange = onSelectChange; return this; }
         public Builder<T> showSearch(boolean showSearch) { this.showSearch = showSearch; return this; }
         public Builder<T> showSearch() { return showSearch(true); }
-        public Builder<T> disabled(boolean disabled) { this.disabled = disabled; return this; }
 
         /** 双向绑定：控件值（目标列表 targetKeys）↔ Property 值实时同步。 */
         public Builder<T> bindValue(ObjectProperty<List<T>> property) {
@@ -138,7 +138,7 @@ public class TransferAnt<T> {
             HBox.setHgrow(targetBox, Priority.ALWAYS);
 
             transferRoot.getChildren().addAll(sourceBox, middleBox, targetBox);
-            transferRoot.setDisable(disabled);
+            transferRoot.setDisable(Boolean.TRUE.equals(disable));
         }
 
         private VBox buildListBox(String title, List<T> items, boolean isSource) {
@@ -215,7 +215,7 @@ public class TransferAnt<T> {
                     refreshTransferView();
                 }
             });
-            toRightBtn.setDisable(disabled);
+            toRightBtn.setDisable(Boolean.TRUE.equals(disable));
 
             Button toLeftBtn = createTransferButton("<");
             toLeftBtn.setOnAction(e -> {
@@ -227,7 +227,7 @@ public class TransferAnt<T> {
                     refreshTransferView();
                 }
             });
-            toLeftBtn.setDisable(disabled);
+            toLeftBtn.setDisable(Boolean.TRUE.equals(disable));
 
             box.getChildren().addAll(toRightBtn, toLeftBtn);
             return box;
@@ -263,12 +263,10 @@ public class TransferAnt<T> {
 
         private String renderText(T item) {
             String text = render != null ? render.apply(item) : null;
-            return text != null ? text : "";
+            return TextUtils.safeText(text);
         }
 
-        private static String safeText(String text) {
-            return text != null ? text : "";
-        }
+        // safeText 统一改用 TextUtils.safeText,见 P0-23。
     }
 
     public static <T> Builder<T> create() {

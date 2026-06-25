@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.composite.SpinAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.token.Size;
 
 /**
  * JFXium 简单加载旋转组件 - 对标 Ant Design Spin 的 SPINNER 模式。
@@ -25,12 +26,19 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
  */
 public class SpinnerAnt {
 
+    /** 默认 spinner 尺寸（32px）。 */
+    private static final double DEFAULT_SIZE = 32;
+    /** SMALL 档阈值：≤24px → Size.SMALL。 */
+    private static final double SMALL_THRESHOLD = 24;
+    /** LARGE 档阈值：≥48px → Size.LARGE。 */
+    private static final double LARGE_THRESHOLD = 48;
+
     public static Builder create() {
         return new Builder();
     }
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
-        private double size = 32;
+        private double size = DEFAULT_SIZE;
 
         private Builder() {}
 
@@ -44,10 +52,10 @@ public class SpinnerAnt {
          * 返回 {@link VBox}（与 SpinAnt 一致），不是 ProgressIndicator。
          */
         public VBox build() {
-            SpinAnt.Size spinSize;
-            if (size <= 24)       spinSize = SpinAnt.Size.SMALL;
-            else if (size >= 48)  spinSize = SpinAnt.Size.LARGE;
-            else                  spinSize = SpinAnt.Size.DEFAULT;
+            Size spinSize;
+            if (size <= SMALL_THRESHOLD)       spinSize = Size.SMALL;
+            else if (size >= LARGE_THRESHOLD)  spinSize = Size.LARGE;
+            else                  spinSize = Size.DEFAULT;
 
             VBox spin = SpinAnt.create()
                     .indicator(SpinAnt.Indicator.SPINNER)

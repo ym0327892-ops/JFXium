@@ -7,60 +7,88 @@ import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import org.openkawu.jfxium.component.composite.SwitchAnt;
-import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.component.layout.LayoutCommon;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.css.JfxStyles;
-import org.openkawu.jfxium.core.builder.Radius;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.ApplySizeUtil;
+import org.openkawu.jfxium.core.util.Bindings;
+import org.openkawu.jfxium.core.util.TextUtils;
+
+import java.util.function.Consumer;
 
 /**
- * JFXium 切换按钮组件（M19.6）— 包装 JavaFX {@link ToggleButton}。
+ * JFXium 切换按钮组件 - 对标 Ant Design Switch/Tag.CheckableTag（继承式 + 双工厂模式，M19.x 重构）。
  *
- * <p><b>定位</b>：具有"按下/弹起"两态切换的按钮（独立或加入 {@link ToggleGroup} 形成互斥组）。
- * 与 {@link ButtonAnt}（一次性触发）和 {@link SwitchAnt}（开关语义）严格区分。</p>
+ * <p><b>定位</b>：具有「按下 / 弹起」两态切换的按钮（独立或加入 {@link ToggleGroup} 形成互斥组）。
+ * 与 {@link ButtonAnt}（一次性触发）和 {@link org.openkawu.jfxium.component.composite.SwitchAnt}（开关语义）严格区分。</p>
  *
  * <h2>典型场景</h2>
  * <ul>
- *   <li>编辑器工具条："加粗 / 斜体 / 下划线"独立切换</li>
+ *   <li>编辑器工具条："加粗 / 斜体 / 下划线" 独立切换</li>
  *   <li>视图切换：列表 / 网格视图（同一 ToggleGroup 互斥）</li>
- *   <li>过滤开关：勾上"仅显示活跃用户"</li>
+ *   <li>过滤开关：勾上「仅显示活跃用户」</li>
  * </ul>
  *
- * <h2>API 用法</h2>
+ * <h2>用法 1：工厂链式（build 可选）</h2>
  * <pre>{@code
- * // 独立切换按钮
  * ToggleButton bold = ToggleButtonAnt.create("加粗")
  *     .selected(true)
  *     .onChange(sel -> applyBold(sel))
  *     .build();
  *
- * // 互斥组（与 RadioButton 同模式）
- * ToggleGroup viewGroup = new ToggleGroup();
- * ToggleButton listView = ToggleButtonAnt.create("列表").toggleGroup(viewGroup).selected(true).build();
- * ToggleButton cardView = ToggleButtonAnt.create("卡片").toggleGroup(viewGroup).build();
+ * // build 之后再改（继承式核心优势，取代原 modify()）
+ * bold.disabled(true);
  * }</pre>
  *
- * <h2>设计要点</h2>
+ * <h2>用法 2：业务继承</h2>
+ * <pre>{@code
+ * public class BoldToggle extends ToggleButtonAnt {
+ *     public BoldToggle() {
+ *         text("加粗");
+ *         selected(true);
+ *         size(Size.SMALL);
+ *     }
+ * }
+ * }</pre>
+ *
+ * <h2>设计契约</h2>
  * <ul>
- *   <li>API 与 ButtonAnt 镜像（type / size / shape / icon / disabled / onChange）</li>
- *   <li>样式走 LESS {@code .toggle-button} 系列（与 ButtonAnt 共享 button-base 视觉）</li>
- *   <li>选中态 {@code :selected} 由 LESS 控制，无需 Java 拼字符串</li>
+ *   <li><b>双重身份</b>：是 {@link ToggleButton} 也是工厂——可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时仍保留链式</li>
+ *   <li><b>幂等性</b>：{@code size()} / {@code shape()} 重复调用不会重复挂 styleClass</li>
+ *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class ToggleButtonAnt {
+public class ToggleButtonAnt extends ToggleButton
+        implements LayoutCommon<ToggleButtonAnt>, DisabledSupport<ToggleButtonAnt> {
 
-    /** 与 ButtonAnt 一致的尺寸枚举。 */
-    public enum Size {
-        DEFAULT,
-        SMALL,
-        LARGE
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
+
+    /**
+     * 形状枚举。
+     * <ul>
+     *   <li>{@link #DEFAULT}：默认（继承 .button 既有圆角，Ant Design 默认）</li>
+     *   <li>{@link #ROUNDED}：pill 圆角（适合标签式 toggle）</li>
+     *   <li>{@link #SQUARE}：直角方形（适合工具条）</li>
+     * </ul>
+     */
+    public enum Shape {
+        DEFAULT, ROUNDED, SQUARE
     }
 
-    public static Builder create(String text) {
-        return new Builder(text);
+    // ============================================================
+    // 工厂入口
+    // ============================================================
+
+    /** 工厂入口（无文本）。 */
+    public static ToggleButtonAnt create() {
+        return new ToggleButtonAnt();
     }
 
-    public static Builder create() {
-        return new Builder("");
+    /** 工厂入口（带文本）。 */
+    public static ToggleButtonAnt create(String text) {
+        return new ToggleButtonAnt(TextUtils.safeText(text));
     }
 
     /**
@@ -88,135 +116,138 @@ public class ToggleButtonAnt {
         return group;
     }
 
-    public static class Builder extends AbstractStyleBuilder<Builder> {
-        private final String text;
-        private Size size = Size.DEFAULT;
-        private boolean selected = false;
-        private boolean disabled = false;
-        private boolean rounded = false;
-        private boolean square = false;
-        private Node icon;
-        private ContentDisplay contentDisplay = ContentDisplay.LEFT;
-        private ToggleGroup toggleGroup;
-        private EventHandler<ActionEvent> onAction;
-        private java.util.function.Consumer<Boolean> onChange;
-        private BooleanProperty bindProperty = null;
+    // ============================================================
+    // 构造函数（公开，便于业务 extends）
+    // ============================================================
 
-        private Builder(String text) {
-            this.text = text;
+    public ToggleButtonAnt() {
+        super();
+        init();
+    }
+
+    public ToggleButtonAnt(String text) {
+        super(TextUtils.safeText(text));
+        init();
+    }
+
+    private void init() {
+        setFocusTraversable(true);
+        getStyleClass().add(JfxStyles.JFX_TOGGLE_BUTTON);
+    }
+
+    // ============================================================
+    // 流式 API —— 文本 / 图标
+    // ============================================================
+
+    /** 设置文本（链式包装 setText）。 */
+    public ToggleButtonAnt text(String text) {
+        setText(TextUtils.safeText(text));
+        return this;
+    }
+
+    /** 设置图标。 */
+    public ToggleButtonAnt icon(Node icon) {
+        setGraphic(icon);
+        return this;
+    }
+
+    /** 设置图标位置。 */
+    public ToggleButtonAnt contentDisplay(ContentDisplay display) {
+        if (display != null) {
+            setContentDisplay(display);
         }
+        return this;
+    }
 
-        public Builder size(Size size) {
-            this.size = size;
-            return this;
+    // ============================================================
+    // 流式 API —— 尺寸 / 形状（幂等，先清后挂）
+    // ============================================================
+
+    /**
+     * 设置尺寸。幂等——先清旧 size styleClass，再按需挂新。
+     * DEFAULT / MIDDLE 视为同一档位。
+     */
+    public ToggleButtonAnt size(Size size) {
+        return ApplySizeUtil.apply(this, size);
+    }
+
+    /**
+     * 设置形状。幂等——先清旧 shape styleClass，再按需挂新。
+     * DEFAULT 仅清不挂。
+     */
+    public ToggleButtonAnt shape(Shape shape) {
+        getStyleClass().removeAll(JfxStyles.SHAPE_ROUNDED, JfxStyles.SHAPE_SQUARE);
+        if (shape == Shape.ROUNDED) {
+            getStyleClass().add(JfxStyles.SHAPE_ROUNDED);
+        } else if (shape == Shape.SQUARE) {
+            getStyleClass().add(JfxStyles.SHAPE_SQUARE);
         }
+        return this;
+    }
 
-        public Builder selected(boolean selected) {
-            this.selected = selected;
-            return this;
+    /** pill 圆角，等价于 {@code shape(Shape.ROUNDED)}。 */
+    public ToggleButtonAnt rounded() {
+        return shape(Shape.ROUNDED);
+    }
+
+    /** 直角方形，等价于 {@code shape(Shape.SQUARE)}。 */
+    public ToggleButtonAnt square() {
+        return shape(Shape.SQUARE);
+    }
+
+    // ============================================================
+    // 流式 API —— 状态（selected / disabled）
+    // ============================================================
+
+    /** 设置选中状态。 */
+    public ToggleButtonAnt selected(boolean selected) {
+        setSelected(selected);
+        return this;
+    }
+
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
+
+    // ============================================================
+    // 流式 API —— 互斥组 / 事件 / 双向绑定
+    // ============================================================
+
+    /** 加入互斥 ToggleGroup（同组内只能选中一个）。 */
+    public ToggleButtonAnt toggleGroup(ToggleGroup group) {
+        if (group != null) {
+            setToggleGroup(group);
         }
+        return this;
+    }
 
-        public Builder disabled(boolean disabled) {
-            this.disabled = disabled;
-            return this;
+    /** 设置点击事件（与 onChange 不同：onAction 总是触发，onChange 仅在 selected 变化时触发）。 */
+    public ToggleButtonAnt onAction(EventHandler<ActionEvent> handler) {
+        setOnAction(handler);
+        return this;
+    }
+
+    /** 选中状态变化回调（推荐使用，sel=true 表示被选中，false 表示取消）。 */
+    public ToggleButtonAnt onChange(Consumer<Boolean> handler) {
+        if (handler != null) {
+            Bindings.onChange(selectedProperty(), handler);
         }
+        return this;
+    }
 
-        public Builder rounded() {
-            this.rounded = true;
-            this.square = false;
-            return this;
+    /** 双向绑定：控件值 ↔ Property 值实时同步。 */
+    public ToggleButtonAnt bindValue(BooleanProperty property) {
+        if (property != null) {
+            Bindings.bindBidirectional(selectedProperty(), property);
         }
+        return this;
+    }
 
-        public Builder square() {
-            this.square = true;
-            this.rounded = false;
-            return this;
-        }
-
-        public Builder icon(Node icon) {
-            this.icon = icon;
-            return this;
-        }
-
-        public Builder contentDisplay(ContentDisplay display) {
-            this.contentDisplay = display;
-            return this;
-        }
-
-        /** 加入互斥 ToggleGroup（同组内只能选中一个）。 */
-        public Builder toggleGroup(ToggleGroup group) {
-            this.toggleGroup = group;
-            return this;
-        }
-
-        public Builder onAction(EventHandler<ActionEvent> handler) {
-            this.onAction = handler;
-            return this;
-        }
-
-        /** 选中状态变化回调（推荐使用）。 */
-        public Builder onChange(java.util.function.Consumer<Boolean> handler) {
-            this.onChange = handler;
-            return this;
-        }
-
-        /** 双向绑定：控件值 ↔ Property 值实时同步。 */
-        public Builder bindValue(BooleanProperty property) {
-            this.bindProperty = property;
-            return this;
-        }
-
-        public ToggleButton build() {
-            ToggleButton btn = new ToggleButton(text);
-
-            // 保留原默认 SM 圆角行为（100% 等价原实现）
-            if (this.radius == null) this.radius = Radius.SM;
-
-            // Size
-            if (size == Size.SMALL) {
-                btn.getStyleClass().add(JfxStyles.SIZE_SMALL);
-            } else if (size == Size.LARGE) {
-                btn.getStyleClass().add(JfxStyles.SIZE_LARGE);
-            }
-
-            // Shape
-            if (rounded) {
-                btn.getStyleClass().add(JfxStyles.SHAPE_ROUNDED);
-            } else if (square) {
-                btn.getStyleClass().add(JfxStyles.SHAPE_SQUARE);
-            }
-
-            // Icon
-            if (icon != null) {
-                btn.setGraphic(icon);
-                btn.setContentDisplay(contentDisplay);
-            }
-
-            btn.setSelected(selected);
-            btn.setDisable(disabled);
-
-            // 双向绑定（在初始值设置之后）
-            if (bindProperty != null) {
-                btn.selectedProperty().bindBidirectional(bindProperty);
-            }
-
-            if (toggleGroup != null) {
-                btn.setToggleGroup(toggleGroup);
-            }
-
-            if (onAction != null) {
-                btn.setOnAction(onAction);
-            }
-
-            if (onChange != null) {
-                btn.selectedProperty().addListener((obs, oldVal, newVal) -> onChange.accept(newVal));
-            }
-
-            btn.setFocusTraversable(true);
-            btn.getStyleClass().add(JfxStyles.JFX_TOGGLE_BUTTON);
-
-            applyStyles(btn);
-            return btn;
-        }
+    /**
+     * Builder 模式终结调用——返回自身（向后兼容）。
+     *
+     * <p>ToggleButtonAnt 既是工厂也是节点：{@code build()} 跟直接拿 {@code this} 等价，
+     * 提供本方法是为了让 API 跟旧版 Builder 的 {@code .build()} 完全对齐。</p>
+     */
+    public ToggleButtonAnt build() {
+        return this;
     }
 }

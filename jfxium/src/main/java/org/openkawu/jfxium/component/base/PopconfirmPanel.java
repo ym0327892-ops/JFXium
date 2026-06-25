@@ -8,6 +8,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.IconPath;
 
 /**
  * 内部基础组件：气泡确认面板（标题 + 描述 + 确认/取消按钮）。
@@ -70,8 +72,7 @@ public class PopconfirmPanel {
             HBox titleBox = new HBox();
             titleBox.setAlignment(Pos.CENTER_LEFT);
 
-            SVGPath icon = new SVGPath();
-            icon.setContent("M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z");
+            SVGPath icon = IconPath.warningTriangle();
             icon.getStyleClass().add(JfxStyles.POPCONFIRM_ICON);
             titleBox.getChildren().add(icon);
 
@@ -93,7 +94,7 @@ public class PopconfirmPanel {
 
             Button cancelBtn = ButtonAnt.create(cancelText)
                 .type(ButtonAnt.Type.DEFAULT)
-                .size(ButtonAnt.Size.SMALL)
+                .size(Size.SMALL)
                 .onClick(e -> {
                     if (onCancel != null) {
                         onCancel.run();
@@ -103,7 +104,7 @@ public class PopconfirmPanel {
 
             Button okBtn = ButtonAnt.create(okText)
                 .type(ButtonAnt.Type.PRIMARY)
-                .size(ButtonAnt.Size.SMALL)
+                .size(Size.SMALL)
                 .onClick(e -> {
                     if (onConfirm != null) {
                         onConfirm.run();

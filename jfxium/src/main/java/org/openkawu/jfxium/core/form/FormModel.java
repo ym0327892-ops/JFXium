@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.core.form;
 
 import javafx.beans.property.*;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -50,9 +51,10 @@ public class FormModel {
 
     /** 声明一个 String 字段。 */
     public FormModel field(String name, String defaultValue) {
-        StringProperty prop = new SimpleStringProperty(defaultValue != null ? defaultValue : "");
+        String safeDefault = TextUtils.safeText(defaultValue);
+        StringProperty prop = new SimpleStringProperty(safeDefault);
         fields.put(name, prop);
-        defaults.put(name, defaultValue != null ? defaultValue : "");
+        defaults.put(name, safeDefault);
         return this;
     }
 

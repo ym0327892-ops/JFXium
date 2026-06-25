@@ -14,6 +14,7 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 import org.openkawu.jfxium.component.base.NotificationCard;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.util.AnimationDuration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ import java.util.function.Consumer;
  * JFXium 全局通知组件 - 对标 Ant Design Notification。
  *
  * <p><b>定位</b>：在窗口四个角落弹出通知卡片（标题 + 描述 + 可选自定义内容），
- * 支持自动消失或手动关闭。与 MessageAnt（短暂提示）和 AlertAnt（嵌入式常驻）严格区分。</p>
+ * 支持自动消失或手动关闭。与 MessageAnt（短暂提示）严格区分。</p>
  *
  * <h2>功能特性</h2>
  * <ul>
@@ -64,7 +65,6 @@ import java.util.function.Consumer;
  * }</pre>
  *
  * @see MessageAnt 全局短暂提示（自动消失，无标题）
- * @see org.openkawu.jfxium.component.composite.AlertAnt 嵌入式常驻提示
  */
 public class NotificationAnt {
 
@@ -296,19 +296,72 @@ public class NotificationAnt {
     }
 
     public static void success(String title, String description) {
-        create().title(title).description(description).type(Type.SUCCESS).build().show();
+        showStatic(title, description, Type.SUCCESS, 4, Placement.TOP_RIGHT);
     }
 
     public static void error(String title, String description) {
-        create().title(title).description(description).type(Type.ERROR).build().show();
+        showStatic(title, description, Type.ERROR, 4, Placement.TOP_RIGHT);
     }
 
     public static void warning(String title, String description) {
-        create().title(title).description(description).type(Type.WARNING).build().show();
+        showStatic(title, description, Type.WARNING, 4, Placement.TOP_RIGHT);
     }
 
     public static void info(String title, String description) {
-        create().title(title).description(description).type(Type.INFO).build().show();
+        showStatic(title, description, Type.INFO, 4, Placement.TOP_RIGHT);
+    }
+
+    // ============================================================
+    // duration / placement 重载（与 MessageAnt 一致：便捷入口不锁死参数）
+    // ============================================================
+
+    /** {@link #success(String, String)} 指定 duration（秒），0 = 不自动消失。 */
+    public static void success(String title, String description, int durationSeconds) {
+        showStatic(title, description, Type.SUCCESS, durationSeconds, Placement.TOP_RIGHT);
+    }
+
+    /** {@link #success(String, String)} 指定 placement。 */
+    public static void success(String title, String description, Placement placement) {
+        showStatic(title, description, Type.SUCCESS, 4, placement);
+    }
+
+    /** {@link #error(String, String)} 指定 duration（秒），0 = 不自动消失。 */
+    public static void error(String title, String description, int durationSeconds) {
+        showStatic(title, description, Type.ERROR, durationSeconds, Placement.TOP_RIGHT);
+    }
+
+    /** {@link #error(String, String)} 指定 placement。 */
+    public static void error(String title, String description, Placement placement) {
+        showStatic(title, description, Type.ERROR, 4, placement);
+    }
+
+    /** {@link #warning(String, String)} 指定 duration（秒），0 = 不自动消失。 */
+    public static void warning(String title, String description, int durationSeconds) {
+        showStatic(title, description, Type.WARNING, durationSeconds, Placement.TOP_RIGHT);
+    }
+
+    /** {@link #warning(String, String)} 指定 placement。 */
+    public static void warning(String title, String description, Placement placement) {
+        showStatic(title, description, Type.WARNING, 4, placement);
+    }
+
+    /** {@link #info(String, String)} 指定 duration（秒），0 = 不自动消失。 */
+    public static void info(String title, String description, int durationSeconds) {
+        showStatic(title, description, Type.INFO, durationSeconds, Placement.TOP_RIGHT);
+    }
+
+    /** {@link #info(String, String)} 指定 placement。 */
+    public static void info(String title, String description, Placement placement) {
+        showStatic(title, description, Type.INFO, 4, placement);
+    }
+
+    private static void showStatic(String title, String description, Type type, int durationSeconds, Placement placement) {
+        create()
+            .title(title).description(description)
+            .type(type)
+            .duration(durationSeconds)
+            .placement(placement)
+            .build().show();
     }
 
     private static void show(Builder config) {
@@ -343,12 +396,12 @@ public class NotificationAnt {
             boolean fromLeft = config.placement == Placement.TOP_LEFT || config.placement == Placement.BOTTOM_LEFT;
             notificationBox.setTranslateX(fromLeft ? -20 : 20);
 
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), notificationBox);
+            FadeTransition fadeIn = new FadeTransition(AnimationDuration.SLOW, notificationBox);
             fadeIn.setFromValue(0);
             fadeIn.setToValue(1);
             fadeIn.setInterpolator(Interpolator.EASE_OUT);
 
-            TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), notificationBox);
+            TranslateTransition slideIn = new TranslateTransition(AnimationDuration.SLOW, notificationBox);
             slideIn.setFromX(fromLeft ? -20 : 20);
             slideIn.setToX(0);
             slideIn.setInterpolator(Interpolator.EASE_OUT);
@@ -376,7 +429,7 @@ public class NotificationAnt {
     }
 
     private static void hide(NotificationEntry entry, Builder config) {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(200), entry.box);
+        FadeTransition fadeOut = new FadeTransition(AnimationDuration.FAST, entry.box);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
         fadeOut.setOnFinished(e -> {

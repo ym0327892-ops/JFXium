@@ -17,6 +17,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.NumericUtils;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -68,7 +69,7 @@ public class WatermarkAnt {
         private String imagePath;
         private Supplier<Node> customNodeSupplier;
         private double rotate = -22;
-        private double opacity = 0.15;
+        private double opacity = 0.05;
         private double fontSize = 16;
         private double gapX = 100;
         private double gapY = 100;
@@ -123,19 +124,19 @@ public class WatermarkAnt {
         public Builder rotate(double rotate) { this.rotate = rotate; return this; }
 
         public Builder opacity(double opacity) {
-            this.opacity = Math.max(0, Math.min(1, opacity));
+            this.opacity = NumericUtils.clamp(opacity, 0, 1, 0.15);
             return this;
         }
 
-        public Builder fontSize(double fontSize) { this.fontSize = Double.isFinite(fontSize) && fontSize > 0 ? fontSize : 16; return this; }
-        public Builder gapX(double gapX) { this.gapX = Double.isFinite(gapX) && gapX >= 0 ? gapX : 100; return this; }
-        public Builder gapY(double gapY) { this.gapY = Double.isFinite(gapY) && gapY >= 0 ? gapY : 100; return this; }
-        public Builder imageWidth(double width) { this.imageWidth = Double.isFinite(width) && width > 0 ? width : 120; return this; }
-        public Builder imageHeight(double height) { this.imageHeight = Double.isFinite(height) && height > 0 ? height : 64; return this; }
+        public Builder fontSize(double fontSize) { this.fontSize = NumericUtils.isFinitePositive(fontSize) ? fontSize : 16; return this; }
+        public Builder gapX(double gapX) { this.gapX = NumericUtils.isFiniteNonNegative(gapX) ? gapX : 100; return this; }
+        public Builder gapY(double gapY) { this.gapY = NumericUtils.isFiniteNonNegative(gapY) ? gapY : 100; return this; }
+        public Builder imageWidth(double width) { this.imageWidth = NumericUtils.isFinitePositive(width) ? width : 120; return this; }
+        public Builder imageHeight(double height) { this.imageHeight = NumericUtils.isFinitePositive(height) ? height : 64; return this; }
         public Builder color(Color color) { this.textColor = color; return this; }
         public Builder fontFamily(String fontFamily) { this.fontFamily = fontFamily != null ? fontFamily : "System"; return this; }
         public Builder fontWeight(FontWeight w) { this.fontWeight = w != null ? w : FontWeight.NORMAL; return this; }
-        public Builder fontGap(double gap) { this.fontGap = Double.isFinite(gap) && gap >= 0 ? gap : 3; return this; }
+        public Builder fontGap(double gap) { this.fontGap = NumericUtils.isFiniteNonNegative(gap) ? gap : 3; return this; }
 
         public Builder preventRemoval(boolean preventRemoval) {
             this.preventRemoval = preventRemoval;

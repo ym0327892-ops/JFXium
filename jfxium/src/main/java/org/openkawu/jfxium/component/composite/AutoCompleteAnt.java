@@ -12,6 +12,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.Bindings;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,27 +49,25 @@ import java.util.function.Function;
 public class AutoCompleteAnt {
 
     public static class Builder<T> extends AbstractStyleBuilder<Builder<T>> {
-        private String placeholder = "";
+        // placeholder 复用父类 AbstractStyleBuilder.placeholder 字段（P2-S8 抽取）
         private String value = "";
         private List<T> options = new ArrayList<>();
         private Function<T, String> optionToString = item -> item == null ? "" : String.valueOf(item);
         private Function<String, List<T>> filter = null;
-        private boolean disabled = false;
+        // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取），
+        // 无需自建字段与 setter，直接继承父类 disabled(boolean) / disabled() 即可。
         private Consumer<String> onChange = null;
         private Consumer<T> onSelect = null;
         private int maxSuggestions = 10;
         private StringProperty bindProperty = null;
 
-        public Builder<T> placeholder(String placeholder) { this.placeholder = placeholder != null ? placeholder : ""; return this; }
-        public Builder<T> value(String value) { this.value = value != null ? value : ""; return this; }
+        public Builder<T> value(String value) { this.value = TextUtils.safeText(value); return this; }
         public Builder<T> options(List<T> options) { this.options = options != null ? options : new ArrayList<>(); return this; }
         public Builder<T> optionToString(Function<T, String> converter) {
             this.optionToString = converter != null ? converter : (item -> item == null ? "" : String.valueOf(item));
             return this;
         }
         public Builder<T> filter(Function<String, List<T>> filter) { this.filter = filter; return this; }
-        public Builder<T> disabled(boolean disabled) { this.disabled = disabled; return this; }
-        public Builder<T> disabled() { return disabled(true); }
         public Builder<T> onChange(Consumer<String> onChange) { this.onChange = onChange; return this; }
         public Builder<T> onSelect(Consumer<T> onSelect) { this.onSelect = onSelect; return this; }
         public Builder<T> maxSuggestions(int max) { this.maxSuggestions = Math.max(0, max); return this; }
@@ -84,14 +84,12 @@ public class AutoCompleteAnt {
             container.getStyleClass().add(JfxStyles.AUTO_COMPLETE);
 
             TextField field = new TextField(value);
-            field.setPromptText(placeholder);
+            field.setPromptText(TextUtils.safeText(placeholder));
             field.getStyleClass().add(JfxStyles.AUTO_COMPLETE_FIELD);
             HBox.setHgrow(field, Priority.ALWAYS);
 
             // 双向绑定（在初始值设置之后）
-            if (bindProperty != null) {
-                field.textProperty().bindBidirectional(bindProperty);
-            }
+            Bindings.bindBidirectional(field.textProperty(), bindProperty);
 
             Popup popup = new Popup();
             popup.setAutoHide(true);
@@ -129,10 +127,10 @@ public class AutoCompleteAnt {
 
             container.getChildren().add(field);
 
-            if (disabled) {
+            if (Boolean.TRUE.equals(disable)) {
                 field.setDisable(true);
                 // disabled opacity 走 LESS .jfx-auto-complete:disabled
-                container.setDisable(true);
+                // （applyStyles 会同步设置 container 的 disable）
             }
             applyStyles(container);
             return container;
@@ -187,7 +185,7 @@ public class AutoCompleteAnt {
 
         private String safeOptionText(T option) {
             String text = optionToString != null ? optionToString.apply(option) : null;
-            return text != null ? text : "";
+            return TextUtils.safeText(text);
         }
     }
 

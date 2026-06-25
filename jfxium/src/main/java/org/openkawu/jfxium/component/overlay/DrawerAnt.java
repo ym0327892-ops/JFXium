@@ -6,16 +6,22 @@ import javafx.animation.TranslateTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
-
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.LabelAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
+import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.AnimationDuration;
 
 import java.util.function.Consumer;
 
@@ -62,7 +68,7 @@ import java.util.function.Consumer;
  * DrawerAnt.create()
  *     .title("文件预览")
  *     .content(filePreviewNode)
- *     .size(DrawerAnt.Size.LARGE)
+ *     .size(Size.LARGE)
  *     .closePlacement(DrawerAnt.ClosePlacement.NONE)
  *     .build()
  *     .open(ownerNode);
@@ -124,7 +130,10 @@ public class DrawerAnt {
         }
 
         public Builder content(String text) {
-            this.content = new Label(text);
+            // 走 LabelAnt 封装（统一 styleClass + Typography 主题继承）
+            this.content = LabelAnt.create(text)
+                    .styleClass(JfxStyles.OVERLAY_BODY)
+                    .build();
             return this;
         }
 
@@ -203,7 +212,7 @@ public class DrawerAnt {
         private final Builder config;
         private Stage stage;
         private StackPane overlay;
-        private VBox drawerPanel;
+        private VBoxAnt drawerPanel;
         private boolean isOpen = false;
 
         DrawerResult(Builder config) {
@@ -224,7 +233,7 @@ public class DrawerAnt {
 
             // 遮罩层覆盖整个屏幕
             overlay = new StackPane();
-            overlay.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_MASK);
+            overlay.getStyleClass().add(JfxStyles.OVERLAY_MASK);
             overlay.setPrefSize(ownerWindow.getWidth(), ownerWindow.getHeight());
 
             // 创建 Drawer 面板
@@ -279,7 +288,7 @@ public class DrawerAnt {
                 if (config.placement == Placement.TOP || config.placement == Placement.BOTTOM) {
                     drawerPanel.setPrefWidth(val.doubleValue());
                     // 保持 max size 约束
-                    drawerPanel.setMaxWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
+                    drawerPanel.setMaxWidth(Region.USE_PREF_SIZE);
                 }
             };
             javafx.beans.value.ChangeListener<Number> heightListener = (obs, old, val) -> {
@@ -288,7 +297,7 @@ public class DrawerAnt {
                 if (config.placement == Placement.LEFT || config.placement == Placement.RIGHT) {
                     drawerPanel.setPrefHeight(val.doubleValue());
                     // 保持 max size 约束
-                    drawerPanel.setMaxHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
+                    drawerPanel.setMaxHeight(Region.USE_PREF_SIZE);
                 }
             };
             javafx.beans.value.ChangeListener<Number> xListener = (obs, old, val) -> stage.setX(val.doubleValue());
@@ -326,85 +335,90 @@ public class DrawerAnt {
             });
         }
 
-        private VBox createDrawerPanel() {
-            VBox panel = new VBox(0);
-            panel.getStyleClass().addAll(
-                    org.openkawu.jfxium.core.css.JfxStyles.DRAWER,
-                    org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_PANEL
+        private VBoxAnt createDrawerPanel() {
+            VBoxAnt panel = VBoxAnt.create();
+            panel.styleClass(
+                    JfxStyles.DRAWER,
+                    JfxStyles.OVERLAY_PANEL
             );
 
             // Header
             if (!config.title.isEmpty()) {
-                HBox header = createHeader();
-                panel.getChildren().add(header);
+                HBoxAnt header = createHeader();
+                panel.children(header);
             }
 
             // Body
             if (config.content != null) {
-                VBox body = new VBox(config.content);
-                body.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_BODY);
-                VBox.setVgrow(body, Priority.ALWAYS);
-                panel.getChildren().add(body);
+                VBoxAnt body = VBoxAnt.create(config.content)
+                        .styleClass(JfxStyles.OVERLAY_BODY);
+                body.setVgrow(body, Priority.ALWAYS);
+                panel.children(body);
             }
 
             // Footer
             if (config.footer != null) {
-                HBox footerBox = createFooter(config.footer);
-                panel.getChildren().add(footerBox);
+                HBoxAnt footerBox = createFooter(config.footer);
+                panel.children(footerBox);
             }
 
             return panel;
         }
 
-        private HBox createHeader() {
-            HBox header = new HBox();
-            header.setAlignment(Pos.CENTER_LEFT);
-            header.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_HEADER);
+        private HBoxAnt createHeader() {
+            HBoxAnt header = HBoxAnt.create()
+                    .align(Pos.CENTER_LEFT)
+                    .styleClass(JfxStyles.OVERLAY_HEADER);
 
             // 关闭按钮：根据 closePlacement 决定渲染位置
             // - LEFT: 在 title 之前（Ant Drawer 默认）
             // - RIGHT: 在 title/extra 之后（Modal 风格）
             // - NONE: 不渲染
-            javafx.scene.control.Button closeBtn = null;
+            ButtonAnt closeBtn = null;
             if (config.closePlacement != ClosePlacement.NONE) {
-                closeBtn = new javafx.scene.control.Button("×");
-                closeBtn.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_CLOSE_BTN);
-                closeBtn.setOnAction(e -> close());
+                closeBtn = ButtonAnt.create("×")
+                        .type(ButtonAnt.Type.TEXT)
+                        .square()
+                        .onClick(e -> close())
+                        .build();
+                closeBtn.getStyleClass().add(JfxStyles.OVERLAY_CLOSE_BTN);
             }
 
             // 1. 左侧关闭按钮（可选）
             if (closeBtn != null && config.closePlacement == ClosePlacement.LEFT) {
-                header.getChildren().add(closeBtn);
+                header.children(closeBtn);
             }
 
-            // 2. 标题文本（默认占自己宽度，不抢空间）
-            Label titleLabel = new Label(config.title);
-            titleLabel.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_TITLE);
-            header.getChildren().add(titleLabel);
+            // 2. 标题文本（走 LabelAnt）
+            LabelAnt titleLabel = LabelAnt.create(config.title)
+                    .styleClass(JfxStyles.OVERLAY_TITLE)
+                    .build();
+            header.children(titleLabel);
 
             // 3. 弹性填充（关键：把右侧推到最右）
             Region spacer = new Region();
-            HBox.setHgrow(spacer, Priority.ALWAYS);
+            HBoxAnt.setHgrow(spacer, Priority.ALWAYS);
             spacer.setMaxWidth(Double.MAX_VALUE);
-            header.getChildren().add(spacer);
+            header.children(spacer);
 
             // 4. Extra 节点（用户自定义按钮组）
             if (config.extra != null) {
-                header.getChildren().add(config.extra);
+                header.children(config.extra);
             }
 
             // 5. 右侧关闭按钮（可选）
             if (closeBtn != null && config.closePlacement == ClosePlacement.RIGHT) {
-                header.getChildren().add(closeBtn);
+                header.children(closeBtn);
             }
 
             return header;
         }
 
-        private HBox createFooter(Node footerContent) {
-            HBox footer = new HBox(footerContent);
-            footer.setAlignment(Pos.CENTER_RIGHT);
-            footer.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_FOOTER);
+        private HBoxAnt createFooter(Node footerContent) {
+            HBoxAnt footer = HBoxAnt.create()
+                    .align(Pos.CENTER_RIGHT)
+                    .styleClass(JfxStyles.OVERLAY_FOOTER);
+            footer.children(footerContent);
             return footer;
         }
 
@@ -414,15 +428,15 @@ public class DrawerAnt {
                     drawerPanel.setPrefWidth(config.width);
                     drawerPanel.setPrefHeight(overlay.getPrefHeight());
                     // 关键：防止 StackPane 拉伸（SKILL §20.1）
-                    drawerPanel.setMaxWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
-                    drawerPanel.setMaxHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
+                    drawerPanel.setMaxWidth(Region.USE_PREF_SIZE);
+                    drawerPanel.setMaxHeight(Region.USE_PREF_SIZE);
                 }
                 case TOP, BOTTOM -> {
                     drawerPanel.setPrefWidth(overlay.getPrefWidth());
                     drawerPanel.setPrefHeight(config.height);
                     // 关键：防止 StackPane 拉伸（SKILL §20.1）
-                    drawerPanel.setMaxWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
-                    drawerPanel.setMaxHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
+                    drawerPanel.setMaxWidth(Region.USE_PREF_SIZE);
+                    drawerPanel.setMaxHeight(Region.USE_PREF_SIZE);
                 }
             }
         }
@@ -439,12 +453,12 @@ public class DrawerAnt {
         private void animateIn() {
             drawerPanel.setOpacity(0);
 
-            FadeTransition fade = new FadeTransition(Duration.millis(250), drawerPanel);
+            FadeTransition fade = new FadeTransition(AnimationDuration.NORMAL, drawerPanel);
             fade.setFromValue(0);
             fade.setToValue(1);
             fade.setInterpolator(Interpolator.EASE_OUT);
 
-            TranslateTransition slide = new TranslateTransition(Duration.millis(250), drawerPanel);
+            TranslateTransition slide = new TranslateTransition(AnimationDuration.NORMAL, drawerPanel);
             switch (config.placement) {
                 case LEFT -> {
                     slide.setFromX(-config.width);
@@ -470,12 +484,12 @@ public class DrawerAnt {
         }
 
         private void animateOut(Runnable onFinished) {
-            FadeTransition fade = new FadeTransition(Duration.millis(200), drawerPanel);
+            FadeTransition fade = new FadeTransition(AnimationDuration.FAST, drawerPanel);
             fade.setFromValue(1);
             fade.setToValue(0);
             fade.setInterpolator(Interpolator.EASE_IN);
 
-            TranslateTransition slide = new TranslateTransition(Duration.millis(200), drawerPanel);
+            TranslateTransition slide = new TranslateTransition(AnimationDuration.FAST, drawerPanel);
             switch (config.placement) {
                 case LEFT -> slide.setToX(-config.width);
                 case RIGHT -> slide.setToX(config.width);

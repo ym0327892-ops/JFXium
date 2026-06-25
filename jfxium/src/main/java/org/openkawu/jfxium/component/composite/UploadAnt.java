@@ -2,7 +2,6 @@ package org.openkawu.jfxium.component.composite;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
@@ -21,6 +20,8 @@ import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.IconPath;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -139,7 +140,7 @@ public class UploadAnt {
             HBox container = new HBox();
             container.setAlignment(Pos.CENTER_LEFT);
 
-            Button uploadBtn = ButtonAnt.create(buttonText != null ? buttonText : Messages.get("upload.button"))
+            ButtonAnt uploadBtn = ButtonAnt.create(buttonText != null ? buttonText : Messages.get("upload.button"))
                     .type(ButtonAnt.Type.PRIMARY)
                     .build();
 
@@ -159,10 +160,7 @@ public class UploadAnt {
             VBox content = new VBox();
             content.setAlignment(Pos.CENTER);
 
-            SVGPath icon = new SVGPath();
-            icon.setContent("M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z");
-            icon.setScaleX(2);
-            icon.setScaleY(2);
+            SVGPath icon = IconPath.cloudUpload();
             icon.getStyleClass().add(JfxStyles.UPLOAD_DRAG_ICON);
 
             Label dragLabel = new Label(dragText != null ? dragText : Messages.get("upload.drag"));
@@ -239,7 +237,12 @@ public class UploadAnt {
                     fileItem.getChildren().add(errorLabel);
                 }
 
-                Button removeBtn = new Button("×");
+                // 关闭按钮：复用 ButtonAnt 而非 new Button("×")，走 jfx- 前缀样式
+                //   × 用 unicode 文字符而非 SVG 图标——LESS 通过 -fx-text-fill / -fx-font-size 直接控制颜色与尺寸
+                ButtonAnt removeBtn = ButtonAnt.create("\u00d7")  // ×
+                        .type(ButtonAnt.Type.TEXT)
+                        .size(Size.SMALL)
+                        .square();
                 removeBtn.getStyleClass().add(JfxStyles.UPLOAD_REMOVE_BTN);
                 removeBtn.setOnAction(e -> {
                     fileList.remove(file);

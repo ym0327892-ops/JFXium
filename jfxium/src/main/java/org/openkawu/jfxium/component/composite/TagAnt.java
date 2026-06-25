@@ -7,6 +7,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.IconPath;
+import org.openkawu.jfxium.core.util.NumericUtils;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.List;
 
@@ -53,9 +57,7 @@ public class TagAnt {
         DEFAULT, PRIMARY, SUCCESS, WARNING, ERROR, PROCESSING
     }
 
-    public enum Size {
-        SMALL, DEFAULT, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     public enum Shape {
         DEFAULT, ROUND, SQUARE
@@ -105,7 +107,7 @@ public class TagAnt {
         private Runnable onClose = null;
 
         public Builder text(String text) {
-            this.text = text != null ? text : "";
+            this.text = TextUtils.safeText(text);
             return this;
         }
 
@@ -203,8 +205,7 @@ public class TagAnt {
             closeBtn.setPrefSize(12, 12);
             closeBtn.setMaxSize(12, 12);
 
-            SVGPath x = new SVGPath();
-            x.setContent("M6 4.5L4.5 6 6 7.5 7.5 6 6 4.5z");
+            SVGPath x = IconPath.closeX();
             x.getStyleClass().add(JfxStyles.TAG_CLOSE_ICON);
             closeBtn.getChildren().add(x);
 
@@ -256,16 +257,18 @@ public class TagAnt {
      * 应用 Tag 的自定义颜色：染背景 + 文本色。
      *
      * <p>对标 Ant Design Tag presetColors 语义：用户传任意 Color，把 Tag 染成该色。
-     * 走 TAG_HAS_COLOR class（jfx-tag-has-color）让 LESS 的 text-fill 主题字体色生效，
-     * 背景色通过 inline setStyle 写入（颜色来源是 API 参数，不算主题派生的硬编码）。</p>
+     * 文本色完全由 LESS 接管（{@code .jfx-tag.jfx-tag-has-color} 选择器已定义
+     * {@code -fx-text-fill: -color-fg-on-emphasis}），背景色通过 inline setStyle 写入
+     * ——因为是用户运行时传入的颜色 token，无法预先在 LESS 中枚举。
+     * 这是 setStyle 写颜色在 JFXium 中唯一被允许的场景：颜色来源是 API 参数而非主题派生。</p>
      */
     private static void applyCustomColor(HBox tag, Color color) {
         if (color != null) {
             if (!tag.getStyleClass().contains(JfxStyles.TAG_HAS_COLOR)) {
                 tag.getStyleClass().add(JfxStyles.TAG_HAS_COLOR);
             }
-            String hex = toHexColor(color);
-            tag.setStyle("-fx-background-color: " + hex + "; -fx-text-fill: -color-fg-on-emphasis;");
+            // 只写 background-color；text-fill 由 LESS .jfx-tag.jfx-tag-has-color 选择器负责
+            tag.setStyle("-fx-background-color: " + toHexColor(color) + ";");
         } else {
             tag.getStyleClass().remove(JfxStyles.TAG_HAS_COLOR);
             tag.setStyle(null);
@@ -274,13 +277,20 @@ public class TagAnt {
 
     /** Color → CSS hex (#rrggbb)。Alpha 不输出，因为 Tag 是 opaque。 */
     private static String toHexColor(Color color) {
-        int r = (int) Math.round(color.getRed() * 255);
-        int g = (int) Math.round(color.getGreen() * 255);
-        int b = (int) Math.round(color.getBlue() * 255);
-        r = Math.max(0, Math.min(255, r));
-        g = Math.max(0, Math.min(255, g));
-        b = Math.max(0, Math.min(255, b));
-        return String.format("#%02x%02x%02x", r, g, b);
+        return String.format("#%02x%02x%02x",
+                clampByte(color.getRed()),
+                clampByte(color.getGreen()),
+                clampByte(color.getBlue()));
+    }
+
+    /**
+     * 把 0..1 的色道值钳制到 0..255 的整数。集中处理越界、NaN 防御。
+     *
+     * <p>先把 channel 钳到 [0,1]（NaN/Infinity 由 NumericUtils.clamp 回退到 0），
+     * 再线性映射到 [0,255]。比手写 {@code Double.isFinite + Math.round + clamp} 更紧凑。</p>
+     */
+    private static int clampByte(double channel) {
+        return (int) Math.round(NumericUtils.clamp(channel, 0, 1, 0) * 255);
     }
 
     /** Tag 所有可能的状态 styleClass 集合（用于清理 applyVisualState 中的旧状态）。 */
@@ -417,7 +427,7 @@ public class TagAnt {
             if (textSet) {
                 Object label = tag.getProperties().get("jfxium.tag.label");
                 if (label instanceof Label l) {
-                    l.setText(text != null ? text : "");
+                    l.setText(TextUtils.safeText(text));
                 }
             }
             return tag;

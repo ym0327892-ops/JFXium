@@ -5,6 +5,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.FontTokens;
 
 /**
  * JFXium 排版组件 - 对标 Ant Design Typography(组合式,Builder 模式)。
@@ -47,7 +48,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *     .build();
  *
  * Label danger = TypographyAnt.text("危险操作")
- *     .type(Type.DANGER)
+ *     .type(TextColor.DANGER)
  *     .strong()
  *     .build();
  * }</pre>
@@ -64,7 +65,15 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  */
 public class TypographyAnt {
 
-    public enum Type {
+    /**
+     * 文字语义色枚举（P0-F5 修复：原名 {@code Type} 与 {@link ButtonAnt.Type} 冲突，改名 {@code TextColor}）。
+     *
+     * <p>{@code Type} 是 {@link TypographyAnt} 文字色枚举与 {@link ButtonAnt} 按钮变体枚举同名，
+     * 在 {@link LabelAnt#type(TypographyAnt.TextColor)} 的方法签名里两个枚举都叫 {@code Type}，
+     * IDE 自动补全会优先匹配 {@code ButtonAnt.Type}，导致 {@code .type(...)} 调用了错误的重载
+     * （或编译期 {@code switch} 报 missing case）。改名 {@code TextColor} 后语义直观、不再冲突。</p>
+     */
+    public enum TextColor {
         PRIMARY, SECONDARY, SUCCESS, WARNING, DANGER, DISABLED
     }
 
@@ -84,14 +93,14 @@ public class TypographyAnt {
             label.getStyleClass().add(JfxStyles.TYPOGRAPHY_TITLE);
             // Title 字号是 level 的函数,结构性属性留 Java;颜色由 LESS 控制
             double fontSize = switch (level) {
-                case 1 -> 38;
-                case 2 -> 30;
-                case 3 -> 24;
-                case 4 -> 20;
-                case 5 -> 16;
-                default -> 38;
+                case 1 -> FontTokens.TITLE_H1;
+                case 2 -> FontTokens.TITLE_H2;
+                case 3 -> FontTokens.TITLE_H3;
+                case 4 -> FontTokens.TITLE_H4;
+                case 5 -> FontTokens.TITLE_H5;
+                default -> FontTokens.TITLE_H1;
             };
-            label.setFont(Font.font("System", FontWeight.BOLD, fontSize));
+            label.setFont(Font.font(FontTokens.TEXT_FAMILY, FontWeight.BOLD, fontSize));
             // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加,覆盖优先级最高
             applyStyles(label);
             return label;
@@ -113,10 +122,10 @@ public class TypographyAnt {
             label.getStyleClass().remove(JfxStyles.TYPOGRAPHY_TEXT);
             label.getStyleClass().add(JfxStyles.TYPOGRAPHY_PARAGRAPH);
             label.wrap(true);
-            label.setFont(Font.font("System", 14));
+            label.setFont(Font.font(FontTokens.TEXT_FAMILY, FontTokens.FONT_SIZE_MD));
             if (ellipsis && rows > 0) {
                 // 高度限制是结构性属性,留 Java
-                label.setMaxHeight(rows * 20);
+                label.setMaxHeight(rows * FontTokens.LINE_HEIGHT_NORMAL);
             }
             // 用户通过 styleClass/style/padding/radius 注入的样式在最后追加,覆盖优先级最高
             applyStyles(label);
@@ -126,7 +135,7 @@ public class TypographyAnt {
 
     public static class TextBuilder extends AbstractStyleBuilder<TextBuilder> {
         private final String text;
-        private Type type = Type.PRIMARY;
+        private TextColor type = TextColor.PRIMARY;
         private boolean copyable = false;
         private boolean strong = false;
         private boolean italic = false;
@@ -136,7 +145,7 @@ public class TypographyAnt {
         private boolean mark = false;
 
         public TextBuilder(String text) { this.text = text; }
-        public TextBuilder type(Type type) { this.type = type; return this; }
+        public TextBuilder type(TextColor type) { this.type = type; return this; }
         public TextBuilder copyable(boolean copyable) { this.copyable = copyable; return this; }
         public TextBuilder copyable() { return copyable(true); }
         public TextBuilder strong(boolean strong) { this.strong = strong; return this; }

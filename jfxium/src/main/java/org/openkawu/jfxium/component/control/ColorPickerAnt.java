@@ -4,8 +4,12 @@ import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.builder.Radius;
+import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.ApplySizeUtil;
+import org.openkawu.jfxium.core.util.Bindings;
 
 import java.util.function.Consumer;
 
@@ -35,16 +39,13 @@ import java.util.function.Consumer;
  * // 大尺寸 + 禁用
  * ColorPickerAnt large = ColorPickerAnt.create()
  *     .value(Color.web("#1677ff"))
- *     .size(ColorPickerAnt.Size.LARGE)
+ *     .size(Size.LARGE)
  *     .build();
  * }</pre>
  */
-public class ColorPickerAnt extends ColorPicker implements LayoutCommon<ColorPickerAnt> {
+public class ColorPickerAnt extends ColorPicker implements LayoutCommon<ColorPickerAnt>, DisabledSupport<ColorPickerAnt> {
 
-    /** 尺寸枚举。 */
-    public enum Size {
-        DEFAULT, SMALL, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     // ============================================================
     // 工厂入口
@@ -64,11 +65,15 @@ public class ColorPickerAnt extends ColorPicker implements LayoutCommon<ColorPic
 
     public ColorPickerAnt() {
         super();
-        getStyleClass().add(JfxStyles.COLOR_PICKER);
+        init();
     }
 
     public ColorPickerAnt(Color value) {
         super(value);
+        init();
+    }
+
+    private void init() {
         getStyleClass().add(JfxStyles.COLOR_PICKER);
     }
 
@@ -82,34 +87,19 @@ public class ColorPickerAnt extends ColorPicker implements LayoutCommon<ColorPic
     }
 
     public ColorPickerAnt onChange(Consumer<Color> onChange) {
-        valueProperty().addListener((obs, old, val) -> {
-            if (val != null && onChange != null) {
-                onChange.accept(val);
-            }
-        });
+        Bindings.onChange(valueProperty(), onChange);
         return this;
     }
 
     public ColorPickerAnt size(Size size) {
-        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
-        if (size == Size.SMALL) {
-            getStyleClass().add(JfxStyles.SIZE_SMALL);
-        } else if (size == Size.LARGE) {
-            getStyleClass().add(JfxStyles.SIZE_LARGE);
-        }
-        return this;
+        return ApplySizeUtil.apply(this, size);
     }
 
-    public ColorPickerAnt disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
 
     /** 双向绑定：控件值 ↔ Property 值实时同步。 */
     public ColorPickerAnt bindValue(ObjectProperty<Color> property) {
-        if (property != null) {
-            valueProperty().bindBidirectional(property);
-        }
+        Bindings.bindBidirectional(valueProperty(), property);
         return this;
     }
 

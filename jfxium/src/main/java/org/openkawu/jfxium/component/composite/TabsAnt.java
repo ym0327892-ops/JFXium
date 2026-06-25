@@ -8,10 +8,12 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.layout.Region;
-import javafx.util.Duration;
 
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.AnimationDuration;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +62,7 @@ import java.util.function.Consumer;
 public class TabsAnt {
 
     public enum Type { LINE, CARD }
-    public enum Size { SMALL, MIDDLE, LARGE }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
     public enum TabPlacement { TOP, BOTTOM, LEFT, RIGHT }
 
     public static Builder create() { return new Builder(); }
@@ -95,12 +97,12 @@ public class TabsAnt {
         private Controller controller;
 
         public Builder tab(String key, String label, Node content) {
-            tabs.add(new TabItem(key, safeLabel(label), safeContent(content), false));
+            tabs.add(new TabItem(key, TextUtils.safeText(label), safeContent(content), false));
             return this;
         }
 
         public Builder tab(String key, String label, Node content, boolean disabled) {
-            tabs.add(new TabItem(key, safeLabel(label), safeContent(content), disabled));
+            tabs.add(new TabItem(key, TextUtils.safeText(label), safeContent(content), disabled));
             return this;
         }
 
@@ -281,7 +283,7 @@ public class TabsAnt {
                 wrapper.sceneProperty().addListener((obs, oldScene, newScene) -> {
                     if (newScene != null) {
                         // 使用 PauseTransition 延迟更新,确保布局完成
-                        PauseTransition delay = new PauseTransition(Duration.millis(300));
+                        PauseTransition delay = new PauseTransition(AnimationDuration.SLOW);
                         delay.setOnFinished(e -> updateIndicator(finalIndicator, finalLabels, finalPane, controller.getCurrent()));
                         delay.play();
                     }
@@ -382,10 +384,8 @@ public class TabsAnt {
             indicator.setLayoutX(labelX);
         }
 
-        private static String safeLabel(String label) {
-            return label != null ? label : "";
-        }
-
+        // safeContent 保留本地:语义不同于 TextUtils.safeText(s, fb),
+        // null 时需要返回一个 0×0 的占位 Region,避免 TabItem.content 为 null 导致 NPE。
         private static Node safeContent(Node content) {
             if (content != null) {
                 return content;

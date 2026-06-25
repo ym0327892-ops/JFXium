@@ -9,6 +9,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +49,8 @@ public class DescriptionsAnt {
         HORIZONTAL, VERTICAL
     }
 
-    public enum Size {
-        SMALL, DEFAULT, MIDDLE, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size
+    // （顶级 Size 五态 DEFAULT/XS/SMALL/MIDDLE/LARGE 完全覆盖 DescriptionsAnt 原四态）。
 
     public static class Item {
         String label;
@@ -71,15 +72,15 @@ public class DescriptionsAnt {
         private boolean bordered = false;
         private List<Item> items = new ArrayList<>();
 
-        public Builder title(String title) { this.title = title != null ? title : ""; return this; }
+        public Builder title(String title) { this.title = TextUtils.safeText(title); return this; }
         public Builder layout(Layout layout) { this.layout = layout != null ? layout : Layout.HORIZONTAL; return this; }
         public Builder size(Size size) { this.size = size != null ? size : Size.DEFAULT; return this; }
-        public Builder column(int column) { this.column = Math.max(1, column); return this; }
+        public Builder column(int column) { this.column = TextUtils.ensureAtLeastOne(column); return this; }
         public Builder bordered(boolean bordered) { this.bordered = bordered; return this; }
         public Builder bordered() { return bordered(true); }
 
         public Builder item(String label, String content) {
-            items.add(new Item(label, new Label(content != null ? content : ""), 1));
+            items.add(new Item(label, new Label(TextUtils.safeText(content)), 1));
             return this;
         }
 
@@ -89,7 +90,7 @@ public class DescriptionsAnt {
         }
 
         public Builder item(String label, String content, int span) {
-            items.add(new Item(label, new Label(content != null ? content : ""), span));
+            items.add(new Item(label, new Label(TextUtils.safeText(content)), span));
             return this;
         }
 
@@ -141,7 +142,7 @@ public class DescriptionsAnt {
                 if (item == null) {
                     continue;
                 }
-                Label label = new Label(item.label != null ? item.label : "");
+                Label label = new Label(TextUtils.safeText(item.label));
                 label.getStyleClass().add(JfxStyles.DESCRIPTIONS_LABEL);
 
                 Node content = item.content != null ? item.content : new Label("");
@@ -151,7 +152,7 @@ public class DescriptionsAnt {
                 }
 
                 int labelSpan = 1;
-                int contentSpan = Math.max(1, Math.min(column * 2 - 1, item.span));
+                int contentSpan = (int) TextUtils.ensureAtLeastOne(Math.min(column * 2 - 1, item.span));
 
                 if (currentCol + labelSpan + contentSpan > column * 2) {
                     currentRow++;
@@ -192,7 +193,7 @@ public class DescriptionsAnt {
                 itemBox.setAlignment(Pos.TOP_LEFT);
                 HBox.setHgrow(itemBox, Priority.ALWAYS);
 
-                Label label = new Label(item.label != null ? item.label : "");
+                Label label = new Label(TextUtils.safeText(item.label));
                 label.getStyleClass().add(JfxStyles.DESCRIPTIONS_LABEL);
                 itemBox.getChildren().add(label);
 

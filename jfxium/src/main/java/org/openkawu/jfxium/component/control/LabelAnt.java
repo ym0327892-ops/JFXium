@@ -11,6 +11,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.FontTokens;
 
 /**
  * LabelAnt - 继承式原生 Label 封装（M19.48 引入）。
@@ -79,16 +80,20 @@ public class LabelAnt extends Label implements LayoutCommon<LabelAnt> {
 
     public LabelAnt() {
         super();
-        getStyleClass().add(JfxStyles.TYPOGRAPHY_TEXT);
+        init();
     }
 
     public LabelAnt(String text) {
         super(text);
-        getStyleClass().add(JfxStyles.TYPOGRAPHY_TEXT);
+        init();
     }
 
     public LabelAnt(String text, Node graphic) {
         super(text, graphic);
+        init();
+    }
+
+    private void init() {
         getStyleClass().add(JfxStyles.TYPOGRAPHY_TEXT);
     }
 
@@ -102,8 +107,8 @@ public class LabelAnt extends Label implements LayoutCommon<LabelAnt> {
         return this;
     }
 
-    /** 设置文字语义色（直接收 {@link TypographyAnt.Type}，不拷贝枚举）。 */
-    public LabelAnt type(TypographyAnt.Type type) {
+    /** 设置文字语义色（直接收 {@link TypographyAnt.TextColor}，不拷贝枚举）。 */
+    public LabelAnt type(TypographyAnt.TextColor type) {
         // 先清掉可能已挂的语义色修饰类，避免多次调用叠加
         getStyleClass().removeAll(
                 JfxStyles.TYPOGRAPHY_SECONDARY, JfxStyles.TYPOGRAPHY_SUCCESS,
@@ -121,11 +126,11 @@ public class LabelAnt extends Label implements LayoutCommon<LabelAnt> {
     }
 
     /** 语义色快捷方法。 */
-    public LabelAnt secondary() { return type(TypographyAnt.Type.SECONDARY); }
-    public LabelAnt success()   { return type(TypographyAnt.Type.SUCCESS); }
-    public LabelAnt warning()   { return type(TypographyAnt.Type.WARNING); }
-    public LabelAnt danger()    { return type(TypographyAnt.Type.DANGER); }
-    public LabelAnt disabledColor() { return type(TypographyAnt.Type.DISABLED); }
+    public LabelAnt secondary() { return type(TypographyAnt.TextColor.SECONDARY); }
+    public LabelAnt success()   { return type(TypographyAnt.TextColor.SUCCESS); }
+    public LabelAnt warning()   { return type(TypographyAnt.TextColor.WARNING); }
+    public LabelAnt danger()    { return type(TypographyAnt.TextColor.DANGER); }
+    public LabelAnt disabledColor() { return type(TypographyAnt.TextColor.DISABLED); }
 
     /** 文本是否换行。 */
     public LabelAnt wrap(boolean wrap) {
@@ -259,7 +264,7 @@ public class LabelAnt extends Label implements LayoutCommon<LabelAnt> {
     public LabelAnt ellipsis(boolean ellipsis) {
         if (ellipsis) {
             setWrapText(false);
-            setMaxHeight(20);
+            setMaxHeight(FontTokens.LINE_HEIGHT_NORMAL);
         } else {
             setMaxHeight(Region.USE_COMPUTED_SIZE);
         }
@@ -269,12 +274,12 @@ public class LabelAnt extends Label implements LayoutCommon<LabelAnt> {
     /**
      * 多行省略：rows 限制最大显示行数。
      *
-     * <p>启用时开启换行并钳制最大高度为 {@code rows * 20}（与 TypographyAnt 一致）；rows&lt;=0 等同于关闭省略。</p>
+     * <p>启用时开启换行并钳制最大高度为 {@code rows * FontTokens.LINE_HEIGHT_NORMAL}（与 TypographyAnt 一致）；rows&lt;=0 等同于关闭省略。</p>
      */
     public LabelAnt ellipsis(int rows) {
         if (rows > 0) {
             setWrapText(true);
-            setMaxHeight(rows * 20);
+            setMaxHeight(rows * FontTokens.LINE_HEIGHT_NORMAL);
         } else {
             setMaxHeight(Region.USE_COMPUTED_SIZE);
         }

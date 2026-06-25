@@ -17,6 +17,7 @@ import javafx.scene.text.FontWeight;
 
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * JFXium 头像组件 - 对标 Ant Design Avatar。
@@ -48,6 +49,21 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  */
 public class AvatarAnt {
 
+    /**
+     * 头像尺寸枚举（保留内部定义）。
+     *
+     * <p>P1-S1 抽取阶段未与顶级 {@link org.openkawu.jfxium.core.token.Size} 合并，原因：
+     * <ul>
+     *   <li>本枚举携带专属 token（{@code SMALL=24 / DEFAULT=32 / LARGE=40 / XL=64}），
+     *       直接绑定头像专属尺寸语义，无法与顶级 Size 通用语义对齐；</li>
+     *   <li>{@code XL(64)} 是本组件独有，顶级 Size 暂未启用；</li>
+     *   <li>{@link #getValue()} 提供头像尺寸的像素 token，作为 layout 约束使用，
+     *       顶级 Size 仅有标识语义无 token 携带。</li>
+     * </ul>
+     * 后续如需统一，应由 {@code org.openkawu.jfxium.core.token.Size} 扩展 token 字段
+     * 并升级各组件再做合并。本枚举维持现状，公共 API 名空间不暴露 {@code XL} 以外的
+     * 重复定义。
+     */
     public enum Size {
         SMALL(24), DEFAULT(32), LARGE(40), XL(64);
 
@@ -97,7 +113,7 @@ public class AvatarAnt {
         }
 
         public Builder text(String text) {
-            this.text = text != null ? text : "";
+            this.text = TextUtils.safeText(text);
             this.image = null;
             this.iconNode = null;
             this.iconText = null;

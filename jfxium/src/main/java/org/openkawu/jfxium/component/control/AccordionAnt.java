@@ -20,8 +20,8 @@ import java.util.List;
  * <pre>{@code
  * VBox accordion = AccordionAnt.create()
  *     .pane("面板一", new Label("内容一"))
- *     .pane("面板二", new Label("内容二"))
- *     .pane("面板三", new Label("内容三"))
+ *     .pane("面板二", new Label("内容二"), true)        // 禁用该面板
+ *     .activeKey("面板一")                              // 默认展开
  *     .build();
  * }</pre>
  *
@@ -33,19 +33,55 @@ import java.util.List;
  */
 public class AccordionAnt {
 
+    /** Pane 自动 key 前缀。 */
+    private static final String KEY_PREFIX = "accordion-";
+
     public static Builder create() {
         return new Builder();
     }
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
-        private record PaneEntry(String key, String title, Node content) {}
+        private record PaneEntry(String key, String title, Node content, boolean disabled) {}
         private final List<PaneEntry> entries = new ArrayList<>();
+        private final List<String> activeKeys = new ArrayList<>();
         private int keyCounter = 1;
 
         private Builder() {}
 
+        /** 添加一个面板。 */
         public Builder pane(String title, Node content) {
-            entries.add(new PaneEntry("accordion-" + keyCounter++, title, content));
+            return pane(title, content, false);
+        }
+
+        /**
+         * 添加一个面板，并指定是否禁用（禁用的面板点击无响应 + jfx-collapse-disabled 样式）。
+         *
+         * @param title    面板标题
+         * @param content  面板内容（任意 Node）
+         * @param disabled true 时禁用，false 时正常
+         */
+        public Builder pane(String title, Node content, boolean disabled) {
+            entries.add(new PaneEntry(KEY_PREFIX + keyCounter++, title, content, disabled));
+            return this;
+        }
+
+        /**
+         * 默认展开指定 key 对应的面板（多个 key 仅取第一个生效，accordion 模式互斥）。
+         * key 对应 pane 的添加顺序（内部生成 "accordion-1", "accordion-2", ...），
+         * 或通过 {@link #activeKeys(List)} 传入自定义 key 映射。
+         */
+        public Builder activeKey(String key) {
+            if (key != null && !key.isEmpty()) {
+                this.activeKeys.add(key);
+            }
+            return this;
+        }
+
+        /** 默认展开多个 key（accordion 模式互斥，实际生效的仍是第一个）。 */
+        public Builder activeKeys(List<String> keys) {
+            if (keys != null) {
+                this.activeKeys.addAll(keys);
+            }
             return this;
         }
 
@@ -56,7 +92,10 @@ public class AccordionAnt {
         public VBox build() {
             CollapseAnt.Builder collapseBuilder = CollapseAnt.create().accordion(true);
             for (PaneEntry entry : entries) {
-                collapseBuilder.panel(entry.key(), entry.title(), entry.content());
+                collapseBuilder.panel(entry.key(), entry.title(), entry.content(), entry.disabled());
+            }
+            if (!activeKeys.isEmpty()) {
+                collapseBuilder.activeKeys(activeKeys);
             }
             VBox collapse = collapseBuilder.build();
             applyStyles(collapse);

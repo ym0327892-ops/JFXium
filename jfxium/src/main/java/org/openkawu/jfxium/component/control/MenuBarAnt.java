@@ -6,7 +6,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.KeyCombination;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +65,7 @@ import java.util.function.Consumer;
  *
  * @see org.openkawu.jfxium.component.composite.MenuAnt 侧边导航菜单（非系统菜单栏）
  */
-public class MenuBarAnt extends MenuBar {
+public class MenuBarAnt extends MenuBar implements DisabledSupport<MenuBarAnt> {
 
     // ============================================================
     // 工厂入口
@@ -107,11 +109,9 @@ public class MenuBarAnt extends MenuBar {
         return this;
     }
 
-    /** 禁用整个菜单栏。 */
-    public MenuBarAnt disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
+    // 注意：内部 MenuBuilder / SubMenuBuilder 的 disabled() 是另一个 API，
+    // 它们操作 currentItem.setDisable(...)——这是 Pattern C（作用于子节点），不动。
 
     // ============================================================
     // MenuBuilder：用于构建单个 Menu 及其子项
@@ -131,8 +131,7 @@ public class MenuBarAnt extends MenuBar {
         // --- 菜单项 ---
 
         public MenuBuilder item(String label, Runnable action) {
-            MenuItem item = new MenuItem(label);
-            item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
+            MenuItem item = createMenuBarItem(label, null);
             if (action != null) {
                 item.setOnAction(e -> action.run());
             }
@@ -142,8 +141,7 @@ public class MenuBarAnt extends MenuBar {
         }
 
         public MenuBuilder item(String label, Node icon, Runnable action) {
-            MenuItem item = new MenuItem(label, icon);
-            item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
+            MenuItem item = createMenuBarItem(label, icon);
             if (action != null) {
                 item.setOnAction(e -> action.run());
             }
@@ -153,8 +151,7 @@ public class MenuBarAnt extends MenuBar {
         }
 
         public MenuBuilder item(String label, Consumer<MenuItem> action) {
-            MenuItem item = new MenuItem(label);
-            item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
+            MenuItem item = createMenuBarItem(label, null);
             if (action != null) {
                 item.setOnAction(e -> action.accept(item));
             }
@@ -191,9 +188,7 @@ public class MenuBarAnt extends MenuBar {
         // --- 分隔线 ---
 
         public MenuBuilder divider() {
-            SeparatorMenuItem sep = new SeparatorMenuItem();
-            sep.getStyleClass().add(JfxStyles.MENU_BAR_DIVIDER);
-            menu.getItems().add(sep);
+            menu.getItems().add(createMenuBarDivider());
             return this;
         }
 
@@ -232,8 +227,7 @@ public class MenuBarAnt extends MenuBar {
         }
 
         public SubMenuBuilder item(String label, Runnable action) {
-            MenuItem item = new MenuItem(label);
-            item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
+            MenuItem item = createMenuBarItem(label, null);
             if (action != null) {
                 item.setOnAction(e -> action.run());
             }
@@ -243,10 +237,19 @@ public class MenuBarAnt extends MenuBar {
         }
 
         public SubMenuBuilder item(String label, Node icon, Runnable action) {
-            MenuItem item = new MenuItem(label, icon);
-            item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
+            MenuItem item = createMenuBarItem(label, icon);
             if (action != null) {
                 item.setOnAction(e -> action.run());
+            }
+            subMenu.getItems().add(item);
+            this.currentItem = item;
+            return this;
+        }
+
+        public SubMenuBuilder item(String label, Consumer<MenuItem> action) {
+            MenuItem item = createMenuBarItem(label, null);
+            if (action != null) {
+                item.setOnAction(e -> action.accept(item));
             }
             subMenu.getItems().add(item);
             this.currentItem = item;
@@ -275,9 +278,7 @@ public class MenuBarAnt extends MenuBar {
         }
 
         public SubMenuBuilder divider() {
-            SeparatorMenuItem sep = new SeparatorMenuItem();
-            sep.getStyleClass().add(JfxStyles.MENU_BAR_DIVIDER);
-            subMenu.getItems().add(sep);
+            subMenu.getItems().add(createMenuBarDivider());
             return this;
         }
 
@@ -285,5 +286,25 @@ public class MenuBarAnt extends MenuBar {
             parent.getMenu().getItems().add(subMenu);
             return parent;
         }
+    }
+
+    // ============================================================
+    // 私有静态工厂（消除 MenuBuilder / SubMenuBuilder 创建逻辑重复）
+    // ============================================================
+
+    /** 创建带 {@link JfxStyles#MENU_BAR_ITEM} 样式的菜单项。icon 为 null 时创建纯文本项。 */
+    private static MenuItem createMenuBarItem(String label, Node icon) {
+        MenuItem item = icon != null
+                ? new MenuItem(TextUtils.safeText(label), icon)
+                : new MenuItem(TextUtils.safeText(label));
+        item.getStyleClass().add(JfxStyles.MENU_BAR_ITEM);
+        return item;
+    }
+
+    /** 创建带 {@link JfxStyles#MENU_BAR_DIVIDER} 样式的分隔线。 */
+    private static SeparatorMenuItem createMenuBarDivider() {
+        SeparatorMenuItem sep = new SeparatorMenuItem();
+        sep.getStyleClass().add(JfxStyles.MENU_BAR_DIVIDER);
+        return sep;
     }
 }

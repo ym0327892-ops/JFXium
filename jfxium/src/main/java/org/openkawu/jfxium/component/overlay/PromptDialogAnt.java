@@ -1,14 +1,15 @@
 package org.openkawu.jfxium.component.overlay;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.InputAnt;
+import org.openkawu.jfxium.component.control.LabelAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
+import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 
@@ -25,6 +26,7 @@ import java.util.function.Consumer;
  *   <li><b>owner 必须是已挂载到 Scene 的 Node</b>：用于定位所属 Stage（取 {@code owner.getScene().getWindow()}）</li>
  *   <li><b>回调</b>：onConfirm(String) / onCancel() 确认/取消时触发</li>
  *   <li><b>视觉</b>：走 {@link JfxStyles#PROMPT_DIALOG} LESS 样式</li>
+ *   <li><b>i18n</b>：title / ok / cancel 文案支持走 {@link Messages#localeProperty()} 自动刷新（仅当调用方未显式指定时）</li>
  * </ul>
  *
  * <h2>用法</h2>
@@ -54,14 +56,17 @@ import java.util.function.Consumer;
  */
 public class PromptDialogAnt {
 
-    private String title = "提示";
+    // null = 用 i18n 默认值；非 null = 调用方显式指定
+    // 字段初始化为 null（不在声明时调 Messages.get），确保 localeProperty() 切换时能动态刷新
+    private String title = null;
     private String message;
     private String defaultValue = "";
     private String placeholder;
-    private String okText = "确认";
-    private String cancelText = "取消";
+    private String okText = null;
+    private String cancelText = null;
     private Consumer<String> onConfirm;
     private Runnable onCancel;
+    private int width = 400;
 
     // ============================================================
     // 工厂入口
@@ -96,7 +101,7 @@ public class PromptDialogAnt {
     }
 
     public PromptDialogAnt defaultValue(String defaultValue) {
-        this.defaultValue = defaultValue != null ? defaultValue : "";
+        this.defaultValue = TextUtils.safeText(defaultValue);
         return this;
     }
 
@@ -125,6 +130,12 @@ public class PromptDialogAnt {
         return this;
     }
 
+    /** 设置弹框宽度，默认 400px。 */
+    public PromptDialogAnt width(int width) {
+        this.width = width;
+        return this;
+    }
+
     // ============================================================
     // 构建
     // ============================================================
@@ -136,56 +147,85 @@ public class PromptDialogAnt {
      * @return PromptDialogResult（持有内部 ModalResult，可通过 {@code .close()} 程序化关闭）
      */
     public PromptDialogResult build() {
-        VBox content = new VBox();
-        content.setAlignment(Pos.CENTER_LEFT);
-        content.getStyleClass().add(JfxStyles.PROMPT_DIALOG);
+        // 懒解析 i18n 文案（避免在字段初始化时锁死 locale）
+        String resolvedTitle = title != null ? title : Messages.get("prompt.title");
+        String resolvedOk = okText != null ? okText : Messages.get("prompt.ok");
+        String resolvedCancel = cancelText != null ? cancelText : Messages.get("prompt.cancel");
+
+        // 内容容器：垂直布局，左对齐
+        VBoxAnt content = VBoxAnt.create()
+                .align(Pos.CENTER_LEFT)
+                .styleClass(JfxStyles.PROMPT_DIALOG);
 
         // 消息文本
         if (message != null && !message.isEmpty()) {
-            Label msgLabel = new Label(message);
-            msgLabel.getStyleClass().add(JfxStyles.PROMPT_DIALOG_MESSAGE);
-            content.getChildren().add(msgLabel);
+            LabelAnt msgLabel = LabelAnt.create(message)
+                    .styleClass(JfxStyles.PROMPT_DIALOG_MESSAGE)
+                    .build();
+            content.children(msgLabel);
         }
 
-        // 输入框
-        TextField input = new TextField(defaultValue);
-        input.getStyleClass().add(JfxStyles.PROMPT_DIALOG_INPUT);
+        // 输入框：走 InputAnt（封装 TextField + styleClass + 主题适配）
+        InputAnt input = InputAnt.create(defaultValue)
+                .styleClass(JfxStyles.PROMPT_DIALOG_INPUT);
         if (placeholder != null) {
-            input.setPromptText(placeholder);
+            input.placeholder(placeholder);
         }
-        content.getChildren().add(input);
+        content.children(input);
 
         // 按钮区
-        HBox buttons = new HBox();
-        buttons.setAlignment(Pos.CENTER_RIGHT);
-        buttons.getStyleClass().add(JfxStyles.PROMPT_DIALOG_FOOTER);
+        HBoxAnt buttons = HBoxAnt.create()
+                .align(Pos.CENTER_RIGHT)
+                .styleClass(JfxStyles.PROMPT_DIALOG_FOOTER);
 
         // 先创建 Result 占位（modalResult 稍后注入），按钮直接调 result.close() 保证点完即关
         PromptDialogResult result = new PromptDialogResult();
 
-        Button cancelBtn = new Button(cancelText);
-        cancelBtn.getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT);
-        cancelBtn.setOnAction(e -> {
-            if (onCancel != null) onCancel.run();
-            result.close();
-        });
+        ButtonAnt cancelBtn = ButtonAnt.create(resolvedCancel)
+                .type(ButtonAnt.Type.DEFAULT)
+                .onClick(e -> {
+                    if (onCancel != null) onCancel.run();
+                    result.close();
+                })
+                .build();
 
-        Button okBtn = new Button(okText);
-        okBtn.getStyleClass().addAll(JfxStyles.BUTTON_ACCENT);
-        okBtn.setOnAction(e -> {
-            if (onConfirm != null) onConfirm.accept(input.getText());
-            result.close();
-        });
+        ButtonAnt okBtn = ButtonAnt.create(resolvedOk)
+                .type(ButtonAnt.Type.ACCENT)
+                .onClick(e -> {
+                    if (onConfirm != null) onConfirm.accept(input.getText());
+                    result.close();
+                })
+                .build();
 
-        buttons.getChildren().addAll(cancelBtn, okBtn);
-        content.getChildren().add(buttons);
+        // 监听 locale 变化：若未显式指定 ok/cancel/title 文案，需同步刷新
+        if (cancelText == null) {
+            Messages.localeProperty().addListener((obs, ov, nv) ->
+                    cancelBtn.setText(Messages.get("prompt.cancel")));
+        }
+        if (okText == null) {
+            Messages.localeProperty().addListener((obs, ov, nv) ->
+                    okBtn.setText(Messages.get("prompt.ok")));
+        }
+        if (title == null) {
+            // title 在 ModalResult.open() 时渲染，这里暂存，build 时挂监听
+            // 由于 ModalResult.open() 内部已读取 title，我们在 build 末尾再处理 title 同步
+            // 见下方 modalResult.setLocaleSyncListener(...)
+        }
+
+        buttons.children(cancelBtn, okBtn);
+        content.children(buttons);
 
         // 使用 ModalAnt 构建（不打开，等 .open() 显式触发）
         ModalAnt.ModalResult modalResult = ModalAnt.create()
-            .title(title)
+            .title(resolvedTitle)
             .content(content)
-            .width(400)
+            .width(width)
             .build();
+
+        // 如果 title 是 i18n 默认值，挂上 locale 监听：ModalResult 暴露 title 同步接口
+        if (title == null) {
+            modalResult.onTitleLocaleChange(() -> Messages.get("prompt.title"));
+        }
 
         result.setModalResult(modalResult);
 

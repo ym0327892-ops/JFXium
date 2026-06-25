@@ -10,6 +10,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.ApplySizeUtil;
+import org.openkawu.jfxium.core.util.NumericUtils;
 
 /**
  * JFXium Progress 进度组件 - 对标 Ant Design Progress。
@@ -30,9 +33,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 public class ProgressAnt {
     private static final String CONTROLLER_KEY = ProgressAnt.class.getName() + ".controller";
 
-    public enum Size {
-        SMALL, DEFAULT, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     public enum Type {
         LINE, CIRCLE
@@ -59,7 +60,7 @@ public class ProgressAnt {
         private BarBuilder() {}
 
         public BarBuilder progress(double progress) {
-            this.progress = clamp(progress);
+            this.progress = NumericUtils.clamp(progress, 0, 1, 0);
             return this;
         }
 
@@ -91,11 +92,7 @@ public class ProgressAnt {
             }
 
             // 高度由 size 决定（结构属性，不下沉到 LESS）
-            switch (size) {
-                case SMALL -> progressBar.setPrefHeight(4);
-                case LARGE -> progressBar.setPrefHeight(12);
-                default -> progressBar.setPrefHeight(8);
-            }
+            progressBar.setPrefHeight(ApplySizeUtil.progressBarHeight(size));
             progressBar.setMaxWidth(Double.MAX_VALUE);
             HBox.setHgrow(progressBar, Priority.ALWAYS);
 
@@ -129,12 +126,12 @@ public class ProgressAnt {
         private CircleBuilder() {}
 
         public CircleBuilder progress(double progress) {
-            this.progress = clamp(progress);
+            this.progress = NumericUtils.clamp(progress, 0, 1, 0);
             return this;
         }
 
         public CircleBuilder size(double size) {
-            this.size = Double.isFinite(size) ? Math.max(1, size) : 60;
+            this.size = NumericUtils.clamp(size, 1, Double.MAX_VALUE, 60);
             return this;
         }
 
@@ -207,7 +204,7 @@ public class ProgressAnt {
         }
 
         public void setProgress(double progress) {
-            double clamped = clamp(progress);
+            double clamped = NumericUtils.clamp(progress, 0, 1, 0);
             progressNode.setProgress(clamped);
             if (infoLabel != null) {
                 infoLabel.setText(formatPercent(clamped));
@@ -252,14 +249,7 @@ public class ProgressAnt {
         };
     }
 
-    private static double clamp(double progress) {
-        if (!Double.isFinite(progress)) {
-            return 0;
-        }
-        return Math.max(0, Math.min(1, progress));
-    }
-
     private static String formatPercent(double progress) {
-        return String.format("%.0f%%", clamp(progress) * 100);
+        return String.format("%.0f%%", NumericUtils.clamp(progress, 0, 1, 0) * 100);
     }
 }

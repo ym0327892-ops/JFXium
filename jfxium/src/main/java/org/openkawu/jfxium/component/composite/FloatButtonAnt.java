@@ -7,6 +7,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.NumericUtils;
+import org.openkawu.jfxium.core.util.TextUtils;
+import org.openkawu.jfxium.core.util.TooltipStyleHelper;
 
 /**
  * JFXium 悬浮按钮组件 - 对标 Ant Design FloatButton
@@ -63,7 +66,8 @@ public class FloatButtonAnt {
         }
 
         public Builder size(double size) {
-            this.size = Double.isFinite(size) ? Math.max(1, size) : 56;
+            // size 至少为 1（0 / 负数不可见），非有限值回退到默认 56
+            this.size = NumericUtils.clamp(size, 1, Double.MAX_VALUE, 56);
             return this;
         }
 
@@ -98,8 +102,9 @@ public class FloatButtonAnt {
             }
 
             if (tooltip != null) {
-                javafx.scene.control.Tooltip t = new javafx.scene.control.Tooltip(tooltip);
-                javafx.scene.control.Tooltip.install(button, t);
+                // 走 TooltipStyleHelper.install → TooltipAnt.create → 挂 jfx-tooltip 根类 + LESS 主题样式,
+                // 避免裸 javafx.scene.control.Tooltip 绕过 JFXium 主题系统（红线 #11 防御）。
+                TooltipStyleHelper.install(button, TextUtils.safeText(tooltip));
             }
 
             container.getChildren().add(button);

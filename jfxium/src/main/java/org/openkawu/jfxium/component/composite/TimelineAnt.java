@@ -10,6 +10,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public class TimelineAnt {
         public Builder pending(boolean pending) { this.pending = pending; return this; }
         public Builder pending(String pendingText) {
             this.pending = true;
-            this.pendingText = pendingText != null ? pendingText : "";
+            this.pendingText = TextUtils.safeText(pendingText);
             return this;
         }
 
@@ -169,7 +170,7 @@ public class TimelineAnt {
             HBox.setHgrow(rightBox, Priority.ALWAYS);
             rightBox.getStyleClass().add(JfxStyles.TIMELINE_CONTENT_BOX);
 
-            Label contentLabel = new Label(item.content != null ? item.content : "");
+            Label contentLabel = new Label(TextUtils.safeText(item.content));
             contentLabel.getStyleClass().add(JfxStyles.TIMELINE_CONTENT);
             contentLabel.setWrapText(true);
             rightBox.getChildren().add(contentLabel);

@@ -1,6 +1,5 @@
 package org.openkawu.jfxium.component.composite;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
@@ -15,6 +14,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.Bindings;
+import org.openkawu.jfxium.core.util.NumericUtils;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -48,7 +49,8 @@ public class SliderAnt {
         private double[] rangeValue = null;
         private double step = 1;
         private boolean range = false;
-        private boolean disabled = false;
+        // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取），
+        // 无需自建字段与 setter，直接继承父类 disabled(boolean) / disabled() 即可。
         private boolean vertical = false;
         private boolean reverse = false;
         private boolean dots = false;
@@ -93,11 +95,6 @@ public class SliderAnt {
 
         public Builder range() {
             return range(true);
-        }
-
-        public Builder disabled(boolean disabled) {
-            this.disabled = disabled;
-            return this;
         }
 
         public Builder vertical(boolean vertical) {
@@ -148,26 +145,25 @@ public class SliderAnt {
 
         public Node build() {
             normalizeRange();
-            step = Double.isFinite(step) && step > 0 ? step : 1;
+            step = NumericUtils.isFinitePositive(step) ? step : 1;
             return range ? buildRangeSlider() : buildSingleSlider();
         }
 
         private Node buildSingleSlider() {
-            value = clamp(value);
+            value = NumericUtils.clamp(value, min, max, min);
             Slider slider = new Slider(min, max, value);
             slider.setBlockIncrement(step);
-            // 双向绑定（仅单滑块模式）
-            if (bindProperty != null) {
-                slider.valueProperty().bindBidirectional(bindProperty);
-            }
+            // 双向绑定（仅单滑块模式）— 工具类自带 null 安全
+            Bindings.bindBidirectional(slider.valueProperty(), bindProperty);
             slider.setShowTickMarks(marks != null || dots);
             slider.setShowTickLabels(marks != null);
             slider.setOrientation(vertical ? Orientation.VERTICAL : Orientation.HORIZONTAL);
             applyReverse(slider);
-            slider.setDisable(disabled);
+            boolean isDisabled = Boolean.TRUE.equals(disable);
+            slider.setDisable(isDisabled);
             slider.getStyleClass().add(JfxStyles.SLIDER);
             // disabled 通过 styleClass 切换 opacity，不再 inline
-            if (disabled) {
+            if (isDisabled) {
                 slider.getStyleClass().add(JfxStyles.SLIDER_DISABLED);
             }
 
@@ -178,8 +174,7 @@ public class SliderAnt {
             }
 
             if (onChange != null) {
-                slider.valueProperty().addListener((obs, oldVal, newVal) ->
-                        onChange.accept(newVal.doubleValue()));
+                Bindings.onChange(slider.valueProperty(), newVal -> onChange.accept(newVal.doubleValue()));
             }
             if (onChangeComplete != null) {
                 slider.setOnMouseReleased(e -> onChangeComplete.accept(slider.getValue()));
@@ -228,13 +223,13 @@ public class SliderAnt {
                 Label tipLabel = new Label();
                 tipLabel.getStyleClass().add(JfxStyles.SLIDER_TIP);
                 tipLabel.textProperty().bind(
-                        Bindings.createStringBinding(
+                        javafx.beans.binding.Bindings.createStringBinding(
                                 () -> {
                                     double val = slider.getValue();
                                     if (tipFormatter != null) {
                                         return tipFormatter.apply(val);
                                     }
-                                    return String.valueOf((int) val);
+                                    return NumericUtils.toIntString(val);
                                 },
                                 slider.valueProperty()
                         )
@@ -257,8 +252,8 @@ public class SliderAnt {
 
             double startVal = rangeValue != null && rangeValue.length >= 2 ? rangeValue[0] : min;
             double endVal = rangeValue != null && rangeValue.length >= 2 ? rangeValue[1] : max;
-            startVal = clamp(startVal);
-            endVal = clamp(endVal);
+            startVal = NumericUtils.clamp(startVal, min, max, min);
+            endVal = NumericUtils.clamp(endVal, min, max, min);
             if (startVal > endVal) {
                 double tmp = startVal;
                 startVal = endVal;
@@ -274,9 +269,10 @@ public class SliderAnt {
                 slider.setShowTickMarks(false);
                 slider.setShowTickLabels(false);
                 applyReverse(slider);
-                slider.setDisable(disabled);
+                boolean isDisabled = Boolean.TRUE.equals(disable);
+                slider.setDisable(isDisabled);
                 slider.getStyleClass().add(JfxStyles.SLIDER);
-                if (disabled) {
+                if (isDisabled) {
                     slider.getStyleClass().add(JfxStyles.SLIDER_DISABLED);
                 }
                 // M19.43.1 #6 二次修复：maxWidth 钉在 pref(160) 而非 MAX。
@@ -289,8 +285,8 @@ public class SliderAnt {
                 slider.setMaxWidth(160);
             }
 
-            Label startLabel = new Label(String.valueOf((int) startVal));
-            Label endLabel = new Label(String.valueOf((int) endVal));
+            Label startLabel = new Label(NumericUtils.toIntString(startVal));
+            Label endLabel = new Label(NumericUtils.toIntString(endVal));
             Label separator = new Label("~");
 
             startLabel.getStyleClass().add(JfxStyles.SLIDER_RANGE_LABEL);
@@ -304,7 +300,7 @@ public class SliderAnt {
                     newStart = endSlider.getValue();
                     startSlider.setValue(newStart);
                 }
-                startLabel.setText(String.valueOf((int) newStart));
+                startLabel.setText(NumericUtils.toIntString(newStart));
                 if (onChange != null) {
                     onChange.accept(newStart);
                 }
@@ -316,7 +312,7 @@ public class SliderAnt {
                     newEnd = startSlider.getValue();
                     endSlider.setValue(newEnd);
                 }
-                endLabel.setText(String.valueOf((int) newEnd));
+                endLabel.setText(NumericUtils.toIntString(newEnd));
                 if (onChange != null) {
                     onChange.accept(newEnd);
                 }
@@ -356,11 +352,6 @@ public class SliderAnt {
                     rangeValue[1] = max;
                 }
             }
-        }
-
-        private double clamp(double rawValue) {
-            double candidate = Double.isFinite(rawValue) ? rawValue : min;
-            return Math.max(min, Math.min(max, candidate));
         }
 
         private void applyReverse(Slider slider) {

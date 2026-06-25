@@ -10,6 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.NumericUtils;
 
 /**
  * JFXium 可调整尺寸面板组件（组合式，Builder 模式）。
@@ -79,12 +80,12 @@ public class ResizablePanelAnt {
         }
 
         public Builder minWidth(double minWidth) {
-            this.minWidth = Math.max(0, minWidth);
+            this.minWidth = NumericUtils.ensureNonNegative(minWidth);
             return this;
         }
 
         public Builder minHeight(double minHeight) {
-            this.minHeight = Math.max(0, minHeight);
+            this.minHeight = NumericUtils.ensureNonNegative(minHeight);
             return this;
         }
 
@@ -99,12 +100,12 @@ public class ResizablePanelAnt {
         }
 
         public Builder maxWidth(double maxWidth) {
-            this.maxWidth = Math.max(0, maxWidth);
+            this.maxWidth = NumericUtils.ensureNonNegative(maxWidth);
             return this;
         }
 
         public Builder maxHeight(double maxHeight) {
-            this.maxHeight = Math.max(0, maxHeight);
+            this.maxHeight = NumericUtils.ensureNonNegative(maxHeight);
             return this;
         }
 
@@ -203,20 +204,16 @@ public class ResizablePanelAnt {
             });
             handle.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
                 if (mode == Mode.HORIZONTAL || mode == Mode.BOTH) {
-                    double width = clamp(start[2] + event.getSceneX() - start[0], minWidth, safeMaxWidth);
+                    double width = NumericUtils.clamp(start[2] + event.getSceneX() - start[0], minWidth, safeMaxWidth, minWidth);
                     panel.setPrefWidth(width);
                 }
                 if (mode == Mode.VERTICAL || mode == Mode.BOTH) {
-                    double height = clamp(start[3] + event.getSceneY() - start[1], minHeight, safeMaxHeight);
+                    double height = NumericUtils.clamp(start[3] + event.getSceneY() - start[1], minHeight, safeMaxHeight, minHeight);
                     panel.setPrefHeight(height);
                 }
                 event.consume();
             });
             return handle;
-        }
-
-        private double clamp(double value, double min, double max) {
-            return Math.max(min, Math.min(max, value));
         }
     }
 }

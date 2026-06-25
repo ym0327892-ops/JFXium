@@ -11,6 +11,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 
@@ -45,17 +47,15 @@ import java.util.function.Consumer;
  */
 public class InputNumberAnt {
 
-    public enum Size {
-        SMALL, DEFAULT, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private double value = 0;
         private double min = Double.NEGATIVE_INFINITY;
         private double max = Double.POSITIVE_INFINITY;
         private double step = 1;
-        private String placeholder = "";
-        private boolean disabled = false;
+        // placeholder 复用父类 AbstractStyleBuilder.placeholder 字段（P2-S8 抽取）
+        // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取）
         private boolean readOnly = false;
         private Size size = Size.DEFAULT;
         private Consumer<Double> onChange = null;
@@ -67,10 +67,8 @@ public class InputNumberAnt {
         public Builder value(double value) { this.value = value; return this; }
         public Builder min(double min) { this.min = min; return this; }
         public Builder max(double max) { this.max = max; return this; }
-        public Builder step(double step) { this.step = Double.isFinite(step) && step > 0 ? step : 1; return this; }
-        public Builder placeholder(String placeholder) { this.placeholder = placeholder != null ? placeholder : ""; return this; }
-        public Builder disabled(boolean disabled) { this.disabled = disabled; return this; }
-        public Builder disabled() { return disabled(true); }
+        public Builder step(double step) { this.step = TextUtils.safePositive(step, 1); return this; }
+        // placeholder(String) 继承自父类 AbstractStyleBuilder（P2-S8 抽取）
         public Builder readOnly(boolean readOnly) { this.readOnly = readOnly; return this; }
         public Builder size(Size size) { this.size = size != null ? size : Size.DEFAULT; return this; }
         public Builder onChange(Consumer<Double> onChange) { this.onChange = onChange; return this; }
@@ -98,7 +96,7 @@ public class InputNumberAnt {
             HBox container = new HBox(0);
             container.setAlignment(Pos.CENTER_LEFT);
             container.getStyleClass().add(JfxStyles.INPUT_NUMBER);
-            if (disabled) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_DISABLED);
+            if (Boolean.TRUE.equals(disable)) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_DISABLED);
             if (size == Size.SMALL) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_SMALL);
             if (size == Size.LARGE) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_LARGE);
 
@@ -110,7 +108,7 @@ public class InputNumberAnt {
 
             TextField field = new TextField(formatValue(value));
             field.setAlignment(Pos.CENTER);
-            field.setPromptText(placeholder != null ? placeholder : "");
+            field.setPromptText(TextUtils.safeText(placeholder));
             field.setEditable(!readOnly);
             field.setPrefWidth(80);
             field.getStyleClass().add(JfxStyles.INPUT_NUMBER_FIELD);
@@ -159,7 +157,7 @@ public class InputNumberAnt {
                 container.getChildren().add(suffixLabel);
             }
 
-            if (disabled) {
+            if (Boolean.TRUE.equals(disable)) {
                 decBtn.setDisable(true);
                 incBtn.setDisable(true);
                 field.setDisable(true);

@@ -13,6 +13,7 @@ import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +60,8 @@ public class TreeSelectAnt {
         }
 
         public TreeNode(String value, String label, List<TreeNode> children) {
-            this.value = value != null ? value : "";
-            this.label = label != null ? label : "";
+            this.value = TextUtils.safeText(value);
+            this.label = TextUtils.safeText(label);
             this.children = children != null ? children : new ArrayList<>();
         }
 
@@ -76,10 +77,10 @@ public class TreeSelectAnt {
     }
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
-        // null = 用 i18n 默认值；非 null = 调用方显式指定
-        private String placeholder = null;
+        // placeholder 复用父类 AbstractStyleBuilder.placeholder 字段（P2-S8 抽取）
         private TreeNode root;
-        private boolean disabled = false;
+        // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取），
+        // 无需自建字段与 setter，直接继承父类 disabled(boolean) / disabled() 即可。
         private boolean multiple = false;
         private Consumer<TreeNode> onSelect = null;
         private Consumer<List<TreeNode>> onMultipleSelect = null;
@@ -88,9 +89,7 @@ public class TreeSelectAnt {
         private final List<TreeNode> selectedNodes = new ArrayList<>();
         private ObjectProperty<String> bindProperty = null;
 
-        public Builder placeholder(String placeholder) { this.placeholder = placeholder; return this; }
         public Builder tree(TreeNode root) { this.root = root; return this; }
-        public Builder disabled(boolean disabled) { this.disabled = disabled; return this; }
         public Builder multiple(boolean multiple) { this.multiple = multiple; return this; }
         public Builder onSelect(Consumer<TreeNode> onSelect) { this.onSelect = onSelect; return this; }
         public Builder onMultipleSelect(Consumer<List<TreeNode>> onMultipleSelect) { this.onMultipleSelect = onMultipleSelect; return this; }
@@ -112,7 +111,7 @@ public class TreeSelectAnt {
                     : Messages.get("treeselect.placeholder");
             field.setPromptText(effectivePlaceholder);
             // 仅当未显式指定 placeholder 时才订阅 locale 变化（避免覆盖用户文案）
-            if (placeholder == null) {
+            if (!hasPlaceholder()) {
                 Messages.localeProperty().addListener((obs, ov, nv) ->
                         field.setPromptText(Messages.get("treeselect.placeholder")));
             }
@@ -135,7 +134,7 @@ public class TreeSelectAnt {
             popup.getContent().add(treePanel);
 
             field.setOnMouseClicked(e -> {
-                if (disabled) return;
+                if (Boolean.TRUE.equals(disable)) return;
                 if (popup.isShowing()) {
                     popup.hide();
                 } else {
@@ -146,9 +145,9 @@ public class TreeSelectAnt {
 
             container.getChildren().add(field);
 
-            if (disabled) {
+            if (Boolean.TRUE.equals(disable)) {
+                // applyStyles() 已自动应用 disable 到 container，这里只需处理内部字段
                 field.setDisable(true);
-                container.setDisable(true);
             }
             applyStyles(container);
             return container;
@@ -261,7 +260,7 @@ public class TreeSelectAnt {
             for (int i = 0; i < selectedNodes.size(); i++) {
                 if (i > 0) sb.append("、");
                 String label = selectedNodes.get(i).getLabel();
-                sb.append(label != null ? label : "");
+                sb.append(TextUtils.safeText(label));
             }
             return sb.toString();
         }

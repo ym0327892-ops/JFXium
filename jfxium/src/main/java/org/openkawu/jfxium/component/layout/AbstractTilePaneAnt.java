@@ -4,6 +4,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * TilePane 系继承式组件的自类型基类。
@@ -23,12 +24,12 @@ public abstract class AbstractTilePaneAnt<SELF extends AbstractTilePaneAnt<SELF>
     }
 
     public SELF prefColumns(int columns) {
-        setPrefColumns(Math.max(1, columns));
+        setPrefColumns(TextUtils.ensureAtLeastOne(columns));
         return self();
     }
 
     public SELF prefRows(int rows) {
-        setPrefRows(Math.max(1, rows));
+        setPrefRows(TextUtils.ensureAtLeastOne(rows));
         return self();
     }
 

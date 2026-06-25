@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.function.Consumer;
@@ -44,7 +45,10 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身</li>
  * </ul>
  */
-public class ListViewAnt<T> extends ListView<T> {
+public class ListViewAnt<T> extends ListView<T> implements DisabledSupport<ListViewAnt<T>> {
+
+    /** 双击事件所需的点击次数。 */
+    private static final int DOUBLE_CLICK_COUNT = 2;
 
     // ============================================================
     // 工厂入口
@@ -61,11 +65,15 @@ public class ListViewAnt<T> extends ListView<T> {
 
     public ListViewAnt() {
         super();
-        getStyleClass().add(JfxStyles.JFX_LIST_VIEW);
+        init();
     }
 
     public ListViewAnt(ObservableList<T> items) {
         super(items);
+        init();
+    }
+
+    private void init() {
         getStyleClass().add(JfxStyles.JFX_LIST_VIEW);
     }
 
@@ -111,7 +119,7 @@ public class ListViewAnt<T> extends ListView<T> {
     /** 设置双击回调。 */
     public ListViewAnt<T> onDoubleClick(Consumer<T> handler) {
         setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2 && handler != null) {
+            if (e.getClickCount() == DOUBLE_CLICK_COUNT && handler != null) {
                 T item = getSelectionModel().getSelectedItem();
                 if (item != null) handler.accept(item);
             }
@@ -125,11 +133,7 @@ public class ListViewAnt<T> extends ListView<T> {
         return this;
     }
 
-    /** 设置禁用状态。 */
-    public ListViewAnt<T> disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
 
     /** 设置可编辑（配合 cellFactory 使用）。 */
     public ListViewAnt<T> editable(boolean editable) {

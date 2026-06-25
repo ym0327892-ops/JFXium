@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.*;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,10 @@ import java.util.List;
  *     .build();
  * }</pre>
  *
+ * <p>注意：`col(6, node)` 这种固定 span 只表示等分，不会自动随窗口变成单列。
+ * 需要响应式时，请使用 `responsive()` + `GridAnt.col(node).responsive(...)`，
+ * 或继续使用 `.xs(...).sm(...).md(...)` 的细粒度写法。</p>
+ *
  * <h3>响应式（窄屏 1 列、宽屏 4 列）</h3>
  * <pre>{@code
  * VBox grid = GridAnt.create()
@@ -62,7 +67,7 @@ public class GridAnt {
     private static final double COLUMN_PERCENT = 100.0 / TOTAL_COLUMNS;
 
     private static int clampSpan(int span) {
-        return Math.max(1, Math.min(TOTAL_COLUMNS, span));
+        return TextUtils.ensureAtLeastOne(Math.min(TOTAL_COLUMNS, span));
     }
 
     private static int clampOffset(int offset) {
@@ -211,6 +216,27 @@ public class GridAnt {
         public ColBuilder lgOffset(int o) { this.lgOffset = clampOffset(o); return this; }
         public ColBuilder xlOffset(int o) { this.xlOffset = clampOffset(o); return this; }
         public ColBuilder xxlOffset(int o) { this.xxlOffset = clampOffset(o); return this; }
+
+        /**
+         * 响应式 span 快捷写法。
+         *
+         * <p>参数顺序固定为 xs / sm / md / lg / xl / xxl。常见布局可以直接写成：
+         * {@code GridAnt.col(node).responsive(24, 12, 12, 6, 6, 6)}</p>
+         */
+        public ColBuilder responsive(int xs, int sm, int md, int lg, int xl, int xxl) {
+            return xs(xs).sm(sm).md(md).lg(lg).xl(xl).xxl(xxl);
+        }
+
+        /**
+         * 响应式 offset 快捷写法。
+         *
+         * <p>参数顺序固定为 xsOffset / smOffset / mdOffset / lgOffset / xlOffset / xxlOffset。</p>
+         */
+        public ColBuilder responsiveOffset(int xsOffset, int smOffset, int mdOffset,
+                                           int lgOffset, int xlOffset, int xxlOffset) {
+            return xsOffset(xsOffset).smOffset(smOffset).mdOffset(mdOffset)
+                    .lgOffset(lgOffset).xlOffset(xlOffset).xxlOffset(xxlOffset);
+        }
 
         Col toCol() {
             int defaultSpan = span > 0 ? span : TOTAL_COLUMNS;

@@ -4,10 +4,11 @@ import javafx.animation.FadeTransition;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
-import javafx.util.Duration;
 import org.openkawu.jfxium.component.base.PopconfirmPanel;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.util.AnimationDuration;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 
@@ -53,6 +54,10 @@ import java.util.function.Consumer;
  */
 public class PopconfirmAnt {
 
+    public enum Placement {
+        TOP, TOP_LEFT, TOP_RIGHT, BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT
+    }
+
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private String title = "";
         private String description = "";
@@ -62,6 +67,7 @@ public class PopconfirmAnt {
         private Consumer<Boolean> onConfirm = null;
         private Consumer<Boolean> onCancel = null;
         private Node target = null;
+        private Placement placement = Placement.BOTTOM;
 
         public Builder title(String title) {
             this.title = title;
@@ -98,6 +104,12 @@ public class PopconfirmAnt {
             return this;
         }
 
+        /** 气泡弹出位置，默认 BOTTOM（目标下方 +8px）。 */
+        public Builder placement(Placement placement) {
+            this.placement = placement;
+            return this;
+        }
+
         public Popconfirm build() {
             return new Popconfirm(this);
         }
@@ -119,8 +131,8 @@ public class PopconfirmAnt {
             VBox panel = new PopconfirmPanel.Builder()
                 .title(config.title)
                 .description(config.description)
-                .okText(config.okText != null ? config.okText : Messages.get("popconfirm.ok"))
-                .cancelText(config.cancelText != null ? config.cancelText : Messages.get("popconfirm.cancel"))
+                .okText(TextUtils.safeText(config.okText, Messages.get("popconfirm.ok")))
+                .cancelText(TextUtils.safeText(config.cancelText, Messages.get("popconfirm.cancel")))
                 .onConfirm(() -> {
                     hide();
                     if (config.onConfirm != null) {
@@ -138,9 +150,37 @@ public class PopconfirmAnt {
             popup.getContent().add(panel);
 
             javafx.geometry.Bounds bounds = config.target.localToScreen(config.target.getBoundsInLocal());
-            popup.show(config.target, bounds.getMinX(), bounds.getMaxY() + 8);
+            double x, y;
+            switch (config.placement) {
+                case TOP -> {
+                    x = bounds.getMinX();
+                    y = bounds.getMinY() - 8 - panel.getHeight();
+                }
+                case TOP_LEFT -> {
+                    x = bounds.getMinX();
+                    y = bounds.getMinY() - 8 - panel.getHeight();
+                }
+                case TOP_RIGHT -> {
+                    x = bounds.getMaxX() - panel.getWidth();
+                    y = bounds.getMinY() - 8 - panel.getHeight();
+                }
+                case BOTTOM_LEFT -> {
+                    x = bounds.getMinX();
+                    y = bounds.getMaxY() + 8;
+                }
+                case BOTTOM_RIGHT -> {
+                    x = bounds.getMaxX() - panel.getWidth();
+                    y = bounds.getMaxY() + 8;
+                }
+                default -> {
+                    // BOTTOM（默认）
+                    x = bounds.getMinX();
+                    y = bounds.getMaxY() + 8;
+                }
+            }
+            popup.show(config.target, x, y);
 
-            FadeTransition fade = new FadeTransition(Duration.millis(150), popup.getContent().get(0));
+            FadeTransition fade = new FadeTransition(AnimationDuration.ULTRA_FAST, popup.getContent().get(0));
             fade.setFromValue(0);
             fade.setToValue(1);
             fade.play();

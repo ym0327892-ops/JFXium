@@ -9,6 +9,7 @@ import javafx.stage.Popup;
 import javafx.util.Duration;
 import org.openkawu.jfxium.component.base.MessageCard;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.util.AnimationDuration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  * JFXium 全局消息提示组件 - 对标 Ant Design Message（组合式，静态方法调用）。
  *
  * <p><b>定位</b>：全局顶部 / 底部 / 中心短暂提示，自动消失，
- * 与 AlertAnt（嵌入式常驻）和 NotificationAnt（右下角通知）严格区分。</p>
+ * 与 NotificationAnt（右下角通知）严格区分。</p>
  *
  * <h2>功能特性</h2>
  * <ul>
@@ -29,16 +30,22 @@ import java.util.List;
  *
  * <h2>用法</h2>
  * <pre>{@code
- * // 顶部成功提示
+ * // 顶部成功提示（默认 3 秒自动消失）
  * MessageAnt.success("保存成功");
  *
- * // 底部错误提示
- * MessageAnt.error("网络错误", MessageAnt.Position.BOTTOM);
+ * // 底部错误提示（指定 5 秒）
+ * MessageAnt.error("网络错误", 5, MessageAnt.Position.BOTTOM);
  *
- * // Loading
+ * // 精确 Duration（支持亚秒级，如 500ms / 2.5s）
+ * MessageAnt.show("提示", MessageAnt.Type.INFO, Duration.millis(500));
+ *
+ * // Loading（默认不自动消失，需手动 close）
  * MessageResult loading = MessageAnt.loading("正在处理...");
  * // ... 异步完成后
  * loading.close();
+ *
+ * // Loading 指定超时（6 秒后自动消失）
+ * MessageAnt.loading("正在处理...", 6);
  * }</pre>
  */
 public class MessageAnt {
@@ -165,8 +172,51 @@ public class MessageAnt {
         show(content, Type.LOADING, 0, defaultPosition);
     }
 
+    // ============================================================
+    // durationSeconds 重载（让业务方自由控制自动消失时间）
+    // - durationSeconds > 0：N 秒后自动消失
+    // - durationSeconds == 0：不自动消失（Loading 默认行为）
+    // - durationSeconds < 0：按 0 处理
+    // ============================================================
+
+    /** {@link #success(String)} 指定 durationSeconds 秒（覆盖默认 3 秒）。 */
+    public static void success(String content, int durationSeconds) {
+        show(content, Type.SUCCESS, durationSeconds, defaultPosition);
+    }
+
+    /** {@link #error(String)} 指定 durationSeconds 秒（覆盖默认 3 秒）。 */
+    public static void error(String content, int durationSeconds) {
+        show(content, Type.ERROR, durationSeconds, defaultPosition);
+    }
+
+    /** {@link #warning(String)} 指定 durationSeconds 秒（覆盖默认 3 秒）。 */
+    public static void warning(String content, int durationSeconds) {
+        show(content, Type.WARNING, durationSeconds, defaultPosition);
+    }
+
+    /** {@link #info(String)} 指定 durationSeconds 秒（覆盖默认 3 秒）。 */
+    public static void info(String content, int durationSeconds) {
+        show(content, Type.INFO, durationSeconds, defaultPosition);
+    }
+
+    /** {@link #loading(String)} 指定 durationSeconds 秒后自动消失（默认 0 = 永不自动消失）。 */
+    public static void loading(String content, int durationSeconds) {
+        show(content, Type.LOADING, durationSeconds, defaultPosition);
+    }
+
     public static void show(String content, Type type, int durationSeconds) {
         show(content, type, durationSeconds, defaultPosition);
+    }
+
+    /**
+     * 精确 Duration 重载（支持亚秒级，如 {@code Duration.millis(500)} / {@code Duration.seconds(2.5)}）。
+     * null 走默认 3 秒。
+     */
+    public static void show(String content, Type type, Duration duration) {
+        double seconds = duration == null ? 3.0 : Math.max(0.0, duration.toSeconds());
+        // 亚秒级向上取整（如 0.5s -> 1s，保证不立即消失）
+        int secondsInt = (int) Math.ceil(seconds);
+        show(content, type, secondsInt, defaultPosition);
     }
 
     /**
@@ -258,7 +308,7 @@ public class MessageAnt {
                     messageBox.setTranslateY(position == Position.BOTTOM ? 20 : -20);
                 }
 
-                FadeTransition fadeIn = new FadeTransition(Duration.millis(200), messageBox);
+                FadeTransition fadeIn = new FadeTransition(AnimationDuration.FAST, messageBox);
                 fadeIn.setFromValue(0);
                 fadeIn.setToValue(1);
                 fadeIn.setInterpolator(Interpolator.EASE_OUT);
@@ -268,7 +318,7 @@ public class MessageAnt {
                     fadeIn.play();
                 } else {
                     // 顶部/底部使用滑入 + 淡入
-                    TranslateTransition slideIn = new TranslateTransition(Duration.millis(200), messageBox);
+                    TranslateTransition slideIn = new TranslateTransition(AnimationDuration.FAST, messageBox);
                     slideIn.setFromY(position == Position.BOTTOM ? 20 : -20);
                     slideIn.setToY(0);
                     slideIn.setInterpolator(Interpolator.EASE_OUT);
@@ -297,7 +347,7 @@ public class MessageAnt {
     }
 
     private static void hideMessage(MessageEntry entry) {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(200), entry.box);
+        FadeTransition fadeOut = new FadeTransition(AnimationDuration.FAST, entry.box);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
         fadeOut.setOnFinished(e -> entry.popup.hide());

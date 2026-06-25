@@ -43,7 +43,8 @@ public class TimePickerAnt {
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private LocalTime value = LocalTime.now();
         private String format = "HH:mm:ss";
-        private boolean disabled = false;
+        // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取），
+        // 无需自建字段与 setter，直接继承父类 disabled(boolean) / disabled() 即可。
         private Consumer<LocalTime> onChange = null;
         private ObjectProperty<LocalTime> bindProperty = null;
 
@@ -54,11 +55,6 @@ public class TimePickerAnt {
 
         public Builder format(String format) {
             this.format = format != null ? format : "HH:mm:ss";
-            return this;
-        }
-
-        public Builder disabled(boolean disabled) {
-            this.disabled = disabled;
             return this;
         }
 
@@ -172,7 +168,7 @@ public class TimePickerAnt {
             spinner.setMinHeight(32);
             spinner.setMaxHeight(32);
             spinner.getStyleClass().add(JfxStyles.TIME_PICKER_SPINNER);
-            spinner.setDisable(disabled);
+            spinner.setDisable(Boolean.TRUE.equals(disable));
 
             spinner.getEditor().setAlignment(Pos.CENTER);
             // 编辑器视觉样式（字号/padding/边框等）走 LESS

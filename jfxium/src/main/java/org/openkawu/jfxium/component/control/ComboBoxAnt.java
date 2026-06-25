@@ -5,8 +5,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.builder.Radius;
+import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.ApplySizeUtil;
+import org.openkawu.jfxium.core.util.Bindings;
 
 import java.util.function.Consumer;
 
@@ -48,12 +52,9 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class ComboBoxAnt<T> extends ComboBox<T> implements LayoutCommon<ComboBoxAnt<T>> {
+public class ComboBoxAnt<T> extends ComboBox<T> implements LayoutCommon<ComboBoxAnt<T>>, DisabledSupport<ComboBoxAnt<T>> {
 
-    /** 尺寸枚举，与 InputAnt/ButtonAnt 一致（DEFAULT/SMALL/LARGE）。 */
-    public enum Size {
-        DEFAULT, SMALL, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     // ============================================================
     // 工厂入口
@@ -70,11 +71,15 @@ public class ComboBoxAnt<T> extends ComboBox<T> implements LayoutCommon<ComboBox
 
     public ComboBoxAnt() {
         super();
-        getStyleClass().add(JfxStyles.JFX_COMBO_BOX);
+        init();
     }
 
     public ComboBoxAnt(ObservableList<T> items) {
         super(items);
+        init();
+    }
+
+    private void init() {
         getStyleClass().add(JfxStyles.JFX_COMBO_BOX);
     }
 
@@ -115,39 +120,25 @@ public class ComboBoxAnt<T> extends ComboBox<T> implements LayoutCommon<ComboBox
         return this;
     }
 
-    /** 设置禁用状态。 */
-    public ComboBoxAnt<T> disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
 
     /**
      * 设置尺寸。幂等——先清旧 size styleClass，再按需挂新。
      * DEFAULT 仅清不挂（与 ButtonAnt 行为一致）。
      */
     public ComboBoxAnt<T> size(Size size) {
-        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
-        if (size == Size.SMALL) {
-            getStyleClass().add(JfxStyles.SIZE_SMALL);
-        } else if (size == Size.LARGE) {
-            getStyleClass().add(JfxStyles.SIZE_LARGE);
-        }
-        return this;
+        return ApplySizeUtil.apply(this, size);
     }
 
     /** 选中值变化回调。 */
     public ComboBoxAnt<T> onChange(Consumer<T> handler) {
-        if (handler != null) {
-            valueProperty().addListener((obs, oldVal, newVal) -> handler.accept(newVal));
-        }
+        Bindings.onChange(valueProperty(), handler);
         return this;
     }
 
     /** 双向绑定：控件值 ↔ Property 值实时同步。 */
     public ComboBoxAnt<T> bindValue(Property<T> property) {
-        if (property != null) {
-            valueProperty().bindBidirectional(property);
-        }
+        Bindings.bindBidirectional(valueProperty(), property);
         return this;
     }
 

@@ -13,6 +13,8 @@ import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.AnimationDuration;
+import org.openkawu.jfxium.core.util.IconPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +69,7 @@ public class CollapseAnt {
         private List<Panel> panels = new ArrayList<>();
         private boolean accordion = false;
         private List<String> activeKeys = new ArrayList<>();
+        private Node expandIcon = null;  // null = 用默认右箭头
 
         public Builder panel(String key, String header, Node content) {
             this.panels.add(new Panel(key, header, content));
@@ -86,6 +89,9 @@ public class CollapseAnt {
         public Builder activeKey(String key) { this.activeKeys.add(key); return this; }
         public Builder activeKeys(List<String> keys) { this.activeKeys = keys != null ? keys : new ArrayList<>(); return this; }
 
+        /** 自定义展开箭头图标（null = 默认右箭头，展开时旋转 180°）。 */
+        public Builder expandIcon(Node icon) { this.expandIcon = icon; return this; }
+
         public VBox build() {
             VBox collapse = new VBox(0);
             collapse.getStyleClass().add(JfxStyles.COLLAPSE);
@@ -104,14 +110,21 @@ public class CollapseAnt {
                     header.getStyleClass().add(JfxStyles.COLLAPSE_DISABLED);
                 }
 
-                SVGPath arrow = new SVGPath();
-                arrow.setContent("M4 6L8 10L12 6");
-                arrow.getStyleClass().add(JfxStyles.COLLAPSE_ARROW);
-                if (isActive) arrow.setRotate(180);
+                Node arrowNode;
+                if (expandIcon != null) {
+                    arrowNode = expandIcon;
+                    header.getChildren().add(arrowNode);
+                } else {
+                    SVGPath defaultArrow = IconPath.chevronDownCollapse();
+                    defaultArrow.getStyleClass().add(JfxStyles.COLLAPSE_ARROW);
+                    arrowNode = defaultArrow;
+                    header.getChildren().add(defaultArrow);
+                }
+                if (isActive) arrowNode.setRotate(180);
 
                 Label headerLabel = new Label(panel.getHeader());
                 headerLabel.getStyleClass().add(JfxStyles.COLLAPSE_HEADER_LABEL);
-                header.getChildren().addAll(arrow, headerLabel);
+                header.getChildren().add(headerLabel);
 
                 VBox contentBox = new VBox(0);
                 contentBox.getStyleClass().add(JfxStyles.COLLAPSE_CONTENT);
@@ -144,8 +157,8 @@ public class CollapseAnt {
                         animatePanel(contentBox, expanding);
                         // 箭头旋转动画
                         Timeline arrowAnim = new Timeline(
-                                new KeyFrame(Duration.millis(200),
-                                        new KeyValue(arrow.rotateProperty(), expanding ? 180 : 0))
+                                new KeyFrame(AnimationDuration.FAST,
+                                        new KeyValue(arrowNode.rotateProperty(), expanding ? 180 : 0))
                         );
                         arrowAnim.play();
                     });
@@ -172,12 +185,12 @@ public class CollapseAnt {
             if (show) {
                 timeline.getKeyFrames().addAll(
                         new KeyFrame(Duration.ZERO, new KeyValue(contentBox.opacityProperty(), 0)),
-                        new KeyFrame(Duration.millis(200), new KeyValue(contentBox.opacityProperty(), 1))
+                        new KeyFrame(AnimationDuration.FAST, new KeyValue(contentBox.opacityProperty(), 1))
                 );
             } else {
                 timeline.getKeyFrames().addAll(
                         new KeyFrame(Duration.ZERO, new KeyValue(contentBox.opacityProperty(), 1)),
-                        new KeyFrame(Duration.millis(200), new KeyValue(contentBox.opacityProperty(), 0))
+                        new KeyFrame(AnimationDuration.FAST, new KeyValue(contentBox.opacityProperty(), 0))
                 );
             }
             timeline.setOnFinished(e -> {

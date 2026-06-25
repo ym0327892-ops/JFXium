@@ -59,11 +59,15 @@ public class SeparatorAnt extends Separator {
 
     public SeparatorAnt() {
         super();
-        getStyleClass().add(JfxStyles.JFX_SEPARATOR);
+        init();
     }
 
     public SeparatorAnt(Orientation orientation) {
         super(orientation);
+        init();
+    }
+
+    private void init() {
         getStyleClass().add(JfxStyles.JFX_SEPARATOR);
     }
 

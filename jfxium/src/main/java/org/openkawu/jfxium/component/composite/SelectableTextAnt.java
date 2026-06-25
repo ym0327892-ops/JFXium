@@ -5,6 +5,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * SelectableTextAnt（M19.7）— 只读、可选、可复制的文本组件。
@@ -90,7 +91,7 @@ public class SelectableTextAnt {
         private boolean focusHalo = false;    // 默认关闭：单行展示型文本拖选时不弹蓝边（M19.42 改默认；避免被误认为"输入框边框"）
 
         private Builder(String text) {
-            this.text = text != null ? text : "";
+            this.text = TextUtils.safeText(text);
         }
 
         /** 是否多行（默认 false 单行）。多行用 TextArea，否则 TextField。 */

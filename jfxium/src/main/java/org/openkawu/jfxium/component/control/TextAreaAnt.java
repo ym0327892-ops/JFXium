@@ -3,8 +3,12 @@ package org.openkawu.jfxium.component.control;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.TextArea;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.builder.Radius;
+
+import org.openkawu.jfxium.core.util.Bindings;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 
@@ -46,7 +50,7 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class TextAreaAnt extends TextArea implements LayoutCommon<TextAreaAnt> {
+public class TextAreaAnt extends TextArea implements LayoutCommon<TextAreaAnt>, DisabledSupport<TextAreaAnt> {
 
     // ============================================================
     // 工厂入口
@@ -86,19 +90,19 @@ public class TextAreaAnt extends TextArea implements LayoutCommon<TextAreaAnt> {
 
     /** 设置占位提示文本。 */
     public TextAreaAnt placeholder(String placeholder) {
-        setPromptText(placeholder != null ? placeholder : "");
+        setPromptText(TextUtils.safeText(placeholder));
         return this;
     }
 
     /** 设置文本（链式包装 setText）。 */
     public TextAreaAnt text(String text) {
-        setText(text != null ? text : "");
+        setText(TextUtils.safeText(text));
         return this;
     }
 
-    /** 设置默认可见行数。 */
+    /** 设置默认可见行数（最小 1 行）。 */
     public TextAreaAnt rows(int rows) {
-        setPrefRowCount(rows);
+        setPrefRowCount(Math.max(1, rows));
         return this;
     }
 
@@ -108,11 +112,7 @@ public class TextAreaAnt extends TextArea implements LayoutCommon<TextAreaAnt> {
         return this;
     }
 
-    /** 设置禁用状态。 */
-    public TextAreaAnt disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
 
     /** 设置可编辑状态。 */
     public TextAreaAnt editable(boolean editable) {
@@ -122,17 +122,13 @@ public class TextAreaAnt extends TextArea implements LayoutCommon<TextAreaAnt> {
 
     /** 监听文本变化。 */
     public TextAreaAnt onChange(Consumer<String> handler) {
-        if (handler != null) {
-            textProperty().addListener((obs, oldVal, newVal) -> handler.accept(newVal));
-        }
+        Bindings.onChange(textProperty(), handler);
         return this;
     }
 
     /** 双向绑定：控件值 ↔ Property 值实时同步。 */
     public TextAreaAnt bindValue(StringProperty property) {
-        if (property != null) {
-            textProperty().bindBidirectional(property);
-        }
+        Bindings.bindBidirectional(textProperty(), property);
         return this;
     }
 

@@ -3,6 +3,7 @@ package org.openkawu.jfxium.core.form;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * 表单校验规则（M19.23）。
@@ -27,7 +28,7 @@ public final class Rule {
 
     private Rule(Predicate<Object> validator, String message) {
         this.validator = Objects.requireNonNull(validator, "validator");
-        this.message = message != null ? message : "";
+        this.message = TextUtils.safeText(message);
     }
 
     /**

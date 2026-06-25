@@ -321,6 +321,69 @@ public interface LayoutCommon<SELF extends LayoutCommon<SELF>> {
     }
 
     // ============================================================
+    // 通用三值便捷 API（min / pref / max 一键搞定，替代 3~6 次链式调用）
+    // ============================================================
+
+    /**
+     * 死尺寸：min / pref / max 三值全部设为同一值。
+     * <p>适用于固定尺寸节点（iconBox / avatar / spinner / 缩略图占位等），
+     * 替代 {@code .minW(x).prefW(x).maxW(x).minH(x).prefH(x).maxH(x)} 六次链式调用。</p>
+     */
+    @SuppressWarnings("unchecked")
+    default SELF size(double size) {
+        if (this instanceof Region r) {
+            r.setMinSize(size, size);
+            r.setPrefSize(size, size);
+            r.setMaxSize(size, size);
+        }
+        return (SELF) this;
+    }
+
+    /**
+     * 弹性宽度：一次设置 min / pref / max 三个值。
+     * <p>替代 {@code .minW(min).prefW(pref).maxW(max)} 三次链式调用。</p>
+     * <p>注意：调用方需保证 {@code min ≤ pref ≤ max}（JavaFX 自身约束），本方法不做 swap。</p>
+     */
+    @SuppressWarnings("unchecked")
+    default SELF width(double min, double pref, double max) {
+        if (this instanceof Region r) {
+            r.setMinWidth(min);
+            r.setPrefWidth(pref);
+            r.setMaxWidth(max);
+        }
+        return (SELF) this;
+    }
+
+    /**
+     * 弹性高度：一次设置 min / pref / max 三个值。
+     */
+    @SuppressWarnings("unchecked")
+    default SELF height(double min, double pref, double max) {
+        if (this instanceof Region r) {
+            r.setMinHeight(min);
+            r.setPrefHeight(pref);
+            r.setMaxHeight(max);
+        }
+        return (SELF) this;
+    }
+
+    /**
+     * 弹性盒子：宽度和高度使用同一组 (min, pref, max) 三值。
+     * <p>常见场景：bar / menu / list-item / spinner 等需要"最小可点击区域 + 弹性扩展"的节点，
+     * 替代 {@code .minSize(min,min).prefSize(pref,pref).maxSize(max,max)} 三次链式调用。</p>
+     * <p>与 {@link #size(double)} 的区别：本方法保留弹性区间，三值可不同。</p>
+     */
+    @SuppressWarnings("unchecked")
+    default SELF box(double min, double pref, double max) {
+        if (this instanceof Region r) {
+            r.setMinSize(min, min);
+            r.setPrefSize(pref, pref);
+            r.setMaxSize(max, max);
+        }
+        return (SELF) this;
+    }
+
+    // ============================================================
     // 高频节点属性（Node 公开方法）
     // ============================================================
 

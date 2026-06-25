@@ -11,6 +11,7 @@ import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import java.util.function.Consumer;
 
@@ -308,7 +309,7 @@ public class AppShellAnt {
         private ButtonAnt createTriggerButton(BooleanProperty collapsedProp) {
             ButtonAnt btn = ButtonAnt.create()
                     .type(ButtonAnt.Type.TEXT)
-                    .size(ButtonAnt.Size.XS)
+                    .size(Size.XS)
                     .square();
             btn.getStyleClass().add(JfxStyles.APP_SHELL_SIDER_TRIGGER);
             btn.setMaxWidth(Double.MAX_VALUE);

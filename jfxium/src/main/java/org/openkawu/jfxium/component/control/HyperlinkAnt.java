@@ -1,7 +1,9 @@
 package org.openkawu.jfxium.component.control;
 
 import javafx.scene.control.Hyperlink;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 
@@ -36,7 +38,7 @@ import java.util.function.Consumer;
  * @see LabelAnt 普通文本标签（不可点击）
  * @see ButtonAnt.Type#LINK 链接风格按钮（带按钮样式）
  */
-public class HyperlinkAnt extends Hyperlink {
+public class HyperlinkAnt extends Hyperlink implements DisabledSupport<HyperlinkAnt> {
 
     // ============================================================
     // 工厂入口
@@ -69,7 +71,7 @@ public class HyperlinkAnt extends Hyperlink {
     // ============================================================
 
     public HyperlinkAnt text(String text) {
-        setText(text);
+        setText(TextUtils.safeText(text));
         return this;
     }
 
@@ -87,10 +89,7 @@ public class HyperlinkAnt extends Hyperlink {
         return this;
     }
 
-    public HyperlinkAnt disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
 
     public HyperlinkAnt underline(boolean underline) {
         setUnderline(underline);

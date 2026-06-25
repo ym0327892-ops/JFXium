@@ -84,17 +84,15 @@ public class TreeTableAnt<T> extends TreeTableView<T> {
     // ============================================================
 
     public TreeTableAnt<T> column(String title, String property) {
-        TreeTableColumn<T, Object> col = new TreeTableColumn<>(title);
-        col.setCellValueFactory(new TreeItemPropertyValueFactory<>(property));
-        col.getStyleClass().add(JfxStyles.TREE_TABLE_HEADER);
-        columns.add(col);
-        return this;
+        return column(title, property, -1);
     }
 
     public TreeTableAnt<T> column(String title, String property, double width) {
         TreeTableColumn<T, Object> col = new TreeTableColumn<>(title);
         col.setCellValueFactory(new TreeItemPropertyValueFactory<>(property));
-        col.setPrefWidth(width);
+        if (width >= 0) {
+            col.setPrefWidth(width);
+        }
         col.getStyleClass().add(JfxStyles.TREE_TABLE_HEADER);
         columns.add(col);
         return this;

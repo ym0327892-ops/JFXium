@@ -5,6 +5,7 @@ import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.base.ResultDisplay;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * JFXium 结果页组件 - 对标 Ant Design Result。
@@ -54,12 +55,12 @@ public class ResultAnt {
         }
 
         public Builder title(String title) {
-            this.title = title != null ? title : "";
+            this.title = TextUtils.safeText(title);
             return this;
         }
 
         public Builder subTitle(String subTitle) {
-            this.subTitle = subTitle != null ? subTitle : "";
+            this.subTitle = TextUtils.safeText(subTitle);
             return this;
         }
 

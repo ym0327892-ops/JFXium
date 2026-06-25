@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,7 @@ import java.util.function.Consumer;
 public class SegmentedAnt {
     private static final String CONTROLLER_KEY = SegmentedAnt.class.getName() + ".controller";
 
-    public enum Size {
-        SMALL, DEFAULT, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     public static class Option {
         private final String value;
@@ -68,7 +67,8 @@ public class SegmentedAnt {
         private List<Option> options = new ArrayList<>();
         private String selectedValue = null;
         private Size size = Size.DEFAULT;
-        private boolean disabled = false;
+        // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取），
+        // 无需自建字段与 setter，直接继承父类 disabled(boolean) / disabled() 即可。
         private boolean block = false;
         private Consumer<String> onChange = null;
         private StringProperty bindProperty = null;
@@ -86,8 +86,6 @@ public class SegmentedAnt {
         public Builder options(List<Option> options) { this.options = options != null ? options : new ArrayList<>(); return this; }
         public Builder selected(String value) { this.selectedValue = value; return this; }
         public Builder size(Size size) { this.size = size != null ? size : Size.DEFAULT; return this; }
-        public Builder disabled(boolean disabled) { this.disabled = disabled; return this; }
-        public Builder disabled() { return disabled(true); }
         public Builder block(boolean block) { this.block = block; return this; }
         public Builder block() { return block(true); }
         public Builder onChange(Consumer<String> onChange) { this.onChange = onChange; return this; }
@@ -105,8 +103,9 @@ public class SegmentedAnt {
 
             HBox segmented = new HBox();
             segmented.setAlignment(Pos.CENTER);
+            boolean isDisabled = Boolean.TRUE.equals(disable);
             segmented.getStyleClass().add(JfxStyles.SEGMENTED);
-            if (disabled) segmented.getStyleClass().add(JfxStyles.SEGMENTED_DISABLED);
+            if (isDisabled) segmented.getStyleClass().add(JfxStyles.SEGMENTED_DISABLED);
             if (size == Size.SMALL) segmented.getStyleClass().add(JfxStyles.SEGMENTED_SMALL);
             else if (size == Size.LARGE) segmented.getStyleClass().add(JfxStyles.SEGMENTED_LARGE);
             if (block) segmented.setMaxWidth(Double.MAX_VALUE);
@@ -138,7 +137,7 @@ public class SegmentedAnt {
 
                 optionPane.getChildren().add(content);
 
-                if (!disabled) {
+                if (!isDisabled) {
                     optionPane.setOnMouseClicked(e -> {
                         selectedValue = option.getValue();
                         controller.setSelected(option.getValue());

@@ -6,14 +6,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.component.layout.LayoutCommon;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.css.JfxStyles;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
- * JFXium 底部状态栏组件 - 对标 VS Code / IDEA 底栏。
+ * JFXium 底部状态栏组件（M19.50 重构）— 继承式 + 双工厂模式。
  *
  * <p><b>定位</b>：窗口底部信息与操作栏，左侧信息 + 中间进度 + 右侧状态/操作。
  * 对标 VS Code / IDEA 底栏，既可展示只读信息（编码、行列号），也可放置可点击操作项
@@ -30,7 +30,7 @@ import java.util.List;
  *   <li><b>视觉</b>：走 {@link JfxStyles#STATUS_BAR} 系列 LESS 样式，高度由 {@code @status-bar-height} token 控制</li>
  * </ul>
  *
- * <h2>用法</h2>
+ * <h2>用法 1：工厂链式</h2>
  * <pre>{@code
  * // 基础状态栏
  * StatusBarAnt statusBar = StatusBarAnt.create()
@@ -66,8 +66,31 @@ import java.util.List;
  * bar.updateProgress(0.8);
  * bar.updateStatus("完成");
  * }</pre>
+ *
+ * <h2>用法 2：业务继承</h2>
+ * <pre>{@code
+ * public class EditorStatusBar extends StatusBarAnt {
+ *     public EditorStatusBar() {
+ *         info("就绪");
+ *         action("UTF-8", () -> chooseEncoding());
+ *         status("行 42, 列 15");
+ *     }
+ * }
+ * }</pre>
+ *
+ * <h2>设计契约</h2>
+ * <ul>
+ *   <li><b>双重身份</b>：是 {@link HBox} 也是工厂——可继续被业务继承</li>
+ *   <li><b>流式 API 返回 this</b>：链式调用 + 子类继承时仍保留链式</li>
+ *   <li><b>运行时 + 构建时双 API</b>：{@code updateXxx} 运行时更新，{@code info/status/progress} 构建时设置</li>
+ *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
+ * </ul>
  */
-public class StatusBarAnt extends HBox {
+public class StatusBarAnt extends HBox
+        implements LayoutCommon<StatusBarAnt>, DisabledSupport<StatusBarAnt> {
+
+    /** 进度条默认宽度。 */
+    private static final double PROGRESS_BAR_WIDTH = 120;
 
     private final HBox leftBox;
     private final HBox centerBox;
@@ -80,8 +103,17 @@ public class StatusBarAnt extends HBox {
     // 工厂入口
     // ============================================================
 
-    public static Builder create() {
-        return new Builder();
+    /** 工厂入口（默认空状态栏）。 */
+    public static StatusBarAnt create() {
+        return new StatusBarAnt();
+    }
+
+    /** 工厂入口（带初始 info/status 文本）。 */
+    public static StatusBarAnt create(String info, String status) {
+        StatusBarAnt bar = new StatusBarAnt();
+        if (info != null) bar.updateInfo(info);
+        if (status != null) bar.updateStatus(status);
+        return bar;
     }
 
     // ============================================================
@@ -115,24 +147,100 @@ public class StatusBarAnt extends HBox {
     }
 
     // ============================================================
+    // 流式 API（构建时）
+    // ============================================================
+
+    /**
+     * 设置左侧信息文本（首次调用创建 Label，后续调用更新文本）。
+     */
+    public StatusBarAnt info(String text) {
+        updateInfo(text);
+        return this;
+    }
+
+    /**
+     * 设置右侧状态文本（首次调用创建 Label，后续调用更新文本）。
+     */
+    public StatusBarAnt status(String text) {
+        updateStatus(text);
+        return this;
+    }
+
+    /**
+     * 设置中间进度（0.0 ~ 1.0；负数表示隐藏）。
+     */
+    public StatusBarAnt progress(double value) {
+        updateProgress(value);
+        return this;
+    }
+
+    /**
+     * 添加可点击操作项（内联按钮，契合 {@code @status-bar-height} 28px 高度，对标 VS Code 底栏按钮）。
+     * 视觉剥离委托给 {@link JfxStyles#BUTTON_INLINE}，语义与尺寸走 ButtonAnt 的 {@code LINK + XS} 档。
+     */
+    public StatusBarAnt action(String text, Runnable onClick) {
+        ButtonAnt btn = ButtonAnt.create(text)
+                .type(ButtonAnt.Type.LINK)
+                .size(Size.XS)
+                .styleClass(JfxStyles.BUTTON_INLINE, JfxStyles.STATUS_BAR_ACTION);
+        if (onClick != null) {
+            btn.setOnAction(e -> onClick.run());
+        }
+        rightBox.getChildren().add(btn);
+        return this;
+    }
+
+    /**
+     * 添加左侧自定义节点。
+     */
+    public StatusBarAnt left(Node node) {
+        if (node != null) {
+            leftBox.getChildren().add(node);
+        }
+        return this;
+    }
+
+    /**
+     * 添加中间自定义节点。
+     */
+    public StatusBarAnt center(Node node) {
+        if (node != null) {
+            centerBox.getChildren().add(node);
+        }
+        return this;
+    }
+
+    /**
+     * 添加右侧自定义节点。
+     */
+    public StatusBarAnt right(Node node) {
+        if (node != null) {
+            rightBox.getChildren().add(node);
+        }
+        return this;
+    }
+
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
+
+    // ============================================================
     // 运行时动态更新（构建后修改状态）
     // ============================================================
 
     /** 更新左侧信息文本。 */
     public void updateInfo(String text) {
         if (infoLabel == null) {
-            infoLabel = new Label(text);
+            infoLabel = LabelAnt.create(TextUtils.safeText(text)).build();
             leftBox.getChildren().add(infoLabel);
         } else {
-            infoLabel.setText(text);
+            infoLabel.setText(TextUtils.safeText(text));
         }
     }
 
-    /** 更新中间进度条（0.0 ~ 1.0，-1 表示隐藏）。 */
+    /** 更新中间进度条（0.0 ~ 1.0，负数表示隐藏）。 */
     public void updateProgress(double value) {
         if (progressBar == null) {
             progressBar = new ProgressBar(value);
-            progressBar.setPrefWidth(120);
+            progressBar.setPrefWidth(PROGRESS_BAR_WIDTH);
             centerBox.getChildren().add(progressBar);
         } else {
             if (value < 0) {
@@ -147,128 +255,24 @@ public class StatusBarAnt extends HBox {
     /** 更新右侧状态文本。 */
     public void updateStatus(String text) {
         if (statusLabel == null) {
-            statusLabel = new Label(text);
+            statusLabel = LabelAnt.create(TextUtils.safeText(text)).build();
             rightBox.getChildren().add(statusLabel);
         } else {
-            statusLabel.setText(text);
+            statusLabel.setText(TextUtils.safeText(text));
         }
     }
 
     // ============================================================
-    // 包内配置方法（供 Builder 使用）
+    // 构建
     // ============================================================
 
-    void doInfo(String text) {
-        if (infoLabel == null) {
-            infoLabel = new Label(text);
-            leftBox.getChildren().add(infoLabel);
-        } else {
-            infoLabel.setText(text);
-        }
-    }
-
-    void doProgress(double value) {
-        if (progressBar == null) {
-            progressBar = new ProgressBar(value);
-            progressBar.setPrefWidth(120);
-            centerBox.getChildren().add(progressBar);
-        } else {
-            if (value < 0) {
-                progressBar.setVisible(false);
-            } else {
-                progressBar.setVisible(true);
-                progressBar.setProgress(value);
-            }
-        }
-    }
-
-    void doStatus(String text) {
-        if (statusLabel == null) {
-            statusLabel = new Label(text);
-            rightBox.getChildren().add(statusLabel);
-        } else {
-            statusLabel.setText(text);
-        }
-    }
-
-    void doLeft(Node node) { leftBox.getChildren().add(node); }
-    void doCenter(Node node) { centerBox.getChildren().add(node); }
-    void doRight(Node node) { rightBox.getChildren().add(node); }
-
-    // ============================================================
-    // Builder
-    // ============================================================
-
-    public static class Builder extends AbstractStyleBuilder<Builder> {
-        private String info;
-        private String status;
-        private double progress = -1;
-        private final List<Node> leftNodes = new ArrayList<>();
-        private final List<Node> centerNodes = new ArrayList<>();
-        private final List<Node> rightNodes = new ArrayList<>();
-
-        /** 左侧信息文本。 */
-        public Builder info(String text) {
-            this.info = text;
-            return this;
-        }
-
-        /** 右侧状态文本。 */
-        public Builder status(String text) {
-            this.status = text;
-            return this;
-        }
-
-        /** 添加可点击操作项（内联按钮：透明背景、无边框、微 padding，契合 {@code @status-bar-height} 28px 高度，对标 VS Code 底栏按钮）。
-         *  视觉剥离委托给 {@link JfxStyles#BUTTON_INLINE}，语义与尺寸走 ButtonAnt 的 {@code LINK + XS} 档。 */
-        public Builder action(String text, Runnable onClick) {
-            ButtonAnt btn = ButtonAnt.create(text)
-                    .type(ButtonAnt.Type.LINK)
-                    .size(ButtonAnt.Size.XS)
-                    .styleClass(JfxStyles.BUTTON_INLINE, JfxStyles.STATUS_BAR_ACTION)
-                    .build();
-            if (onClick != null) {
-                btn.setOnAction(e -> onClick.run());
-            }
-            rightNodes.add(btn);
-            return this;
-        }
-
-        /** 中间进度条（0.0 ~ 1.0）。 */
-        public Builder progress(double value) {
-            this.progress = value;
-            return this;
-        }
-
-        /** 自定义左侧节点。 */
-        public Builder left(Node node) {
-            leftNodes.add(node);
-            return this;
-        }
-
-        /** 自定义中间节点。 */
-        public Builder center(Node node) {
-            centerNodes.add(node);
-            return this;
-        }
-
-        /** 自定义右侧节点。 */
-        public Builder right(Node node) {
-            rightNodes.add(node);
-            return this;
-        }
-
-        /** 构建 StatusBarAnt。 */
-        public StatusBarAnt build() {
-            StatusBarAnt bar = new StatusBarAnt();
-            if (info != null) bar.doInfo(info);
-            if (status != null) bar.doStatus(status);
-            if (progress >= 0) bar.doProgress(progress);
-            for (Node n : leftNodes) bar.doLeft(n);
-            for (Node n : centerNodes) bar.doCenter(n);
-            for (Node n : rightNodes) bar.doRight(n);
-            applyStyles(bar);
-            return bar;
-        }
+    /**
+     * Builder 模式终结调用——返回自身。
+     *
+     * <p>StatusBarAnt 既是工厂也是节点：{@code build()} 跟直接拿 {@code this} 等价，
+     * 提供本方法是为了让 API 跟旧版 Builder 的 {@code .build()} 完全对齐。</p>
+     */
+    public StatusBarAnt build() {
+        return this;
     }
 }

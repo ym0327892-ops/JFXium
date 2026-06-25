@@ -9,6 +9,8 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.form.FormContext;
 import org.openkawu.jfxium.core.form.Rule;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,9 +80,7 @@ public class FormAnt {
         HORIZONTAL, VERTICAL, INLINE
     }
 
-    public enum Size {
-        SMALL, DEFAULT, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     public enum Align {
         LEFT, RIGHT
@@ -105,7 +105,7 @@ public class FormAnt {
         List<Rule> rules = new ArrayList<>();
 
         FormItem(String label, Node control, String name) {
-            this.label = label != null ? label : "";
+            this.label = TextUtils.safeText(label);
             this.control = control;
             this.name = name;
             this.required = false;
@@ -153,7 +153,7 @@ public class FormAnt {
         }
 
         public ItemBuilder helpText(String text) {
-            item.helpText = text != null ? text : "";
+            item.helpText = TextUtils.safeText(text);
             return this;
         }
 
@@ -224,6 +224,21 @@ public class FormAnt {
             return this;
         }
 
+        /** footer 按钮组左对齐。 */
+        public Builder footerAlignLeft() {
+            return footerAlign(Pos.CENTER_LEFT);
+        }
+
+        /** footer 按钮组居中对齐。 */
+        public Builder footerAlignCenter() {
+            return footerAlign(Pos.CENTER);
+        }
+
+        /** footer 按钮组右对齐（默认）。 */
+        public Builder footerAlignRight() {
+            return footerAlign(Pos.CENTER_RIGHT);
+        }
+
         /**
          * 顶部 banner 区（M19.39 新增）—— 放置重要提示 / 标题图 / 用户信息等。
          * <p>覆盖语义：多次调用以最后一次为准。null 表示不渲染 header。</p>
@@ -285,7 +300,7 @@ public class FormAnt {
                                      ValidateStatus status) {
             FormItem fi = new FormItem(label, control, name);
             fi.required = required;
-            fi.helpText = helpText != null ? helpText : "";
+            fi.helpText = TextUtils.safeText(helpText);
             fi.validateStatus = status != null ? status : ValidateStatus.DEFAULT;
             entries.add(fi);
             return this;
@@ -304,7 +319,7 @@ public class FormAnt {
         public Result buildResult() {
             FormContext ctx = new FormContext();
 
-            VBox form = new VBox(0);
+            VBox form = new VBox();
             form.getStyleClass().add(JfxStyles.FORM);
             switch (size) {
                 case SMALL -> form.getStyleClass().add(JfxStyles.FORM_SIZE_SMALL);
@@ -348,8 +363,6 @@ public class FormAnt {
         private GridPane buildHorizontalForm(FormContext ctx) {
             GridPane grid = new GridPane();
             grid.getStyleClass().add(JfxStyles.FORM_HORIZONTAL);
-            grid.setHgap(16);
-            grid.setVgap(getVerticalGap());
             grid.setAlignment(Pos.TOP_LEFT);
 
             int row = 0;
@@ -380,7 +393,7 @@ public class FormAnt {
         }
 
         private VBox buildVerticalForm(FormContext ctx) {
-            VBox container = new VBox(getVerticalGap());
+            VBox container = new VBox();
             container.getStyleClass().add(JfxStyles.FORM_VERTICAL);
             for (Object entry : entries) {
                 if (entry instanceof SectionMarker sm) {
@@ -483,13 +496,6 @@ public class FormAnt {
             };
         }
 
-        private int getVerticalGap() {
-            return switch (size) {
-                case SMALL -> 12;
-                case LARGE -> 24;
-                default -> 16;
-            };
-        }
     }
 
     /**

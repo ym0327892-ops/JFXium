@@ -7,19 +7,27 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.LabelAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
+import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.util.AnimationDuration;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * JFXium 对话框组件 - 对标 Ant Design Modal 6.x 规范。
@@ -90,6 +98,9 @@ public class ModalAnt {
         private Node content = null;
         private boolean maskClosable = true;
         private int width = 520;
+        private int height = -1;     // -1 = 未设置，自适应内容
+        private int maxHeight = -1;   // -1 = 不限制
+        private int minHeight = -1;   // -1 = 不限制
         private Consumer<Boolean> onClose = null;
         private Node footer = null;
         private boolean centered = true;
@@ -114,7 +125,10 @@ public class ModalAnt {
         }
 
         public Builder content(String text) {
-            this.content = new Label(text);
+            // 走 LabelAnt 封装（统一 styleClass 入口 + Typography 主题继承）
+            this.content = LabelAnt.create(text)
+                    .styleClass(JfxStyles.OVERLAY_BODY)
+                    .build();
             return this;
         }
 
@@ -125,6 +139,24 @@ public class ModalAnt {
 
         public Builder width(int width) {
             this.width = width;
+            return this;
+        }
+
+        /** 设置对话框固定高度（-1 = 自适应内容）。 */
+        public Builder height(int height) {
+            this.height = height;
+            return this;
+        }
+
+        /** 设置对话框最大高度（超出内容自动滚动）。 */
+        public Builder maxHeight(int maxHeight) {
+            this.maxHeight = maxHeight;
+            return this;
+        }
+
+        /** 设置对话框最小高度。 */
+        public Builder minHeight(int minHeight) {
+            this.minHeight = minHeight;
             return this;
         }
 
@@ -210,11 +242,29 @@ public class ModalAnt {
         private final Builder config;
         private Stage stage;
         private StackPane overlay;
-        private VBox modalPanel;
+        private VBoxAnt modalPanel;
         private boolean isOpen = false;
+        // 标题 i18n 动态刷新回调：若调用方在 build() 之后、open() 之前挂上
+        // supplier，则会在 localeProperty() 变化时调用 supplier.get() 重新设置标题
+        private Supplier<String> titleLocaleSupplier = null;
 
         ModalResult(Builder config) {
             this.config = config;
+        }
+
+        /**
+         * 注册 title 的 i18n 动态刷新回调。
+         *
+         * <p>适用场景：调用方使用 i18n 默认 title（未显式调用 {@code .title(String)}），
+         * 希望 locale 切换时自动同步显示文案。</p>
+         *
+         * <p>通常由基于 ModalAnt 封装的复合弹框（如 {@code PromptDialogAnt}）调用，
+         * 在自己的 build() 末尾统一处理 i18n 同步。本方法必须在 {@code open()} 之前调用。</p>
+         *
+         * @param supplier 每次 locale 变化时调用的文案提供器（返回新 title）
+         */
+        public void onTitleLocaleChange(Supplier<String> supplier) {
+            this.titleLocaleSupplier = supplier;
         }
 
         public void open(Node owner) {
@@ -231,13 +281,24 @@ public class ModalAnt {
 
             // 遮罩层覆盖整个屏幕
             overlay = new StackPane();
-            overlay.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_MASK);
+            overlay.getStyleClass().add(JfxStyles.OVERLAY_MASK);
             overlay.setPrefSize(ownerWindow.getWidth(), ownerWindow.getHeight());
 
             // 创建 Modal 面板
             modalPanel = createModalPanel();
             modalPanel.setMaxWidth(config.width);
             modalPanel.setMinWidth(config.width);
+
+            // 高度约束
+            if (config.height > 0) {
+                modalPanel.setPrefHeight(config.height);
+            }
+            if (config.maxHeight > 0) {
+                modalPanel.setMaxHeight(config.maxHeight);
+            }
+            if (config.minHeight > 0) {
+                modalPanel.setMinHeight(config.minHeight);
+            }
 
             overlay.getChildren().add(modalPanel);
             if (config.centered) {
@@ -329,91 +390,112 @@ public class ModalAnt {
             });
         }
 
-        private VBox createModalPanel() {
-            VBox panel = new VBox(0);
+        private VBoxAnt createModalPanel() {
+            // 用 VBoxAnt 替代裸 VBox（统一 styleClass/spacing 入口 + 主题继承）
+            VBoxAnt panel = VBoxAnt.create();
             // Modal 用圆角面板（Drawer 不带圆角）
-            panel.getStyleClass().addAll(
-                    org.openkawu.jfxium.core.css.JfxStyles.MODAL,
-                    org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_PANEL,
-                    org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_PANEL_ROUNDED
+            panel.styleClass(
+                    JfxStyles.MODAL,
+                    JfxStyles.OVERLAY_PANEL,
+                    JfxStyles.OVERLAY_PANEL_ROUNDED
             );
 
             // Header
             if (!config.title.isEmpty()) {
-                HBox header = createHeader();
-                panel.getChildren().add(header);
+                HBoxAnt header = createHeader();
+                panel.children(header);
             }
 
             // Body
             if (config.content != null) {
-                VBox body = new VBox(config.content);
-                body.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_BODY);
-                VBox.setVgrow(body, Priority.ALWAYS);
-                panel.getChildren().add(body);
+                VBoxAnt body = VBoxAnt.create(config.content)
+                        .styleClass(JfxStyles.OVERLAY_BODY);
+                body.setVgrow(body, Priority.ALWAYS);
+
+                if (config.maxHeight > 0) {
+                    // maxHeight 模式：外层 ScrollPane，内容超出时自动出现滚动条
+                    javafx.scene.control.ScrollPane scrollPane = new javafx.scene.control.ScrollPane(body);
+                    scrollPane.setFitToWidth(true);
+                    VBoxAnt.setVgrow(scrollPane, Priority.ALWAYS);
+                    panel.children(scrollPane);
+                } else {
+                    panel.children(body);
+                }
             }
 
             // Footer
             if (config.noDefaultFooter && config.footer != null) {
-                HBox footerBox = createCustomFooter(config.footer);
-                panel.getChildren().add(footerBox);
+                HBoxAnt footerBox = createCustomFooter(config.footer);
+                panel.children(footerBox);
             } else if (!config.noDefaultFooter) {
-                HBox defaultFooter = createDefaultFooter();
-                panel.getChildren().add(defaultFooter);
+                HBoxAnt defaultFooter = createDefaultFooter();
+                panel.children(defaultFooter);
             }
 
             return panel;
         }
 
-        private HBox createHeader() {
-            HBox header = new HBox();
-            header.setAlignment(Pos.CENTER_LEFT);
-            header.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_HEADER);
+        private HBoxAnt createHeader() {
+            HBoxAnt header = HBoxAnt.create()
+                    .align(Pos.CENTER_LEFT)
+                    .styleClass(JfxStyles.OVERLAY_HEADER);
 
             // 关闭按钮：根据 closePlacement 决定渲染位置
             // - LEFT: 在 title 之前
             // - RIGHT: 在 title 之后（Ant Modal 默认）
             // - NONE: 不渲染
-            javafx.scene.control.Button closeBtn = null;
+            ButtonAnt closeBtn = null;
             if (config.closePlacement != ClosePlacement.NONE) {
-                closeBtn = new javafx.scene.control.Button("×");
-                closeBtn.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_CLOSE_BTN);
-                closeBtn.setOnAction(e -> close());
+                // 走 ButtonAnt 工厂（封装 button + text + styleClass + type + shape）
+                closeBtn = ButtonAnt.create("×")
+                        .type(ButtonAnt.Type.TEXT)
+                        .square()
+                        .onClick(e -> close())
+                        .build();
+                closeBtn.getStyleClass().add(JfxStyles.OVERLAY_CLOSE_BTN);
             }
 
             // 1. 左侧关闭按钮（可选）
             if (closeBtn != null && config.closePlacement == ClosePlacement.LEFT) {
-                header.getChildren().add(closeBtn);
+                header.children(closeBtn);
             }
 
-            // 2. 标题文本（默认占自己宽度，不抢空间）
-            Label titleLabel = new Label(config.title);
-            titleLabel.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_TITLE);
-            header.getChildren().add(titleLabel);
+            // 2. 标题文本（走 LabelAnt，封装 typography 主题继承）
+            LabelAnt titleLabel = LabelAnt.create(config.title)
+                    .styleClass(JfxStyles.OVERLAY_TITLE)
+                    .build();
+            header.children(titleLabel);
 
             // 3. 弹性填充（关键：把右侧推到最右）
             Region spacer = new Region();
-            HBox.setHgrow(spacer, Priority.ALWAYS);
+            HBoxAnt.setHgrow(spacer, Priority.ALWAYS);
             spacer.setMaxWidth(Double.MAX_VALUE);
-            header.getChildren().add(spacer);
+            header.children(spacer);
 
             // 4. 右侧关闭按钮（可选）
             if (closeBtn != null && config.closePlacement == ClosePlacement.RIGHT) {
-                header.getChildren().add(closeBtn);
+                header.children(closeBtn);
+            }
+
+            // 5. 注册 title i18n 监听（如果调用方通过 onTitleLocaleChange() 注入）
+            if (titleLocaleSupplier != null) {
+                Messages.localeProperty().addListener((obs, ov, nv) ->
+                        titleLabel.setText(titleLocaleSupplier.get()));
             }
 
             return header;
         }
 
-        private HBox createDefaultFooter() {
+        private HBoxAnt createDefaultFooter() {
             // null 表示调用方未指定，走 i18n 默认值
-            String resolvedCancel = config.cancelText != null ? config.cancelText : Messages.get("modal.cancel");
-            String resolvedOk = config.okText != null ? config.okText : Messages.get("modal.ok");
-            javafx.scene.control.Button cancelBtn = ButtonAnt.create(resolvedCancel)
+            String resolvedCancel = TextUtils.safeText(config.cancelText, Messages.get("modal.cancel"));
+            String resolvedOk = TextUtils.safeText(config.okText, Messages.get("modal.ok"));
+            ButtonAnt cancelBtn = ButtonAnt.create(resolvedCancel)
                 .type(ButtonAnt.Type.DEFAULT)
                 .onClick(e -> close())
                 .build();
 
-            javafx.scene.control.Button okBtn = ButtonAnt.create(resolvedOk)
+            ButtonAnt okBtn = ButtonAnt.create(resolvedOk)
                 .type(ButtonAnt.Type.PRIMARY)
                 .loading(config.confirmLoading)
                 .onClick(e -> {
@@ -434,16 +516,18 @@ public class ModalAnt {
                         okBtn.setText(Messages.get("modal.ok")));
             }
 
-            HBox footer = new HBox(cancelBtn, okBtn);
-            footer.setAlignment(Pos.CENTER_RIGHT);
-            footer.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_FOOTER);
+            HBoxAnt footer = HBoxAnt.create()
+                    .align(Pos.CENTER_RIGHT)
+                    .styleClass(JfxStyles.OVERLAY_FOOTER);
+            footer.children(cancelBtn, okBtn);
             return footer;
         }
 
-        private HBox createCustomFooter(Node footerContent) {
-            HBox footer = new HBox(footerContent);
-            footer.setAlignment(Pos.CENTER_RIGHT);
-            footer.getStyleClass().add(org.openkawu.jfxium.core.css.JfxStyles.OVERLAY_FOOTER);
+        private HBoxAnt createCustomFooter(Node footerContent) {
+            HBoxAnt footer = HBoxAnt.create()
+                    .align(Pos.CENTER_RIGHT)
+                    .styleClass(JfxStyles.OVERLAY_FOOTER);
+            footer.children(footerContent);
             return footer;
         }
 
@@ -452,12 +536,12 @@ public class ModalAnt {
             modalPanel.setScaleX(0.9);
             modalPanel.setScaleY(0.9);
 
-            FadeTransition fade = new FadeTransition(Duration.millis(200), modalPanel);
+            FadeTransition fade = new FadeTransition(AnimationDuration.FAST, modalPanel);
             fade.setFromValue(0);
             fade.setToValue(1);
             fade.setInterpolator(Interpolator.EASE_OUT);
 
-            ScaleTransition scale = new ScaleTransition(Duration.millis(200), modalPanel);
+            ScaleTransition scale = new ScaleTransition(AnimationDuration.FAST, modalPanel);
             scale.setFromX(0.9);
             scale.setFromY(0.9);
             scale.setToX(1);
@@ -469,12 +553,12 @@ public class ModalAnt {
         }
 
         private void animateOut(Runnable onFinished) {
-            FadeTransition fade = new FadeTransition(Duration.millis(150), modalPanel);
+            FadeTransition fade = new FadeTransition(AnimationDuration.ULTRA_FAST, modalPanel);
             fade.setFromValue(1);
             fade.setToValue(0);
             fade.setInterpolator(Interpolator.EASE_IN);
 
-            ScaleTransition scale = new ScaleTransition(Duration.millis(150), modalPanel);
+            ScaleTransition scale = new ScaleTransition(AnimationDuration.ULTRA_FAST, modalPanel);
             scale.setFromX(1);
             scale.setFromY(1);
             scale.setToX(0.95);

@@ -12,6 +12,7 @@ import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.AnimationDuration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,14 +226,14 @@ public class CarouselAnt {
             Node newItem = items.get(newIndex);
 
             if (effect == Effect.FADE) {
-                FadeTransition fadeOut = new FadeTransition(Duration.millis(300), currentItem);
+                FadeTransition fadeOut = new FadeTransition(AnimationDuration.SLOW, currentItem);
                 fadeOut.setFromValue(1);
                 fadeOut.setToValue(0);
                 fadeOut.setOnFinished(e -> {
                     currentItem.setVisible(false);
                     newItem.setVisible(true);
                     newItem.setOpacity(0);
-                    FadeTransition fadeIn = new FadeTransition(Duration.millis(300), newItem);
+                    FadeTransition fadeIn = new FadeTransition(AnimationDuration.SLOW, newItem);
                     fadeIn.setFromValue(0);
                     fadeIn.setToValue(1);
                     fadeIn.play();
@@ -250,12 +251,12 @@ public class CarouselAnt {
                 newItem.setVisible(true);
                 newItem.setTranslateX(newFromX);
 
-                TranslateTransition slideOut = new TranslateTransition(Duration.millis(400), currentItem);
+                TranslateTransition slideOut = new TranslateTransition(AnimationDuration.SLIDE, currentItem);
                 slideOut.setFromX(0);
                 slideOut.setToX(oldToX);
                 slideOut.setInterpolator(Interpolator.EASE_OUT);
 
-                TranslateTransition slideIn = new TranslateTransition(Duration.millis(400), newItem);
+                TranslateTransition slideIn = new TranslateTransition(AnimationDuration.SLIDE, newItem);
                 slideIn.setFromX(newFromX);
                 slideIn.setToX(0);
                 slideIn.setInterpolator(Interpolator.EASE_OUT);

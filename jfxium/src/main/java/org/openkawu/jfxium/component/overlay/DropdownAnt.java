@@ -57,6 +57,10 @@ import java.util.function.Consumer;
  */
 public class DropdownAnt {
 
+    public enum Placement {
+        BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT
+    }
+
     public static class MenuItem {
         private final String key;
         private final String label;
@@ -100,8 +104,10 @@ public class DropdownAnt {
         private List<MenuItem> items = new ArrayList<>();
         private Consumer<String> onSelect = null;
         private Consumer<MenuItem> onSelectItem = null;
-        private boolean disabled = false;
-        private String placement = "bottomLeft";
+        // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取），
+        // 无需自建字段与 setter，直接继承父类 disabled(boolean) / disabled() 即可。
+        // 内类 DropdownResult 通过 config.isDisabled() 查询状态。
+        private Placement placement = Placement.BOTTOM_LEFT;
         private boolean showArrow = false;
 
         public Builder trigger(Node trigger) {
@@ -165,12 +171,8 @@ public class DropdownAnt {
             return this;
         }
 
-        public Builder disabled(boolean disabled) {
-            this.disabled = disabled;
-            return this;
-        }
-
-        public Builder placement(String placement) {
+        /** 设置弹出位置（默认 BOTTOM_LEFT）。 */
+        public Builder placement(Placement placement) {
             this.placement = placement;
             return this;
         }
@@ -261,7 +263,7 @@ public class DropdownAnt {
             popup.setHideOnEscape(true);
             popup.getContent().add(menu);
             trigger.setOnMouseClicked(e -> {
-                if (config.disabled) return;
+                if (config.isDisabled()) return;
                 if (popup.isShowing()) {
                     popup.hide();
                 } else {
@@ -274,11 +276,13 @@ public class DropdownAnt {
             Bounds bounds = trigger.localToScreen(trigger.getBoundsInLocal());
             double x = bounds.getMinX();
             double y = bounds.getMaxY() + 4;
-            if (config.placement.contains("Right")) {
-                x = bounds.getMaxX() - 160;
+            switch (config.placement) {
+                case BOTTOM_RIGHT, TOP_RIGHT -> x = bounds.getMaxX() - 160;
+                default -> {}
             }
-            if (config.placement.contains("top")) {
-                y = bounds.getMinY() - menu.getHeight() - 4;
+            switch (config.placement) {
+                case TOP_LEFT, TOP_RIGHT -> y = bounds.getMinY() - menu.getHeight() - 4;
+                default -> {}
             }
             popup.show(trigger, x, y);
         }

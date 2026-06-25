@@ -10,8 +10,13 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.TextAreaAnt;
+import org.openkawu.jfxium.component.overlay.ContextMenuAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.AnimationDuration;
+import org.openkawu.jfxium.core.util.TextUtils;
 import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.core.theme.Theme.ThemeType;
@@ -107,7 +112,7 @@ public class CodeBlockAnt {
         }
 
         public Builder code(String code) {
-            this.code = code != null ? code : "";
+            this.code = TextUtils.safeText(code);
             return this;
         }
 
@@ -122,7 +127,7 @@ public class CodeBlockAnt {
         }
 
         public Builder maxHeight(double height) {
-            this.maxHeight = Double.isFinite(height) && height > 0 ? height : 400;
+            this.maxHeight = TextUtils.safePositive(height, 400);
             return this;
         }
 
@@ -266,13 +271,14 @@ public class CodeBlockAnt {
          * 行号与代码天然对齐（同一 ScrollPane 滚动，不需要手动 bind scrollTop）。</p>
          */
         private Node buildSelectableCenter() {
-            javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(code);
-            textArea.setEditable(false);
-            textArea.setWrapText(false); // 代码不折行，超宽横向滚动
+            // 红线 #11：禁止业务代码 new 原生 JavaFX 控件。TextAreaAnt 提供 .editable().wrapText().rows()
+            // 链式 API，并且默认会接管 jfx-text-area 样式类。
+            TextAreaAnt textArea = TextAreaAnt.create(code)
+                    .editable(false)
+                    .wrapText(false); // 代码不折行，超宽横向滚动
             textArea.getStyleClass().addAll(JfxStyles.CODEBLOCK_CONTENT, JfxStyles.CODEBLOCK_TEXTAREA);
             // 自适应行数：让 TextArea 撑到全部内容高度，避免内部滚动条与外层 ScrollPane 打架
-            int rows = countLines(code);
-            textArea.setPrefRowCount(rows);
+            textArea.rows(countLines(code));
             textArea.setMinHeight(Region.USE_PREF_SIZE);
 
             Node scrollContent;
@@ -296,39 +302,32 @@ public class CodeBlockAnt {
         /**
          * 创建顶部 header：左侧语言/标题，右侧「复制」按钮。
          *
-         * <p>遵循组件组合规范 3.1 Header 三段式——独立 Region spacer 把复制按钮推到最右。
+         * <p>委托 {@link HBarAnt} 二段式布局，替代手写 spacer。
          * 复制按钮点击后短暂显示「已复制」文案再恢复（PauseTransition），给用户明确反馈。</p>
          */
         private HBox createHeader() {
-            HBox header = new HBox();
-            header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-            header.getStyleClass().add(JfxStyles.CODEBLOCK_HEADER);
-
             // 左侧：语言/标题标签
             Label langLabel = new Label(title != null ? title : language.name());
             langLabel.getStyleClass().add(JfxStyles.CODEBLOCK_LANG);
-            header.getChildren().add(langLabel);
-
-            // 弹性 spacer：把复制按钮推到最右（独立 Region，遵循 SKILL §4.1）
-            Region spacer = new Region();
-            HBox.setHgrow(spacer, Priority.ALWAYS);
-            spacer.setMaxWidth(Double.MAX_VALUE);
-            header.getChildren().add(spacer);
 
             // 右侧：复制按钮（文案走 i18n，BUG #133 修复——之前中文硬编码）
-            javafx.scene.control.Button copyBtn = new javafx.scene.control.Button(Messages.get("codeblock.copy"));
+            ButtonAnt copyBtn = ButtonAnt.create(Messages.get("codeblock.copy"));
             copyBtn.getStyleClass().add(JfxStyles.CODEBLOCK_COPY_BTN);
             copyBtn.setOnAction(e -> {
                 copyToClipboard(code);
                 // 「已复制」短暂反馈，再恢复成「复制」（都走 i18n）
                 copyBtn.setText(Messages.get("codeblock.copied"));
                 javafx.animation.PauseTransition pause =
-                        new javafx.animation.PauseTransition(javafx.util.Duration.millis(1200));
+                        new javafx.animation.PauseTransition(AnimationDuration.COPY_TOAST);
                 pause.setOnFinished(ev -> copyBtn.setText(Messages.get("codeblock.copy")));
                 pause.play();
             });
-            header.getChildren().add(copyBtn);
 
+            HBox header = HBarAnt.create()
+                    .left(langLabel)
+                    .right(copyBtn)
+                    .build();
+            header.getStyleClass().add(JfxStyles.CODEBLOCK_HEADER);
             return header;
         }
 
@@ -492,22 +491,22 @@ public class CodeBlockAnt {
                 }
             });
 
-            // 右键菜单
-            node.setOnContextMenuRequested(e -> {
-                javafx.scene.control.ContextMenu menu = new javafx.scene.control.ContextMenu();
-                javafx.scene.control.MenuItem copyItem = new javafx.scene.control.MenuItem("复制");
-                copyItem.setOnAction(ev -> copyToClipboard(fullCode));
-                menu.getItems().add(copyItem);
-                menu.show(node, e.getScreenX(), e.getScreenY());
-            });
+            // 右键菜单——红线 #11：禁止 new 原生 ContextMenu/MenuItem。ContextMenuAnt 在 build() 内部
+            // 会自动给 target.setOnContextMenuRequested(...) 绑定一个带 Popup 的实现，此处只需要
+            // 声明菜单项即可，无需手动 show()。同时顺手把中文硬编码「复制」换成 i18n key（避免
+            // 英文环境下出现中文文案——之前 BUG #133 反馈过类似问题）。
+            ContextMenuAnt.create()
+                    .target(node)
+                    .item("copy", Messages.get("codeblock.copy"), () -> copyToClipboard(fullCode))
+                    .build();
 
             // 双击/三击全选（视觉反馈）
             node.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() >= 2) {
                     // TextFlow 没有选中概念，这里给视觉反馈
                     node.getStyleClass().add(JfxStyles.CODEBLOCK_HIGHLIGHT);
-                    javafx.animation.PauseTransition pause = 
-                        new javafx.animation.PauseTransition(javafx.util.Duration.millis(200));
+                    javafx.animation.PauseTransition pause =
+                        new javafx.animation.PauseTransition(AnimationDuration.FAST);
                     pause.setOnFinished(ev -> node.getStyleClass().remove(JfxStyles.CODEBLOCK_HIGHLIGHT));
                     pause.play();
                 }

@@ -10,6 +10,8 @@ import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.AnimationDuration;
+import org.openkawu.jfxium.core.util.IconPath;
 
 /**
  * JFXium 回到顶部组件 - 对标 Ant Design BackTop（组合式，Builder 模式）。
@@ -39,7 +41,7 @@ public class BackTopAnt {
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private int visibilityHeight = 400;
-        private Duration duration = Duration.millis(450);
+        private Duration duration = AnimationDuration.BACK_TOP;
         private Node target = null;
         private double bottom = 40;
         private double right = 40;
@@ -50,7 +52,7 @@ public class BackTopAnt {
         }
 
         public Builder duration(Duration duration) {
-            this.duration = duration != null ? duration : Duration.millis(450);
+            this.duration = duration != null ? duration : AnimationDuration.BACK_TOP;
             return this;
         }
 
@@ -81,10 +83,7 @@ public class BackTopAnt {
             StackPane.setMargin(backTop, new Insets(0, right, bottom, 0));
 
             // 箭头图标，颜色随主题切换
-            SVGPath arrow = new SVGPath();
-            arrow.setContent("M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z");
-            arrow.setScaleX(1.5);
-            arrow.setScaleY(1.5);
+            SVGPath arrow = IconPath.arrowUpScaled();
             arrow.getStyleClass().add(JfxStyles.BACK_TOP_ARROW);
             backTop.getChildren().add(arrow);
 
@@ -117,13 +116,13 @@ public class BackTopAnt {
             if (shouldShow && !backTop.isVisible()) {
                 backTop.setVisible(true);
                 backTop.setManaged(true);
-                FadeTransition fadeIn = new FadeTransition(Duration.millis(200), backTop);
+                FadeTransition fadeIn = new FadeTransition(AnimationDuration.FAST, backTop);
                 fadeIn.setFromValue(0);
                 fadeIn.setToValue(1);
                 fadeIn.setInterpolator(Interpolator.EASE_OUT);
                 fadeIn.play();
             } else if (!shouldShow && backTop.isVisible()) {
-                FadeTransition fadeOut = new FadeTransition(Duration.millis(200), backTop);
+                FadeTransition fadeOut = new FadeTransition(AnimationDuration.FAST, backTop);
                 fadeOut.setFromValue(1);
                 fadeOut.setToValue(0);
                 fadeOut.setInterpolator(Interpolator.EASE_IN);

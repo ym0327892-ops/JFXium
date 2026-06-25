@@ -9,9 +9,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.command.Command;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.builder.Radius;
+import org.openkawu.jfxium.core.util.TextUtils;
+import org.openkawu.jfxium.core.token.Size;
 
 /**
  * JFXium 按钮组件 - 对标 Ant Design Button（继承式，M19.50 重构）。
@@ -66,7 +69,8 @@ import org.openkawu.jfxium.core.builder.Radius;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
+public class ButtonAnt extends Button
+        implements LayoutCommon<ButtonAnt>, DisabledSupport<ButtonAnt> {
 
     // ============================================================
     // 枚举
@@ -77,9 +81,8 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
         OUTLINED, DASHED, TEXT, LINK
     }
 
-    public enum Size {
-        DEFAULT, MIDDLE, SMALL, XS, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size，
+    // 删除此处重复定义。调用方需 import 顶级 Size。
 
     public enum Shape {
         DEFAULT, ROUNDED, SQUARE
@@ -152,18 +155,18 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
     }
 
     public ButtonAnt(String text) {
-        super(text != null ? text : "");
+        super(TextUtils.safeText(text));
         init();
     }
 
     public ButtonAnt(String text, Node graphic) {
-        super(text != null ? text : "", graphic);
+        super(TextUtils.safeText(text), graphic);
         init();
     }
 
     private void init() {
         setFocusTraversable(true);
-        applyTypeStyleClasses(Type.DEFAULT);
+        applyTypeStyleClasses(this, Type.DEFAULT);
     }
 
     // ============================================================
@@ -174,28 +177,17 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
      * 设置按钮类型。幂等——先清旧 type styleClass，再按需挂新。
      */
     public ButtonAnt type(Type type) {
-        applyTypeStyleClasses(type != null ? type : Type.DEFAULT);
+        applyTypeStyleClasses(this, type);
         return this;
     }
 
     /**
      * 设置尺寸。幂等——先清旧 size styleClass，再按需挂新。
-     * DEFAULT / MIDDLE 视为同一档位。
+     * DEFAULT / MIDDLE 视为同一档位（均映射 SIZE_MIDDLE）。
+     * 委托 {@link ApplySizeUtil#apply(javafx.scene.Node, Size, boolean)} 实现。
      */
     public ButtonAnt size(Size size) {
-        getStyleClass().removeAll(JfxStyles.SIZE_MIDDLE, JfxStyles.SIZE_SMALL,
-                JfxStyles.SIZE_XS, JfxStyles.SIZE_LARGE);
-        Size effective = size != null ? size : Size.DEFAULT;
-        if (effective == Size.DEFAULT || effective == Size.MIDDLE) {
-            getStyleClass().add(JfxStyles.SIZE_MIDDLE);
-        } else if (effective == Size.SMALL) {
-            getStyleClass().add(JfxStyles.SIZE_SMALL);
-        } else if (effective == Size.XS) {
-            getStyleClass().add(JfxStyles.SIZE_XS);
-        } else if (effective == Size.LARGE) {
-            getStyleClass().add(JfxStyles.SIZE_LARGE);
-        }
-        return this;
+        return org.openkawu.jfxium.core.util.ApplySizeUtil.apply(this, size, true);
     }
 
     /**
@@ -226,11 +218,7 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
     // 流式 API —— 状态
     // ============================================================
 
-    /** 设置禁用状态。 */
-    public ButtonAnt disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
 
     /**
      * 设置加载状态：加载时禁用按钮。
@@ -281,7 +269,7 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
 
     /** 设置文本（链式包装 setText）。 */
     public ButtonAnt text(String text) {
-        setText(text != null ? text : "");
+        setText(TextUtils.safeText(text));
         return this;
     }
 
@@ -318,32 +306,6 @@ public class ButtonAnt extends Button implements LayoutCommon<ButtonAnt> {
     /** Builder 模式终结调用——返回自身（向后兼容）。 */
     public ButtonAnt build() {
         return this;
-    }
-
-    // ============================================================
-    // 内部 styleClass 渲染原语（幂等：先清后挂）
-    // ============================================================
-
-    /** 应用 type 对应的 styleClass。 */
-    private void applyTypeStyleClasses(Type type) {
-        getStyleClass().removeAll(
-                JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_ACCENT,
-                JfxStyles.BUTTON_OUTLINED, JfxStyles.BUTTON_DASHED,
-                JfxStyles.BUTTON_TEXT, JfxStyles.BUTTON_LINK,
-                JfxStyles.BUTTON_SUCCESS, JfxStyles.BUTTON_WARNING, JfxStyles.BUTTON_DANGER
-        );
-        switch (type) {
-            case PRIMARY, ACCENT -> getStyleClass().add(JfxStyles.BUTTON_ACCENT);
-            case SUCCESS -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_SUCCESS);
-            case WARNING -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_WARNING);
-            case DANGER -> getStyleClass().addAll(JfxStyles.BUTTON_DEFAULT, JfxStyles.BUTTON_DANGER);
-            case OUTLINED -> getStyleClass().add(JfxStyles.BUTTON_OUTLINED);
-            case DASHED -> getStyleClass().add(JfxStyles.BUTTON_DASHED);
-            case TEXT -> getStyleClass().add(JfxStyles.BUTTON_TEXT);
-            case LINK -> getStyleClass().add(JfxStyles.BUTTON_LINK);
-            case DEFAULT -> getStyleClass().add(JfxStyles.BUTTON_DEFAULT);
-            default -> getStyleClass().add(JfxStyles.BUTTON_DEFAULT);
-        }
     }
 
     // ============================================================

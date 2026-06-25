@@ -7,8 +7,14 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.builder.Radius;
+import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.ApplySizeUtil;
+import org.openkawu.jfxium.core.util.Bindings;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 
@@ -65,12 +71,9 @@ import java.util.function.Consumer;
  *   <li><b>向后兼容</b>：{@code build()} 返回自身，旧代码 {@code .build()} 写法无需改动</li>
  * </ul>
  */
-public class InputAnt extends TextField implements LayoutCommon<InputAnt> {
+public class InputAnt extends TextField implements LayoutCommon<InputAnt>, DisabledSupport<InputAnt> {
 
-    /** 尺寸枚举，与 ButtonAnt 一致（DEFAULT/SMALL/LARGE）。 */
-    public enum Size {
-        DEFAULT, SMALL, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     // ============================================================
     // 工厂入口
@@ -106,7 +109,7 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt> {
 
     /** 设置占位提示文本。 */
     public InputAnt placeholder(String placeholder) {
-        setPromptText(placeholder != null ? placeholder : "");
+        setPromptText(TextUtils.safeText(placeholder));
         if (placeholder != null && !placeholder.isEmpty()) {
             setAccessibleText(placeholder);
         }
@@ -115,7 +118,7 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt> {
 
     /** 设置文本（链式包装 setText）。 */
     public InputAnt text(String text) {
-        setText(text != null ? text : "");
+        setText(TextUtils.safeText(text));
         return this;
     }
 
@@ -124,20 +127,10 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt> {
      * DEFAULT 仅清不挂（与 ButtonAnt 行为一致）。
      */
     public InputAnt size(Size size) {
-        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
-        if (size == Size.SMALL) {
-            getStyleClass().add(JfxStyles.SIZE_SMALL);
-        } else if (size == Size.LARGE) {
-            getStyleClass().add(JfxStyles.SIZE_LARGE);
-        }
-        return this;
+        return ApplySizeUtil.apply(this, size);
     }
 
-    /** 设置禁用状态。 */
-    public InputAnt disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
 
     /** 设置只读状态（可选中复制但不可编辑）。 */
     public InputAnt readOnly(boolean readOnly) {
@@ -147,9 +140,7 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt> {
 
     /** 双向绑定：控件值 ↔ Property 值实时同步。 */
     public InputAnt bindValue(StringProperty property) {
-        if (property != null) {
-            textProperty().bindBidirectional(property);
-        }
+        Bindings.bindBidirectional(textProperty(), property);
         return this;
     }
 
@@ -215,12 +206,11 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt> {
             container.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
             PasswordField pwdField = new PasswordField();
-            pwdField.getStyleClass().add("text-input");
-            if (size == Size.SMALL) {
-                pwdField.getStyleClass().add(JfxStyles.SIZE_SMALL);
-            } else if (size == Size.LARGE) {
-                pwdField.getStyleClass().add(JfxStyles.SIZE_LARGE);
-            }
+            // 取消裸名 "text-input"（P0-F1 修复）：
+            // 1) 该类名在 LESS 端未定义，加载无效
+            // 2) 违反 red-lines "禁止新建 styleClass 不带 jfx- 前缀"
+            // PasswordField 沿用 .text-field 根类自动继承 _input.less 通用样式
+            ApplySizeUtil.apply(pwdField.getStyleClass(), size);
             pwdField.setPromptText(placeholder);
             pwdField.setDisable(disabled);
             HBox.setHgrow(pwdField, Priority.ALWAYS);
@@ -228,7 +218,8 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt> {
             // 可见切换按钮
             ToggleButton eyeBtn = new ToggleButton();
             eyeBtn.getStyleClass().add(JfxStyles.INPUT_PASSWORD_EYE);
-            eyeBtn.setText("👁");
+            // P0-F3 修复：眼睛 emoji 国际化（zh_CN=en_US，避免在 Java 端硬编码字符）
+            eyeBtn.setText(Messages.get("input.password.eye"));
             eyeBtn.setSelected(false);
 
             // 切换密码可见性
@@ -252,9 +243,7 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt> {
             }
 
             // 绑定
-            if (bindProperty != null) {
-                pwdField.textProperty().bindBidirectional(bindProperty);
-            }
+            Bindings.bindBidirectional(pwdField.textProperty(), bindProperty);
 
             container.getChildren().addAll(pwdField, eyeBtn);
             return container;

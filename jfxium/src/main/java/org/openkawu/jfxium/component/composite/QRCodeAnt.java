@@ -10,6 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * JFXium 二维码组件 - 对标 Ant Design QRCode
@@ -45,7 +46,7 @@ public class QRCodeAnt {
         private boolean bordered = true;
 
         public Builder value(String value) {
-            this.value = value != null ? value : "";
+            this.value = TextUtils.safeText(value);
             return this;
         }
 
@@ -212,6 +213,6 @@ public class QRCodeAnt {
     }
 
     private static String normalizeValue(String value) {
-        return value != null ? value : "";
+        return TextUtils.safeText(value);
     }
 }

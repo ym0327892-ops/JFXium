@@ -1,15 +1,10 @@
 package org.openkawu.jfxium.component.composite;
 
-import javafx.geometry.Insets;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.component.layout.AbstractHBoxAnt;
-import org.openkawu.jfxium.component.layout.LayoutCommon;
-import org.openkawu.jfxium.core.builder.Radius;
-import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.util.ArrayList;
@@ -169,7 +164,7 @@ public class HBarAnt extends AbstractHBoxAnt<HBarAnt> {
 
     /** 顶部分割线（开关）。 */
     public HBarAnt borderTop(boolean on) {
-        toggleStyleClass(JfxStyles.BORDER_TOP, on);
+        toggleStyleClass(JfxStyles.BAR_BORDER_TOP, on);
         return this;
     }
 
@@ -180,7 +175,7 @@ public class HBarAnt extends AbstractHBoxAnt<HBarAnt> {
 
     /** 底部分割线（开关）。 */
     public HBarAnt borderBottom(boolean on) {
-        toggleStyleClass(JfxStyles.BORDER_BOTTOM, on);
+        toggleStyleClass(JfxStyles.BAR_BORDER_BOTTOM, on);
         return this;
     }
 
@@ -203,148 +198,6 @@ public class HBarAnt extends AbstractHBoxAnt<HBarAnt> {
     /** 右侧分割线（开关）。 */
     public HBarAnt borderRight(boolean on) {
         toggleStyleClass(JfxStyles.BORDER_RIGHT, on);
-        return this;
-    }
-
-    // ============================================================
-    // LayoutCommon 二进制兼容桥接
-    // ============================================================
-
-    /**
-     * HBarAnt 早期版本把这些流式 API 暴露为 HBarAnt 自身方法。
-     * 现在能力来自 LayoutCommon/AbstractHBoxAnt，但保留具体方法可避免旧业务模块运行时 NoSuchMethodError。
-     */
-    public HBarAnt styleClass(String cls) {
-        if (cls != null && !cls.isEmpty() && !getStyleClass().contains(cls)) {
-            getStyleClass().add(cls);
-        }
-        return this;
-    }
-
-    public HBarAnt styleClass(String... classes) {
-        if (classes != null) {
-            for (String cls : classes) {
-                styleClass(cls);
-            }
-        }
-        return this;
-    }
-
-    public HBarAnt style(String style) {
-        if (style != null) {
-            setStyle(style);
-        }
-        return this;
-    }
-
-    public HBarAnt background(Background bg) {
-        if (bg != null) {
-            styleClass(bg.styleClass());
-        }
-        return this;
-    }
-
-    public HBarAnt padding(double padding) {
-        setPadding(new Insets(padding));
-        return this;
-    }
-
-    public HBarAnt padding(double top, double right, double bottom, double left) {
-        setPadding(new Insets(top, right, bottom, left));
-        return this;
-    }
-
-    public HBarAnt padding(Insets padding) {
-        if (padding != null) {
-            setPadding(padding);
-        }
-        return this;
-    }
-
-    public HBarAnt borderRadius(Radius radius) {
-        getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
-        if (radius == Radius.NONE) {
-            getStyleClass().add(JfxStyles.RADIUS_NONE);
-        } else if (radius == Radius.SM) {
-            getStyleClass().add(JfxStyles.RADIUS_SM);
-        } else if (radius == Radius.LG) {
-            getStyleClass().add(JfxStyles.RADIUS_LG);
-        }
-        return this;
-    }
-
-    public HBarAnt maxW(double width) {
-        setMaxWidth(width);
-        return this;
-    }
-
-    public HBarAnt maxH(double height) {
-        setMaxHeight(height);
-        return this;
-    }
-
-    public HBarAnt minW(double width) {
-        setMinWidth(width);
-        return this;
-    }
-
-    public HBarAnt minH(double height) {
-        setMinHeight(height);
-        return this;
-    }
-
-    public HBarAnt prefW(double width) {
-        setPrefWidth(width);
-        return this;
-    }
-
-    public HBarAnt prefH(double height) {
-        setPrefHeight(height);
-        return this;
-    }
-
-    public HBarAnt prefSize(double width, double height) {
-        setPrefSize(width, height);
-        return this;
-    }
-
-    public HBarAnt maxSize(double width, double height) {
-        setMaxSize(width, height);
-        return this;
-    }
-
-    public HBarAnt minSize(double width, double height) {
-        setMinSize(width, height);
-        return this;
-    }
-
-    public HBarAnt visible(boolean visible) {
-        setVisible(visible);
-        return this;
-    }
-
-    public HBarAnt disable(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
-
-    public HBarAnt managed(boolean managed) {
-        setManaged(managed);
-        return this;
-    }
-
-    public HBarAnt opacity(double opacity) {
-        setOpacity(opacity);
-        return this;
-    }
-
-    public HBarAnt cursor(Cursor cursor) {
-        setCursor(cursor);
-        return this;
-    }
-
-    public HBarAnt id(String id) {
-        setId(id);
         return this;
     }
 

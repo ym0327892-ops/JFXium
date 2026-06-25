@@ -9,9 +9,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.AnimationDuration;
+import org.openkawu.jfxium.core.util.Bindings;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 
@@ -64,7 +66,9 @@ public class SwitchAnt {
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private boolean selected = false;
-        private boolean disabled = false;
+        // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取），
+        // 无需自建字段与 setter，直接继承父类 disabled(boolean) / disabled() 即可，
+        // applyStyles() 会统一把 disable 字段应用到容器节点。
         private String checkedText = "";
         private String uncheckedText = "";
         private Shape shape = Shape.PILL;
@@ -78,18 +82,13 @@ public class SwitchAnt {
             return this;
         }
 
-        public Builder disabled(boolean disabled) {
-            this.disabled = disabled;
-            return this;
-        }
-
         public Builder checkedText(String text) {
-            this.checkedText = text != null ? text : "";
+            this.checkedText = TextUtils.safeText(text);
             return this;
         }
 
         public Builder uncheckedText(String text) {
-            this.uncheckedText = text != null ? text : "";
+            this.uncheckedText = TextUtils.safeText(text);
             return this;
         }
 
@@ -149,7 +148,7 @@ public class SwitchAnt {
             final SimpleBooleanProperty valueProperty = new SimpleBooleanProperty(selected);
             if (bindProperty != null) {
                 valueProperty.set(bindProperty.get());
-                valueProperty.bindBidirectional(bindProperty);
+                Bindings.bindBidirectional(valueProperty, bindProperty);
             }
             selected = valueProperty.get();
 
@@ -159,7 +158,8 @@ public class SwitchAnt {
                 thumb.setTranslateX(24);
             }
             // 禁用态用 styleClass 切换，避免 inline setStyle 在动态场景下残留 cursor
-            if (disabled) {
+            boolean isDisabled = disable != null && disable;
+            if (isDisabled) {
                 switchPane.getStyleClass().add(JfxStyles.SWITCH_DISABLED);
             }
             // Shape 修饰类（M19.20）—— PILL 默认不挂；ROUNDED/SQUARE 挂修饰类切换圆角
@@ -178,7 +178,7 @@ public class SwitchAnt {
             });
 
             switchPane.setOnMouseClicked(e -> {
-                if (!disabled) {
+                if (!isDisabled) {
                     valueProperty.set(!valueProperty.get());
                 }
             });
@@ -209,7 +209,7 @@ public class SwitchAnt {
 
             if (animated) {
                 // 从当前实际位置滑到目标位置（不写死 from，避免与初始 translateX 冲突）
-                TranslateTransition slide = new TranslateTransition(Duration.millis(200), thumb);
+                TranslateTransition slide = new TranslateTransition(AnimationDuration.FAST, thumb);
                 slide.setToX(isSelected ? 24 : 0);
                 slide.play();
             } else {

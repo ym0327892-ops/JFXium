@@ -6,8 +6,10 @@ import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import java.util.function.Consumer;
 import org.openkawu.jfxium.component.base.PopoverPanel;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.util.AnimationDuration;
 
 /**
  * JFXium 气泡卡片组件 - 对标 Ant Design Popover。
@@ -61,6 +63,7 @@ public class PopoverAnt {
         private Node target = null;
         private Pos placement = Pos.BOTTOM_CENTER;
         private Trigger trigger = Trigger.CLICK;
+        private Consumer<Boolean> onOpenChange = null;
 
         public Builder title(String title) {
             this.title = title;
@@ -87,6 +90,12 @@ public class PopoverAnt {
             return this;
         }
 
+        /** 气泡打开/关闭状态变化回调（true=打开，false=关闭）。 */
+        public Builder onOpenChange(Consumer<Boolean> callback) {
+            this.onOpenChange = callback;
+            return this;
+        }
+
         public Popover build() {
             return new Popover(this);
         }
@@ -108,6 +117,7 @@ public class PopoverAnt {
             if (config.trigger == Trigger.HOVER) {
                 config.target.setOnMouseEntered(e -> show());
                 config.target.setOnMouseExited(e -> {
+                    // 100ms hover 离开延迟（用户交互缓冲，非动画时长，保持 unique 魔法值不抽取）
                     javafx.animation.PauseTransition delay = new javafx.animation.PauseTransition(Duration.millis(100));
                     delay.setOnFinished(ev -> hide());
                     delay.play();
@@ -170,7 +180,11 @@ public class PopoverAnt {
 
             popup.show(config.target, x, y);
 
-            FadeTransition fade = new FadeTransition(Duration.millis(150), panel);
+            if (config.onOpenChange != null) {
+                config.onOpenChange.accept(true);
+            }
+
+            FadeTransition fade = new FadeTransition(AnimationDuration.ULTRA_FAST, panel);
             fade.setFromValue(0);
             fade.setToValue(1);
             fade.play();
@@ -179,7 +193,15 @@ public class PopoverAnt {
         public void hide() {
             if (popup != null && popup.isShowing()) {
                 popup.hide();
+                if (config.onOpenChange != null) {
+                    config.onOpenChange.accept(false);
+                }
             }
+        }
+
+        /** {@link #hide()} 语义化别名。 */
+        public void close() {
+            hide();
         }
     }
 

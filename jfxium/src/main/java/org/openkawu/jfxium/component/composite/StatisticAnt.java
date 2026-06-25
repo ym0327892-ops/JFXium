@@ -7,6 +7,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * JFXium 统计数值组件 - 对标 Ant Design Statistic（组合式，Builder 模式）。
@@ -35,9 +37,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
 public class StatisticAnt {
     private static final String CONTROLLER_KEY = StatisticAnt.class.getName() + ".controller";
 
-    public enum Size {
-        SMALL, DEFAULT, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private String title = "";
@@ -49,8 +49,8 @@ public class StatisticAnt {
         private Node prefixNode = null;
         private Node suffixNode = null;
 
-        public Builder title(String title) { this.title = title != null ? title : ""; return this; }
-        public Builder value(String value) { this.value = value != null ? value : ""; return this; }
+        public Builder title(String title) { this.title = TextUtils.safeText(title); return this; }
+        public Builder value(String value) { this.value = TextUtils.safeText(value); return this; }
         public Builder value(double value) { this.value = String.valueOf(value); return this; }
         public Builder value(int value) { this.value = String.valueOf(value); return this; }
         public Builder value(long value) { this.value = String.valueOf(value); return this; }
@@ -78,7 +78,7 @@ public class StatisticAnt {
             HBox valueRow = new HBox();
             valueRow.setAlignment(Pos.CENTER_LEFT);
 
-            Label prefixLabel = new Label(prefix != null ? prefix : "");
+            Label prefixLabel = new Label(TextUtils.safeText(prefix));
             prefixLabel.getStyleClass().add(JfxStyles.STATISTIC_PREFIX);
             if (prefixNode != null) {
                 valueRow.getChildren().add(prefixNode);
@@ -92,7 +92,7 @@ public class StatisticAnt {
             valueLabel.getStyleClass().add(JfxStyles.STATISTIC_VALUE);
             valueRow.getChildren().add(valueLabel);
 
-            Label suffixLabel = new Label(suffix != null ? suffix : "");
+            Label suffixLabel = new Label(TextUtils.safeText(suffix));
             suffixLabel.getStyleClass().add(JfxStyles.STATISTIC_SUFFIX);
             if (suffixNode != null) {
                 valueRow.getChildren().add(suffixNode);
@@ -141,7 +141,7 @@ public class StatisticAnt {
         }
 
         public void setTitle(String title) {
-            String text = title != null ? title : "";
+            String text = TextUtils.safeText(title);
             titleLabel.setText(text);
             titleLabel.setVisible(!text.isEmpty());
             titleLabel.setManaged(!text.isEmpty());
@@ -152,7 +152,7 @@ public class StatisticAnt {
         }
 
         public void setValue(String value) {
-            valueLabel.setText(value != null ? value : "");
+            valueLabel.setText(TextUtils.safeText(value));
         }
 
         public void setValue(double value) {
@@ -191,7 +191,7 @@ public class StatisticAnt {
             if (label == null) {
                 return;
             }
-            String value = text != null ? text : "";
+            String value = TextUtils.safeText(text);
             label.setText(value);
             label.setVisible(!value.isEmpty());
             label.setManaged(!value.isEmpty());

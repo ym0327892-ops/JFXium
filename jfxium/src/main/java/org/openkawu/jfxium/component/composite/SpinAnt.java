@@ -15,6 +15,7 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 /**
  * JFXium 加载中组件 - 对标 Ant Design Spin。
@@ -36,7 +37,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * <pre>{@code
  * // 简单加载器
  * StackPane spin = SpinAnt.create()
- *     .size(SpinAnt.Size.LARGE)
+ *     .size(Size.LARGE)
  *     .tip("加载中...")
  *     .build();
  *
@@ -49,9 +50,7 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  */
 public class SpinAnt {
 
-    public enum Size {
-        SMALL, DEFAULT, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     public enum Indicator {
         SPINNER, DOTS, BARS

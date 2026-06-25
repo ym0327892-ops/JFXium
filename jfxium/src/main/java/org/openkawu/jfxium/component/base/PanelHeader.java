@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * 面板头部基础组件
@@ -55,7 +56,7 @@ public class PanelHeader {
          * 设置内边距（四边独立）。默认 16px 24px。
          */
         public Builder padding(double top, double right, double bottom, double left) {
-            this.padding = new Insets(safeSize(top), safeSize(right), safeSize(bottom), safeSize(left));
+            this.padding = new Insets(TextUtils.safeNonNegative(top, 0), TextUtils.safeNonNegative(right, 0), TextUtils.safeNonNegative(bottom, 0), TextUtils.safeNonNegative(left, 0));
             return this;
         }
 
@@ -86,8 +87,6 @@ public class PanelHeader {
             return header;
         }
 
-        private static double safeSize(double value) {
-            return Double.isFinite(value) ? Math.max(0, value) : 0;
-        }
+        // safeSize 统一改用 TextUtils.safeNonNegative,见 P0-23。
     }
 }

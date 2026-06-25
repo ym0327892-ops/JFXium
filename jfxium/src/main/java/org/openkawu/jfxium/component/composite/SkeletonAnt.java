@@ -11,6 +11,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * JFXium 骨架屏组件 - 对标 Ant Design Skeleton（组合式，Builder 模式）。
@@ -66,12 +67,12 @@ public class SkeletonAnt {
         }
 
         public Builder width(double width) {
-            this.width = Double.isFinite(width) && width >= 0 ? width : 200;
+            this.width = TextUtils.safeNonNegative(width, 200);
             return this;
         }
 
         public Builder height(double height) {
-            this.height = Double.isFinite(height) && height >= 0 ? height : 16;
+            this.height = TextUtils.safeNonNegative(height, 16);
             return this;
         }
 

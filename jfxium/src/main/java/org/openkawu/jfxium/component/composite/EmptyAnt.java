@@ -9,6 +9,7 @@ import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.util.IconPath;
 
 /**
  * JFXium 空状态组件 - 对标 Ant Design Empty（组合式，Builder 模式）。
@@ -68,11 +69,7 @@ public class EmptyAnt {
             empty.getStyleClass().add(JfxStyles.EMPTY);
 
             // SVG 图标：颜色由 LESS 控制
-            SVGPath icon = new SVGPath();
-            icon.setContent("M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z");
-            // scale 是结构性属性，保留在 Java
-            icon.setScaleX(2);
-            icon.setScaleY(2);
+            SVGPath icon = IconPath.folderScaled();
             icon.getStyleClass().add(JfxStyles.EMPTY_ICON);
             empty.getChildren().add(icon);
 

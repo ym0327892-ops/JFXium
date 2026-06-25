@@ -7,6 +7,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.FontTokens;
 
 /**
  * JFXium 极简内置图标。两种渲染模式：
@@ -38,6 +39,9 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *
  */
 public class IconAnt {
+
+    /** 默认图标尺寸（px）。 */
+    private static final int DEFAULT_ICON_SIZE = 16;
 
     /** Unicode 字符图标（窗口控制、箭头、勾选等基础符号）。 */
     public enum Symbol {
@@ -131,22 +135,23 @@ public class IconAnt {
     }
 
     public static Node symbol(Symbol symbol) {
-        return symbol(symbol, 16);
+        return symbol(symbol, DEFAULT_ICON_SIZE);
     }
 
     public static Node symbol(Symbol symbol, int size) {
         Label label = new Label(symbol.getChar());
         // Font 是结构性属性（字体族 + 字号），保留在 Java；颜色走 LESS
-        label.setFont(Font.font("Segoe UI Symbol", size));
+        // 字体族常量收敛到 FontTokens（避免散落字面量，P0-F4 修复）
+        label.setFont(Font.font(FontTokens.SYMBOL_FAMILY, size));
         label.getStyleClass().add(JfxStyles.ICON);
         StackPane pane = new StackPane(label);
         pane.setPrefSize(size, size);
         return pane;
     }
 
-    /** SVG 业务图标，默认 16px。 */
+    /** SVG 业务图标，默认 {@link #DEFAULT_ICON_SIZE}px。 */
     public static Region path(Path icon) {
-        return path(icon, 16);
+        return path(icon, DEFAULT_ICON_SIZE);
     }
 
     /**

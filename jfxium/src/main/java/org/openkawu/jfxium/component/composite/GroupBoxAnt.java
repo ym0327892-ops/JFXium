@@ -8,13 +8,14 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
 
 import org.openkawu.jfxium.core.builder.Radius;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.List;
  *   <li><b>底部操作区</b>：actions 按钮组</li>
  *   <li><b>标签页</b>：tabList 内置标签切换</li>
  *   <li><b>边框</b>：bordered 控制边框显隐（桌面 GroupBox 默认有边框）</li>
- *   <li><b>尺寸</b>：MEDIUM / SMALL</li>
+ *   <li><b>尺寸</b>：MIDDLE / SMALL（其余顶级 size 暂未启用）</li>
  *   <li><b>内嵌模式</b>：type=INNER 用于分组框嵌套</li>
  * </ul>
  *
@@ -76,11 +77,14 @@ public class GroupBoxAnt {
         public Node getContent() { return content; }
     }
 
-    public enum Size {
-        MEDIUM,
-        SMALL
-    }
-
+    /**
+     * 分组框尺寸枚举（P1-S1 抽取）。
+     *
+     * <p>已从原内部 {@code Size.MEDIUM/SMALL} 迁移到顶级 {@link Size}（五态）。
+     * 顶级枚举 {@link Size#MIDDLE} 与原 {@code MEDIUM} 同义；
+     * 顶级枚举 {@link Size#DEFAULT/SMALL/LARGE/XS} 暂未在本组件启用，
+     * 保留调用方继续使用枚举语义（GROUP_BOX 仅识别 SMALL）。</p>
+     */
     public enum Type {
         DEFAULT,
         INNER
@@ -95,7 +99,7 @@ public class GroupBoxAnt {
         private Node extra;
         private Node content;
         private boolean bordered = false;
-        private Size size = Size.MEDIUM;
+        private Size size = Size.MIDDLE;
         private Type type = Type.DEFAULT;
         private List<Node> actions = new ArrayList<>();
         private List<TabItem> tabList = new ArrayList<>();
@@ -111,7 +115,7 @@ public class GroupBoxAnt {
 
         /** 设置标题文本。 */
         public Builder title(String title) {
-            this.title = title != null ? title : "";
+            this.title = TextUtils.safeText(title);
             return this;
         }
 
@@ -135,7 +139,7 @@ public class GroupBoxAnt {
 
         /** 设置卡片尺寸。 */
         public Builder size(Size size) {
-            this.size = size != null ? size : Size.MEDIUM;
+            this.size = size != null ? size : Size.MIDDLE;
             return this;
         }
 
@@ -372,9 +376,6 @@ public class GroupBoxAnt {
         }
 
         private Node buildTabBar() {
-            HBox tabBar = new HBox(0);
-            tabBar.getStyleClass().add(JfxStyles.GROUP_BOX_TAB_BAR);
-
             HBox tabButtons = new HBox(0);
             tabButtons.getStyleClass().add(JfxStyles.GROUP_BOX_TAB_LIST);
 
@@ -396,15 +397,12 @@ public class GroupBoxAnt {
                 tabButtons.getChildren().add(tabButton);
             }
 
-            tabBar.getChildren().add(tabButtons);
-
-            if (tabBarExtraContent != null) {
-                Region spacer = new Region();
-                HBox.setHgrow(spacer, Priority.ALWAYS);
-                spacer.setMaxWidth(Double.MAX_VALUE);
-                tabBar.getChildren().addAll(spacer, tabBarExtraContent);
-            }
-
+            // 二段式：tabs 左 + extraContent 右（HBarAnt.right() null-safe）
+            HBox tabBar = HBarAnt.create()
+                    .left(tabButtons)
+                    .right(tabBarExtraContent)
+                    .build();
+            tabBar.getStyleClass().add(JfxStyles.GROUP_BOX_TAB_BAR);
             return tabBar;
         }
 

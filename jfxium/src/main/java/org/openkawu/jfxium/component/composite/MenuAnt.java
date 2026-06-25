@@ -7,12 +7,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
-import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.AnimationDuration;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +122,8 @@ public class MenuAnt {
     // ============================================================
     // Builder
     // ============================================================
-    public static class Builder extends AbstractStyleBuilder<Builder> {
+    public static class Builder extends AbstractStyleBuilder<Builder>
+            implements AbstractMenuEntryBuilder<Builder> {
         private final List<MenuItem> items = new ArrayList<>();
         private SubMenuBuilder currentSubMenu = null;
 
@@ -139,61 +142,26 @@ public class MenuAnt {
 
         private Builder() {}
 
-        // ---------------- item ----------------
-        public Builder item(String text, Runnable onClick) {
-            return item(null, text, null, onClick);
+        // ---------------- AbstractMenuEntryBuilder 钩子 ----------------
+        @Override
+        public int childLevel() {
+            return currentSubMenu == null ? 0 : currentSubMenu.level + 1;
         }
 
-        public Builder item(String text, Node icon, Runnable onClick) {
-            return item(null, text, icon, onClick);
+        @Override
+        public void addItem(MenuItem item) {
+            if (currentSubMenu != null) currentSubMenu.children.add(item);
+            else items.add(item);
         }
 
-        public Builder item(String key, String text, Runnable onClick) {
-            return item(key, text, null, onClick);
-        }
-
-        public Builder item(String key, String text, Node icon, Runnable onClick) {
-            MenuItem mi = new MenuItem(key, text, icon, onClick, 0);
-            if (currentSubMenu != null) {
-                currentSubMenu.children.add(new MenuItem(key, text, icon, onClick, currentSubMenu.level + 1));
-            } else {
-                items.add(mi);
-            }
-            return this;
-        }
-
-        // ---------------- subMenu ----------------
-        public SubMenuBuilder subMenu(String text) { return subMenu(null, text, null); }
-        public SubMenuBuilder subMenu(String text, Node icon) { return subMenu(null, text, icon); }
-        public SubMenuBuilder subMenu(String key, String text) { return subMenu(key, text, null); }
-
+        @Override
         public SubMenuBuilder subMenu(String key, String text, Node icon) {
             int level = currentSubMenu == null ? 0 : currentSubMenu.level + 1;
             SubMenuBuilder sub = new SubMenuBuilder(key, text, icon, level, this, currentSubMenu);
-            if (currentSubMenu != null) {
-                currentSubMenu.children.add(sub);
-            } else {
-                items.add(sub);
-            }
+            if (currentSubMenu != null) currentSubMenu.children.add(sub);
+            else items.add(sub);
             currentSubMenu = sub;
             return sub;
-        }
-
-        // ---------------- group / divider ----------------
-        public Builder group(String title) {
-            int level = currentSubMenu == null ? 0 : currentSubMenu.level + 1;
-            MenuGroup g = new MenuGroup(title, level);
-            if (currentSubMenu != null) currentSubMenu.children.add(g);
-            else items.add(g);
-            return this;
-        }
-
-        public Builder divider() {
-            int level = currentSubMenu == null ? 0 : currentSubMenu.level + 1;
-            MenuDivider d = new MenuDivider(level);
-            if (currentSubMenu != null) currentSubMenu.children.add(d);
-            else items.add(d);
-            return this;
         }
 
         // ---------------- 表级 API ----------------
@@ -546,7 +514,8 @@ public class MenuAnt {
     // ============================================================
     // SubMenuBuilder
     // ============================================================
-    public static class SubMenuBuilder extends MenuItem {
+    public static class SubMenuBuilder extends MenuItem
+            implements AbstractMenuEntryBuilder<SubMenuBuilder> {
         final List<MenuItem> children = new ArrayList<>();
         private final Builder rootBuilder;
         final SubMenuBuilder parent;
@@ -568,45 +537,23 @@ public class MenuAnt {
             return this;
         }
 
-        public SubMenuBuilder item(String text, Runnable onClick) {
-            children.add(new MenuItem(null, text, null, onClick, level + 1));
-            return this;
+        // ---------------- AbstractMenuEntryBuilder 钩子 ----------------
+        @Override
+        public int childLevel() {
+            return level + 1;
         }
 
-        public SubMenuBuilder item(String text, Node icon, Runnable onClick) {
-            children.add(new MenuItem(null, text, icon, onClick, level + 1));
-            return this;
+        @Override
+        public void addItem(MenuItem item) {
+            children.add(item);
         }
 
-        public SubMenuBuilder item(String key, String text, Runnable onClick) {
-            children.add(new MenuItem(key, text, null, onClick, level + 1));
-            return this;
-        }
-
-        public SubMenuBuilder item(String key, String text, Node icon, Runnable onClick) {
-            children.add(new MenuItem(key, text, icon, onClick, level + 1));
-            return this;
-        }
-
-        public SubMenuBuilder subMenu(String text) { return subMenu(null, text, null); }
-        public SubMenuBuilder subMenu(String text, Node icon) { return subMenu(null, text, icon); }
-        public SubMenuBuilder subMenu(String key, String text) { return subMenu(key, text, null); }
-
+        @Override
         public SubMenuBuilder subMenu(String key, String text, Node icon) {
             SubMenuBuilder sub = new SubMenuBuilder(key, text, icon, level + 1, rootBuilder, this);
             children.add(sub);
             rootBuilder.currentSubMenu = sub;
             return sub;
-        }
-
-        public SubMenuBuilder group(String title) {
-            children.add(new MenuGroup(title, level + 1));
-            return this;
-        }
-
-        public SubMenuBuilder divider() {
-            children.add(new MenuDivider(level + 1));
-            return this;
         }
 
         public Builder endSubMenu() {
@@ -625,6 +572,8 @@ public class MenuAnt {
             VBox container = new VBox(0);
 
             HBox header = createInlineHeader();
+            header.setMinWidth(0);
+            header.setMaxWidth(Double.MAX_VALUE);
             container.getChildren().add(header);
 
             VBox childrenContainer = new VBox(0);
@@ -666,7 +615,7 @@ public class MenuAnt {
                 expanded[0] = false;
                 childrenContainer.setVisible(false);
                 childrenContainer.setManaged(false);
-                RotateTransition r = new RotateTransition(Duration.millis(200), arrow);
+                RotateTransition r = new RotateTransition(AnimationDuration.FAST, arrow);
                 r.setToAngle(0);
                 r.play();
                 if (key != null) ctx.expandedKeys.remove(key);
@@ -677,7 +626,7 @@ public class MenuAnt {
                 expanded[0] = true;
                 childrenContainer.setVisible(true);
                 childrenContainer.setManaged(true);
-                RotateTransition r = new RotateTransition(Duration.millis(200), arrow);
+                RotateTransition r = new RotateTransition(AnimationDuration.FAST, arrow);
                 r.setToAngle(90);
                 r.play();
                 if (key != null) {
@@ -765,6 +714,8 @@ public class MenuAnt {
         private HBox createInlineHeader() {
             HBox row = new HBox(0);
             row.setAlignment(Pos.CENTER_LEFT);
+            row.setMinWidth(0);
+            row.setMaxWidth(Double.MAX_VALUE);
             // CSS .jfx-menu-submenu-header 控制 top/right/bottom padding，left=0 由 indent spacer 接管
             row.getStyleClass().add(JfxStyles.MENU_SUBMENU_HEADER);
 
@@ -780,16 +731,14 @@ public class MenuAnt {
             }
             Label label = new Label(text);
             label.getStyleClass().add(JfxStyles.MENU_ITEM_LABEL);
+            label.setMinWidth(0);
+            label.setMaxWidth(Double.MAX_VALUE);
+            label.setTextOverrun(OverrunStyle.ELLIPSIS);
+            HBox.setHgrow(label, Priority.ALWAYS);
             if (icon != null) {
                 HBox.setMargin(label, new Insets(0, 0, 0, 12));  // icon-label gap
             }
             row.getChildren().add(label);
-            // 用独立 Region spacer 把右侧箭头推到最右（Label 默认 maxWidth=USE_PREF_SIZE
-            // 给它设 Hgrow=ALWAYS 不会拉伸；详见 SKILL §4.1 / §20.1）
-            javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
-            HBox.setHgrow(spacer, Priority.ALWAYS);
-            spacer.setMaxWidth(Double.MAX_VALUE);
-            row.getChildren().add(spacer);
             return row;
         }
 
@@ -851,7 +800,7 @@ public class MenuAnt {
 
         MenuItem(String key, String text, Node icon, Runnable onClick, int level) {
             this.key = key;
-            this.text = text != null ? text : "";
+            this.text = TextUtils.safeText(text);
             this.icon = icon;
             this.onClick = onClick;
             this.level = level;
@@ -862,6 +811,8 @@ public class MenuAnt {
         Node buildInline(BuildContext ctx) {
             HBox row = new HBox(0);
             applyItemStyles(row, ctx);
+            row.setMinWidth(0);
+            row.setMaxWidth(Double.MAX_VALUE);
 
             if (ctx.collapsed) {
                 // 折叠模式：只显示图标。CSS .jfx-menu-collapsed > .jfx-menu-item 控制 padding+居中
@@ -889,6 +840,10 @@ public class MenuAnt {
                 }
                 Label label = new Label(text);
                 label.getStyleClass().add(JfxStyles.MENU_ITEM_LABEL);
+                label.setMinWidth(0);
+                label.setMaxWidth(Double.MAX_VALUE);
+                label.setTextOverrun(OverrunStyle.ELLIPSIS);
+                HBox.setHgrow(label, Priority.ALWAYS);
                 if (icon != null) {
                     HBox.setMargin(label, new Insets(0, 0, 0, 12));  // icon-label gap
                 }

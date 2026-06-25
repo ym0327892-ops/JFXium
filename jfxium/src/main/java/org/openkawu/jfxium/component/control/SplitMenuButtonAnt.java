@@ -5,7 +5,11 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
+import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.ApplySizeUtil;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * JFXium SplitMenuButton 组件 - 分裂式菜单按钮（继承式，双工厂模式）。
@@ -16,6 +20,9 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  *
  * <p>左侧是主操作按钮（单击触发 {@code onAction}），右侧是下拉箭头（弹出菜单项列表）。
  * 典型场景：新建按钮 → 新建文件 / 新建文件夹 / 新建项目。</p>
+ *
+ * @deprecated 推荐使用功能更完整的 {@link SplitButtonAnt}（shape/arrow/icon/contentDisplay 等）。
+ *             两者均包装 {@link SplitMenuButton}，功能重叠。本类仅保留向后兼容。
  *
  * <h2>用法</h2>
  *
@@ -44,12 +51,10 @@ import org.openkawu.jfxium.core.css.JfxStyles;
  * }
  * }</pre>
  */
-public class SplitMenuButtonAnt extends SplitMenuButton {
+@Deprecated
+public class SplitMenuButtonAnt extends SplitMenuButton implements DisabledSupport<SplitMenuButtonAnt> {
 
-    /** 尺寸枚举，与 InputAnt/ButtonAnt 一致。 */
-    public enum Size {
-        DEFAULT, SMALL, LARGE
-    }
+    // P1-S1 抽取：Size 枚举迁到 org.openkawu.jfxium.core.token.Size。
 
     // ============================================================
     // 工厂入口
@@ -75,7 +80,7 @@ public class SplitMenuButtonAnt extends SplitMenuButton {
 
     /** 设置按钮文本。 */
     public SplitMenuButtonAnt text(String text) {
-        setText(text);
+        setText(TextUtils.safeText(text));
         return this;
     }
 
@@ -106,24 +111,14 @@ public class SplitMenuButtonAnt extends SplitMenuButton {
         return this;
     }
 
-    /** 设置禁用状态。 */
-    public SplitMenuButtonAnt disabled(boolean disabled) {
-        setDisable(disabled);
-        return this;
-    }
+    // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）
 
     /**
      * 设置尺寸。幂等——先清旧 size styleClass，再按需挂新。
      * DEFAULT 仅清不挂（与 ButtonAnt 行为一致）。
      */
     public SplitMenuButtonAnt size(Size size) {
-        getStyleClass().removeAll(JfxStyles.SIZE_SMALL, JfxStyles.SIZE_LARGE);
-        if (size == Size.SMALL) {
-            getStyleClass().add(JfxStyles.SIZE_SMALL);
-        } else if (size == Size.LARGE) {
-            getStyleClass().add(JfxStyles.SIZE_LARGE);
-        }
-        return this;
+        return ApplySizeUtil.apply(this, size);
     }
 
     // ============================================================
