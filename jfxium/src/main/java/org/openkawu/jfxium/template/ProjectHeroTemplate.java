@@ -12,7 +12,10 @@ import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt;
+import org.openkawu.jfxium.component.overlay.DropdownAnt.DropdownResult;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +48,7 @@ public final class ProjectHeroTemplate {
      * <p>它语义上属于工程门面的一部分，但底层直接委托给 {@link WorkspaceTemplate}，
      * 这样首页、展示页和工作台都可以共用同一个入口实现。</p>
      */
-    public static DropdownAnt.DropdownResult userMenu(String currentUser, Consumer<String> onAction) {
+    public static DropdownResult userMenu(String currentUser, Consumer<String> onAction) {
         return WorkspaceTemplate.userMenu(currentUser, onAction);
     }
 
@@ -64,17 +67,17 @@ public final class ProjectHeroTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = title != null ? title : DEFAULT_TITLE;
+            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
             return this;
         }
 
         public Builder subtitle(String subtitle) {
-            this.subtitle = subtitle != null ? subtitle : DEFAULT_SUBTITLE;
+            this.subtitle = TextUtils.safeText(subtitle, DEFAULT_SUBTITLE);
             return this;
         }
 
         public Builder description(String description) {
-            this.description = description != null ? description : DEFAULT_DESCRIPTION;
+            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
             return this;
         }
 
@@ -88,13 +91,13 @@ public final class ProjectHeroTemplate {
         }
 
         public Builder status(String text, TagAnt.Type type) {
-            statusTags.add(new StatusTag(text != null ? text : "", type != null ? type : TagAnt.Type.DEFAULT));
+            statusTags.add(new StatusTag(TextUtils.safeText(text), type != null ? type : TagAnt.Type.DEFAULT));
             return this;
         }
 
         public Builder meta(String label, String value) {
-            return meta(label, TypographyAnt.text(value != null ? value : "")
-                    .type(TypographyAnt.Type.SECONDARY)
+            return meta(label, TypographyAnt.text(TextUtils.safeText(value))
+                    .type(TypographyAnt.TextColor.SECONDARY)
                     .build(), 1);
         }
 
@@ -104,9 +107,9 @@ public final class ProjectHeroTemplate {
 
         public Builder meta(String label, Node content, int span) {
             metadata.add(new Meta(
-                    label != null ? label : "",
+                    TextUtils.safeText(label),
                     content != null ? content : TypographyAnt.text("").build(),
-                    Math.max(1, span)
+                    TextUtils.ensureAtLeastOne(span)
             ));
             return this;
         }
@@ -163,7 +166,7 @@ public final class ProjectHeroTemplate {
                                     .spacing(4)
                                     .children(
                                             TypographyAnt.text(subtitle)
-                                                    .type(TypographyAnt.Type.SECONDARY)
+                                                    .type(TypographyAnt.TextColor.SECONDARY)
                                                     .build(),
                                             TypographyAnt.paragraph(description).build()
                                     )
@@ -193,7 +196,7 @@ public final class ProjectHeroTemplate {
 
             DescriptionsAnt.Builder descriptions = DescriptionsAnt.create()
                     .column(3)
-                    .size(DescriptionsAnt.Size.SMALL);
+                    .size(Size.SMALL);
             for (Meta meta : metadata) {
                 descriptions.item(meta.label(), meta.content(), meta.span());
             }

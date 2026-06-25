@@ -13,6 +13,9 @@ import org.openkawu.jfxium.component.layout.GridAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.Callbacks;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,22 +52,22 @@ public final class LaunchPadTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = title != null ? title : DEFAULT_TITLE;
+            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
             return this;
         }
 
         public Builder description(String description) {
-            this.description = description != null ? description : DEFAULT_DESCRIPTION;
+            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
             return this;
         }
 
         public Builder columns(int columns) {
-            this.columns = Math.max(1, columns);
+            this.columns = (int) TextUtils.ensureAtLeastOne(columns);
             return this;
         }
 
         public Builder gap(double gap) {
-            this.gap = Double.isFinite(gap) ? Math.max(0, gap) : 16;
+            this.gap = TextUtils.safeNonNegative(gap, 16);
             return this;
         }
 
@@ -79,11 +82,11 @@ public final class LaunchPadTemplate {
 
         public Builder item(String key, String title, String description, IconAnt.Path icon, String actionText) {
             items.add(new Item(
-                    key != null ? key : "",
-                    title != null ? title : "",
-                    description != null ? description : "",
+                    TextUtils.safeText(key),
+                    TextUtils.safeText(title),
+                    TextUtils.safeText(description),
                     icon != null ? icon : IconAnt.Path.DASHBOARD,
-                    actionText != null ? actionText : DEFAULT_ACTION_TEXT
+                    TextUtils.safeText(actionText, DEFAULT_ACTION_TEXT)
             ));
             return this;
         }
@@ -103,7 +106,7 @@ public final class LaunchPadTemplate {
                     .children(
                             TypographyAnt.title(title, 4).build(),
                             TypographyAnt.text(description)
-                                    .type(TypographyAnt.Type.SECONDARY)
+                                    .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
                     .build();
@@ -115,7 +118,7 @@ public final class LaunchPadTemplate {
             }
 
             GridAnt.Row row = GridAnt.row().align(Pos.TOP_LEFT);
-            int span = Math.max(1, 24 / columns);
+            int span = (int) TextUtils.ensureAtLeastOne(24 / columns);
             for (Item item : items) {
                 row.col(GridAnt.col(buildCard(item))
                         .xs(24)
@@ -134,8 +137,8 @@ public final class LaunchPadTemplate {
         }
 
         private Node buildCard(Item item) {
-            ButtonAnt action = ButtonAnt.link(item.actionText(), ButtonAnt.Size.SMALL)
-                    .onClick(e -> fire(item.key()))
+            ButtonAnt action = ButtonAnt.link(item.actionText(), Size.SMALL)
+                    .onClick(e -> Callbacks.fire(onAction, item.key()))
                     .build();
             action.setDisable(onAction == null);
 
@@ -156,14 +159,14 @@ public final class LaunchPadTemplate {
                                                     .children(
                                                             TypographyAnt.text(item.title()).build(),
                                                             TypographyAnt.text(item.description())
-                                                                    .type(TypographyAnt.Type.SECONDARY)
+                                                                    .type(TypographyAnt.TextColor.SECONDARY)
                                                                     .build()
                                                     )
                                                     .build()
                                     )
                                     .build(),
                             TypographyAnt.text("路由：" + item.key())
-                                    .type(TypographyAnt.Type.SECONDARY)
+                                    .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
                     .build();
@@ -176,12 +179,6 @@ public final class LaunchPadTemplate {
                     .content(body)
                     .gap(8)
                     .build();
-        }
-
-        private void fire(String key) {
-            if (onAction != null) {
-                onAction.accept(key);
-            }
         }
     }
 }

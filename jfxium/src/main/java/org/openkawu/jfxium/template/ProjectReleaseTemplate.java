@@ -17,6 +17,9 @@ import org.openkawu.jfxium.component.layout.GridAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.Callbacks;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,12 +62,12 @@ public final class ProjectReleaseTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = title != null ? title : DEFAULT_TITLE;
+            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
             return this;
         }
 
         public Builder description(String description) {
-            this.description = description != null ? description : DEFAULT_DESCRIPTION;
+            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
             return this;
         }
 
@@ -73,14 +76,14 @@ public final class ProjectReleaseTemplate {
         }
 
         public Builder status(String text, TagAnt.Type type) {
-            statusTexts.add(text != null ? text : "");
+            statusTexts.add(TextUtils.safeText(text));
             statusTypes.add(type != null ? type : TagAnt.Type.DEFAULT);
             return this;
         }
 
         public Builder meta(String label, String value) {
-            return meta(label, TypographyAnt.text(value != null ? value : "")
-                    .type(TypographyAnt.Type.SECONDARY)
+            return meta(label, TypographyAnt.text(TextUtils.safeText(value))
+                    .type(TypographyAnt.TextColor.SECONDARY)
                     .build(), 1);
         }
 
@@ -90,17 +93,17 @@ public final class ProjectReleaseTemplate {
 
         public Builder meta(String label, Node content, int span) {
             metadata.add(new Meta(
-                    label != null ? label : "",
+                    TextUtils.safeText(label),
                     content != null ? content : TypographyAnt.text("").build(),
-                    Math.max(1, span)
+                    TextUtils.ensureAtLeastOne(span)
             ));
             return this;
         }
 
         public Builder release(String version, String label, TimelineAnt.DotColor color) {
             releases.add(new Release(
-                    version != null ? version : "",
-                    label != null ? label : "",
+                    TextUtils.safeText(version),
+                    TextUtils.safeText(label),
                     color != null ? color : TimelineAnt.DotColor.BLUE
             ));
             return this;
@@ -112,20 +115,20 @@ public final class ProjectReleaseTemplate {
 
         public Builder change(String key, String title, String description, String actionText) {
             changes.add(new Change(
-                    key != null ? key : "",
-                    title != null ? title : "",
-                    description != null ? description : "",
-                    actionText != null ? actionText : DEFAULT_ACTION_TEXT
+                    TextUtils.safeText(key),
+                    TextUtils.safeText(title),
+                    TextUtils.safeText(description),
+                    TextUtils.safeText(actionText, DEFAULT_ACTION_TEXT)
             ));
             return this;
         }
 
         public Builder readiness(String title, double value, ProgressAnt.Status status, String note) {
             this.readiness = new Readiness(
-                    title != null ? title : "",
+                    TextUtils.safeText(title),
                     value,
                     status != null ? status : ProgressAnt.Status.NORMAL,
-                    note != null ? note : ""
+                    TextUtils.safeText(note)
             );
             return this;
         }
@@ -155,7 +158,7 @@ public final class ProjectReleaseTemplate {
                     .spacing(4)
                     .children(
                             TypographyAnt.text(description)
-                                    .type(TypographyAnt.Type.SECONDARY)
+                                    .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
                     .build();
@@ -176,7 +179,7 @@ public final class ProjectReleaseTemplate {
 
             DescriptionsAnt.Builder descriptions = DescriptionsAnt.create()
                     .column(4)
-                    .size(DescriptionsAnt.Size.SMALL);
+                    .size(Size.SMALL);
             for (Meta meta : metadata) {
                 descriptions.item(meta.label(), meta.content(), meta.span());
             }
@@ -228,8 +231,8 @@ public final class ProjectReleaseTemplate {
                 list.item("暂无近期变更", "可以把下一次发布的重点放进这里。");
             } else {
                 for (Change change : changes) {
-                    Button action = ButtonAnt.link(change.actionText(), ButtonAnt.Size.SMALL)
-                            .onClick(e -> fire(change.key()))
+                    Button action = ButtonAnt.link(change.actionText(), Size.SMALL)
+                            .onClick(e -> Callbacks.fire(onAction, change.key()))
                             .build();
                     list.item(null, change.title(), change.description(), action);
                 }
@@ -261,7 +264,7 @@ public final class ProjectReleaseTemplate {
                     .build();
             if (!readiness.note().isEmpty()) {
                 body.getChildren().add(TypographyAnt.text(readiness.note())
-                        .type(TypographyAnt.Type.SECONDARY)
+                        .type(TypographyAnt.TextColor.SECONDARY)
                         .build());
             }
 
@@ -281,16 +284,10 @@ public final class ProjectReleaseTemplate {
             for (int i = 0; i < statusTexts.size(); i++) {
                 row.getChildren().add(TagAnt.create(statusTexts.get(i))
                         .type(statusTypes.get(i))
-                        .size(TagAnt.Size.SMALL)
+                        .size(Size.SMALL)
                         .build());
             }
             return row;
-        }
-
-        private void fire(String key) {
-            if (onAction != null) {
-                onAction.accept(key);
-            }
         }
     }
 }

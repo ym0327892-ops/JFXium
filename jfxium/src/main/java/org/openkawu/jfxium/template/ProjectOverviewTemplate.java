@@ -19,6 +19,9 @@ import org.openkawu.jfxium.component.layout.GridAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.Callbacks;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,12 +68,12 @@ public final class ProjectOverviewTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = title != null ? title : DEFAULT_TITLE;
+            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
             return this;
         }
 
         public Builder description(String description) {
-            this.description = description != null ? description : DEFAULT_DESCRIPTION;
+            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
             return this;
         }
 
@@ -79,7 +82,7 @@ public final class ProjectOverviewTemplate {
         }
 
         public Builder status(String text, TagAnt.Type type) {
-            statusTags.add(new StatusTag(text != null ? text : "", type != null ? type : TagAnt.Type.DEFAULT));
+            statusTags.add(new StatusTag(TextUtils.safeText(text), type != null ? type : TagAnt.Type.DEFAULT));
             return this;
         }
 
@@ -88,23 +91,23 @@ public final class ProjectOverviewTemplate {
         }
 
         public Builder tech(String text, TagAnt.Type type) {
-            techTags.add(new StatusTag(text != null ? text : "", type != null ? type : TagAnt.Type.DEFAULT));
+            techTags.add(new StatusTag(TextUtils.safeText(text), type != null ? type : TagAnt.Type.DEFAULT));
             return this;
         }
 
         public Builder metric(String title, String value, String note, IconAnt.Path icon) {
             metrics.add(new Metric(
-                    title != null ? title : "",
-                    value != null ? value : "",
-                    note != null ? note : "",
+                    TextUtils.safeText(title),
+                    TextUtils.safeText(value),
+                    TextUtils.safeText(note),
                     icon != null ? icon : IconAnt.Path.DASHBOARD
             ));
             return this;
         }
 
         public Builder meta(String label, String value) {
-            return meta(label, TypographyAnt.text(value != null ? value : "")
-                    .type(TypographyAnt.Type.SECONDARY)
+            return meta(label, TypographyAnt.text(TextUtils.safeText(value))
+                    .type(TypographyAnt.TextColor.SECONDARY)
                     .build(), 1);
         }
 
@@ -114,17 +117,17 @@ public final class ProjectOverviewTemplate {
 
         public Builder meta(String label, Node content, int span) {
             metadata.add(new Meta(
-                    label != null ? label : "",
+                    TextUtils.safeText(label),
                     content != null ? content : TypographyAnt.text("").build(),
-                    Math.max(1, span)
+                    TextUtils.ensureAtLeastOne(span)
             ));
             return this;
         }
 
         public Builder milestone(String content, String label, TimelineAnt.DotColor color) {
             milestones.add(new Milestone(
-                    content != null ? content : "",
-                    label != null ? label : "",
+                    TextUtils.safeText(content),
+                    TextUtils.safeText(label),
                     color != null ? color : TimelineAnt.DotColor.BLUE
             ));
             return this;
@@ -136,20 +139,20 @@ public final class ProjectOverviewTemplate {
 
         public Builder activity(String key, String title, String description, String actionText) {
             activities.add(new Activity(
-                    key != null ? key : "",
-                    title != null ? title : "",
-                    description != null ? description : "",
-                    actionText != null ? actionText : DEFAULT_ACTION_TEXT
+                    TextUtils.safeText(key),
+                    TextUtils.safeText(title),
+                    TextUtils.safeText(description),
+                    TextUtils.safeText(actionText, DEFAULT_ACTION_TEXT)
             ));
             return this;
         }
 
         public Builder progress(String title, double value, ProgressAnt.Status status, String note) {
             this.progress = new ProgressSpec(
-                    title != null ? title : "",
+                    TextUtils.safeText(title),
                     value,
                     status != null ? status : ProgressAnt.Status.NORMAL,
-                    note != null ? note : ""
+                    TextUtils.safeText(note)
             );
             return this;
         }
@@ -180,7 +183,7 @@ public final class ProjectOverviewTemplate {
                     .spacing(4)
                     .children(
                             TypographyAnt.text(description)
-                                    .type(TypographyAnt.Type.SECONDARY)
+                                    .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
                     .build();
@@ -224,7 +227,7 @@ public final class ProjectOverviewTemplate {
 
             DescriptionsAnt.Builder descriptions = DescriptionsAnt.create()
                     .column(3)
-                    .size(DescriptionsAnt.Size.SMALL);
+                    .size(Size.SMALL);
             for (Meta meta : metadata) {
                 descriptions.item(meta.label(), meta.content(), meta.span());
             }
@@ -261,8 +264,8 @@ public final class ProjectOverviewTemplate {
                 list.item("暂无近期动作", "可以从右上角头像入口继续扩展工程设置。");
             } else {
                 for (Activity activity : activities) {
-                    Button actionButton = ButtonAnt.link(activity.actionText(), ButtonAnt.Size.SMALL)
-                            .onClick(e -> fire(activity.key()))
+                    Button actionButton = ButtonAnt.link(activity.actionText(), Size.SMALL)
+                            .onClick(e -> Callbacks.fire(onAction, activity.key()))
                             .build();
 
                     list.item(null, activity.title(), activity.description(), actionButton);
@@ -288,7 +291,7 @@ public final class ProjectOverviewTemplate {
                     .children(statistic.build());
             if (!metric.note().isEmpty()) {
                 body.children(TypographyAnt.text(metric.note())
-                        .type(TypographyAnt.Type.SECONDARY)
+                        .type(TypographyAnt.TextColor.SECONDARY)
                         .build());
             }
 
@@ -319,7 +322,7 @@ public final class ProjectOverviewTemplate {
         private Node buildProgressBlock() {
             if (progress == null) {
                 return TypographyAnt.text("暂未配置工程进度。")
-                        .type(TypographyAnt.Type.SECONDARY)
+                        .type(TypographyAnt.TextColor.SECONDARY)
                         .build();
             }
 
@@ -335,7 +338,7 @@ public final class ProjectOverviewTemplate {
                     );
             if (!progress.note().isEmpty()) {
                 body.children(TypographyAnt.text(progress.note())
-                        .type(TypographyAnt.Type.SECONDARY)
+                        .type(TypographyAnt.TextColor.SECONDARY)
                         .build());
             }
 
@@ -372,16 +375,10 @@ public final class ProjectOverviewTemplate {
             for (StatusTag tag : tags) {
                 row.getChildren().add(TagAnt.create(tag.text())
                         .type(tag.type())
-                        .size(TagAnt.Size.SMALL)
+                        .size(Size.SMALL)
                         .build());
             }
             return row;
-        }
-
-        private void fire(String key) {
-            if (onAction != null) {
-                onAction.accept(key);
-            }
         }
     }
 }

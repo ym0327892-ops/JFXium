@@ -10,11 +10,13 @@ import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.control.MenuBarAnt;
 import org.openkawu.jfxium.component.control.StatusBarAnt;
 import org.openkawu.jfxium.component.control.TooltipAnt;
+import org.openkawu.jfxium.component.layout.GridAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt;
+import org.openkawu.jfxium.component.overlay.DropdownAnt.DropdownResult;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
-import org.openkawu.jfxium.component.layout.GridAnt;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,7 @@ public final class ProjectConsoleTemplate {
     /**
      * 复用工程展示页常见的“头像 + 用户名 + 下拉菜单”入口。
      */
-    public static DropdownAnt.DropdownResult userMenu(String currentUser, Consumer<String> onAction) {
+    public static DropdownResult userMenu(String currentUser, Consumer<String> onAction) {
         return WorkspaceTemplate.userMenu(currentUser, onAction);
     }
 
@@ -113,7 +115,7 @@ public final class ProjectConsoleTemplate {
     }
 
     public static SidebarLink sidebarLink(String key, String label, Node icon) {
-        return new SidebarLink(safeText(key), safeText(label), icon);
+        return new SidebarLink(TextUtils.safeText(key), TextUtils.safeText(label), icon);
     }
 
     public static SidebarSection sidebarSection(String key,
@@ -129,7 +131,7 @@ public final class ProjectConsoleTemplate {
                 }
             }
         }
-        return new SidebarSection(safeText(key), safeText(label), icon, expandedByDefault, List.copyOf(resolved));
+        return new SidebarSection(TextUtils.safeText(key), TextUtils.safeText(label), icon, expandedByDefault, List.copyOf(resolved));
     }
 
     public static SidebarSection sidebarSection(String key, String label, Node icon, SidebarLink... items) {
@@ -213,20 +215,20 @@ public final class ProjectConsoleTemplate {
 
         /** 顶部品牌标题。 */
         public Builder brand(String title) {
-            this.brandTitle = title != null ? title : "工程控制台";
+            this.brandTitle = TextUtils.safeText(title, "工程控制台");
             return this;
         }
 
         /** 顶部品牌标题 + 副标题。 */
         public Builder brand(String title, String subtitle) {
-            this.brandTitle = title != null ? title : "工程控制台";
-            this.brandSubtitle = subtitle != null ? subtitle : "项目展示壳";
+            this.brandTitle = TextUtils.safeText(title, "工程控制台");
+            this.brandSubtitle = TextUtils.safeText(subtitle, "项目展示壳");
             return this;
         }
 
         /** 顶部品牌副标题。 */
         public Builder brandSubtitle(String subtitle) {
-            this.brandSubtitle = subtitle != null ? subtitle : "项目展示壳";
+            this.brandSubtitle = TextUtils.safeText(subtitle, "项目展示壳");
             return this;
         }
 
@@ -250,19 +252,19 @@ public final class ProjectConsoleTemplate {
 
         /** 顶部系统菜单栏 / 通知条。 */
         public Builder headerTop(Node... nodes) {
-            addNodes(headerTop, nodes);
+            TextUtils.addNonNull(headerTop, nodes);
             return this;
         }
 
         /** 顶部中间区域。 */
         public Builder headerCenter(Node... nodes) {
-            addNodes(headerCenter, nodes);
+            TextUtils.addNonNull(headerCenter, nodes);
             return this;
         }
 
         /** 顶部右侧区域。 */
         public Builder headerRight(Node... nodes) {
-            addNodes(headerRight, nodes);
+            TextUtils.addNonNull(headerRight, nodes);
             return this;
         }
 
@@ -273,7 +275,7 @@ public final class ProjectConsoleTemplate {
 
         /** 品牌区左侧附加节点。 */
         public Builder headerLeft(Node... nodes) {
-            addNodes(headerLeft, nodes);
+            TextUtils.addNonNull(headerLeft, nodes);
             return this;
         }
 
@@ -284,7 +286,7 @@ public final class ProjectConsoleTemplate {
 
         /** 头像下拉入口放到右侧区域，并按用户名统一构建。 */
         public Builder userMenu(String currentUser, Consumer<String> onAction) {
-            DropdownAnt.DropdownResult result = ProjectConsoleTemplate.userMenu(currentUser, onAction);
+            DropdownResult result = ProjectConsoleTemplate.userMenu(currentUser, onAction);
             return userMenu(result.getTrigger());
         }
 
@@ -297,7 +299,7 @@ public final class ProjectConsoleTemplate {
         /** 左侧导航区 + 宽度。 */
         public Builder sider(Node sider, double width) {
             this.sider = sider;
-            this.siderWidth = safeWidth(width, 240);
+            this.siderWidth = TextUtils.safePositive(width, 240);
             return this;
         }
 
@@ -339,7 +341,7 @@ public final class ProjectConsoleTemplate {
 
         /** 折叠后宽度。 */
         public Builder collapsedWidth(double width) {
-            this.collapsedWidth = safeWidth(width, 64);
+            this.collapsedWidth = TextUtils.safePositive(width, 64);
             return this;
         }
 
@@ -404,29 +406,12 @@ public final class ProjectConsoleTemplate {
             return result;
         }
 
-        private static void addNodes(List<Node> target, Node... nodes) {
-            if (nodes == null) {
-                return;
-            }
-            for (Node node : nodes) {
-                if (node != null) {
-                    target.add(node);
-                }
-            }
-        }
-
-        private static double safeWidth(double value, double fallback) {
-            return Double.isFinite(value) && value > 0 ? value : fallback;
-        }
+        // safeWidth 统一改用 TextUtils.safePositive,见 P0-23。
     }
 
     private static void emit(Consumer<String> onAction, String action) {
         if (onAction != null) {
             onAction.accept(action);
         }
-    }
-
-    private static String safeText(String text) {
-        return text == null ? "" : text;
     }
 }

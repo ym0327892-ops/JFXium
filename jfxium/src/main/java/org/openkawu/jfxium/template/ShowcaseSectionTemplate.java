@@ -6,6 +6,7 @@ import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.VBarAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ public final class ShowcaseSectionTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = title != null ? title : "";
+            this.title = TextUtils.safeText(title);
             return this;
         }
 
@@ -103,7 +104,7 @@ public final class ShowcaseSectionTemplate {
         private Node buildDescription() {
             if (hasDescription()) {
                 Label descLabel = TypographyAnt.text(description)
-                        .type(TypographyAnt.Type.SECONDARY)
+                        .type(TypographyAnt.TextColor.SECONDARY)
                         .build();
                 descLabel.setWrapText(true);
                 return descLabel;

@@ -10,6 +10,8 @@ import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.util.NumericUtils;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,9 +108,9 @@ public class DashboardTemplate {
         /** 添加一个统计卡。trend 例如 "↑ 12.5%"，up=true 显示绿色，false 红色。 */
         public Builder stat(IconAnt.Path icon, String title, String value, String trend, boolean up) {
             stats.add(new StatCard(icon != null ? icon : IconAnt.Path.DASHBOARD,
-                    title != null ? title : "",
-                    value != null ? value : "",
-                    trend != null ? trend : "",
+                    TextUtils.safeText(title),
+                    TextUtils.safeText(value),
+                    TextUtils.safeText(trend),
                     up));
             return this;
         }
@@ -137,7 +139,7 @@ public class DashboardTemplate {
 
         /** 底部左侧占比（默认 60，对应右侧 40）。 */
         public Builder leftRatio(double percent) {
-            this.leftRatio = safePercent(percent, 60);
+            this.leftRatio = clampPercent(percent, 60);
             return this;
         }
 
@@ -145,16 +147,16 @@ public class DashboardTemplate {
         // 装饰
         // ============================================================
 
-        public Builder sectionGap(double gap) { this.sectionGap = safeSpacing(gap); return this; }
-        public Builder padding(double padding) { this.padding = safeSpacing(padding); return this; }
+        public Builder sectionGap(double gap) { this.sectionGap = TextUtils.safeNonNegative(gap, 0); return this; }
+        public Builder padding(double padding) { this.padding = TextUtils.safeNonNegative(padding, 0); return this; }
 
         // ============================================================
         // 构建
         // ============================================================
 
         public VBox build() {
-            double resolvedSectionGap = safeSpacing(sectionGap);
-            double resolvedPadding = safeSpacing(padding);
+            double resolvedSectionGap = TextUtils.safeNonNegative(sectionGap, 0);
+            double resolvedPadding = TextUtils.safeNonNegative(padding, 0);
             VBox root = new VBox(resolvedSectionGap);
             root.setPadding(new Insets(resolvedPadding));
             root.getStyleClass().add(JfxStyles.DASHBOARD_ROOT);
@@ -238,10 +240,10 @@ public class DashboardTemplate {
             GridPane grid = new GridPane();
             grid.setHgap(16);
             ColumnConstraints left = new ColumnConstraints();
-            left.setPercentWidth(safePercent(leftRatio, 60));
+            left.setPercentWidth(clampPercent(leftRatio, 60));
             left.setHgrow(Priority.ALWAYS);
             ColumnConstraints right = new ColumnConstraints();
-            right.setPercentWidth(100 - safePercent(leftRatio, 60));
+            right.setPercentWidth(100 - clampPercent(leftRatio, 60));
             right.setHgrow(Priority.ALWAYS);
             grid.getColumnConstraints().addAll(left, right);
 
@@ -254,15 +256,10 @@ public class DashboardTemplate {
             return grid;
         }
 
-        private static double safeSpacing(double value) {
-            return Double.isFinite(value) && value >= 0 ? value : 0;
-        }
-
-        private static double safePercent(double value, double fallback) {
-            if (!Double.isFinite(value)) {
-                return fallback;
-            }
-            return Math.max(10, Math.min(90, value));
+        // safeSpacing 统一改用 TextUtils.safeNonNegative,见 P0-23。
+        // safePercent 钳制到 [10, 90] 的语义为 Dashboard 专属,直接走 NumericUtils.clamp 收口。
+        private static double clampPercent(double value, double fallback) {
+            return NumericUtils.clamp(value, 10, 90, fallback);
         }
     }
 }

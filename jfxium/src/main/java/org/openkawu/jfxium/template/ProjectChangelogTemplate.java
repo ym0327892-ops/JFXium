@@ -10,6 +10,7 @@ import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +64,8 @@ public final class ProjectChangelogTemplate {
      */
     public static ChangeEntry changelog(String type, String text) {
         return new ChangeEntry(
-                type != null ? type : "",
-                text != null ? text : ""
+                TextUtils.safeText(type),
+                TextUtils.safeText(text)
         );
     }
 
@@ -87,12 +88,12 @@ public final class ProjectChangelogTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = title != null ? title : DEFAULT_TITLE;
+            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
             return this;
         }
 
         public Builder description(String description) {
-            this.description = description != null ? description : DEFAULT_DESCRIPTION;
+            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
             return this;
         }
 
@@ -118,8 +119,8 @@ public final class ProjectChangelogTemplate {
                 }
             }
             versions.add(new Version(
-                    version != null ? version : "",
-                    date != null ? date : "",
+                    TextUtils.safeText(version),
+                    TextUtils.safeText(date),
                     list
             ));
             return this;
@@ -140,7 +141,7 @@ public final class ProjectChangelogTemplate {
                     .children(
                             TypographyAnt.title(title, 4).build(),
                             TypographyAnt.text(description)
-                                    .type(TypographyAnt.Type.SECONDARY)
+                                    .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
                     .build();
@@ -170,7 +171,7 @@ public final class ProjectChangelogTemplate {
                     .build();
 
             Node dateLabel = TypographyAnt.text(ver.date())
-                    .type(TypographyAnt.Type.SECONDARY)
+                    .type(TypographyAnt.TextColor.SECONDARY)
                     .build();
 
             Node headerRow = HBoxAnt.create()

@@ -11,11 +11,14 @@ import org.openkawu.jfxium.component.composite.SwitchAnt;
 import org.openkawu.jfxium.component.control.ComboBoxAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.overlay.DrawerAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.theme.ThemeColor;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -48,7 +51,7 @@ public final class WorkspaceSettingsTemplate {
                                                 Consumer<Boolean> onWatermarkVisibleChanged) {
         return DrawerAnt.create()
                 .title(DEFAULT_TITLE)
-                .width(width > 0 ? width : 420)
+                .width(TextUtils.ensureAtLeastOne(width))
                 .content(WorkspaceSettingsTemplate.create()
                         .watermarkVisibleSupplier(watermarkVisibleSupplier)
                         .onWatermarkVisibleChanged(onWatermarkVisibleChanged)
@@ -90,15 +93,15 @@ public final class WorkspaceSettingsTemplate {
             return this;
         }
 
-        /** 面板标题。 */
+        /** 面板标题。null 视为空字符串(由 TextUtils.safeText 收口,见 P1-2)。 */
         public Builder title(String title) {
-            this.title = title != null ? title : DEFAULT_TITLE;
+            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
             return this;
         }
 
-        /** 面板说明。 */
+        /** 面板说明。null 视为空字符串(由 TextUtils.safeText 收口,见 P1-2)。 */
         public Builder description(String description) {
-            this.description = description != null ? description : DEFAULT_DESCRIPTION;
+            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
             return this;
         }
 
@@ -131,7 +134,7 @@ public final class WorkspaceSettingsTemplate {
                     .children(
                             TypographyAnt.title(title, 3).build(),
                             TypographyAnt.text(description)
-                                    .type(TypographyAnt.Type.SECONDARY)
+                                    .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
                     .build();
@@ -142,7 +145,7 @@ public final class WorkspaceSettingsTemplate {
             ComboBox<ThemeManager.Family> familySelect = ComboBoxAnt.<ThemeManager.Family>create()
                     .items(ThemeManager.Family.values())
                     .value(mgr.getCurrentFamily())
-                    .size(ComboBoxAnt.Size.SMALL)
+                    .size(Size.SMALL)
                     .onChange(family -> {
                         if (family != null) {
                             mgr.setFamily(family);
@@ -186,7 +189,7 @@ public final class WorkspaceSettingsTemplate {
                     .items(ThemeColor.Preset.values())
                     .value(mgr.getCurrentPrimaryPreset())
                     .placeholder(mgr.getCurrentThemeColor().getHexColor())
-                    .size(ComboBoxAnt.Size.SMALL)
+                    .size(Size.SMALL)
                     .onChange(preset -> {
                         if (preset != null) {
                             mgr.setPrimaryColor(preset);
@@ -233,19 +236,20 @@ public final class WorkspaceSettingsTemplate {
                     .build();
         }
 
-        private HBox settingRow(String label, Node control) {
-            String safeLabel = label != null ? label : "";
-            HBox row = new HBox(12);
-            row.setAlignment(Pos.CENTER_LEFT);
-            row.getChildren().add(TypographyAnt.text(safeLabel)
-                    .type(TypographyAnt.Type.SECONDARY)
-                    .build());
-            if (control != null) {
-                row.getChildren().add(control);
-                if (control instanceof ComboBox<?> comboBox) {
-                    HBox.setHgrow(comboBox, javafx.scene.layout.Priority.ALWAYS);
-                    comboBox.setMaxWidth(Double.MAX_VALUE);
-                }
+        private HBoxAnt settingRow(String label, Node control) {
+            HBoxAnt row = HBoxAnt.create()
+                    .spacing(12)
+                    .align(Pos.CENTER_LEFT)
+                    .children(
+                            TypographyAnt.text(TextUtils.safeText(label))
+                                    .type(TypographyAnt.TextColor.SECONDARY)
+                                    .build(),
+                            control
+                    )
+                    .build();
+            if (control instanceof ComboBox<?> comboBox) {
+                HBox.setHgrow(comboBox, javafx.scene.layout.Priority.ALWAYS);
+                comboBox.setMaxWidth(Double.MAX_VALUE);
             }
             return row;
         }

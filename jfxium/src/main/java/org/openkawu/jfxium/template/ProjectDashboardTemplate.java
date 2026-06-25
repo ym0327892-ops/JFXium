@@ -10,6 +10,9 @@ import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
+import org.openkawu.jfxium.core.util.Callbacks;
+import org.openkawu.jfxium.core.util.NumericUtils;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +84,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot pageTitle(String pageTitle) {
-            this.pageTitle = pageTitle != null ? pageTitle : DEFAULT_PAGE_TITLE;
+            this.pageTitle = TextUtils.safeText(pageTitle, DEFAULT_PAGE_TITLE);
             return this;
         }
 
@@ -90,7 +93,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot pageSubtitle(String pageSubtitle) {
-            this.pageSubtitle = pageSubtitle != null ? pageSubtitle : DEFAULT_PAGE_SUBTITLE;
+            this.pageSubtitle = TextUtils.safeText(pageSubtitle, DEFAULT_PAGE_SUBTITLE);
             return this;
         }
 
@@ -99,7 +102,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot pageDescription(String pageDescription) {
-            this.pageDescription = pageDescription != null ? pageDescription : DEFAULT_PAGE_DESCRIPTION;
+            this.pageDescription = TextUtils.safeText(pageDescription, DEFAULT_PAGE_DESCRIPTION);
             return this;
         }
 
@@ -108,7 +111,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot currentUser(String currentUser) {
-            this.currentUser = currentUser != null ? currentUser : DEFAULT_CURRENT_USER;
+            this.currentUser = TextUtils.safeText(currentUser, DEFAULT_CURRENT_USER);
             return this;
         }
 
@@ -117,7 +120,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot version(String version) {
-            this.version = version != null ? version : DEFAULT_VERSION;
+            this.version = TextUtils.safeText(version, DEFAULT_VERSION);
             return this;
         }
 
@@ -126,7 +129,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot branch(String branch) {
-            this.branch = branch != null ? branch : DEFAULT_BRANCH;
+            this.branch = TextUtils.safeText(branch, DEFAULT_BRANCH);
             return this;
         }
 
@@ -135,7 +138,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot buildStatus(String buildStatus) {
-            this.buildStatus = buildStatus != null ? buildStatus : DEFAULT_BUILD_STATUS;
+            this.buildStatus = TextUtils.safeText(buildStatus, DEFAULT_BUILD_STATUS);
             return this;
         }
 
@@ -144,7 +147,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot mode(String mode) {
-            this.mode = mode != null ? mode : DEFAULT_MODE;
+            this.mode = TextUtils.safeText(mode, DEFAULT_MODE);
             return this;
         }
 
@@ -153,7 +156,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot templateCount(String templateCount) {
-            this.templateCount = templateCount != null ? templateCount : DEFAULT_TEMPLATE_COUNT;
+            this.templateCount = TextUtils.safeText(templateCount, DEFAULT_TEMPLATE_COUNT);
             return this;
         }
 
@@ -162,7 +165,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot componentCount(String componentCount) {
-            this.componentCount = componentCount != null ? componentCount : DEFAULT_COMPONENT_COUNT;
+            this.componentCount = TextUtils.safeText(componentCount, DEFAULT_COMPONENT_COUNT);
             return this;
         }
 
@@ -171,7 +174,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot updatedAt(String updatedAt) {
-            this.updatedAt = updatedAt != null ? updatedAt : DEFAULT_UPDATED_AT;
+            this.updatedAt = TextUtils.safeText(updatedAt, DEFAULT_UPDATED_AT);
             return this;
         }
 
@@ -180,7 +183,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot completion(double completion) {
-            this.completion = Double.isFinite(completion) ? Math.max(0, Math.min(1, completion)) : 0.92;
+            this.completion = NumericUtils.clamp(completion, 0, 1, 0.92);
             return this;
         }
 
@@ -196,6 +199,33 @@ public final class ProjectDashboardTemplate {
         public IconAnt.Path icon() {
             return icon;
         }
+
+        /**
+         * 把另一个 Snapshot 的字段合并进当前实例（{@code null} 字段保留本实例的值）。
+         *
+         * <p>供 {@link Builder#snapshot(Snapshot)} 在去重字段后复用本类的 null 安全逻辑：
+         * Builder 不再独立持有 13 个 {@code pageTitle / currentUser / ...} 字段，
+         * 而是把整个 Snapshot 作为单一数据源，{@code mergeFrom} 是它俩之间的唯一写入点。</p>
+         */
+        public Snapshot mergeFrom(Snapshot other) {
+            if (other == null) {
+                return this;
+            }
+            this.pageTitle = other.pageTitle;
+            this.pageSubtitle = other.pageSubtitle;
+            this.pageDescription = other.pageDescription;
+            this.currentUser = other.currentUser;
+            this.version = other.version;
+            this.branch = other.branch;
+            this.buildStatus = other.buildStatus;
+            this.mode = other.mode;
+            this.templateCount = other.templateCount;
+            this.componentCount = other.componentCount;
+            this.updatedAt = other.updatedAt;
+            this.completion = other.completion;
+            this.icon = other.icon;
+            return this;
+        }
     }
 
     public static Builder create() {
@@ -203,21 +233,13 @@ public final class ProjectDashboardTemplate {
     }
 
     public static final class Builder extends AbstractStyleBuilder<Builder> {
+        // 字段去重：pageTitle / pageSubtitle / pageDescription / currentUser / version /
+        // branch / buildStatus / mode / templateCount / componentCount / updatedAt /
+        // completion / icon 这些"首页快照数据"统一收口到 Snapshot。
+        // Builder 只保留自己的 title / description（首页框架级文案）和区域节点字段。
+        private final Snapshot snapshot = Snapshot.create();
         private String title = DEFAULT_TITLE;
         private String description = DEFAULT_DESCRIPTION;
-        private String pageTitle = DEFAULT_PAGE_TITLE;
-        private String pageSubtitle = DEFAULT_PAGE_SUBTITLE;
-        private String pageDescription = DEFAULT_PAGE_DESCRIPTION;
-        private String currentUser = DEFAULT_CURRENT_USER;
-        private String version = DEFAULT_VERSION;
-        private String branch = DEFAULT_BRANCH;
-        private String buildStatus = DEFAULT_BUILD_STATUS;
-        private String mode = DEFAULT_MODE;
-        private String templateCount = DEFAULT_TEMPLATE_COUNT;
-        private String componentCount = DEFAULT_COMPONENT_COUNT;
-        private String updatedAt = DEFAULT_UPDATED_AT;
-        private double completion = 0.92;
-        private IconAnt.Path icon = IconAnt.Path.DASHBOARD;
         private Node hero;
         private Node overview;
         private Node release;
@@ -228,103 +250,94 @@ public final class ProjectDashboardTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = title != null ? title : DEFAULT_TITLE;
+            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
             return this;
         }
 
         public Builder description(String description) {
-            this.description = description != null ? description : DEFAULT_DESCRIPTION;
+            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
             return this;
         }
 
         public Builder pageTitle(String pageTitle) {
-            this.pageTitle = pageTitle != null ? pageTitle : DEFAULT_PAGE_TITLE;
+            snapshot.pageTitle(pageTitle);
             return this;
         }
 
         public Builder pageSubtitle(String pageSubtitle) {
-            this.pageSubtitle = pageSubtitle != null ? pageSubtitle : DEFAULT_PAGE_SUBTITLE;
+            snapshot.pageSubtitle(pageSubtitle);
             return this;
         }
 
         public Builder pageDescription(String pageDescription) {
-            this.pageDescription = pageDescription != null ? pageDescription : DEFAULT_PAGE_DESCRIPTION;
+            snapshot.pageDescription(pageDescription);
             return this;
         }
 
         public Builder currentUser(String currentUser) {
-            this.currentUser = currentUser != null ? currentUser : DEFAULT_CURRENT_USER;
+            snapshot.currentUser(currentUser);
             return this;
         }
 
         public Builder version(String version) {
-            this.version = version != null ? version : DEFAULT_VERSION;
+            snapshot.version(version);
             return this;
         }
 
         public Builder branch(String branch) {
-            this.branch = branch != null ? branch : DEFAULT_BRANCH;
+            snapshot.branch(branch);
             return this;
         }
 
         public Builder buildStatus(String buildStatus) {
-            this.buildStatus = buildStatus != null ? buildStatus : DEFAULT_BUILD_STATUS;
+            snapshot.buildStatus(buildStatus);
             return this;
         }
 
         public Builder mode(String mode) {
-            this.mode = mode != null ? mode : DEFAULT_MODE;
+            snapshot.mode(mode);
             return this;
         }
 
         public Builder templateCount(String templateCount) {
-            this.templateCount = templateCount != null ? templateCount : DEFAULT_TEMPLATE_COUNT;
+            snapshot.templateCount(templateCount);
             return this;
         }
 
         public Builder componentCount(String componentCount) {
-            this.componentCount = componentCount != null ? componentCount : DEFAULT_COMPONENT_COUNT;
+            snapshot.componentCount(componentCount);
             return this;
         }
 
         public Builder updatedAt(String updatedAt) {
-            this.updatedAt = updatedAt != null ? updatedAt : DEFAULT_UPDATED_AT;
+            snapshot.updatedAt(updatedAt);
             return this;
         }
 
         public Builder completion(double completion) {
-            this.completion = Double.isFinite(completion) ? Math.max(0, Math.min(1, completion)) : 0.92;
+            snapshot.completion(completion);
             return this;
         }
 
         public Builder icon(IconAnt.Path icon) {
-            this.icon = icon != null ? icon : IconAnt.Path.DASHBOARD;
+            snapshot.icon(icon);
             return this;
         }
 
         public Builder snapshot(Snapshot snapshot) {
-            if (snapshot == null) {
-                return this;
-            }
-            this.pageTitle = snapshot.pageTitle;
-            this.pageSubtitle = snapshot.pageSubtitle;
-            this.pageDescription = snapshot.pageDescription;
-            this.currentUser = snapshot.currentUser;
-            this.version = snapshot.version;
-            this.branch = snapshot.branch;
-            this.buildStatus = snapshot.buildStatus;
-            this.mode = snapshot.mode;
-            this.templateCount = snapshot.templateCount;
-            this.componentCount = snapshot.componentCount;
-            this.updatedAt = snapshot.updatedAt;
-            this.completion = snapshot.completion;
-            this.icon = snapshot.icon;
+            // 委托给 Snapshot.mergeFrom，Builder 不再独立复制 13 个字段
+            this.snapshot.mergeFrom(snapshot);
             return this;
         }
 
         public Builder onAction(Consumer<String> onAction) {
             this.onAction = onAction;
             return this;
+        }
+
+        /** Builder 私有的 fire 委托：让子模板 onAction(this::fire) 能直接拿到 Consumer<String> 方法引用。 */
+        private void fire(String key) {
+            Callbacks.fire(onAction, key);
         }
 
         public Builder hero(Node hero) {
@@ -386,30 +399,32 @@ public final class ProjectDashboardTemplate {
             String currentPreset = mgr.getCurrentPrimaryPreset() != null
                     ? mgr.getCurrentPrimaryPreset().getDisplayName()
                     : "自定义";
-            String themeHex = mgr.getCurrentThemeColor() != null ? mgr.getCurrentThemeColor().getHexColor() : "";
+            String themeHex = mgr.getCurrentThemeColor() != null
+                    ? TextUtils.safeText(mgr.getCurrentThemeColor().getHexColor())
+                    : "";
             String density = mgr.getDensity() == ThemeDensity.COMPACT ? "紧凑" : "默认";
 
             ButtonAnt consoleButton = ButtonAnt.compactLink("工程控制台")
-                    .onClick(e -> fire(ACTION_PROJECT_CONSOLE))
+                    .onClick(e -> Callbacks.fire(onAction, ACTION_PROJECT_CONSOLE))
                     .build();
             consoleButton.setDisable(onAction == null);
 
             ButtonAnt workspaceButton = ButtonAnt.compactLink("工作台模板")
-                    .onClick(e -> fire(ACTION_WORKSPACE_TEMPLATE))
+                    .onClick(e -> Callbacks.fire(onAction, ACTION_WORKSPACE_TEMPLATE))
                     .build();
             workspaceButton.setDisable(onAction == null);
 
             ButtonAnt watermarkButton = ButtonAnt.compactLink("水印示例")
-                    .onClick(e -> fire(ACTION_WATERMARK))
+                    .onClick(e -> Callbacks.fire(onAction, ACTION_WATERMARK))
                     .build();
             watermarkButton.setDisable(onAction == null);
 
             return ProjectHeroTemplate.create()
-                    .title(pageTitle)
-                    .subtitle(pageSubtitle)
-                    .description(pageDescription)
-                    .icon(icon)
-                    .status(buildStatus, TagAnt.Type.SUCCESS)
+                    .title(snapshot.pageTitle())
+                    .subtitle(snapshot.pageSubtitle())
+                    .description(snapshot.pageDescription())
+                    .icon(snapshot.icon())
+                    .status(snapshot.buildStatus(), TagAnt.Type.SUCCESS)
                     .status("零 FXML", TagAnt.Type.PRIMARY)
                     .status("工程展示", TagAnt.Type.SUCCESS)
                     .meta("当前主题", currentTheme + " / " + currentPreset)
@@ -418,7 +433,7 @@ public final class ProjectDashboardTemplate {
                     .action(consoleButton)
                     .action(workspaceButton)
                     .action(watermarkButton)
-                    .action(ProjectHeroTemplate.userMenu(currentUser, this::fire).getTrigger())
+                    .action(ProjectHeroTemplate.userMenu(snapshot.currentUser(), this::fire).getTrigger())
                     .build();
         }
 
@@ -428,30 +443,32 @@ public final class ProjectDashboardTemplate {
             String currentPreset = mgr.getCurrentPrimaryPreset() != null
                     ? mgr.getCurrentPrimaryPreset().getDisplayName()
                     : "自定义";
-            String themeHex = mgr.getCurrentThemeColor() != null ? mgr.getCurrentThemeColor().getHexColor() : "";
+            String themeHex = mgr.getCurrentThemeColor() != null
+                    ? TextUtils.safeText(mgr.getCurrentThemeColor().getHexColor())
+                    : "";
             String density = mgr.getDensity() == ThemeDensity.COMPACT ? "紧凑" : "默认";
 
             return ProjectOverviewTemplate.create()
                     .title("项目概览")
                     .description("运行态、技术栈、里程碑与近期动作。")
-                    .status(buildStatus, TagAnt.Type.SUCCESS)
+                    .status(snapshot.buildStatus(), TagAnt.Type.SUCCESS)
                     .status("工程展示", TagAnt.Type.PRIMARY)
-                    .meta("版本", version)
-                    .meta("分支", branch)
-                    .meta("构建", TagAnt.create(buildStatus).type(TagAnt.Type.SUCCESS).build())
-                    .meta("模式", mode)
+                    .meta("版本", snapshot.version())
+                    .meta("分支", snapshot.branch())
+                    .meta("构建", TagAnt.create(snapshot.buildStatus()).type(TagAnt.Type.SUCCESS).build())
+                    .meta("模式", snapshot.mode())
                     .metric("当前主题", currentTheme, currentPreset + " / " + themeHex, IconAnt.Path.SETTINGS)
                     .metric("当前密度", density, "default / compact 由 ThemeManager 统一切换", IconAnt.Path.DASHBOARD)
-                    .metric("模板沉淀", templateCount,
+                    .metric("模板沉淀", snapshot.templateCount(),
                             "ProjectConsole / ProjectHero / ProjectOverview / ProjectRelease / ProjectShowcase / LaunchPad / Workspace 等模板已可复用",
                             IconAnt.Path.FILE)
-                    .metric("组件总数", componentCount,
-                            "97 个 *Ant 组件 + " + templateCount + " 个 *Template + 1 个 FilterBarAnt",
+                    .metric("组件总数", snapshot.componentCount(),
+                            "97 个 *Ant 组件 + " + snapshot.templateCount() + " 个 *Template + 1 个 FilterBarAnt",
                             IconAnt.Path.HOME)
                     .tech("Java 21", TagAnt.Type.DEFAULT)
                     .tech("JavaFX 21", TagAnt.Type.DEFAULT)
                     .tech("JFxium", TagAnt.Type.PRIMARY)
-                    .progress("工程展示完成度", completion, ProgressAnt.Status.SUCCESS,
+                    .progress("工程展示完成度", snapshot.completion(), ProgressAnt.Status.SUCCESS,
                             "核心展示链路已经收口成一页。")
                     .milestone("把首页改成工程控制台", "完成", TimelineAnt.DotColor.GREEN)
                     .milestone("抽出 ProjectConsoleTemplate", "完成", TimelineAnt.DotColor.GREEN)
@@ -473,18 +490,18 @@ public final class ProjectDashboardTemplate {
             return ProjectReleaseTemplate.create()
                     .title("发布节奏")
                     .description("版本、分支、变更和发布准备度。")
-                    .status(buildStatus, TagAnt.Type.SUCCESS)
+                    .status(snapshot.buildStatus(), TagAnt.Type.SUCCESS)
                     .status("可演示", TagAnt.Type.PRIMARY)
-                    .meta("版本", version)
-                    .meta("分支", branch)
-                    .meta("更新", updatedAt)
-                    .release(version, "当前演示版本", TimelineAnt.DotColor.GREEN)
+                    .meta("版本", snapshot.version())
+                    .meta("分支", snapshot.branch())
+                    .meta("更新", snapshot.updatedAt())
+                    .release(snapshot.version(), "当前演示版本", TimelineAnt.DotColor.GREEN)
                     .release("1.0.1", "引入工程首页成品模板", TimelineAnt.DotColor.BLUE)
                     .release("1.0.2", "把公共 section / 入口沉淀回 JFxium", TimelineAnt.DotColor.BLUE)
                     .change(ACTION_PROJECT_OVERVIEW, "工程概览模板", "展示运行态、技术栈和里程碑", "打开")
                     .change(ACTION_WORKSPACE_TEMPLATE, "工作台模板", "继续收口 header / sider / footer 的工程壳层", "打开")
                     .change(ACTION_PROJECT_SHOWCASE, "工程项目展示首页模板", "把概览、发布和快捷入口组合成首页", "打开")
-                    .readiness("当前发布准备度", completion, ProgressAnt.Status.SUCCESS,
+                    .readiness("当前发布准备度", snapshot.completion(), ProgressAnt.Status.SUCCESS,
                             "核心展示链路已经稳定，可以继续加细节区块。")
                     .onAction(this::fire)
                     .build();
@@ -505,12 +522,6 @@ public final class ProjectDashboardTemplate {
                     .item(ACTION_PROJECT_MODAL, "模态示例", "查看 Modal / Drawer / Prompt 的反馈链路", IconAnt.Path.BELL)
                     .item(ACTION_WATERMARK, "水印示例", "确认全局叠层和工作台水印是否一致", IconAnt.Path.SETTINGS)
                     .build();
-        }
-
-        private void fire(String action) {
-            if (onAction != null && action != null) {
-                onAction.accept(action);
-            }
         }
     }
 }

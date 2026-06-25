@@ -11,6 +11,7 @@ import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -205,18 +206,18 @@ public class CrudTemplate {
         }
 
         public Builder topbarSpacing(double spacing) {
-            this.topbarSpacing = safeSpacing(spacing);
+            this.topbarSpacing = TextUtils.safeNonNegative(spacing, 0);
             return this;
         }
 
         public Builder bottombarSpacing(double spacing) {
-            this.bottombarSpacing = safeSpacing(spacing);
+            this.bottombarSpacing = TextUtils.safeNonNegative(spacing, 0);
             return this;
         }
 
         /** title / topbar / body / bottombar 之间的垂直间距（默认 16）。 */
         public Builder sectionGap(double gap) {
-            this.sectionGap = safeSpacing(gap);
+            this.sectionGap = TextUtils.safeNonNegative(gap, 0);
             return this;
         }
 
@@ -236,7 +237,7 @@ public class CrudTemplate {
             }
 
             // ========== 顶部 = title + topbar（VBox 组合）==========
-            double resolvedSectionGap = safeSpacing(sectionGap);
+            double resolvedSectionGap = TextUtils.safeNonNegative(sectionGap, 0);
             VBox top = new VBox(resolvedSectionGap);
             top.setAlignment(Pos.TOP_LEFT);
 
@@ -287,12 +288,10 @@ public class CrudTemplate {
             return HBarAnt.create()
                     .left(left.toArray(new Node[0]))
                     .right(right.toArray(new Node[0]))
-                    .gap(safeSpacing(spacing))
+                    .gap(TextUtils.safeNonNegative(spacing, 0))
                     .build();
         }
 
-        private static double safeSpacing(double value) {
-            return Double.isFinite(value) && value >= 0 ? value : 0;
-        }
+        // safeSpacing 统一改用 TextUtils.safeNonNegative,见 P0-23。
     }
 }

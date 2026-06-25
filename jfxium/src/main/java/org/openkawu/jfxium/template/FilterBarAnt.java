@@ -12,6 +12,7 @@ import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,13 +71,13 @@ public class FilterBarAnt {
 
         /** 整栏 spacing。 */
         public Builder spacing(double spacing) {
-            this.spacing = safeSpacing(spacing);
+            this.spacing = TextUtils.safeNonNegative(spacing, 0);
             return this;
         }
 
         /** 整栏 padding。 */
         public Builder padding(double padding) {
-            this.padding = safeSpacing(padding);
+            this.padding = TextUtils.safeNonNegative(padding, 0);
             return this;
         }
 
@@ -85,7 +86,7 @@ public class FilterBarAnt {
             TextField input = InputAnt.create()
                     .placeholder(placeholder)
                     .build();
-            double resolvedWidth = safeSize(width);
+            double resolvedWidth = TextUtils.safePositive(width, 0);
             input.setPrefWidth(resolvedWidth);
             input.setMinWidth(resolvedWidth);
             // 回车触发
@@ -134,10 +135,10 @@ public class FilterBarAnt {
 
         /** 添加主操作按钮（PRIMARY 类型，带可选前置文字图标）。 */
         public Builder actionPrimary(String text, String iconPrefix, Runnable onClick) {
-            String safeText = text != null ? text : "";
+            String resolvedText = TextUtils.safeText(text);
             String label = (iconPrefix == null || iconPrefix.isEmpty())
-                    ? safeText
-                    : (safeText.isEmpty() ? iconPrefix : iconPrefix + " " + safeText);
+                    ? resolvedText
+                    : (resolvedText.isEmpty() ? iconPrefix : iconPrefix + " " + resolvedText);
             Button btn = ButtonAnt.create(label)
                     .type(ButtonAnt.Type.PRIMARY)
                     .onClick(e -> { if (onClick != null) onClick.run(); })
@@ -160,10 +161,10 @@ public class FilterBarAnt {
         }
 
         public HBox build() {
-            HBox bar = new HBox(safeSpacing(spacing));
+            HBox bar = new HBox(TextUtils.safeNonNegative(spacing, 0));
             bar.getStyleClass().add(JfxStyles.FILTER_BAR);
             bar.setAlignment(Pos.CENTER_LEFT);
-            double resolvedPadding = safeSpacing(padding);
+            double resolvedPadding = TextUtils.safeNonNegative(padding, 0);
             if (resolvedPadding > 0) {
                 bar.setPadding(new javafx.geometry.Insets(resolvedPadding));
             }
@@ -186,12 +187,6 @@ public class FilterBarAnt {
             return bar;
         }
 
-        private static double safeSpacing(double value) {
-            return Double.isFinite(value) && value >= 0 ? value : 0;
-        }
-
-        private static double safeSize(double value) {
-            return Double.isFinite(value) && value > 0 ? value : 0;
-        }
+        // safeSpacing / safeSize 统一改用 TextUtils.safeNonNegative / safePositive,见 P0-23。
     }
 }

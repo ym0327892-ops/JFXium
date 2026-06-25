@@ -14,6 +14,7 @@ import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +116,7 @@ public class LoginTemplate {
         }
         public Builder copyright(String text) { this.copyright = text; return this; }
         public Builder bannerWidth(double width) {
-            this.bannerWidth = Double.isFinite(width) && width > 0 ? width : 360;
+            this.bannerWidth = TextUtils.safePositive(width, 360);
             return this;
         }
 
@@ -169,10 +170,10 @@ public class LoginTemplate {
 
         private VBox buildBanner() {
             // 解析当前 Locale 文案（null 走 i18n 默认）
-            String resolvedBrand = brandName != null ? brandName : Messages.get("login.brand_name");
-            String resolvedTagline = tagline != null ? tagline : Messages.get("login.tagline");
-            String resolvedCopyright = copyright != null ? copyright : Messages.get("login.copyright");
-            double resolvedBannerWidth = Double.isFinite(bannerWidth) && bannerWidth > 0 ? bannerWidth : 360;
+            String resolvedBrand = TextUtils.safeText(brandName, Messages.get("login.brand_name"));
+            String resolvedTagline = TextUtils.safeText(tagline, Messages.get("login.tagline"));
+            String resolvedCopyright = TextUtils.safeText(copyright, Messages.get("login.copyright"));
+            double resolvedBannerWidth = TextUtils.safePositive(bannerWidth, 360);
 
             // Logo box（图标白色，背景半透明白）
             Region logoIcon = IconAnt.path(IconAnt.Path.DASHBOARD, 24);
@@ -223,7 +224,7 @@ public class LoginTemplate {
             // 给 Node 套个 Class，让 LESS 走 LOGIN_BANNER_FEATURE_CHECK 样式
             check.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_CHECK);
 
-            LabelAnt content = LabelAnt.create(text != null ? text : "");
+            LabelAnt content = LabelAnt.create(TextUtils.safeText(text));
             content.getStyleClass().add(JfxStyles.LOGIN_BANNER_FEATURE_TEXT);
 
             HBox row = new HBox(check, content);
@@ -236,11 +237,11 @@ public class LoginTemplate {
 
         private VBox buildForm() {
             // 解析当前 Locale 文案
-            String resolvedFormTitle = formTitle != null ? formTitle : Messages.get("login.form_title");
-            String resolvedFormSubtitle = formSubtitle != null ? formSubtitle : Messages.get("login.form_subtitle");
-            String resolvedUsername = usernamePlaceholder != null ? usernamePlaceholder : Messages.get("login.username_placeholder");
-            String resolvedPassword = passwordPlaceholder != null ? passwordPlaceholder : Messages.get("login.password_placeholder");
-            String resolvedSubmit = submitText != null ? submitText : Messages.get("login.submit");
+            String resolvedFormTitle = TextUtils.safeText(formTitle, Messages.get("login.form_title"));
+            String resolvedFormSubtitle = TextUtils.safeText(formSubtitle, Messages.get("login.form_subtitle"));
+            String resolvedUsername = TextUtils.safeText(usernamePlaceholder, Messages.get("login.username_placeholder"));
+            String resolvedPassword = TextUtils.safeText(passwordPlaceholder, Messages.get("login.password_placeholder"));
+            String resolvedSubmit = TextUtils.safeText(submitText, Messages.get("login.submit"));
 
             LabelAnt title = LabelAnt.create(resolvedFormTitle);
             title.getStyleClass().add(JfxStyles.LOGIN_FORM_TITLE);
@@ -360,7 +361,7 @@ public class LoginTemplate {
         }
 
         private static Region vSpacer(double h) {
-            double size = Double.isFinite(h) ? Math.max(0, h) : 0;
+            double size = TextUtils.safeNonNegative(h, 0);
             Region r = new Region();
             r.setMinHeight(size);
             r.setMaxHeight(size);

@@ -7,6 +7,8 @@ import org.openkawu.jfxium.component.composite.StepsAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,12 +66,12 @@ public final class ProjectQuickStartTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = title != null ? title : DEFAULT_TITLE;
+            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
             return this;
         }
 
         public Builder description(String description) {
-            this.description = description != null ? description : DEFAULT_DESCRIPTION;
+            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
             return this;
         }
 
@@ -90,8 +92,8 @@ public final class ProjectQuickStartTemplate {
          */
         public Builder step(String title, String description, String code, CodeBlockAnt.Language language) {
             steps.add(new StepEntry(
-                    title != null ? title : "",
-                    description != null ? description : "",
+                    TextUtils.safeText(title),
+                    TextUtils.safeText(description),
                     code,
                     language != null ? language : CodeBlockAnt.Language.JAVA
             ));
@@ -113,7 +115,7 @@ public final class ProjectQuickStartTemplate {
                     .children(
                             TypographyAnt.title(title, 4).build(),
                             TypographyAnt.text(description)
-                                    .type(TypographyAnt.Type.SECONDARY)
+                                    .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
                     .build();
@@ -129,7 +131,7 @@ public final class ProjectQuickStartTemplate {
 
             StepsAnt.Builder stepsBuilder = StepsAnt.create()
                     .direction(StepsAnt.Direction.HORIZONTAL)
-                    .size(StepsAnt.Size.DEFAULT)
+                    .size(Size.DEFAULT)
                     .current(steps.size()); // 全部 finished
 
             for (StepEntry entry : steps) {
@@ -165,7 +167,7 @@ public final class ProjectQuickStartTemplate {
 
             // 步骤说明
             Node stepDesc = TypographyAnt.text(entry.description())
-                    .type(TypographyAnt.Type.SECONDARY)
+                    .type(TypographyAnt.TextColor.SECONDARY)
                     .build();
 
             VBoxAnt detailBuilder = VBoxAnt.create()

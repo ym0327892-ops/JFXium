@@ -11,6 +11,8 @@ import org.openkawu.jfxium.component.layout.GridAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,22 +69,22 @@ public final class ProjectFeatureTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = title != null ? title : DEFAULT_TITLE;
+            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
             return this;
         }
 
         public Builder description(String description) {
-            this.description = description != null ? description : DEFAULT_DESCRIPTION;
+            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
             return this;
         }
 
         public Builder columns(int columns) {
-            this.columns = Math.max(1, columns);
+            this.columns = (int) TextUtils.ensureAtLeastOne(columns);
             return this;
         }
 
         public Builder gap(double gap) {
-            this.gap = Double.isFinite(gap) ? Math.max(0, gap) : 16;
+            this.gap = TextUtils.safeNonNegative(gap, 16);
             return this;
         }
 
@@ -97,9 +99,9 @@ public final class ProjectFeatureTemplate {
 
         public Builder feature(String key, String title, String description, IconAnt.Path icon) {
             features.add(new Feature(
-                    key != null ? key : "",
-                    title != null ? title : "",
-                    description != null ? description : "",
+                    TextUtils.safeText(key),
+                    TextUtils.safeText(title),
+                    TextUtils.safeText(description),
                     icon != null ? icon : IconAnt.Path.DASHBOARD
             ));
             return this;
@@ -120,7 +122,7 @@ public final class ProjectFeatureTemplate {
                     .children(
                             TypographyAnt.title(title, 4).build(),
                             TypographyAnt.text(description)
-                                    .type(TypographyAnt.Type.SECONDARY)
+                                    .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
                     .build();
@@ -133,7 +135,7 @@ public final class ProjectFeatureTemplate {
 
             GridAnt.Row row = GridAnt.row();
             row.align(Pos.TOP_LEFT);
-            int span = Math.max(1, 24 / columns);
+            int span = (int) TextUtils.ensureAtLeastOne(24 / columns);
             for (Feature feat : features) {
                 row.col(GridAnt.col(buildCard(feat))
                         .xs(24)
@@ -160,7 +162,7 @@ public final class ProjectFeatureTemplate {
 
             Node titleNode = TypographyAnt.text(feat.title()).build();
             Node descNode = TypographyAnt.text(feat.description())
-                    .type(TypographyAnt.Type.SECONDARY)
+                    .type(TypographyAnt.TextColor.SECONDARY)
                     .build();
 
             HBoxAnt leadRow = HBoxAnt.create()
@@ -181,7 +183,7 @@ public final class ProjectFeatureTemplate {
 
             if (onAction != null && !feat.key().isEmpty()) {
                 cardBody.setOnMouseClicked(e -> onAction.accept(feat.key()));
-                cardBody.getStyleClass().add("jfx-feature-card-clickable");
+                cardBody.getStyleClass().add(JfxStyles.FEATURE_CARD_CLICKABLE);
             }
 
             return SurfaceAnt.create()

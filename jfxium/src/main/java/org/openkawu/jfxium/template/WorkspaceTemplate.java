@@ -11,6 +11,7 @@ import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 import org.openkawu.jfxium.layout.AppShellAnt;
 import org.openkawu.jfxium.component.layout.GridAnt;
 
@@ -19,6 +20,7 @@ import org.openkawu.jfxium.component.composite.AvatarAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.overlay.DropdownAnt.DropdownResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +75,7 @@ public class WorkspaceTemplate {
      * <p>这是工程展示页里最常重复的头部动作之一：外观设置、关于、退出。
      * 把它收口到 WorkspaceTemplate，主窗口和后台壳都能直接复用。</p>
      */
-    public static DropdownAnt.DropdownResult userMenu(String currentUser, Consumer<String> onAction) {
+    public static DropdownResult userMenu(String currentUser, Consumer<String> onAction) {
         String resolvedUser = currentUser == null || currentUser.isBlank() ? "访客" : currentUser;
         String avatarText = resolvedUser.isBlank() ? "U" : resolvedUser;
 
@@ -86,7 +88,7 @@ public class WorkspaceTemplate {
                                 .size(AvatarAnt.Size.DEFAULT)
                                 .build(),
                         TypographyAnt.text(resolvedUser)
-                                .type(TypographyAnt.Type.SECONDARY)
+                                .type(TypographyAnt.TextColor.SECONDARY)
                                 .build()
                 )
                 .build();
@@ -94,11 +96,11 @@ public class WorkspaceTemplate {
         return DropdownAnt.create()
                 .trigger(trigger)
                 .showArrow()
-                .placement("bottomRight")
-                .item("settings", "外观设置", org.openkawu.jfxium.component.control.IconAnt.path(org.openkawu.jfxium.component.control.IconAnt.Path.SETTINGS, 16))
-                .item("about", "关于", org.openkawu.jfxium.component.control.IconAnt.symbol(org.openkawu.jfxium.component.control.IconAnt.Symbol.INFO, 16))
+                .placement(DropdownAnt.Placement.BOTTOM_RIGHT)
+                .item("settings", "外观设置", IconAnt.path(IconAnt.Path.SETTINGS, 16))
+                .item("about", "关于", IconAnt.symbol(IconAnt.Symbol.INFO, 16))
                 .divider()
-                .item("logout", "退出", org.openkawu.jfxium.component.control.IconAnt.path(org.openkawu.jfxium.component.control.IconAnt.Path.LOGOUT, 16))
+                .item("logout", "退出", IconAnt.path(IconAnt.Path.LOGOUT, 16))
                 .onSelect(key -> {
                     if (onAction != null) {
                         onAction.accept(key);
@@ -187,31 +189,31 @@ public class WorkspaceTemplate {
 
         /** Header 左侧附加节点。 */
         public Builder headerLeft(Node... nodes) {
-            addNodes(headerLeft, nodes);
+            TextUtils.addNonNull(headerLeft, nodes);
             return this;
         }
 
         /** Header 顶部附加节点，通常用于系统菜单栏。 */
         public Builder headerTop(Node... nodes) {
-            addNodes(headerTop, nodes);
+            TextUtils.addNonNull(headerTop, nodes);
             return this;
         }
 
         /** Header 中间节点（通常是 Breadcrumb / Tabs / page status）。 */
         public Builder headerCenter(Node... nodes) {
-            addNodes(headerCenter, nodes);
+            TextUtils.addNonNull(headerCenter, nodes);
             return this;
         }
 
         /** Header 右侧节点（通常是操作按钮 / 用户菜单）。 */
         public Builder headerRight(Node... nodes) {
-            addNodes(headerRight, nodes);
+            TextUtils.addNonNull(headerRight, nodes);
             return this;
         }
 
         /** Header 内 left/center/right 的主间距（默认 12）。 */
         public Builder headerGap(double gap) {
-            this.headerGap = safeSpacing(gap, 12);
+            this.headerGap = TextUtils.safeNonNegative(gap, 12);
             return this;
         }
 
@@ -228,13 +230,13 @@ public class WorkspaceTemplate {
         /** 侧栏节点 + 宽度。 */
         public Builder sider(Node sider, double width) {
             this.sider = sider;
-            this.siderWidth = safeWidth(width, 240);
+            this.siderWidth = TextUtils.safePositive(width, 240);
             return this;
         }
 
         /** 侧栏宽度。 */
         public Builder siderWidth(double width) {
-            this.siderWidth = safeWidth(width, 240);
+            this.siderWidth = TextUtils.safePositive(width, 240);
             return this;
         }
 
@@ -273,7 +275,7 @@ public class WorkspaceTemplate {
 
         /** 折叠后宽度。 */
         public Builder collapsedWidth(double width) {
-            this.collapsedWidth = safeWidth(width, 64);
+            this.collapsedWidth = TextUtils.safePositive(width, 64);
             return this;
         }
 
@@ -383,8 +385,8 @@ public class WorkspaceTemplate {
         }
 
         private Node buildBrandBox() {
-            String resolvedTitle = safeText(brandTitle);
-            String resolvedSubtitle = safeText(brandSubtitle);
+            String resolvedTitle = TextUtils.safeText(brandTitle);
+            String resolvedSubtitle = TextUtils.safeText(brandSubtitle);
             if ((resolvedTitle.isEmpty() && resolvedSubtitle.isEmpty()) && brandIcon == null) {
                 return null;
             }
@@ -433,28 +435,7 @@ public class WorkspaceTemplate {
             return box;
         }
 
-        private static void addNodes(List<Node> target, Node... nodes) {
-            if (nodes == null) {
-                return;
-            }
-            for (Node node : nodes) {
-                if (node != null) {
-                    target.add(node);
-                }
-            }
-        }
-
-        private static String safeText(String text) {
-            return text == null ? "" : text;
-        }
-
-        private static double safeSpacing(double value, double fallback) {
-            return Double.isFinite(value) && value >= 0 ? value : fallback;
-        }
-
-        private static double safeWidth(double value, double fallback) {
-            return Double.isFinite(value) && value > 0 ? value : fallback;
-        }
+        // safeText / safeSpacing / safeWidth 已统一收口到 TextUtils,见 P0-23。
 
     }
 
