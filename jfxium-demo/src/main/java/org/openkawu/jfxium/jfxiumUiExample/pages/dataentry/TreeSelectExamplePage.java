@@ -10,6 +10,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.TreeSelectAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * TreeSelect 树选择 —— 基础 / 多选。
@@ -39,7 +40,7 @@ public class TreeSelectExamplePage extends VBoxAnt {
         Node demo = TreeSelectAnt.create()
                 .tree(deptTree())
                 .placeholder("请选择部门")
-                .onSelect(node -> {})
+                .onSelect(node -> MessageAnt.info("选中节点：" + node.getLabel()))
                 .build();
         String code = """
                 TreeSelectAnt.TreeNode root = new TreeSelectAnt.TreeNode("root", "公司", List.of(
@@ -50,7 +51,7 @@ public class TreeSelectExamplePage extends VBoxAnt {
                 TreeSelectAnt.create()
                         .tree(root)
                         .placeholder("请选择部门")
-                        .onSelect(node -> System.out.println(node.getLabel()))
+                        .onSelect(node -> MessageAnt.info("选中节点：" + node.getLabel()))
                         .build();
                 """;
         return Demos.sectionWithCode("1. 基础用法",

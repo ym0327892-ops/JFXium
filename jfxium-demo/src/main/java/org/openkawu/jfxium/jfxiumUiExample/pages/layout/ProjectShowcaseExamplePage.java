@@ -36,18 +36,18 @@ public class ProjectShowcaseExamplePage extends VBoxAnt {
                 "适合工程主页、产品展示页、仓库首页、项目文档首页这类需要把多个模板拼成一页的场景。",
                 Demos.column(
                         Demos.labeled("首页定位", TypographyAnt.text("把页面从“控件目录”升级成“工程门面”。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("组合方式", TypographyAnt.text("现在可以直接复用 ProjectDashboardTemplate，一次性得到门面、概览、发布和快捷入口。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("复用价值", TypographyAnt.text("不同项目的首页只需要替换数据，不需要重写壳层。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }
 
     private Node previewSection() {
         Label actionState = TypographyAnt.text("动作：未触发")
-                .type(TypographyAnt.Type.SECONDARY)
+                .type(TypographyAnt.TextColor.SECONDARY)
                 .build();
 
         Node dashboard = ProjectDashboardTemplate.create()
@@ -67,7 +67,7 @@ public class ProjectShowcaseExamplePage extends VBoxAnt {
         String code = """
                 ProjectDashboardTemplate.create()
                         .snapshot(ProjectDashboardTemplate.Snapshot.demo())
-                        .onAction(action -> System.out.println("动作：" + action))
+                        .onAction(action -> MessageAnt.info("动作: " + action))
                         .build();
                 """;
 
@@ -77,9 +77,9 @@ public class ProjectShowcaseExamplePage extends VBoxAnt {
                 code,
                 Demos.column(
                         Demos.labeled("落地建议", TypographyAnt.text("如果你的首页总是写概览 + 发布 + 快捷入口，可以直接复用这个模板。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("继续整合", TypographyAnt.text("如果多个项目都要工程门面，可以继续把数据从页面层迁到配置层。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }

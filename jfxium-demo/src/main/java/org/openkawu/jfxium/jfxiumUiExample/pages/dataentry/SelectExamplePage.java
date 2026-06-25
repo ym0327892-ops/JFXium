@@ -6,8 +6,13 @@ import javafx.scene.control.Label;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.ComboBoxAnt;
+import org.openkawu.jfxium.core.token.Size;
+
+import java.util.function.Supplier;
 
 /**
  * Select 选择器 —— 基础 / 可编辑 / 禁用+尺寸。
@@ -22,7 +27,8 @@ public class SelectExamplePage extends VBoxAnt {
                         basicSection(),
                         editableSection(),
                         disabledSizeSection(),
-                        valueSection()
+                        valueSection(),
+                        playgroundSection()
                 )
                 .padding(24)
                 .build());
@@ -68,7 +74,7 @@ public class SelectExamplePage extends VBoxAnt {
         Node demo = Demos.row(
                 ComboBoxAnt.<String>create()
                         .items("A", "B", "C")
-                        .size(ComboBoxAnt.Size.SMALL)
+                        .size(Size.SMALL)
                         .placeholder("Small")
                         .build(),
                 ComboBoxAnt.<String>create()
@@ -77,7 +83,7 @@ public class SelectExamplePage extends VBoxAnt {
                         .build(),
                 ComboBoxAnt.<String>create()
                         .items("A", "B", "C")
-                        .size(ComboBoxAnt.Size.LARGE)
+                        .size(Size.LARGE)
                         .placeholder("Large")
                         .build(),
                 ComboBoxAnt.<String>create()
@@ -88,11 +94,11 @@ public class SelectExamplePage extends VBoxAnt {
         );
         String code = """
                 ComboBoxAnt.<String>create().items("A", "B", "C")
-                        .size(ComboBoxAnt.Size.SMALL).placeholder("Small").build();
+                        .size(Size.SMALL).placeholder("Small").build();
                 ComboBoxAnt.<String>create().items("A", "B", "C")
                         .placeholder("Default").build();
                 ComboBoxAnt.<String>create().items("A", "B", "C")
-                        .size(ComboBoxAnt.Size.LARGE).placeholder("Large").build();
+                        .size(Size.LARGE).placeholder("Large").build();
                 ComboBoxAnt.<String>create().items("A", "B", "C")
                         .disabled(true).placeholder("禁用").build();
                 """;
@@ -127,5 +133,51 @@ public class SelectExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("4. 获取选中值",
                 "onChange(v -> ...) 回调直接给出选中的值；下方结果 Label 实时显示当前值。",
                 code, demo);
+    }
+
+    /**
+     * 5. 交互演示 —— 通过左侧控件实时改变 ComboBox 的尺寸 / 可编辑 / 禁用 / 占位符。
+     */
+    private Node playgroundSection() {
+        Binder<String> sizeBinder        = PlayGround.binder("default");
+        Binder<String> editableBinder    = PlayGround.binder("off");
+        Binder<String> disabledBinder    = PlayGround.binder("off");
+        Binder<String> placeholderBinder = PlayGround.binder("请选择");
+
+        Supplier<Node> factory = () -> ComboBoxAnt.<String>create()
+                .items("北京", "上海", "广州", "深圳", "杭州", "成都")
+                .size(parseSize(sizeBinder.get()))
+                .editable(parseBool(editableBinder.get()))
+                .disabled(parseBool(disabledBinder.get()))
+                .placeholder(placeholderBinder.get().isEmpty() ? "请选择" : placeholderBinder.get())
+                .build();
+
+        return Demos.section("5. 交互演示",
+                "通过左侧控件实时改变 ComboBox 的尺寸、可编辑、禁用、占位符。",
+                PlayGround.rebindRebuild(factory, null,
+                        PlayGround.row("尺寸", PlayGround.segmented(sizeBinder,
+                                PlayGround.entry("small",   "小"),
+                                PlayGround.entry("default", "默认"),
+                                PlayGround.entry("large",   "大"))),
+                        PlayGround.row("可编辑", PlayGround.segmented(editableBinder,
+                                PlayGround.entry("off", "关"),
+                                PlayGround.entry("on",  "开"))),
+                        PlayGround.row("禁用", PlayGround.segmented(disabledBinder,
+                                PlayGround.entry("off", "启用"),
+                                PlayGround.entry("on",  "禁用"))),
+                        PlayGround.row("占位符", PlayGround.textField(placeholderBinder, "请选择", "输入占位符"))));
+    }
+
+    private static boolean parseBool(String v) {
+        return "on".equalsIgnoreCase(v) || "true".equalsIgnoreCase(v);
+    }
+
+    private static Size parseSize(String v) {
+        if (v == null) return Size.DEFAULT;
+        return switch (v) {
+            case "small" -> Size.SMALL;
+            case "large" -> Size.LARGE;
+            default      -> Size.DEFAULT;
+        };
     }
 }

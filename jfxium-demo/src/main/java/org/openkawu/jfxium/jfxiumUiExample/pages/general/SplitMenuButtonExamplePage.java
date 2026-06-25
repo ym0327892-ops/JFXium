@@ -1,12 +1,14 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 
 import javafx.scene.Node;
-import javafx.scene.control.MenuItem;
 
 import org.openkawu.jfxium.component.control.SplitMenuButtonAnt;
+import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.MenuItemUtil;
 import org.openkawu.jfxium.template.PageTemplate;
 
 /**
@@ -32,31 +34,31 @@ public class SplitMenuButtonExamplePage extends VBoxAnt {
                 SplitMenuButtonAnt.create()
                         .text("新建")
                         .items(
-                                new MenuItem("新建文件"),
-                                new MenuItem("新建文件夹"),
-                                new MenuItem("新建项目")
+                                MenuItemUtil.item("新建文件"),
+                                MenuItemUtil.item("新建文件夹"),
+                                MenuItemUtil.item("新建项目")
                         )
-                        .onAction(e -> System.out.println("快速新建"))
+                        .onAction(e -> MessageAnt.info("已执行快速新建"))
                         .build(),
                 SplitMenuButtonAnt.create()
                         .text("分享")
                         .items(
-                                new MenuItem("复制链接"),
-                                new MenuItem("邮件分享"),
-                                new MenuItem("导出 PDF")
+                                MenuItemUtil.item("复制链接"),
+                                MenuItemUtil.item("邮件分享"),
+                                MenuItemUtil.item("导出 PDF")
                         )
-                        .onAction(e -> System.out.println("复制链接"))
+                        .onAction(e -> MessageAnt.info("已执行复制链接"))
                         .build()
         );
         String code = """
                 SplitMenuButtonAnt.create()
                     .text("新建")
                     .items(
-                        new MenuItem("新建文件"),
-                        new MenuItem("新建文件夹"),
-                        new MenuItem("新建项目")
+                        MenuItemUtil.item("新建文件"),
+                        MenuItemUtil.item("新建文件夹"),
+                        MenuItemUtil.item("新建项目")
                     )
-                    .onAction(e -> System.out.println("快速新建"))
+                    .onAction(e -> MessageAnt.info("已执行快速新建"))
                     .build();
                 """;
         return Demos.sectionWithCode("1. 基础用法",
@@ -72,12 +74,12 @@ public class SplitMenuButtonExamplePage extends VBoxAnt {
                 SplitMenuButtonAnt.create()
                         .text("新建")
                         .graphic(plusIcon)
-                        .items(new MenuItem("新建文件"), new MenuItem("新建文件夹"))
+                        .items(MenuItemUtil.item("新建文件"), MenuItemUtil.item("新建文件夹"))
                         .build(),
                 SplitMenuButtonAnt.create()
                         .text("分享")
                         .graphic(shareIcon)
-                        .items(new MenuItem("复制链接"), new MenuItem("邮件"))
+                        .items(MenuItemUtil.item("复制链接"), MenuItemUtil.item("邮件"))
                         .build()
         );
         String code = """
@@ -85,8 +87,8 @@ public class SplitMenuButtonExamplePage extends VBoxAnt {
                     .text("新建")
                     .graphic(iconNode)
                     .items(
-                        new MenuItem("新建文件"),
-                        new MenuItem("新建文件夹")
+                        MenuItemUtil.item("新建文件"),
+                        MenuItemUtil.item("新建文件夹")
                     )
                     .build();
                 """;
@@ -99,29 +101,29 @@ public class SplitMenuButtonExamplePage extends VBoxAnt {
         Node demo = Demos.row(
                 SplitMenuButtonAnt.create()
                         .text("Small")
-                        .items(new MenuItem("选项 1"), new MenuItem("选项 2"))
-                        .size(SplitMenuButtonAnt.Size.SMALL)
+                        .items(MenuItemUtil.item("选项 1"), MenuItemUtil.item("选项 2"))
+                        .size(Size.SMALL)
                         .build(),
                 SplitMenuButtonAnt.create()
                         .text("Default")
-                        .items(new MenuItem("选项 1"), new MenuItem("选项 2"))
-                        .size(SplitMenuButtonAnt.Size.DEFAULT)
+                        .items(MenuItemUtil.item("选项 1"), MenuItemUtil.item("选项 2"))
+                        .size(Size.DEFAULT)
                         .build(),
                 SplitMenuButtonAnt.create()
                         .text("Large")
-                        .items(new MenuItem("选项 1"), new MenuItem("选项 2"))
-                        .size(SplitMenuButtonAnt.Size.LARGE)
+                        .items(MenuItemUtil.item("选项 1"), MenuItemUtil.item("选项 2"))
+                        .size(Size.LARGE)
                         .build(),
                 SplitMenuButtonAnt.create()
                         .text("Disabled")
-                        .items(new MenuItem("选项 1"))
+                        .items(MenuItemUtil.item("选项 1"))
                         .disabled(true)
                         .build()
         );
         String code = """
                 SplitMenuButtonAnt.create()
                     .text("Small")
-                    .size(SplitMenuButtonAnt.Size.SMALL)
+                    .size(Size.SMALL)
                     .build();
                 SplitMenuButtonAnt.create()
                     .text("Disabled")

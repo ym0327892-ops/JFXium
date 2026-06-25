@@ -2,7 +2,6 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
@@ -31,13 +30,13 @@ public class TransferExamplePage extends VBoxAnt {
     }
 
     private Node basicSection() {
-        HBox transfer = TransferAnt.<String>create()
+        Node transfer = TransferAnt.<String>create()
                 .dataSource(List.of("选项 1", "选项 2", "选项 3", "选项 4", "选项 5"))
                 .targetKeys(List.of("选项 3"))
                 .titles("可选项", "已选项")
                 .build();
         String code = """
-                HBox transfer = TransferAnt.<String>create()
+                Node transfer = TransferAnt.<String>create()
                         .dataSource(List.of("选项 1", "选项 2", "选项 3", "选项 4", "选项 5"))
                         .targetKeys(List.of("选项 3"))
                         .titles("可选项", "已选项")
@@ -49,14 +48,14 @@ public class TransferExamplePage extends VBoxAnt {
     }
 
     private Node searchSection() {
-        HBox transfer = TransferAnt.<String>create()
+        Node transfer = TransferAnt.<String>create()
                 .dataSource(List.of("北京", "上海", "广州", "深圳", "杭州", "成都"))
                 .targetKeys(List.of("上海"))
                 .titles("城市列表", "已选城市")
                 .showSearch()
                 .build();
         String code = """
-                HBox transfer = TransferAnt.<String>create()
+                Node transfer = TransferAnt.<String>create()
                         .dataSource(List.of("北京", "上海", "广州", "深圳", "杭州", "成都"))
                         .targetKeys(List.of("上海"))
                         .titles("城市列表", "已选城市")
@@ -73,7 +72,7 @@ public class TransferExamplePage extends VBoxAnt {
      */
     private Node valueSection() {
         Label result = TypographyAnt.text("已选项：[选项 3]").build();
-        HBox transfer = TransferAnt.<String>create()
+        Node transfer = TransferAnt.<String>create()
                 .dataSource(List.of("选项 1", "选项 2", "选项 3", "选项 4", "选项 5"))
                 .targetKeys(List.of("选项 3"))
                 .titles("可选项", "已选项")
@@ -82,7 +81,7 @@ public class TransferExamplePage extends VBoxAnt {
         Node demo = Demos.column(transfer, result);
         String code = """
                 Label result = TypographyAnt.text("已选项：[选项 3]").build();
-                HBox transfer = TransferAnt.<String>create()
+                Node transfer = TransferAnt.<String>create()
                         .dataSource(List.of("选项 1", "选项 2", "选项 3", "选项 4", "选项 5"))
                         .targetKeys(List.of("选项 3"))
                         .titles("可选项", "已选项")

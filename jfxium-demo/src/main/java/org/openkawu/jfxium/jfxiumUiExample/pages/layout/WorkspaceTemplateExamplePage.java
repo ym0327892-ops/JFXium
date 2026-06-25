@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 
 import org.openkawu.jfxium.component.composite.BreadcrumbAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.component.control.StatusBarAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
@@ -38,16 +39,16 @@ public class WorkspaceTemplateExamplePage extends VBoxAnt {
     private Node overviewSection() {
         Node intro = Demos.column(
                 TypographyAnt.text("适合管理后台、运营台、CRM / CMS、桌面工具等需要 header + sider + content + footer 的主框架。")
-                        .type(TypographyAnt.Type.SECONDARY).build(),
+                        .type(TypographyAnt.TextColor.SECONDARY).build(),
                 TypographyAnt.text("如果你已经有一个 PageTemplate / CrudTemplate 页面，它可以直接塞进 WorkspaceTemplate 的 content 里。")
-                        .type(TypographyAnt.Type.SECONDARY).build()
+                        .type(TypographyAnt.TextColor.SECONDARY).build()
         );
         return Demos.section("1. 适用场景", "把工作台壳从具体页面中抽离出来，减少每个项目重复手写 header / sider / footer。", intro);
     }
 
     private Node previewSection() {
         Label syncState = TypographyAnt.text("状态：已就绪")
-                .type(TypographyAnt.Type.SECONDARY)
+                .type(TypographyAnt.TextColor.SECONDARY)
                 .build();
 
         Button refreshBtn = ButtonAnt.compactLink("刷新")
@@ -101,7 +102,7 @@ public class WorkspaceTemplateExamplePage extends VBoxAnt {
 
         String code = """
                 Label syncState = TypographyAnt.text("状态：已就绪")
-                        .type(TypographyAnt.Type.SECONDARY)
+                        .type(TypographyAnt.TextColor.SECONDARY)
                         .build();
 
         Button refreshBtn = ButtonAnt.compactLink("刷新")
@@ -151,9 +152,9 @@ public class WorkspaceTemplateExamplePage extends VBoxAnt {
                 """;
 
         Node notes = Demos.column(
-                TypographyAnt.text("• `WorkspaceTemplate` 适合应用壳子，不适合单页文档页。").type(TypographyAnt.Type.SECONDARY).build(),
-                TypographyAnt.text("• 单页展示继续用 `PageTemplate`，列表页继续用 `CrudTemplate`。").type(TypographyAnt.Type.SECONDARY).build(),
-                TypographyAnt.text("• 如果侧栏内容很多，content 自己再包一层 ScrollPane。").type(TypographyAnt.Type.SECONDARY).build()
+                TypographyAnt.text("• `WorkspaceTemplate` 适合应用壳子，不适合单页文档页。").type(TypographyAnt.TextColor.SECONDARY).build(),
+                TypographyAnt.text("• 单页展示继续用 `PageTemplate`，列表页继续用 `CrudTemplate`。").type(TypographyAnt.TextColor.SECONDARY).build(),
+                TypographyAnt.text("• 如果侧栏内容很多，content 自己再包一层 ScrollPane。").type(TypographyAnt.TextColor.SECONDARY).build()
         );
 
         return Demos.sectionWithCode("4. 使用代码",
@@ -181,11 +182,11 @@ public class WorkspaceTemplateExamplePage extends VBoxAnt {
 
         Node notes = Demos.column(
                 TypographyAnt.text("• 这个模板可以直接塞进 DrawerAnt，也可以作为独立页面展示。")
-                        .type(TypographyAnt.Type.SECONDARY).build(),
+                        .type(TypographyAnt.TextColor.SECONDARY).build(),
                 TypographyAnt.text("• 主题、密度、主色、水印都从同一处收口，避免 demo 里反复拼接。")
-                        .type(TypographyAnt.Type.SECONDARY).build(),
+                        .type(TypographyAnt.TextColor.SECONDARY).build(),
                 TypographyAnt.text("• 这一步之后，主窗口右上角头像弹出的面板和文档页里的预览是同一套代码。")
-                        .type(TypographyAnt.Type.SECONDARY).build()
+                        .type(TypographyAnt.TextColor.SECONDARY).build()
         );
 
         return Demos.sectionWithCode("3. 外观设置抽屉模板",
@@ -196,7 +197,7 @@ public class WorkspaceTemplateExamplePage extends VBoxAnt {
     private static Button navItem(String text) {
         Button btn = ButtonAnt.create(text)
                 .type(ButtonAnt.Type.TEXT)
-                .size(ButtonAnt.Size.SMALL)
+                .size(Size.SMALL)
                 .build();
         btn.setMaxWidth(Double.MAX_VALUE);
         btn.setAlignment(javafx.geometry.Pos.CENTER_LEFT);

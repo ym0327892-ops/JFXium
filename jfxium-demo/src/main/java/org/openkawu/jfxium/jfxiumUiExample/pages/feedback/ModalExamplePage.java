@@ -1,16 +1,26 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.VBarAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.overlay.ModalAnt;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+
+import java.util.function.Supplier;
 
 /**
  * Modal 模态对话框 —— 基础信息 / 确认 / 自定义内容 / 自定义宽度。
@@ -28,7 +38,8 @@ public class ModalExamplePage extends VBoxAnt {
                         basicSection(),
                         confirmSection(),
                         customContentSection(),
-                        widthSection()
+                        widthSection(),
+                        playgroundSection()
                 )
                 .padding(24)
                 .build());
@@ -161,5 +172,97 @@ public class ModalExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("4. 宽度 / 居中 / 关闭按钮位置",
                 "width(int) 自定义宽度；centered() 垂直居中；closePlacement 控制关闭按钮位置。",
                 code, btn);
+    }
+
+    private Node playgroundSection() {
+        Binder<String> titleBinder = PlayGround.binder("交互演示");
+        Binder<String> contentBinder = PlayGround.binder("这是一个模拟预览。点击下方按钮可按当前配置弹出真实 Modal。");
+        Binder<String> widthBinder = PlayGround.binder("520");
+        Binder<String> closeBinder = PlayGround.binder("right");
+        Binder<String> okTextBinder = PlayGround.binder("确定");
+        Supplier<Node> factory = () -> {
+            // 预览卡片：模拟 Modal 外观
+            VBox preview = new VBox(0);
+            preview.getStyleClass().add("jfx-demo-modal-preview");
+            preview.setMaxWidth(parseWidth(widthBinder.get()));
+            preview.setMinWidth(parseWidth(widthBinder.get()));
+            preview.setPrefWidth(parseWidth(widthBinder.get()));
+
+            // header
+            HBox header = new HBox();
+            header.getStyleClass().add("jfx-demo-modal-header");
+            Label titleLabel = new Label(emptyToDefault(titleBinder.get(), "交互演示"));
+            titleLabel.getStyleClass().add("jfx-demo-modal-title");
+            HBox spacer = new HBox();
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+            String closeSide = closeBinder.get();
+            Label closeBtn = new Label("✕");
+            closeBtn.getStyleClass().add("jfx-demo-modal-close");
+            if ("left".equals(closeSide)) {
+                header.getChildren().addAll(closeBtn, spacer, titleLabel);
+            } else if ("none".equals(closeSide)) {
+                header.getChildren().addAll(spacer, titleLabel, spacer);
+            } else {
+                header.getChildren().addAll(titleLabel, spacer, closeBtn);
+            }
+            preview.getChildren().add(header);
+
+            // body
+            Label body = new Label(emptyToDefault(contentBinder.get(), "（空内容）"));
+            body.getStyleClass().add("jfx-demo-modal-body");
+            body.setWrapText(true);
+            preview.getChildren().add(body);
+
+            // footer
+            HBox footer = new HBox();
+            footer.getStyleClass().add("jfx-demo-modal-footer");
+            ButtonAnt cancelBtn = ButtonAnt.create("取消").type(ButtonAnt.Type.DEFAULT);
+            ButtonAnt openBtn = ButtonAnt.create(emptyToDefault(okTextBinder.get(), "确定"))
+                    .type(ButtonAnt.Type.PRIMARY);
+            // 真实打开按钮：点击后弹一个真实 Modal（用当前控件配置）
+            openBtn.onClick(e -> {
+                ModalAnt.Builder modal = ModalAnt.create()
+                        .title(emptyToDefault(titleBinder.get(), "交互演示"))
+                        .content(emptyToDefault(contentBinder.get(), "（空内容）"))
+                        .width(parseWidth(widthBinder.get()));
+                String cs = closeBinder.get();
+                if ("left".equals(cs)) modal.closePlacement(ModalAnt.ClosePlacement.LEFT);
+                else if ("none".equals(cs)) modal.closePlacement(ModalAnt.ClosePlacement.NONE);
+                String ot = okTextBinder.get();
+                if (!ot.isEmpty()) modal.okText(ot);
+                modal.build().open((Node) e.getSource());
+            });
+            footer.getChildren().addAll(cancelBtn, openBtn.build());
+            preview.getChildren().add(footer);
+
+            StackPane wrapper = new StackPane(preview);
+            wrapper.setAlignment(Pos.CENTER);
+            wrapper.getStyleClass().add("jfx-demo-modal-wrapper");
+            return wrapper;
+        };
+        return Demos.section("5. 交互演示",
+                "通过左侧控件实时改变 Modal 的 title / content / width / closePlacement / okText，预览卡片实时更新。",
+                PlayGround.rebindRebuild(factory, null,
+                        PlayGround.row("标题", PlayGround.textField(titleBinder, "交互演示", "输入标题")),
+                        PlayGround.row("内容", PlayGround.textField(contentBinder, "这是一个模拟预览。", "输入内容文本")),
+                        PlayGround.row("宽度", PlayGround.segmented(widthBinder,
+                                PlayGround.entry("400", "400"),
+                                PlayGround.entry("520", "520"),
+                                PlayGround.entry("720", "720"),
+                                PlayGround.entry("900", "900"))),
+                        PlayGround.row("关闭按钮", PlayGround.segmented(closeBinder,
+                                PlayGround.entry("right", "右上"),
+                                PlayGround.entry("left", "左上"),
+                                PlayGround.entry("none", "不显示"))),
+                        PlayGround.row("确定按钮文本", PlayGround.textField(okTextBinder, "确定", "输入按钮文本"))));
+    }
+
+    private static int parseWidth(String v) {
+        if (v == null) return 520;
+        try { return Integer.parseInt(v); } catch (NumberFormatException e) { return 520; }
+    }
+
+    private static String emptyToDefault(String v, String def) {
+        return (v == null || v.isEmpty()) ? def : v;
     }
 }

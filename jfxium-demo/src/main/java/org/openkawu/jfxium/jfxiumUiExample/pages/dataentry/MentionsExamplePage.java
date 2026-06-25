@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 
 import org.openkawu.jfxium.component.control.MentionsAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -34,7 +35,7 @@ public class MentionsExamplePage extends VBoxAnt {
                 .option("wangwu", "王五")
                 .option("zhaoliu", "赵六")
                 .option("sunqi", "孙七")
-                .onSelect(value -> System.out.println("选中了：" + value))
+                .onSelect(value -> MessageAnt.info("选中了：" + value))
                 .rows(4)
                 .build();
         demo.setMaxHeight(120);
@@ -46,7 +47,7 @@ public class MentionsExamplePage extends VBoxAnt {
                     .option("zhangsan", "张三")
                     .option("lisi", "李四")
                     .option("wangwu", "王五")
-                    .onSelect(value -> System.out.println(value))
+                    .onSelect(value -> MessageAnt.info("选中了：" + value))
                     .rows(4)
                     .build();
                 """;
@@ -64,7 +65,7 @@ public class MentionsExamplePage extends VBoxAnt {
                 .option("feature", "新功能")
                 .option("docs", "文档")
                 .option("refactor", "重构")
-                .onSelect(value -> System.out.println("标签：" + value))
+                .onSelect(value -> MessageAnt.info("标签：" + value))
                 .rows(4)
                 .build();
         demo.setMaxHeight(120);
@@ -76,7 +77,7 @@ public class MentionsExamplePage extends VBoxAnt {
                     .option("urgent", "紧急")
                     .option("bug", "缺陷")
                     .option("feature", "新功能")
-                    .onSelect(value -> System.out.println(value))
+                    .onSelect(value -> MessageAnt.info("标签：" + value))
                     .rows(4)
                     .build();
                 """;

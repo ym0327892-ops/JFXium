@@ -33,18 +33,18 @@ public class ProjectFeatureExamplePage extends VBoxAnt {
                 "适合项目首页「为什么选择 XXX」区域、产品 Landing Page 的特性矩阵、README 首页的功能亮点。",
                 Demos.column(
                         Demos.labeled("首页定位", TypographyAnt.text("用卡片网格快速传达项目核心价值。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("复用方式", TypographyAnt.text("不同项目只需要替换特性列表，不需要重写布局。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("通用性", TypographyAnt.text("项目展示页、产品介绍页、README 首页都可以直接复用。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }
 
     private Node previewSection() {
         Label actionState = TypographyAnt.text("动作：未触发")
-                .type(TypographyAnt.Type.SECONDARY)
+                .type(TypographyAnt.TextColor.SECONDARY)
                 .build();
 
         Node featurePanel = ProjectFeatureTemplate.create()
@@ -78,7 +78,7 @@ public class ProjectFeatureExamplePage extends VBoxAnt {
                         .feature("11 套主题", "多种风格一键切换", IconAnt.Path.DASHBOARD)
                         .feature("97+ 组件", "控件、组合、弹层全覆盖", IconAnt.Path.HOME)
                         .feature("零 FXML", "纯 Java 构建 UI", IconAnt.Path.FILE)
-                        .onAction(key -> System.out.println(key))
+                        .onAction(key -> MessageAnt.info("点击了特性: " + key))
                         .build();
                 """;
 
@@ -88,9 +88,9 @@ public class ProjectFeatureExamplePage extends VBoxAnt {
                 code,
                 Demos.column(
                         Demos.labeled("复用建议", TypographyAnt.text("配合 ProjectShowcaseTemplate 使用，把特性网格放在首页中间位置。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("继续整合", TypographyAnt.text("如果多个项目都用特性网格，可以把特性数据从页面层迁到配置层。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }

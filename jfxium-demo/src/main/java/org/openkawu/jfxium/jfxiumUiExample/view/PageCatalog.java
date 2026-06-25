@@ -48,7 +48,6 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TimelineExamplePage
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TitledPaneExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TreeExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TreeTableExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.AlertExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.ContextMenuExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.DrawerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.FloatButtonExamplePage;
@@ -233,7 +232,7 @@ final class PageCatalog {
         register(registry, "feedback.notification", "Notification 通知提醒", PageRegistry.Category.FEEDBACK, NotificationExamplePage::new);
         register(registry, UiExampleConstants.ROUTE_MODAL, "Modal 模态对话框", PageRegistry.Category.FEEDBACK, ModalExamplePage::new);
         register(registry, "feedback.drawer", "Drawer 抽屉", PageRegistry.Category.FEEDBACK, DrawerExamplePage::new);
-        register(registry, "feedback.alert", "Alert 警告提示", PageRegistry.Category.FEEDBACK, AlertExamplePage::new);
+        // AlertAnt 已并入 FormExamplePage 第 9 个 section 演示
         register(registry, "feedback.spin", "Spin 加载", PageRegistry.Category.FEEDBACK, SpinExamplePage::new);
         register(registry, "feedback.popconfirm", "Popconfirm 确认", PageRegistry.Category.FEEDBACK, PopconfirmExamplePage::new);
         register(registry, "feedback.result", "Result 结果页", PageRegistry.Category.FEEDBACK, ResultExamplePage::new);

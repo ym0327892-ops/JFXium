@@ -3,11 +3,12 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
+import org.openkawu.jfxium.component.control.MenuButtonAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.component.control.MenuButtonAnt;
 
 /**
  * MenuButton 菜单按钮 —— 基础菜单 / 箭头样式。
@@ -25,17 +26,17 @@ public class MenuButtonExamplePage extends VBoxAnt {
 
     private Node basicSection() {
         Node demo = MenuButtonAnt.create("批量操作")
-                .item("导出", e -> System.out.println("导出"))
-                .item("删除", e -> System.out.println("删除"))
+                .item("导出", e -> MessageAnt.info("已点击菜单项: 导出"))
+                .item("删除", e -> MessageAnt.info("已点击菜单项: 删除"))
                 .separator()
-                .item("移动到...", e -> System.out.println("移动"))
+                .item("移动到...", e -> MessageAnt.info("已点击菜单项: 移动到..."))
                 .build();
         String code = """
                 MenuButtonAnt.create("批量操作")
-                        .item("导出", e -> exportSelected())
-                        .item("删除", e -> deleteSelected())
+                        .item("导出", e -> MessageAnt.info("已点击菜单项: 导出"))
+                        .item("删除", e -> MessageAnt.info("已点击菜单项: 删除"))
                         .separator()
-                        .item("移动到...", e -> moveSelected())
+                        .item("移动到...", e -> MessageAnt.info("已点击菜单项: 移动到..."))
                         .build();
                 """;
         return Demos.sectionWithCode("1. 基础菜单",
@@ -45,21 +46,21 @@ public class MenuButtonExamplePage extends VBoxAnt {
     private Node arrowSection() {
         Node demo = Demos.row(
                 MenuButtonAnt.create("Chevron")
-                        .item("选项一", e -> {}).item("选项二", e -> {}).build(),
+                        .item("选项一", e -> MessageAnt.info("已点击菜单项: 选项一")).item("选项二", e -> MessageAnt.info("已点击菜单项: 选项二")).build(),
                 MenuButtonAnt.create("Triangle")
                         .arrowStyle(MenuButtonAnt.ArrowStyle.TRIANGLE)
-                        .item("选项一", e -> {}).item("选项二", e -> {}).build(),
+                        .item("选项一", e -> MessageAnt.info("已点击菜单项: 选项一")).item("选项二", e -> MessageAnt.info("已点击菜单项: 选项二")).build(),
                 MenuButtonAnt.create("无箭头")
                         .noArrow()
-                        .item("选项一", e -> {}).item("选项二", e -> {}).build()
+                        .item("选项一", e -> MessageAnt.info("已点击菜单项: 选项一")).item("选项二", e -> MessageAnt.info("已点击菜单项: 选项二")).build()
         );
         String code = """
-                MenuButtonAnt.create("Chevron").item("选项一", e -> {}).build();
+                MenuButtonAnt.create("Chevron").item("选项一", e -> MessageAnt.info("已点击菜单项: 选项一")).build();
                 MenuButtonAnt.create("Triangle")
                         .arrowStyle(MenuButtonAnt.ArrowStyle.TRIANGLE)
-                        .item("选项一", e -> {}).build();
+                        .item("选项一", e -> MessageAnt.info("已点击菜单项: 选项一")).build();
                 MenuButtonAnt.create("无箭头").noArrow()
-                        .item("选项一", e -> {}).build();
+                        .item("选项一", e -> MessageAnt.info("已点击菜单项: 选项一")).build();
                 """;
         return Demos.sectionWithCode("2. 箭头样式",
                 "arrowStyle 切换 CHEVRON / TRIANGLE，noArrow 隐藏箭头。", code, demo);

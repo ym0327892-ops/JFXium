@@ -52,6 +52,26 @@
   -fx-font-size: 13px;
 }
 
+/* Grid 响应式示例：更明显的卡片式内容层 */
+.jfx-demo-grid-card {
+  -fx-alignment: center;
+  -fx-min-height: 92;
+}
+
+.jfx-demo-grid-card .jfx-demo-grid-card-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: 700;
+}
+
+.jfx-demo-grid-card .jfx-demo-grid-card-detail {
+  -fx-font-size: 12px;
+  -fx-opacity: 0.9;
+}
+
+.jfx-demo-grid-hint {
+  -fx-padding: 4 0 0 0;
+}
+
 /* HBarAnt 自定义演示：蓝色强调背景 */
 .jfx-demo-bar-accent {
   -fx-background-color: -color-accent-subtle;
@@ -61,7 +81,7 @@
 /* ContextMenu / Spin 等组件演示区：虚线边框目标区域 */
 .jfx-demo-dashed-border {
   -fx-border-style: dashed;
-  -fx-border-color: -color-border;
+  -fx-border-color: -color-border-default;
   -fx-border-radius: 8;
   -fx-background-radius: 8;
   -fx-alignment: center;
@@ -87,4 +107,175 @@
   -fx-background-insets: 0, 1;
   -fx-background-radius: 6, 5;
   -fx-padding: 1;
+}
+
+/* ============================================
+   PlayGround 交互演示区（M19.PlayGround）
+   ============================================
+   用于把"控制区 + 展示区"两栏布局封装成统一视觉。
+   左侧：控件区（Segmented/Switch/Input...），垂直铺开
+   右侧：展示区（实时反映控制区状态）
+   类名延续 jfx-demo- 前缀（仅 demo 使用，不进主题）。
+   ============================================ */
+
+/* 整体外壳：横向两栏，控制区定宽 + 展示区自动填充 */
+.jfx-demo-playground {
+  -fx-spacing: 0;
+  -fx-min-height: 200;
+  -fx-alignment: top-left;
+}
+
+/* 控制区：自适应宽度 + 底色 + 右边框分隔
+   宽度策略：min=240（保底，避免单选项页面控制区过窄）
+            max=560（容纳 7 选项 Segmented ~490px 的固有宽度）
+            内容在 240~560 之间时，宽度跟内容走（intrinsic size）。
+            超 max 时由 row 的 FlowPaneAnt 自动换行
+            （label 上方，control 下方），不再依赖 HBox 压缩。 */
+.jfx-demo-playground-control {
+  -fx-pref-width: 240;
+  -fx-min-width: 240;
+  -fx-max-width: 560;
+  -fx-padding: 16;
+  -fx-spacing: 12;
+  -fx-background-color: -color-bg-layout;
+  -fx-border-color: transparent -color-border-muted transparent transparent;
+  -fx-border-width: 0 1 0 0;
+  -fx-border-style: solid;
+}
+
+/* 控制区单行（FlowPaneAnt：label + control 自动 wrap）
+   用 -fx-hgap/-fx-vgap（FlowPane 专用）替代 -fx-spacing。
+   hgap=8 与原 HBox(8) 保持一致；vgap=4 让 wrap 时上下间距更紧凑。 */
+.jfx-demo-playground-row {
+  -fx-hgap: 8;
+  -fx-vgap: 4;
+  -fx-alignment: center-left;
+}
+
+/* 控制区小标签：放在控件上方或同行，灰色弱化 */
+.jfx-demo-playground-label {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 12px;
+  -fx-min-width: 56;
+}
+
+/* 控制区主标签：行首、稍大、占位宽度一致 */
+.jfx-demo-playground-row-label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 13px;
+  -fx-min-width: 56;
+  -fx-font-weight: 500;
+}
+
+/* 展示区：填充剩余空间 + 浅底色 + 居中对齐 */
+.jfx-demo-playground-display {
+  -fx-padding: 24;
+  -fx-spacing: 12;
+  -fx-alignment: center;
+  -fx-background-color: -color-bg-default;
+  -fx-min-height: 200;
+  -fx-pref-height: 240;
+}
+
+/* 展示区标题（H6 弱化） */
+.jfx-demo-playground-display-title {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 11px;
+  -fx-padding: 0 0 4 0;
+}
+
+/* 当前值徽章：放在控制区顶部，告诉用户当前生效配置 */
+.jfx-demo-playground-badge {
+  -fx-padding: 8 12 8 12;
+  -fx-background-color: -color-accent-subtle;
+  -fx-background-radius: 4;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-size: 12px;
+  -fx-wrap-text: true;
+}
+
+/* 控制区分组标题（H6 弱化） */
+.jfx-demo-playground-section-label {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 11px;
+  -fx-font-weight: 600;
+  -fx-padding: 4 0 2 0;
+}
+
+/* Modal 示例中的预览卡片 */
+.jfx-demo-modal-wrapper {
+  -fx-padding: 24;
+  -fx-min-height: 220;
+}
+
+.jfx-demo-modal-preview {
+  -fx-background-color: -color-bg-container;
+  -fx-background-radius: 8;
+  -fx-border-color: -color-border-muted;
+  -fx-border-radius: 8;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 16, 0, 0, 4);
+}
+
+.jfx-demo-modal-header {
+  -fx-padding: 16;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+  -fx-alignment: center-left;
+}
+
+.jfx-demo-modal-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-demo-modal-close {
+  -fx-text-fill: -color-fg-subtle;
+  -fx-cursor: hand;
+  -fx-font-size: 14px;
+}
+
+.jfx-demo-modal-close:hover {
+  -fx-text-fill: -color-fg-default;
+}
+
+.jfx-demo-modal-body {
+  -fx-padding: 24;
+  -fx-text-fill: -color-fg-muted;
+  -fx-wrap-text: true;
+}
+
+.jfx-demo-modal-footer {
+  -fx-spacing: 8;
+  -fx-padding: 12 16;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1 0 0 0;
+  -fx-alignment: center-right;
+}
+
+/* 紧凑模式：缩小控制区 padding/间距，让 Playground 更紧致 */
+.jfx-demo-playground.jfx-demo-playground-compact .jfx-demo-playground-control {
+  -fx-padding: 12;
+  -fx-spacing: 8;
+}
+
+.jfx-demo-playground.jfx-demo-playground-compact .jfx-demo-playground-display {
+  -fx-padding: 16;
+  -fx-min-height: 160;
+  -fx-pref-height: 200;
+}
+
+/* PlayGround 控制区 TextField：占主区宽度，不抢行高 */
+.jfx-demo-playground-textfield {
+  -fx-pref-width: 200;
+  -fx-min-width: 160;
+  -fx-max-width: 240;
+}
+
+/* 兜底：PlayGround 控制区内的 Segmented 文字不换行、不截断
+   原因：库内 .jfx-segmented-item-label 默认 wrap-text=true。
+   现在 row 已换 FlowPaneAnt（label/control 自动 wrap），控件本身不会再被压缩；
+   这里进一步禁止 segmented 内部 label 换行，让 Segmented 保持「横向一字排开」的视觉一致性。 */
+.jfx-demo-playground .jfx-segmented .jfx-segmented-item-label {
+  -fx-wrap-text: false;
 }

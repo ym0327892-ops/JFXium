@@ -3,16 +3,18 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Node;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.composite.ProgressAnt;
+
+import java.util.function.Supplier;
 
 /**
  * Progress 进度条 —— 基础百分比 / 状态色 / 圆形。
@@ -23,15 +25,15 @@ public class ProgressExamplePage extends VBoxAnt {
         spacing(0).children(PageTemplate.create()
                 .title("Progress 进度条")
                 .description("展示操作的当前进度，支持条形和圆形两种形态。")
-                .sections(basicSection(), statusSection(), circleSection(), dynamicSection())
+                .sections(basicSection(), statusSection(), circleSection(), dynamicSection(), playgroundSection())
                 .padding(24)
                 .build());
     }
 
     private Node basicSection() {
-        HBox p30 = ProgressAnt.bar().progress(0.3).build();
-        HBox p70 = ProgressAnt.bar().progress(0.7).build();
-        HBox p100 = ProgressAnt.bar().progress(1.0).build();
+        Node p30 = ProgressAnt.bar().progress(0.3).build();
+        Node p70 = ProgressAnt.bar().progress(0.7).build();
+        Node p100 = ProgressAnt.bar().progress(1.0).build();
         Node demo = Demos.column(p30, p70, p100);
         String code = """
                 ProgressAnt.bar().progress(0.3).build();
@@ -42,9 +44,9 @@ public class ProgressExamplePage extends VBoxAnt {
     }
 
     private Node statusSection() {
-        HBox success = ProgressAnt.bar().progress(1.0).status(ProgressAnt.Status.SUCCESS).build();
-        HBox warning = ProgressAnt.bar().progress(0.6).status(ProgressAnt.Status.WARNING).build();
-        HBox error = ProgressAnt.bar().progress(0.4).status(ProgressAnt.Status.ERROR).build();
+        Node success = ProgressAnt.bar().progress(1.0).status(ProgressAnt.Status.SUCCESS).build();
+        Node warning = ProgressAnt.bar().progress(0.6).status(ProgressAnt.Status.WARNING).build();
+        Node error = ProgressAnt.bar().progress(0.4).status(ProgressAnt.Status.ERROR).build();
         Node demo = Demos.column(success, warning, error);
         String code = """
                 ProgressAnt.bar().progress(1.0).status(ProgressAnt.Status.SUCCESS).build();
@@ -56,9 +58,9 @@ public class ProgressExamplePage extends VBoxAnt {
     }
 
     private Node circleSection() {
-        VBox c1 = ProgressAnt.circle().progress(0.75).size(80).build();
-        VBox c2 = ProgressAnt.circle().progress(1.0).size(80).status(ProgressAnt.Status.SUCCESS).build();
-        VBox c3 = ProgressAnt.circle().progress(0.5).size(60).status(ProgressAnt.Status.ERROR).build();
+        Node c1 = ProgressAnt.circle().progress(0.75).size(80).build();
+        Node c2 = ProgressAnt.circle().progress(1.0).size(80).status(ProgressAnt.Status.SUCCESS).build();
+        Node c3 = ProgressAnt.circle().progress(0.5).size(60).status(ProgressAnt.Status.ERROR).build();
         Node demo = Demos.row(c1, c2, c3);
         String code = """
                 ProgressAnt.circle().progress(0.75).size(80).build();
@@ -70,8 +72,8 @@ public class ProgressExamplePage extends VBoxAnt {
     }
 
     private Node dynamicSection() {
-        HBox bar = ProgressAnt.bar().progress(0.0).build();
-        VBox circle = ProgressAnt.circle().progress(0.0).size(80).build();
+        Node bar = ProgressAnt.bar().progress(0.0).build();
+        Node circle = ProgressAnt.circle().progress(0.0).size(80).build();
         ProgressAnt.Controller barController = ProgressAnt.controllerOf(bar);
         ProgressAnt.Controller circleController = ProgressAnt.controllerOf(circle);
 
@@ -104,10 +106,10 @@ public class ProgressExamplePage extends VBoxAnt {
             circleController.setProgress(0.0);
         });
 
-        VBox barRow = Demos.column(bar, playBtn, resetBtn);
+        Node barRow = Demos.column(bar, playBtn, resetBtn);
         Node demo = Demos.row(barRow, circle);
         String code = """
-                HBox bar = ProgressAnt.bar().progress(0.0).build();
+                Node bar = ProgressAnt.bar().progress(0.0).build();
                 ProgressAnt.Controller ctrl = ProgressAnt.controllerOf(bar);
                 // ... Timeline 或业务回调
                 ctrl.setProgress(p);
@@ -115,5 +117,75 @@ public class ProgressExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("4. 动态演示",
                 "点击按钮模拟进度从 0% → 100% 的动画效果，运行时通过 Controller 更新进度。",
                 code, demo);
+    }
+
+    // ============================================================
+    // 5. 交互演示 (PlayGround)
+    // ============================================================
+
+    /**
+     * 可交互演示区 —— 实时改变 Progress 的 3 个维度：类型（条形/圆形）/ 进度 / 状态色。
+     *
+     * <p>ProgressAnt 的 {@code bar()} / {@code circle()} 是两个不同的 Builder，节点不同；
+     * Controller 只暴露 {@code setProgress / setStatus}，不能换 Builder / 改 size。
+     * 所以采用 {@link PlayGround#rebuildRebuild}：任一 binder 变化都重 build 节点。</p>
+     */
+    private Node playgroundSection() {
+        // 1. 状态盒子
+        Binder<String> type    = PlayGround.binder("line");
+        Binder<String> percent = PlayGround.binder("50");
+        Binder<String> status  = PlayGround.binder("normal");
+
+        // 2. display 工厂 —— 根据 type 选择 bar/circle Builder 重 build
+        Supplier<Node> factory = () -> {
+            double p = parsePercent(percent.get());
+            ProgressAnt.Status s = parseStatus(status.get());
+            Node node;
+            if ("circle".equals(type.get())) {
+                node = ProgressAnt.circle().progress(p).status(s).size(80).build();
+            } else {
+                node = ProgressAnt.bar().progress(p).status(s).build();
+            }
+            return node;
+        };
+
+        // 3. 串起来
+        return Demos.section("5. 交互演示",
+                "通过左侧控件实时改变 Progress 的类型 / 进度 / 状态色 —— bar() 与 circle() 是不同 Builder，type 变化必须重建。",
+                PlayGround.rebindRebuild(factory, null,
+                        PlayGround.row("类型", PlayGround.segmented(type,
+                                PlayGround.entry("line",   "条形"),
+                                PlayGround.entry("circle", "圆形"))),
+                        PlayGround.row("进度", PlayGround.segmented(percent,
+                                PlayGround.entry("0",   "0%"),
+                                PlayGround.entry("25",  "25%"),
+                                PlayGround.entry("50",  "50%"),
+                                PlayGround.entry("75",  "75%"),
+                                PlayGround.entry("100", "100%"))),
+                        PlayGround.row("状态", PlayGround.segmented(status,
+                                PlayGround.entry("normal",  "默认"),
+                                PlayGround.entry("success", "成功"),
+                                PlayGround.entry("warning", "警告"),
+                                PlayGround.entry("error",   "错误")))));
+    }
+
+    // ============================================================
+    // 参数解析 helpers
+    // ============================================================
+
+    private static double parsePercent(String v) {
+        if (v == null) return 0;
+        try { return Math.max(0, Math.min(100, Double.parseDouble(v))) / 100.0; }
+        catch (NumberFormatException e) { return 0; }
+    }
+
+    private static ProgressAnt.Status parseStatus(String v) {
+        if (v == null) return ProgressAnt.Status.NORMAL;
+        return switch (v) {
+            case "success" -> ProgressAnt.Status.SUCCESS;
+            case "warning" -> ProgressAnt.Status.WARNING;
+            case "error"   -> ProgressAnt.Status.ERROR;
+            default        -> ProgressAnt.Status.NORMAL;
+        };
     }
 }

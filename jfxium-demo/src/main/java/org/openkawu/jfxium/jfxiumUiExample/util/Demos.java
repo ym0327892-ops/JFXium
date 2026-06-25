@@ -165,7 +165,7 @@ public final class Demos {
      * 控件前面挂个小标签（用于"label: 控件"的成对展示）。
      */
     public static Node labeled(String label, Node control) {
-        Label l = TypographyAnt.text(label).type(TypographyAnt.Type.SECONDARY).build();
+        Label l = TypographyAnt.text(label).type(TypographyAnt.TextColor.SECONDARY).build();
         return HBoxAnt.create()
                 .spacing(8)
                 .align(javafx.geometry.Pos.CENTER_LEFT)
@@ -183,7 +183,7 @@ public final class Demos {
         VBoxAnt pane = VBoxAnt.create()
                 .padding(24)
                 .align(javafx.geometry.Pos.CENTER)
-                .children(TypographyAnt.text(text).type(TypographyAnt.Type.SECONDARY).build());
+                .children(TypographyAnt.text(text).type(TypographyAnt.TextColor.SECONDARY).build());
         pane.setMinHeight(80);
         pane.background(bg != null ? bg : Background.SUBTLE);
         return pane;

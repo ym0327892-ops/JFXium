@@ -2,9 +2,10 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.layout.HBox;
 
 import org.openkawu.jfxium.component.control.ListViewAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -30,8 +31,8 @@ public class ListViewExamplePage extends VBoxAnt {
         ListViewAnt<String> demo = ListViewAnt.<String>create()
                 .items("项目 Alpha", "项目 Beta", "项目 Gamma", "项目 Delta", "项目 Epsilon")
                 .selectionMode(SelectionMode.SINGLE)
-                .onSelect(item -> System.out.println("选中: " + item))
-                .onDoubleClick(item -> System.out.println("双击: " + item))
+                .onSelect(item -> MessageAnt.info("选中: " + item))
+                .onDoubleClick(item -> MessageAnt.info("双击: " + item))
                 .fixedCellSize(32)
                 .build();
         demo.setPrefHeight(170);
@@ -40,8 +41,8 @@ public class ListViewExamplePage extends VBoxAnt {
                 ListViewAnt.<String>create()
                     .items("项目 Alpha", "项目 Beta", "项目 Gamma")
                     .selectionMode(SelectionMode.SINGLE)
-                    .onSelect(item -> System.out.println("选中: " + item))
-                    .onDoubleClick(item -> System.out.println("双击: " + item))
+                    .onSelect(item -> MessageAnt.info("选中: " + item))
+                    .onDoubleClick(item -> MessageAnt.info("双击: " + item))
                     .fixedCellSize(32)
                     .build();
                 """;
@@ -65,7 +66,7 @@ public class ListViewExamplePage extends VBoxAnt {
                         .fixedCellSize(32)
                         .build()
         );
-        if (demo instanceof HBox row) {
+        if (demo instanceof HBoxAnt row) {
             row.setSpacing(20);
         }
         String code = """

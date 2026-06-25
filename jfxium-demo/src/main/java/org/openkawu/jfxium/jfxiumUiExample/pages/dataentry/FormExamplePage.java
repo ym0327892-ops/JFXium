@@ -1,17 +1,27 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Window;
 
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.form.Rule;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
+import org.openkawu.jfxium.component.overlay.AlertAnt;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.composite.SegmentedAnt;
 import org.openkawu.jfxium.component.composite.FormAnt;
-import org.openkawu.jfxium.component.composite.AlertAnt;
+import org.openkawu.jfxium.core.token.Size;
+
+import java.util.function.Supplier;
 
 /**
  * Form 表单 —— 布局 / 校验 / 联动 / header / footer / section 分段。
@@ -30,8 +40,11 @@ public class FormExamplePage extends VBoxAnt {
                         validateSection(),
                         linkedSection(),
                         headerFooterSection(),
+                        footerAlignSection(),
                         sectionDemoSection(),
-                        layoutCompareSection()
+                        layoutCompareSection(),
+                        playgroundSection(),
+                        alertAntSection()
                 )
                 .padding(24)
                 .build());
@@ -137,7 +150,7 @@ public class FormExamplePage extends VBoxAnt {
     private Node headerFooterSection() {
         Node form = FormAnt.create()
                 .layout(FormAnt.Layout.HORIZONTAL)
-                .header(AlertAnt.info("请仔细填写以下信息，带 * 为必填项。").build())
+                .header(infoBanner("请仔细填写以下信息，带 * 为必填项。"))
                 .item("姓名", InputAnt.create().placeholder("真实姓名").build(), true)
                 .item("手机", InputAnt.create().placeholder("11 位手机号").build(), true)
                 .footer(
@@ -149,7 +162,7 @@ public class FormExamplePage extends VBoxAnt {
                 .build();
         String code = """
                 FormAnt.create()
-                        .header(AlertAnt.info("请仔细填写以下信息").build())
+                        .header(infoBanner("请仔细填写以下信息"))
                         .item("姓名", nameField, true)
                         .item("手机", phoneField, true)
                         .footer(cancelBtn, resetBtn, submitBtn)   // 变长重载
@@ -160,7 +173,40 @@ public class FormExamplePage extends VBoxAnt {
                 code, form);
     }
 
-    /** 5. section 分段标题。 */
+    /** 5. footer 对齐演示。 */
+    private Node footerAlignSection() {
+        BorderPane preview = new BorderPane();
+        preview.setCenter(buildAlignedFooterForm(Pos.CENTER_RIGHT));
+
+        Node alignSwitch = SegmentedAnt.create()
+                .option("left", "左对齐")
+                .option("center", "居中")
+                .option("right", "右对齐")
+                .selected("right")
+                .onChange(value -> preview.setCenter(buildAlignedFooterForm(resolveFooterAlign(value))))
+                .build();
+
+        String code = """
+                FormAnt.create()
+                        .layout(FormAnt.Layout.HORIZONTAL)
+                        .item("姓名", nameField, true)
+                        .item("手机", phoneField, true)
+                        .footerAlign(Pos.CENTER_RIGHT)
+                        .footer(cancelBtn, resetBtn, submitBtn)
+                        .build();
+                """;
+
+        return Demos.sectionWithCode("5. footer 对齐",
+                "footerAlign(Pos.*) 控制按钮组在 footer 区内的对齐方式；默认是右对齐。",
+                code,
+                Demos.column(
+                        TypographyAnt.text("切换下面的选项，观察按钮组在 footer 中的对齐变化。")
+                                .type(TypographyAnt.TextColor.SECONDARY).build(),
+                        alignSwitch,
+                        preview));
+    }
+
+    /** 6. section 分段标题。 */
     private Node sectionDemoSection() {
         Node form = FormAnt.create()
                 .layout(FormAnt.Layout.HORIZONTAL)
@@ -187,12 +233,12 @@ public class FormExamplePage extends VBoxAnt {
                         .footer(saveBtn)
                         .build();
                 """;
-        return Demos.sectionWithCode("5. section 分段",
+        return Demos.sectionWithCode("6. section 分段",
                 "section(String) 在长表单中按业务语义分组字段。",
                 code, form);
     }
 
-    /** 6. 三种 layout 对比。 */
+    /** 7. 三种 layout 对比。 */
     private Node layoutCompareSection() {
         Node horizontal = FormAnt.create()
                 .layout(FormAnt.Layout.HORIZONTAL)
@@ -216,11 +262,167 @@ public class FormExamplePage extends VBoxAnt {
                 FormAnt.create().layout(FormAnt.Layout.VERTICAL)...build();
                 FormAnt.create().layout(FormAnt.Layout.INLINE)...build();
                 """;
-        return Demos.sectionWithCode("6. 三种 layout 对比",
+        return Demos.sectionWithCode("7. 三种 layout 对比",
                 "HORIZONTAL（标签左 + 控件右）/ VERTICAL（标签上 + 控件下）/ INLINE（一行内联）。",
                 code, Demos.column(
                         TypographyAnt.text("HORIZONTAL:").build(), horizontal,
                         TypographyAnt.text("VERTICAL:").build(), vertical,
                         TypographyAnt.text("INLINE:").build(), inline));
+    }
+
+    private Node buildAlignedFooterForm(Pos footerAlign) {
+        return FormAnt.create()
+                .layout(FormAnt.Layout.HORIZONTAL)
+                .item("姓名", InputAnt.create().placeholder("请输入姓名").build(), true)
+                .item("手机", InputAnt.create().placeholder("请输入手机号").build(), true)
+                .footerAlign(footerAlign)
+                .footer(
+                        ButtonAnt.create("取消").build(),
+                        ButtonAnt.create("重置").build(),
+                        ButtonAnt.create("提交").type(ButtonAnt.Type.PRIMARY)
+                                .onClick(e -> MessageAnt.success("已提交")).build()
+                )
+                .build();
+    }
+
+    private static Pos resolveFooterAlign(String value) {
+        if ("left".equals(value)) {
+            return Pos.CENTER_LEFT;
+        }
+        if ("center".equals(value)) {
+            return Pos.CENTER;
+        }
+        return Pos.CENTER_RIGHT;
+    }
+
+    /** 8. 交互演示：实时切换 layout / size / labelAlign / colon。 */
+    private Node playgroundSection() {
+        Binder<String> layoutBinder = PlayGround.binder("horizontal");
+        Binder<String> sizeBinder = PlayGround.binder("default");
+        Binder<String> labelAlignBinder = PlayGround.binder("right");
+        Binder<String> colonBinder = PlayGround.binder("on");
+        Supplier<Node> factory = () -> FormAnt.create()
+                .layout(parseLayout(layoutBinder.get()))
+                .size(parseSize(sizeBinder.get()))
+                .labelAlign(parseAlign(labelAlignBinder.get()))
+                .colon("on".equals(colonBinder.get()))
+                .item("用户名", InputAnt.create().placeholder("请输入用户名").build(), true)
+                .item("邮箱", InputAnt.create().placeholder("请输入邮箱").build(), true)
+                .item("备注", InputAnt.create().placeholder("可选").build())
+                .footer(ButtonAnt.create("提交").type(ButtonAnt.Type.PRIMARY)
+                        .onClick(e -> MessageAnt.success("已提交")).build())
+                .build();
+        return Demos.section("8. 交互演示",
+                "通过左侧控件实时改变 Form 的 layout / size / labelAlign / colon，右侧表单实时重建反映配置。",
+                PlayGround.rebindRebuild(factory, null,
+                        PlayGround.row("布局", PlayGround.segmented(layoutBinder,
+                                PlayGround.entry("horizontal", "水平"),
+                                PlayGround.entry("vertical", "垂直"),
+                                PlayGround.entry("inline", "内联"))),
+                        PlayGround.row("尺寸", PlayGround.segmented(sizeBinder,
+                                PlayGround.entry("small", "小"),
+                                PlayGround.entry("default", "默认"),
+                                PlayGround.entry("large", "大"))),
+                        PlayGround.row("标签对齐", PlayGround.segmented(labelAlignBinder,
+                                PlayGround.entry("right", "右对齐"),
+                                PlayGround.entry("left", "左对齐"))),
+                        PlayGround.row("冒号", PlayGround.segmented(colonBinder,
+                                PlayGround.entry("on", "显示"),
+                                PlayGround.entry("off", "隐藏")))));
+    }
+
+    private static FormAnt.Layout parseLayout(String v) {
+        if ("vertical".equals(v)) return FormAnt.Layout.VERTICAL;
+        if ("inline".equals(v)) return FormAnt.Layout.INLINE;
+        return FormAnt.Layout.HORIZONTAL;
+    }
+
+    private static Size parseSize(String v) {
+        if ("small".equals(v)) return Size.SMALL;
+        if ("large".equals(v)) return Size.LARGE;
+        return Size.DEFAULT;
+    }
+
+    private static FormAnt.Align parseAlign(String v) {
+        if ("left".equals(v)) return FormAnt.Align.LEFT;
+        return FormAnt.Align.RIGHT;
+    }
+
+    /** 9. AlertAnt 独立 Stage 模态弹窗（继承 JavaFX 原生 Alert）。 */
+    private Node alertAntSection() {
+        // 当前 Scene 的 owner 窗口：弹窗会 initOwner 该窗口并 APPLICATION_MODAL 阻塞
+        Window owner = getScene() != null ? getScene().getWindow() : null;
+
+        // info：信息提示（accent 蓝色）
+        Node infoBtn = ButtonAnt.create("info")
+                .type(ButtonAnt.Type.PRIMARY)
+                .onClick(e -> AlertAnt.info(
+                        "操作成功",
+                        "数据已保存到服务器，下次刷新即可生效。",
+                        owner).showAndWait())
+                .build();
+
+        // warning：警告（warning 黄色）
+        Node warningBtn = ButtonAnt.create("warning")
+                .type(ButtonAnt.Type.WARNING)
+                .onClick(e -> AlertAnt.warning(
+                        "注意",
+                        "当前网络不稳定，部分功能可能受影响。",
+                        owner).showAndWait())
+                .build();
+
+        // error：错误（danger 红色）
+        Node errorBtn = ButtonAnt.create("error")
+                .type(ButtonAnt.Type.DANGER)
+                .onClick(e -> AlertAnt.error(
+                        "保存失败",
+                        "网络连接中断，请检查网络后重试。",
+                        owner).showAndWait())
+                .build();
+
+        // confirm：确认对话框（success 绿色）+ 返回 boolean + 自定义按钮文案
+        Node confirmBtn = ButtonAnt.create("confirm")
+                .onClick(e -> {
+                    AlertAnt a = AlertAnt.confirm(
+                            "删除确认",
+                            "此操作不可撤销，确认要删除这条记录吗？",
+                            owner);
+                    a.okText("删除")
+                     .cancelText("再想想");
+                    if (a.showAndWaitForOk()) {
+                        MessageAnt.success("已删除");
+                    } else {
+                        MessageAnt.info("已取消");
+                    }
+                })
+                .build();
+
+        Node preview = Demos.row(infoBtn, warningBtn, errorBtn, confirmBtn);
+
+        String code = """
+                // 4 个静态工厂（owner 传 Scene Window 即可）
+                AlertAnt.info("操作成功", "数据已保存到服务器", owner).showAndWait();
+                AlertAnt.warning("注意", "网络不稳定", owner).showAndWait();
+                AlertAnt.error("保存失败", "网络连接中断", owner).showAndWait();
+
+                // confirm：返回 boolean + 自定义按钮文案
+                AlertAnt a = AlertAnt.confirm("删除确认", "此操作不可撤销", owner)
+                        .okText("删除")
+                        .cancelText("再想想");
+                if (a.showAndWaitForOk()) { ... }
+
+                // 继承自 Alert：showAndWait() / getResult() / setOnHidden() 等 API 完全兼容
+                """;
+
+        return Demos.sectionWithCode("9. AlertAnt 模态弹窗",
+                "独立 Stage 模态对话框（继承 javafx.scene.control.Alert），4 种 type 切换 header 配色与 icon。",
+                code, preview);
+    }
+
+    /** 蓝色信息提示横幅（作为 FormAnt.header 的占位 Node）。 */
+    private static Node infoBanner(String text) {
+        return org.openkawu.jfxium.component.control.LabelAnt.create(text)
+                .styleClass("jfx-form-info-banner")
+                .build();
     }
 }

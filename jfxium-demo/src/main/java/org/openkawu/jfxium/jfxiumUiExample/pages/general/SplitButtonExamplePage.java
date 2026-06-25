@@ -2,10 +2,11 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 
 import javafx.scene.Node;
 
+import org.openkawu.jfxium.component.control.SplitButtonAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.component.control.SplitButtonAnt;
 
 /**
  * SplitButton 分裂按钮 —— 基础（主操作 + 备选）/ 带菜单项。
@@ -23,15 +24,15 @@ public class SplitButtonExamplePage extends VBoxAnt {
 
     private Node basicSection() {
         Node demo = SplitButtonAnt.create("保存")
-                .onClick(e -> System.out.println("保存"))
-                .item("保存并新建", e -> System.out.println("保存并新建"))
-                .item("保存并退出", e -> System.out.println("保存并退出"))
+                .onClick(e -> MessageAnt.info("已执行主操作: 保存"))
+                .item("保存并新建", e -> MessageAnt.info("已执行备选操作: 保存并新建"))
+                .item("保存并退出", e -> MessageAnt.info("已执行备选操作: 保存并退出"))
                 .build();
         String code = """
                 SplitButtonAnt.create("保存")
-                        .onClick(e -> save())
-                        .item("保存并新建", e -> saveAndNew())
-                        .item("保存并退出", e -> saveAndExit())
+                        .onClick(e -> MessageAnt.info("已执行主操作: 保存"))
+                        .item("保存并新建", e -> MessageAnt.info("已执行备选操作: 保存并新建"))
+                        .item("保存并退出", e -> MessageAnt.info("已执行备选操作: 保存并退出"))
                         .build();
                 """;
         return Demos.sectionWithCode("1. 基础用法",
@@ -40,18 +41,18 @@ public class SplitButtonExamplePage extends VBoxAnt {
 
     private Node menuSection() {
         Node demo = SplitButtonAnt.create("运行")
-                .onClick(e -> System.out.println("运行"))
-                .item("调试", e -> System.out.println("调试"))
+                .onClick(e -> MessageAnt.info("已执行主操作: 运行"))
+                .item("调试", e -> MessageAnt.info("已执行备选操作: 调试"))
                 .separator()
-                .item("性能分析", e -> System.out.println("性能分析"))
+                .item("性能分析", e -> MessageAnt.info("已执行备选操作: 性能分析"))
                 .itemDisabled("远程运行（不可用）")
                 .build();
         String code = """
                 SplitButtonAnt.create("运行")
-                        .onClick(e -> run())
-                        .item("调试", e -> debug())
+                        .onClick(e -> MessageAnt.info("已执行主操作: 运行"))
+                        .item("调试", e -> MessageAnt.info("已执行备选操作: 调试"))
                         .separator()
-                        .item("性能分析", e -> profile())
+                        .item("性能分析", e -> MessageAnt.info("已执行备选操作: 性能分析"))
                         .itemDisabled("远程运行（不可用）")
                         .build();
                 """;

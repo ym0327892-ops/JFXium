@@ -5,9 +5,14 @@ import javafx.scene.control.Label;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.AnchorAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
+
+import java.util.function.Supplier;
 
 /**
  * Anchor 锚点 —— 基础。
@@ -21,7 +26,7 @@ public class AnchorExamplePage extends VBoxAnt {
         spacing(0).children(PageTemplate.create()
                 .title("Anchor 锚点")
                 .description("用于展示页面内的导航锚点列表，支持高亮当前项与点击回调。")
-                .sections(verticalSection(), horizontalSection(), activeSection())
+                .sections(verticalSection(), horizontalSection(), activeSection(), playgroundSection())
                 .padding(24)
                 .build());
     }
@@ -32,7 +37,7 @@ public class AnchorExamplePage extends VBoxAnt {
                 .item("install", "安装", "#install")
                 .item("usage", "用法", "#usage")
                 .activeKey("install")
-                .onChange(key -> {})
+                .onChange(key -> MessageAnt.info("锚点：" + key))
                 .build();
         String code = """
                 AnchorAnt.create()
@@ -106,5 +111,55 @@ public class AnchorExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("3. 显示当前激活锚点",
                 "点击锚点高亮条自动移动（运行时 Controller.setActiveKey），onChange 同时拿到被点击的 key。",
                 code, demo);
+    }
+
+    // ============================================================
+    // 4. 交互演示 (PlayGround)
+    // ============================================================
+
+    /**
+     * 可交互演示区 —— 实时改变 Anchor 的方向 / 当前激活项。
+     *
+     * <p>AnchorAnt 没有静态 {@code controllerOf(Node)}，只能从 Builder 实例拿 Controller；
+     * Controller 只能运行时改 activeKey，不能改 direction。所以采用
+     * {@link PlayGround#rebuildRebuild} 策略：任一 binder 变化都重 build。</p>
+     */
+    private Node playgroundSection() {
+        // 1. 状态盒子
+        Binder<String> direction = PlayGround.binder("vertical");
+        Binder<String> activeKey = PlayGround.binder("intro");
+
+        // 2. display 工厂
+        Supplier<Node> factory = () -> {
+            AnchorAnt.Builder b = AnchorAnt.create()
+                    .item("intro",    "介绍", "#intro")
+                    .item("install",  "安装", "#install")
+                    .item("usage",    "用法", "#usage")
+                    .direction(parseDirection(direction.get()))
+                    .activeKey(activeKey.get())
+                    .onChange(key -> MessageAnt.info("锚点：" + key));
+            return b.build();
+        };
+
+        // 3. 串起来
+        return Demos.section("4. 交互演示",
+                "通过左侧控件实时改变 Anchor 的方向与当前激活项 —— direction 是 build 期属性，每次重建。",
+                PlayGround.rebindRebuild(factory, null,
+                        PlayGround.row("方向", PlayGround.segmented(direction,
+                                PlayGround.entry("vertical",   "垂直"),
+                                PlayGround.entry("horizontal", "水平"))),
+                        PlayGround.row("激活", PlayGround.segmented(activeKey,
+                                PlayGround.entry("intro",   "介绍"),
+                                PlayGround.entry("install", "安装"),
+                                PlayGround.entry("usage",   "用法")))));
+    }
+
+    // ============================================================
+    // 枚举解析 helpers
+    // ============================================================
+
+    private static AnchorAnt.Direction parseDirection(String v) {
+        if (v == null) return AnchorAnt.Direction.VERTICAL;
+        return "horizontal".equals(v) ? AnchorAnt.Direction.HORIZONTAL : AnchorAnt.Direction.VERTICAL;
     }
 }

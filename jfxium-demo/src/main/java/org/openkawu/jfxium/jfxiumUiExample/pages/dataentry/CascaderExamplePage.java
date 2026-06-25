@@ -7,9 +7,14 @@ import javafx.scene.control.Label;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.CascaderAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
+
+import java.util.function.Supplier;
 
 /**
  * Cascader 级联选择 —— 基础多级 / 自定义占位符。
@@ -20,7 +25,7 @@ public class CascaderExamplePage extends VBoxAnt {
         spacing(0).children(PageTemplate.create()
                 .title("Cascader 级联选择")
                 .description("从一组相关联的数据集中进行选择，逐级展开下一级选项。")
-                .sections(basicSection(), placeholderSection(), valueSection())
+                .sections(basicSection(), placeholderSection(), valueSection(), playgroundSection())
                 .padding(24)
                 .build());
     }
@@ -42,7 +47,7 @@ public class CascaderExamplePage extends VBoxAnt {
     private Node basicSection() {
         Node demo = CascaderAnt.create()
                 .options(regionOptions())
-                .onChange(values -> {})
+                .onChange(values -> MessageAnt.info("选中路径：" + String.join(" / ", values)))
                 .build();
         String code = """
                 CascaderAnt.create()
@@ -50,7 +55,7 @@ public class CascaderExamplePage extends VBoxAnt {
                                 new CascaderAnt.Option("zhejiang", "浙江", List.of(
                                         new CascaderAnt.Option("hangzhou", "杭州", List.of(
                                                 new CascaderAnt.Option("xihu", "西湖区")))))))
-                        .onChange(values -> System.out.println(values))
+                        .onChange(values -> MessageAnt.info("选中路径：" + String.join(" / ", values)))
                         .build();
                 """;
         return Demos.sectionWithCode("1. 基础用法",
@@ -101,5 +106,28 @@ public class CascaderExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("3. 获取选中值",
                 "onChange(values -> ...) 在选中叶子节点时回调，给出各级 value 列表（注意是 value 编码，不是 label 文案）。",
                 code, demo);
+    }
+
+    /**
+     * 4. 交互演示 —— 通过左侧文本框实时改变 Cascader 的占位符。
+     *
+     * <p>CascaderAnt 主要是多级选择逻辑，可玩维度有限；这里演示占位符的动态切换效果。</p>
+     */
+    private Node playgroundSection() {
+        Binder<String> placeholderBinder = PlayGround.binder("请选择所在地区");
+
+        Supplier<Node> factory = () -> {
+            String p = placeholderBinder.get();
+            return CascaderAnt.create()
+                    .options(regionOptions())
+                    .placeholder(p.isEmpty() ? "请选择" : p)
+                    .onChange(values -> MessageAnt.info("选中路径：" + String.join(" / ", values)))
+                    .build();
+        };
+
+        return Demos.section("4. 交互演示",
+                "通过左侧文本框实时改变 Cascader 的占位符 —— CascaderAnt 主要是多级选择逻辑，可玩维度有限。",
+                PlayGround.rebindRebuild(factory, null,
+                        PlayGround.row("占位符", PlayGround.textField(placeholderBinder, "请选择所在地区", "输入占位符文本"))));
     }
 }

@@ -34,18 +34,18 @@ public class ProjectChangelogExamplePage extends VBoxAnt {
                 "适合展示版本变更日志、近期改动摘要、发布记录，常见于项目首页、发布页、README 演示页。",
                 Demos.column(
                         Demos.labeled("展示方式", TypographyAnt.text("版本号 + 日期 + 带类型标签的变更条目列表。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("类型标注", TypographyAnt.text("新增(绿) / 优化(蓝) / 修复(黄) / 移除(红)，一眼区分变更性质。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("通用性", TypographyAnt.text("项目首页、发布页、CHANGELOG 展示都可以直接复用。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }
 
     private Node previewSection() {
         Label actionState = TypographyAnt.text("动作：未触发")
-                .type(TypographyAnt.Type.SECONDARY)
+                .type(TypographyAnt.TextColor.SECONDARY)
                 .build();
 
         Node changelogPanel = ProjectChangelogTemplate.create()
@@ -96,9 +96,9 @@ public class ProjectChangelogExamplePage extends VBoxAnt {
                 code,
                 Demos.column(
                         Demos.labeled("复用建议", TypographyAnt.text("如果项目有 CHANGELOG 展示需求，可以直接复用这个模板。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("继续整合", TypographyAnt.text("若有多个项目共享变更日志面板，可以继续把版本数据从页面层迁到配置层。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }

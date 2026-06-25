@@ -5,6 +5,8 @@ import javafx.scene.Node;
 import org.openkawu.jfxium.component.layout.FlexAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 
@@ -21,7 +23,8 @@ public class FlexExamplePage extends VBoxAnt {
                         rowSection(),
                         columnSection(),
                         justifySection(),
-                        wrapSection()
+                        wrapSection(),
+                        playgroundSection()
                 )
                 .padding(24)
                 .build());
@@ -87,6 +90,62 @@ public class FlexExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("3. 两端对齐",
                 "justify(BETWEEN) 子元素两端对齐，中间均匀分布。",
                 code, demo);
+    }
+
+    /** 5. PlayGround：实时调整 direction / justify / align / gap。 */
+    private Node playgroundSection() {
+        Binder<String> direction = PlayGround.binder("row");
+        Binder<String> justify = PlayGround.binder("start");
+        Binder<String> align = PlayGround.binder("center");
+        Binder<String> gap = PlayGround.binder("12");
+        return PlayGround.rebindRebuild(
+                () -> buildFlex(direction.get(), justify.get(), align.get(), gap.get()),
+                "方向 / 对齐 / 间距",
+                PlayGround.row("方向", PlayGround.segmented(direction,
+                        PlayGround.entry("row", "水平"),
+                        PlayGround.entry("column", "垂直"))),
+                PlayGround.row("主轴对齐", PlayGround.segmented(justify,
+                        PlayGround.entry("start", "起点"),
+                        PlayGround.entry("center", "居中"),
+                        PlayGround.entry("end", "终点"),
+                        PlayGround.entry("between", "两端"))),
+                PlayGround.row("交叉轴对齐", PlayGround.segmented(align,
+                        PlayGround.entry("start", "起点"),
+                        PlayGround.entry("center", "居中"),
+                        PlayGround.entry("end", "终点"),
+                        PlayGround.entry("stretch", "拉伸"))),
+                PlayGround.row("间距 gap", PlayGround.textField(gap, "12", "子元素间 px")));
+    }
+
+    private Node buildFlex(String direction, String justify, String align, String gapStr) {
+        FlexAnt.Direction dir = "column".equals(direction)
+                ? FlexAnt.Direction.COLUMN : FlexAnt.Direction.ROW;
+        FlexAnt.Justify j = switch (justify) {
+            case "center"  -> FlexAnt.Justify.CENTER;
+            case "end"     -> FlexAnt.Justify.END;
+            case "between" -> FlexAnt.Justify.BETWEEN;
+            default        -> FlexAnt.Justify.START;
+        };
+        FlexAnt.Align a = switch (align) {
+            case "start"   -> FlexAnt.Align.START;
+            case "end"     -> FlexAnt.Align.END;
+            case "stretch" -> FlexAnt.Align.STRETCH;
+            default        -> FlexAnt.Align.CENTER;
+        };
+        double g;
+        try { g = Math.max(0, Double.parseDouble(gapStr)); }
+        catch (NumberFormatException e) { g = 12.0; }
+        return FlexAnt.create()
+                .direction(dir)
+                .justify(j)
+                .align(a)
+                .gap(g)
+                .children(
+                        ButtonAnt.create("按钮 1").type(ButtonAnt.Type.PRIMARY).build(),
+                        ButtonAnt.create("按钮 2").build(),
+                        ButtonAnt.create("按钮 3").build()
+                )
+                .build();
     }
 
     private Node wrapSection() {

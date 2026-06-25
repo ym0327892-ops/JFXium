@@ -7,6 +7,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.TreeAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * Tree 树形控件 —— 基础 / 默认展开 / 可选择。
@@ -93,7 +94,7 @@ public class TreeExamplePage extends VBoxAnt {
                         ),
                         TreeAnt.leaf("README.md")
                 )
-                .onSelect(item -> System.out.println("选中: " + item))
+                .onSelect(item -> MessageAnt.info("选中: " + item))
                 .build();
         tree.setPrefHeight(180);
         String code = """
@@ -105,7 +106,7 @@ public class TreeExamplePage extends VBoxAnt {
                                 ),
                                 TreeAnt.leaf("README.md")
                         )
-                        .onSelect(item -> System.out.println("选中: " + item))
+                        .onSelect(item -> MessageAnt.info("选中: " + item))
                         .build();
                 """;
         return Demos.sectionWithCode("3. 可选择", "通过 onSelect 回调响应选中事件。", code, tree);

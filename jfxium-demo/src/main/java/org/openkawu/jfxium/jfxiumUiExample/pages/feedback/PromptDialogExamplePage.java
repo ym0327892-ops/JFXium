@@ -45,7 +45,7 @@ public class PromptDialogExamplePage extends VBoxAnt {
                     .message("输入后点击确认保存")
                     .placeholder("例如：张三")
                     .onConfirm(name -> {
-                        System.out.println("输入：" + name);
+                        MessageAnt.success("输入：" + name);
                     })
                     .build()
                     .open(ownerNode);
@@ -114,7 +114,7 @@ public class PromptDialogExamplePage extends VBoxAnt {
                     .okText("确认删除")
                     .cancelText("我再想想")
                     .onConfirm(...)
-                    .onCancel(() -> System.out.println("取消"))
+                    .onCancel(() -> MessageAnt.info("已取消"))
                     .build()
                     .open(ownerNode);
                 """;

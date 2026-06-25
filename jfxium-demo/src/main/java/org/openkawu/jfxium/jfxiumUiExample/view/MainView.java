@@ -1,13 +1,16 @@
 package org.openkawu.jfxium.jfxiumUiExample.view;
 
 import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.composite.MenuAnt;
 import org.openkawu.jfxium.component.layout.BorderPaneAnt;
 import org.openkawu.jfxium.component.layout.ScrollPaneAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.jfxiumUiExample.UiExampleConstants;
 import org.openkawu.jfxium.template.ProjectConsoleTemplate;
@@ -65,7 +68,7 @@ public class MainView {
 
         ButtonAnt settingsBtn = ButtonAnt.create("设置")
                 .type(ButtonAnt.Type.LINK)
-                .size(ButtonAnt.Size.XS)
+                .size(Size.XS)
                 .onClick(e -> openSettingsDrawer(contentHost))
                 .build();
 
@@ -136,6 +139,7 @@ public class MainView {
         menuController = sidebar.controller();
 
         ScrollPaneAnt menuScroll = ScrollPaneAnt.create(sidebar.root()).fitToWidth(true);
+        menuScroll.hbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         menuScroll.getStyleClass().add(Background.SUBTLE.styleClass());
 
         BorderPane wrapper = BorderPaneAnt.create().center(menuScroll.build()).build();
@@ -183,8 +187,7 @@ public class MainView {
         switch (action) {
             case "settings" -> openSettingsDrawer(contentHost);
             case "logout" -> doLogout();
-            default -> {
-            }
+            default -> MessageAnt.info("未知动作: " + action);
         }
     }
 
@@ -197,10 +200,10 @@ public class MainView {
             case "logout" -> doLogout();
             case "settings" -> openSettingsDrawer(contentHost);
             case "toggleSidebar" -> toggleSidebar();
-            case "about", "undo", "redo" -> {
-            }
-            default -> {
-            }
+            case "undo" -> MessageAnt.info("演示项目暂未实现撤销");
+            case "redo" -> MessageAnt.info("演示项目暂未实现重做");
+            case "about" -> MessageAnt.info("JFXium v1.0-SNAPSHOT · Java 21 · JavaFX 21");
+            default -> MessageAnt.info("未知动作: " + action);
         }
     }
 

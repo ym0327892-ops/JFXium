@@ -4,9 +4,14 @@ import javafx.scene.Node;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.core.token.Size;
+
+import java.util.function.Supplier;
 
 /**
  * Button 按钮 —— 类型 / 四档尺寸 / 形状 / 状态 / 块级。
@@ -24,7 +29,8 @@ public class ButtonExamplePage extends VBoxAnt {
                         sizeSection(),
                         shapeSection(),
                         stateSection(),
-                        blockSection()
+                        blockSection(),
+                        playgroundSection()
                 )
                 .padding(24)
                 .build());
@@ -66,34 +72,34 @@ public class ButtonExamplePage extends VBoxAnt {
     private Node sizeSection() {
         Node row = Demos.column(
                 Demos.row(
-                        ButtonAnt.create("Large").size(ButtonAnt.Size.LARGE).type(ButtonAnt.Type.PRIMARY).build(),
-                        ButtonAnt.create("Middle").size(ButtonAnt.Size.MIDDLE).type(ButtonAnt.Type.PRIMARY).build(),
-                        ButtonAnt.create("Small").size(ButtonAnt.Size.SMALL).type(ButtonAnt.Type.PRIMARY).build(),
-                        ButtonAnt.create("XS").size(ButtonAnt.Size.XS).type(ButtonAnt.Type.PRIMARY).build()
+                        ButtonAnt.create("Large").size(Size.LARGE).type(ButtonAnt.Type.PRIMARY).build(),
+                        ButtonAnt.create("Middle").size(Size.MIDDLE).type(ButtonAnt.Type.PRIMARY).build(),
+                        ButtonAnt.create("Small").size(Size.SMALL).type(ButtonAnt.Type.PRIMARY).build(),
+                        ButtonAnt.create("XS").size(Size.XS).type(ButtonAnt.Type.PRIMARY).build()
                 ),
                 Demos.row(
-                        ButtonAnt.create("Text Large").type(ButtonAnt.Type.TEXT).size(ButtonAnt.Size.LARGE).build(),
-                        ButtonAnt.create("Text Middle").type(ButtonAnt.Type.TEXT).size(ButtonAnt.Size.MIDDLE).build(),
-                        ButtonAnt.create("Text Small").type(ButtonAnt.Type.TEXT).size(ButtonAnt.Size.SMALL).build(),
-                        ButtonAnt.create("Text XS").type(ButtonAnt.Type.TEXT).size(ButtonAnt.Size.XS).build()
+                        ButtonAnt.create("Text Large").type(ButtonAnt.Type.TEXT).size(Size.LARGE).build(),
+                        ButtonAnt.create("Text Middle").type(ButtonAnt.Type.TEXT).size(Size.MIDDLE).build(),
+                        ButtonAnt.create("Text Small").type(ButtonAnt.Type.TEXT).size(Size.SMALL).build(),
+                        ButtonAnt.create("Text XS").type(ButtonAnt.Type.TEXT).size(Size.XS).build()
                 ),
                 Demos.row(
-                        ButtonAnt.create("Link Large").type(ButtonAnt.Type.LINK).size(ButtonAnt.Size.LARGE).build(),
-                        ButtonAnt.create("Link Middle").type(ButtonAnt.Type.LINK).size(ButtonAnt.Size.MIDDLE).build(),
-                        ButtonAnt.create("Link Small").type(ButtonAnt.Type.LINK).size(ButtonAnt.Size.SMALL).build(),
-                        ButtonAnt.create("Link XS").type(ButtonAnt.Type.LINK).size(ButtonAnt.Size.XS).build()
+                        ButtonAnt.create("Link Large").type(ButtonAnt.Type.LINK).size(Size.LARGE).build(),
+                        ButtonAnt.create("Link Middle").type(ButtonAnt.Type.LINK).size(Size.MIDDLE).build(),
+                        ButtonAnt.create("Link Small").type(ButtonAnt.Type.LINK).size(Size.SMALL).build(),
+                        ButtonAnt.create("Link XS").type(ButtonAnt.Type.LINK).size(Size.XS).build()
                 )
         );
         String code = """
                 // 四档：LARGE / MIDDLE / SMALL / XS
-                ButtonAnt.create("Large").size(ButtonAnt.Size.LARGE).type(ButtonAnt.Type.PRIMARY).build();
-                ButtonAnt.create("Middle").size(ButtonAnt.Size.MIDDLE).type(ButtonAnt.Type.PRIMARY).build();
-                ButtonAnt.create("Small").size(ButtonAnt.Size.SMALL).type(ButtonAnt.Type.PRIMARY).build();
-                ButtonAnt.create("XS").size(ButtonAnt.Size.XS).type(ButtonAnt.Type.PRIMARY).build();
+                ButtonAnt.create("Large").size(Size.LARGE).type(ButtonAnt.Type.PRIMARY).build();
+                ButtonAnt.create("Middle").size(Size.MIDDLE).type(ButtonAnt.Type.PRIMARY).build();
+                ButtonAnt.create("Small").size(Size.SMALL).type(ButtonAnt.Type.PRIMARY).build();
+                ButtonAnt.create("XS").size(Size.XS).type(ButtonAnt.Type.PRIMARY).build();
 
                 // TEXT / LINK 也沿用同一套四档 size
-                ButtonAnt.create("Text XS").type(ButtonAnt.Type.TEXT).size(ButtonAnt.Size.XS).build();
-                ButtonAnt.create("Link XS").type(ButtonAnt.Type.LINK).size(ButtonAnt.Size.XS).build();
+                ButtonAnt.create("Text XS").type(ButtonAnt.Type.TEXT).size(Size.XS).build();
+                ButtonAnt.create("Link XS").type(ButtonAnt.Type.LINK).size(Size.XS).build();
                 """;
         return Demos.sectionWithCode("2. 尺寸 Size",
                 "四档：LARGE / MIDDLE / SMALL / XS。TEXT 和 LINK 也直接复用同一套 size。",
@@ -164,5 +170,82 @@ public class ButtonExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("5. 块级 block",
                 "block(true) —— 撑满父容器宽度，常用于移动端 / 表单提交按钮。",
                 code, btn);
+    }
+
+    private Node playgroundSection() {
+        Binder<String> typeBinder = PlayGround.binder("primary");
+        Binder<String> sizeBinder = PlayGround.binder("middle");
+        Binder<String> shapeBinder = PlayGround.binder("default");
+        Binder<String> stateBinder = PlayGround.binder("normal");
+        Supplier<Node> factory = () -> {
+            ButtonAnt btn = ButtonAnt.create("按钮")
+                    .type(parseType(typeBinder.get()))
+                    .size(parseSize(sizeBinder.get()))
+                    .shape(parseShape(shapeBinder.get()))
+                    .disabled("disabled".equals(stateBinder.get()))
+                    .ghost("ghost".equals(stateBinder.get()));
+            if ("loading".equals(stateBinder.get())) {
+                btn.loading(true);
+            }
+            return btn.build();
+        };
+        return Demos.section("6. 交互演示",
+                "通过左侧控件实时改变按钮的 type / size / shape / state。",
+                PlayGround.rebindRebuild(factory, null,
+                        PlayGround.row("类型", PlayGround.segmented(typeBinder,
+                                PlayGround.entry("default", "默认"),
+                                PlayGround.entry("primary", "主按钮"),
+                                PlayGround.entry("dashed", "虚线"),
+                                PlayGround.entry("text", "文字"),
+                                PlayGround.entry("link", "链接"))),
+                        PlayGround.row("尺寸", PlayGround.segmented(sizeBinder,
+                                PlayGround.entry("large", "Large"),
+                                PlayGround.entry("middle", "Middle"),
+                                PlayGround.entry("small", "Small"),
+                                PlayGround.entry("xs", "XS"))),
+                        PlayGround.row("形状", PlayGround.segmented(shapeBinder,
+                                PlayGround.entry("default", "默认"),
+                                PlayGround.entry("rounded", "圆角"),
+                                PlayGround.entry("square", "方角"))),
+                        PlayGround.row("状态", PlayGround.segmented(stateBinder,
+                                PlayGround.entry("normal", "正常"),
+                                PlayGround.entry("disabled", "禁用"),
+                                PlayGround.entry("ghost", "幽灵"),
+                                PlayGround.entry("loading", "加载中")))));
+    }
+
+    private static ButtonAnt.Type parseType(String v) {
+        if (v == null) return ButtonAnt.Type.DEFAULT;
+        return switch (v) {
+            case "primary" -> ButtonAnt.Type.PRIMARY;
+            case "dashed" -> ButtonAnt.Type.DASHED;
+            case "text" -> ButtonAnt.Type.TEXT;
+            case "link" -> ButtonAnt.Type.LINK;
+            case "danger" -> ButtonAnt.Type.DANGER;
+            case "success" -> ButtonAnt.Type.SUCCESS;
+            case "warning" -> ButtonAnt.Type.WARNING;
+            case "accent" -> ButtonAnt.Type.ACCENT;
+            case "outlined" -> ButtonAnt.Type.OUTLINED;
+            default -> ButtonAnt.Type.DEFAULT;
+        };
+    }
+
+    private static Size parseSize(String v) {
+        if (v == null) return Size.MIDDLE;
+        return switch (v) {
+            case "large" -> Size.LARGE;
+            case "small" -> Size.SMALL;
+            case "xs" -> Size.XS;
+            default -> Size.MIDDLE;
+        };
+    }
+
+    private static ButtonAnt.Shape parseShape(String v) {
+        if (v == null) return ButtonAnt.Shape.DEFAULT;
+        return switch (v) {
+            case "rounded" -> ButtonAnt.Shape.ROUNDED;
+            case "square" -> ButtonAnt.Shape.SQUARE;
+            default -> ButtonAnt.Shape.DEFAULT;
+        };
     }
 }

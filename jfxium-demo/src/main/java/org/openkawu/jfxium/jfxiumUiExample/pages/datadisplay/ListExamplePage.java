@@ -1,9 +1,6 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
-import javafx.scene.layout.VBox;
-
-
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
@@ -29,13 +26,13 @@ public class ListExamplePage extends VBoxAnt {
     }
 
     private Node basicSection() {
-        VBox list = ListAnt.create()
+        Node list = ListAnt.create()
                 .item("Ant Design", "蚂蚁金服体验技术部出品")
                 .item("JFXium", "JavaFX 组件库")
                 .item("Element Plus", "Vue 3 组件库")
                 .build();
         String code = """
-                VBox list = ListAnt.create()
+                Node list = ListAnt.create()
                         .item("Ant Design", "蚂蚁金服体验技术部出品")
                         .item("JFXium", "JavaFX 组件库")
                         .item("Element Plus", "Vue 3 组件库")
@@ -45,7 +42,7 @@ public class ListExamplePage extends VBoxAnt {
     }
 
     private Node borderedSection() {
-        VBox list = ListAnt.create()
+        Node list = ListAnt.create()
                 .header("列表标题")
                 .bordered()
                 .item("列表项 1", "描述文字")
@@ -54,7 +51,7 @@ public class ListExamplePage extends VBoxAnt {
                 .footer("共 3 项")
                 .build();
         String code = """
-                VBox list = ListAnt.create()
+                Node list = ListAnt.create()
                         .header("列表标题")
                         .bordered()
                         .item("列表项 1", "描述文字")
@@ -67,7 +64,7 @@ public class ListExamplePage extends VBoxAnt {
     }
 
     private Node actionSection() {
-        VBox list = ListAnt.create()
+        Node list = ListAnt.create()
                 .item(null, "任务一", "进行中",
                         ButtonAnt.create("编辑").type(ButtonAnt.Type.LINK).build())
                 .item(null, "任务二", "已完成",
@@ -77,7 +74,7 @@ public class ListExamplePage extends VBoxAnt {
                 .bordered()
                 .build();
         String code = """
-                VBox list = ListAnt.create()
+                Node list = ListAnt.create()
                         .item(null, "任务一", "进行中",
                                 ButtonAnt.create("编辑").type(ButtonAnt.Type.LINK).build())
                         .item(null, "任务二", "已完成",

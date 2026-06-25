@@ -6,6 +6,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.TreeTableAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * TreeTable 树表格 —— 基础层级 / 文件管理器 / 多选。
@@ -101,7 +102,7 @@ public class TreeTableExamplePage extends VBoxAnt {
                     .endChild()
                 .endRoot()
                 .expandAll()
-                .onSelect(node -> System.out.println("选中：" + node.getName()))
+                .onSelect(node -> MessageAnt.info("选中: " + node.getName()))
                 .build();
         demo.setPrefHeight(280);
         String code = """
@@ -116,7 +117,7 @@ public class TreeTableExamplePage extends VBoxAnt {
                         .endChild()
                     .endRoot()
                     .expandAll()
-                    .onSelect(node -> System.out.println(node.getName()))
+                    .onSelect(node -> MessageAnt.info("选中: " + node.getName()))
                     .build();
                 """;
         return Demos.sectionWithCode("2. 文件管理器风格",

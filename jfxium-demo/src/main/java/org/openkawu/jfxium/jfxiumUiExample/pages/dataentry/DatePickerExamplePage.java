@@ -9,6 +9,7 @@ import org.openkawu.jfxium.template.PageTemplate;
 
 import java.time.LocalDate;
 import org.openkawu.jfxium.component.control.DatePickerAnt;
+import org.openkawu.jfxium.core.token.Size;
 
 /**
  * DatePicker 日期选择 —— 基础 / 禁用 / 占位文字。
@@ -55,20 +56,20 @@ public class DatePickerExamplePage extends VBoxAnt {
     private Node placeholderSection() {
         DatePicker small = DatePickerAnt.create()
                 .placeholder("选择日期")
-                .size(DatePickerAnt.Size.SMALL)
+                .size(Size.SMALL)
                 .build();
         DatePicker normal = DatePickerAnt.create()
                 .placeholder("请选择日期")
                 .build();
         DatePicker large = DatePickerAnt.create()
                 .placeholder("Pick a date")
-                .size(DatePickerAnt.Size.LARGE)
+                .size(Size.LARGE)
                 .build();
         Node demo = Demos.row(small, normal, large);
         String code = """
-                DatePickerAnt.create().placeholder("选择日期").size(DatePickerAnt.Size.SMALL).build();
+                DatePickerAnt.create().placeholder("选择日期").size(Size.SMALL).build();
                 DatePickerAnt.create().placeholder("请选择日期").build();
-                DatePickerAnt.create().placeholder("Pick a date").size(DatePickerAnt.Size.LARGE).build();
+                DatePickerAnt.create().placeholder("Pick a date").size(Size.LARGE).build();
                 """;
         return Demos.sectionWithCode("3. 占位文字与尺寸",
                 "placeholder 设置提示文字；size 支持 SMALL / DEFAULT / LARGE 三档。", code, demo);

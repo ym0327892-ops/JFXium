@@ -8,6 +8,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.AutoCompleteAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * AutoComplete 自动完成 —— 基础 / 自定义选项。
@@ -43,13 +44,13 @@ public class AutoCompleteExamplePage extends VBoxAnt {
         Node demo = AutoCompleteAnt.<String>create()
                 .placeholder("输入邮箱前缀")
                 .options(List.of("@gmail.com", "@163.com", "@qq.com", "@outlook.com"))
-                .onSelect(opt -> {})
+                .onSelect(opt -> MessageAnt.info("选中：" + opt))
                 .build();
         String code = """
                 AutoCompleteAnt.<String>create()
                         .placeholder("输入邮箱前缀")
                         .options(List.of("@gmail.com", "@163.com", "@qq.com", "@outlook.com"))
-                        .onSelect(opt -> System.out.println("选中：" + opt))
+                        .onSelect(opt -> MessageAnt.info("选中：" + opt))
                         .build();
                 """;
         return Demos.sectionWithCode("2. 选中回调",

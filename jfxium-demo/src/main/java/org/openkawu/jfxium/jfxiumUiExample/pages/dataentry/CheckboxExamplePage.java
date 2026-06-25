@@ -3,10 +3,15 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.dataentry;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 
+import java.util.function.Supplier;
+
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.CheckBoxAnt;
+import org.openkawu.jfxium.core.token.Size;
 
 /**
  * Checkbox 复选框 —— 基础 / 禁用 / 形状。
@@ -17,7 +22,7 @@ public class CheckboxExamplePage extends VBoxAnt {
         spacing(0).children(PageTemplate.create()
                 .title("Checkbox 复选框")
                 .description("多选场景下的勾选控件，支持选中、半选、禁用等状态。")
-                .sections(basicSection(), disabledSection(), shapeSection())
+                .sections(basicSection(), disabledSection(), shapeSection(), playgroundSection())
                 .padding(24)
                 .build());
     }
@@ -62,5 +67,95 @@ public class CheckboxExamplePage extends VBoxAnt {
                 """;
         return Demos.sectionWithCode("3. 形状 Shape",
                 "DEFAULT / CIRCLE / SQUARE / ROUNDED 四种外形。", code, demo);
+    }
+
+    // ============================================================
+    // 4. 交互演示 (PlayGround)
+    // ============================================================
+
+    /**
+     * 可交互演示区 —— 实时改变 CheckBox 的 5 个维度：大小 / 形状 / 文字 / 状态 / 禁用。
+     *
+     * <p>CheckBoxAnt 是继承式 API（{@code extends CheckBox}），且没有 Controller 暴露，
+     * 所有属性（size / shape / disabled / indeterminate / text）均为 build-time。
+     * 因此采用 {@link PlayGround#rebindRebuild}：每次 binder 变化都重新 build()
+     * —— CheckBox 节点重建，但开销极小（一个 Node），且保证所有属性变更生效。</p>
+     */
+    private Node playgroundSection() {
+        // 1. 状态盒子
+        Binder<String> size     = PlayGround.binder("default");
+        Binder<String> shape    = PlayGround.binder("default");
+        Binder<String> text     = PlayGround.binder("Apple");
+        Binder<String> state    = PlayGround.binder("unchecked");
+        Binder<String> disabled = PlayGround.binder("false");
+
+        // 2. display 工厂 —— 每次都反映 binder 当前值
+        Supplier<Node> factory = () -> {
+            CheckBoxAnt cb = CheckBoxAnt.create(text.get());
+            applySize(cb, size.get());
+            applyShape(cb, shape.get());
+            applyState(cb, state.get());
+            cb.disabled(parseBool(disabled.get()));
+            return cb.build();
+        };
+
+        // 3. 串起来
+        return Demos.section("4. 交互演示",
+                "通过左侧控件实时改变 CheckBox 的大小 / 形状 / 文字 / 状态 / 禁用 —— CheckBoxAnt 无 Controller，所有变更通过 build 重建生效。",
+                PlayGround.rebindRebuild(factory, null,
+                        PlayGround.row("大小", PlayGround.segmented(size,
+                                PlayGround.entry("small",   "小"),
+                                PlayGround.entry("default", "默认"),
+                                PlayGround.entry("large",   "大"))),
+                        PlayGround.row("形状", PlayGround.segmented(shape,
+                                PlayGround.entry("default", "默认"),
+                                PlayGround.entry("circle",  "圆形"),
+                                PlayGround.entry("square",  "方形"),
+                                PlayGround.entry("rounded", "大圆角"))),
+                        PlayGround.row("文字", PlayGround.textField(text, text.get(), "CheckBox 文字")),
+                        PlayGround.row("状态", PlayGround.segmented(state,
+                                PlayGround.entry("unchecked",     "未选"),
+                                PlayGround.entry("checked",       "已选"),
+                                PlayGround.entry("indeterminate", "半选"))),
+                        PlayGround.row("禁用", PlayGround.segmented(disabled,
+                                PlayGround.entry("false", "启用"),
+                                PlayGround.entry("true",  "禁用")))));
+    }
+
+    // ============================================================
+    // 参数解析 helpers
+    // ============================================================
+
+    private static boolean parseBool(String v) {
+        return v != null && "true".equalsIgnoreCase(v);
+    }
+
+    private static void applySize(CheckBoxAnt cb, String v) {
+        if (v == null) { cb.size(Size.DEFAULT); return; }
+        switch (v) {
+            case "small"  -> cb.size(Size.SMALL);
+            case "large"  -> cb.size(Size.LARGE);
+            default       -> cb.size(Size.DEFAULT);
+        }
+    }
+
+    private static void applyShape(CheckBoxAnt cb, String v) {
+        if (v == null) { cb.shape(CheckBoxAnt.Shape.DEFAULT); return; }
+        switch (v) {
+            case "circle"  -> cb.shape(CheckBoxAnt.Shape.CIRCLE);
+            case "square"  -> cb.shape(CheckBoxAnt.Shape.SQUARE);
+            case "rounded" -> cb.shape(CheckBoxAnt.Shape.ROUNDED);
+            default        -> cb.shape(CheckBoxAnt.Shape.DEFAULT);
+        }
+    }
+
+    private static void applyState(CheckBoxAnt cb, String v) {
+        if ("checked".equals(v)) {
+            cb.selected(true).indeterminate(false).allowIndeterminate(false);
+        } else if ("indeterminate".equals(v)) {
+            cb.selected(false).indeterminate(true).allowIndeterminate(true);
+        } else {
+            cb.selected(false).indeterminate(false).allowIndeterminate(false);
+        }
     }
 }

@@ -38,18 +38,18 @@ public class ProjectHeroExamplePage extends VBoxAnt {
                 "适合项目首页、控制台首页、产品首页、README 首屏这类需要先立住“门面感”的页面。",
                 Demos.column(
                         Demos.labeled("首页定位", TypographyAnt.text("先让用户看见这是什么项目，再进入具体内容。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("复用方式", TypographyAnt.text("不同项目只换文案、状态和动作，不需要重写首屏结构。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("工程目标", TypographyAnt.text("把软件图标、状态标签、摘要信息和用户菜单统一封装。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }
 
     private Node previewSection() {
         Label actionState = TypographyAnt.text("动作：未触发")
-                .type(TypographyAnt.Type.SECONDARY)
+                .type(TypographyAnt.TextColor.SECONDARY)
                 .build();
 
         ThemeManager mgr = ThemeManager.getInstance();
@@ -95,7 +95,7 @@ public class ProjectHeroExamplePage extends VBoxAnt {
                         .icon(IconAnt.Path.DASHBOARD)
                         .status("编译通过", TagAnt.Type.SUCCESS)
                         .meta("当前主题", "Ant Design / Light")
-                        .action(ProjectHeroTemplate.userMenu("开发者", action -> {}).getTrigger())
+                        .action(ProjectHeroTemplate.userMenu("开发者", action -> System.out.println("动作：" + action)).getTrigger())
                         .build();
                 """;
 
@@ -105,9 +105,9 @@ public class ProjectHeroExamplePage extends VBoxAnt {
                 code,
                 Demos.column(
                         Demos.labeled("复用建议", TypographyAnt.text("配合 ProjectShowcaseTemplate / WorkspaceTemplate 使用，首页会更像真实工程壳。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("继续整合", TypographyAnt.text("如果多项目都要这个门面，可以把标题、状态、动作改成配置驱动。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }

@@ -2,12 +2,16 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.general;
 
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 
+import org.openkawu.jfxium.component.control.IconAnt;
+import org.openkawu.jfxium.component.control.LabelAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.component.control.LabelAnt;
-import org.openkawu.jfxium.component.control.IconAnt;
 
 /**
  * Label 文本 —— 最基础的文本控件（继承式 + 链式 build）。
@@ -24,7 +28,8 @@ public class LabelExamplePage extends VBoxAnt {
                         basicSection(),
                         typeSection(),
                         wrapSection(),
-                        graphicSection()
+                        graphicSection(),
+                        playgroundSection()
                 )
                 .padding(24)
                 .build());
@@ -98,5 +103,54 @@ public class LabelExamplePage extends VBoxAnt {
                 """;
         return Demos.sectionWithCode("4. 带图标",
                 "graphic() 设置图标节点，contentDisplay() 控制图标相对文字的位置。", code, demo);
+    }
+
+    /** 5. PlayGround：实时切换语义色 + 文本 + 换行 + 图标位置。 */
+    private Node playgroundSection() {
+        Binder<String> textType = PlayGround.binder("default");
+        Binder<String> textContent = PlayGround.binder("PlayGround 演示文本");
+        Binder<String> wrapOn = PlayGround.binder("off");
+        Binder<String> iconPos = PlayGround.binder("none");
+
+        return PlayGround.rebindRebuild(
+                () -> {
+                    String txt = textContent.get();
+                    boolean wrap = "on".equals(wrapOn.get());
+                    String pos = iconPos.get();
+                    LabelAnt label = LabelAnt.create(txt);
+                    switch (textType.get()) {
+                        case "secondary" -> label.secondary();
+                        case "success"   -> label.success();
+                        case "warning"   -> label.warning();
+                        case "danger"    -> label.danger();
+                        case "disabled"  -> label.disabledColor();
+                        default          -> { /* default */ }
+                    }
+                    if (wrap) label.wrap(true);
+                    if ("left".equals(pos)) {
+                        label.graphic(IconAnt.path(IconAnt.Path.HOME, 14));
+                    } else if ("right".equals(pos)) {
+                        label.graphic(IconAnt.path(IconAnt.Path.BELL, 14))
+                             .contentDisplay(ContentDisplay.RIGHT);
+                    }
+                    if (wrap) label.setMaxWidth(280);
+                    return label;
+                },
+                "语义色 / 文本 / 换行 / 图标",
+                PlayGround.row("语义色", PlayGround.segmented(textType,
+                        PlayGround.entry("default", "默认"),
+                        PlayGround.entry("secondary", "次要"),
+                        PlayGround.entry("success", "成功"),
+                        PlayGround.entry("warning", "警告"),
+                        PlayGround.entry("danger", "危险"),
+                        PlayGround.entry("disabled", "禁用"))),
+                PlayGround.row("文本", PlayGround.textField(textContent, "PlayGround 演示文本", "请输入文本")),
+                PlayGround.row("自动换行", PlayGround.segmented(wrapOn,
+                        PlayGround.entry("off", "关闭"),
+                        PlayGround.entry("on", "开启"))),
+                PlayGround.row("图标位置", PlayGround.segmented(iconPos,
+                        PlayGround.entry("none", "无"),
+                        PlayGround.entry("left", "左侧"),
+                        PlayGround.entry("right", "右侧"))));
     }
 }

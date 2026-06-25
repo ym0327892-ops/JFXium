@@ -92,7 +92,7 @@ public class JfxiumUiExampleApp extends Application {
         // 统一包一层水印，整套 demo 更像真实工程壳
         WatermarkAnt.wrap(scene, b -> b
                 .text(UiExampleConstants.APP_TITLE)
-                .opacity(watermarkVisible ? UiExampleConstants.DEFAULT_WATERMARK_OPACITY : 0.0));
+                .opacity(watermarkVisible ? 0.05:0.01));
         watermarkController = WatermarkAnt.controllerOf(scene.getRoot());
 
         stage.setScene(scene);

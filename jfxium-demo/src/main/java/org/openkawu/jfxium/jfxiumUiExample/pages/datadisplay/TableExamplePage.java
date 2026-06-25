@@ -3,10 +3,14 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 import javafx.scene.Node;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
+import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
 
 import java.util.List;
+import java.util.function.Supplier;
 import org.openkawu.jfxium.component.control.TableAnt;
 
 /**
@@ -32,7 +36,8 @@ public class TableExamplePage extends VBoxAnt {
                         basicSection(),
                         stripedBorderedSection(),
                         sizeSection(),
-                        sortableSection()
+                        sortableSection(),
+                        playgroundSection()
                 )
                 .padding(24)
                 .build());
@@ -40,16 +45,16 @@ public class TableExamplePage extends VBoxAnt {
 
     private Node basicSection() {
         Node demo = TableAnt.<Person>create()
-                .column("姓名", Person::name).end()
-                .numberColumn("年龄", Person::age).end()
-                .column("邮箱", Person::email).end()
+                .column("姓名", Person::name)
+                .numberColumn("年龄", Person::age)
+                .column("邮箱", Person::email)
                 .data(SAMPLE_DATA)
                 .build();
         String code = """
                 TableAnt.<Person>create()
-                        .column("姓名", Person::name).end()
-                        .numberColumn("年龄", Person::age).end()
-                        .column("邮箱", Person::email).end()
+                        .column("姓名", Person::name)
+                        .numberColumn("年龄", Person::age)
+                        .column("邮箱", Person::email)
                         .data(dataList)
                         .build();
                 """;
@@ -58,18 +63,18 @@ public class TableExamplePage extends VBoxAnt {
 
     private Node stripedBorderedSection() {
         Node demo = TableAnt.<Person>create()
-                .column("姓名", Person::name).end()
-                .numberColumn("年龄", Person::age).end()
-                .column("邮箱", Person::email).end()
+                .column("姓名", Person::name)
+                .numberColumn("年龄", Person::age)
+                .column("邮箱", Person::email)
                 .data(SAMPLE_DATA)
                 .striped(true)
                 .borders(TableAnt.Border.BOTH)
                 .build();
         String code = """
                 TableAnt.<Person>create()
-                        .column("姓名", Person::name).end()
-                        .numberColumn("年龄", Person::age).end()
-                        .column("邮箱", Person::email).end()
+                        .column("姓名", Person::name)
+                        .numberColumn("年龄", Person::age)
+                        .column("邮箱", Person::email)
                         .data(dataList)
                         .striped(true)
                         .borders(TableAnt.Border.BOTH)
@@ -83,23 +88,23 @@ public class TableExamplePage extends VBoxAnt {
     private Node sizeSection() {
         Node demo = Demos.column(
                 TableAnt.<Person>create()
-                        .column("姓名", Person::name).end()
-                        .numberColumn("年龄", Person::age).end()
+                        .column("姓名", Person::name)
+                        .numberColumn("年龄", Person::age)
                         .data(SAMPLE_DATA)
-                        .size(TableAnt.Size.SMALL)
+                        .size(Size.SMALL)
                         .build(),
                 TableAnt.<Person>create()
-                        .column("姓名", Person::name).end()
-                        .numberColumn("年龄", Person::age).end()
+                        .column("姓名", Person::name)
+                        .numberColumn("年龄", Person::age)
                         .data(SAMPLE_DATA)
-                        .size(TableAnt.Size.LARGE)
+                        .size(Size.LARGE)
                         .build()
         );
         String code = """
                 // 紧凑
-                TableAnt.<Person>create()...size(TableAnt.Size.SMALL).build();
+                TableAnt.<Person>create().column("姓名", Person::name).numberColumn("年龄", Person::age).size(Size.SMALL).build();
                 // 宽松
-                TableAnt.<Person>create()...size(TableAnt.Size.LARGE).build();
+                TableAnt.<Person>create().column("姓名", Person::name).numberColumn("年龄", Person::age).size(Size.LARGE).build();
                 """;
         return Demos.sectionWithCode("3. 尺寸",
                 "SMALL（紧凑）/ MIDDLE（默认）/ LARGE（宽松）。",
@@ -108,17 +113,17 @@ public class TableExamplePage extends VBoxAnt {
 
     private Node sortableSection() {
         Node demo = TableAnt.<Person>create()
-                .column("姓名", Person::name).end()
-                .numberColumn("年龄", Person::age).end()
-                .column("邮箱", Person::email).end()
+                .column("姓名", Person::name)
+                .numberColumn("年龄", Person::age)
+                .column("邮箱", Person::email)
                 .data(SAMPLE_DATA)
                 .sortable(true)
                 .build();
         String code = """
                 TableAnt.<Person>create()
-                        .column("姓名", Person::name).end()
-                        .numberColumn("年龄", Person::age).end()
-                        .column("邮箱", Person::email).end()
+                        .column("姓名", Person::name)
+                        .numberColumn("年龄", Person::age)
+                        .column("邮箱", Person::email)
                         .data(dataList)
                         .sortable(true)
                         .build();
@@ -126,5 +131,54 @@ public class TableExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("4. 可排序",
                 "sortable(true) 启用列头点击排序。",
                 code, demo);
+    }
+
+    /** 5. 交互演示：实时切换 size / striped / borders / sortable。 */
+    private Node playgroundSection() {
+        Binder<String> sizeBinder = PlayGround.binder("middle");
+        Binder<String> stripedBinder = PlayGround.binder("off");
+        Binder<String> bordersBinder = PlayGround.binder("horizontal");
+        Binder<String> sortableBinder = PlayGround.binder("on");
+        Supplier<Node> factory = () -> TableAnt.<Person>create()
+                .column("姓名", Person::name)
+                .numberColumn("年龄", Person::age)
+                .column("邮箱", Person::email)
+                .data(SAMPLE_DATA)
+                .size(parseSize(sizeBinder.get()))
+                .striped("on".equals(stripedBinder.get()))
+                .borders(parseBorder(bordersBinder.get()))
+                .sortable("on".equals(sortableBinder.get()))
+                .build();
+        return Demos.section("5. 交互演示",
+                "通过左侧控件实时改变 Table 的 size / striped / borders / sortable，表格实时重建反映配置。",
+                PlayGround.rebindRebuild(factory, null,
+                        PlayGround.row("尺寸", PlayGround.segmented(sizeBinder,
+                                PlayGround.entry("small", "小"),
+                                PlayGround.entry("middle", "默认"),
+                                PlayGround.entry("large", "大"))),
+                        PlayGround.row("斑马纹", PlayGround.segmented(stripedBinder,
+                                PlayGround.entry("off", "关闭"),
+                                PlayGround.entry("on", "开启"))),
+                        PlayGround.row("边框", PlayGround.segmented(bordersBinder,
+                                PlayGround.entry("none", "无"),
+                                PlayGround.entry("horizontal", "横线"),
+                                PlayGround.entry("vertical", "竖线"),
+                                PlayGround.entry("both", "全部"))),
+                        PlayGround.row("可排序", PlayGround.segmented(sortableBinder,
+                                PlayGround.entry("on", "开启"),
+                                PlayGround.entry("off", "关闭")))));
+    }
+
+    private static Size parseSize(String v) {
+        if ("small".equals(v)) return Size.SMALL;
+        if ("large".equals(v)) return Size.LARGE;
+        return Size.MIDDLE;
+    }
+
+    private static TableAnt.Border parseBorder(String v) {
+        if ("none".equals(v)) return TableAnt.Border.NONE;
+        if ("vertical".equals(v)) return TableAnt.Border.VERTICAL;
+        if ("both".equals(v)) return TableAnt.Border.BOTH;
+        return TableAnt.Border.HORIZONTAL;
     }
 }

@@ -38,18 +38,18 @@ public class ProjectReleaseExamplePage extends VBoxAnt {
                 "适合展示版本发布、分支稳定性、变更摘要、发布准备度等信息，常见于项目首页、发布页、README 演示页。",
                 Demos.column(
                         Demos.labeled("项目主页", TypographyAnt.text("让用户看到项目不仅能跑，还在持续发布与演进。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("复用方式", TypographyAnt.text("首页、控制台页和发布页都可以共用这块模板。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("信息密度", TypographyAnt.text("用发布信息 + 时间线 + 变更列表，代替分散的文字说明。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }
 
     private Node previewSection() {
         Label actionState = TypographyAnt.text("动作：未触发")
-                .type(TypographyAnt.Type.SECONDARY)
+                .type(TypographyAnt.TextColor.SECONDARY)
                 .build();
         ProjectDashboardTemplate.Snapshot snapshot = ProjectDashboardTemplate.Snapshot.demo();
 
@@ -100,9 +100,9 @@ public class ProjectReleaseExamplePage extends VBoxAnt {
                 code,
                 Demos.column(
                         Demos.labeled("复用建议", TypographyAnt.text("如果项目有版本页、发布页或对外展示页，都可以直接复用。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("继续整合", TypographyAnt.text("若有多个项目共享同类发布面板，可以进一步抽成更底层的公共 section。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }

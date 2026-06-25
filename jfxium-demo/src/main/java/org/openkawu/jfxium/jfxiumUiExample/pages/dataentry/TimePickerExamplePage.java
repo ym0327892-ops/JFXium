@@ -10,6 +10,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.composite.TimePickerAnt;
+import org.openkawu.jfxium.component.overlay.MessageAnt;
 
 /**
  * TimePicker 时间选择 —— 基础 / 时分格式 / 默认值。
@@ -27,11 +28,11 @@ public class TimePickerExamplePage extends VBoxAnt {
 
     private Node basicSection() {
         Node demo = TimePickerAnt.create()
-                .onChange(time -> {})
+                .onChange(time -> MessageAnt.info("当前时间：" + time))
                 .build();
         String code = """
                 TimePickerAnt.create()
-                        .onChange(time -> System.out.println(time))
+                        .onChange(time -> MessageAnt.info("当前时间：" + time))
                         .build();
                 """;
         return Demos.sectionWithCode("1. 基础用法",

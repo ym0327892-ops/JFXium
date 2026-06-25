@@ -38,18 +38,18 @@ public class ProjectConsoleExamplePage extends VBoxAnt {
                 "适合工程主页、后台控制台、桌面管理工具、示例项目主窗口这类需要完整壳层的场景。",
                 Demos.column(
                         Demos.labeled("首页定位", TypographyAnt.text("把 demo 从“页面集合”升级成“真实工程壳”。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("壳层组成", TypographyAnt.text("顶部菜单 + 品牌区 + 用户入口 + 左侧菜单 + 内容区 + 底部状态栏。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("复用建议", TypographyAnt.text("项目只需要替换菜单、路由和内容，不用重复拼窗口骨架。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }
 
     private Node previewSection() {
         Label status = TypographyAnt.text("动作：未触发")
-                .type(TypographyAnt.Type.SECONDARY)
+                .type(TypographyAnt.TextColor.SECONDARY)
                 .build();
         AtomicReference<Node> shellRef = new AtomicReference<>();
         Consumer<String> onAction = action -> {
@@ -114,7 +114,7 @@ public class ProjectConsoleExamplePage extends VBoxAnt {
 
         String code = """
                 Label status = TypographyAnt.text("动作：未触发")
-                        .type(TypographyAnt.Type.SECONDARY)
+                        .type(TypographyAnt.TextColor.SECONDARY)
                         .build();
                 AtomicReference<Node> shellRef = new AtomicReference<>();
                 Consumer<String> onAction = action -> {
@@ -179,8 +179,8 @@ public class ProjectConsoleExamplePage extends VBoxAnt {
                 ProjectConsoleTemplate.create()
                         .brand("JFXium UI Example", "工程项目控制台")
                         .brandIcon(IconAnt.Path.DASHBOARD)
-                        .menuBar(ProjectConsoleTemplate.standardMenuBar(action -> {}))
-                        .headerRight(ProjectConsoleTemplate.headerActions("开发者", action -> {}))
+                        .menuBar(ProjectConsoleTemplate.standardMenuBar(action -> System.out.println("菜单点击：" + action)))
+                        .headerRight(ProjectConsoleTemplate.headerActions("开发者", action -> System.out.println("用户点击：" + action)))
                         .sider(menu, 240)
                         .content(mainArea)
                         .footer(ProjectConsoleTemplate.statusBar("就绪", "Java 21 | JavaFX 21"))
@@ -190,11 +190,11 @@ public class ProjectConsoleExamplePage extends VBoxAnt {
 
         Node notes = Demos.column(
                 Demos.labeled("一句话", TypographyAnt.text("调用方只需要提供菜单、路由和内容，壳层结构交给模板。")
-                        .type(TypographyAnt.Type.SECONDARY).build()),
+                        .type(TypographyAnt.TextColor.SECONDARY).build()),
                 Demos.labeled("配套模板", TypographyAnt.text("如果需要头像设置面板，可以直接接 WorkspaceSettingsTemplate。")
-                        .type(TypographyAnt.Type.SECONDARY).build()),
+                        .type(TypographyAnt.TextColor.SECONDARY).build()),
                 Demos.labeled("继续整合", TypographyAnt.text("后续可把项目菜单、状态栏规范继续沉淀成更多 helper。")
-                        .type(TypographyAnt.Type.SECONDARY).build())
+                        .type(TypographyAnt.TextColor.SECONDARY).build())
         );
 
         return Demos.sectionWithCode(

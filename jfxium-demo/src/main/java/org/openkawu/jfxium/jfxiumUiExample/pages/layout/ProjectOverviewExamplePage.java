@@ -38,18 +38,18 @@ public class ProjectOverviewExamplePage extends VBoxAnt {
                 "适合项目首页、控制台首页、README 展示页、产品演示页这类需要让用户一眼看到项目状态的地方。",
                 Demos.column(
                         Demos.labeled("工程壳", TypographyAnt.text("把首页从控件列表升级成真实工程控制台。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("通用性", TypographyAnt.text("作为模板可直接复用到不同项目，不依赖 demo 特定数据结构。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("收口策略", TypographyAnt.text("统计、标签、进度、时间线、列表都复用 JFxium 现有组件。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }
 
     private Node previewSection() {
         Label actionState = TypographyAnt.text("动作：未触发")
-                .type(TypographyAnt.Type.SECONDARY)
+                .type(TypographyAnt.TextColor.SECONDARY)
                 .build();
         ProjectDashboardTemplate.Snapshot snapshot = ProjectDashboardTemplate.Snapshot.demo();
 
@@ -107,9 +107,9 @@ public class ProjectOverviewExamplePage extends VBoxAnt {
                 code,
                 Demos.column(
                         Demos.labeled("复用建议", TypographyAnt.text("如果项目首页和 README 页都要显示工程概览，直接复用这个模板。")
-                                .type(TypographyAnt.Type.SECONDARY).build()),
+                                .type(TypographyAnt.TextColor.SECONDARY).build()),
                         Demos.labeled("后续演进", TypographyAnt.text("如果出现更多重复块，可以继续沉淀成更细粒度的 section template。")
-                                .type(TypographyAnt.Type.SECONDARY).build())
+                                .type(TypographyAnt.TextColor.SECONDARY).build())
                 )
         );
     }

@@ -350,7 +350,7 @@ public class HBarExamplePage extends VBoxAnt {
 
         // 9b. 对话框底部：左提示文字，右取消+确认，顶部1px线
         Node dialogFooter = HBarAnt.create()
-                .left(TypographyAnt.text("请确认以上信息").type(TypographyAnt.Type.SECONDARY).build())
+                .left(TypographyAnt.text("请确认以上信息").type(TypographyAnt.TextColor.SECONDARY).build())
                 .right(
                         ButtonAnt.create("取消").build(),
                         ButtonAnt.create("确认删除").type(ButtonAnt.Type.DANGER).build()

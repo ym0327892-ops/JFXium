@@ -7,6 +7,8 @@ import org.openkawu.jfxium.component.control.SeparatorAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
+import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
 
 /**
@@ -20,7 +22,8 @@ public class SeparatorExamplePage extends VBoxAnt {
                 .description("视觉分隔线控件，JavaFX 原生 Separator 的 Builder 封装，支持水平/垂直方向。")
                 .sections(
                         basicSection(),
-                        verticalSection()
+                        verticalSection(),
+                        playgroundSection()
                 )
                 .padding(24)
                 .build());
@@ -64,5 +67,39 @@ public class SeparatorExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("2. 垂直分隔符",
                 "orientation(VERTICAL) 生成垂直分隔线，用于横向排列元素之间的区隔。",
                 code, demo);
+    }
+
+    /** 3. PlayGround：实时切换方向 + 内容长度。 */
+    private Node playgroundSection() {
+        Binder<String> orientation = PlayGround.binder("horizontal");
+        Binder<String> contentLength = PlayGround.binder("short");
+
+        return PlayGround.rebindRebuild(
+                () -> {
+                    Orientation o = "vertical".equals(orientation.get())
+                            ? Orientation.VERTICAL : Orientation.HORIZONTAL;
+                    boolean useLong = "long".equals(contentLength.get());
+                    String label = useLong ? "这是一段比较长的标签文字内容用来演示效果" : "标签";
+                    Node separator = SeparatorAnt.create().orientation(o).build();
+                    return wrapWithContent(separator, o, label);
+                },
+                "方向 / 内容长度",
+                PlayGround.row("方向", PlayGround.segmented(orientation,
+                        PlayGround.entry("horizontal", "水平"),
+                        PlayGround.entry("vertical", "垂直"))),
+                PlayGround.row("内容长度", PlayGround.segmented(contentLength,
+                        PlayGround.entry("short", "短"),
+                        PlayGround.entry("long", "长")))
+        );
+    }
+
+    /** 按方向组合「标签 + 分隔符」演示组。 */
+    private Node wrapWithContent(Node separator, Orientation o, String label) {
+        Node textNode = TypographyAnt.text(label).build();
+        if (o == Orientation.HORIZONTAL) {
+            return Demos.column(textNode, separator, textNode);
+        } else {
+            return Demos.row(textNode, separator, textNode);
+        }
     }
 }
