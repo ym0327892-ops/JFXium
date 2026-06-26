@@ -15,6 +15,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.Callbacks;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
@@ -29,9 +30,7 @@ import java.util.function.Consumer;
  */
 public final class LaunchPadTemplate {
 
-    private static final String DEFAULT_TITLE = "快捷入口";
-    private static final String DEFAULT_DESCRIPTION = "把最常用的页面和模板摆在首页，减少来回找目录的成本。";
-    private static final String DEFAULT_ACTION_TEXT = "打开";
+    // i18n keys: launchpad.title, launchpad.description, launchpad.action
 
     private LaunchPadTemplate() {}
 
@@ -42,8 +41,8 @@ public final class LaunchPadTemplate {
     public static final class Builder extends AbstractStyleBuilder<Builder> {
         private record Item(String key, String title, String description, IconAnt.Path icon, String actionText) {}
 
-        private String title = DEFAULT_TITLE;
-        private String description = DEFAULT_DESCRIPTION;
+        private String title = Messages.get("launchpad.title");
+        private String description = Messages.get("launchpad.description");
         private int columns = 2;
         private double gap = 16;
         private final List<Item> items = new ArrayList<>();
@@ -52,12 +51,12 @@ public final class LaunchPadTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
+            this.title = TextUtils.safeText(title, Messages.get("launchpad.title"));
             return this;
         }
 
         public Builder description(String description) {
-            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
+            this.description = TextUtils.safeText(description, Messages.get("launchpad.description"));
             return this;
         }
 
@@ -77,7 +76,7 @@ public final class LaunchPadTemplate {
         }
 
         public Builder item(String key, String title, String description, IconAnt.Path icon) {
-            return item(key, title, description, icon, DEFAULT_ACTION_TEXT);
+            return item(key, title, description, icon, Messages.get("launchpad.action"));
         }
 
         public Builder item(String key, String title, String description, IconAnt.Path icon, String actionText) {
@@ -86,7 +85,7 @@ public final class LaunchPadTemplate {
                     TextUtils.safeText(title),
                     TextUtils.safeText(description),
                     icon != null ? icon : IconAnt.Path.DASHBOARD,
-                    TextUtils.safeText(actionText, DEFAULT_ACTION_TEXT)
+                    TextUtils.safeText(actionText, Messages.get("launchpad.action"))
             ));
             return this;
         }

@@ -8,6 +8,7 @@ import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
@@ -47,8 +48,7 @@ import java.util.List;
  */
 public final class ProjectQuickStartTemplate {
 
-    private static final String DEFAULT_TITLE = "快速上手";
-    private static final String DEFAULT_DESCRIPTION = "几步跑通项目，快速开始使用。";
+    // i18n keys: project.quickstart_title, project.quickstart_description
 
     private ProjectQuickStartTemplate() {}
 
@@ -59,19 +59,19 @@ public final class ProjectQuickStartTemplate {
     public static final class Builder extends AbstractStyleBuilder<Builder> {
         private record StepEntry(String title, String description, String code, CodeBlockAnt.Language language) {}
 
-        private String title = DEFAULT_TITLE;
-        private String description = DEFAULT_DESCRIPTION;
+        private String title = Messages.get("project.quickstart_title");
+        private String description = Messages.get("project.quickstart_description");
         private final List<StepEntry> steps = new ArrayList<>();
 
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
+            this.title = TextUtils.safeText(title, Messages.get("project.quickstart_title"));
             return this;
         }
 
         public Builder description(String description) {
-            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
+            this.description = TextUtils.safeText(description, Messages.get("project.quickstart_description"));
             return this;
         }
 

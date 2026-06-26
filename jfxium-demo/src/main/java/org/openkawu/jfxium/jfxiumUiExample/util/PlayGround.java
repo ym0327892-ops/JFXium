@@ -12,8 +12,10 @@ import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.composite.SegmentedAnt;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.component.composite.VBarAnt;
+import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.FlowPaneAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -308,7 +310,7 @@ public final class PlayGround {
             displayBox.getChildren().add(displayNode);
 
             // 整体两栏 HBox
-            HBox twoCols = new HBox(0);
+            HBoxAnt twoCols = HBoxAnt.create();
             twoCols.setAlignment(Pos.TOP_LEFT);
             twoCols.getStyleClass().add("jfx-demo-playground");
             if (compact) twoCols.getStyleClass().add("jfx-demo-playground-compact");
@@ -446,7 +448,8 @@ public final class PlayGround {
         if (binder == null) {
             throw new IllegalArgumentException("binder 不能为 null");
         }
-        TextField tf = new TextField(initial != null ? initial : "");
+        InputAnt tf = InputAnt.create();
+        tf.setText(initial != null ? initial : "");
         if (prompt != null && !prompt.isBlank()) {
             tf.setPromptText(prompt);
         }

@@ -3,6 +3,7 @@ package org.openkawu.jfxium.template;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
@@ -20,8 +21,7 @@ import java.util.List;
  */
 public final class ProjectShowcaseTemplate {
 
-    private static final String DEFAULT_TITLE = "工程首页";
-    private static final String DEFAULT_DESCRIPTION = "把工程门面、概览、发布节奏和快捷入口组织成一页展示。";
+    // i18n keys: project.showcase_title, project.showcase_description
 
     private ProjectShowcaseTemplate() {}
 
@@ -30,20 +30,20 @@ public final class ProjectShowcaseTemplate {
     }
 
     public static final class Builder extends AbstractStyleBuilder<Builder> {
-        private String title = DEFAULT_TITLE;
-        private String description = DEFAULT_DESCRIPTION;
+        private String title = Messages.get("project.showcase_title");
+        private String description = Messages.get("project.showcase_description");
         private Node hero;
         private final List<Node> sections = new ArrayList<>();
 
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
+            this.title = TextUtils.safeText(title, Messages.get("project.showcase_title"));
             return this;
         }
 
         public Builder description(String description) {
-            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
+            this.description = TextUtils.safeText(description, Messages.get("project.showcase_description"));
             return this;
         }
 

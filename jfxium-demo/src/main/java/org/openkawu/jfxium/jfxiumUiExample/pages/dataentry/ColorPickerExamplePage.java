@@ -129,7 +129,8 @@ public class ColorPickerExamplePage extends VBoxAnt {
                     .onChange(color -> resultRef[0].setText("当前颜色：" + toHex(color)))
                     .build();
 
-            VBox box = new VBox(8);
+            VBoxAnt box = VBoxAnt.create();
+            box.setSpacing(8);
             box.setAlignment(Pos.CENTER_LEFT);
             box.getChildren().addAll(picker, resultRef[0]);
             return box;

@@ -18,6 +18,7 @@ import org.openkawu.jfxium.core.theme.ThemeColor;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
@@ -31,9 +32,6 @@ import java.util.function.Supplier;
  * 而是把这类重复的“设置面板骨架”从 demo 里收口出来，方便多个工作台页复用。</p>
  */
 public final class WorkspaceSettingsTemplate {
-
-    private static final String DEFAULT_TITLE = "外观设置";
-    private static final String DEFAULT_DESCRIPTION = "切换主题、密度、主色和全局水印，修改后即时生效。";
 
     private WorkspaceSettingsTemplate() {}
 
@@ -50,7 +48,7 @@ public final class WorkspaceSettingsTemplate {
                                                 Supplier<Boolean> watermarkVisibleSupplier,
                                                 Consumer<Boolean> onWatermarkVisibleChanged) {
         return DrawerAnt.create()
-                .title(DEFAULT_TITLE)
+                .title(Messages.get("settings.title"))
                 .width(TextUtils.ensureAtLeastOne(width))
                 .content(WorkspaceSettingsTemplate.create()
                         .watermarkVisibleSupplier(watermarkVisibleSupplier)
@@ -70,8 +68,8 @@ public final class WorkspaceSettingsTemplate {
         private ThemeManager themeManager = ThemeManager.getInstance();
         private Supplier<Boolean> watermarkVisibleSupplier;
         private Consumer<Boolean> onWatermarkVisibleChanged;
-        private String title = DEFAULT_TITLE;
-        private String description = DEFAULT_DESCRIPTION;
+        private String title = null;
+        private String description = null;
 
         private Builder() {}
 
@@ -95,13 +93,13 @@ public final class WorkspaceSettingsTemplate {
 
         /** 面板标题。null 视为空字符串(由 TextUtils.safeText 收口,见 P1-2)。 */
         public Builder title(String title) {
-            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
+            this.title = title;
             return this;
         }
 
         /** 面板说明。null 视为空字符串(由 TextUtils.safeText 收口,见 P1-2)。 */
         public Builder description(String description) {
-            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
+            this.description = description;
             return this;
         }
 
@@ -112,15 +110,15 @@ public final class WorkspaceSettingsTemplate {
                     .padding(16)
                     .children(
                             buildHeader(),
-                            settingGroup("设计语言",
-                                    settingRow("设计风格", buildFamilySelect(mgr))),
-                            settingGroup("外观",
-                                    settingRow("明暗模式", buildDarkSwitch(mgr)),
-                                    settingRow("紧凑模式", buildDensitySwitch(mgr))),
-                            settingGroup("强调色",
-                                    settingRow("主色调", buildPrimaryColorSelect(mgr))),
-                            settingGroup("水印",
-                                    settingRow("显示水印", buildWatermarkSwitch()))
+                            settingGroup(Messages.get("settings.group_design_language"),
+                                    settingRow(Messages.get("settings.row_design_style"), buildFamilySelect(mgr))),
+                            settingGroup(Messages.get("settings.group_appearance"),
+                                    settingRow(Messages.get("settings.row_dark_mode"), buildDarkSwitch(mgr)),
+                                    settingRow(Messages.get("settings.row_compact_mode"), buildDensitySwitch(mgr))),
+                            settingGroup(Messages.get("settings.group_accent_color"),
+                                    settingRow(Messages.get("settings.row_primary_color"), buildPrimaryColorSelect(mgr))),
+                            settingGroup(Messages.get("settings.group_watermark"),
+                                    settingRow(Messages.get("settings.row_show_watermark"), buildWatermarkSwitch()))
                     )
                     .build();
 
@@ -132,8 +130,8 @@ public final class WorkspaceSettingsTemplate {
             VBox header = VBoxAnt.create()
                     .spacing(4)
                     .children(
-                            TypographyAnt.title(title, 3).build(),
-                            TypographyAnt.text(description)
+                            TypographyAnt.title(TextUtils.safeText(title, Messages.get("settings.title")), 3).build(),
+                            TypographyAnt.text(TextUtils.safeText(description, Messages.get("settings.description")))
                                     .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
@@ -169,8 +167,8 @@ public final class WorkspaceSettingsTemplate {
         private Node buildDarkSwitch(ThemeManager mgr) {
             return SwitchAnt.create()
                     .selected(mgr.isDark())
-                    .checkedText("暗色")
-                    .uncheckedText("亮色")
+                    .checkedText(Messages.get("settings.dark_on"))
+                    .uncheckedText(Messages.get("settings.dark_off"))
                     .onChange(mgr::setDark)
                     .build();
         }
@@ -178,8 +176,8 @@ public final class WorkspaceSettingsTemplate {
         private Node buildDensitySwitch(ThemeManager mgr) {
             return SwitchAnt.create()
                     .selected(mgr.getDensity() == ThemeDensity.COMPACT)
-                    .checkedText("紧凑")
-                    .uncheckedText("默认")
+                    .checkedText(Messages.get("settings.compact_on"))
+                    .uncheckedText(Messages.get("settings.compact_off"))
                     .onChange(checked -> mgr.setDensity(checked ? ThemeDensity.COMPACT : ThemeDensity.DEFAULT))
                     .build();
         }

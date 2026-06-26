@@ -12,6 +12,7 @@ import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.core.util.Callbacks;
 import org.openkawu.jfxium.core.util.NumericUtils;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
@@ -39,15 +40,10 @@ public final class ProjectDashboardTemplate {
     public static final String ACTION_PROJECT_MODAL = "project.modal";
     public static final String ACTION_WATERMARK = "project.watermark";
 
-    private static final String DEFAULT_TITLE = "工程首页";
-    private static final String DEFAULT_DESCRIPTION = "把工程门面、概览、发布节奏和快捷入口组织成一页展示。";
+    // i18n keys: project.dashboard_title, project.dashboard_description, project.dashboard_page_subtitle, project.dashboard_page_description, project.dashboard_current_user, project.dashboard_build_status
     private static final String DEFAULT_PAGE_TITLE = "JFXium UI Example";
-    private static final String DEFAULT_PAGE_SUBTITLE = "工程项目展示首页";
-    private static final String DEFAULT_PAGE_DESCRIPTION = "这不是简单的控件列表，而是一个完整工程壳样板：顶部菜单、头像设置、左侧导航、右侧展示、底部状态栏和全局水印都在这里一起演示。";
-    private static final String DEFAULT_CURRENT_USER = "开发者";
     private static final String DEFAULT_VERSION = "1.0-SNAPSHOT";
     private static final String DEFAULT_BRANCH = "main";
-    private static final String DEFAULT_BUILD_STATUS = "通过";
     private static final String DEFAULT_MODE = "Showcase";
     private static final String DEFAULT_TEMPLATE_COUNT = "14";
     private static final String DEFAULT_COMPONENT_COUNT = "112+";
@@ -60,12 +56,12 @@ public final class ProjectDashboardTemplate {
      */
     public static final class Snapshot {
         private String pageTitle = DEFAULT_PAGE_TITLE;
-        private String pageSubtitle = DEFAULT_PAGE_SUBTITLE;
-        private String pageDescription = DEFAULT_PAGE_DESCRIPTION;
-        private String currentUser = DEFAULT_CURRENT_USER;
+        private String pageSubtitle = Messages.get("project.dashboard_page_subtitle");
+        private String pageDescription = Messages.get("project.dashboard_page_description");
+        private String currentUser = Messages.get("project.dashboard_current_user");
         private String version = DEFAULT_VERSION;
         private String branch = DEFAULT_BRANCH;
-        private String buildStatus = DEFAULT_BUILD_STATUS;
+        private String buildStatus = Messages.get("project.dashboard_build_status");
         private String mode = DEFAULT_MODE;
         private String templateCount = DEFAULT_TEMPLATE_COUNT;
         private String componentCount = DEFAULT_COMPONENT_COUNT;
@@ -93,7 +89,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot pageSubtitle(String pageSubtitle) {
-            this.pageSubtitle = TextUtils.safeText(pageSubtitle, DEFAULT_PAGE_SUBTITLE);
+            this.pageSubtitle = TextUtils.safeText(pageSubtitle, Messages.get("project.dashboard_page_subtitle"));
             return this;
         }
 
@@ -102,7 +98,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot pageDescription(String pageDescription) {
-            this.pageDescription = TextUtils.safeText(pageDescription, DEFAULT_PAGE_DESCRIPTION);
+            this.pageDescription = TextUtils.safeText(pageDescription, Messages.get("project.dashboard_page_description"));
             return this;
         }
 
@@ -111,7 +107,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot currentUser(String currentUser) {
-            this.currentUser = TextUtils.safeText(currentUser, DEFAULT_CURRENT_USER);
+            this.currentUser = TextUtils.safeText(currentUser, Messages.get("project.dashboard_current_user"));
             return this;
         }
 
@@ -138,7 +134,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public Snapshot buildStatus(String buildStatus) {
-            this.buildStatus = TextUtils.safeText(buildStatus, DEFAULT_BUILD_STATUS);
+            this.buildStatus = TextUtils.safeText(buildStatus, Messages.get("project.dashboard_build_status"));
             return this;
         }
 
@@ -238,8 +234,8 @@ public final class ProjectDashboardTemplate {
         // completion / icon 这些"首页快照数据"统一收口到 Snapshot。
         // Builder 只保留自己的 title / description（首页框架级文案）和区域节点字段。
         private final Snapshot snapshot = Snapshot.create();
-        private String title = DEFAULT_TITLE;
-        private String description = DEFAULT_DESCRIPTION;
+        private String title = Messages.get("project.dashboard_title");
+        private String description = Messages.get("project.dashboard_description");
         private Node hero;
         private Node overview;
         private Node release;
@@ -250,12 +246,12 @@ public final class ProjectDashboardTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
+            this.title = TextUtils.safeText(title, Messages.get("project.dashboard_title"));
             return this;
         }
 
         public Builder description(String description) {
-            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
+            this.description = TextUtils.safeText(description, Messages.get("project.dashboard_description"));
             return this;
         }
 

@@ -11,6 +11,7 @@ import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.Background;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 import org.openkawu.jfxium.layout.AppShellAnt;
 import org.openkawu.jfxium.component.layout.GridAnt;
@@ -76,7 +77,7 @@ public class WorkspaceTemplate {
      * 把它收口到 WorkspaceTemplate，主窗口和后台壳都能直接复用。</p>
      */
     public static DropdownResult userMenu(String currentUser, Consumer<String> onAction) {
-        String resolvedUser = currentUser == null || currentUser.isBlank() ? "访客" : currentUser;
+        String resolvedUser = currentUser == null || currentUser.isBlank() ? Messages.get("workspace.guest_user") : currentUser;
         String avatarText = resolvedUser.isBlank() ? "U" : resolvedUser;
 
         HBox trigger = HBoxAnt.create()
@@ -97,10 +98,10 @@ public class WorkspaceTemplate {
                 .trigger(trigger)
                 .showArrow()
                 .placement(DropdownAnt.Placement.BOTTOM_RIGHT)
-                .item("settings", "外观设置", IconAnt.path(IconAnt.Path.SETTINGS, 16))
-                .item("about", "关于", IconAnt.symbol(IconAnt.Symbol.INFO, 16))
+                .item("settings", Messages.get("workspace.menu_appearance"), IconAnt.path(IconAnt.Path.SETTINGS, 16))
+                .item("about", Messages.get("workspace.menu_about"), IconAnt.symbol(IconAnt.Symbol.INFO, 16))
                 .divider()
-                .item("logout", "退出", IconAnt.path(IconAnt.Path.LOGOUT, 16))
+                .item("logout", Messages.get("workspace.menu_logout"), IconAnt.path(IconAnt.Path.LOGOUT, 16))
                 .onSelect(key -> {
                     if (onAction != null) {
                         onAction.accept(key);

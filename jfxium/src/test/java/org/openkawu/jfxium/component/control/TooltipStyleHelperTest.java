@@ -1,4 +1,4 @@
-package org.openkawu.jfxium.core.util;
+package org.openkawu.jfxium.component.control;
 
 import javafx.scene.control.Button;
 import javafx.util.Duration;
@@ -6,9 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
-import org.openkawu.jfxium.component.control.ButtonAnt;
-import org.openkawu.jfxium.component.control.TooltipAnt;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -19,6 +19,8 @@ import org.openkawu.jfxium.component.overlay.ModalAnt;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.LabelAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
 
 import java.util.function.Supplier;
 
@@ -182,21 +184,21 @@ public class ModalExamplePage extends VBoxAnt {
         Binder<String> okTextBinder = PlayGround.binder("确定");
         Supplier<Node> factory = () -> {
             // 预览卡片：模拟 Modal 外观
-            VBox preview = new VBox(0);
+            VBoxAnt preview = VBoxAnt.create();
             preview.getStyleClass().add("jfx-demo-modal-preview");
             preview.setMaxWidth(parseWidth(widthBinder.get()));
             preview.setMinWidth(parseWidth(widthBinder.get()));
             preview.setPrefWidth(parseWidth(widthBinder.get()));
 
             // header
-            HBox header = new HBox();
+            HBoxAnt header = HBoxAnt.create();
             header.getStyleClass().add("jfx-demo-modal-header");
-            Label titleLabel = new Label(emptyToDefault(titleBinder.get(), "交互演示"));
+            LabelAnt titleLabel = LabelAnt.create(emptyToDefault(titleBinder.get(), "交互演示")).build();
             titleLabel.getStyleClass().add("jfx-demo-modal-title");
-            HBox spacer = new HBox();
+            HBoxAnt spacer = HBoxAnt.create();
             HBox.setHgrow(spacer, Priority.ALWAYS);
             String closeSide = closeBinder.get();
-            Label closeBtn = new Label("✕");
+            LabelAnt closeBtn = LabelAnt.create("✕").build();
             closeBtn.getStyleClass().add("jfx-demo-modal-close");
             if ("left".equals(closeSide)) {
                 header.getChildren().addAll(closeBtn, spacer, titleLabel);
@@ -208,13 +210,12 @@ public class ModalExamplePage extends VBoxAnt {
             preview.getChildren().add(header);
 
             // body
-            Label body = new Label(emptyToDefault(contentBinder.get(), "（空内容）"));
+            LabelAnt body = LabelAnt.create(emptyToDefault(contentBinder.get(), "（空内容）")).wrap(true).build();
             body.getStyleClass().add("jfx-demo-modal-body");
-            body.setWrapText(true);
             preview.getChildren().add(body);
 
             // footer
-            HBox footer = new HBox();
+            HBoxAnt footer = HBoxAnt.create();
             footer.getStyleClass().add("jfx-demo-modal-footer");
             ButtonAnt cancelBtn = ButtonAnt.create("取消").type(ButtonAnt.Type.DEFAULT);
             ButtonAnt openBtn = ButtonAnt.create(emptyToDefault(okTextBinder.get(), "确定"))

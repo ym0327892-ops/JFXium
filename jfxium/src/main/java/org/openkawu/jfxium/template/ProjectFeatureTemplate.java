@@ -12,6 +12,7 @@ import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
@@ -47,8 +48,7 @@ import java.util.function.Consumer;
  */
 public final class ProjectFeatureTemplate {
 
-    private static final String DEFAULT_TITLE = "核心特性";
-    private static final String DEFAULT_DESCRIPTION = "项目提供的核心能力和技术亮点。";
+    // i18n keys: project.feature_title, project.feature_description
 
     private ProjectFeatureTemplate() {}
 
@@ -59,8 +59,8 @@ public final class ProjectFeatureTemplate {
     public static final class Builder extends AbstractStyleBuilder<Builder> {
         private record Feature(String key, String title, String description, IconAnt.Path icon) {}
 
-        private String title = DEFAULT_TITLE;
-        private String description = DEFAULT_DESCRIPTION;
+        private String title = Messages.get("project.feature_title");
+        private String description = Messages.get("project.feature_description");
         private int columns = 2;
         private double gap = 16;
         private final List<Feature> features = new ArrayList<>();
@@ -69,12 +69,12 @@ public final class ProjectFeatureTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
+            this.title = TextUtils.safeText(title, Messages.get("project.feature_title"));
             return this;
         }
 
         public Builder description(String description) {
-            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
+            this.description = TextUtils.safeText(description, Messages.get("project.feature_description"));
             return this;
         }
 

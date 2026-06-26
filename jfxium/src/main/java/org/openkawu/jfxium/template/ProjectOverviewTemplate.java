@@ -21,6 +21,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.Callbacks;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
@@ -36,9 +37,7 @@ import java.util.function.Consumer;
  */
 public final class ProjectOverviewTemplate {
 
-    private static final String DEFAULT_TITLE = "工程概览";
-    private static final String DEFAULT_DESCRIPTION = "把项目的运行态、技术栈、里程碑和近期动作收进一张总览板。";
-    private static final String DEFAULT_ACTION_TEXT = "打开";
+    // i18n keys: project.overview_title, project.overview_description, project.overview_action
 
     private ProjectOverviewTemplate() {}
 
@@ -54,8 +53,8 @@ public final class ProjectOverviewTemplate {
         private record Activity(String key, String title, String description, String actionText) {}
         private record ProgressSpec(String title, double value, ProgressAnt.Status status, String note) {}
 
-        private String title = DEFAULT_TITLE;
-        private String description = DEFAULT_DESCRIPTION;
+        private String title = Messages.get("project.overview_title");
+        private String description = Messages.get("project.overview_description");
         private final List<StatusTag> statusTags = new ArrayList<>();
         private final List<Meta> metadata = new ArrayList<>();
         private final List<Metric> metrics = new ArrayList<>();
@@ -68,12 +67,12 @@ public final class ProjectOverviewTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
+            this.title = TextUtils.safeText(title, Messages.get("project.overview_title"));
             return this;
         }
 
         public Builder description(String description) {
-            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
+            this.description = TextUtils.safeText(description, Messages.get("project.overview_description"));
             return this;
         }
 
@@ -134,7 +133,7 @@ public final class ProjectOverviewTemplate {
         }
 
         public Builder activity(String key, String title, String description) {
-            return activity(key, title, description, DEFAULT_ACTION_TEXT);
+            return activity(key, title, description, Messages.get("project.overview_action"));
         }
 
         public Builder activity(String key, String title, String description, String actionText) {
@@ -142,7 +141,7 @@ public final class ProjectOverviewTemplate {
                     TextUtils.safeText(key),
                     TextUtils.safeText(title),
                     TextUtils.safeText(description),
-                    TextUtils.safeText(actionText, DEFAULT_ACTION_TEXT)
+                    TextUtils.safeText(actionText, Messages.get("project.overview_action"))
             ));
             return this;
         }

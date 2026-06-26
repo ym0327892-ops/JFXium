@@ -9,7 +9,7 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.util.NumericUtils;
 import org.openkawu.jfxium.core.util.TextUtils;
-import org.openkawu.jfxium.core.util.TooltipStyleHelper;
+import org.openkawu.jfxium.component.control.TooltipStyleHelper;
 
 /**
  * JFXium 悬浮按钮组件 - 对标 Ant Design FloatButton

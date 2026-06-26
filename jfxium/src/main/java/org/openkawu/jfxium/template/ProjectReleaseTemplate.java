@@ -19,6 +19,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.Callbacks;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
@@ -33,9 +34,7 @@ import java.util.function.Consumer;
  */
 public final class ProjectReleaseTemplate {
 
-    private static final String DEFAULT_TITLE = "发布节奏";
-    private static final String DEFAULT_DESCRIPTION = "把版本、分支、发布进度和近期变更放进同一块工程面板。";
-    private static final String DEFAULT_ACTION_TEXT = "查看";
+    // i18n keys: project.release_title, project.release_description, project.release_action
 
     private ProjectReleaseTemplate() {}
 
@@ -49,8 +48,8 @@ public final class ProjectReleaseTemplate {
         private record Change(String key, String title, String description, String actionText) {}
         private record Readiness(String title, double value, ProgressAnt.Status status, String note) {}
 
-        private String title = DEFAULT_TITLE;
-        private String description = DEFAULT_DESCRIPTION;
+        private String title = Messages.get("project.release_title");
+        private String description = Messages.get("project.release_description");
         private final List<Meta> metadata = new ArrayList<>();
         private final List<Release> releases = new ArrayList<>();
         private final List<Change> changes = new ArrayList<>();
@@ -62,12 +61,12 @@ public final class ProjectReleaseTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
+            this.title = TextUtils.safeText(title, Messages.get("project.release_title"));
             return this;
         }
 
         public Builder description(String description) {
-            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
+            this.description = TextUtils.safeText(description, Messages.get("project.release_description"));
             return this;
         }
 
@@ -110,7 +109,7 @@ public final class ProjectReleaseTemplate {
         }
 
         public Builder change(String key, String title, String description) {
-            return change(key, title, description, DEFAULT_ACTION_TEXT);
+            return change(key, title, description, Messages.get("project.release_action"));
         }
 
         public Builder change(String key, String title, String description, String actionText) {
@@ -118,7 +117,7 @@ public final class ProjectReleaseTemplate {
                     TextUtils.safeText(key),
                     TextUtils.safeText(title),
                     TextUtils.safeText(description),
-                    TextUtils.safeText(actionText, DEFAULT_ACTION_TEXT)
+                    TextUtils.safeText(actionText, Messages.get("project.release_action"))
             ));
             return this;
         }

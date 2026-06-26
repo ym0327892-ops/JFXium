@@ -15,6 +15,7 @@ import org.openkawu.jfxium.component.overlay.DropdownAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt.DropdownResult;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
@@ -32,9 +33,7 @@ import java.util.function.Consumer;
  */
 public final class ProjectHeroTemplate {
 
-    private static final String DEFAULT_TITLE = "工程门面";
-    private static final String DEFAULT_SUBTITLE = "项目首页首屏摘要";
-    private static final String DEFAULT_DESCRIPTION = "把软件图标、状态标签、关键摘要和快捷动作收进同一块首屏门面。";
+    // i18n keys: project.hero_title, project.hero_subtitle, project.hero_description
 
     private ProjectHeroTemplate() {}
 
@@ -56,9 +55,9 @@ public final class ProjectHeroTemplate {
         private record StatusTag(String text, TagAnt.Type type) {}
         private record Meta(String label, Node content, int span) {}
 
-        private String title = DEFAULT_TITLE;
-        private String subtitle = DEFAULT_SUBTITLE;
-        private String description = DEFAULT_DESCRIPTION;
+        private String title = Messages.get("project.hero_title");
+        private String subtitle = Messages.get("project.hero_subtitle");
+        private String description = Messages.get("project.hero_description");
         private IconAnt.Path icon = IconAnt.Path.DASHBOARD;
         private final List<StatusTag> statusTags = new ArrayList<>();
         private final List<Meta> metadata = new ArrayList<>();
@@ -67,17 +66,17 @@ public final class ProjectHeroTemplate {
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
+            this.title = TextUtils.safeText(title, Messages.get("project.hero_title"));
             return this;
         }
 
         public Builder subtitle(String subtitle) {
-            this.subtitle = TextUtils.safeText(subtitle, DEFAULT_SUBTITLE);
+            this.subtitle = TextUtils.safeText(subtitle, Messages.get("project.hero_subtitle"));
             return this;
         }
 
         public Builder description(String description) {
-            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
+            this.description = TextUtils.safeText(description, Messages.get("project.hero_description"));
             return this;
         }
 

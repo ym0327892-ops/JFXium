@@ -10,6 +10,7 @@ import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
@@ -46,8 +47,7 @@ import java.util.function.Consumer;
  */
 public final class ProjectChangelogTemplate {
 
-    private static final String DEFAULT_TITLE = "变更日志";
-    private static final String DEFAULT_DESCRIPTION = "项目近期版本与变更记录。";
+    // i18n keys: project.changelog_title, project.changelog_description
 
     private ProjectChangelogTemplate() {}
 
@@ -80,20 +80,20 @@ public final class ProjectChangelogTemplate {
     public static final class Builder extends AbstractStyleBuilder<Builder> {
         private record Version(String version, String date, List<ChangeEntry> changes) {}
 
-        private String title = DEFAULT_TITLE;
-        private String description = DEFAULT_DESCRIPTION;
+        private String title = Messages.get("project.changelog_title");
+        private String description = Messages.get("project.changelog_description");
         private final List<Version> versions = new ArrayList<>();
         private Consumer<String> onAction;
 
         private Builder() {}
 
         public Builder title(String title) {
-            this.title = TextUtils.safeText(title, DEFAULT_TITLE);
+            this.title = TextUtils.safeText(title, Messages.get("project.changelog_title"));
             return this;
         }
 
         public Builder description(String description) {
-            this.description = TextUtils.safeText(description, DEFAULT_DESCRIPTION);
+            this.description = TextUtils.safeText(description, Messages.get("project.changelog_description"));
             return this;
         }
 

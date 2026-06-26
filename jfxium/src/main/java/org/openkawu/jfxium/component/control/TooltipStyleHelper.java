@@ -1,10 +1,10 @@
-package org.openkawu.jfxium.core.util;
+package org.openkawu.jfxium.component.control;
 
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
-import org.openkawu.jfxium.component.control.TooltipAnt;
 import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
  * Tooltip 样式 / 安装辅助工具 —— 集中收口「快捷 tooltip 安装 + 状态色变体」。
