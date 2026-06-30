@@ -1,23 +1,25 @@
 package org.openkawu.jfxium;
 
 import javafx.application.Platform;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.extension.ConditionEvaluationResult;
-import org.junit.jupiter.api.extension.ExecutionCondition;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * JavaFX 单元测试基类 —— 在 @BeforeAll 中初始化 JavaFX 工具套件。
+ * JavaFX 单元测试基类 —— 在 {@code @BeforeAll} 中初始化 JavaFX 工具套件。
  *
  * <p>所有需要创建 JavaFX 控件（Button、TextField 等）的测试类都应继承此类。
  * JavaFX 工具套件只需初始化一次（JVM 级单例），本类通过 {@link AtomicBoolean} 保证幂等。</p>
  *
- * <p>在无图形后端的环境里，这些测试会被自动跳过，而不是卡在 JavaFX 启动阶段。</p>
+ * <p>在无图形后端的环境（如 CI 非 xvfb-run）里，{@code Platform.startup()} 会失败，
+ * 通过 {@code Assumptions.assumeTrue} 自动跳过整个测试类的全部用例，
+ * 而不是卡死在 JavaFX 启动阶段。</p>
+ *
+ * <p>CI 已配置 {@code xvfb-run} + {@code -Dprism.order=sw}（见 jfxium/pom.xml），
+ * 确保全量测试在 GitHub Actions 上真实执行。</p>
  *
  * <h2>用法</h2>
  * <pre>{@code
@@ -30,7 +32,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * }
  * }</pre>
  */
-@ExtendWith(JfxTestBase.HeadlessCondition.class)
 public abstract class JfxTestBase {
 
     private static final AtomicBoolean FX_INITIALIZED = new AtomicBoolean(false);
@@ -39,11 +40,6 @@ public abstract class JfxTestBase {
     @BeforeAll
     static void initJavaFX() {
         if (FX_INITIALIZED.compareAndSet(false, true)) {
-            if (isHeadlessEnvironment()) {
-                FX_AVAILABLE.set(false);
-                return;
-            }
-
             CountDownLatch latch = new CountDownLatch(1);
             try {
                 Platform.startup(latch::countDown);
@@ -51,11 +47,13 @@ public abstract class JfxTestBase {
                 FX_AVAILABLE.set(true);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                throw new RuntimeException("JavaFX toolkit init interrupted", e);
-            } catch (Throwable error) {
-                FX_AVAILABLE.set(false);
+                // 中断 == 无法运行，标记不可用
+            } catch (Throwable ignored) {
+                // Platform.startup() 失败（无显示后端 / 缺 GL 库），测试跳过
             }
         }
+        // 跳过整个测试类的全部用例（JUnit 5 语义：假设不满足 = 跳过）
+        Assumptions.assumeTrue(FX_AVAILABLE.get(), "JavaFX not available in this environment");
     }
 
     protected static void runOnFxThreadAndWait(Runnable action) {
@@ -100,20 +98,5 @@ public abstract class JfxTestBase {
             return;
         }
         runOnFxThreadAndWait(() -> {});
-    }
-
-    private static boolean isHeadlessEnvironment() {
-        String display = System.getenv("DISPLAY");
-        return display == null || display.isBlank();
-    }
-
-    static final class HeadlessCondition implements ExecutionCondition {
-        @Override
-        public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
-            if (isHeadlessEnvironment()) {
-                return ConditionEvaluationResult.disabled("JavaFX tests skipped in headless environment");
-            }
-            return ConditionEvaluationResult.enabled("JavaFX available");
-        }
     }
 }

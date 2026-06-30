@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.composite;
 
+import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import org.junit.jupiter.api.DisplayName;
@@ -47,5 +48,26 @@ class TagAntTest extends JfxTestBase {
         Label label = (Label) tag.getChildren().get(0);
         assertEquals("", label.getText());
         assertTrue(tag.getStyleClass().contains(JfxStyles.TAG_DEFAULT));
+    }
+
+    @Test
+    @DisplayName("modify color 保留调用方已有 inline style")
+    void modifyColor_preservesExistingInlineStyle() {
+        HBox tag = TagAnt.create("处理中")
+                .style("-fx-opacity: 0.5;")
+                .build();
+
+        TagAnt.modify(tag)
+                .color(Color.DODGERBLUE)
+                .apply();
+
+        assertTrue(tag.getStyle().contains("-fx-opacity: 0.5;"));
+        assertTrue(tag.getStyle().contains("-fx-background-color: #1e90ff;"));
+
+        TagAnt.modify(tag)
+                .color(null)
+                .apply();
+
+        assertTrue(tag.getStyle().contains("-fx-opacity: 0.5;"));
     }
 }

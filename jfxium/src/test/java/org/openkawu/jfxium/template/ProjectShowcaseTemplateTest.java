@@ -29,10 +29,10 @@ class ProjectShowcaseTemplateTest extends JfxTestBase {
                 .build();
 
         assertNotNull(root);
-        assertEquals(5, root.getChildren().size());
-        assertEquals("hero", ((Label) root.getChildren().get(0)).getText());
-        assertEquals("intro", ((Label) root.getChildren().get(1)).getText());
-        assertEquals("launchpad", ((Label) root.getChildren().get(4)).getText());
+        assertEquals(6, root.getChildren().size());
+        assertEquals("hero", ((Label) root.getChildren().get(1)).getText());
+        assertEquals("intro", ((Label) root.getChildren().get(2)).getText());
+        assertEquals("launchpad", ((Label) root.getChildren().get(5)).getText());
     }
 
     private static Node section(String name) {

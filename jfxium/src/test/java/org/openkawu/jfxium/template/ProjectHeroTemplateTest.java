@@ -30,11 +30,14 @@ class ProjectHeroTemplateTest extends JfxTestBase {
         assertEquals(2, root.getChildren().size());
         assertTrue(root.getChildren().get(0) instanceof HBox);
 
+        // SurfaceAnt 把 content 包裹在 body VBox 内
         VBox body = (VBox) root.getChildren().get(1);
-        assertEquals(3, body.getChildren().size());
-        assertTrue(body.getChildren().get(0) instanceof HBox);
-        assertTrue(body.getChildren().get(1) instanceof HBox);
-        assertTrue(body.getChildren().get(2) instanceof VBox);
+        assertEquals(1, body.getChildren().size());
+        VBox heroBody = (VBox) body.getChildren().get(0);
+        assertEquals(3, heroBody.getChildren().size());
+        assertTrue(heroBody.getChildren().get(0) instanceof HBox);
+        assertTrue(heroBody.getChildren().get(1) instanceof HBox);
+        assertTrue(heroBody.getChildren().get(2) instanceof VBox);
     }
 
     @Test

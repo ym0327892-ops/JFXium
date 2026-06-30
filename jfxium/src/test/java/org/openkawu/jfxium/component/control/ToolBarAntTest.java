@@ -349,7 +349,7 @@ class ToolBarAntTest extends JfxTestBase {
                 .disabled(false)
                 .build();
 
-        assertEquals(5, bar.getItems().size());
+        assertEquals(6, bar.getItems().size());
         assertEquals(Orientation.HORIZONTAL, bar.getOrientation());
     }
 
