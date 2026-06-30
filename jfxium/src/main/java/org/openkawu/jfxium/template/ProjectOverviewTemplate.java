@@ -53,8 +53,8 @@ public final class ProjectOverviewTemplate {
         private record Activity(String key, String title, String description, String actionText) {}
         private record ProgressSpec(String title, double value, ProgressAnt.Status status, String note) {}
 
-        private String title = Messages.get("project.overview_title");
-        private String description = Messages.get("project.overview_description");
+        private String title = null;
+        private String description = null;
         private final List<StatusTag> statusTags = new ArrayList<>();
         private final List<Meta> metadata = new ArrayList<>();
         private final List<Metric> metrics = new ArrayList<>();
@@ -177,18 +177,20 @@ public final class ProjectOverviewTemplate {
         }
 
         private Node buildHeader() {
+            String resolvedTitle = TextUtils.safeText(title, Messages.get("project.overview_title"));
+            String resolvedDescription = TextUtils.safeText(description, Messages.get("project.overview_description"));
             HBox statusBox = buildTagRow(statusTags);
             VBox headerBody = VBoxAnt.create()
                     .spacing(4)
                     .children(
-                            TypographyAnt.text(description)
+                            TypographyAnt.text(resolvedDescription)
                                     .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
                     .build();
 
             SurfaceAnt.Builder builder = SurfaceAnt.create()
-                    .title(title)
+                    .title(resolvedTitle)
                     .extra(statusBox)
                     .bordered(true)
                     .shadow(SurfaceAnt.Shadow.SMALL)

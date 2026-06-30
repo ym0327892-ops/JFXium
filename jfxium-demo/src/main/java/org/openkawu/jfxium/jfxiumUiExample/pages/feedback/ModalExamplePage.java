@@ -2,11 +2,8 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.VBarAnt;
@@ -21,6 +18,7 @@ import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
+import org.openkawu.jfxium.component.layout.StackPaneAnt;
 
 import java.util.function.Supplier;
 
@@ -203,7 +201,9 @@ public class ModalExamplePage extends VBoxAnt {
             if ("left".equals(closeSide)) {
                 header.getChildren().addAll(closeBtn, spacer, titleLabel);
             } else if ("none".equals(closeSide)) {
-                header.getChildren().addAll(spacer, titleLabel, spacer);
+                HBoxAnt spacer2 = HBoxAnt.create();
+                HBox.setHgrow(spacer2, Priority.ALWAYS);
+                header.getChildren().addAll(spacer, titleLabel, spacer2);
             } else {
                 header.getChildren().addAll(titleLabel, spacer, closeBtn);
             }
@@ -236,7 +236,7 @@ public class ModalExamplePage extends VBoxAnt {
             footer.getChildren().addAll(cancelBtn, openBtn.build());
             preview.getChildren().add(footer);
 
-            StackPane wrapper = new StackPane(preview);
+            StackPaneAnt wrapper = StackPaneAnt.create(preview);
             wrapper.setAlignment(Pos.CENTER);
             wrapper.getStyleClass().add("jfx-demo-modal-wrapper");
             return wrapper;

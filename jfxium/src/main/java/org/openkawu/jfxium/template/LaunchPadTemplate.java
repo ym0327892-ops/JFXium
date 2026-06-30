@@ -41,8 +41,8 @@ public final class LaunchPadTemplate {
     public static final class Builder extends AbstractStyleBuilder<Builder> {
         private record Item(String key, String title, String description, IconAnt.Path icon, String actionText) {}
 
-        private String title = Messages.get("launchpad.title");
-        private String description = Messages.get("launchpad.description");
+        private String title = null;
+        private String description = null;
         private int columns = 2;
         private double gap = 16;
         private final List<Item> items = new ArrayList<>();
@@ -100,11 +100,13 @@ public final class LaunchPadTemplate {
         }
 
         private VBox buildHeader() {
+            String resolvedTitle = TextUtils.safeText(title, Messages.get("launchpad.title"));
+            String resolvedDescription = TextUtils.safeText(description, Messages.get("launchpad.description"));
             return VBoxAnt.create()
                     .spacing(4)
                     .children(
-                            TypographyAnt.title(title, 4).build(),
-                            TypographyAnt.text(description)
+                            TypographyAnt.title(resolvedTitle, 4).build(),
+                            TypographyAnt.text(resolvedDescription)
                                     .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )

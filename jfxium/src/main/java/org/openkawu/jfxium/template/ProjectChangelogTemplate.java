@@ -80,8 +80,8 @@ public final class ProjectChangelogTemplate {
     public static final class Builder extends AbstractStyleBuilder<Builder> {
         private record Version(String version, String date, List<ChangeEntry> changes) {}
 
-        private String title = Messages.get("project.changelog_title");
-        private String description = Messages.get("project.changelog_description");
+        private String title = null;
+        private String description = null;
         private final List<Version> versions = new ArrayList<>();
         private Consumer<String> onAction;
 
@@ -136,11 +136,13 @@ public final class ProjectChangelogTemplate {
         }
 
         private VBox buildHeader() {
+            String resolvedTitle = TextUtils.safeText(title, Messages.get("project.changelog_title"));
+            String resolvedDescription = TextUtils.safeText(description, Messages.get("project.changelog_description"));
             return VBoxAnt.create()
                     .spacing(4)
                     .children(
-                            TypographyAnt.title(title, 4).build(),
-                            TypographyAnt.text(description)
+                            TypographyAnt.title(resolvedTitle, 4).build(),
+                            TypographyAnt.text(resolvedDescription)
                                     .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )

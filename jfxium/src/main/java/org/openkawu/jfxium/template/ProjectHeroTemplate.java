@@ -55,9 +55,9 @@ public final class ProjectHeroTemplate {
         private record StatusTag(String text, TagAnt.Type type) {}
         private record Meta(String label, Node content, int span) {}
 
-        private String title = Messages.get("project.hero_title");
-        private String subtitle = Messages.get("project.hero_subtitle");
-        private String description = Messages.get("project.hero_description");
+        private String title = null;
+        private String subtitle = null;
+        private String description = null;
         private IconAnt.Path icon = IconAnt.Path.DASHBOARD;
         private final List<StatusTag> statusTags = new ArrayList<>();
         private final List<Meta> metadata = new ArrayList<>();
@@ -130,6 +130,7 @@ public final class ProjectHeroTemplate {
         }
 
         public VBox build() {
+            String resolvedTitle = TextUtils.safeText(title, Messages.get("project.hero_title"));
             VBox heroBody = VBoxAnt.create()
                     .spacing(12)
                     .children(
@@ -140,7 +141,7 @@ public final class ProjectHeroTemplate {
                     .build();
 
             VBox root = SurfaceAnt.create()
-                    .title(title)
+                    .title(resolvedTitle)
                     .extra(buildActionBar())
                     .bordered(true)
                     .shadow(SurfaceAnt.Shadow.SMALL)
@@ -152,6 +153,8 @@ public final class ProjectHeroTemplate {
         }
 
         private Node buildLeadRow() {
+            String resolvedSubtitle = TextUtils.safeText(subtitle, Messages.get("project.hero_subtitle"));
+            String resolvedDescription = TextUtils.safeText(description, Messages.get("project.hero_description"));
             return HBoxAnt.create()
                     .spacing(12)
                     .align(Pos.CENTER_LEFT)
@@ -164,10 +167,10 @@ public final class ProjectHeroTemplate {
                             VBoxAnt.create()
                                     .spacing(4)
                                     .children(
-                                            TypographyAnt.text(subtitle)
+                                            TypographyAnt.text(resolvedSubtitle)
                                                     .type(TypographyAnt.TextColor.SECONDARY)
                                                     .build(),
-                                            TypographyAnt.paragraph(description).build()
+                                            TypographyAnt.paragraph(resolvedDescription).build()
                                     )
                                     .build()
                     )

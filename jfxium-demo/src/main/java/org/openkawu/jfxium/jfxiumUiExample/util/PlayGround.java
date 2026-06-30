@@ -3,7 +3,6 @@ package org.openkawu.jfxium.jfxiumUiExample.util;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -16,6 +15,7 @@ import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.FlowPaneAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
+import org.openkawu.jfxium.component.layout.StackPaneAnt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -304,7 +304,7 @@ public final class PlayGround {
             controlBox.getStyleClass().add("jfx-demo-playground-control");
 
             // 展示区 StackPane（保留引用以便回调里 replaceDisplay）
-            StackPane displayBox = new StackPane();
+            StackPaneAnt displayBox = StackPaneAnt.create();
             displayBox.getStyleClass().add("jfx-demo-playground-display");
             displayBox.setAlignment(Pos.CENTER);
             displayBox.getChildren().add(displayNode);

@@ -59,8 +59,8 @@ public final class ProjectQuickStartTemplate {
     public static final class Builder extends AbstractStyleBuilder<Builder> {
         private record StepEntry(String title, String description, String code, CodeBlockAnt.Language language) {}
 
-        private String title = Messages.get("project.quickstart_title");
-        private String description = Messages.get("project.quickstart_description");
+        private String title = null;
+        private String description = null;
         private final List<StepEntry> steps = new ArrayList<>();
 
         private Builder() {}
@@ -110,11 +110,13 @@ public final class ProjectQuickStartTemplate {
         }
 
         private VBox buildHeader() {
+            String resolvedTitle = TextUtils.safeText(title, Messages.get("project.quickstart_title"));
+            String resolvedDescription = TextUtils.safeText(description, Messages.get("project.quickstart_description"));
             return VBoxAnt.create()
                     .spacing(4)
                     .children(
-                            TypographyAnt.title(title, 4).build(),
-                            TypographyAnt.text(description)
+                            TypographyAnt.title(resolvedTitle, 4).build(),
+                            TypographyAnt.text(resolvedDescription)
                                     .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )

@@ -48,8 +48,8 @@ public final class ProjectReleaseTemplate {
         private record Change(String key, String title, String description, String actionText) {}
         private record Readiness(String title, double value, ProgressAnt.Status status, String note) {}
 
-        private String title = Messages.get("project.release_title");
-        private String description = Messages.get("project.release_description");
+        private String title = null;
+        private String description = null;
         private final List<Meta> metadata = new ArrayList<>();
         private final List<Release> releases = new ArrayList<>();
         private final List<Change> changes = new ArrayList<>();
@@ -152,18 +152,20 @@ public final class ProjectReleaseTemplate {
         }
 
         private Node buildHeader() {
+            String resolvedTitle = TextUtils.safeText(title, Messages.get("project.release_title"));
+            String resolvedDescription = TextUtils.safeText(description, Messages.get("project.release_description"));
             HBox statusBox = buildTagRow();
             VBox headerBody = VBoxAnt.create()
                     .spacing(4)
                     .children(
-                            TypographyAnt.text(description)
+                            TypographyAnt.text(resolvedDescription)
                                     .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )
                     .build();
 
             return SurfaceAnt.create()
-                    .title(title)
+                    .title(resolvedTitle)
                     .extra(statusBox)
                     .bordered(true)
                     .shadow(SurfaceAnt.Shadow.SMALL)

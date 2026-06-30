@@ -59,8 +59,8 @@ public final class ProjectFeatureTemplate {
     public static final class Builder extends AbstractStyleBuilder<Builder> {
         private record Feature(String key, String title, String description, IconAnt.Path icon) {}
 
-        private String title = Messages.get("project.feature_title");
-        private String description = Messages.get("project.feature_description");
+        private String title = null;
+        private String description = null;
         private int columns = 2;
         private double gap = 16;
         private final List<Feature> features = new ArrayList<>();
@@ -117,11 +117,13 @@ public final class ProjectFeatureTemplate {
         }
 
         private VBox buildHeader() {
+            String resolvedTitle = TextUtils.safeText(title, Messages.get("project.feature_title"));
+            String resolvedDescription = TextUtils.safeText(description, Messages.get("project.feature_description"));
             return VBoxAnt.create()
                     .spacing(4)
                     .children(
-                            TypographyAnt.title(title, 4).build(),
-                            TypographyAnt.text(description)
+                            TypographyAnt.title(resolvedTitle, 4).build(),
+                            TypographyAnt.text(resolvedDescription)
                                     .type(TypographyAnt.TextColor.SECONDARY)
                                     .build()
                     )

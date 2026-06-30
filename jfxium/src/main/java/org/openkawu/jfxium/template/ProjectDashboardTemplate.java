@@ -56,12 +56,12 @@ public final class ProjectDashboardTemplate {
      */
     public static final class Snapshot {
         private String pageTitle = DEFAULT_PAGE_TITLE;
-        private String pageSubtitle = Messages.get("project.dashboard_page_subtitle");
-        private String pageDescription = Messages.get("project.dashboard_page_description");
-        private String currentUser = Messages.get("project.dashboard_current_user");
+        private String pageSubtitle = null;
+        private String pageDescription = null;
+        private String currentUser = null;
         private String version = DEFAULT_VERSION;
         private String branch = DEFAULT_BRANCH;
-        private String buildStatus = Messages.get("project.dashboard_build_status");
+        private String buildStatus = null;
         private String mode = DEFAULT_MODE;
         private String templateCount = DEFAULT_TEMPLATE_COUNT;
         private String componentCount = DEFAULT_COMPONENT_COUNT;
@@ -94,7 +94,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public String pageSubtitle() {
-            return pageSubtitle;
+            return TextUtils.safeText(pageSubtitle, Messages.get("project.dashboard_page_subtitle"));
         }
 
         public Snapshot pageDescription(String pageDescription) {
@@ -103,7 +103,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public String pageDescription() {
-            return pageDescription;
+            return TextUtils.safeText(pageDescription, Messages.get("project.dashboard_page_description"));
         }
 
         public Snapshot currentUser(String currentUser) {
@@ -112,7 +112,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public String currentUser() {
-            return currentUser;
+            return TextUtils.safeText(currentUser, Messages.get("project.dashboard_current_user"));
         }
 
         public Snapshot version(String version) {
@@ -139,7 +139,7 @@ public final class ProjectDashboardTemplate {
         }
 
         public String buildStatus() {
-            return buildStatus;
+            return TextUtils.safeText(buildStatus, Messages.get("project.dashboard_build_status"));
         }
 
         public Snapshot mode(String mode) {
@@ -234,8 +234,8 @@ public final class ProjectDashboardTemplate {
         // completion / icon 这些"首页快照数据"统一收口到 Snapshot。
         // Builder 只保留自己的 title / description（首页框架级文案）和区域节点字段。
         private final Snapshot snapshot = Snapshot.create();
-        private String title = Messages.get("project.dashboard_title");
-        private String description = Messages.get("project.dashboard_description");
+        private String title = null;
+        private String description = null;
         private Node hero;
         private Node overview;
         private Node release;
@@ -374,6 +374,8 @@ public final class ProjectDashboardTemplate {
 
         public VBox build() {
             List<Node> sections = new ArrayList<>();
+            String resolvedTitle = TextUtils.safeText(title, Messages.get("project.dashboard_title"));
+            String resolvedDescription = TextUtils.safeText(description, Messages.get("project.dashboard_description"));
             sections.add(hero != null ? hero : buildHero());
             sections.add(overview != null ? overview : buildOverview());
             sections.add(release != null ? release : buildRelease());
@@ -381,8 +383,8 @@ public final class ProjectDashboardTemplate {
             sections.addAll(extraSections);
 
             VBox root = ProjectShowcaseTemplate.create()
-                    .title(title)
-                    .description(description)
+                    .title(resolvedTitle)
+                    .description(resolvedDescription)
                     .sections(sections.toArray(Node[]::new))
                     .build();
             applyStyles(root);

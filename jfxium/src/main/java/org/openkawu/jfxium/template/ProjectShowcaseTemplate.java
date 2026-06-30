@@ -30,8 +30,8 @@ public final class ProjectShowcaseTemplate {
     }
 
     public static final class Builder extends AbstractStyleBuilder<Builder> {
-        private String title = Messages.get("project.showcase_title");
-        private String description = Messages.get("project.showcase_description");
+        private String title = null;
+        private String description = null;
         private Node hero;
         private final List<Node> sections = new ArrayList<>();
 
@@ -75,14 +75,16 @@ public final class ProjectShowcaseTemplate {
 
         public VBox build() {
             List<Node> bodySections = new ArrayList<>();
+            String resolvedTitle = TextUtils.safeText(title, Messages.get("project.showcase_title"));
+            String resolvedDescription = TextUtils.safeText(description, Messages.get("project.showcase_description"));
             if (hero != null) {
                 bodySections.add(hero);
             }
             bodySections.addAll(sections);
 
             VBox root = PageTemplate.create()
-                    .title(title)
-                    .description(description)
+                    .title(resolvedTitle)
+                    .description(resolvedDescription)
                     .sections(bodySections.toArray(Node[]::new))
                     .build();
             applyStyles(root);
