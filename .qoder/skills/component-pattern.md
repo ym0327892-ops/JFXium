@@ -163,3 +163,62 @@ node.getStyleClass().add(switch (status) {
 - [ ] 无 inline `setStyle("-fx-...: -color-...")` 残留
 - [ ] **所有便捷方法既有零参默认版，也有关键参数重载版**
 - [ ] **阻塞和非阻塞两种调用路径均可正常工作**
+
+## 组件命名约定表（受控属性标准）
+
+> **目的**:统一所有 `*Ant` 组件的 Builder 方法命名,避免同名不同语义。借鉴 EUI-NEO `docs/组件.md` §"API 标准"的"组件公共属性标准"表。新建/重构组件时按本节口径收敛;不一致项登记到 INTERNAL/BUILDER_API_AUDIT.md。
+
+| 类别 | 标准方法名 | 适用范围 | JFXium 现状 |
+|------|----------|---------|-------------|
+| **身份** | 构造参数 `id` (String) | 所有组件 | 未统一(部分组件 id 可选) |
+| **尺寸** | `size(width, height)` / `width(...)` / `height(...)` | 有明确外框的控件/容器/弹层/图表 | 已用 `width/height/prefWidth/...`(语义更细) |
+| **内容** | `text(...)` / `title(...)` / `message(...)` / `content(...)` / `placeholder(...)` | 文本/弹层/容器按语义选一种 | 已有,但部分组件混用(如 Modal 同时有 title + content) |
+| **受控值** | `value(...)` / `checked(...)` / `selected(...)` / `index(...)` / `open(...)` / `visible(...)` / `expanded(...)` | 业务状态由调用方持有,组件只回调 next value | 已有 `value/checked/selected/open/visible`,**缺 `expanded` 标准名**(Collapse/Tree 等子用) |
+| **变更事件** | `onChange(...)` / `onOpenChange(...)` / `onClose(...)` / `onDismiss(...)` / `onOk(...)` / `onCancel(...)` | 值变化统一 `onChange`,开关态 `onOpenChange`,关闭语义按场景区分 | 已有 `onChange/onClose/onOpen`,**缺 `onDismiss`(Toast/Message 应统一)** |
+| **可用状态** | `disabled(boolean)` | 可交互组件必须支持禁用态 | 已有 `disable()/enabled()`,**建议同时支持 `disabled(boolean)` 短名** |
+| **视觉** | `theme(tokens)` / `style(style)` / `transition(duration, easing)` | theme 按主题重建;style 完整覆盖;动画走 transition | 已有 `styleClass/style`,**缺 `transition` 命名(目前用 `duration` + easing)**,**无 `theme(tokens)` 入口** |
+| **层级** | `zIndex(int)` | 仅 overlay 组件(Modal/Drawer/Dropdown/Toast/Tooltip) | **未提供 zIndex setter**,由调用方 `node.setViewOrder()` 手动管理,**容易踩反模式** |
+| **坐标** | `position(x, y)` / `anchor(...)` / `screen(width, height)` | 浮层/菜单/tooltip/dialog/picker | **未提供,需手动 `layoutX/layoutY`**,容易出现主题切换后位置漂移 |
+
+### 命名收敛规则(强制)
+
+1. **状态属性名固定**:布尔态用 `checked` / `open` / `visible` / `selected`,不要发明 `isXxx` / `xxxOn`。
+2. **变更事件固定**:值变化 → `onChange`;开关/可见性 → `onOpenChange` 或 `onClose`;主动关闭 → `onDismiss`(Toast/Message)。
+3. **弹层固定 zIndex**:所有 overlay 组件必须暴露 `zIndex(int)` 链式方法,内部调 `setViewOrder()`。
+4. **弹层固定 screen/anchor**:Dialog/Drawer/Picker 必须暴露 `screen(int, int)` 链式方法,内部用绑定到 Scene 宽高属性,避免主题/窗口缩放后位置漂移。
+5. **content 唯一语义**:`content(...)` 统一指"塞入子节点"或"面板主内容回调",不要同时表示 "value content(富文本内容)"。
+
+### 反模式(本节禁止)
+
+- 同一概念用不同名:`isOpen` / `opened` / `show` / `visible` 同时存在 → 收敛为 `open`。
+- 关闭事件混用 `onClose` / `onDismiss` / `onHidden` → 弹层主动消失用 `onClose`,Toast/Message 自动消失用 `onDismiss`。
+- 弹层不暴露 `zIndex` / `screen`,让调用方去 `node.setViewOrder(...)` → 禁止,必须封装在 Builder 内。
+
+## 组件 ID 命名空间
+
+> **目的**:避免同级组件子节点互相污染,保证 `lookup(id)` / CSS 后代选择器 / 调试时能稳定定位。借鉴 EUI-NEO `docs/组件.md` §"写新组件时的底线"第 3 条:组件 id 必须稳定,内部子节点使用 `id + ".name"`。
+
+### 强制规则
+
+1. **每个组件根节点必须有稳定 id** — Builder 必须暴露 `id(String)` 链式方法,未设时在 `build()` 内用 `getClass().getSimpleName() + "@" + System.identityHashCode(this)` 兜底,但**禁止裸用 `setId(class.getSimpleName())` 同名复用**。
+2. **内部子节点用 `id + ".role"` 命名** — 角色名用小写单词,描述视觉/语义角色,不用外观描述:
+   - ✅ 正确:`"save.dialog"` → 子节点 `"save.dialog.scrim"` / `"save.dialog.panel"` / `"save.dialog.title"` / `"save.dialog.close"`
+   - ❌ 错误:`"save.dialog"` → 子节点 `"panel1"` / `"rectBg"` / `"labelTop"`
+3. **角色名禁止带数字后缀**:`"row1"` / `"col2"` 是从 0/1 索引算出来的,删除中间项会全部错位。改用 `id + "." + dataKey`(如 `"userTable.row.userId_42"`)或 `id + "." + index`(且 index 必须从数据绑定而非循环下标取)。
+4. **id 命名走 lowerCamelCase,带 `.` 路径分隔** — `save.btn` / `nav.menu.item.dark` / `table.cell.userId.col1`。保留 `.` 作为路径分隔,便于将来 `lookup(".title")` 在子树内递归找。
+5. **id 全局唯一** — 同一 Scene 内不允许两个不同组件用同一 id。复杂场景(动态表行)用 `idPrefix` + `dataKey` 拼出唯一 id。
+
+### 子节点 ID 与 CSS 后代选择器协同
+
+- 子节点 id 主要用于**调试定位 + 程序化查找**,不是给 LESS 用的。LESS 仍走 `根 styleClass + 后代选择器`(参见六大铁律 #7)。
+- 例外:**当需要从外部 JS 风格代码 / CSS query 直接锁定某子节点时**,子节点 id 可作为锚点(如 `lookup("#save.dialog.title")`),但默认不依赖。
+
+### 反模式(本节禁止)
+
+- 多个子节点共用同一 id(如 Modal 内 close 按钮和 backdrop 都叫 `"close"`)→ 违反节点唯一性。
+- 子节点 id 用 `auto-generated-uuid` → 失去稳定锚点,主题切换后所有引用失效。
+- 子节点 id 含组件类名( `"SaveButton.btn"` )→ 冗余,只需 `"save.btn"`。
+
+## 外部借鉴来源
+
+本文件 §"组件命名约定表" 与 §"组件 ID 命名空间" 借鉴自 [EUI-NEO docs/组件.md](https://github.com/sudoevolve/EUI-NEO/blob/main/docs/%E7%BB%84%E4%BB%B6.md) §"API 标准" 与 §"写新组件时的底线"。JFXium 收敛时遵循:**取其标准名,留其组合套路,不照搬 DSL 风格**(我们走 Java 链式 API,不走 C++ builder 链)。

@@ -112,6 +112,7 @@ The demo `mainClass` is `org.openkawu.jfxium.jfxiumUiExample.JfxiumUiExampleApp`
 | `.less` 改了不生效 | BUG #64:`groovy-maven-plugin` 假成功 | 在 CSS 输出文件中加 marker,重跑 `mvn generate-resources` 验证 |
 | 速查表弱化红线 | 速查表合并了 `-fx-transition` 导致漏检 | 速查表必须与 `.qoder/rules/red-lines.md` 1:1 对齐 |
 | i18n 字段锁死 Locale | `private String x = Messages.get("k")` 锁死 zh_CN | 字段初始化为 `null`,`build()` 中懒解析 + 监听 `Messages.localeProperty()` |
+| 增量构建陈旧 `target/` | `install -DskipTests` 报 `NoSuchFileException *.class` / 诡异「找不到符号: 变量 Family/Preset、类 DrawerResult、IconAnt.Path」 | `-DskipTests` 只跳过测试**执行**不跳过测试**编译**;陈旧 `target/` 增量引用缺失 `.class` 即失败。先 `./mvnw clean` 再构建,**不要误判为源码缺符号**(主源码本身健康) |
 
 ---
 
@@ -271,7 +272,7 @@ MenuAnt.Controller ctrl = MenuAnt.controllerOf(menu);
 ctrl.setSelectedKey("file");
 ```
 
-This avoids rebuilding the entire component tree. **Always add a Controller** when a component's state needs to change after `build()`. Existing Controllers: `MenuAnt.Controller`, `StepsAnt.Controller`, `AnchorAnt.Controller`.
+This avoids rebuilding the entire component tree. **Always add a Controller** when a component's state needs to change after `build()`. Existing Controllers: `MenuAnt.Controller`, `StepsAnt.Controller`, `AnchorAnt.Controller`, `TabsAnt.Controller`, `CalendarAnt.Controller`, `PaginationAnt.Controller`.
 
 ### Builder return type contract
 

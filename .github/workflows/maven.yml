@@ -1,0 +1,115 @@
+name: JFXium CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build & Test (Java ${{ matrix.java }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 21 ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: temurin
+          cache: maven
+
+      - name: Build & Test (with virtual display)
+        run: xvfb-run --auto-servernum ./mvnw verify -pl jfxium -B -ntp
+
+      - name: Build Demo (verify downstream)
+        run: xvfb-run --auto-servernum ./mvnw verify -pl jfxium-demo -B -ntp -DskipTests
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-java${{ matrix.java }}
+          path: |
+            jfxium/target/surefire-reports/
+            jfxium-demo/target/surefire-reports/
+          retention-days: 7
+
+  red-line-scan:
+    name: Red Line Compliance Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan red line #1 — setStyle with color/px
+        run: |
+          violations=$(grep -rn 'setStyle.*#[0-9a-fA-F]\|setStyle.*[0-9]px' jfxium/src/main/java --include="*.java" | grep -v '//\|test' | wc -l)
+          echo "Red Line #1 (setStyle magic values): $violations"
+          [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
+
+      - name: Scan red line #11 — demo new native controls
+        run: |
+          violations=$(grep -rnE 'new (Label|Button|TextField|HBox|VBox|ComboBox|RadioButton|CheckBox|TextArea|Slider|ProgressBar|TableView|TreeView|StackPane)\b' jfxium-demo/src/main/java --include="*.java" | grep -v 'new Label\[\]\|new ButtonAnt\|new ButtonType\|new Stage' | wc -l)
+          echo "Red Line #11 (demo new native controls): $violations"
+          echo "Open items:"
+          grep -rnE 'new (Label|Button|TextField|HBox|VBox|ComboBox|RadioButton|CheckBox|TextArea|Slider|ProgressBar|TableView|TreeView|StackPane)\b' jfxium-demo/src/main/java --include="*.java" | grep -v 'new Label\[\]\|new ButtonAnt\|new ButtonType\|new Stage' || true
+          [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
+
+      - name: Scan red line #2 — CSS box-shadow
+        run: |
+          violations=$(grep -rn 'box-shadow' jfxium/src/main/resources --include="*.less" | wc -l)
+          echo "Red Line #2 (CSS box-shadow): $violations"
+          [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
+
+      - name: Scan red line #3 — CSS :active/:focus
+        run: |
+          violations=$(grep -rn ':active\|:focus[^e]' jfxium/src/main/resources --include="*.less" | wc -l)
+          echo "Red Line #3 (CSS :active/:focus): $violations"
+          [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
+
+      - name: Scan red line #8 — styleClass without jfx- prefix
+        run: |
+          violations=$(grep -rn 'getStyleClass().*add("' jfxium/src/main/java --include="*.java" | grep -v 'jfx-' | grep -v '".*"' | wc -l)
+          echo "Red Line #8 (no jfx- prefix): $violations"
+          echo "⚠️ Manual review recommended — check output above"
+
+      - name: Scan architecture — core→component reverse deps
+        run: |
+          violations=$(grep -rn 'import.*component\.' jfxium/src/main/java/org/openkawu/jfxium/core/ --include="*.java" | wc -l)
+          echo "Architecture (core→component reverse deps): $violations"
+          [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
+
+      - name: Scan i18n — key count
+        run: |
+          zh=$(grep -c '=' jfxium/src/main/resources/org/openkawu/jfxium/i18n/messages_zh_CN.properties)
+          en=$(grep -c '=' jfxium/src/main/resources/org/openkawu/jfxium/i18n/messages_en.properties)
+          echo "i18n keys: zh_CN=$zh, en=$en"
+          [ "$zh" -eq "$en" ] || { echo "❌ FAILED: key count mismatch"; exit 1; }
+
+  summary:
+    name: CI Summary
+    if: always()
+    needs: [ build-and-test, red-line-scan ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check results
+        run: |
+          if [ "${{ needs.build-and-test.result }}" = "success" ] && [ "${{ needs.red-line-scan.result }}" = "success" ]; then
+            echo "✅ All checks passed"
+          else
+            echo "❌ Some checks failed — review details above"
+            exit 1
+          fi

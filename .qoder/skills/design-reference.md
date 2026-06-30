@@ -262,3 +262,75 @@ description: >
 | Ikonli 图标库评估 | 是否替换为更中性的图标库 | 低（独立任务） |
 | MUI 主题重设计 | 替换 Material Design 为桌面工具配色 | 待用户决策 |
 
+## 十、弹层交互阻断契约
+
+> **目的**:定义所有 overlay 组件(Modal / Drawer / Dropdown / Toast / Tooltip / ContextMenu / DatePicker / TimePicker / ColorPicker / 自定义弹层)在打开时**阻断下层页面交互**的硬约束,避免事件穿透、焦点盗窃、滚动穿透。借鉴 EUI-NEO `docs/组件.md` §"基本约定" 第 7 条 + §"dialog" L620 + §"sidebar" L649。
+
+### 契约条文(强制)
+
+所有 overlay 组件**必须**满足以下三点,缺一即视为实现缺陷:
+
+1. **scrim/backdrop 阻断下层 hover / click / scroll / focus**
+   - Modal / Drawer / ContextMenu:全屏半透明 scrim + **透明 hit rect** 吃掉后内容的 hover、click 和 scroll。
+   - Drawer:左/右侧 scrim 负责点击关闭 + 阻断背景 click/scroll/focus;面板背景吃掉空白区域的 click/scroll/focus。
+   - Dropdown / DatePicker / TimePicker / ColorPicker:打开时,在下拉面板/对话框外层加全屏透明 dismiss 层(覆盖整个 Scene 而非面板本身),点击触发 `onDismiss`。
+2. **焦点命中阻断**
+   - overlay 打开时,下层输入框(`TextField` / `TextArea` / `ComboBox` 等可获焦组件)**不得**被点击获焦;即使用户点 scrim,焦点也应保持在 overlay 内或转移到关闭按钮,而不是穿透到底层。
+3. **scrim 关闭语义统一**
+   - 点击 scrim → 触发 `onClose`(Modal/Drawer)/ `onDismiss`(Dropdown/Toast/Menu),不直接销毁弹层状态。
+   - **例外**:带 `onMaskClick` 自定义回调的 Modal,按回调决定是否关闭;**不允许** 完全没有关闭路径的弹层。
+
+### JFXium 实现要点
+
+| 场景 | 实现机制 | 参考实现 |
+|------|---------|---------|
+| **半透明 scrim 阻断** | `StackPane` 装透明 `Region`(全屏),`setOnMouseClicked(...)` + `setPickOnBounds(true)` | `ModalAnt` / `DrawerAnt` 现有 scrim |
+| **透明 dismiss 层** | `Region` 覆盖整个 Scene,`setMouseTransparent(false)`,`setOnMouseClicked(e -> onDismiss.accept())` | `DropdownAnt` / `ContextMenuAnt` 现有 dismiss 层 |
+| **focus 阻断** | overlay 打开时把焦点抢到自己的 first focusable 子节点(优先 close 按钮 / 第一个输入框),关闭时归还到原 owner | 参见 `ModalAnt.requestFocus()` 现有逻辑 |
+| **键盘 Escape 关闭** | overlay 注册 `SceneAccelerator(Escape)`,触发 `onClose` | 多数 overlay 已有,统一验过即可 |
+| **滚动阻断** | 弹层打开时,如果页面有 `ScrollPane`,临时禁用其滚动(`setPannable(false)`);关闭时还原 | 容易遗漏,**作为后续 feature 候选** |
+
+### 反模式(本节禁止)
+
+- ❌ overlay 打开时,下层 TextField 仍能获焦(光标闪)→ 焦点穿透,严重 UX bug。
+- ❌ scrim 只画半透明背景,不挂 hit rect → 用户点 scrim 无反应,误以为应用卡死。
+- ❌ scrim 用 `setMouseTransparent(true)` → 反向穿透,下层仍可点击。
+- ❌ `onClose` 路径缺失,弹层只能通过右上角 X 关闭 → 桌面工具不允许,必须有 scrim/Escape 关闭路径。
+- ❌ Dropdown / DatePicker 关闭后,旧 panel 仍保留 hover 高亮 → 命中区未清,旧 panel 仍能触发原回调。必须 `setMouseTransparent(true)` 或 `setVisible(false)`。
+- ❌ overlay 嵌套时,内层 modal 的 scrim 没盖到外层 modal → 内层点击会穿透到外层 scrim,误触关闭外层。
+
+### 验收清单(每个 overlay 组件创建/修改时必跑)
+
+- [ ] 打开 overlay → 点击 scrim 区域,弹层正确关闭
+- [ ] 打开 overlay → 点击 scrim,下层 TextField 不会获焦
+- [ ] 打开 overlay → 按 Escape 键,弹层正确关闭
+- [ ] 打开 overlay → 滚动下层 ScrollPane,不会带动底层内容滚动
+- [ ] 关闭 overlay → 焦点正确归还到打开前 owner
+- [ ] overlay 嵌套时,内层 modal 的 scrim 覆盖整个内层区域(不穿透到外层)
+
+## 十一、外部框架借鉴索引
+
+> **目的**:集中记录本文件借鉴的外部框架来源,便于审计设计来源权重与回溯原始依据。
+
+| 借鉴内容 | 来源 | 借鉴章节 | JFXium 落地位置 |
+|---------|------|---------|----------------|
+| **弹层交互阻断契约**(scrim + 透明 hit rect + focus 阻断 + topmost hit-test) | [EUI-NEO docs/组件.md](https://github.com/sudoevolve/EUI-NEO/blob/main/docs/%E7%BB%84%E4%BB%B6.md) | §"基本约定" 第 7 条 + §"dialog" L620 + §"sidebar" L649 + §"tooltip" L727 | 本文件 §十 |
+| **风格来源权重**(JetBrains 50% / Qt 25% / ...) | 自创 | — | 本文件 §一 |
+| **设计语言迁移决策**(从 Ant Design 转向桌面工具) | 自创 | — | 本文件 §九 |
+
+### 后续候选借鉴(待评估)
+
+以下 EUI-NEO 设计点已识别为有借鉴价值,但本次未落地,登记为后续 feature 候选:
+
+| 候选借鉴 | EUI-NEO 来源 | 评估维度 |
+|---------|------------|---------|
+| `visualStateFrom(id, scale)` 共享视觉态(按钮按压时外层 Stack 跟随缩放) | `docs/组件.md` §"写新组件时的底线" | JFXium 用 `PseudoClass` + `setScaleX/Y` 已能部分表达,需评估是否值得抽象 |
+| 8 个命名缓动函数 + 全局速率缩放 | `docs/动画.md`(未在本次审计范围) | JFXium 动画系统已用 `Interpolator` 子类,需评估命名映射 |
+| `ignoreLayout()` 装饰背景不入布局 | `docs/组件.md` §"card / layoutDebugOverlay" | JFXium 用 `StackPane.getChildren().add(...)` + `setMouseTransparent(true)` 已能部分表达 |
+| `runtimePointerTransformFrom` 高频指针跟随 | `docs/组件.md` §"workshop" L697 | JFXium 用 `Timeline` 驱动 `setTranslateX/Y` 性能足够,除非出现真实性能瓶颈 |
+| `MouseArea` 通用输入热区 | `docs/组件.md` §"mouseArea" | JFXium 用 `Region` + 手写事件监听已能实现,**不重复造轮子** |
+| `layoutDebugOverlay` 显式绘制 frame/padding/content 边界 | `docs/组件.md` §"card / layoutDebugOverlay" | 调试辅助工具,需评估是否值得加到 `jfxium-debug` 模块 |
+| `workshop/` 命名空间放高定组件 | `docs/组件.md` §"workshop" | JFXium 暂不需要,业务模板已用 `*Template` 后缀划分 |
+
+> **审计周期**:每次新增/重大修改组件前,扫一遍本表确认是否还有未评估的借鉴项;**每季度** 复核一次 EUI-NEO 主仓库是否有新的设计模式值得借鉴。
+
