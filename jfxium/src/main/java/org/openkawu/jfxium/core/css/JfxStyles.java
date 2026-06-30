@@ -228,6 +228,8 @@ public final class JfxStyles {
     public static final String FORM_INLINE = "jfx-form-inline";
     public static final String FORM_LABEL = "jfx-form-label";
     public static final String FORM_LABEL_REQUIRED = "jfx-form-label-required";
+    /** 自定义 required mark 时挂载（抑制 CSS ::after 默认 * 号，避免双重显示）。 */
+    public static final String FORM_LABEL_REQUIRED_CUSTOM = "jfx-form-label-required-custom";
     public static final String FORM_ITEM_WRAPPER = "jfx-form-item-wrapper";
     public static final String FORM_ITEM_BOX = "jfx-form-item-box";
     public static final String FORM_HELP_TEXT = "jfx-form-help-text";

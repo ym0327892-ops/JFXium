@@ -239,8 +239,11 @@ public class StatusBarAnt extends HBox
     /** 更新中间进度条（0.0 ~ 1.0，负数表示隐藏）。 */
     public void updateProgress(double value) {
         if (progressBar == null) {
-            progressBar = new ProgressBar(value);
+            progressBar = new ProgressBar(value < 0 ? ProgressBar.INDETERMINATE_PROGRESS : value);
             progressBar.setPrefWidth(PROGRESS_BAR_WIDTH);
+            if (value < 0) {
+                progressBar.setVisible(false);
+            }
             centerBox.getChildren().add(progressBar);
         } else {
             if (value < 0) {

@@ -50,9 +50,12 @@ public final class Messages {
     /** 资源 bundle 的 base name —— 与包路径平行，避免与未来其他资源冲突 */
     private static final String BUNDLE_BASE_NAME = "org.openkawu.jfxium.i18n.messages";
 
+    /** 当前 Locale 的唯一事实来源；property 通知可稍后回到 FX 线程，但语义值必须立即生效。 */
+    private static volatile Locale currentLocale = Locale.SIMPLIFIED_CHINESE;
+
     /** 当前 Locale 的 JavaFX 属性 —— 暴露 ReadOnlyObjectProperty 让 UI 监听变化 */
     private static final ReadOnlyObjectWrapper<Locale> LOCALE_WRAPPER =
-            new ReadOnlyObjectWrapper<>(Locale.SIMPLIFIED_CHINESE);
+            new ReadOnlyObjectWrapper<>(currentLocale);
 
     /** 当前 locale 缓存的 bundle（避免每次 get 重新加载） */
     private static volatile ResourceBundle currentBundle;
@@ -75,7 +78,7 @@ public final class Messages {
      * 取当前 Locale。默认为 {@link Locale#SIMPLIFIED_CHINESE}。
      */
     public static synchronized Locale getLocale() {
-        return LOCALE_WRAPPER.get();
+        return currentLocale;
     }
 
     /**
@@ -92,11 +95,12 @@ public final class Messages {
     public static void setLocale(Locale locale) {
         Objects.requireNonNull(locale, "locale 不能为 null");
         synchronized (Messages.class) {
-            Locale current = LOCALE_WRAPPER.get();
+            Locale current = currentLocale;
             if (current.equals(locale)) {
                 return; // 同 Locale 直接返回，不触发变更通知
             }
             // 清空缓存，强制下次按新 Locale 加载
+            currentLocale = locale;
             currentBundle = null;
         }
         Runnable update = () -> LOCALE_WRAPPER.set(locale);

@@ -36,6 +36,7 @@ public class FormContext {
             FXCollections.observableMap(new LinkedHashMap<>());
     private final Map<String, java.util.List<Rule>> rulesByName = new LinkedHashMap<>();
     private final Map<String, Node> controlsByName = new LinkedHashMap<>();
+    private boolean validateOnChange = false;
 
     /**
      * 注册字段（FormAnt 内部 build 时调用）。
@@ -54,7 +55,12 @@ public class FormContext {
         errors.put(name, errorProp);
 
         // 监听控件值变化，同步到 valueProp
-        bindControlToProperty(control, valueProp);
+        bindControlToProperty(control, valueProp, name);
+    }
+
+    /** 设置 onChange 自动校验（由 FormAnt.Builder 在 build 时调用）。 */
+    public void setValidateTrigger(boolean onChange) {
+        this.validateOnChange = onChange;
     }
 
     /** 读取字段当前值（按字段 name）。 */
@@ -135,6 +141,23 @@ public class FormContext {
         errors.values().forEach(p -> p.set(""));
     }
 
+    /** 重置所有字段值为 null/空 + 清除所有错误。 */
+    public void reset() {
+        controlsByName.forEach((name, control) -> applyValueToControl(control, null));
+        values.values().forEach(p -> p.set(null));
+        clearErrors();
+    }
+
+    /** 重置单个字段值为 null/空 + 清除其错误。 */
+    public void resetField(String name) {
+        Node control = controlsByName.get(name);
+        ObjectProperty<Object> prop = values.get(name);
+        StringProperty errProp = errors.get(name);
+        if (control != null) applyValueToControl(control, null);
+        if (prop != null) prop.set(null);
+        if (errProp != null) errProp.set("");
+    }
+
     /**
      * 字段联动：当 dependency 字段值变化时调用 handler。
      * handler 收到 (新值, FormContext)，可在内部用 {@link #setValue} / {@link #validateField} 等。
@@ -176,20 +199,26 @@ public class FormContext {
         }
     }
 
-    private static void bindControlToProperty(Node control, ObjectProperty<Object> prop) {
+    private void bindControlToProperty(Node control, ObjectProperty<Object> prop, String name) {
         if (control instanceof TextInputControl tic) {
-            tic.textProperty().addListener((obs, ov, nv) -> prop.set(nv));
+            tic.textProperty().addListener((obs, ov, nv) -> { prop.set(nv); onChangeValidate(name); });
         } else if (control instanceof CheckBox cb) {
-            cb.selectedProperty().addListener((obs, ov, nv) -> prop.set(nv));
+            cb.selectedProperty().addListener((obs, ov, nv) -> { prop.set(nv); onChangeValidate(name); });
         } else if (control instanceof RadioButton rb) {
-            rb.selectedProperty().addListener((obs, ov, nv) -> prop.set(nv));
+            rb.selectedProperty().addListener((obs, ov, nv) -> { prop.set(nv); onChangeValidate(name); });
         } else if (control instanceof ToggleButton tb) {
-            tb.selectedProperty().addListener((obs, ov, nv) -> prop.set(nv));
+            tb.selectedProperty().addListener((obs, ov, nv) -> { prop.set(nv); onChangeValidate(name); });
         } else if (control instanceof ComboBox<?> cb) {
-            cb.valueProperty().addListener((obs, ov, nv) -> prop.set(nv));
+            cb.valueProperty().addListener((obs, ov, nv) -> { prop.set(nv); onChangeValidate(name); });
         } else if (control instanceof DatePicker dp) {
-            dp.valueProperty().addListener((obs, ov, nv) -> prop.set(nv));
+            dp.valueProperty().addListener((obs, ov, nv) -> { prop.set(nv); onChangeValidate(name); });
         }
         // 其他控件类型不绑定（业务可手动 setValue 同步）
+    }
+
+    private void onChangeValidate(String name) {
+        if (validateOnChange && name != null) {
+            validateField(name);
+        }
     }
 }

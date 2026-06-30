@@ -267,12 +267,48 @@ public class TagAnt {
             if (!tag.getStyleClass().contains(JfxStyles.TAG_HAS_COLOR)) {
                 tag.getStyleClass().add(JfxStyles.TAG_HAS_COLOR);
             }
-            // 只写 background-color；text-fill 由 LESS .jfx-tag.jfx-tag-has-color 选择器负责
-            tag.setStyle("-fx-background-color: " + toHexColor(color) + ";");
+            // 只覆写 background-color，保留调用方通过 Builder/style() 传入的其他 inline style。
+            tag.setStyle(upsertStyleDeclaration(tag.getStyle(), "-fx-background-color", toHexColor(color)));
         } else {
             tag.getStyleClass().remove(JfxStyles.TAG_HAS_COLOR);
-            tag.setStyle(null);
+            tag.setStyle(removeStyleDeclaration(tag.getStyle(), "-fx-background-color"));
         }
+    }
+
+    private static String upsertStyleDeclaration(String style, String property, String value) {
+        String withoutProperty = removeStyleDeclaration(style, property);
+        String declaration = property + ": " + value + ";";
+        if (withoutProperty == null || withoutProperty.isBlank()) {
+            return declaration;
+        }
+        return withoutProperty.endsWith(";") ? withoutProperty + " " + declaration : withoutProperty + "; " + declaration;
+    }
+
+    private static String removeStyleDeclaration(String style, String property) {
+        if (style == null || style.isBlank()) {
+            return null;
+        }
+        StringBuilder kept = new StringBuilder();
+        String propertyLower = property.toLowerCase();
+        for (String declaration : style.split(";")) {
+            String trimmed = declaration.trim();
+            if (trimmed.isEmpty()) {
+                continue;
+            }
+            int colonIndex = trimmed.indexOf(':');
+            if (colonIndex < 0) {
+                continue;
+            }
+            String name = trimmed.substring(0, colonIndex).trim();
+            if (name.toLowerCase().equals(propertyLower)) {
+                continue;
+            }
+            if (kept.length() > 0) {
+                kept.append("; ");
+            }
+            kept.append(trimmed);
+        }
+        return kept.length() == 0 ? null : kept.append(';').toString();
     }
 
     /** Color → CSS hex (#rrggbb)。Alpha 不输出，因为 Tag 是 opaque。 */

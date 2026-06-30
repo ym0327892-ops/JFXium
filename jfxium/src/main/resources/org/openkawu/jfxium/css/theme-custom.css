@@ -1686,7 +1686,7 @@
   -fx-background-radius: 4px;
 }
 .date-picker-popup .day-cell:disabled {
-  -fx-text-fill: -color-fg-disabled;
+  -fx-text-fill: -color-fg-subtle;
   -fx-opacity: 0.4;
 }
 /* DatePicker Popup 增强样式 */
@@ -4966,6 +4966,10 @@
   -fx-content: " *";
   -fx-text-fill: -color-danger-emphasis;
 }
+/* 自定义 requiredMark 时抑制 CSS ::after 双重显示（* 已由 Java 端拼接进 label 文本） */
+.jfx-form-label-required-custom::after {
+  -fx-content: "";
+}
 /* Help text */
 .jfx-form-help-text {
   -fx-text-fill: -color-fg-subtle;
@@ -5041,14 +5045,14 @@
   -fx-spacing: 8px;
 }
 .jfx-divider-text {
-  -fx-text-fill: -color-fg-secondary;
+  -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
   -fx-padding: 0 12px 0 12px;
 }
 .jfx-divider-line {
   /* 让带文本的 Divider 中线段保持与单独 Separator 一致的视觉粗细 */
   -fx-pref-height: 1px;
-  -fx-background-color: -color-border;
+  -fx-background-color: -color-border-muted;
 }
 .jfx-divider-line .line {
   -fx-border-color: -color-border-muted;
@@ -5867,9 +5871,9 @@
 }
 /* TextAreaAnt read-only danger style */
 .jfx-text-area-read-only {
-  -fx-background-color: -color-danger-bg;
-  -fx-border-color: -color-danger-border;
-  -fx-text-fill: -color-danger;
+  -fx-background-color: -color-danger-subtle;
+  -fx-border-color: -color-danger-muted;
+  -fx-text-fill: -color-danger-emphasis;
   -fx-font-size: 14px;
   -fx-padding: 12px;
   -fx-border-radius: 6px;

@@ -114,7 +114,10 @@ public class NotificationCard {
 
             headerBox.getChildren().add(contentBox);
 
-            if (closable && onClose != null) {
+            // 修 Bug（M19.51）：原条件 if (closable && onClose != null) 要求两条件同时为真,
+            // 但 NotificationAnt 透传时 onClose 可能为 null,导致 X 按钮永远不渲染。
+            // 改为单条件 closable —— X 按钮仅由 closable 控制,onClose 可为 null(只关闭不回调)。
+            if (closable) {
                 CloseButton closeBtn = new CloseButton(onClose);
                 headerBox.getChildren().add(closeBtn);
             }

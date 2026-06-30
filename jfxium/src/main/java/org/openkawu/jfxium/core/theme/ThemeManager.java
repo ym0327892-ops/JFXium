@@ -223,6 +223,7 @@ public class ThemeManager {
     private void applyPrimaryColorToAll() {
         String hex = currentThemeColor.getHexColor();
         Theme.ThemeType currentType = currentTheme.getType();
+        String previousAccentStylesheet = accentStylesheet;
 
         // 短路：hex + 明暗类型均未变化时复用缓存 data-URI
         String dataUri;
@@ -252,15 +253,17 @@ public class ThemeManager {
 
             cachedAccentHex = hex;
             cachedAccentThemeType = currentType;
-            accentStylesheet = dataUri;
         }
 
         // 替换每个 scene 上一次注入的 accent stylesheet（先移除旧的，再加新的）
-        String oldUri = accentStylesheet;
         for (Scene scene : registeredScenes) {
-            scene.getStylesheets().remove(oldUri);
+            if (previousAccentStylesheet != null) {
+                scene.getStylesheets().remove(previousAccentStylesheet);
+            }
+            scene.getStylesheets().remove(dataUri);
             scene.getStylesheets().add(dataUri);
         }
+        accentStylesheet = dataUri;
     }
 
     /** 上一次注入的 accent data-URI stylesheet，用于切换时移除旧的。 */

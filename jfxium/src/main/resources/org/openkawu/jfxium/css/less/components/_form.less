@@ -58,6 +58,10 @@
   -fx-content: " *";
   -fx-text-fill: -color-danger-emphasis;
 }
+/* 自定义 requiredMark 时抑制 CSS ::after 双重显示（* 已由 Java 端拼接进 label 文本） */
+.jfx-form-label-required-custom::after {
+  -fx-content: "";
+}
 
 /* Help text */
 .jfx-form-help-text {

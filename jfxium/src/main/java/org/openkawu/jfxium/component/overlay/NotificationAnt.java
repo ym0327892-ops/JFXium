@@ -39,6 +39,15 @@ import java.util.function.Consumer;
  *   <li><b>静态快捷方法</b>：success() / error() / warning() / info()</li>
  * </ul>
  *
+ * <h2>关闭语义（与 Ant Design Notification 对齐）</h2>
+ * <ul>
+ *   <li><b>duration &gt; 0</b>：秒数到点自动关闭（hide）</li>
+ *   <li><b>点 X 按钮</b>：触发 onClose 回调 + 关闭（X 按钮由 closable=true 渲染）</li>
+ *   <li><b>点 body（非 X）</b>：仅触发 onClick 回调（若提供），<b>不关闭</b></li>
+ * </ul>
+ * 点 body 不关闭是核心约定 —— 用户可放心阅读长描述 / 点击 content(Hyperlink) /
+ * 点 box 内空白;关闭必须显式（X 或 duration 到点）。修复点见 Bug 3（M19.51 同族）。
+ *
  * <h2>用法</h2>
  * <pre>{@code
  * // 快捷调用：右上角成功通知
@@ -382,6 +391,9 @@ public class NotificationAnt {
                 .description(config.description)
                 .type(convertType(config.type))
                 .closable(config.closable)
+                // 透传 onClose：NotificationCard.onClose 收 Runnable,此处收 Consumer<Void>,包一层适配
+                // 修 Bug（M19.51）：之前漏传,导致 NotificationCard.L117 if (closable && onClose != null) 永远为 false,X 按钮从未渲染
+                .onClose(config.onClose == null ? null : () -> config.onClose.accept(null))
                 .content(config.content);
 
             VBox notificationBox = cardBuilder.build();
@@ -415,13 +427,17 @@ public class NotificationAnt {
                 delay.play();
             }
 
-            if (config.closable) {
-                notificationBox.setOnMouseClicked(e -> {
-                    if (config.onClick != null) {
-                        config.onClick.accept(null);
-                    }
-                    hide(entry, config);
-                });
+            // 关闭路径 3 条:
+            //   1) duration 计时器到点 → hide()       (L415)
+            //   2) NotificationCard 内部的 X 按钮 onAction → hide() (内嵌于 cardBuilder 内)
+            //   3) onClick 回调 —— 不触发 hide,只通知业务方用户点了 box(见下方 setOnMouseClicked)
+            //
+            // 修复 Bug 3 (M19.51 同族): 之前 box click handler 末尾也调用 hide(),
+            // 导致: ① 点 body 任何位置都关掉通知;② 点 X 时事件 bubble-up 重复触发 hide;
+            // ③ content(Hyperlink) 等自定义节点被 bubble-up 截胡,根本无法点击。
+            // 现仅触发 onClick,不再 hide —— 与 Ant Design Notification 默认语义对齐。
+            if (config.closable && config.onClick != null) {
+                notificationBox.setOnMouseClicked(e -> config.onClick.accept(null));
             }
 
             container.addEntry(entry);

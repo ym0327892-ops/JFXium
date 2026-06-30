@@ -18,6 +18,8 @@ import org.openkawu.jfxium.core.util.IconPath;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * JFXium 折叠面板组件 - 对标 Ant Design Collapse。
@@ -32,15 +34,21 @@ import java.util.List;
  *   <li><b>默认展开</b>：defaultActiveKeys(keys)</li>
  *   <li><b>禁用</b>：panel 级别 disabled</li>
  *   <li><b>展开动画</b>：内容区高度动画过渡</li>
+ *   <li><b>运行时控制</b>：通过 {@link Controller} 编程式展开/折叠面板</li>
  * </ul>
  *
  * <h2>用法</h2>
  * <pre>{@code
- * VBox collapse = CollapseAnt.create()
+ * CollapseAnt.Builder builder = CollapseAnt.create()
  *     .panel("q1", "什么是 JFXium？", new Label("JavaFX 组件库..."))
  *     .panel("q2", "如何安装？", new Label("Maven 依赖..."))
- *     .accordion(true)
- *     .build();
+ *     .accordion(true);
+ * VBox collapse = builder.build();
+ *
+ * // 运行时控制
+ * CollapseAnt.Controller ctrl = builder.controller();
+ * ctrl.expand("q1");
+ * ctrl.collapse("q2");
  * }</pre>
  */
 public class CollapseAnt {
@@ -65,11 +73,23 @@ public class CollapseAnt {
         public boolean isDisabled() { return disabled; }
     }
 
+    /**
+     * 从已构建的 VBox 中获取 Controller。
+     * @param root 由 CollapseAnt 构建的 VBox 节点
+     * @return Controller 实例，若 root 不是 CollapseAnt 构建的则返回 null
+     */
+    public static Controller controllerOf(VBox root) {
+        if (root == null) return null;
+        Object ctrl = root.getProperties().get(Controller.PROPERTY_KEY);
+        return ctrl instanceof Controller ? (Controller) ctrl : null;
+    }
+
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private List<Panel> panels = new ArrayList<>();
         private boolean accordion = false;
         private List<String> activeKeys = new ArrayList<>();
         private Node expandIcon = null;  // null = 用默认右箭头
+        private Controller controller;
 
         public Builder panel(String key, String header, Node content) {
             this.panels.add(new Panel(key, header, content));
@@ -95,6 +115,8 @@ public class CollapseAnt {
         public VBox build() {
             VBox collapse = new VBox(0);
             collapse.getStyleClass().add(JfxStyles.COLLAPSE);
+
+            this.controller = new Controller(collapse, this);
 
             for (int i = 0; i < panels.size(); i++) {
                 Panel panel = panels.get(i);
@@ -135,32 +157,17 @@ public class CollapseAnt {
                 contentBox.setManaged(isActive);
                 contentBox.setOpacity(isActive ? 1 : 0);
 
+                // 注册到 controller
+                controller.registerPanel(panel.getKey(), panelBox, arrowNode, contentBox, panel.isDisabled());
+
                 if (!panel.isDisabled()) {
+                    final String panelKey = panel.getKey();
                     header.setOnMouseClicked(e -> {
                         boolean expanding = !contentBox.isVisible();
                         if (accordion && expanding) {
-                            // 关闭其他 panel
-                            for (Node node : collapse.getChildren()) {
-                                if (node instanceof VBox && node != panelBox) {
-                                    VBox otherPanel = (VBox) node;
-                                    for (Node child : otherPanel.getChildren()) {
-                                        if (child instanceof VBox && child != contentBox) {
-                                            VBox otherContent = (VBox) child;
-                                            if (otherContent.isVisible()) {
-                                                animatePanel(otherContent, false);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            controller.collapseAllExcept(panelKey);
                         }
-                        animatePanel(contentBox, expanding);
-                        // 箭头旋转动画
-                        Timeline arrowAnim = new Timeline(
-                                new KeyFrame(AnimationDuration.FAST,
-                                        new KeyValue(arrowNode.rotateProperty(), expanding ? 180 : 0))
-                        );
-                        arrowAnim.play();
+                        controller.toggle(panelKey);
                     });
                 }
 
@@ -174,8 +181,159 @@ public class CollapseAnt {
 
                 collapse.getChildren().add(panelBox);
             }
+
+            // 把 controller 挂到 root 的 properties 上
+            collapse.getProperties().put(Controller.PROPERTY_KEY, controller);
             applyStyles(collapse);
             return collapse;
+        }
+
+        /**
+         * 获取运行时控制器。
+         * 必须在 {@link #build()} 之后调用。
+         */
+        public Controller controller() {
+            if (controller == null) {
+                throw new IllegalStateException("controller() must be called after build()");
+            }
+            return controller;
+        }
+    }
+
+    /**
+     * 折叠面板运行时控制器。
+     *
+     * <p>提供编程式控制面板展开/折叠的功能，无需重建整个组件树。
+     *
+     * <pre>{@code
+     * CollapseAnt.Controller ctrl = builder.controller();
+     * ctrl.expand("q1");
+     * ctrl.collapse("q2");
+     * }</pre>
+     */
+    public static class Controller {
+        public static final String PROPERTY_KEY = "jfxium.collapse.controller";
+
+        private final VBox root;
+        private final Builder builder;
+        private final List<PanelHandle> panelHandles = new ArrayList<>();
+        private final Set<String> activeKeys = new HashSet<>();
+
+        Controller(VBox root, Builder builder) {
+            this.root = root;
+            this.builder = builder;
+        }
+
+        void registerPanel(String key, VBox panelBox, Node arrowNode, VBox contentBox, boolean disabled) {
+            PanelHandle handle = new PanelHandle(key, panelBox, arrowNode, contentBox, disabled);
+            panelHandles.add(handle);
+            if (contentBox.isVisible()) {
+                activeKeys.add(key);
+            }
+        }
+
+        /**
+         * 展开指定面板。
+         * @param key 面板的 key
+         */
+        public void expand(String key) {
+            PanelHandle handle = findHandle(key);
+            if (handle == null || handle.disabled || handle.contentBox.isVisible()) return;
+
+            if (builder.accordion) {
+                collapseAllExcept(key);
+            }
+
+            animatePanel(handle.contentBox, true);
+            animateArrow(handle.arrowNode, true);
+            activeKeys.add(key);
+        }
+
+        /**
+         * 折叠指定面板。
+         * @param key 面板的 key
+         */
+        public void collapse(String key) {
+            PanelHandle handle = findHandle(key);
+            if (handle == null || handle.disabled || !handle.contentBox.isVisible()) return;
+
+            animatePanel(handle.contentBox, false);
+            animateArrow(handle.arrowNode, false);
+            activeKeys.remove(key);
+        }
+
+        /**
+         * 切换指定面板的展开/折叠状态。
+         * @param key 面板的 key
+         */
+        public void toggle(String key) {
+            PanelHandle handle = findHandle(key);
+            if (handle == null || handle.disabled) return;
+
+            if (handle.contentBox.isVisible()) {
+                collapse(key);
+            } else {
+                expand(key);
+            }
+        }
+
+        /**
+         * 展开所有面板。
+         * 注意：在手风琴模式下这与 accordion 语义冲突，不会生效。
+         */
+        public void expandAll() {
+            if (builder.accordion) return;
+            for (PanelHandle handle : panelHandles) {
+                if (!handle.disabled) {
+                    expand(handle.key);
+                }
+            }
+        }
+
+        /**
+         * 折叠所有面板。
+         */
+        public void collapseAll() {
+            for (PanelHandle handle : panelHandles) {
+                if (!handle.disabled) {
+                    collapse(handle.key);
+                }
+            }
+        }
+
+        /**
+         * 折叠除指定 key 外的所有面板。
+         * 用于手风琴模式。
+         */
+        void collapseAllExcept(String exceptKey) {
+            for (PanelHandle handle : panelHandles) {
+                if (!handle.key.equals(exceptKey) && !handle.disabled) {
+                    collapse(handle.key);
+                }
+            }
+        }
+
+        /**
+         * 检查指定面板是否已展开。
+         * @param key 面板的 key
+         * @return true 表示已展开
+         */
+        public boolean isExpanded(String key) {
+            return activeKeys.contains(key);
+        }
+
+        /**
+         * 获取当前所有已展开面板的 key 集合（只读）。
+         */
+        public Set<String> getActiveKeys() {
+            return Set.copyOf(activeKeys);
+        }
+
+        private PanelHandle findHandle(String key) {
+            return panelHandles.stream()
+                    .filter(h -> h.key.equals(key))
+                    .findFirst()
+                    .orElse(null);
         }
 
         private void animatePanel(VBox contentBox, boolean show) {
@@ -200,6 +358,30 @@ public class CollapseAnt {
                 }
             });
             timeline.play();
+        }
+
+        private void animateArrow(Node arrowNode, boolean expanding) {
+            Timeline arrowAnim = new Timeline(
+                    new KeyFrame(AnimationDuration.FAST,
+                            new KeyValue(arrowNode.rotateProperty(), expanding ? 180 : 0))
+            );
+            arrowAnim.play();
+        }
+
+        private static class PanelHandle {
+            final String key;
+            final VBox panelBox;
+            final Node arrowNode;
+            final VBox contentBox;
+            final boolean disabled;
+
+            PanelHandle(String key, VBox panelBox, Node arrowNode, VBox contentBox, boolean disabled) {
+                this.key = key;
+                this.panelBox = panelBox;
+                this.arrowNode = arrowNode;
+                this.contentBox = contentBox;
+                this.disabled = disabled;
+            }
         }
     }
 

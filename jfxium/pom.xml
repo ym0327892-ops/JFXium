@@ -69,6 +69,8 @@
                 <version>3.2.5</version>
                 <configuration>
                     <argLine>
+                        -Dprism.order=sw
+                        -Dprism.verbose=true
                         --add-opens javafx.graphics/javafx.application=ALL-UNNAMED
                         --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
                         --add-opens org.openkawu.jfxium/org.openkawu.jfxium=ALL-UNNAMED
@@ -140,6 +142,27 @@
                                     log.info('Compiled LESS: ' + name + '.css (' + css.length() + ' chars)')
                                 }
                                 log.info('All ' + themes.size() + ' themes compiled successfully (jlessc, no Node.js required)')
+
+                                // === jlessc 1.16 嵌套 @-token bug 校验 ===
+                                // 已知问题：jlessc 1.16（最新版）在 .root.jfx-compact { ... } 嵌套块内
+                                // 对 @-token 变量解析输出错位值，因此紧凑块内使用字面量 px 绕行。
+                                // 源码见 theme-base.less 第 119-127 行注释。
+                                // 后续若升级 LESS 编译器（jlessc → less4j），可移除本校验。
+                                ['theme-light-compact', 'theme-dark-compact',
+                                 'theme-mui-compact', 'theme-mui-dark-compact'].each { name -&gt;
+                                    def compactOutput = new File(cssDir, name + '.css')
+                                    if (compactOutput.exists()) {
+                                        def text = compactOutput.text
+                                        if (!text.contains('.root.jfx-compact')) {
+                                            throw new RuntimeException(
+                                                'jlessc BUG: ' + name + '.css 缺少 .root.jfx-compact 块。\n' +
+                                                '这可能是 jlessc 1.16 嵌套 @-token 解析 bug 的新表现。\n' +
+                                                '请检查 theme-base.less 中 .root.jfx-compact 的内容。\n' +
+                                                '升级路线：jlessc → less4j（见 BUG #87）。')
+                                        }
+                                        log.info('Compact marker verified in ' + name + '.css')
+                                    }
+                                }
                             </source>
                         </configuration>
                     </execution>

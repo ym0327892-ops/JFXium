@@ -202,6 +202,84 @@ public class HBarAnt extends AbstractHBoxAnt<HBarAnt> {
     }
 
     // ============================================================
+    // LayoutCommon 桥接方法（二进制兼容性）
+    // ============================================================
+    //
+    // 继承 AbstractHBoxAnt<HBarAnt> → LayoutCommon<HBarAnt> 默认方法在源码级正常编译。
+    // 但旧调用方（或 getDeclaredMethod 反射）按 HBarAnt.xxx(): HBarAnt 精确签名查找时
+    // 找不到 LayoutCommon 的默认方法，触发 NoSuchMethodError。
+    // 以下桥接方法显式声明精确类型签名，同时为子类提供可 override 的入口。
+    // （详见 Bug #123、Bug #138、HBarAntTest.backgroundBridgeMethodKeepsBinarySignature）
+
+    @Override
+    public HBarAnt background(org.openkawu.jfxium.core.css.Background background) {
+        styleClass(background != null ? background.styleClass() : null);
+        return this;
+    }
+
+    @Override
+    public HBarAnt padding(double top, double right, double bottom, double left) {
+        if (this instanceof javafx.scene.layout.Region r) {
+            r.setPadding(new javafx.geometry.Insets(top, right, bottom, left));
+        }
+        return this;
+    }
+
+    @Override
+    public HBarAnt borderRadius(org.openkawu.jfxium.core.builder.Radius radius) {
+        getStyleClass().removeAll(JfxStyles.RADIUS_NONE, JfxStyles.RADIUS_SM, JfxStyles.RADIUS_LG);
+        if (radius == null) return this;
+        if (radius == org.openkawu.jfxium.core.builder.Radius.NONE) getStyleClass().add(JfxStyles.RADIUS_NONE);
+        else if (radius == org.openkawu.jfxium.core.builder.Radius.SM) getStyleClass().add(JfxStyles.RADIUS_SM);
+        else if (radius == org.openkawu.jfxium.core.builder.Radius.LG) getStyleClass().add(JfxStyles.RADIUS_LG);
+        return this;
+    }
+
+    @Override
+    public HBarAnt styleClass(String... styleClasses) {
+        if (styleClasses != null) {
+            for (String c : styleClasses) {
+                if (c != null && !c.isEmpty() && !getStyleClass().contains(c)) {
+                    getStyleClass().add(c);
+                }
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public HBarAnt style(String inlineStyle) {
+        if (inlineStyle != null) setStyle(inlineStyle);
+        return this;
+    }
+
+    @Override
+    public HBarAnt visible(boolean visible) {
+        setVisible(visible);
+        return this;
+    }
+
+    // DisabledSupport.disabled(boolean) — 无需桥接，已被 DisabledSupport 默认方法覆盖
+
+    @Override
+    public HBarAnt managed(boolean managed) {
+        setManaged(managed);
+        return this;
+    }
+
+    @Override
+    public HBarAnt opacity(double opacity) {
+        setOpacity(opacity);
+        return this;
+    }
+
+    @Override
+    public HBarAnt id(String id) {
+        setId(id);
+        return this;
+    }
+
+    // ============================================================
     // 构建
     // ============================================================
 
