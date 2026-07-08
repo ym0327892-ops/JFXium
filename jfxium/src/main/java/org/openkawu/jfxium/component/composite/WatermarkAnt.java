@@ -23,6 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 /**
  * WatermarkAnt - 对标 Ant Design / Element Plus Watermark。
@@ -58,6 +59,7 @@ import java.util.function.Supplier;
  * @since 1.0
  */
 public class WatermarkAnt {
+    private static final Logger LOGGER = Logger.getLogger(WatermarkAnt.class.getName());
     private static final String CONTROLLER_KEY = WatermarkAnt.class.getName() + ".controller";
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
@@ -468,7 +470,7 @@ public class WatermarkAnt {
                                 javafx.application.Platform.runLater(() -> {
                                     if (!root.getChildren().contains(watermarkLayer)) {
                                         root.getChildren().add(watermarkLayer);
-                                        System.out.println("[WatermarkAnt] 水印层被移除，已自动恢复");
+                                        LOGGER.info("[WatermarkAnt] 水印层被移除，已自动恢复");
                                     }
                                 });
                             }

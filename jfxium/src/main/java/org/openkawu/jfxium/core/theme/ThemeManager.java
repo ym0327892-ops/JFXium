@@ -176,15 +176,6 @@ public class ThemeManager {
         return density;
     }
 
-    /**
-     * @deprecated 自 v1.0 起密度升级为一等状态，使用 {@link #setDensity(ThemeDensity)}。
-     *             保留 2 个版本以兼容旧 API，内部委托给 setDensity()。
-     */
-    @Deprecated
-    public void setCompactDensity(boolean compact) {
-        setDensity(compact ? ThemeDensity.COMPACT : ThemeDensity.DEFAULT);
-    }
-
     public Family getCurrentFamily() { return currentFamily; }
     public boolean isDark() { return dark; }
 
@@ -370,22 +361,6 @@ public class ThemeManager {
     /** 切换亮色 / 暗色主题（保持家族 / 密度 / 主题色不变）。 */
     public void toggleTheme() {
         setDark(!dark);
-    }
-
-    /**
-     * @deprecated 使用 {@link #setDensity(ThemeDensity)} 代替。
-     */
-    @Deprecated
-    public void toggleCompact() {
-        setDensity(isCompact() ? ThemeDensity.DEFAULT : ThemeDensity.COMPACT);
-    }
-
-    /**
-     * @deprecated 使用 {@code getDensity() == ThemeDensity.COMPACT} 代替。
-     */
-    @Deprecated
-    public boolean isCompact() {
-        return density == ThemeDensity.COMPACT;
     }
 
     /** 切换到 MUI 亮色主题家族。 */
