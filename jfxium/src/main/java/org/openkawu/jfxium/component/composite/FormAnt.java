@@ -4,7 +4,9 @@ import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.layout.*;
+import org.openkawu.jfxium.component.control.TooltipAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.form.FormContext;
@@ -148,6 +150,7 @@ public class FormAnt {
         Align labelAlign;
         double labelWidth = -1;
         boolean hidden;
+        String tooltip;   // M21.x: label 旁的 tooltip 提示文本（null=不显示）
 
         FormItem(String label, Node control, String name) {
             this.label = TextUtils.safeText(label);
@@ -234,6 +237,12 @@ public class FormAnt {
 
         /** 隐藏当前表单项（语法糖）。 */
         public ItemBuilder hide() { return hidden(true); }
+
+        /** label 旁的 tooltip 提示文本（hover 问号图标时显示）。 */
+        public ItemBuilder tooltip(String text) {
+            item.tooltip = TextUtils.safeText(text);
+            return this;
+        }
 
         /** 回链到父 Builder 继续链式配置。 */
         public Builder end() {
@@ -524,7 +533,7 @@ public class FormAnt {
                     row++;
                 } else if (entry instanceof FormItem item) {
                     if (item.hidden) continue; // 隐藏项跳过渲染
-                    Label label = createLabel(item);
+                    Node label = createLabel(item);
                     // 单项级 labelAlign 覆盖 form 级
                     Align effectiveAlign = item.labelAlign != null ? item.labelAlign : labelAlign;
                     GridPane.setHalignment(label, effectiveAlign == Align.RIGHT ? HPos.RIGHT : HPos.LEFT);
@@ -605,7 +614,7 @@ public class FormAnt {
         // Label / Wrapper 工厂
         // ===========================================================
 
-        private Label createLabel(FormItem item) {
+        private Node createLabel(FormItem item) {
             String labelText = item.label;
             if (colon && !labelText.isEmpty()) {
                 labelText += ":";
@@ -629,7 +638,27 @@ public class FormAnt {
             }
             if (labelWrap) {
                 label.setWrapText(true);
+            } else {
+                // 不换行时自动省略号（对标 Ant Design label ellipsis）
+                label.setTextOverrun(OverrunStyle.ELLIPSIS);
             }
+
+            // M21.x: tooltip 问号图标
+            if (item.tooltip != null && !item.tooltip.isEmpty()) {
+                HBox labelBox = new HBox();
+                labelBox.setAlignment(Pos.CENTER_LEFT);
+                labelBox.setSpacing(4);
+                HBox.setHgrow(label, Priority.ALWAYS); // label 自适应收缩，触发 ellipsis
+
+                Label helpIcon = new Label("?");
+                helpIcon.getStyleClass().add(JfxStyles.FORM_LABEL_TOOLTIP);
+                helpIcon.setAlignment(Pos.CENTER);
+                TooltipAnt.create(item.tooltip).install(helpIcon);
+
+                labelBox.getChildren().addAll(label, helpIcon);
+                return labelBox;
+            }
+
             return label;
         }
 

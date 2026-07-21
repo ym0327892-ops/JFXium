@@ -30,6 +30,7 @@ import org.openkawu.jfxium.core.token.Size;
  *   <li><b>提示文本</b>：tip("加载中...")</li>
  *   <li><b>嵌入模式</b>：content(Node) 把加载器盖在内容上</li>
  *   <li><b>全屏模式</b>：fullscreen(true) 覆盖整个场景</li>
+ *   <li><b>遮罩透明度</b>：overlayOpacity(OverlayOpacity) 控制 fullscreen/overlay 背景透明度</li>
  *   <li><b>主题色</b>：所有颜色通过 LESS 变量控制，支持主题切换</li>
  * </ul>
  *
@@ -56,11 +57,25 @@ public class SpinAnt {
         SPINNER, DOTS, BARS
     }
 
+    /**
+     * 遮罩背景透明度档位，用于 fullscreen 和 overlay 模式。
+     * <ul>
+     *   <li>{@link #NONE} — 完全透明，无遮罩背景</li>
+     *   <li>{@link #LIGHT} — 轻度半透明（~30%），内容若隐若现</li>
+     *   <li>{@link #NORMAL} — 中度半透明（~65%），默认遮罩效果</li>
+     *   <li>{@link #STRONG} — 强半透明（~85%），几乎遮挡底层内容</li>
+     * </ul>
+     */
+    public enum OverlayOpacity {
+        NONE, LIGHT, NORMAL, STRONG
+    }
+
     public static class Builder extends AbstractStyleBuilder<Builder> {
         private String tip = null;
         private Size size = Size.DEFAULT;
         private Indicator indicator = Indicator.SPINNER;
         private boolean fullscreen = false;
+        private OverlayOpacity overlayOpacity = null;
         private String delay = null;
 
         public Builder tip(String tip) {
@@ -87,6 +102,18 @@ public class SpinAnt {
             return fullscreen(true);
         }
 
+        /**
+         * 设置遮罩背景透明度（仅 fullscreen 模式生效）。
+         * <p>用法：{@code SpinAnt.create().fullscreen().overlayOpacity(OverlayOpacity.NONE).build()}</p>
+         *
+         * @param overlayOpacity 透明度档位，null 视为 {@link OverlayOpacity#NORMAL}（默认）
+         * @return this
+         */
+        public Builder overlayOpacity(OverlayOpacity overlayOpacity) {
+            this.overlayOpacity = overlayOpacity;
+            return this;
+        }
+
         public VBox build() {
             VBox spin = new VBox();
             spin.setAlignment(Pos.CENTER);
@@ -94,6 +121,14 @@ public class SpinAnt {
 
             if (fullscreen) {
                 spin.getStyleClass().add(JfxStyles.SPIN_FULLSCREEN);
+                if (overlayOpacity != null) {
+                    switch (overlayOpacity) {
+                        case NONE -> spin.getStyleClass().add(JfxStyles.SPIN_BG_NONE);
+                        case LIGHT -> spin.getStyleClass().add(JfxStyles.SPIN_BG_LIGHT);
+                        case STRONG -> spin.getStyleClass().add(JfxStyles.SPIN_BG_STRONG);
+                        // NORMAL 不加修饰类，走 .jfx-spin-fullscreen 默认值
+                    }
+                }
             }
 
             double scale = size == Size.SMALL ? 0.6 : size == Size.LARGE ? 1.4 : 1.0;
@@ -177,21 +212,25 @@ public class SpinAnt {
             bars.setAlignment(Pos.BOTTOM_CENTER);
 
             double barWidth = 4 * scale;
+            double baseHeight = 16 * scale;
+            double maxHeight = 28 * scale;
+            // 容器高度固定为 maxHeight，避免 bar 高低变化撑开 HBox 导致 tip 文字上下抖动
+            bars.setMinHeight(maxHeight);
+            bars.setPrefHeight(maxHeight);
+            bars.setMaxHeight(maxHeight);
             for (int i = 0; i < 5; i++) {
                 // 使用 Region 替代 Rectangle，通过 CSS 控制颜色
+                // min/max 不能钳死为同一值，否则 prefHeight 动画不生效（BUG: BARS 无动态效果）
                 Region bar = new Region();
-                bar.setPrefSize(barWidth, 16 * scale);
-                bar.setMaxSize(barWidth, 16 * scale);
-                bar.setMinSize(barWidth, 16 * scale);
+                bar.setMinSize(barWidth, 0);
+                bar.setPrefSize(barWidth, baseHeight);
+                bar.setMaxSize(barWidth, Region.USE_PREF_SIZE);
                 bar.getStyleClass().add(JfxStyles.SPIN_INDICATOR_BAR);
                 bar.setOpacity(0.3);
 
                 Timeline timeline = new Timeline();
                 timeline.setCycleCount(Timeline.INDEFINITE);
                 timeline.setAutoReverse(true);
-
-                double baseHeight = 16 * scale;
-                double maxHeight = 28 * scale;
 
                 KeyFrame start = new KeyFrame(Duration.millis(i * 100), new KeyValue(bar.prefHeightProperty(), baseHeight));
                 KeyFrame mid = new KeyFrame(Duration.millis(i * 100 + 300), new KeyValue(bar.prefHeightProperty(), maxHeight));
@@ -253,6 +292,29 @@ public class SpinAnt {
                 this.overlay = null;
                 throw new IllegalArgumentException("SpinAnt.overlay() target parent must be a Pane subclass");
             }
+        }
+
+        /**
+         * 设置遮罩层背景透明度。
+         * <p>用法：{@code SpinAnt.overlay(node).overlayOpacity(OverlayOpacity.NONE).show();}</p>
+         *
+         * @param opacity 透明度档位，null 视为 {@link OverlayOpacity#NORMAL}（默认）
+         * @return this
+         */
+        public Overlay overlayOpacity(OverlayOpacity opacity) {
+            if (overlay == null) return this;
+            // 先清除旧修饰类
+            overlay.getStyleClass().removeAll(
+                    JfxStyles.SPIN_BG_NONE, JfxStyles.SPIN_BG_LIGHT, JfxStyles.SPIN_BG_STRONG);
+            if (opacity != null) {
+                switch (opacity) {
+                    case NONE -> overlay.getStyleClass().add(JfxStyles.SPIN_BG_NONE);
+                    case LIGHT -> overlay.getStyleClass().add(JfxStyles.SPIN_BG_LIGHT);
+                    case STRONG -> overlay.getStyleClass().add(JfxStyles.SPIN_BG_STRONG);
+                    // NORMAL 不加修饰类，走 .jfx-spin-overlay 默认值
+                }
+            }
+            return this;
         }
 
         /** 显示默认加载器。 */

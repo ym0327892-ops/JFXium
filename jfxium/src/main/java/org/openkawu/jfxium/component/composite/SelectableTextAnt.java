@@ -3,6 +3,8 @@ package org.openkawu.jfxium.component.composite;
 import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.css.JfxStyles;
 import org.openkawu.jfxium.core.util.TextUtils;
@@ -157,10 +159,36 @@ public class SelectableTextAnt {
             if (bordered) tf.getStyleClass().add(JfxStyles.SELECTABLE_TEXT_BORDERED);
             if (focusHalo) tf.getStyleClass().add(JfxStyles.SELECTABLE_TEXT_FOCUS_HALO);
             applyTypeClass(tf.getStyleClass());
-            if (prefWidth > 0) tf.setPrefWidth(prefWidth);
+            if (prefWidth > 0) {
+                tf.setPrefWidth(prefWidth);
+            } else if (maxWidth <= 0) {
+                // 未显式指定宽度时，根据文字内容自动撑开（Label 行为）
+                // CSS 异步生效后 font 会变，text 也可能动态修改 → 监听两者动态重算
+                updatePrefWidthToContent(tf);
+                tf.fontProperty().addListener((obs, o, font) -> updatePrefWidthToContent(tf));
+                tf.textProperty().addListener((obs, o, n) -> updatePrefWidthToContent(tf));
+            }
             if (maxWidth > 0) tf.setMaxWidth(maxWidth);
             applyStyles(tf);
             return tf;
+        }
+
+        /**
+         * 按 TextField 当前文字 + 字体动态计算并设置 prefWidth，使其像 Label 一样按内容自适应。
+         * <p>用 Text 节点测量文字像素宽度。CSS 异步应用后 font 变化会触发重算，
+         * text 变化也会触发重算——消除与 Label 自动宽度的差距。</p>
+         */
+        private static void updatePrefWidthToContent(TextField tf) {
+            String content = tf.getText();
+            if (content == null || content.isEmpty()) {
+                tf.setPrefWidth(40); // 空文本给个最小宽度
+                return;
+            }
+            Text helper = new Text(content);
+            Font font = tf.getFont();
+            helper.setFont(font != null ? font : Font.getDefault());
+            // TextField 内部有 text-display 区域的左右 insets，+8px 余量补偿
+            tf.setPrefWidth(Math.ceil(helper.getLayoutBounds().getWidth()) + 8);
         }
 
         private TextArea buildTextArea() {

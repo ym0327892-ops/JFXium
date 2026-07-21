@@ -66,11 +66,9 @@ public final class JfxStyles {
     public static final String BG_TRANSPARENT = "jfx-bg-transparent";
 
     /* ============================================
-       密度修饰类（ThemeManager 运行时切换）
-       挂在 scene.getRoot() 上，全局生效。
-       LESS 端见 theme-base.less 末尾的 .root.jfx-compact 覆盖块。
+       密度：由 ThemeManager 按密度切换整套 UA 样式表实现
+       （COMPACT → theme-*-compact.css），不再使用 styleClass 修饰类。
        ============================================ */
-    public static final String DENSITY_COMPACT = "jfx-compact";
 
     /* ============================================
        通用圆角修饰 —— 任意组件可挂，LESS 端统一覆盖
@@ -230,6 +228,8 @@ public final class JfxStyles {
     public static final String FORM_LABEL_REQUIRED = "jfx-form-label-required";
     /** 自定义 required mark 时挂载（抑制 CSS ::after 默认 * 号，避免双重显示）。 */
     public static final String FORM_LABEL_REQUIRED_CUSTOM = "jfx-form-label-required-custom";
+    /** label 旁的 tooltip 问号图标。 */
+    public static final String FORM_LABEL_TOOLTIP = "jfx-form-label-tooltip";
     public static final String FORM_ITEM_WRAPPER = "jfx-form-item-wrapper";
     public static final String FORM_ITEM_BOX = "jfx-form-item-box";
     public static final String FORM_HELP_TEXT = "jfx-form-help-text";
@@ -435,6 +435,9 @@ public final class JfxStyles {
     public static final String SPIN_INDICATOR_SPINNER = "jfx-spin-indicator-spinner";
     public static final String SPIN_INDICATOR_DOT = "jfx-spin-indicator-dot";
     public static final String SPIN_INDICATOR_BAR = "jfx-spin-indicator-bar";
+    public static final String SPIN_BG_NONE = "jfx-spin-bg-none";
+    public static final String SPIN_BG_LIGHT = "jfx-spin-bg-light";
+    public static final String SPIN_BG_STRONG = "jfx-spin-bg-strong";
 
     /** TimePickerAnt 时间选择器 */
     public static final String TIME_PICKER = "jfx-time-picker";
@@ -979,6 +982,7 @@ public final class JfxStyles {
     public static final String NOTIFICATION_CONTAINER  = "jfx-notification-container";
     public static final String NOTIFICATION_CARD_HEADER  = "jfx-notification-card-header";
     public static final String NOTIFICATION_CARD_CONTENT = "jfx-notification-card-content";
+    public static final String DESKTOP_NOTIFICATION_CONTAINER = "jfx-desktop-notification-container";
     public static final String RESULT_TITLE    = "jfx-result-title";
     public static final String RESULT_SUBTITLE = "jfx-result-subtitle";
 
