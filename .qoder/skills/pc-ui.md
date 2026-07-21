@@ -392,14 +392,14 @@ Large 档（40px / 紧凑 36px）仅用于：开始 / 停止 / 部署 / 导出 /
 | 紧凑控制 | 独立 *CompactTheme 类、*Compact.less 文件 | `ThemeManager.setDensity(Density.COMPACT)` 切换 |
 | Token 覆盖 | theme-*-compact.less 覆盖所有 token | ThemeManager 注入 CSS 变量覆盖 |
 
-### 12.4 11 套主题现状
+### 12.4 主题现状
 
-当前 LESS 已编译 11 个主题 CSS：
+当前 LESS 已编译主题 CSS：
 
-- **8 套 ThemeManager 主题**：theme-light / theme-dark / theme-light-compact / theme-dark-compact / theme-mui / theme-mui-compact / theme-mui-dark / theme-mui-dark-compact
-- **3 套独立加载主题**：theme-shadcn / theme-cyberpunk / theme-custom（设计探索，非密度控制）
+- **4 套 ThemeManager 主题**：theme-light / theme-dark / theme-light-compact / theme-dark-compact
+- **2 套独立加载主题**：theme-shadcn / theme-custom（设计探索，非密度控制）
 
-新设计**不强制清理** shadcn / cyberpunk / custom 三套独立主题。
+新设计**不强制清理** shadcn / custom 两套独立主题。
 
 ---
 
@@ -451,7 +451,7 @@ Large 档（40px / 紧凑 36px）仅用于：开始 / 停止 / 部署 / 导出 /
 | `css/less/theme-mui-compact.less` | 同上 + 删 `@border-radius-xl` + `.badge-count` 字号 sm |
 | `css/less/theme-mui-dark-compact.less` | 同上 |
 | `css/less/theme-mui.less` / `theme-mui-dark.less` | 删 `@border-radius-xl` + `.badge-count` 字号 sm |
-| `css/less/theme-cyberpunk.less` / `theme-shadcn.less` | 删 `@border-radius-xl` |
+| `css/less/theme-shadcn.less` | 删 `@border-radius-xl` |
 | `css/less/components/_badge.less` | `.badge` 字号 sm |
 | `css/less/components/_badge-enhance.less` | 2 处 `font-size-xs` → sm |
 | `css/less/components/_codeblock.less` | 2 处同上 |
@@ -642,12 +642,11 @@ ThemeManager.getInstance().setDensity(ThemeDensity.COMPACT);
 ```js
 // 当前
 const themes = ['light', 'dark', 'light-compact', 'dark-compact',
-                'mui', 'mui-compact', 'mui-dark', 'mui-dark-compact',
-                'shadcn', 'cyberpunk', 'custom'];
+                'shadcn', 'custom'];
 
 // 短期保留 compact 兜底
 // 长期改为
-const themes = ['light', 'dark', 'mui', 'mui-dark', 'shadcn', 'cyberpunk', 'custom'];
+const themes = ['light', 'dark', 'shadcn', 'custom'];
 ```
 
 ---

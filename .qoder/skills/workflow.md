@@ -49,10 +49,10 @@ theme-{name}.less     → @import variables + theme-base
 
 ## 三、主题体系
 
-**11 个主题 CSS**：light, dark, light-compact, dark-compact, mui, mui-compact, mui-dark, mui-dark-compact, shadcn, cyberpunk, custom
+**6 个主题 CSS**：light, dark, light-compact, dark-compact, shadcn, custom
 
-前 8 个有 Java wrapper（`*Theme.java`），可通过 `ThemeManager.applyTheme()` 切换。
-后 3 个直接通过 `scene.getStylesheets().add(...)` 加载。
+前 4 个有 Java wrapper（`*Theme.java`：Light / Dark / Shadcn / Custom；light-compact / dark-compact 无独立 wrapper，走 `setDensity` 密度切换），可通过 `ThemeManager.applyTheme()` 切换。
+shadcn / custom 为脱管主题，通常直接通过 `scene.getStylesheets().add(...)` 加载。
 
 ### ThemeManager 状态机
 
