@@ -1,7 +1,7 @@
 # JFXium 主题系统文档
 
 > ⚠️ **文档归档说明**：本文档为 M18 早期版本，部分 API 和命名已过时：
-> - **主题数量**：当前为 **11 套**（含 shadcn / cyberpunk / custom），非本文档的 2 套
+> - **主题数量**：当前含 shadcn / custom 脱管主题，非本文档的 2 套
 > - **Theme 接口**：`ThemeType` 枚举已废弃，现为 `ThemeManager.Family`（ANT_DESIGN / MUI）+ 密度正交维度
 > - **密度系统**：§15.6 起密度从主题子类拆分，通过 `ThemeManager.setDensity(ThemeDensity)` 独立控制
 > - **CSS 类名**：本文档的 `.button.primary` 等旧命名已统一为 `jfx-` 前缀（见 `JfxStyles.java`）

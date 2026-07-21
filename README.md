@@ -14,7 +14,7 @@
 
 - **Comprehensive UI Library** — Controls, composites, overlays, layouts, and business templates
 - **Ant Design 6.x Style** — Pixel-perfect implementation of Ant Design's design language
-- **11 Built-in Theme Entries** — Light/Dark/MUI + shadcn/Cyberpunk/Custom, with compact density variants
+- **Built-in Theme Entries** — Light/Dark/MUI + shadcn/Custom, with compact density variants
 - **Builder Pattern** — Fluent API for all components: `XxxAnt.create()...build()`
 - **LESS-based Theming** — Modify one LESS file to generate your own theme
 - **i18n** — Built-in Chinese/English with `Messages.get(key)` API

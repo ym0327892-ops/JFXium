@@ -154,8 +154,7 @@ JFXium/
 │           │       ├── theme-light.less       # → @import variables.less + theme-base.less
 │           │       ├── theme-dark.less
 │           │       ├── theme-*-compact.less   # Override size tokens, then @import theme-base
-│           │       ├── theme-mui*.less        # Material Design variants
-│           │       ├── theme-shadcn.less / theme-cyberpunk.less / theme-custom.less
+│           │       ├── theme-shadcn.less / theme-custom.less
 │           │       └── components/            # 64 component-level .less files
 │           └── i18n/                # messages.properties, messages_zh_CN, messages_en
 └── jfxium-demo/                     # Showcase application (depends on jfxium)
@@ -327,7 +326,7 @@ public static final String MY_COMPONENT = "my-component";
 
 LESS source files are compiled to CSS by **jlessc** (pure Java, no Node.js required) via `groovy-maven-plugin` during the `generate-resources` phase. This runs automatically with `mvn compile` or `mvn install`.
 
-**Themes compiled (11 CSS files)**: theme-light, theme-dark, theme-light-compact, theme-dark-compact, theme-mui, theme-mui-compact, theme-mui-dark, theme-mui-dark-compact, theme-shadcn, theme-cyberpunk, theme-custom. Of these, only the first 8 have Java wrapper classes (`*Theme.java`) accessible via `ThemeManager.applyTheme(...)`. The last 3 (shadcn / cyberpunk / custom) are loaded directly via `scene.getStylesheets().add("/org/openkawu/jfxium/css/theme-xxx.css")` and are **not** part of the ThemeManager state machine.
+**Themes compiled (6 CSS files)**: theme-light, theme-dark, theme-light-compact, theme-dark-compact, theme-shadcn, theme-custom. Of these, only the first 4 have Java wrapper classes (`*Theme.java`) accessible via `ThemeManager.applyTheme(...)` — the compact variants are density overrides applied via `setDensity(ThemeDensity)`. The last 2 (shadcn / custom) are loaded directly via `scene.getStylesheets().add("/org/openkawu/jfxium/css/theme-xxx.css")` and are **not** part of the ThemeManager state machine.
 
 **⚠️ Build pitfall (BUG #64)**: If changes to `.less` files don't appear in compiled CSS, suspect the groovy-maven-plugin "fake success" issue — logs say "compiled successfully" but `Files.writeString` / Groovy `File.text` silently fail to write. Verify by adding a marker string to a CSS output file, re-running `mvn generate-resources -pl jfxium`, and checking if the marker was overwritten.
 
@@ -391,7 +390,7 @@ ThemeManager.getInstance().registerScene(scene);  // Watch for future theme chan
 ThemeManager.getInstance().setPrimaryColor("#ff5722");
 ```
 
-ThemeManager maintains a three-axis state machine: **Family** (Ant/MUI) × **dark** (boolean) × **compact** (boolean). The `ThemeManager.Family` enum exposes only `ANT_DESIGN` and `MUI` (note: `ANT_DESIGN` is a legacy enum name from the project's origin — the project no longer references Ant Design Web; the enum may be renamed to `DEFAULT` or `STANDARD` in a future release); the eight concrete `*Theme` classes are the 2×2×2 cartesian product of these three axes. Shadcn / Cyberpunk / Custom themes (no dark/compact variants) are intentionally excluded from this state machine — load them via `scene.getStylesheets().add("/org/openkawu/jfxium/css/theme-xxx.css")` instead. Theme switching re-applies the accent color automatically (BUG #62 fix).
+ThemeManager maintains a two-axis state machine: **dark** (boolean) × **compact** (boolean). The `ThemeManager.Family` enum retains only `ANT_DESIGN` (a legacy enum name from the project's origin — the project no longer references Ant Design Web; the enum may be removed in a future release); the two concrete `*Theme` classes (`LightTheme` / `DarkTheme`) are the light/dark axis. Density (compact) is orthogonal — controlled via `setDensity(ThemeDensity)` independently of theme selection. Shadcn / Custom themes (no dark/compact variants) are intentionally excluded from this state machine — load them via `scene.getStylesheets().add("/org/openkawu/jfxium/css/theme-xxx.css")` instead. Theme switching re-applies the accent color automatically (BUG #62 fix).
 
 ---
 

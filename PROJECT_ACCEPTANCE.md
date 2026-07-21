@@ -18,7 +18,7 @@
 
 ## 1. 全局主题切换（每套都扫一遍核心页）
 
-> 顶栏点「亮/暗」切明暗、「紧凑」切密度。共 11 套：light / dark / light-compact / dark-compact / mui / mui-dark / mui-compact / mui-dark-compact / shadcn / cyberpunk / custom。
+> 顶栏点「亮/暗」切明暗、「紧凑」切密度。共 6 套：light / dark / light-compact / dark-compact / shadcn / custom。
 
 - [ ] 切换每套主题，组件颜色整体跟随，无「写死的颜色」突兀残留
 - [ ] 暗色系下文字 / 边框 / 选中态对比度安全（看得清）
@@ -90,7 +90,7 @@
 |---|---|
 | 编译 / 代码层 | ✅ 已通过（自动实测，jfxium + jfxium-demo 双零报错） |
 | 测试矩阵（M20 + M21 新增） | ✅ 已通过（**796 用例 / 0 失败**，@M20.1 BorderRadiusTest 28 + 3 组件单测骨架 + @M21.1 FormAnt.Builder 66 + @M21.2 bindValue 4 控件系列测试） |
-| 主题切换（11 套） | ⏳ 待勾 |
+| 主题切换（6 套） | ⏳ 待勾 |
 | 重点回归页（#41–#72） | ⏳ 待勾 |
 | 逐分类浏览（72 页） | ⏳ 待勾 |
 
@@ -135,7 +135,7 @@
 ### 5.5 M21 总体验证
 
 - [ ] `./mvnw test -pl jfxium` 全量 796 用例 0 失败、BUILD SUCCESS
-- [ ] `./mvnw install -pl jfxium -DskipTests -q` 主框架打包 + LESS 编译（含 11 套主题）正常
+- [ ] `./mvnw install -pl jfxium -DskipTests -q` 主框架打包 + LESS 编译（含 6 套主题）正常
 - [ ] jfxium-demo `./mvnw javafx:run` 启动正常，无新增启动异常
 
 ---
