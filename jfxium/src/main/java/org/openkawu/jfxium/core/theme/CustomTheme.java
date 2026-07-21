@@ -7,7 +7,7 @@ import java.util.Objects;
  *
  * <p>该主题属于「脱管主题」,<strong>不在</strong> {@link ThemeManager} 的
  * Family × dark × density 状态机内(没有 dark/compact 派生变体),仅作为对外
- * 完整 {@link Theme} API 入口存在,使 11 套主题可统一通过 {@link Theme} 抽象
+ * 完整 {@link Theme} API 入口存在,使全部主题可统一通过 {@link Theme} 抽象
  * 操作。</p>
  *
  * <p>典型用法:</p>

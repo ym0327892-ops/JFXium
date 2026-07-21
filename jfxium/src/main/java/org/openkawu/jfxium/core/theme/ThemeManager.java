@@ -1,10 +1,8 @@
 package org.openkawu.jfxium.core.theme;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
-import org.openkawu.jfxium.core.css.JfxStyles;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -18,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * <p>核心能力：</p>
  * <ul>
- *   <li>二维主题切换：家族（Ant/MUI）× 明暗（light/dark）× 密度（default/compact）</li>
+ *   <li>明暗切换（light/dark）× 密度（default/compact）</li>
  *   <li>运行时动态改主色（accent color），支持预设色板或任意 hex 颜色</li>
  *   <li>Scene / Region 注册机制 —— 主题切换时自动刷新所有已注册节点</li>
  * </ul>
@@ -32,8 +30,6 @@ public class ThemeManager {
     // 四个 Theme 实现均为无状态，缓存为单例避免反复 new
     private static final Theme LIGHT_THEME = new LightTheme();
     private static final Theme DARK_THEME = new DarkTheme();
-    private static final Theme MUI_LIGHT_THEME = new MuiLightTheme();
-    private static final Theme MUI_DARK_THEME = new MuiDarkTheme();
 
     private Theme currentTheme;
     private ThemeColor currentThemeColor;
@@ -41,10 +37,9 @@ public class ThemeManager {
     private final List<Scene> registeredScenes = new ArrayList<>();
     private final List<Region> registeredRegions = new ArrayList<>();
 
-    /** 主题家族（设计风格）。 */
+    /** 主题家族（设计风格）。当前仅 Ant Design 一种。 */
     public enum Family {
-        ANT_DESIGN("Ant Design"),
-        MUI("MUI");
+        ANT_DESIGN("Ant Design");
 
         private final String displayName;
         Family(String displayName) { this.displayName = displayName; }
@@ -96,10 +91,8 @@ public class ThemeManager {
     public void registerScene(Scene scene) {
         if (!registeredScenes.contains(scene)) {
             registeredScenes.add(scene);
-            // 立即为新 Scene 注入当前 accent 色和密度状态，
-            // 确保无论注册时序，新 Scene 都能拿到当前主题的全部状态。
+            // 立即为新 Scene 注入当前 accent 色。密度已随全局 UA 样式表生效，无需单独处理。
             applyAccentToScene(scene);
-            applyDensityToScene(scene);
         }
     }
 
@@ -112,18 +105,16 @@ public class ThemeManager {
 
     /**
      * 全局应用主题 —— 调用 {@link javafx.application.Application#setUserAgentStylesheet(String)}。
-     * <p>切换主题后会自动重新应用当前主题色（accent），避免「换风格 / 换明暗后主题色丢失」。</p>
+     * <p>按当前密度选择样式表：{@link ThemeDensity#COMPACT} 时取主题的紧凑变体
+     * （{@code theme-*-compact.css}），否则取默认变体。切换后自动重新应用主题色（accent），
+     * 避免「换风格 / 换明暗 / 换密度后主题色丢失」。</p>
      */
     public void applyTheme(Theme theme) {
         this.currentTheme = theme;
-        Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
+        Application.setUserAgentStylesheet(theme.getUserAgentStylesheet(density));
         // 关键：userAgentStylesheet 重置后，之前 inline 注入的 accent 色阶会被覆盖，
         // 必须重新应用一次，否则切风格 / 切明暗后主题色回退到 CSS 默认蓝。
         applyPrimaryColorToAll();
-        // 密度同掉重应用：jfx-compact styleClass 在 scene.getRoot() 上，UA CSS 重置不影响
-        // styleClass 列表，但 applyTheme() 后再走一次保证状态唯一源仍是 ThemeManager。
-        // DEFAULT 状态等价于「移除 jfx-compact」，幂等 no-op。
-        applyDensityToAll();
     }
 
     // ============================================================
@@ -132,13 +123,10 @@ public class ThemeManager {
 
     /**
      * 根据当前 family × dark 二维状态组合出具体 Theme 并应用。
-     * 4 个 Theme 类 = 2 家族(Ant/MUI) × 2 明暗。密度不再参与主题类选择（见 §15.3）。
+     * 2 个 Theme 类 = 明(light) / 暗(dark)。密度不再参与主题类选择（见 §15.3）。
      */
     private void applyComposite() {
-        Theme theme = switch (currentFamily) {
-            case ANT_DESIGN -> dark ? DARK_THEME : LIGHT_THEME;
-            case MUI        -> dark ? MUI_DARK_THEME : MUI_LIGHT_THEME;
-        };
+        Theme theme = dark ? DARK_THEME : LIGHT_THEME;
         applyTheme(theme);
     }
 
@@ -159,15 +147,17 @@ public class ThemeManager {
     }
 
     /**
-     * 切换密度（PC UI 规范 §12.2 / §15.3）。
-     * 保持家族 / 明暗 / 主题色不变；密度通过 CSS 变量注入而非独立主题类实现。
+     * 切换密度（PC UI 规范 §12.2）。
+     * 保持家族 / 明暗 / 主题色不变；通过重新应用当前主题的密度对应样式表实现
+     * （{@link ThemeDensity#COMPACT} → {@code theme-*-compact.css}）。
      *
      * @param density {@link ThemeDensity#DEFAULT} 或 {@link ThemeDensity#COMPACT}；null 忽略
      */
     public void setDensity(ThemeDensity density) {
         if (density == null || density == this.density) return;
         this.density = density;
-        applyDensityToAll();
+        // 重新应用当前主题：applyTheme 会按新密度挑选整套 UA 样式表。
+        applyTheme(currentTheme);
         notifyListeners();
     }
 
@@ -268,39 +258,6 @@ public class ThemeManager {
     /** 状态变更监听器列表（线程安全）。 */
     private final List<Runnable> listeners = new CopyOnWriteArrayList<>();
 
-    /**
-     * 将当前 density 应用到所有已注册的 Scene（PC UI 规范 §12.2 / §15.3 实施）。
-     *
-     * <p>与 P2 初版不同：不再用 data-URI 注入 CSS 变量。
-     * LESS 用的是编译期变量（{@code @control-height}），运行时注入 JavaFX looked-up color
-     * （{@code -control-height}）不会被任何规则读取，注入等于 no-op（见 PROJECT_BUG.md #68 根因）。</p>
-     *
-     * <p>新方案：直接在 scene.getRoot() 上挂/卸 {@code jfx-compact} 修饰类。
-     * LESS 端在 theme-base.less 末尾提供 {@code .root.jfx-compact { ... }} 覆盖块，
-     * 用字面量 px 值覆盖控件高 / 行高 / padding，比运行时 looked-up color 链路短、稳。</p>
-     *
-     * <p>幂等性：</p>
-     * <ul>
-     *   <li>DEFAULT → 从 root 卸 jfx-compact，CSS 走 LESS 默认值</li>
-     *   <li>COMPACT → 在 root 挂 jfx-compact，CSS 走 .root.jfx-compact 覆盖</li>
-     *   <li>applyTheme() 后调用是 no-op（UA CSS 重置不碰 root 的 styleClass 列表）</li>
-     * </ul>
-     */
-    private void applyDensityToAll() {
-        boolean compact = density == ThemeDensity.COMPACT;
-        for (Scene scene : registeredScenes) {
-            if (scene.getRoot() == null) continue;
-            ObservableList<String> classes = scene.getRoot().getStyleClass();
-            if (compact) {
-                if (!classes.contains(JfxStyles.DENSITY_COMPACT)) {
-                    classes.add(JfxStyles.DENSITY_COMPACT);
-                }
-            } else {
-                classes.remove(JfxStyles.DENSITY_COMPACT);
-            }
-        }
-    }
-
     /** 将当前 accent data-URI 注入单个 Scene（用于 registerScene 即时补齐）。 */
     private void applyAccentToScene(Scene scene) {
         if (accentStylesheet != null) {
@@ -309,31 +266,16 @@ public class ThemeManager {
         }
     }
 
-    /** 将当前密度应用到单个 Scene（用于 registerScene 即时补齐）。 */
-    private void applyDensityToScene(Scene scene) {
-        if (scene.getRoot() == null) return;
-        boolean compact = density == ThemeDensity.COMPACT;
-        ObservableList<String> classes = scene.getRoot().getStyleClass();
-        if (compact) {
-            if (!classes.contains(JfxStyles.DENSITY_COMPACT)) {
-                classes.add(JfxStyles.DENSITY_COMPACT);
-            }
-        } else {
-            classes.remove(JfxStyles.DENSITY_COMPACT);
-        }
-    }
-
     // ============================================================
     // 公共 API：refresh / 监听器
     // ============================================================
 
     /**
-     * 对已注册的 Scene 重应用当前 accent 色和密度（不重设 UA CSS）。
+     * 对已注册的 Scene 重应用当前主题（含密度）和 accent 色。
      * 适用于外部修改了 scene 的 stylesheets 后需要恢复主题状态的场景。
      */
     public void refresh() {
-        applyPrimaryColorToAll();
-        applyDensityToAll();
+        applyTheme(currentTheme);
     }
 
     /**
@@ -361,24 +303,6 @@ public class ThemeManager {
     /** 切换亮色 / 暗色主题（保持家族 / 密度 / 主题色不变）。 */
     public void toggleTheme() {
         setDark(!dark);
-    }
-
-    /** 切换到 MUI 亮色主题家族。 */
-    public void switchToMui() {
-        if (currentFamily == Family.MUI && !dark) return;
-        this.currentFamily = Family.MUI;
-        this.dark = false;
-        applyComposite();
-        notifyListeners();
-    }
-
-    /** 切换到 MUI 暗色主题家族。 */
-    public void switchToMuiDark() {
-        if (currentFamily == Family.MUI && dark) return;
-        this.currentFamily = Family.MUI;
-        this.dark = true;
-        applyComposite();
-        notifyListeners();
     }
 
     /** 获取当前主题家族名称。 */

@@ -21,6 +21,14 @@ public class DarkTheme implements Theme {
     }
 
     @Override
+    public String getUserAgentStylesheet(ThemeDensity density) {
+        String css = density == ThemeDensity.COMPACT
+            ? "/org/openkawu/jfxium/css/theme-dark-compact.css"
+            : "/org/openkawu/jfxium/css/theme-dark.css";
+        return Objects.requireNonNull(getClass().getResource(css)).toExternalForm();
+    }
+
+    @Override
     public ThemeType getType() {
         return ThemeType.DARK;
     }
