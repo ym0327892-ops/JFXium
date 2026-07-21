@@ -51,7 +51,7 @@ class WorkspaceSettingsTemplateTest extends JfxTestBase {
             assertNotNull(root);
             assertEquals(5, root.getChildren().size(), "标题 + 4 个设置分组");
 
-            ComboBox<?> familySelect = findComboBox(root, 2);
+            ComboBox<?> familySelect = findComboBox(root, ThemeManager.Family.values().length);
             assertNotNull(familySelect);
             assertEquals(ThemeManager.Family.ANT_DESIGN, familySelect.getValue());
 
