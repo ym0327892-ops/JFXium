@@ -8,6 +8,9 @@ import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.composite.MenuAnt;
+import org.openkawu.jfxium.component.composite.SegmentedAnt;
+import org.openkawu.jfxium.core.theme.ThemeDensity;
+import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.component.layout.BorderPaneAnt;
 import org.openkawu.jfxium.component.layout.ScrollPaneAnt;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
@@ -72,11 +75,22 @@ public class MainView {
                 .onClick(e -> openSettingsDrawer(contentHost))
                 .build();
 
+        // 顶栏密度开关：默认 / 紧凑。切换时由 ThemeManager 整套切换 UA 样式表（§15.3 P3）。
+        ThemeManager themeManager = ThemeManager.getInstance();
+        Node densityToggle = SegmentedAnt.create()
+                .size(Size.SMALL)
+                .option("default", "默认")
+                .option("compact", "紧凑")
+                .selected(themeManager.getDensity() == ThemeDensity.COMPACT ? "compact" : "default")
+                .onChange(val -> themeManager.setDensity(
+                        "compact".equals(val) ? ThemeDensity.COMPACT : ThemeDensity.DEFAULT))
+                .build();
+
         workspaceResult = ProjectConsoleTemplate.create()
                 .brand(UiExampleConstants.APP_TITLE, "工程壳展示")
                 .brandIcon(IconAnt.Path.DASHBOARD)
                 .menuBar(ProjectConsoleTemplate.standardMenuBar(this::handleMenuAction))
-                .headerRight(settingsBtn)
+                .headerRight(densityToggle, settingsBtn)
                 .userMenu(currentUser, this::handleUserMenuAction)
                 .sider(buildSider(), UiExampleConstants.MAIN_SIDER_WIDTH)
                 .content(contentScroll)
