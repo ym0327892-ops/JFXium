@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.openkawu</groupId>
         <artifactId>jfxium-parent</artifactId>
-        <version>1.10.0-RC1</version>
+        <version>1.20.1</version>
 
     </parent>
 
@@ -113,8 +113,7 @@
 
                                 def themes = [
                                         'theme-light', 'theme-dark',
-                                        'theme-mui', 'theme-mui-compact', 'theme-mui-dark', 'theme-mui-dark-compact',
-                                        'theme-shadcn', 'theme-cyberpunk', 'theme-custom',
+                                        'theme-shadcn', 'theme-custom',
                                         'theme-light-compact', 'theme-dark-compact'
                                 ]
 
@@ -143,24 +142,28 @@
                                 }
                                 log.info('All ' + themes.size() + ' themes compiled successfully (jlessc, no Node.js required)')
 
-                                // === jlessc 1.16 嵌套 @-token bug 校验 ===
-                                // 已知问题：jlessc 1.16（最新版）在 .root.jfx-compact { ... } 嵌套块内
-                                // 对 @-token 变量解析输出错位值，因此紧凑块内使用字面量 px 绕行。
-                                // 源码见 theme-base.less 第 119-127 行注释。
-                                // 后续若升级 LESS 编译器（jlessc → less4j），可移除本校验。
-                                ['theme-light-compact', 'theme-dark-compact',
-                                 'theme-mui-compact', 'theme-mui-dark-compact'].each { name -&gt;
+                                // === 紧凑主题完整性校验（§15.3 P3：整套 UA 样式表切换）===
+                                // 紧凑主题不再走运行时 .root.jfx-compact 局部覆盖块，而是各自
+                                // import theme-base 生成「一整套」按 compact token 重算的组件样式。
+                                // 校验点：
+                                //   1) 必须包含核心组件选择器（.button），证明 theme-base 已被完整 import，
+                                //      区别于旧「仅约 10 个组件」的半成品覆盖块；
+                                //   2) 不得再出现 .root.jfx-compact 死块，证明已彻底迁移。
+                                ['theme-light-compact', 'theme-dark-compact'].each { name -&gt;
                                     def compactOutput = new File(cssDir, name + '.css')
                                     if (compactOutput.exists()) {
                                         def text = compactOutput.text
-                                        if (!text.contains('.root.jfx-compact')) {
+                                        if (!text.contains('.button')) {
                                             throw new RuntimeException(
-                                                'jlessc BUG: ' + name + '.css 缺少 .root.jfx-compact 块。\n' +
-                                                '这可能是 jlessc 1.16 嵌套 @-token 解析 bug 的新表现。\n' +
-                                                '请检查 theme-base.less 中 .root.jfx-compact 的内容。\n' +
-                                                '升级路线：jlessc → less4j（见 BUG #87）。')
+                                                name + '.css 缺少核心组件样式(.button)——'
+                                                + 'theme-base 可能未被完整 import，紧凑主题不是「整套」样式表。')
                                         }
-                                        log.info('Compact marker verified in ' + name + '.css')
+                                        if (text.contains('.root.jfx-compact')) {
+                                            throw new RuntimeException(
+                                                name + '.css 仍含 .root.jfx-compact 死块——'
+                                                + '密度机制已改为整套 UA 样式表切换，该运行时覆盖块应删除。')
+                                        }
+                                        log.info('Compact theme integrity verified in ' + name + '.css')
                                     }
                                 }
                             </source>

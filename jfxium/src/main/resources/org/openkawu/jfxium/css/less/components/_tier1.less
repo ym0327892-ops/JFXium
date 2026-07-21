@@ -79,15 +79,29 @@
   -fx-background-color: transparent;
 }
 
-/* fullscreen 模式：半透明白色背景遮罩 */
+/* fullscreen 模式：半透明背景遮罩（主题感知：Light=白底 / Dark=黑底） */
 .jfx-spin.jfx-spin-fullscreen {
-  -fx-background-color: rgba(255, 255, 255, 0.7);
+  -fx-background-color: @color-spin-overlay-normal;
 }
 
 /* overlay 挂载模式：遮罩层盖在内容上 */
 .jfx-spin-overlay {
-  -fx-background-color: rgba(255, 255, 255, 0.65);
+  -fx-background-color: @color-spin-overlay-normal;
   -fx-alignment: center;
+}
+
+/* 背景透明度修饰类（同时适用于 fullscreen 和 overlay 模式） */
+.jfx-spin.jfx-spin-bg-none,
+.jfx-spin-overlay.jfx-spin-bg-none {
+  -fx-background-color: transparent;
+}
+.jfx-spin.jfx-spin-bg-light,
+.jfx-spin-overlay.jfx-spin-bg-light {
+  -fx-background-color: @color-spin-overlay-light;
+}
+.jfx-spin.jfx-spin-bg-strong,
+.jfx-spin-overlay.jfx-spin-bg-strong {
+  -fx-background-color: @color-spin-overlay-strong;
 }
 
 .jfx-spin-tip {

@@ -21,9 +21,9 @@
 // --------------------------------------------
 // Spacing（对齐 compact size 阶梯）
 // M19.45 修正：原 xs=4/sm=8 与默认值相同 → 走 @spacing-sm 的组件（Table cell / Menu /
-//   Tab / List / Tree / Tooltip / Form 等）紧凑模式根本没收紧。现对齐 mui-compact 真正收窄。
-@spacing-xs: 2px;   // 4 → 2（与 mui-compact 对齐）
-@spacing-sm: 6px;   // 8 → 6（与 mui-compact 对齐，让走 spacing-sm 的组件真紧凑）
+//   Tab / List / Tree / Tooltip / Form 等）紧凑模式根本没收紧。现真正收窄。
+@spacing-xs: 2px;   // 4 → 2（紧凑）
+@spacing-sm: 6px;   // 8 → 6（让走 spacing-sm 的组件真紧凑）
 @spacing-md: 8px;   // size = 8（紧凑下 md 收到 8）
 @spacing-lg: 12px;  // 介于 size(8) 与 sizeLG(16)，admin 实战取 12 更平衡
 @spacing-xl: 16px;  // sizeLG = 16

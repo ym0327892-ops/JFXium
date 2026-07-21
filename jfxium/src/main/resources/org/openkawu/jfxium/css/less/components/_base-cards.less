@@ -67,6 +67,16 @@
 .jfx-notification-card-header { -fx-spacing: @spacing-md; }
 .jfx-notification-card-content { -fx-spacing: @spacing-xs; }
 
+/* Desktop Notification —— 透明 Stage 内的堆叠容器。
+   -fx-background-color: transparent 必须显式覆盖 modena 给 Scene 根节点隐式添加的
+   .root 灰底(否则透明 Stage 里会出现一块不透明灰色面板)。
+   -fx-padding 给卡片 dropshadow 留渲染空间,否则阴影被 Stage 边界裁剪。 */
+.jfx-desktop-notification-container {
+  -fx-background-color: transparent;
+  -fx-spacing: @spacing-sm;
+  -fx-padding: 12px;
+}
+
 /* Result */
 .jfx-result-title    { -fx-font-size: 24px; -fx-font-weight: 600; -fx-text-fill: -color-fg-default; }
 .jfx-result-subtitle { -fx-font-size: 14px; -fx-text-fill: -color-fg-muted; }

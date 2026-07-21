@@ -3558,14 +3558,27 @@
 .jfx-spin {
   -fx-background-color: transparent;
 }
-/* fullscreen 模式：半透明白色背景遮罩 */
+/* fullscreen 模式：半透明背景遮罩（主题感知：Light=白底 / Dark=黑底） */
 .jfx-spin.jfx-spin-fullscreen {
-  -fx-background-color: rgba(255, 255, 255, 0.7);
+  -fx-background-color: rgba(255, 255, 255, 0.65);
 }
 /* overlay 挂载模式：遮罩层盖在内容上 */
 .jfx-spin-overlay {
   -fx-background-color: rgba(255, 255, 255, 0.65);
   -fx-alignment: center;
+}
+/* 背景透明度修饰类（同时适用于 fullscreen 和 overlay 模式） */
+.jfx-spin.jfx-spin-bg-none,
+.jfx-spin-overlay.jfx-spin-bg-none {
+  -fx-background-color: transparent;
+}
+.jfx-spin.jfx-spin-bg-light,
+.jfx-spin-overlay.jfx-spin-bg-light {
+  -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+.jfx-spin.jfx-spin-bg-strong,
+.jfx-spin-overlay.jfx-spin-bg-strong {
+  -fx-background-color: rgba(255, 255, 255, 0.85);
 }
 .jfx-spin-tip {
   -fx-font-size: 14px;
@@ -4970,6 +4983,22 @@
 .jfx-form-label-required-custom::after {
   -fx-content: "";
 }
+/* Label tooltip 问号图标（14×14 圆形 + 细边框） */
+.jfx-form-label-tooltip {
+  -fx-min-width: 14px;
+  -fx-min-height: 14px;
+  -fx-pref-width: 14px;
+  -fx-pref-height: 14px;
+  -fx-max-width: 14px;
+  -fx-max-height: 14px;
+  -fx-background-radius: 7px;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-style: solid;
+  -fx-text-fill: -color-fg-subtle;
+  -fx-font-size: 10px;
+  -fx-padding: 0;
+}
 /* Help text */
 .jfx-form-help-text {
   -fx-text-fill: -color-fg-subtle;
@@ -5844,6 +5873,15 @@
 }
 .jfx-notification-card-content {
   -fx-spacing: 4px;
+}
+/* Desktop Notification —— 透明 Stage 内的堆叠容器。
+   -fx-background-color: transparent 必须显式覆盖 modena 给 Scene 根节点隐式添加的
+   .root 灰底(否则透明 Stage 里会出现一块不透明灰色面板)。
+   -fx-padding 给卡片 dropshadow 留渲染空间,否则阴影被 Stage 边界裁剪。 */
+.jfx-desktop-notification-container {
+  -fx-background-color: transparent;
+  -fx-spacing: 8px;
+  -fx-padding: 12px;
 }
 /* Result */
 .jfx-result-title {
@@ -6894,148 +6932,6 @@
 }
 .jfx-icon-muted {
   -fx-fill: -color-fg-muted;
-}
-.root.jfx-compact .button {
-  -fx-padding: 5px 11px;
-  -fx-min-height: 28px;
-}
-.root.jfx-compact .button.small {
-  -fx-padding: 1px 7px;
-  -fx-min-height: 24px;
-}
-.root.jfx-compact .button.large {
-  -fx-padding: 7px 11px;
-  -fx-min-height: 36px;
-}
-.root.jfx-compact .text-field,
-.root.jfx-compact .password-field,
-.root.jfx-compact .text-area,
-.root.jfx-compact .combo-box,
-.root.jfx-compact .choice-box,
-.root.jfx-compact .spinner,
-.root.jfx-compact .date-picker,
-.root.jfx-compact .menu-button {
-  -fx-padding: 5px 8px;
-}
-.root.jfx-compact .text-field.small,
-.root.jfx-compact .password-field.small,
-.root.jfx-compact .combo-box.small,
-.root.jfx-compact .choice-box.small,
-.root.jfx-compact .spinner.small,
-.root.jfx-compact .date-picker.small,
-.root.jfx-compact .menu-button.small {
-  -fx-padding: 1px 7px;
-}
-.root.jfx-compact .text-field.large,
-.root.jfx-compact .password-field.large,
-.root.jfx-compact .combo-box.large,
-.root.jfx-compact .choice-box.large,
-.root.jfx-compact .spinner.large,
-.root.jfx-compact .date-picker.large,
-.root.jfx-compact .menu-button.large {
-  -fx-padding: 7px 8px;
-}
-.root.jfx-compact .table-view .column-header-background,
-.root.jfx-compact .tree-table-view .column-header-background {
-  -fx-pref-height: 28px;
-}
-.root.jfx-compact .table-view .column-header,
-.root.jfx-compact .tree-table-view .column-header {
-  -fx-padding: 2px 8px;
-}
-.root.jfx-compact .table-view .table-row-cell,
-.root.jfx-compact .tree-table-view .table-row-cell,
-.root.jfx-compact .table-view .tree-table-row-cell,
-.root.jfx-compact .tree-table-view .tree-table-row-cell {
-  -fx-min-height: 28px;
-}
-.root.jfx-compact .table-view .table-cell,
-.root.jfx-compact .tree-table-view .table-cell,
-.root.jfx-compact .table-view .tree-table-cell,
-.root.jfx-compact .tree-table-view .tree-table-cell {
-  -fx-padding: 2px 8px;
-  -fx-font-size: 13px;
-}
-.root.jfx-compact .table-view.jfx-table-small .column-header-background,
-.root.jfx-compact .tree-table-view.jfx-table-small .column-header-background {
-  -fx-pref-height: 28px;
-}
-.root.jfx-compact .table-view.jfx-table-small .table-row-cell,
-.root.jfx-compact .tree-table-view.jfx-table-small .table-row-cell,
-.root.jfx-compact .table-view.jfx-table-small .tree-table-row-cell,
-.root.jfx-compact .tree-table-view.jfx-table-small .tree-table-row-cell {
-  -fx-min-height: 28px;
-}
-.root.jfx-compact .table-view.jfx-table-small .table-cell,
-.root.jfx-compact .tree-table-view.jfx-table-small .table-cell,
-.root.jfx-compact .table-view.jfx-table-small .tree-table-cell,
-.root.jfx-compact .tree-table-view.jfx-table-small .tree-table-cell {
-  -fx-padding: 2px 8px;
-}
-.root.jfx-compact .table-view.jfx-table-large .column-header-background,
-.root.jfx-compact .tree-table-view.jfx-table-large .column-header-background {
-  -fx-pref-height: 28px;
-}
-.root.jfx-compact .table-view.jfx-table-large .table-row-cell,
-.root.jfx-compact .tree-table-view.jfx-table-large .table-row-cell,
-.root.jfx-compact .table-view.jfx-table-large .tree-table-row-cell,
-.root.jfx-compact .tree-table-view.jfx-table-large .tree-table-row-cell {
-  -fx-min-height: 28px;
-}
-.root.jfx-compact .table-view.jfx-table-large .table-cell,
-.root.jfx-compact .tree-table-view.jfx-table-large .table-cell,
-.root.jfx-compact .table-view.jfx-table-large .tree-table-cell,
-.root.jfx-compact .tree-table-view.jfx-table-large .tree-table-cell {
-  -fx-padding: 2px 8px;
-}
-.root.jfx-compact .menu-item {
-  -fx-padding: 5px 12px;
-}
-.root.jfx-compact .jfx-menu-item,
-.root.jfx-compact .jfx-menu-submenu-header,
-.root.jfx-compact .jfx-menu-group {
-  -fx-padding: 5px 12px 5px 0;
-  -fx-min-height: 28px;
-}
-.root.jfx-compact .jfx-menu-divider {
-  -fx-padding: 3px 12px 3px 12px;
-  -fx-min-height: 7px;
-}
-.root.jfx-compact .jfx-menu-submenu-body {
-  -fx-padding: 2px 0 2px 2px;
-}
-.root.jfx-compact .menu-bar {
-  -fx-padding: 2px 4px;
-}
-.root.jfx-compact .context-menu {
-  -fx-padding: 2px 0;
-}
-.root.jfx-compact .list-view .list-cell {
-  -fx-padding: 4px 8px;
-}
-.root.jfx-compact .list-view .list-cell:filled {
-  -fx-padding: 4px 8px;
-}
-.root.jfx-compact .tab-header-area {
-  -fx-padding: 0 8px;
-}
-.root.jfx-compact .tab .tab-label {
-  -fx-padding: 2px 8px;
-}
-.root.jfx-compact .progress-bar {
-  -fx-min-height: 6px;
-}
-.root.jfx-compact .progress-indicator {
-  -fx-min-height: 6px;
-}
-.root.jfx-compact .form-item {
-  -fx-spacing: 6px;
-}
-.root.jfx-compact .group-box > .content {
-  -fx-padding: 8px;
-}
-.root.jfx-compact .combo-box-popup .list-view .list-cell {
-  -fx-padding: 4px 8px;
 }
 /* ============================================
    通用圆角修饰 —— 任意组件可挂
