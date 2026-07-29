@@ -2,7 +2,10 @@ package org.openkawu.jfxium.component.composite;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
@@ -130,5 +133,60 @@ class SwitchAntTest extends JfxTestBase {
                 .padding(8)
                 .build();
         assertNotNull(sw);
+    }
+
+    // ---------- 物理点击防抖 ----------
+
+    @Test
+    @DisplayName("物理点击防抖：极短间隔内的重复点击只翻转一次")
+    void debounce_rapidClicksToggleOnce() {
+        int[] count = {0};
+        HBox sw = SwitchAnt.create().onChange(b -> count[0]++).build();
+        StackPane switchPane = (StackPane) sw.getChildren().get(0);
+
+        // 同一 FX 事件回合内连点两次，必落在 100ms 防抖窗口内 → 只应生效一次
+        runOnFxThreadAndWait(() -> {
+            fireClick(switchPane);
+            fireClick(switchPane);
+        });
+        assertEquals(1, count[0], "极短间隔内的第二次点击应被防抖忽略");
+    }
+
+    @Test
+    @DisplayName("物理点击防抖：超过防抖窗口后可再次翻转")
+    void debounce_afterWindowTogglesAgain() throws InterruptedException {
+        int[] count = {0};
+        HBox sw = SwitchAnt.create().onChange(b -> count[0]++).build();
+        StackPane switchPane = (StackPane) sw.getChildren().get(0);
+
+        runOnFxThreadAndWait(() -> fireClick(switchPane));
+        Thread.sleep(150); // 超过 100ms 防抖窗口
+        runOnFxThreadAndWait(() -> fireClick(switchPane));
+        assertEquals(2, count[0], "超过防抖窗口后第二次点击应生效");
+    }
+
+    @Test
+    @DisplayName("防抖不影响 bindValue：程序化改值不受窗口限制")
+    void debounce_doesNotAffectBinding() {
+        BooleanProperty prop = new SimpleBooleanProperty(false);
+        int[] count = {0};
+        HBox sw = SwitchAnt.create().bindValue(prop).onChange(b -> count[0]++).build();
+        assertNotNull(sw);
+
+        // 连续程序化翻转不走物理点击防抖路径，应逐次生效
+        runOnFxThreadAndWait(() -> {
+            prop.set(true);
+            prop.set(false);
+        });
+        assertEquals(2, count[0], "程序化改值不应被物理点击防抖拦截");
+    }
+
+    /** 向节点派发一次合成的 MOUSE_CLICKED 事件，模拟物理点击。 */
+    private static void fireClick(javafx.scene.Node node) {
+        node.fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED,
+                0, 0, 0, 0, MouseButton.PRIMARY, 1,
+                false, false, false, false,
+                true, false, false,
+                false, false, false, null));
     }
 }

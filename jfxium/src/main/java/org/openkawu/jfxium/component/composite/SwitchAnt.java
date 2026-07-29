@@ -46,6 +46,14 @@ import java.util.function.Consumer;
  */
 public class SwitchAnt {
 
+    /**
+     * 物理点击防抖窗口（毫秒）——忽略极短间隔内的重复翻转，抵御鼠标/触控的机械抖动与误触双击。
+     * 取 100ms：远大于机械抖动（通常几毫秒），又远小于人有意的连续切换间隔，
+     * 因此正常使用无感知。防抖仅作用于物理点击路径，不影响 {@code bindValue} /
+     * 程序化 {@code valueProperty.set} 的状态同步。
+     */
+    private static final long TOGGLE_DEBOUNCE_NANOS = 100L * 1_000_000L;
+
     public static Builder create() {
         return new Builder();
     }
@@ -177,10 +185,21 @@ public class SwitchAnt {
                 }
             });
 
+            // 物理输入防抖：忽略极短间隔（< TOGGLE_DEBOUNCE_NANOS）内的重复点击。
+            // 数组包装以便在 lambda 中可变；只拦物理点击，不动绑定/程序化赋值路径。
+            // 初值播种到「一个防抖窗口之前」（相对 nanoTime 任意原点）：既保证首次点击必过，
+            // 又避免用 Long.MIN_VALUE 造成 now - last 减法溢出误判。
+            final long[] lastToggleNanos = { System.nanoTime() - TOGGLE_DEBOUNCE_NANOS };
             switchPane.setOnMouseClicked(e -> {
-                if (!isDisabled) {
-                    valueProperty.set(!valueProperty.get());
+                if (isDisabled) {
+                    return;
                 }
+                long now = System.nanoTime();
+                if (now - lastToggleNanos[0] < TOGGLE_DEBOUNCE_NANOS) {
+                    return; // 抖动 / 误触双击，忽略本次翻转
+                }
+                lastToggleNanos[0] = now;
+                valueProperty.set(!valueProperty.get());
             });
 
             HBox.setHgrow(switchPane, Priority.NEVER);
