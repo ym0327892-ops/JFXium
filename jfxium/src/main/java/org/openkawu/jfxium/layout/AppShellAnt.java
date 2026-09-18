@@ -9,8 +9,8 @@ import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.layout.GridAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.Background;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.Background;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
 
 import java.util.function.Consumer;

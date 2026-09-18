@@ -14,7 +14,7 @@ import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.component.layout.BorderPaneAnt;
 import org.openkawu.jfxium.component.layout.ScrollPaneAnt;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
-import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.style.Background;
 import org.openkawu.jfxium.jfxiumUiExample.UiExampleConstants;
 import org.openkawu.jfxium.template.ProjectConsoleTemplate;
 import org.openkawu.jfxium.template.WorkspaceSettingsTemplate;

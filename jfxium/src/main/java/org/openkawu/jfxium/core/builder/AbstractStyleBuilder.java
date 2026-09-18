@@ -5,7 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;

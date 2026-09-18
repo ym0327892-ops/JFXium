@@ -2,7 +2,7 @@ package org.openkawu.jfxium.core.util;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
 
 import java.util.Arrays;

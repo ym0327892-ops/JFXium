@@ -14,7 +14,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.IconPath;
 import org.openkawu.jfxium.core.util.TextUtils;

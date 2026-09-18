@@ -9,7 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
 

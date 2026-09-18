@@ -5,7 +5,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.component.layout.AbstractHBoxAnt;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,7 +212,7 @@ public class HBarAnt extends AbstractHBoxAnt<HBarAnt> {
     // （详见 Bug #123、Bug #138、HBarAntTest.backgroundBridgeMethodKeepsBinarySignature）
 
     @Override
-    public HBarAnt background(org.openkawu.jfxium.core.css.Background background) {
+    public HBarAnt background(org.openkawu.jfxium.core.style.Background background) {
         styleClass(background != null ? background.styleClass() : null);
         return this;
     }

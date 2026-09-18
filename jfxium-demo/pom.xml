@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.openkawu</groupId>
         <artifactId>jfxium-parent</artifactId>
-        <version>1.20.1</version>
+        <version>1.30.0</version>
     </parent>
 
     <artifactId>jfxium-demo</artifactId>
@@ -39,12 +39,8 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.openkawu</groupId>
-            <artifactId>jfxium</artifactId>
-            <version>1.20.1</version>
-            <scope>compile</scope>
-        </dependency>
+        <!-- BUG #144：删除重复的 org.openkawu:jfxium:1.20.1 依赖声明 ——
+             旧版 jar 会遮蔽 reactor 当前版本（新 API 编译报找不到符号） -->
     </dependencies>
 
     <build>

@@ -1,18 +1,16 @@
 package org.openkawu.jfxium.component.composite;
 
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.layout.Region;
 
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
-import org.openkawu.jfxium.core.util.AnimationDuration;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;
@@ -29,10 +27,10 @@ import java.util.function.Consumer;
  * <ul>
  *   <li><b>形态</b>:LINE(下划线指示条) / CARD(卡片式页签)</li>
  *   <li><b>尺寸</b>:SMALL / MIDDLE / LARGE</li>
- *   <li><b>位置</b>:TOP / BOTTOM / LEFT / RIGHT</li>
- *   <li><b>可关闭</b>:closable 支持关闭标签页</li>
- *   <li><b>禁用</b>:单个标签页可禁用</li>
- *   <li><b>额外操作区</b>:tabBarExtra 放右侧操作按钮</li>
+ *   <li><b>位置</b>：TOP / BOTTOM / LEFT / RIGHT（LINE 形态四个方向都带指示条）</li>
+ *   <li><b>初始选中</b>：activeIndex / activeKey 指定初始激活的 tab，自动跳过禁用项</li>
+ *   <li><b>禁用</b>：单个标签页可禁用</li>
+ *   <li><b>额外操作区</b>：extraLeft / extraRight 放标签栏两侧附加节点</li>
  *   <li><b>运行时切换</b>:通过 {@link Controller} 编程式切换当前 tab(对齐 StepsAnt.Controller)</li>
  * </ul>
  *
@@ -50,7 +48,7 @@ import java.util.function.Consumer;
  *     .tab("logs", "日志", logsPanel)
  *     .tab("config", "配置", configPanel)
  *     .type(TabsAnt.Type.CARD)
- *     .size(TabsAnt.Size.MIDDLE)
+ *     .size(org.openkawu.jfxium.core.token.Size.MIDDLE)
  *     .build();
  *
  * // 运行时切换(BUG #51 推广,无需 rebuild)
@@ -93,6 +91,7 @@ public class TabsAnt {
         private Node extraRight = null;
         private Consumer<String> onChange = null;
         private int activeIndex = 0;
+        private String activeKey = null;
         // runtime 控制器:build() 后装配,支持不重建节点切换当前 tab(BUG #51 推广, 对齐 StepsAnt.Controller)
         private Controller controller;
 
@@ -114,6 +113,17 @@ public class TabsAnt {
         public Builder extraRight(Node n) { this.extraRight = n; return this; }
         public Builder onChange(Consumer<String> c) { this.onChange = c; return this; }
 
+        /**
+         * 指定初始激活的 tab 下标（0-based）。越界钳制到 0；指向禁用 tab 时自动让位到最近的可用 tab。
+         * <p>{@link #activeKey(String)} 已设置且 key 存在时以 activeKey 为准。</p>
+         */
+        public Builder activeIndex(int index) { this.activeIndex = index; return this; }
+
+        /**
+         * 按 key 指定初始激活的 tab。优先于 {@link #activeIndex(int)}；key 未找到时退回 activeIndex。
+         */
+        public Builder activeKey(String key) { this.activeKey = key; return this; }
+
         public Node build() {
             if (tabs.isEmpty()) {
                 VBox empty = new VBox();
@@ -121,9 +131,48 @@ public class TabsAnt {
                 return empty;
             }
 
-            // 装配 Controller(每次 build 新建一个,与已构造节点树绑定)
-            this.controller = new Controller(tabs.size(), activeIndex);
+            // 装配 Controller(每次 build 新建一个,与已构造节点树绑定)；
+            // 初始下标经 resolveInitialIndex 解析（禁用自动让位，BUG #144）
+            this.controller = new Controller(tabs.size(), resolveInitialIndex());
             return buildTabsTree();
+        }
+
+        /**
+         * 解析初始激活下标：activeKey（找到时）> activeIndex > 0，
+         * 指向禁用项时向后让位优先，其次向前；全部禁用则保留钳制后的下标。
+         */
+        private int resolveInitialIndex() {
+            int total = tabs.size();
+            int candidate = activeIndex;
+            if (activeKey != null) {
+                int byKey = -1;
+                for (int i = 0; i < total; i++) {
+                    if (activeKey.equals(tabs.get(i).key)) {
+                        byKey = i;
+                        break;
+                    }
+                }
+                if (byKey >= 0) {
+                    candidate = byKey;
+                }
+            }
+            if (candidate < 0 || candidate >= total) {
+                candidate = 0;
+            }
+            if (!tabs.get(candidate).disabled) {
+                return candidate;
+            }
+            for (int i = candidate + 1; i < total; i++) {
+                if (!tabs.get(i).disabled) {
+                    return i;
+                }
+            }
+            for (int i = candidate - 1; i >= 0; i--) {
+                if (!tabs.get(i).disabled) {
+                    return i;
+                }
+            }
+            return candidate;
         }
 
         /**
@@ -156,26 +205,10 @@ public class TabsAnt {
                     if (key != null) onChange.accept(key);
                 }
             };
-            controller.onChangeCallback = changeCallback;
-            controller.onIndicatorMove = () -> {
-                Node tabBar = controller.tabBarRef;
-                if (tabBar != null) {
-                    Node wrapper = tabBar.getParent();
-                    if (wrapper instanceof VBox) {
-                        VBox vbox = (VBox) wrapper;
-                        if (vbox.getChildren().size() > 1) {
-                            Node indicatorContainer = vbox.getChildren().get(1);
-                            if (indicatorContainer instanceof Pane) {
-                                Pane container = (Pane) indicatorContainer;
-                                if (!container.getChildren().isEmpty()) {
-                                    Region indicator = (Region) container.getChildren().get(0);
-                                    updateIndicator(indicator, controller.tabLabels, container, controller.getCurrent());
-                                }
-                            }
-                        }
-                    }
-                }
-            };
+            controller.setOnChangeCallback(changeCallback);
+            // BUG #144：指示条节点由 wireIndicator 直接存到 Controller，
+            // 不再通过 tabBar.getParent() + children 强转链反查（结构一改就静默失效）
+            controller.setOnIndicatorMove(this::refreshIndicator);
 
             boolean isVertical = placement == TabPlacement.LEFT || placement == TabPlacement.RIGHT;
 
@@ -195,6 +228,9 @@ public class TabsAnt {
                     layout.getChildren().addAll(contentArea, tabBar);
                 }
                 HBox.setHgrow(contentArea, Priority.ALWAYS);
+                // BUG #144-P0：垂直场景 contentArea 的 parent 是 HBox 不是 root VBox，
+                // 必须对 layout 设 VBox.setVgrow 才能在 root 内垂直撑满
+                VBox.setVgrow(layout, Priority.ALWAYS);
                 root.getChildren().add(layout);
             } else {
                 if (placement == TabPlacement.TOP) {
@@ -202,9 +238,9 @@ public class TabsAnt {
                 } else {
                     root.getChildren().addAll(contentArea, tabBar);
                 }
+                // 水平场景 contentArea 直接是 root VBox 的子节点
+                VBox.setVgrow(contentArea, Priority.ALWAYS);
             }
-
-            VBox.setVgrow(contentArea, Priority.ALWAYS);
             applyStyles(root);
             return root;
         }
@@ -247,64 +283,94 @@ public class TabsAnt {
                 tabBar.getChildren().add(extraRight);
             }
 
-            // Line 模式下,指示条放在标签栏下方
-            if (type == Type.LINE && !isVertical) {
-                VBox wrapper = new VBox(0);
-                wrapper.setAlignment(Pos.TOP_LEFT);
-                wrapper.getChildren().add(tabBar);
+            // LINE 模式：指示条贴着标签栏 —— 水平形态在下方，垂直形态（LEFT/RIGHT）在内侧。
+            // BUG #144：此前垂直形态完全没有指示条，现补齐；
+            // 指示条节点直接存到 Controller（wireIndicator），不再靠反查节点树。
+            if (type == Type.LINE) {
+                if (!isVertical) {
+                    VBox wrapper = new VBox(0);
+                    wrapper.setAlignment(Pos.TOP_LEFT);
+                    wrapper.getChildren().add(tabBar);
 
-                // 指示条容器 - 使用 Pane 实现绝对定位
-                Pane indicatorPane = new Pane();
-                indicatorPane.getStyleClass().add(JfxStyles.TABS_INDICATOR_PANE);
+                    // 指示条容器 - 使用 Pane 实现绝对定位
+                    Pane indicatorPane = new Pane();
+                    indicatorPane.getStyleClass().add(JfxStyles.TABS_INDICATOR_PANE);
+                    Region indicator = newIndicator(false);
+                    indicatorPane.getChildren().add(indicator);
+                    wrapper.getChildren().add(indicatorPane);
 
-                // 创建指示条
-                Region indicator = new Region();
-                indicator.getStyleClass().add(JfxStyles.TABS_INDICATOR_BAR);
-                indicatorPane.getChildren().add(indicator);
-
-                wrapper.getChildren().add(indicatorPane);
-
-                // 绑定容器宽度到 tabBar
-                indicatorPane.prefWidthProperty().bind(tabBar.widthProperty());
-
-                // 初始指示条位置(在布局完成后)
-                final Region finalIndicator = indicator;
-                final List<Label> finalLabels = controller.tabLabels;
-                final Pane finalPane = indicatorPane;
-
-                // 监听每个标签的布局变化
-                for (Label label : finalLabels) {
-                    label.layoutBoundsProperty().addListener((obs, old, val) -> {
-                        updateIndicator(finalIndicator, finalLabels, finalPane, controller.getCurrent());
-                    });
+                    // 绑定容器宽度到 tabBar
+                    indicatorPane.prefWidthProperty().bind(tabBar.widthProperty());
+                    wireIndicator(wrapper, indicatorPane, false);
+                    return wrapper;
                 }
 
-                // 监听 wrapper 添加到场景
-                wrapper.sceneProperty().addListener((obs, oldScene, newScene) -> {
-                    if (newScene != null) {
-                        // 使用 PauseTransition 延迟更新,确保布局完成
-                        PauseTransition delay = new PauseTransition(AnimationDuration.SLOW);
-                        delay.setOnFinished(e -> updateIndicator(finalIndicator, finalLabels, finalPane, controller.getCurrent()));
-                        delay.play();
-                    }
-                });
+                HBox wrapper = new HBox(0);
+                wrapper.setAlignment(Pos.TOP_LEFT);
 
-                // 立即尝试更新一次(如果已经添加到场景)
-                Platform.runLater(() -> {
-                    Platform.runLater(() -> {
-                        updateIndicator(finalIndicator, finalLabels, finalPane, controller.getCurrent());
-                    });
-                });
+                Pane indicatorPane = new Pane();
+                indicatorPane.getStyleClass().add(JfxStyles.TABS_INDICATOR_PANE_VERTICAL);
+                Region indicator = newIndicator(true);
+                indicatorPane.getChildren().add(indicator);
 
-                // 监听 tabBar 布局变化
-                tabBar.layoutBoundsProperty().addListener((obs, old, val) -> {
-                    updateIndicator(finalIndicator, finalLabels, finalPane, controller.getCurrent());
-                });
+                // LEFT：指示条在标签栏右侧（紧邻内容区）；RIGHT：在标签栏左侧
+                if (placement == TabPlacement.LEFT) {
+                    wrapper.getChildren().addAll(tabBar, indicatorPane);
+                } else {
+                    wrapper.getChildren().addAll(indicatorPane, tabBar);
+                }
 
+                // 绑定容器高度到 tabBar
+                indicatorPane.prefHeightProperty().bind(tabBar.heightProperty());
+                wireIndicator(wrapper, indicatorPane, true);
                 return wrapper;
             }
 
             return tabBar;
+        }
+
+        /** 创建指示条节点并记到 Controller（初始隐藏，首次定位成功后才显示）。 */
+        private Region newIndicator(boolean vertical) {
+            Region indicator = new Region();
+            indicator.getStyleClass().add(vertical ? JfxStyles.TABS_INDICATOR_BAR_VERTICAL : JfxStyles.TABS_INDICATOR_BAR);
+            indicator.setVisible(false);
+            controller.indicatorRef = indicator;
+            return indicator;
+        }
+
+        /**
+         * 为指示条挂布局监听并在挂入场景后完成首次定位。
+         *
+         * <p>BUG #144：取代旧「PauseTransition 300ms 延迟 + 双重 runLater + 多套监听重复触发」实现 ——
+         * 场景挂接后双 runLater（保证在布局脉冲之后执行）是唯一首次定位入口，
+         * label / 标签栏的 layoutBounds 监听负责后续动态重定位。</p>
+         */
+        private void wireIndicator(Node wrapper, Pane indicatorPane, boolean vertical) {
+            controller.indicatorPaneRef = indicatorPane;
+            controller.verticalIndicator = vertical;
+
+            for (Label label : controller.tabLabels) {
+                label.layoutBoundsProperty().addListener((obs, old, val) -> refreshIndicator());
+            }
+            controller.tabBarRef.layoutBoundsProperty().addListener((obs, old, val) -> refreshIndicator());
+
+            wrapper.sceneProperty().addListener((obs, oldScene, newScene) -> {
+                if (newScene != null) {
+                    Platform.runLater(() -> Platform.runLater(() -> refreshIndicator()));
+                }
+            });
+            // 边缘场景：build 时节点已挂场景（如先建子树再重组）
+            if (wrapper.getScene() != null) {
+                Platform.runLater(() -> Platform.runLater(() -> refreshIndicator()));
+            }
+        }
+
+        /** 指示条重定位统一入口（直接读 Controller 持有引用，不反查节点树）。 */
+        private void refreshIndicator() {
+            if (controller == null || controller.indicatorRef == null) {
+                return;
+            }
+            updateIndicator(controller.indicatorRef, controller.tabLabels, controller.getCurrent(), controller.verticalIndicator);
         }
 
         private StackPane createContentArea() {
@@ -314,6 +380,8 @@ public class TabsAnt {
 
             for (int i = 0; i < tabs.size(); i++) {
                 Node content = tabs.get(i).content;
+                // BUG #144：二次 build() 复用同一批 content 时先释放旧 parent（JavaFX 单亲规则）
+                detachFromParent(content);
                 content.setVisible(i == controller.getCurrent());
                 content.setManaged(i == controller.getCurrent());
                 contentArea.getChildren().add(content);
@@ -325,7 +393,8 @@ public class TabsAnt {
 
         private Label createTabLabel(TabItem item, boolean isActive) {
             Label label = new Label(item.label);
-            label.setPadding(getTabPadding());
+            // padding 完全由 LESS token 驱动（@tabs-label-padding-* / @tabs-card-padding-*，BUG #144）。
+            // Java 端不得 setPadding —— 直设属性优先级高于样式表，会盖掉 LESS，破坏紧凑模式联动。
 
             // 基础 styleClass
             label.getStyleClass().add(JfxStyles.TABS_LABEL);
@@ -349,39 +418,43 @@ public class TabsAnt {
             return label;
         }
 
-        private Insets getTabPadding() {
-            // 返回 Insets,但样式中也会设置 padding,以样式为准
-            if (type == Type.LINE) {
-                int v = size == Size.LARGE ? 16 : (size == Size.SMALL ? 8 : 12);
-                int h = size == Size.LARGE ? 20 : (size == Size.SMALL ? 12 : 16);
-                return new Insets(v, h, v, h);
-            } else {
-                int v = size == Size.LARGE ? 11 : (size == Size.SMALL ? 4 : 8);
-                int h = size == Size.LARGE ? 16 : (size == Size.SMALL ? 8 : 16);
-                return new Insets(v, h, v, h);
-            }
-        }
-
-        private void updateIndicator(Region indicator, List<Label> labels, Pane container, int index) {
+        private void updateIndicator(Region indicator, List<Label> labels, int index, boolean vertical) {
             if (index < 0 || index >= labels.size()) return;
 
             Label label = labels.get(index);
 
-            // 获取标签的实际边界
+            // 获取标签的实际边界（相对标签栏，与指示条容器的坐标系原点一致）
             javafx.geometry.Bounds bounds = label.getBoundsInParent();
-            double labelX = bounds.getMinX();
-            double labelWidth = bounds.getWidth();
 
-            // 如果宽度为 0,说明还未布局完成,使用默认值确保指示条可见
-            if (labelWidth <= 0) {
-                indicator.setPrefWidth(100);
-                indicator.setLayoutX(0);
-                return;
+            if (vertical) {
+                double labelHeight = bounds.getHeight();
+                // 高度为 0 说明未布局完成，跳过等下次触发（BUG #144：取代 prefWidth=100 魔法兑底）
+                if (labelHeight <= 0) return;
+                indicator.setPrefHeight(labelHeight);
+                indicator.setLayoutY(bounds.getMinY());
+            } else {
+                double labelWidth = bounds.getWidth();
+                if (labelWidth <= 0) return;
+                indicator.setPrefWidth(labelWidth);
+                indicator.setLayoutX(bounds.getMinX());
             }
 
-            // 设置指示条宽度和位置
-            indicator.setPrefWidth(labelWidth);
-            indicator.setLayoutX(labelX);
+            // 首次定位成功后显示指示条（newIndicator 初始隐藏）
+            if (!indicator.isVisible()) {
+                indicator.setVisible(true);
+            }
+        }
+
+        /**
+         * 挂载前释放节点的旧 parent（JavaFX 单亲规则）。
+         * BUG #144：同一 Builder 二次 build() 时若 content 仍挂在旧树上，
+         * 直接 add 会抛 IllegalArgumentException。
+         */
+        private static void detachFromParent(Node node) {
+            Parent parent = node.getParent();
+            if (parent instanceof Pane pane) {
+                pane.getChildren().remove(node);
+            }
         }
 
         // safeContent 保留本地:语义不同于 TextUtils.safeText(s, fb),
@@ -421,14 +494,20 @@ public class TabsAnt {
         final List<Node> tabContents = new ArrayList<>();
         final List<String> tabKeys = new ArrayList<>();
         final boolean[] tabDisabled;
-        Node tabBarRef;          // 标签栏容器(指示条更新用)
+        Node tabBarRef;          // 标签栏容器(指示条布局监听用)
         StackPane contentAreaRef; // 内容容器(预留扩展)
+        Region indicatorRef;      // 指示条节点（BUG #144：直接引用，取代反查节点树）
+        Pane indicatorPaneRef;    // 指示条容器（Pane 绝对定位）
+        boolean verticalIndicator; // 指示条是否垂直形态（LEFT/RIGHT placement）
 
         private final int total;
         private int current;
-        // 注入:onChange / 指示条移动
-        Runnable onChangeCallback;
-        Runnable onIndicatorMove;
+        // 注入:onChange / 指示条移动（package-private setter，外部不可直接赋 null 破坏回调）
+        private Runnable onChangeCallback;
+        private Runnable onIndicatorMove;
+
+        void setOnChangeCallback(Runnable r) { this.onChangeCallback = r; }
+        void setOnIndicatorMove(Runnable r) { this.onIndicatorMove = r; }
 
         Controller(int total, int current) {
             this.total = total;
@@ -474,7 +553,7 @@ public class TabsAnt {
          * <ul>
          *   <li>旧/新 tab label 的 {@code TABS_ACTIVE} 修饰类切换</li>
      *   <li>旧/新 tab content 的 visible/managed 切换</li>
-     *   <li>Line 模式下指示条重定位</li>
+     *   <li>LINE 模式下指示条重定位（含垂直形态）</li>
      *   <li>Builder 注入的 onChange 回调(回传新 tab 的 key)</li>
      * </ul>
          * </p>
@@ -519,20 +598,37 @@ public class TabsAnt {
         }
 
         /**
-         * 按 key 切换当前 tab。未找到 key 时无操作。
-         * @return true 表示切换成功,false 表示 key 不存在或被拒绝
+         * 按 key 切换当前 tab。null 或空串直接返回 false；未找到 key 时也返回 false。
+         * @return true 表示切换成功,false 表示 key 无效或不存在或被拒绝
          */
         public boolean selectByKey(String key) {
+            if (key == null || key.isEmpty()) return false;
             int idx = tabKeys.indexOf(key);
             if (idx < 0) return false;
             return setCurrent(idx);
         }
 
-        /** 前进到下一 tab(已是最后一项则无操作)。 */
-        public boolean next() { return setCurrent(current + 1); }
+        /**
+         * 前进到下一个<b>可用</b> tab（跳过禁用项，已是末尾则无操作）。
+         * @return true 表示切换成功,false 表示后方无可用 tab
+         */
+        public boolean next() {
+            for (int i = current + 1; i < total; i++) {
+                if (!tabDisabled[i] && setCurrent(i)) return true;
+            }
+            return false;
+        }
 
-        /** 后退到上一 tab(已是第一项则无操作)。 */
-        public boolean prev() { return setCurrent(current - 1); }
+        /**
+         * 后退到上一个<b>可用</b> tab（跳过禁用项，已是开头则无操作）。
+         * @return true 表示切换成功,false 表示前方无可用 tab
+         */
+        public boolean prev() {
+            for (int i = current - 1; i >= 0; i--) {
+                if (!tabDisabled[i] && setCurrent(i)) return true;
+            }
+            return false;
+        }
     }
 
     private static class TabItem {

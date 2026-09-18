@@ -9,7 +9,7 @@ import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.builder.Radius;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.ApplySizeUtil;

@@ -8,7 +8,7 @@ import javafx.scene.control.OverrunStyle;
 import javafx.scene.layout.*;
 import org.openkawu.jfxium.component.control.TooltipAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.form.FormContext;
 import org.openkawu.jfxium.core.form.Rule;
 import org.openkawu.jfxium.core.token.Size;

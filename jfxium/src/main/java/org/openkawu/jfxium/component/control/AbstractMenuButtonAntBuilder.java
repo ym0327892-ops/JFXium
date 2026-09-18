@@ -7,7 +7,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.ApplySizeUtil;
 import org.openkawu.jfxium.core.util.MenuItemFactory;

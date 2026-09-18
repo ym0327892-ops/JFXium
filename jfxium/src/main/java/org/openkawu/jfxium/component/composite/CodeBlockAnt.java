@@ -14,7 +14,7 @@ import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.TextAreaAnt;
 import org.openkawu.jfxium.component.overlay.ContextMenuAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 import org.openkawu.jfxium.core.util.TextUtils;
 import org.openkawu.jfxium.core.i18n.Messages;

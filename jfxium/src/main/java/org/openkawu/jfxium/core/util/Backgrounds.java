@@ -1,7 +1,7 @@
 package org.openkawu.jfxium.core.util;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.style.Background;
 
 import java.util.Arrays;
 

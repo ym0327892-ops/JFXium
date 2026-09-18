@@ -7,7 +7,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.KeyCombination;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;

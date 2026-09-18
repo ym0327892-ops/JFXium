@@ -2,7 +2,7 @@ package org.openkawu.jfxium.component.layout;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 /**
  * ScrollPaneAnt - 继承式滚动容器（M19.36 升级为双工厂模式 + 改名自 ScrollContainerAnt）。

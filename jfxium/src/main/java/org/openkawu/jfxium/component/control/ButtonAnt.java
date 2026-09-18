@@ -11,7 +11,7 @@ import javafx.scene.layout.Region;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.command.Command;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.builder.Radius;
 import org.openkawu.jfxium.core.util.TextUtils;
 import org.openkawu.jfxium.core.token.Size;

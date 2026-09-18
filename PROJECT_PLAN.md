@@ -2552,6 +2552,22 @@ JFXium/                                          # 多模块 Maven 项目（pare
   - 需要「JavaFX 控件包装 + 实例化后链式调用 + 可被业务继承」时（ButtonAnt / ListViewAnt / MenuAnt）：**LayoutCommon 接口 default methods 模式**
   - 需要「单一容器 + LayoutCommon 能力 + 零 Builder 样板」时（HBoxAnt / BorderPaneAnt）：**Abstract*Ant<SELF> 泛型基类模式**
   - 需要「业务代码 new + 静态方法直接渲染」时（IconAnt 静态工厂 / PromptDialogAnt Result）：**无 Builder 静态/Result 模式**
-- P3 「继承率提升」目标应改为「流式 API 覆盖率 ≥ 98%」（101/103 = 98.1% 已达成 ✅）
+- P3 「继承率提升」目标应改为「流式 API 覆盖率 ≥ 98%」（101/103 = 98.1% 已达成  ✅）
+
+---
+
+### 🎯 M21.26 TabsAnt 系统性体检与修复（2026-08-29，BUG #144）
+
+**动机**：对 TabsAnt 做全面检查，发现红线违规（Java 端 setPadding 硬编码 px 覆盖样式表）、API 缺口（activeIndex 字段无 setter，demo 被迫绕行）、垂直形态指示条缺失、初始选中可落禁用项、二次 build 单亲异常、指示条延迟 hack 与结构反查耦合等问题。
+
+**产出**：
+- [x] Java 端删 `setPadding`，padding 完全交给新增的 12 个 `@tabs-label-padding-*` / `@tabs-card-padding-*` token（派生 `@spacing-*`，紧凑模式首次能联动收紧 tabs 高度）
+- [x] 新增 `activeIndex(int)` / `activeKey(String)` Builder API，`resolveInitialIndex()` 统一解析（越界钳制 + 禁用自动让位）
+- [x] 补齐 LEFT/RIGHT 垂直指示条（`.jfx-tabs-indicator-pane-vertical` / `-bar-vertical`，jfx- 前缀）
+- [x] `createContentArea` 挂载前释放旧 parent（单亲规则，二次 build 安全）
+- [x] 指示条节点直接存 Controller，去除 PauseTransition 300ms 延迟 hack 与 `getParent()→children` 强转链反查；指示条初始隐藏，首次定位成功才显示（取代 100px 魔法兑底）
+- [x] 顺带修掉 `jfxium-demo/pom.xml` 重复声明 `jfxium:1.20.1` 遮蔽 reactor 当前版本的问题（此前任何新 API 都会导致 demo 编译失败）
+- [x] demo（TabsExamplePage）改用 `activeKey(...)` 消除绕行；TabsAntTest 新增 6 个用例（共 7/7 通过）
+- [x] 全量测试 1367/1367 通过；demo 下游编译验证通过；详见 PROJECT_BUG.md #144
 
 ---

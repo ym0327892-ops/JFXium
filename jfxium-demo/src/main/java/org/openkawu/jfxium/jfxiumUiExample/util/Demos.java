@@ -8,7 +8,7 @@ import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.composite.VBarAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
-import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.style.Background;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.CodeBlockAnt;
 import org.openkawu.jfxium.component.composite.GroupBoxAnt;

@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.openkawu</groupId>
         <artifactId>jfxium-parent</artifactId>
-        <version>1.20.1</version>
+        <version>1.30.0</version>
 
     </parent>
 
@@ -51,6 +51,16 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!-- 排除 LESS 源码：运行时不需要，避免打进 jar（由 generate-resources 阶段的
+                     groovy-maven-plugin 现场编译成 .css；该插件直接读源码路径，不受排除影响） -->
+                <excludes>
+                    <exclude>**/*.less</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -77,7 +87,7 @@
                         --add-opens org.openkawu.jfxium/org.openkawu.jfxium.component.control=ALL-UNNAMED
                         --add-opens org.openkawu.jfxium/org.openkawu.jfxium.component.composite=ALL-UNNAMED
                         --add-opens org.openkawu.jfxium/org.openkawu.jfxium.core.builder=ALL-UNNAMED
-                        --add-opens org.openkawu.jfxium/org.openkawu.jfxium.core.css=ALL-UNNAMED
+                        --add-opens org.openkawu.jfxium/org.openkawu.jfxium.core.style=ALL-UNNAMED
                     </argLine>
                 </configuration>
             </plugin>

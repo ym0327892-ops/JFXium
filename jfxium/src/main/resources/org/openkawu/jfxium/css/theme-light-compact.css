@@ -1144,6 +1144,20 @@
   -fx-min-height: 3;
   -fx-max-height: 3;
 }
+/* TabsAnt indicator —— 垂直形态（LEFT/RIGHT placement，BUG #144：补齐垂直指示条） */
+.jfx-tabs-indicator-pane-vertical {
+  -fx-background-color: -color-border-muted;
+  -fx-pref-width: 3;
+  -fx-min-width: 3;
+  -fx-max-width: 3;
+}
+.jfx-tabs-indicator-bar-vertical {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-radius: 2px;
+  -fx-pref-width: 3;
+  -fx-min-width: 3;
+  -fx-max-width: 3;
+}
 /* ============================================
    Tree Component
    ============================================ */
@@ -6501,25 +6515,26 @@
 .jfx-tabs-label:not(.jfx-tabs-large):not(.jfx-tabs-small) {
   -fx-font-size: 13px;
 }
-/* LINE padding */
+/* LINE padding —— BUG #144：token 化（variables-base.less @tabs-label-padding-*），
+   Java 端不再 setPadding（直设属性会覆盖样式表，导致紧凑模式失效） */
 .jfx-tabs-label-line.jfx-tabs-large {
-  -fx-padding: 16px 20px;
+  -fx-padding: 12px 16px;
 }
 .jfx-tabs-label-line.jfx-tabs-small {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 8px;
 }
 .jfx-tabs-label-line:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-padding: 12px 16px;
+  -fx-padding: 8px 12px;
 }
 /* CARD padding */
 .jfx-tabs-label-card.jfx-tabs-large {
-  -fx-padding: 11px 16px;
+  -fx-padding: 7px 12px;
 }
 .jfx-tabs-label-card.jfx-tabs-small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 6px;
 }
 .jfx-tabs-label-card:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-padding: 8px 16px;
+  -fx-padding: 6px 12px;
 }
 /* Disabled */
 .jfx-tabs-label.jfx-tabs-disabled {

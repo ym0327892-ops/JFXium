@@ -18,7 +18,7 @@ import javafx.stage.FileChooser;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.IconPath;

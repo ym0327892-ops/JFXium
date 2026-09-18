@@ -5,7 +5,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.ApplySizeUtil;
 import org.openkawu.jfxium.core.util.Bindings;

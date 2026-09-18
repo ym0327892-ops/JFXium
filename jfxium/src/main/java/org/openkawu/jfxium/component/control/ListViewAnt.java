@@ -6,7 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 import java.util.function.Consumer;
 

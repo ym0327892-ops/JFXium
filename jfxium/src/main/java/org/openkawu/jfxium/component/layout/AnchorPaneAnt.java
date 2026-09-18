@@ -1,7 +1,7 @@
 package org.openkawu.jfxium.component.layout;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 /**
  * JFXium 绝对定位布局组件 - 对标 CSS position: absolute。

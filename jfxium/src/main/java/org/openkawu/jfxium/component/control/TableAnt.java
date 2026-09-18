@@ -16,7 +16,7 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.HBox;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
 
 import java.util.ArrayList;

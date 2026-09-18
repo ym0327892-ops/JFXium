@@ -1,4 +1,4 @@
-package org.openkawu.jfxium.core.css;
+package org.openkawu.jfxium.core.style;
 
 /**
  * JFXium 样式类名常量。
@@ -905,6 +905,9 @@ public final class JfxStyles {
     public static final String TABS_LABEL_SMALL = "jfx-tabs-small";
     public static final String TABS_INDICATOR_PANE = "jfx-tabs-indicator-pane";
     public static final String TABS_INDICATOR_BAR = "jfx-tabs-indicator-bar";
+    // 垂直形态指示条（LEFT/RIGHT placement，BUG #144）
+    public static final String TABS_INDICATOR_PANE_VERTICAL = "jfx-tabs-indicator-pane-vertical";
+    public static final String TABS_INDICATOR_BAR_VERTICAL = "jfx-tabs-indicator-bar-vertical";
 
     /* ============================================
        PanelFooter — 面板底部

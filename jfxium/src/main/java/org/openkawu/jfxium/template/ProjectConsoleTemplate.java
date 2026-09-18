@@ -15,7 +15,7 @@ import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt.DropdownResult;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.style.Background;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;

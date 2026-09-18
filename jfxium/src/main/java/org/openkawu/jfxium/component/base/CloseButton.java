@@ -1,7 +1,7 @@
 package org.openkawu.jfxium.component.base;
 
 import javafx.scene.control.Button;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 /**
  * 可复用的关闭按钮组件

@@ -2244,3 +2244,65 @@ V2.1 报告建议迁移 7 个(M2-A 3 + M4-Typography 3 + M5 1)。**V2.2 重新�
   - `./mvnw -pl jfxium -Dtest=SkeletonAntTest test` ✅（13/13 通过）
   - `./mvnw -pl jfxium test` ✅（全量 938/938 通过）
 
+### #144 TabsAnt 系统性体检：红线违规 + API 缺口 + 指示条缺陷（2026-08-29）
+
+- **现象**：
+  1. `createTabLabel` 里 Java 端 `setPadding` 硬编码 px（红线：直设属性优先级高于样式表，会盖掉 LESS，紧凑模式永远压不下 tab 高度）；LESS 侧同样是裸 px，双份维护。
+  2. `activeIndex` 字段存在但没有 setter，无法指定初始激活的 tab；demo（TabsExamplePage playground）已被迫 build 后用 `controllerOf(node).selectByKey(...)` 补救——典型「demo 绕行 = 框架 API 缺口」信号。
+  3. `TabPlacement.LEFT/RIGHT` + LINE 形态下指示条完全不创建（条件 `!isVertical` 直接跳过），垂直标签页没有激活指示。
+  4. 初始下标可指向禁用 tab，显示为激活态但 `setCurrent` 拒绝一切禁用项切换，语义矛盾。
+  5. 同一 Builder 二次 `build()` 复用 content 节点时，旧 parent 未释放直接 add，抛 `IllegalArgumentException`（JavaFX 单亲规则）。
+  6. 指示条初始化靠 `PauseTransition(300ms)` + 双重 `Platform.runLater` + 多套监听重复触发；未布局时 `setPrefWidth(100)` 魔法兑底；`onIndicatorMove` 靠 `tabBar.getParent() → children.get(1) → children.get(0)` 强转链反查节点。
+  7. `jfxium-demo/pom.xml` 重复声明 `org.openkawu:jfxium:1.20.1`，旧 jar 遮蔽 reactor 当前版本，新 API 在 demo 编译报「找不到符号」。
+
+- **根因**：
+  - 视觉值写在 Java 端而非 LESS token（违反「Java 视觉结构 ≠ CSS 视觉值」）；初始选中/禁用钳制/单亲释放等防御逻辑缺失；指示条用结构反查而非直接引用，耦合节点树形状。
+
+- **修复**：
+  - [`TabsAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TabsAnt.java)：
+    1. 删除 `setPadding` + `getTabPadding()`，padding 完全交给 LESS token。
+    2. 新增 `activeIndex(int)` / `activeKey(String)` Builder API；`resolveInitialIndex()` 统一解析（activeKey 优先 > activeIndex > 0，越界钳制，禁用自动让位：向后优先其次向前）。
+    3. 补齐垂直指示条：LEFT/RIGHT 下用 `HBox wrapper + indicatorPane`（宽 3）贴在标签栏内侧，`updateIndicator` 按 `vertical` 分支定位（layoutY/height）。
+    4. `createContentArea` 挂载前 `detachFromParent(content)`（单亲规则）。
+    5. 指示条节点直接存 Controller（`indicatorRef/indicatorPaneRef/verticalIndicator`），`onIndicatorMove` 改为 `refreshIndicator()` 直接引用；去除 PauseTransition，改为场景挂接后双 runLater；指示条初始隐藏，首次定位成功才显示（取代 100px 魔法兑底）。
+  - [`variables-base.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/variables-base.less)：新增 `@tabs-label-padding-*` / `@tabs-card-padding-*` 12 个 token（全部派生 `@spacing-*`，CARD large 11px 用 `@spacing-md - 1px` 公式）。
+  - [`_component-aux.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_component-aux.less)：6 组 jfx-tabs padding 全部 token 化。
+  - [`_tabs.less`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/resources/org/openkawu/jfxium/css/less/components/_tabs.less) + [`JfxStyles.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/core/css/JfxStyles.java)：新增 `.jfx-tabs-indicator-pane-vertical` / `.jfx-tabs-indicator-bar-vertical`（jfx- 前缀）。
+  - [`TabsExamplePage.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/src/main/java/org/openkawu/jfxium/jfxiumUiExample/pages/navigation/TabsExamplePage.java)：playground 改用 `activeKey(...)` Builder API，删除 Controller 补救绕行。
+  - [`jfxium-demo/pom.xml`](file:///Users/openai/workspace/work_open/JFXium/jfxium-demo/pom.xml)：删除重复的 `jfxium:1.20.1` 依赖。
+  - 测试：[`TabsAntTest`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/TabsAntTest.java) 新增 6 个用例（activeIndex / activeKey 优先级 / 禁用让位 / 越界钳制 / 二次 build 单亲 / 垂直指示条结构）。
+
+- **结果**：
+  - 紧凑模式下 tabs 高度首次能联动收紧（实测 compact small padding `8px 12px` → `6px 8px`）。
+  - 垂直标签页四个方向指示条行为一致；初始选中不再落在禁用项；rebuild 安全。
+  - 顺带修掉 demo 依赖遮蔽问题（此前任何新 API 都会在 demo 侧编译失败）。
+
+- **验证**：
+  - `./mvnw install -pl jfxium -DskipTests -q` ✅（LESS→CSS 6 主题编译成功，新 token/垂直指示条选择器落盘）
+  - `./mvnw test -pl jfxium -Dtest=TabsAntTest` ✅（7/7）
+  - `./mvnw test -pl jfxium` ✅（全量 1367/1367）
+  - `./mvnw compile -pl jfxium-demo -am -DskipTests` ✅（下游新 API 可见）
+
+---
+
+### #145 TabsAnt 第二轮深度检查（垂直撑满 / Javadoc 误导 / 防御性）
+
+- **状态**：✅ 已修复
+
+- **问题**（第二轮检查 TabsAnt.java 发现 3 类问题）：
+  1. **P0 垂直布局不撑满**：LEFT/RIGHT 下 `contentArea` 的 parent 是 `HBox` 不是 root `VBox`，`VBox.setVgrow(contentArea, ALWAYS)` 静默无效，内容区无法垂直撑满。
+  2. **P1 Javadoc 三处误导**：① `closable 支持关闭标签页`（无此功能）；② `TabsAnt.Size.MIDDLE`（Size 在 `org.openkawu.jfxium.core.token`）；③ `tabBarExtra`（实际 API 是 `extraLeft/extraRight`）。
+  3. **P2 防御性不足**：① `next()/prev()` 不跳禁用项；② `selectByKey(null)` 未防御；③ Controller 的 `onChangeCallback/onIndicatorMove` 是 package-public 可变字段，外部可直接赋 null 破坏回调。
+
+- **修复**：
+  - [`TabsAnt.java`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/main/java/org/openkawu/jfxium/component/composite/TabsAnt.java)：
+    1. 垂直分支补 `VBox.setVgrow(layout, Priority.ALWAYS)`；水平分支保留 `VBox.setVgrow(contentArea, ALWAYS)`。
+    2. Javadoc 删除 `closable` 条目、修正 `Size` 全限定名、`tabBarExtra` → `extraLeft / extraRight`。
+    3. `next()/prev()` 改为循环跳过禁用项；`selectByKey` 前置 null/空串检查返回 false；`onChangeCallback/onIndicatorMove` 改 private + package-private setter。
+  - [`TabsAntTest`](file:///Users/openai/workspace/work_open/JFXium/jfxium/src/test/java/org/openkawu/jfxium/component/composite/TabsAntTest.java)：新增 5 个用例（next 跳禁用 / prev 跳禁用 / next 末尾返回 false / selectByKey null / selectByKey 空串）。
+
+- **验证**：
+  - `./mvnw test -pl jfxium -Dtest=TabsAntTest` ✅（12/12）
+  - `./mvnw test -pl jfxium` ✅（全量 1372/1372）
+  - `./mvnw compile -pl jfxium-demo -am` ✅（下游可见）
+

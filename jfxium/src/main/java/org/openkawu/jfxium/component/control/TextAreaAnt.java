@@ -4,7 +4,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.control.TextArea;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.builder.Radius;
 
 import org.openkawu.jfxium.core.util.Bindings;

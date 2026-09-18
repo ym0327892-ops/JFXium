@@ -1,7 +1,7 @@
 package org.openkawu.jfxium.component.layout;
 
 import javafx.scene.Node;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 /**
  * SplitPaneAnt - 继承式 SplitPane 容器（M19.36 升级为双工厂模式）。

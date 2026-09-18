@@ -9,8 +9,8 @@ import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.composite.HBarAnt;
 import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.Background;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.Background;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.ArrayList;

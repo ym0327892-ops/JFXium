@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.builder.Radius;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 import static org.junit.jupiter.api.Assertions.*;
 

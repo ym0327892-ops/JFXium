@@ -8,7 +8,7 @@ import javafx.scene.text.TextAlignment;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
-import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.style.Background;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;

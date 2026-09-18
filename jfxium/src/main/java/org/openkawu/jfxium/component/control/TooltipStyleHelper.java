@@ -3,7 +3,7 @@ package org.openkawu.jfxium.component.control;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 /**

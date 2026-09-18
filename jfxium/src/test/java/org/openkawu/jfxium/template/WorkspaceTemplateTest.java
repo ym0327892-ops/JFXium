@@ -12,7 +12,7 @@ import org.openkawu.jfxium.component.composite.HBarAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt.DropdownResult;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

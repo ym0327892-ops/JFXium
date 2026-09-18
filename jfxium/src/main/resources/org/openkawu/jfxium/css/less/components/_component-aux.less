@@ -113,30 +113,31 @@
   -fx-font-size: @font-size-md;
 }
 
-/* LINE padding */
+/* LINE padding —— BUG #144：token 化（variables-base.less @tabs-label-padding-*），
+   Java 端不再 setPadding（直设属性会覆盖样式表，导致紧凑模式失效） */
 .jfx-tabs-label-line.jfx-tabs-large {
-  -fx-padding: 16px 20px;
+  -fx-padding: @tabs-label-padding-y-lg @tabs-label-padding-x-lg;
 }
 
 .jfx-tabs-label-line.jfx-tabs-small {
-  -fx-padding: 8px 12px;
+  -fx-padding: @tabs-label-padding-y-sm @tabs-label-padding-x-sm;
 }
 
 .jfx-tabs-label-line:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-padding: 12px 16px;
+  -fx-padding: @tabs-label-padding-y @tabs-label-padding-x;
 }
 
 /* CARD padding */
 .jfx-tabs-label-card.jfx-tabs-large {
-  -fx-padding: 11px 16px;
+  -fx-padding: @tabs-card-padding-y-lg @tabs-card-padding-x-lg;
 }
 
 .jfx-tabs-label-card.jfx-tabs-small {
-  -fx-padding: 4px 8px;
+  -fx-padding: @tabs-card-padding-y-sm @tabs-card-padding-x-sm;
 }
 
 .jfx-tabs-label-card:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-padding: 8px 16px;
+  -fx-padding: @tabs-card-padding-y @tabs-card-padding-x;
 }
 
 /* Disabled */

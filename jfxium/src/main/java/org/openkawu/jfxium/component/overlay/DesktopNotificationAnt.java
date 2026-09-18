@@ -17,7 +17,7 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 import org.openkawu.jfxium.component.base.NotificationCard;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 
 import java.util.EnumMap;

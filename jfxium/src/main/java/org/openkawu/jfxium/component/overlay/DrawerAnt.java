@@ -20,7 +20,7 @@ import org.openkawu.jfxium.component.control.LabelAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 
 import java.util.function.Consumer;

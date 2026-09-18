@@ -10,7 +10,7 @@ import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.component.control.StatusBarAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
-import org.openkawu.jfxium.core.css.Background;
+import org.openkawu.jfxium.core.style.Background;
 import org.openkawu.jfxium.component.layout.GridAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;

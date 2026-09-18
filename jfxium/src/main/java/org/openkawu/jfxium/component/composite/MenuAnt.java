@@ -12,7 +12,7 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 import org.openkawu.jfxium.core.util.TextUtils;
 

@@ -6,7 +6,7 @@
 
     <groupId>org.openkawu</groupId>
     <artifactId>jfxium-parent</artifactId>
-    <version>1.20.1</version>
+    <version>1.30.0</version>
     <packaging>pom</packaging>
     <name>JFXium Parent</name>
     <description>Enterprise-class JavaFX UI Framework</description>

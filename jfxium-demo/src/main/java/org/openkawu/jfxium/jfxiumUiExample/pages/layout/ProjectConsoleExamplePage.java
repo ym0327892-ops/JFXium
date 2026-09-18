@@ -92,8 +92,8 @@ public class ProjectConsoleExamplePage extends VBoxAnt {
                 .spacing(16)
                 .children(
                         Demos.placeholder("这里是右侧主展示区，可以放路由出口、统计卡、表格、表单或欢迎页。",
-                                org.openkawu.jfxium.core.css.Background.DEFAULT),
-                        Demos.placeholder("控制台模板强调的是壳层结构，而不是单个控件。", org.openkawu.jfxium.core.css.Background.SUBTLE),
+                                org.openkawu.jfxium.core.style.Background.DEFAULT),
+                        Demos.placeholder("控制台模板强调的是壳层结构，而不是单个控件。", org.openkawu.jfxium.core.style.Background.SUBTLE),
                         status
                 );
 

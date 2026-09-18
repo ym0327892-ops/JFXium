@@ -117,10 +117,9 @@ public class TabsExamplePage extends VBoxAnt {
                     .onChange(key -> MessageAnt.info("已切换到: " + key));
             b.type(parseType(type.get()));
             b.tabPlacement(parsePlacement(position.get()));
-            // build 后用 Controller 切换 activeKey（build() 内部 activeIndex 默认 0）
-            Node node = b.build();
-            TabsAnt.controllerOf(node).selectByKey(activeKey.get());
-            return node;
+            // BUG #144：activeKey 已是 Builder API，不再需要 build 后用 Controller 补救
+            b.activeKey(activeKey.get());
+            return b.build();
         };
 
         // 3. 串起来 —— rebuild 入口负责 scaffold build + binder 监听注册

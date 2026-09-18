@@ -230,6 +230,25 @@
 @tab-padding-y: @spacing-sm;
 @tab-padding-x: @spacing-md;
 
+// TabsAnt (jfx-tabs) label padding —— LINE/CARD 两形态 × 三尺寸，全部派生 @spacing-*。
+// 背景：BUG #144 —— 旧实现 Java 端 setPadding 硬编码 px 会覆盖样式表（JavaFX 直设属性优先级高于 CSS），
+//   且 LESS 侧也是裸 px，导致紧凑模式覆盖 @spacing-* 时 tabs 高度收不紧。
+//   现统一走 token：Java 端不再 setPadding，padding 完全由这里的 token 驱动，紧凑模式自动联动。
+// LINE 形态：middle 12/16，large 16/20，small 8/12
+@tabs-label-padding-y: @spacing-md;
+@tabs-label-padding-x: @spacing-lg;
+@tabs-label-padding-y-lg: @spacing-lg;
+@tabs-label-padding-x-lg: @spacing-xl;
+@tabs-label-padding-y-sm: @spacing-sm;
+@tabs-label-padding-x-sm: @spacing-md;
+// CARD 形态：middle 8/16，large 11/16（11 = @spacing-md - 1px 微调），small 4/8
+@tabs-card-padding-y: @spacing-sm;
+@tabs-card-padding-x: @spacing-lg;
+@tabs-card-padding-y-lg: @spacing-md - 1px;
+@tabs-card-padding-x-lg: @spacing-lg;
+@tabs-card-padding-y-sm: @spacing-xs;
+@tabs-card-padding-x-sm: @spacing-sm;
+
 // List Cell Padding
 // 使用位置：.list-view .list-cell、.combo-box-popup .list-cell
 // 影响组件：ListViewAnt、ComboBoxAnt 下拉列表

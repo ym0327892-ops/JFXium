@@ -7,7 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.IconPath;
 import org.openkawu.jfxium.core.util.NumericUtils;
 import org.openkawu.jfxium.core.util.TextUtils;

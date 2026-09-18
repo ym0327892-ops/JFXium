@@ -2,7 +2,7 @@ package org.openkawu.jfxium.component.control;
 
 import javafx.scene.control.Hyperlink;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;

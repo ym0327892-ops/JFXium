@@ -12,7 +12,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Window;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.control.LabelAnt;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.token.FontTokens;
 import org.openkawu.jfxium.core.util.TextUtils;

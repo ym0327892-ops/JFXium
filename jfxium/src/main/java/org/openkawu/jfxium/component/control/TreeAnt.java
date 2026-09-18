@@ -6,7 +6,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

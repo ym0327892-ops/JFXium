@@ -8,7 +8,7 @@ import org.openkawu.jfxium.component.control.StatusBarAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;

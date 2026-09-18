@@ -4,7 +4,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
 import javafx.scene.control.Separator;
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 /**
  * JFXium Separator 组件 - 分隔线（继承式，双工厂模式）。

@@ -1,6 +1,6 @@
 package org.openkawu.jfxium.component.layout;
 
-import org.openkawu.jfxium.core.css.JfxStyles;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 /**
  * JFXium 平铺布局组件 - 对标 Ant Design 的平铺/缩略图网格。

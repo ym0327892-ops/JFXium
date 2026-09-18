@@ -1,4 +1,4 @@
-package org.openkawu.jfxium.core.css;
+package org.openkawu.jfxium.core.style;
 
 /**
  * 通用背景层级枚举（M19.35 引入）。
