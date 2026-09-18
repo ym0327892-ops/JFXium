@@ -256,7 +256,8 @@ public class CodeBlockAnt {
 
             ScrollPane scrollPane = new ScrollPane(scrollContent);
             scrollPane.setFitToWidth(true);
-            scrollPane.setPrefViewportHeight(maxHeight);
+            scrollPane.setFitToHeight(true);
+            scrollPane.setPrefViewportHeight(Region.USE_COMPUTED_SIZE);
             scrollPane.setMaxHeight(maxHeight);
             scrollPane.getStyleClass().add(JfxStyles.CODEBLOCK_SCROLL);
             return scrollPane;
@@ -277,10 +278,11 @@ public class CodeBlockAnt {
                     .editable(false)
                     .wrapText(false); // 代码不折行，超宽横向滚动
             textArea.getStyleClass().addAll(JfxStyles.CODEBLOCK_CONTENT, JfxStyles.CODEBLOCK_TEXTAREA);
-            // 输入容器高度 = 可视高度：内容多时在 TextArea 内部滚动（单一滚动条），
-            // 不与外层页面叠加出双滚动条。不按行数把 TextArea 撑开（那是旧病根）。
-            textArea.setMinHeight(maxHeight);
-            textArea.setPrefHeight(maxHeight);
+            // 高度自适应：内容多时不超过 maxHeight(超出滚动)，内容少时贴合内容高度，
+            // 不强制撑高——否则内容很少也会显示空滚动条+大块空白。
+            textArea.setMinHeight(Region.USE_COMPUTED_SIZE);
+            textArea.setPrefHeight(Region.USE_COMPUTED_SIZE);
+            textArea.setMaxHeight(maxHeight);
 
             Node scrollContent;
             if (showLineNumbers) {
@@ -294,7 +296,8 @@ public class CodeBlockAnt {
 
             ScrollPane scrollPane = new ScrollPane(scrollContent);
             scrollPane.setFitToWidth(true);
-            scrollPane.setPrefViewportHeight(maxHeight);
+            scrollPane.setFitToHeight(true);
+            scrollPane.setPrefViewportHeight(Region.USE_COMPUTED_SIZE);
             scrollPane.setMaxHeight(maxHeight);
             scrollPane.getStyleClass().add(JfxStyles.CODEBLOCK_SCROLL);
             return scrollPane;
