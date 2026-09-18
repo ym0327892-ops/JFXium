@@ -99,7 +99,7 @@ public class CodeBlockAnt {
         private String code = "";
         private boolean showLineNumbers = false;
         private Theme theme = Theme.LIGHT;
-        private double maxHeight = 400; // 超出时滚动
+        private double maxHeight = 220; // 超出时滚动（默认紧凑；调用方可显式调大）
         private boolean showCopyButton = true; // 顶部复制按钮（默认显示，对齐 GitHub/Ant Design 代码块）
         private String title = null;           // 顶部标题（可选；null 时用语言名）
         private boolean selectable = false;    // 是否可自由选区复制（true=TextArea 单色可选 / false=TextFlow 高亮不可选）

@@ -74,6 +74,7 @@
 /* LINE variant */
 .jfx-tabs-label-line {
   -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-default;
 }
 
 .jfx-tabs-label-line.jfx-tabs-active {
@@ -81,11 +82,12 @@
   -fx-font-weight: 600;
 }
 
-.jfx-tabs-label-line:not(.jfx-tabs-active) {
+/* CARD variant */
+.jfx-tabs-label-card {
+  -fx-background-color: transparent;
   -fx-text-fill: -color-fg-default;
 }
 
-/* CARD variant */
 .jfx-tabs-label-card.jfx-tabs-active {
   -fx-background-color: -color-bg-default;
   -fx-text-fill: -color-accent-emphasis;
@@ -93,11 +95,6 @@
   -fx-border-width: 1px 1px 0 1px;
   -fx-background-radius: @border-radius-lg @border-radius-lg 0 0;
   -fx-border-radius: @border-radius-lg @border-radius-lg 0 0;
-}
-
-.jfx-tabs-label-card:not(.jfx-tabs-active) {
-  -fx-background-color: transparent;
-  -fx-text-fill: -color-fg-default;
 }
 
 /* Size variants */
@@ -109,12 +106,18 @@
   -fx-font-size: @font-size-sm;
 }
 
-.jfx-tabs-label:not(.jfx-tabs-large):not(.jfx-tabs-small) {
+.jfx-tabs-label {
   -fx-font-size: @font-size-md;
 }
 
 /* LINE padding —— BUG #144：token 化（variables-base.less @tabs-label-padding-*），
-   Java 端不再 setPadding（直设属性会覆盖样式表，导致紧凑模式失效） */
+   Java 端不再 setPadding（直设属性会覆盖样式表，导致紧凑模式失效）。
+   注意：JavaFX CSS 不支持 :not() 伪类 —— 用「默认类 + large/small 特异性覆盖」替代，
+   否则 .jfx-tabs-label-line:not(.jfx-tabs-large) 整条规则会被静默丢弃，padding 恒为 0（标签贴一起）。 */
+.jfx-tabs-label-line {
+  -fx-padding: @tabs-label-padding-y @tabs-label-padding-x;
+}
+
 .jfx-tabs-label-line.jfx-tabs-large {
   -fx-padding: @tabs-label-padding-y-lg @tabs-label-padding-x-lg;
 }
@@ -123,21 +126,17 @@
   -fx-padding: @tabs-label-padding-y-sm @tabs-label-padding-x-sm;
 }
 
-.jfx-tabs-label-line:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-padding: @tabs-label-padding-y @tabs-label-padding-x;
+/* CARD padding */
+.jfx-tabs-label-card {
+  -fx-padding: @tabs-card-padding-y @tabs-card-padding-x;
 }
 
-/* CARD padding */
 .jfx-tabs-label-card.jfx-tabs-large {
   -fx-padding: @tabs-card-padding-y-lg @tabs-card-padding-x-lg;
 }
 
 .jfx-tabs-label-card.jfx-tabs-small {
   -fx-padding: @tabs-card-padding-y-sm @tabs-card-padding-x-sm;
-}
-
-.jfx-tabs-label-card:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-padding: @tabs-card-padding-y @tabs-card-padding-x;
 }
 
 /* Disabled */

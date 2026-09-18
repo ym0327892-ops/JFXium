@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component.composite;
 
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -176,5 +177,41 @@ class TabsAntTest extends JfxTestBase {
                 .tab("a", "A", new Region())
                 .build();
         assertFalse(TabsAnt.controllerOf(root).selectByKey(""));
+    }
+
+    @Test
+    @DisplayName("标签间应有间距：CSS padding 生效后 label 有横向 insets")
+    void tabLabels_haveHorizontalInsets() {
+        runOnFxThreadAndWait(() -> {
+            VBox root = (VBox) TabsAnt.create()
+                    .tab("a", "标签一", new Region())
+                    .tab("b", "标签二", new Region())
+                    .build();
+            // 结构：root > VBox wrapper(tabBar+indicator) > HBox tabBar > Label×2
+            VBox wrapper = (VBox) root.getChildren().get(0);
+            HBox tabBar = (HBox) wrapper.getChildren().get(0);
+            Label first = (Label) tabBar.getChildren().get(0);
+            Label second = (Label) tabBar.getChildren().get(1);
+
+            // 放进 Scene 并 applyCss，让 CSS padding 生效
+            Scene scene = new Scene(root, 600, 200);
+            // 加载真实的 JFXium 主题 CSS，精确复现 demo 渲染（LESS 编译产物）
+            java.net.URL url = getClass().getResource("/org/openkawu/jfxium/css/theme-light.css");
+            if (url != null) {
+                scene.getStylesheets().add(url.toExternalForm());
+            }
+            root.applyCss();
+            root.layout();
+
+            double padR = first.getInsets().getRight();
+            System.out.println("[TabsAnt-test] label1 styleClass=" + first.getStyleClass());
+            System.out.println("[TabsAnt-test] label1 insets L=" + first.getInsets().getLeft()
+                    + " R=" + padR + " label1.maxX=" + first.getBoundsInParent().getMaxX()
+                    + " label2.minX=" + second.getBoundsInParent().getMinX());
+            // 标签间水平应有间隙（CSS 16px padding 提供）
+            assertTrue(padR > 0, "标签应有横向内边距，实际 R=" + padR);
+            double gap = second.getBoundsInParent().getMinX() - first.getBoundsInParent().getMaxX();
+            assertTrue(gap >= 0, "标签间不应重叠，间距=" + gap);
+        });
     }
 }

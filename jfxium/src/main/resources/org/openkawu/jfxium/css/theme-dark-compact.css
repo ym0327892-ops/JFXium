@@ -6485,15 +6485,17 @@
 /* LINE variant */
 .jfx-tabs-label-line {
   -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-default;
 }
 .jfx-tabs-label-line.jfx-tabs-active {
   -fx-text-fill: -color-accent-emphasis;
   -fx-font-weight: 600;
 }
-.jfx-tabs-label-line:not(.jfx-tabs-active) {
+/* CARD variant */
+.jfx-tabs-label-card {
+  -fx-background-color: transparent;
   -fx-text-fill: -color-fg-default;
 }
-/* CARD variant */
 .jfx-tabs-label-card.jfx-tabs-active {
   -fx-background-color: -color-bg-default;
   -fx-text-fill: -color-accent-emphasis;
@@ -6502,10 +6504,6 @@
   -fx-background-radius: 8px 8px 0 0;
   -fx-border-radius: 8px 8px 0 0;
 }
-.jfx-tabs-label-card:not(.jfx-tabs-active) {
-  -fx-background-color: transparent;
-  -fx-text-fill: -color-fg-default;
-}
 /* Size variants */
 .jfx-tabs-label.jfx-tabs-large {
   -fx-font-size: 16px;
@@ -6513,29 +6511,31 @@
 .jfx-tabs-label.jfx-tabs-small {
   -fx-font-size: 12px;
 }
-.jfx-tabs-label:not(.jfx-tabs-large):not(.jfx-tabs-small) {
+.jfx-tabs-label {
   -fx-font-size: 13px;
 }
 /* LINE padding —— BUG #144：token 化（variables-base.less @tabs-label-padding-*），
-   Java 端不再 setPadding（直设属性会覆盖样式表，导致紧凑模式失效） */
+   Java 端不再 setPadding（直设属性会覆盖样式表，导致紧凑模式失效）。
+   注意：JavaFX CSS 不支持 :not() 伪类 —— 用「默认类 + large/small 特异性覆盖」替代，
+   否则 .jfx-tabs-label-line:not(.jfx-tabs-large) 整条规则会被静默丢弃，padding 恒为 0（标签贴一起）。 */
+.jfx-tabs-label-line {
+  -fx-padding: 8px 12px;
+}
 .jfx-tabs-label-line.jfx-tabs-large {
   -fx-padding: 12px 16px;
 }
 .jfx-tabs-label-line.jfx-tabs-small {
   -fx-padding: 6px 8px;
 }
-.jfx-tabs-label-line:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-padding: 8px 12px;
-}
 /* CARD padding */
+.jfx-tabs-label-card {
+  -fx-padding: 6px 12px;
+}
 .jfx-tabs-label-card.jfx-tabs-large {
   -fx-padding: 7px 12px;
 }
 .jfx-tabs-label-card.jfx-tabs-small {
   -fx-padding: 2px 6px;
-}
-.jfx-tabs-label-card:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-padding: 6px 12px;
 }
 /* Disabled */
 .jfx-tabs-label.jfx-tabs-disabled {

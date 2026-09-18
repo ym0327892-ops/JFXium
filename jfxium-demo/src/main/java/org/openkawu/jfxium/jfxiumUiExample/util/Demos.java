@@ -115,7 +115,7 @@ public final class Demos {
                 .showLineNumbers(true)
                 .theme(CodeBlockAnt.Theme.AUTO)
                 .selectable(true)   // 示例代码：可自由拖选 + Ctrl+C 抄走片段（单色，但选区比高亮重要）
-                .maxHeight(360)
+                .maxHeight(200)
                 .build();
         codeBlock.setVisible(false);
         codeBlock.setManaged(false);
