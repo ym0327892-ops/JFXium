@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.layout;
 
 import javafx.scene.Node;
+import javafx.scene.layout.Region;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.ResizablePanelAnt;
@@ -52,6 +53,13 @@ public class LayoutContainerExamplePage extends VBoxAnt {
     // 视觉块 helper：给容器填色块节点，方便看间距/对齐效果
     private Node chip(String text) {
         return Demos.placeholder(text, Background.SUBTLE);
+    }
+
+    /** 指定宽的色块（FlowPane 换行、TilePane 网格用——固定宽才能看到换行）。 */
+    private Node chipW(double width, String text) {
+        Region n = (Region) Demos.placeholder(text, Background.SUBTLE);
+        n.setPrefWidth(width);
+        return n;
     }
 
     private Node vboxSection() {
@@ -151,41 +159,62 @@ public class LayoutContainerExamplePage extends VBoxAnt {
     }
 
     private Node scrollPaneSection() {
-        Node demo = ScrollPaneAnt.create()
-                .content(VBoxAnt.create()
-                        .spacing(8)
-                        .padding(12)
-                        .children(chip("滚动内容 1"), chip("滚动内容 2"), chip("滚动内容 3"),
-                                chip("滚动内容 4"), chip("滚动内容 5"), chip("滚动内容 6"))
-                        .build())
-                .build();
-        String code = """
-                ScrollPaneAnt.create()
-                        .content(longContent)   // 内容超高时出现滚动条
-                        .build();
-                """;
-        return Demos.sectionWithCode("6. ScrollPane 滚动视图", "内容超出可视区时可滚动的容器。", code, demo);
-    }
+            // 纵向滚动：内容总高超限 → 必出纵向滚动条
+            ScrollPaneAnt demo = ScrollPaneAnt.create()
+                    .content(VBoxAnt.create()
+                            .spacing(8)
+                            .children(
+                                    chipW(60, "滚动项 1"), chipW(60, "滚动项 2"), chipW(60, "滚动项 3"),
+                                    chipW(60, "滚动项 4"), chipW(60, "滚动项 5"))
+                            .build())
+                    .build();
+            demo.setMaxHeight(170);     // 钳制可视高度，内容溢出 → 纵向滚动条出现
+            String code = """
+                    ScrollPaneAnt.create()
+                            .content(tallContent)   // 内容总高 > maxHeight 时出现滚动条
+                            .maxHeight(170)          // 关键：钳制可视高度才可滚动
+                            .build();
+                    """;
+            return Demos.sectionWithCode("6. ScrollPane 滚动视图", "钳制高度后内容溢出即出现滚动条，可上下滚动。", code, demo);
+        }
 
-    private Node flowTileSection() {
-        Node flow = FlowPaneAnt.create()
-                .children(chip("1"), chip("2"), chip("3"), chip("4"), chip("5"), chip("6"))
-                .build();
-        Node tile = TilePaneAnt.create()
-                .children(chip("A"), chip("B"), chip("C"), chip("D"), chip("E"), chip("F"))
-                .build();
-        Node demo = VBoxAnt.create()
-                .spacing(12)
-                .children(
-                        TypographyAnt.text("FlowPane · 流式换行").build(), flow,
-                        TypographyAnt.text("TilePane · 等尺寸网格平铺").build(), tile)
-                .build();
-        String code = """
-                FlowPaneAnt.create().children(...)   // 放不下自动换行，子项不等宽
-                TilePaneAnt.create().children(...)   // 等宽高网格平铺
-                """;
-        return Demos.sectionWithCode("7. FlowPane / TilePane", "流式换行 与 等尺寸网格 平铺。", code, demo);
-    }
+        private Node flowTileSection() {
+            // FlowPane 换行：给子项不等的固定宽 + 钳制宽度，放不下就换行
+            FlowPaneAnt flow = FlowPaneAnt.create()
+                    .children(
+                            chipW(120, "宽 120"), chipW(80, "宽 80"), chipW(100, "宽 100"),
+                            chipW(60, "宽 60"), chipW(140, "宽 140"), chipW(90, "宽 90"),
+                            chipW(110, "宽 110"), chipW(70, "宽 70"))
+                    .build();
+            flow.setMaxWidth(300);     // 钳制总宽度 → 超宽自动换行（Region 原生方法）
+            // TilePane 网格换行：固定每行列数 + 等宽单元
+            TilePaneAnt tile = TilePaneAnt.create()
+                    .prefColumns(4)     // 每行 4 列
+                    .children(
+                            chipW(70, "A"), chipW(70, "B"), chipW(70, "C"), chipW(70, "D"),
+                            chipW(70, "E"), chipW(70, "F"), chipW(70, "G"), chipW(70, "H"))
+                    .build();
+            tile.setMaxWidth(320);
+            Node demo = VBoxAnt.create()
+                    .spacing(16)
+                    .children(
+                            TypographyAnt.text("FlowPane · 放不下自动换行").build(), flow,
+                            TypographyAnt.text("TilePane · 等尺寸网格平铺").build(), tile)
+                    .build();
+            String code = """
+                    FlowPaneAnt.create()
+                            .children(不等宽节点们)
+                            .maxWidth(300)        // 钳制宽度 → 超宽换行（FlowPane）
+                            .build();
+
+                    TilePaneAnt.create()
+                            .prefColumns(4)         // 每行 4 列
+                            .prefTileWidth(70)
+                            .children(等宽单元们)
+                            .build();               // 铺满一行自动换下一行
+                    """;
+            return Demos.sectionWithCode("7. FlowPane / TilePane", "流式换行（不等宽）与网格平铺（等尺寸、定列数）。", code, demo);
+        }
 
     private Node textFlowSection() {
         // TextFlow 富文本：行内混排（普通文字 + 强调 + 链接样）
