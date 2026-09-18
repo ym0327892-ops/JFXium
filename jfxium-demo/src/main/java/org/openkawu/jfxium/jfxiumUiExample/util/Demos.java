@@ -9,6 +9,7 @@ import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.composite.VBarAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.style.Background;
+import org.openkawu.jfxium.component.control.SeparatorAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.CodeBlockAnt;
 import org.openkawu.jfxium.component.composite.GroupBoxAnt;
@@ -121,7 +122,9 @@ public final class Demos {
 
         // 容器：toggle 上、code 下
         // 顶部加一条细分隔线（与上方演示区视觉拉开）
-        javafx.scene.control.Separator sep = new javafx.scene.control.Separator();
+        SeparatorAnt sep = SeparatorAnt.create()
+                .orientation(javafx.geometry.Orientation.HORIZONTAL)
+                .build();
         sep.getStyleClass().add("jfx-demo-code-separator");
         VBox.setMargin(sep, new javafx.geometry.Insets(4, 0, 4, 0));
 
