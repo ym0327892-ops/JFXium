@@ -277,9 +277,10 @@ public class CodeBlockAnt {
                     .editable(false)
                     .wrapText(false); // 代码不折行，超宽横向滚动
             textArea.getStyleClass().addAll(JfxStyles.CODEBLOCK_CONTENT, JfxStyles.CODEBLOCK_TEXTAREA);
-            // 自适应行数：让 TextArea 撑到全部内容高度，避免内部滚动条与外层 ScrollPane 打架
-            textArea.rows(countLines(code));
-            textArea.setMinHeight(Region.USE_PREF_SIZE);
+            // 输入容器高度 = 可视高度：内容多时在 TextArea 内部滚动（单一滚动条），
+            // 不与外层页面叠加出双滚动条。不按行数把 TextArea 撑开（那是旧病根）。
+            textArea.setMinHeight(maxHeight);
+            textArea.setPrefHeight(maxHeight);
 
             Node scrollContent;
             if (showLineNumbers) {

@@ -46,6 +46,7 @@ public class MainView {
     private final Supplier<Boolean> watermarkVisibleSupplier;
     private final PageRegistry registry;
     private final BorderPane contentHost = BorderPaneAnt.create().build();
+    private ScrollPaneAnt contentScroll;
     private MenuAnt.Controller menuController;
     private WorkspaceTemplate.Result workspaceResult;
 
@@ -71,6 +72,7 @@ public class MainView {
                 .content(contentHost)
                 .fitToWidth(true)
                 .build();
+        this.contentScroll = contentScroll;
         contentScroll.getStyleClass().add(Background.LAYOUT.styleClass());
 
         ButtonAnt settingsBtn = ButtonAnt.create("设置")
@@ -211,6 +213,10 @@ public class MainView {
             return;
         }
         contentHost.setCenter(page);
+        // 切换页面时把内容滚动区重置回顶部，避免跳到新页停在上一页的滚动位置。
+        if (contentScroll != null) {
+            contentScroll.setVvalue(0);
+        }
         if (menuController != null) {
             menuController.setSelectedKey(key);
         }
