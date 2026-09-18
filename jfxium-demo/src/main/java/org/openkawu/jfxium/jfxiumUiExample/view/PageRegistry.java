@@ -31,6 +31,7 @@ public class PageRegistry {
     public enum Category {
         GENERAL("通用"),
         LAYOUT("布局"),
+        TEMPLATE("工程模板"),
         NAVIGATION("导航"),
         DATA_ENTRY("数据录入"),
         DATA_DISPLAY("数据展示"),

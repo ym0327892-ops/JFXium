@@ -76,6 +76,7 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.general.TypographyExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.WatermarkExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.FlexExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.GridExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.LayoutContainerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectChangelogExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectConsoleExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectFeatureExamplePage;
@@ -124,6 +125,7 @@ final class PageCatalog {
 
         registerGeneral(registry);
         registerLayout(registry);
+        registerTemplate(registry);
         registerNavigation(registry);
         registerDataEntry(registry);
         registerDataDisplay(registry);
@@ -151,17 +153,22 @@ final class PageCatalog {
         register(registry, "layout.flex", "Flex 弹性布局", PageRegistry.Category.LAYOUT, FlexExamplePage::new);
         register(registry, "layout.bar", "HBar 横向条状容器", PageRegistry.Category.LAYOUT, HBarExamplePage::new);
         register(registry, "layout.vbar", "VBar 竖向条状容器", PageRegistry.Category.LAYOUT, VBarExamplePage::new);
-        register(registry, "layout.workspace", "WorkspaceTemplate 工作台模板", PageRegistry.Category.LAYOUT, WorkspaceTemplateExamplePage::new);
-        register(registry, UiExampleConstants.ROUTE_PROJECT_CONSOLE, "ProjectConsole 工程控制台壳模板", PageRegistry.Category.LAYOUT, ProjectConsoleExamplePage::new);
-        register(registry, UiExampleConstants.ROUTE_PROJECT_FEATURE, "ProjectFeature 工程特色模块模板", PageRegistry.Category.LAYOUT, ProjectFeatureExamplePage::new);
-        register(registry, UiExampleConstants.ROUTE_PROJECT_QUICKSTART, "ProjectQuickStart 快速上手模板", PageRegistry.Category.LAYOUT, ProjectQuickStartExamplePage::new);
-        register(registry, UiExampleConstants.ROUTE_PROJECT_CHANGELOG, "ProjectChangelog 更新日志模板", PageRegistry.Category.LAYOUT, ProjectChangelogExamplePage::new);
-        register(registry, UiExampleConstants.ROUTE_PROJECT_HERO, "ProjectHero 工程门面模板", PageRegistry.Category.LAYOUT, ProjectHeroExamplePage::new);
-        register(registry, UiExampleConstants.ROUTE_PROJECT_OVERVIEW, "ProjectOverview 工程概览模板", PageRegistry.Category.LAYOUT, ProjectOverviewExamplePage::new);
-        register(registry, UiExampleConstants.ROUTE_PROJECT_RELEASE, "ProjectRelease 发布节奏模板", PageRegistry.Category.LAYOUT, ProjectReleaseExamplePage::new);
-        register(registry, UiExampleConstants.ROUTE_PROJECT_SHOWCASE, "ProjectShowcase 工程项目展示首页模板", PageRegistry.Category.LAYOUT, ProjectShowcaseExamplePage::new);
         register(registry, "layout.divider", "Divider 分割线", PageRegistry.Category.LAYOUT, DividerExamplePage::new);
         register(registry, "layout.separator", "Separator 分隔符", PageRegistry.Category.LAYOUT, SeparatorExamplePage::new);
+        // 布局容器综合页（VBox/HBox/BorderPane/StackPane/SplitPane/ScrollPane/... 的 spacing/align/grow/padding 用法）
+        register(registry, "layout.container", "布局容器", PageRegistry.Category.LAYOUT, LayoutContainerExamplePage::new);
+    }
+
+    private static void registerTemplate(PageRegistry registry) {
+        register(registry, "template.workspace", "WorkspaceTemplate 工作台模板", PageRegistry.Category.TEMPLATE, WorkspaceTemplateExamplePage::new);
+        register(registry, UiExampleConstants.ROUTE_PROJECT_CONSOLE, "ProjectConsole 工程控制台壳模板", PageRegistry.Category.TEMPLATE, ProjectConsoleExamplePage::new);
+        register(registry, UiExampleConstants.ROUTE_PROJECT_FEATURE, "ProjectFeature 工程特色模块模板", PageRegistry.Category.TEMPLATE, ProjectFeatureExamplePage::new);
+        register(registry, UiExampleConstants.ROUTE_PROJECT_QUICKSTART, "ProjectQuickStart 快速上手模板", PageRegistry.Category.TEMPLATE, ProjectQuickStartExamplePage::new);
+        register(registry, UiExampleConstants.ROUTE_PROJECT_CHANGELOG, "ProjectChangelog 更新日志模板", PageRegistry.Category.TEMPLATE, ProjectChangelogExamplePage::new);
+        register(registry, UiExampleConstants.ROUTE_PROJECT_HERO, "ProjectHero 工程门面模板", PageRegistry.Category.TEMPLATE, ProjectHeroExamplePage::new);
+        register(registry, UiExampleConstants.ROUTE_PROJECT_OVERVIEW, "ProjectOverview 工程概览模板", PageRegistry.Category.TEMPLATE, ProjectOverviewExamplePage::new);
+        register(registry, UiExampleConstants.ROUTE_PROJECT_RELEASE, "ProjectRelease 发布节奏模板", PageRegistry.Category.TEMPLATE, ProjectReleaseExamplePage::new);
+        register(registry, UiExampleConstants.ROUTE_PROJECT_SHOWCASE, "ProjectShowcase 工程项目展示首页模板", PageRegistry.Category.TEMPLATE, ProjectShowcaseExamplePage::new);
     }
 
     private static void registerNavigation(PageRegistry registry) {

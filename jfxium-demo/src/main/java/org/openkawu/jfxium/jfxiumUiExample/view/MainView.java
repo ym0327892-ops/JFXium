@@ -197,6 +197,7 @@ public class MainView {
         return switch (category) {
             case GENERAL -> IconAnt.path(IconAnt.Path.SETTINGS, 16);
             case LAYOUT -> IconAnt.path(IconAnt.Path.DASHBOARD, 16);
+            case TEMPLATE -> IconAnt.path(IconAnt.Path.FILE, 16);
             case NAVIGATION -> IconAnt.path(IconAnt.Path.HOME, 16);
             case DATA_ENTRY -> IconAnt.path(IconAnt.Path.EDIT, 16);
             case DATA_DISPLAY -> IconAnt.path(IconAnt.Path.CHART, 16);
