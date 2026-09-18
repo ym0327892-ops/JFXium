@@ -3,11 +3,14 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.layout;
 import javafx.scene.Node;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.composite.ResizablePanelAnt;
+import org.openkawu.jfxium.component.composite.SurfaceAnt;
 import org.openkawu.jfxium.component.layout.AnchorPaneAnt;
 import org.openkawu.jfxium.component.layout.BorderPaneAnt;
 import org.openkawu.jfxium.component.layout.FlowPaneAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.ScrollPaneAnt;
+import org.openkawu.jfxium.component.layout.SpaceAnt;
 import org.openkawu.jfxium.component.layout.SplitPaneAnt;
 import org.openkawu.jfxium.component.layout.StackPaneAnt;
 import org.openkawu.jfxium.component.layout.TextFlowAnt;
@@ -37,7 +40,10 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         scrollPaneSection(),
                         flowTileSection(),
                         textFlowSection(),
-                        anchorSection()
+                        anchorSection(),
+                        spaceSection(),
+                        surfaceSection(),
+                        resizableSection()
                 )
                 .padding(24)
                 .build());
@@ -215,5 +221,65 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         .build();   // 边沿/四角锚定，跟随窗口尺寸缩放
                 """;
         return Demos.sectionWithCode("9. AnchorPane 锚点定位", "固定子节点到四角 / 边、填满或让出空间（复杂布局常用）。", code, demo);
+    }
+
+    private Node spaceSection() {
+        // Space：统一间距排布（横向）
+        Node demo = SpaceAnt.create()
+                .size(12)
+                .children(
+                        ButtonAnt.create("按钮 A").build(),
+                        ButtonAnt.create("按钮 B").build(),
+                        ButtonAnt.create("按钮 C").build()
+                )
+                .build();
+        String code = """
+                SpaceAnt.create()
+                        .size(12)                       // 统一间距
+                        .children(btnA, btnB, btnC)
+                        .build();                        // 无需手动给每个按钮加 margin
+                """;
+        return Demos.sectionWithCode("10. Space 间距排布", "Ant Design Space —— 统一、平均地给一组兄弟节点加间距。", code, demo);
+    }
+
+    private Node surfaceSection() {
+        // Surface：材质卡片容器（标题 + 额外操作 + 内容）
+        Node demo = SurfaceAnt.create()
+                .title("Surface 材质卡片")
+                .extra(ButtonAnt.create("操作").type(ButtonAnt.Type.LINK).build())
+                .content(VBoxAnt.create()
+                        .spacing(8)
+                        .children(
+                                TypographyAnt.text("带标题、头部额外操作区的内容卡片外壳。").build(),
+                                TypographyAnt.text("常用于侧栏面板 / 分组设置 / 浮动内容块。").type(TypographyAnt.TextColor.SECONDARY).build())
+                        .build())
+                .build();
+        String code = """
+                SurfaceAnt.create()
+                        .title("标题")
+                        .extra(操作按钮)          // 头部右侧
+                        .content(body)
+                        .build();                  // 卡片式材质容器
+                """;
+        return Demos.sectionWithCode("11. Surface 材质卡片", "带标题 + 头部操作区的内容卡片，常用于面板 / 分组。", code, demo);
+    }
+
+    private Node resizableSection() {
+        // ResizablePanel：可拖拽调整尺寸的面板
+        Node demo = ResizablePanelAnt.create()
+                .content(Demos.placeholder("拖拽右/下边缘调整大小", Background.SUBTLE))
+                .mode(ResizablePanelAnt.Mode.BOTH)
+                .prefWidth(320)
+                .minWidth(160)
+                .minHeight(80)
+                .build();
+        String code = """
+                ResizablePanelAnt.create()
+                        .content(detailView)
+                        .mode(BOTH)                // 可同时拖右/下边缘
+                        .prefWidth(320).minWidth(160)
+                        .build();                  // 侧边详情面板 / 底部控制台
+                """;
+        return Demos.sectionWithCode("12. ResizablePanel 可调面板", "拖拽边缘调整宽度/高度，带 min/max 约束。", code, demo);
     }
 }
