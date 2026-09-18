@@ -3297,7 +3297,8 @@
 .jfx-codeblock-scroll {
   -fx-background-color: transparent;
   -fx-border-width: 0;
-  -fx-padding: 12;
+  /* ScrollPane 的 -fx-padding 会被算进内容尺寸，诱发多余滚动条 */
+  -fx-padding: 0;
 }
 /* ScrollPane 的视口也需要透明，否则会盖住 codeblock 容器的浅灰背景 */
 .jfx-codeblock-scroll > .viewport {
