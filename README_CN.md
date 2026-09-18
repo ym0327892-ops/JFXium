@@ -17,7 +17,7 @@
 | 文档 | 内容 |
 |------|------|
 | [组件参考](docs/cn/组件参考.md) | 全量组件/模板参考 + bindValue 声明式绑定专题 + 布局/全局浮层管理 |
-| [主题系统](docs/cn/主题系统.md) | ThemeManager + 11 套主题入口（7 个 Java Theme 类 + 4 个 compact 变体）+ 自定义主题 + styleClass 体系 |
+| [主题系统](docs/cn/主题系统.md) | ThemeManager + 主题入口（Light/Dark + custom 模板 × 密度变体）+ 自定义主题 + styleClass 体系 |
 | [快速上手](docs/cn/快速上手.md) | 完整入门教程 + 5 个可运行的业务场景示例 |
 | [业务模板](docs/cn/业务模板.md) | PageTemplate / CrudTemplate / LoginTemplate / DashboardTemplate |
 | [最佳实践](docs/cn/最佳实践.md) | Builder 规范 / EventBus + record / 页面骨架继承式写法 |
@@ -34,7 +34,7 @@
 <dependency>
     <groupId>org.openkawu</groupId>
     <artifactId>jfxium</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.31.0</version>
 </dependency>
 ```
 

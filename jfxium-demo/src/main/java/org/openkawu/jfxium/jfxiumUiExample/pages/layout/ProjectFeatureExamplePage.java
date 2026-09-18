@@ -52,7 +52,7 @@ public class ProjectFeatureExamplePage extends VBoxAnt {
                 .description("为 JavaFX 开发者提供的一站式 UI 增强能力")
                 .columns(2)
                 .feature("builder", "Builder 模式", "所有组件统一 Builder API，链式调用一目了然", IconAnt.Path.SETTINGS)
-                .feature("theme", "11 套主题", "Ant Design / Material / Shadcn 等风格一键切换", IconAnt.Path.DASHBOARD)
+                .feature("theme", "5 套主题", "亮暗 × 紧凑自适应，支持自定义主题模板一键切换", IconAnt.Path.DASHBOARD)
                 .feature("components", "97+ 组件", "控件、组合、弹层、布局、模板全覆盖", IconAnt.Path.HOME)
                 .feature("nofxml", "零 FXML", "纯 Java 代码构建 UI，不需要 XML 配置文件", IconAnt.Path.FILE)
                 .feature("defensive", "防御性编程", "null 安全、输入校验、尺寸钳制，全链路防御", IconAnt.Path.BELL)

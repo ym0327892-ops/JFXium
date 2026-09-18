@@ -19,26 +19,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * 主题冒烟测试 —— 在 JFX 工具套件下验证：
  * <ol>
- *   <li>6 套主题 CSS 资源全部存在且非空（编译产物完整性）</li>
+ *   <li>5 套主题 CSS 资源全部存在且非空（编译产物完整性）</li>
  *   <li>ThemeManager 状态机 Light/Dark × Default/Compact 全可切换</li>
- *   <li>2 套脱管主题（shadcn / custom）CSS 资源可加载（可手挂 Scene）</li>
+ *   <li>1 套模板主题（custom）CSS 资源可加载（可手挂 Scene / 支持密度派生）</li>
  * </ol>
  *
  * <p>本测试不替代人工 UI 走查，但能给出"主题切换可用"的机器可验证结论。
  * 对应 {@code PROJECT_ACCEPTANCE.md} 第 1 节「全局主题切换」中"主题颜色整体跟随"、
  * "暗色系下对比度安全"、"紧凑模式控件高度收紧"的可机器验证子项。</p>
  */
-@DisplayName("主题冒烟测试 (6 套 CSS 加载 + 状态机 4 组合)")
+@DisplayName("主题冒烟测试 (5 套 CSS 加载 + 状态机 4 组合)")
 class ThemeSmokeTest extends JfxTestBase {
 
-    /** 6 套主题 CSS 路径。 */
+    /** 5 套主题 CSS 路径。 */
     private static final String[] ALL_THEME_CSS = {
         "/org/openkawu/jfxium/css/theme-light.css",
         "/org/openkawu/jfxium/css/theme-dark.css",
         "/org/openkawu/jfxium/css/theme-light-compact.css",
         "/org/openkawu/jfxium/css/theme-dark-compact.css",
-        "/org/openkawu/jfxium/css/theme-shadcn.css",
         "/org/openkawu/jfxium/css/theme-custom.css",
+        "/org/openkawu/jfxium/css/theme-custom-compact.css",
     };
 
     /** 4 套受 ThemeManager 状态机管理的主题（Light/Dark × Default/Compact）。 */
@@ -49,20 +49,20 @@ class ThemeSmokeTest extends JfxTestBase {
         "/org/openkawu/jfxium/css/theme-dark-compact.css",
     };
 
-    /** 2 套脱管主题（手挂 Scene，不进 ThemeManager 状态机）。 */
+    /** 1 套模板主题（custom + 其 compact 派生，支持密度联动，可手挂 Scene）。 */
     private static final String[] UNMANAGED_THEME_CSS = {
-        "/org/openkawu/jfxium/css/theme-shadcn.css",
         "/org/openkawu/jfxium/css/theme-custom.css",
+        "/org/openkawu/jfxium/css/theme-custom-compact.css",
     };
 
     @Nested
-    @DisplayName("6 套主题 CSS 编译产物完整性")
+    @DisplayName("6 个 CSS 产物完整性（状态机 4 + custom 常规/紧凑 2）")
     class CssArtifacts {
 
         @Test
-        @DisplayName("6 套 CSS 资源全部存在且非空")
+        @DisplayName("6 个主题 CSS 文件全部存在且非空")
         void allThemeCssArtifactsExist() throws Exception {
-            assertEquals(6, ALL_THEME_CSS.length, "6 套主题宣称数量");
+            assertEquals(6, ALL_THEME_CSS.length, "6 个主题 CSS 文件");
 
             for (String path : ALL_THEME_CSS) {
                 URL url = ThemeSmokeTest.class.getResource(path);
@@ -145,55 +145,38 @@ class ThemeSmokeTest extends JfxTestBase {
     }
 
     @Nested
-    @DisplayName("2 套脱管主题（shadcn / custom）")
+    @DisplayName("1 套模板主题（custom）")
     class UnmanagedThemes {
 
         @Test
-        @DisplayName("2 套脱管主题 CSS 资源存在且非空（可手挂 Scene）")
-        void unmanagedThemesLoadable() throws Exception {
-            assertEquals(2, UNMANAGED_THEME_CSS.length,
-                "2 套脱管主题：shadcn / custom");
-
+        @DisplayName("custom 常规/紧凑 CSS 资源存在且非空（可手挂 Scene）")
+        void customThemeLoadable() throws Exception {
             for (String path : UNMANAGED_THEME_CSS) {
                 URL url = ThemeSmokeTest.class.getResource(path);
-                assertNotNull(url, () -> "脱管主题 CSS 资源缺失: " + path);
+                assertNotNull(url, () -> "custom 主题 CSS 资源缺失: " + path);
                 try (InputStream in = url.openStream()) {
                     int size = in.readAllBytes().length;
                     assertTrue(size > 100,
-                        () -> "脱管主题 CSS 异常小: " + path);
+                        () -> "custom 主题 CSS 异常小: " + path);
                 }
             }
         }
 
         @Test
-        @DisplayName("4 套 MANAGED + 2 套 UNMANAGED = 6 套")
-        void managedPlusUnmanagedEqualsSeven() {
+        @DisplayName("4 个 MANAGED + 2 个 custom = 6 个 CSS 文件")
+        void managedPlusUnmanagedEqualsSix() {
             assertEquals(MANAGED_THEME_CSS.length + UNMANAGED_THEME_CSS.length,
                 ALL_THEME_CSS.length,
-                "MANAGED 4 套 + UNMANAGED 2 套 = 6 套");
+                "MANAGED 4 + custom 2 = 6 个 CSS 文件");
         }
     }
 
     @Nested
-    @DisplayName("2 套脱管主题的 Theme 包装类（ShadcnTheme / CustomTheme）")
+    @DisplayName("模板主题的 Theme 包装类（CustomTheme）")
     class UnmanagedThemeWrappers {
 
         @Test
-        @DisplayName("ShadcnTheme: 名称/UA stylesheet/类型 全部正确")
-        void shadcnThemeWrapperIsValid() {
-            ShadcnTheme t = new ShadcnTheme();
-            assertEquals("JFXium Shadcn", t.getName(), "Shadcn 名称");
-            assertEquals(Theme.ThemeType.LIGHT, t.getType(),
-                "Shadcn 是白底 + Zinc 黑主色，归类 LIGHT");
-            assertNotNull(t.getUserAgentStylesheet(), "Shadcn UA stylesheet 不可为空");
-            assertTrue(t.getUserAgentStylesheet().endsWith("theme-shadcn.css"),
-                "Shadcn UA stylesheet 应指向 theme-shadcn.css");
-            assertEquals(ThemeDensity.DEFAULT, t.getDensity(),
-                "脱管主题无独立密度变体，应走默认密度");
-        }
-
-        @Test
-        @DisplayName("CustomTheme: 名称/UA stylesheet/类型 全部正确")
+        @DisplayName("CustomTheme: 名称/UA stylesheet/类型/密度派生 全部正确")
         void customThemeWrapperIsValid() {
             CustomTheme t = new CustomTheme();
             assertEquals("JFXium Custom", t.getName(), "Custom 名称");
@@ -201,23 +184,20 @@ class ThemeSmokeTest extends JfxTestBase {
                 "Custom 是白底 + 紫主色，归类 LIGHT");
             assertNotNull(t.getUserAgentStylesheet(), "Custom UA stylesheet 不可为空");
             assertTrue(t.getUserAgentStylesheet().endsWith("theme-custom.css"),
-                "Custom UA stylesheet 应指向 theme-custom.css");
-            assertEquals(ThemeDensity.DEFAULT, t.getDensity(),
-                "脱管主题无独立密度变体，应走默认密度");
+                "Custom UA stylesheet 默认应指向 theme-custom.css");
+            // 支持密度派生：COMPACT 时返回 custom-compact.css
+            assertTrue(t.getUserAgentStylesheet(ThemeDensity.COMPACT).endsWith("theme-custom-compact.css"),
+                "Custom COMPACT 应指向 theme-custom-compact.css");
+            assertTrue(t.getUserAgentStylesheet(ThemeDensity.DEFAULT).endsWith("theme-custom.css"),
+                "Custom DEFAULT 应指向 theme-custom.css");
         }
 
         @Test
-        @DisplayName("2 套脱管 Theme 包装可统一通过 ThemeManager.applyTheme 加载")
-        void unmanagedThemesApplyViaThemeManager() {
+        @DisplayName("CustomTheme 可统一通过 ThemeManager.applyTheme 加载")
+        void customThemeApplyViaThemeManager() {
             ThemeManager mgr = ThemeManager.getInstance();
-            Theme[] unmanaged = {
-                new ShadcnTheme(),
-                new CustomTheme(),
-            };
-            for (Theme t : unmanaged) {
-                assertDoesNotThrow(() -> mgr.applyTheme(t),
-                    () -> "脱管主题 applyTheme 失败: " + t.getClass().getSimpleName());
-            }
+            assertDoesNotThrow(() -> mgr.applyTheme(new CustomTheme()),
+                "Custom 主题 applyTheme 失败");
         }
     }
 }

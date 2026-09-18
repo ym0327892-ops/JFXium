@@ -2082,20 +2082,8 @@ ShowcaseDemo
 ```
 JFXium/                                          # 多模块 Maven 项目（parent）
 ├── pom.xml                                      # 父 POM（modules: jfxium, jfxium-demo）
-├── AGENTS.md / README.md / README_CN.md / README_PK.md
-├── PROJECT_PLAN.md                              # 进度跟踪（时间线 + 路线图）
-├── PROJECT_BUG.md                               # BUG 表（#1 起顺号，当前 #72 全闭环）
-├── PROJECT_ACCEPTANCE.md                        # 人工验收清单（default 尺寸）
-├── PROJECT_AUDIT_REPORT.md                      # 规则审计快照
-│
-├── INTERNAL/                                    # 对内知识库（全大写英文，研发参考）
-│   ├── SKILL.md                                 # 主题/交互/CSS 规范
-│   ├── QUICKSTART.md                            # 5 分钟上手
-│   ├── COMPONENTS.md                            # 组件清单（详见 M20+ 增量）
-│   ├── LAYOUT.md                                # 布局类
-│   ├── THEME.md                                 # 主题系统
-│   ├── ANIMATION.md / BORDER.md                 # 动画/边框规范
-│   └── BUILDER_API_AUDIT.md                     # 2026-05-13 审计快照
+├── README.md / README_CN.md                     # 项目介绍与使用指南
+├── LICENSE                                      # MIT License
 │
 ├── docs/cn/                                     # 对外文档（中文，新人入口）
 │   ├── 快速上手.md / 主题系统.md / 业务模板.md
@@ -2106,11 +2094,11 @@ JFXium/                                          # 多模块 Maven 项目（pare
 │   └── src/
 │       ├── main/
 │       │   ├── java/org/openkawu/jfxium/
-│       │   │   ├── module-info.java             # JPMS exports（同步见 AGENTS）
+│       │   │   ├── module-info.java             # JPMS exports
 │       │   │   ├── core/
 │       │   │   │   ├── token/                   # 设计 token（Color/Spacing/Radius…）
 │       │   │   │   ├── theme/                   # ThemeManager + 8 套 *Theme + ThemeColor
-│       │   │   │   ├── css/                     # JfxStyles 常量 + Background
+│       │   │   │   ├── style/                   # JfxStyles 常量 + Background
 │       │   │   │   ├── builder/                 # AbstractStyleBuilder<SELF>（M20 集中 borderRadius）
 │       │   │   │   ├── i18n/                    # Messages（ResourceBundle，zh_CN 默认）
 │       │   │   │   ├── form/                    # FormContext / FormModel / Rule（M19.39 落地）
@@ -2132,8 +2120,8 @@ JFXium/                                          # 多模块 Maven 项目（pare
 │       │       │       ├── variables-dark.less  # 暗色色阶
 │       │       │       ├── theme-base.less      # → @import "components/_index"
 │       │       │       ├── theme-light.less     # → @import variables.less + theme-base.less
-│       │       │       ├── theme-dark.less / theme-*-compact.less / theme-mui*.less
-│       │       │       ├── theme-shadcn.less / theme-cyberpunk.less / theme-custom.less
+│       │       │       ├── theme-dark.less / theme-*-compact.less
+│       │       │       ├── theme-custom.less / theme-custom-compact.less  # custom 模板 + 其紧凑版
 │       │       │       └── components/          # 64 个 _xxx.less 组件样式
 │       │       └── i18n/                        # messages.properties（zh_CN / en）
 │       └── test/java/org/openkawu/jfxium/      # @M20+ 测试矩阵（25 文件 / 796 用例）

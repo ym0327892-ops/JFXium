@@ -39,7 +39,7 @@ import java.util.function.Consumer;
  *     .title("核心特性")
  *     .description("JFXium 为 JavaFX 开发者提供的核心能力")
  *     .feature("Builder 模式", "所有组件统一 Builder API，链式调用一目了然", IconAnt.Path.SETTINGS)
- *     .feature("11 套主题", "Ant Design / Material / Shadcn 等风格一键切换", IconAnt.Path.DASHBOARD)
+ *     .feature("5 套主题", "亮暗 × 紧凑自适应，支持自定义主题模板一键切换", IconAnt.Path.DASHBOARD)
  *     .feature("97+ 组件", "控件、组合、弹层、布局、模板全覆盖", IconAnt.Path.HOME)
  *     .feature("零 FXML", "纯 Java 代码构建 UI，不需要 XML 配置", IconAnt.Path.FILE)
  *     .onAction(key -> System.out.println("clicked: " + key))

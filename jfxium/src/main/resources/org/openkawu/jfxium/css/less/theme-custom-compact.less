@@ -1,27 +1,59 @@
 // ============================================
-// JFXium Custom Theme Example
-// 自定义主题示例 - 企业紫主题
-//
-// ⚠️ 实现 Theme 接口，可 ThemeManager.applyTheme(new CustomTheme()) 切换；
-//    但不参与状态机的「暗色 × 紧凑」两轴派生（无 dark/compact 变体）。
-//    也可 scene.getStylesheets().add("/org/openkawu/jfxium/css/theme-custom.css") 手挂。
-//    本文件是【示例模板】，复制它改配色即可产出自己的主题（参考 CustomTheme 类 javadoc）。
-// 
-// 使用方法：
-// 1. 复制此文件和 variables.less
-// 2. 修改变量值
-// 3. 在 pom.xml 中添加 lessc 编译配置
-// 4. 运行 mvn compile 生成 CSS
+// JFXium Custom Theme - Compact（自定义模板主题的紧凑版）
+// ============================================
+// 紧凑模式 = Custom（企业紫）配色 + 桌面工具 compact 尺寸算法
+// 尺寸算法说明见 theme-light-compact.less 顶部注释。
+// 配色变量与 theme-custom.less 完全一致（此处内联，避免 @import 反向覆盖尺寸 token）。
 // ============================================
 
-// 导入基础变量（尺寸、间距等）
+// Step 1: 导入基础尺寸 token
 @import "variables-base.less";
 
-// ============================================
-// 自定义颜色变量 - 修改这里即可改变整套 UI 风格
-// ============================================
+// Step 2: 覆盖为 compact 尺寸（与 light-compact 完全一致）
+// --------------------------------------------
+@spacing-xs: 2px;
+@spacing-sm: 6px;
+@spacing-md: 8px;
+@spacing-lg: 12px;
+@spacing-xl: 16px;
 
-// 基础色板
+@control-height: 28px;        // 32 - 4
+@control-height-sm: 24px;    // 28 - 4
+@control-height-lg: 36px;    // 40 - 4
+
+@table-header-height: 28px;
+@table-row-height: 28px;
+
+@ctrl-padding-y: 5px;
+@ctrl-padding-x: 11px;
+@ctrl-padding-y-sm: 1px;
+@ctrl-padding-x-sm: 7px;
+@ctrl-padding-y-lg: 7px;
+@ctrl-padding-x-lg: 11px;
+
+@btn-padding-y: @ctrl-padding-y;
+@btn-padding-x: @ctrl-padding-x;
+@btn-padding-y-xs: 0px;
+@btn-padding-x-xs: 5px;
+@btn-padding-y-sm: @ctrl-padding-y-sm;
+@btn-padding-x-sm: @ctrl-padding-x-sm;
+@btn-padding-y-lg: @ctrl-padding-y-lg;
+@btn-padding-x-lg: @ctrl-padding-x-lg;
+
+@input-padding-y: @ctrl-padding-y;
+@input-padding-x: 8px;
+@input-padding-y-sm: @ctrl-padding-y-sm;
+@input-padding-x-sm: 7px;
+@input-padding-y-lg: @ctrl-padding-y-lg;
+@input-padding-x-lg: 8px;
+
+@card-padding: 8px;
+@menu-bar-padding-y: 2px;
+@menu-inline-padding-y: 5px;
+@font-size-md: 13px;
+
+// Step 3: 内联 Custom（企业紫）配色（与 theme-custom.less 一致）
+// --------------------------------------------
 @color-base-0: #ffffff;
 @color-base-1: #f9f8ff;
 @color-base-2: #eeebff;
@@ -98,28 +130,24 @@
 @color-border-muted: #eeebff;
 @color-border-subtle: rgba(0, 0, 0, 0.06);
 
-// Accent Color Scale (Custom Purple)
 @color-accent-emphasis: @color-accent-5;
 @color-accent-hover: @color-accent-0;
 @color-accent-active: @color-accent-6;
 @color-accent-muted: @color-accent-2;
 @color-accent-subtle: @color-accent-0;
 
-// Success Color Scale (Custom)
 @color-success-emphasis: @color-success-5;
 @color-success-hover: @color-success-0;
 @color-success-active: @color-success-6;
 @color-success-muted: @color-success-2;
 @color-success-subtle: @color-success-0;
 
-// Warning Color Scale (Custom)
 @color-warning-emphasis: @color-warning-5;
 @color-warning-hover: @color-warning-0;
 @color-warning-active: @color-warning-6;
 @color-warning-muted: @color-warning-2;
 @color-warning-subtle: @color-warning-0;
 
-// Danger Color Scale (Custom)
 @color-danger-emphasis: @color-danger-4;
 @color-danger-hover: @color-danger-0;
 @color-danger-active: @color-danger-6;
@@ -133,7 +161,5 @@
 @motion-duration-mid: 0.2s;
 @motion-duration-slow: 0.3s;
 
-// ============================================
-// 导入基础组件样式（使用上面的变量）
-// ============================================
+// Step 4: 导入全部组件样式（用上面 compact token 重新生成）
 @import "theme-base.less";

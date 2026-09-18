@@ -23,8 +23,8 @@ public interface Theme {
 
     /**
      * 按密度获取 CSS 用户代理样式表路径。
-     * <p>默认实现忽略密度、回退到 {@link #getUserAgentStylesheet()}——
-     * 适用于没有紧凑变体的主题（如 Shadcn / Custom）。
+     * 默认实现忽略密度、回退到 {@link #getUserAgentStylesheet()}——
+          * 适用于没有紧凑变体的主题（如无 compact 派生的自定义模板）。
      * 有紧凑变体的主题（Light / Dark）覆盖此方法，在 {@link ThemeDensity#COMPACT}
      * 时返回对应的 {@code theme-*-compact.css}。</p>
      */

@@ -9,6 +9,10 @@ import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.composite.MenuAnt;
 import org.openkawu.jfxium.component.composite.SegmentedAnt;
+import org.openkawu.jfxium.core.theme.CustomTheme;
+import org.openkawu.jfxium.core.theme.DarkTheme;
+import org.openkawu.jfxium.core.theme.LightTheme;
+import org.openkawu.jfxium.core.theme.Theme;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.component.layout.BorderPaneAnt;
@@ -86,11 +90,29 @@ public class MainView {
                         "compact".equals(val) ? ThemeDensity.COMPACT : ThemeDensity.DEFAULT))
                 .build();
 
+        // 顶栏主题切换：默认(light) / 暗色(dark) / custom（模板主题）。
+        // 直接 applyTheme 具体 Theme 实例；custom 支持密度派生（配合密度开关联动）。
+        Node themeToggle = SegmentedAnt.create()
+                .size(Size.SMALL)
+                .option("light", "默认")
+                .option("dark", "暗色")
+                .option("custom", "custom")
+                .selected(resolveThemeKey(themeManager.getCurrentTheme()))
+                .onChange(val -> {
+                    Theme target = switch (val) {
+                        case "dark" -> new DarkTheme();
+                        case "custom" -> new CustomTheme();
+                        default -> new LightTheme();
+                    };
+                    themeManager.applyTheme(target);
+                })
+                .build();
+
         workspaceResult = ProjectConsoleTemplate.create()
                 .brand(UiExampleConstants.APP_TITLE, "工程壳展示")
                 .brandIcon(IconAnt.Path.DASHBOARD)
                 .menuBar(ProjectConsoleTemplate.standardMenuBar(this::handleMenuAction))
-                .headerRight(densityToggle, settingsBtn)
+                .headerRight(themeToggle, densityToggle, settingsBtn)
                 .userMenu(currentUser, this::handleUserMenuAction)
                 .sider(buildSider(), UiExampleConstants.MAIN_SIDER_WIDTH)
                 .content(contentScroll)
@@ -159,6 +181,16 @@ public class MainView {
         BorderPane wrapper = BorderPaneAnt.create().center(menuScroll.build()).build();
         wrapper.getStyleClass().add(Background.SUBTLE.styleClass());
         return wrapper;
+    }
+
+    /**
+     * 由当前 Theme 实例反解主题切换控件的选中 key。
+     * 按类名匹配具体主题；未知实例降到 "light"。
+     */
+    private static String resolveThemeKey(Theme theme) {
+        if (theme instanceof DarkTheme) return "dark";
+        if (theme instanceof CustomTheme) return "custom";
+        return "light";
     }
 
     private static Node iconForCategory(PageRegistry.Category category) {

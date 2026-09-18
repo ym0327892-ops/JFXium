@@ -3,109 +3,109 @@
    ============================================ */
 .root {
   -color-base-0: #ffffff;
-  -color-base-1: #fafafa;
-  -color-base-2: #f4f4f5;
-  -color-base-3: #e4e4e7;
-  -color-base-4: #d4d4d8;
-  -color-base-5: #a1a1aa;
-  -color-base-6: #71717a;
-  -color-base-7: #52525b;
-  -color-base-8: #3f3f46;
-  -color-base-9: #27272a;
-  -color-base-10: #18181b;
+  -color-base-1: #f9f8ff;
+  -color-base-2: #eeebff;
+  -color-base-3: #ddd8f5;
+  -color-base-4: #bbb5e0;
+  -color-base-5: #9a93c4;
+  -color-base-6: #7a72a8;
+  -color-base-7: #5d558c;
+  -color-base-8: #423a70;
+  -color-base-9: #2a2454;
+  -color-base-10: #151038;
   /* Accent Scale */
-  -color-accent-0: #f4f4f5;
-  -color-accent-1: #e4e4e7;
-  -color-accent-2: #d4d4d8;
-  -color-accent-3: #a1a1aa;
-  -color-accent-4: #71717a;
-  -color-accent-5: #18181b;
-  -color-accent-6: #27272a;
-  -color-accent-7: #3f3f46;
-  -color-accent-8: #52525b;
-  -color-accent-9: #52525b;
+  -color-accent-0: #f3e8ff;
+  -color-accent-1: #e4ccff;
+  -color-accent-2: #d1aaff;
+  -color-accent-3: #bc87ff;
+  -color-accent-4: #a564ff;
+  -color-accent-5: #8b41f5;
+  -color-accent-6: #7228dc;
+  -color-accent-7: #5910c2;
+  -color-accent-8: #4100a8;
+  -color-accent-9: #2a008e;
   /* Success Scale */
-  -color-success-0: #f0fdf4;
-  -color-success-1: #dcfce7;
-  -color-success-2: #bbf7d0;
-  -color-success-3: #86efac;
-  -color-success-4: #4ade80;
-  -color-success-5: #22c55e;
-  -color-success-6: #16a34a;
-  -color-success-7: #15803d;
-  -color-success-8: #166534;
-  -color-success-9: #14532d;
+  -color-success-0: #e6fffb;
+  -color-success-1: #b5f5ec;
+  -color-success-2: #87e8de;
+  -color-success-3: #5cdbd3;
+  -color-success-4: #36cfc9;
+  -color-success-5: #13c2c2;
+  -color-success-6: #08979c;
+  -color-success-7: #006d75;
+  -color-success-8: #00474f;
+  -color-success-9: #002329;
   /* Warning Scale */
-  -color-warning-0: #fffbeb;
-  -color-warning-1: #fef3c7;
-  -color-warning-2: #fde68a;
-  -color-warning-3: #fcd34d;
-  -color-warning-4: #fbbf24;
-  -color-warning-5: #f59e0b;
-  -color-warning-6: #d97706;
-  -color-warning-7: #b45309;
-  -color-warning-8: #92400e;
-  -color-warning-9: #78350f;
+  -color-warning-0: #fffbe6;
+  -color-warning-1: #fff1b8;
+  -color-warning-2: #ffe58f;
+  -color-warning-3: #ffd666;
+  -color-warning-4: #ffc53d;
+  -color-warning-5: #faad14;
+  -color-warning-6: #d48806;
+  -color-warning-7: #ad6800;
+  -color-warning-8: #874d00;
+  -color-warning-9: #613400;
   /* Danger Scale */
-  -color-danger-0: #fef2f2;
-  -color-danger-1: #fee2e2;
-  -color-danger-2: #fecaca;
-  -color-danger-3: #fca5a5;
-  -color-danger-4: #f87171;
-  -color-danger-5: #ef4444;
-  -color-danger-6: #dc2626;
-  -color-danger-7: #b91c1c;
-  -color-danger-8: #991b1b;
-  -color-danger-9: #7f1d1d;
+  -color-danger-0: #fff0f6;
+  -color-danger-1: #ffd6e7;
+  -color-danger-2: #ffadd2;
+  -color-danger-3: #ff85c0;
+  -color-danger-4: #f759ab;
+  -color-danger-5: #eb2f96;
+  -color-danger-6: #c41d7f;
+  -color-danger-7: #9e1068;
+  -color-danger-8: #780650;
+  -color-danger-9: #520339;
 }
 /* ============================================
    Semantic Variables
    ============================================ */
 .root {
-  -color-fg-default: #09090b;
-  -color-fg-muted: #71717a;
-  -color-fg-subtle: #a1a1aa;
+  -color-fg-default: rgba(0, 0, 0, 0.88);
+  -color-fg-muted: rgba(0, 0, 0, 0.65);
+  -color-fg-subtle: rgba(0, 0, 0, 0.45);
   -color-fg-on-emphasis: #ffffff;
   -color-bg-default: #ffffff;
   -color-bg-overlay: #ffffff;
-  -color-bg-subtle: #fafafa;
-  -color-bg-inset: #f4f4f5;
+  -color-bg-subtle: #f9f8ff;
+  -color-bg-inset: #f5f3ff;
   -color-bg-container: #ffffff;
-  -color-bg-layout: #f0f0f0;
+  -color-bg-layout: #eeebf7;
   -color-bg-masked: rgba(0, 0, 0, 0.45);
-  -color-border-default: #e4e4e7;
-  -color-border-muted: #f4f4f5;
-  -color-border-subtle: rgba(0, 0, 0, 0.05);
-  -color-accent-emphasis: #18181b;
-  -color-accent-hover: #f4f4f5;
-  -color-accent-active: #27272a;
-  -color-accent-muted: #d4d4d8;
-  -color-accent-subtle: #f4f4f5;
-  -color-cell-bg-selected: #f4f4f5;
-  -color-cell-fg-selected: #09090b;
-  -color-success-emphasis: #22c55e;
-  -color-success-hover: #f0fdf4;
-  -color-success-active: #16a34a;
-  -color-success-muted: #bbf7d0;
-  -color-success-subtle: #f0fdf4;
-  -color-warning-emphasis: #f59e0b;
-  -color-warning-hover: #fffbeb;
-  -color-warning-active: #d97706;
-  -color-warning-muted: #fde68a;
-  -color-warning-subtle: #fffbeb;
-  -color-danger-emphasis: #ef4444;
-  -color-danger-hover: #fef2f2;
-  -color-danger-active: #dc2626;
-  -color-danger-muted: #fecaca;
-  -color-danger-subtle: #fef2f2;
-  -color-shadow-default: rgba(0, 0, 0, 0.08);
+  -color-border-default: #ddd8f5;
+  -color-border-muted: #eeebff;
+  -color-border-subtle: rgba(0, 0, 0, 0.06);
+  -color-accent-emphasis: #8b41f5;
+  -color-accent-hover: #f3e8ff;
+  -color-accent-active: #7228dc;
+  -color-accent-muted: #d1aaff;
+  -color-accent-subtle: #f3e8ff;
+  -color-cell-bg-selected: #f3e8ff;
+  -color-cell-fg-selected: rgba(0, 0, 0, 0.88);
+  -color-success-emphasis: #13c2c2;
+  -color-success-hover: #e6fffb;
+  -color-success-active: #08979c;
+  -color-success-muted: #87e8de;
+  -color-success-subtle: #e6fffb;
+  -color-warning-emphasis: #faad14;
+  -color-warning-hover: #fffbe6;
+  -color-warning-active: #d48806;
+  -color-warning-muted: #ffe58f;
+  -color-warning-subtle: #fffbe6;
+  -color-danger-emphasis: #f759ab;
+  -color-danger-hover: #fff0f6;
+  -color-danger-active: #c41d7f;
+  -color-danger-muted: #ffadd2;
+  -color-danger-subtle: #fff0f6;
+  -color-shadow-default: rgba(0, 0, 0, 0.15);
 }
 /* ============================================
    Global Styles
    ============================================ */
 .root {
   -fx-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-background-color: -color-bg-layout;
 }
 /* ============================================
@@ -135,7 +135,7 @@
 /* 老 PageAnt 已删除（M18），相关 .page / .page-header / .page-title 等样式同步移除 */
 /* CrudTemplate（业务模板，M18 新增）：通用三段式骨架 */
 .jfx-crud-template {
-  -fx-padding: 24px;
+  -fx-padding: 16px;
 }
 .jfx-crud-template.jfx-crud-template-bordered {
   -fx-border-color: -color-border-muted;
@@ -163,7 +163,7 @@
   -fx-background-color: transparent;
 }
 .jfx-page-template-header {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-page-template-title {
   -fx-font-size: 28px;
@@ -171,7 +171,7 @@
   -fx-text-fill: -color-fg-default;
 }
 .jfx-page-template-desc {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
   -fx-wrap-text: true;
 }
@@ -182,7 +182,7 @@
   -fx-background-color: -color-bg-container;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
-  -fx-padding: 16px;
+  -fx-padding: 12px;
 }
 .jfx-surface.bordered {
   -fx-border-color: -color-border-muted;
@@ -190,23 +190,23 @@
   -fx-border-style: solid;
 }
 .jfx-surface.shadow-sm {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4, 0, 0, 1);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 4, 0, 0, 1);
 }
 .jfx-surface.shadow-md {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
 .jfx-surface.shadow-lg {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 16, 0, 0, 4);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 16, 0, 0, 4);
 }
 .jfx-surface-header {
   -fx-background-color: transparent;
-  -fx-padding: 0 0 12px 0;
+  -fx-padding: 0 0 8px 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
   -fx-border-style: solid;
 }
 .jfx-surface-title {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
@@ -220,7 +220,7 @@
    - M19 之后：取代了老 .action-bar（ActionBarAnt 已删除） */
 .jfx-h-bar {
   -fx-background-color: transparent;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-padding: 4 10 4 10;
 }
 /* 显式背景层级要压过透明基底，保证 .background(Background.*) 生效 */
@@ -247,8 +247,8 @@
    - spacer 是结构性弹性占位，无外观属性 */
 .jfx-v-bar {
   -fx-background-color: transparent;
-  -fx-spacing: 8px;
-  -fx-padding: 8px 12px 8px 12px;
+  -fx-spacing: 6px;
+  -fx-padding: 6px 8px 6px 8px;
 }
 .jfx-v-bar.jfx-bg-default {
   -fx-background-color: -color-bg-default;
@@ -392,7 +392,7 @@
   -fx-padding: 0;
   -fx-effect: none;
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-cursor: text;
   /* 选区高亮：用更实的浅蓝（accent-1）+ 深色文字，避免选中时文字与半透明高亮叠加发虚（M19.42 修） */
   -fx-highlight-fill: -color-accent-1;
@@ -449,7 +449,7 @@
   -fx-border-radius: 6px;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 6px;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 8px;
 }
 .text-field.jfx-selectable-text.jfx-selectable-text-bordered:focused,
 .text-area.jfx-selectable-text.jfx-selectable-text-bordered:focused {
@@ -485,7 +485,7 @@
 .button {
   -fx-background-radius: 4px;
   -fx-text-fill: -color-fg-default;
-  -fx-padding: 6px 15px;
+  -fx-padding: 5px 11px;
   -fx-cursor: hand;
   -fx-font-weight: 500;
   -fx-alignment: center;
@@ -586,25 +586,25 @@
 }
 /* Button Sizes */
 .button.middle {
-  -fx-padding: 6px 15px;
-  -fx-font-size: 14px;
+  -fx-padding: 5px 11px;
+  -fx-font-size: 13px;
 }
 .button.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 1px 7px;
   -fx-font-size: 12px;
 }
 .button.xs {
-  -fx-padding: 1px 6px;
+  -fx-padding: 0px 5px;
   -fx-font-size: 12px;
 }
 .button.large {
-  -fx-padding: 9px 15px;
+  -fx-padding: 7px 11px;
   -fx-font-size: 16px;
 }
 /* Inline text button — 剥皮按钮，视觉上是内联文字，行为上是真按钮
    适用于：StatusBar action、表格行操作、面包屑链接等嵌入文本流的场景 */
 .button.inline {
-  -fx-padding: 1px 4px 1px 4px;
+  -fx-padding: 1px 2px 1px 2px;
   -fx-background-color: transparent;
   -fx-background-insets: 0;
   -fx-background-radius: 4px;
@@ -630,58 +630,58 @@
    状态：base / :hover / :armed+:pressed（disabled 走 .button:disabled 行 25-28 统一 opacity 0.6）
    fix #102 */
 .button.success {
-  -fx-background-color: #22c55e;
-  -fx-border-color: #22c55e;
+  -fx-background-color: #13c2c2;
+  -fx-border-color: #13c2c2;
   -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.success:hover {
-  -fx-background-color: #4ade80;
-  -fx-border-color: #4ade80;
+  -fx-background-color: #36cfc9;
+  -fx-border-color: #36cfc9;
 }
 .button.success:armed,
 .button.success:pressed {
-  -fx-background-color: #16a34a;
-  -fx-border-color: #16a34a;
+  -fx-background-color: #08979c;
+  -fx-border-color: #08979c;
 }
 .button.warning {
-  -fx-background-color: #f59e0b;
-  -fx-border-color: #f59e0b;
+  -fx-background-color: #faad14;
+  -fx-border-color: #faad14;
   -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.warning:hover {
-  -fx-background-color: #fbbf24;
-  -fx-border-color: #fbbf24;
+  -fx-background-color: #ffc53d;
+  -fx-border-color: #ffc53d;
 }
 .button.warning:armed,
 .button.warning:pressed {
-  -fx-background-color: #d97706;
-  -fx-border-color: #d97706;
+  -fx-background-color: #d48806;
+  -fx-border-color: #d48806;
 }
 .button.danger {
-  -fx-background-color: #ef4444;
-  -fx-border-color: #ef4444;
+  -fx-background-color: #eb2f96;
+  -fx-border-color: #eb2f96;
   -fx-text-fill: -color-fg-on-emphasis;
 }
 .button.danger:hover {
-  -fx-background-color: #f87171;
-  -fx-border-color: #f87171;
+  -fx-background-color: #f759ab;
+  -fx-border-color: #f759ab;
 }
 .button.danger:armed,
 .button.danger:pressed {
-  -fx-background-color: #dc2626;
-  -fx-border-color: #dc2626;
+  -fx-background-color: #c41d7f;
+  -fx-border-color: #c41d7f;
 }
 /* ============================================
    Input Component
    ============================================ */
 .text-field {
   -fx-background-color: #ffffff;
-  -fx-border-color: #e4e4e7;
+  -fx-border-color: #ddd8f5;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
-  -fx-text-fill: #09090b;
+  -fx-padding: 5px 8px;
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
 }
 .text-field:hover {
   -fx-border-color: -color-accent-muted;
@@ -695,12 +695,12 @@
    ============================================ */
 .text-area {
   -fx-background-color: #ffffff;
-  -fx-border-color: #e4e4e7;
+  -fx-border-color: #ddd8f5;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
-  -fx-text-fill: #09090b;
+  -fx-padding: 5px 8px;
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
 }
 .text-area:hover {
   -fx-border-color: -color-accent-muted;
@@ -733,17 +733,17 @@
 }
 /* 悬停效果 —— 桌面克制：仅加轻阴影，无底色变化/缩放 */
 .jfx-group-box.hoverable:hover {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4, 0, 0, 1);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 4, 0, 0, 1);
 }
 /* 小尺寸 */
 .jfx-group-box.jfx-group-box-small {
   -fx-font-size: 14px;
 }
 .jfx-group-box.jfx-group-box-small .jfx-group-box-header {
-  -fx-padding: 8px 8px;
+  -fx-padding: 6px 6px;
 }
 .jfx-group-box.jfx-group-box-small .jfx-group-box-body {
-  -fx-padding: 8px;
+  -fx-padding: 6px;
 }
 /* 内嵌模式 */
 .jfx-group-box.jfx-group-box-inner {
@@ -768,11 +768,11 @@
 }
 /* Body（内容区） */
 .jfx-group-box .jfx-group-box-body {
-  -fx-padding: 4px 12px 12px 12px;
-  -fx-spacing: 12px;
+  -fx-padding: 2px 8px 8px 8px;
+  -fx-spacing: 8px;
 }
 .jfx-group-box.jfx-group-box-small .jfx-group-box-body {
-  -fx-padding: 4px 8px 8px 8px;
+  -fx-padding: 2px 6px 6px 6px;
 }
 /* 标题文字 */
 .jfx-group-box .jfx-group-box-title {
@@ -800,14 +800,14 @@
 }
 /* 标签栏 */
 .jfx-group-box .jfx-group-box-tab-bar {
-  -fx-padding: 0 12px;
+  -fx-padding: 0 8px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
   -fx-border-style: solid;
   -fx-alignment: center-left;
 }
 .jfx-group-box.jfx-group-box-small .jfx-group-box-tab-bar {
-  -fx-padding: 0 8px;
+  -fx-padding: 0 6px;
 }
 .jfx-group-box .jfx-group-box-tab-list {
   -fx-spacing: 0;
@@ -854,7 +854,7 @@
 .table-view .column-header .label {
   -fx-text-fill: -color-fg-default;
   -fx-font-weight: 600;
-  -fx-padding: 0 16px 0 16px;
+  -fx-padding: 0 12px 0 12px;
   -fx-alignment: center-left;
 }
 /* GridPane 是 column-header 内部包 label+arrow+sort-order 的容器，
@@ -866,7 +866,7 @@
    而不是 .column-header（仅控制单列）。
    对齐 PC UI 规范：表头高 = @table-header-height = @control-height（32px）。 */
 .table-view .column-header-background {
-  -fx-pref-height: 32px;
+  -fx-pref-height: 28px;
   /* 整个表头容器的背景：包括最后一列右侧的"剩余空白区" */
   -fx-background-color: -color-bg-subtle;
   -fx-background-insets: 0;
@@ -1057,13 +1057,13 @@
    -fx-min-height 锁死行高：JavaFX font lineHeight 算不出 32px 整（fontSize 14 → ~17.5），
    单独靠 padding 撑会差 1-2px。详见 variables-base.less @menu-inline-row-height 注释。 */
 .jfx-menu-item {
-  -fx-padding: 7px 16px 7px 0;
-  -fx-min-height: 32px;
+  -fx-padding: 5px 12px 5px 0;
+  -fx-min-height: 28px;
 }
 /* INLINE 模式子菜单 header（行高同上） */
 .jfx-menu-submenu-header {
-  -fx-padding: 7px 16px 7px 0;
-  -fx-min-height: 32px;
+  -fx-padding: 5px 12px 5px 0;
+  -fx-min-height: 28px;
 }
 /* 子菜单标题：比普通 item 稍强一点，帮助建立父子层级感 */
 .jfx-menu-submenu-header > .jfx-menu-item-label {
@@ -1074,29 +1074,29 @@
   -fx-border-color: transparent transparent transparent -color-border-muted;
   -fx-border-style: solid;
   -fx-border-width: 0 0 0 1px;
-  -fx-padding: 4px 0 4px 4px;
+  -fx-padding: 2px 0 2px 2px;
 }
 /* INLINE 模式分组标题（BUG #68，对齐 AtlantaFX .caption-menu-item）
    padding 跟普通 .jfx-menu-item 完全一致（top/right/bottom 走 token，left=0 由 indent spacer 接管）。
    视觉区分只靠 inner label 的 .jfx-menu-group-label（font-size-sm + muted + 600） */
 .jfx-menu-group {
-  -fx-padding: 7px 16px 7px 0;
-  -fx-min-height: 32px;
+  -fx-padding: 5px 12px 5px 0;
+  -fx-min-height: 28px;
 }
 /* HORIZONTAL 模式：横向导航栏行高 = @control-height-lg（40px→compact 36px） */
 .jfx-menu-horizontal > .jfx-menu-item,
 .jfx-menu-horizontal > .jfx-menu-submenu-header {
-  -fx-min-height: 40px;
-  -fx-pref-height: 40px;
-  -fx-padding: 0 16px;
+  -fx-min-height: 36px;
+  -fx-pref-height: 36px;
+  -fx-padding: 0 12px;
 }
 /* COLLAPSED 模式：居中纯图标行（vertical padding 跟 INLINE 一致：32px/row 标准桌面密度） */
 .jfx-menu-collapsed > .jfx-menu-item {
-  -fx-padding: 7px 0;
+  -fx-padding: 5px 0;
   -fx-alignment: center;
 }
 .jfx-menu-collapsed > .jfx-menu-submenu-header {
-  -fx-padding: 7px 0;
+  -fx-padding: 5px 0;
   -fx-alignment: center;
 }
 /* ============================================
@@ -1108,7 +1108,7 @@
    ============================================ */
 .jfx-menu-divider {
   -fx-min-height: 7px;
-  -fx-padding: 3px 16px 3px 16px;
+  -fx-padding: 3px 12px 3px 12px;
 }
 .jfx-menu-collapsed > .jfx-menu-divider {
   -fx-min-height: 7px;
@@ -1177,7 +1177,7 @@
    ============================================ */
 .check-box {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-label-padding: 0 0 0 6px;
   /* 框与文字间距，对齐 AtlantaFX $graphic-gap: 6px */
 }
@@ -1231,7 +1231,7 @@
    ============================================ */
 .radio-button {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-label-padding: 0 0 0 6px;
   /* 框与文字间距 6px（对齐 AtlantaFX $graphic-gap） */
 }
@@ -1278,12 +1278,12 @@
    ============================================ */
 .combo-box {
   -fx-background-color: #ffffff;
-  -fx-border-color: #e4e4e7;
+  -fx-border-color: #ddd8f5;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
-  -fx-text-fill: #09090b;
+  -fx-padding: 5px 8px;
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
 }
 .combo-box:hover {
   -fx-border-color: -color-accent-muted;
@@ -1318,7 +1318,7 @@
 /* DropdownAnt trigger wrapper：触发节点 + 箭头的横向间距 */
 .jfx-dropdown-trigger {
   -fx-background-color: transparent;
-  -fx-spacing: 4px;
+  -fx-spacing: 2px;
 }
 .combo-box:hover .arrow {
   -fx-background-color: -color-accent-emphasis;
@@ -1329,10 +1329,10 @@
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
 .combo-box-popup .list-cell {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 8px;
   -fx-text-fill: -color-fg-default;
 }
 .combo-box-popup .list-cell:hover {
@@ -1356,7 +1356,7 @@
   -fx-background-radius: 8px;
 }
 .list-view .list-cell {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 8px;
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
 }
@@ -1406,7 +1406,7 @@
   -fx-border-width: 2px;
   -fx-background-radius: 9999px;
   -fx-border-radius: 9999px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4, 0, 0, 1);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 4, 0, 0, 1);
   -fx-snap-to-pixel: false;
   /* 显式设尺寸——modena 默认 thumb 偏小，对齐桌面工具 14px 圆点手柄 */
   -fx-min-width: 14px;
@@ -1520,7 +1520,7 @@
   /* M19.44 红线#6 修复：badge 宽度由文字内容决定，非尺寸钳制节点，
      禁止 @border-radius-full，改用 @border-radius-md */
   -fx-background-radius: 6px;
-  -fx-padding: 0 4px;
+  -fx-padding: 0 2px;
   -fx-font-size: 12px;
   -fx-font-weight: 600;
 }
@@ -1557,12 +1557,12 @@
    ============================================ */
 .date-picker {
   -fx-background-color: #ffffff;
-  -fx-border-color: #e4e4e7;
+  -fx-border-color: #ddd8f5;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
-  -fx-text-fill: #09090b;
+  -fx-padding: 5px 8px;
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
   /* M19.43 #7：modena 算的 pref 宽偏窄，配上我们的 padding + 箭头按钮会把日期文字裁掉「显示不全」。
      给一个能容纳「2026/05/31 + 箭头」的最小宽度，文字不再被截断。 */
   -fx-min-width: 130px;
@@ -1609,7 +1609,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
   -fx-padding: 0;
   -fx-alignment: center;
   -fx-spacing: 0;
@@ -1661,7 +1661,7 @@
 .date-picker-popup .spinner .label {
   -fx-alignment: center;
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-font-weight: 600;
 }
 .date-picker-popup .calendar-grid {
@@ -1739,12 +1739,12 @@
    ============================================ */
 .color-picker {
   -fx-background-color: #ffffff;
-  -fx-border-color: #e4e4e7;
+  -fx-border-color: #ddd8f5;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
-  -fx-text-fill: #09090b;
+  -fx-padding: 5px 8px;
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
   -fx-min-width: 60px;
   -fx-pref-width: 80px;
 }
@@ -1765,7 +1765,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
   -fx-padding: 10px;
   -fx-min-width: 200px;
 }
@@ -1896,7 +1896,7 @@
 }
 .jfx-accordion .titled-pane > .title {
   -fx-background-color: -color-bg-default;
-  -fx-padding: 12px 16px;
+  -fx-padding: 8px 12px;
   -fx-font-weight: 500;
 }
 .jfx-accordion .titled-pane > .title:hover {
@@ -1907,7 +1907,7 @@
 }
 .jfx-accordion .titled-pane > .content {
   -fx-background-color: -color-bg-default;
-  -fx-padding: 12px 16px;
+  -fx-padding: 8px 12px;
 }
 .jfx-accordion .titled-pane:expanded > .title {
   -fx-text-fill: -color-accent-emphasis;
@@ -1924,13 +1924,13 @@
 }
 .titled-pane > .title {
   -fx-background-color: -color-bg-subtle;
-  -fx-padding: 12px 16px;
+  -fx-padding: 8px 12px;
   -fx-font-weight: 500;
   -fx-background-radius: 6px 6px 0 0;
 }
 .titled-pane > .content {
   -fx-background-color: -color-bg-default;
-  -fx-padding: 16px;
+  -fx-padding: 12px;
   -fx-background-radius: 0 0 6px 6px;
 }
 /* ============================================
@@ -1940,12 +1940,12 @@
   -fx-background-color: -color-bg-overlay;
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 12px;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 8px;
   -fx-background-radius: 6px;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
 /* ============================================
    Tooltip 状态色变体（对标 Ant Design Tooltip success/warning/error/info）
@@ -1988,7 +1988,7 @@
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
   -fx-text-fill: -color-fg-default;
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 6px;
   -fx-cursor: hand;
 }
 .jfx-pagination .pagination-control .button:hover {
@@ -2011,7 +2011,7 @@
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
   -fx-text-fill: -color-fg-default;
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 6px;
   -fx-cursor: hand;
 }
 .jfx-pagination .pagination-control .toggle-button:hover {
@@ -2078,12 +2078,12 @@
   -fx-border-style: solid;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
-  -fx-padding: 4px 0;
+  -fx-padding: 2px 0;
   -fx-min-width: 160;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
 .jfx-context-menu-item {
-  -fx-padding: 8px 16px;
+  -fx-padding: 6px 12px;
   -fx-alignment: center-left;
   -fx-spacing: 8px;
   -fx-cursor: hand;
@@ -2096,7 +2096,7 @@
 }
 .jfx-context-menu-item .label {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 .jfx-context-menu-item-disabled {
   -fx-opacity: 0.5;
@@ -2109,7 +2109,7 @@
   -fx-min-height: 1px;
   -fx-pref-height: 1px;
   -fx-background-color: -color-border-muted;
-  -fx-padding: 4px 0;
+  -fx-padding: 2px 0;
 }
 .jfx-context-menu-accelerator {
   -fx-text-fill: -color-fg-subtle;
@@ -2128,14 +2128,14 @@
    注意：.menu-button 是 JavaFX MenuBarSkin 内部节点名
    ============================================ */
 .jfx-menu-bar > .container {
-  -fx-padding: 4px 4px;
+  -fx-padding: 2px 4px;
 }
 .menu-bar > .container {
-  -fx-padding: 4px 4px;
+  -fx-padding: 2px 4px;
 }
 .jfx-menu-bar > .container > .menu-button,
 .menu-bar > .container > .menu-button {
-  -fx-padding: 6px 10px;
+  -fx-padding: 5px 6px;
   -fx-background-color: transparent;
   -fx-background-insets: 0;
   -fx-background-radius: 4px;
@@ -2157,7 +2157,7 @@
 .menu-bar > .container > .menu-button > .label {
   -fx-padding: 0;
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 .jfx-menu-bar > .container > .menu-button:hover,
 .jfx-menu-bar > .container > .menu-button:showing,
@@ -2181,9 +2181,9 @@
 .context-menu {
   -fx-background-color: -color-border-default, -color-bg-overlay;
   -fx-background-insets: 0, 1px;
-  -fx-padding: 4px 0;
+  -fx-padding: 2px 0;
   -fx-background-radius: 6px, 4px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
 .context-menu > .scroll-arrow {
   -fx-padding: 0.5em;
@@ -2211,7 +2211,7 @@
    ============================================ */
 .menu-item {
   -fx-background-color: transparent;
-  -fx-padding: 8px 16px;
+  -fx-padding: 6px 12px;
   -fx-background-radius: 4px;
 }
 .menu-item > .graphic-container {
@@ -2220,7 +2220,7 @@
 .menu-item > .label {
   -fx-padding: 0 1em 0 0;
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 .menu-item > .left-container {
   -fx-padding: 0 1em 0 0;
@@ -2284,7 +2284,7 @@
   -fx-background-radius: 8px;
 }
 .dialog-pane > .button-bar {
-  -fx-padding: 16px;
+  -fx-padding: 12px;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 0 0 8px 8px;
 }
@@ -2332,7 +2332,7 @@
 }
 /* Custom Switch Component (JFXSwitch) */
 .jfx-switch-container {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-switch {
   -fx-background-radius: 11px;
@@ -2347,7 +2347,7 @@
 /* Switch 旁的状态文本（"开/关"/"On/Off"），通过 styleClass 控制视觉，
    不再在 Java 端 setStyle 拼字号/颜色 */
 .jfx-switch-status-label {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 0 0 0 8;
 }
@@ -2443,7 +2443,7 @@
    ============================================ */
 .jfx-typography-text {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 .jfx-typography-text.muted {
   -fx-text-fill: -color-fg-muted;
@@ -2494,13 +2494,13 @@
    :vertical 伪类控制侧边栏宽度，对齐 AtlantaFX .tool-bar:vertical
    ============================================ */
 .jfx-tool-bar {
-  -fx-pref-height: 32px;
-  -fx-min-height: 32px;
+  -fx-pref-height: 28px;
+  -fx-min-height: 28px;
   -fx-background-color: -color-border-muted, -color-bg-subtle;
   -fx-background-insets: 0, 0 0 1px 0;
   -fx-border-color: transparent;
-  -fx-padding: 8px 12px;
-  -fx-spacing: 4px;
+  -fx-padding: 6px 8px;
+  -fx-spacing: 2px;
   -fx-alignment: CENTER_LEFT;
 }
 /* 垂直工具栏：pref-width 替代 pref-height */
@@ -2508,10 +2508,10 @@
   -fx-pref-height: -1;
   /* 取消高度约束，改由内容决定 */
   -fx-min-height: 0;
-  -fx-pref-width: 32px;
-  -fx-min-width: 32px;
+  -fx-pref-width: 28px;
+  -fx-min-width: 28px;
   -fx-background-insets: 0, 1px 0 0 0;
-  -fx-padding: 12px 8px;
+  -fx-padding: 8px 6px;
   -fx-alignment: TOP_LEFT;
 }
 .jfx-tool-bar > .container > .button,
@@ -2528,26 +2528,26 @@
    StatusBar — 底部状态栏（对标 VS Code / IDEA 底栏）
    ============================================ */
 .jfx-status-bar {
-  -fx-pref-height: 28px;
-  -fx-min-height: 28px;
-  -fx-max-height: 28px;
+  -fx-pref-height: 24px;
+  -fx-min-height: 24px;
+  -fx-max-height: 24px;
   -fx-background-color: -color-border-muted, -color-bg-subtle;
   -fx-background-insets: 0, 1px 0 0 0;
-  -fx-padding: 0 12px;
-  -fx-spacing: 8px;
+  -fx-padding: 0 8px;
+  -fx-spacing: 6px;
   -fx-font-size: 12px;
 }
 .jfx-status-bar-left {
   -fx-alignment: CENTER_LEFT;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-status-bar-center {
   -fx-alignment: CENTER;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-status-bar-right {
   -fx-alignment: CENTER_RIGHT;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 /* 可点击操作项 — 行为委托给 .button.inline（剥皮按钮），此处仅保留状态条内间距微调 */
 .jfx-status-bar-action {
@@ -2570,7 +2570,7 @@
   -fx-text-fill: -color-fg-default;
   -fx-alignment: CENTER;
   -fx-content-display: LEFT;
-  -fx-padding: 6px 11px;
+  -fx-padding: 5px 8px;
   /* ⚠️ 不再单独设 -fx-border-color / -fx-border-width：与上方 -fx-background-color
      stacking 重复会形成"双边框"（M19.42 #7 修复同款）。边框已由
      -fx-background-color: -color-border-default, -color-bg-default 配合
@@ -2588,7 +2588,7 @@
 }
 .choice-box .open-button {
   -fx-background-color: transparent;
-  -fx-padding: 4px 4px;
+  -fx-padding: 2px 2px;
 }
 .choice-box .open-button .arrow {
   /* M19.44 红线#9 修复：显式设 shape + 尺寸（对齐 AtlantaFX arrow-drop-down） */
@@ -2620,7 +2620,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
   -fx-padding: 0;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
 /* 弹层内部 ListView（如果存在）：背景透明、滚动条让 context-menu 自身控制 */
 .choice-box > .context-menu > .list-view {
@@ -2629,7 +2629,7 @@
   -fx-padding: 0;
 }
 .choice-box > .context-menu > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 8px;
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
 }
@@ -2648,12 +2648,12 @@
    ============================================ */
 .spinner {
   -fx-background-color: #ffffff;
-  -fx-border-color: #e4e4e7;
+  -fx-border-color: #ddd8f5;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
-  -fx-text-fill: #09090b;
+  -fx-padding: 5px 8px;
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
   -fx-padding: 0;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
@@ -2666,7 +2666,7 @@
 .spinner .text-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
-  -fx-padding: 6px 11px;
+  -fx-padding: 5px 8px;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
@@ -2752,7 +2752,7 @@
    Separator (JFXium `.jfx-separator`)
    ============================================ */
 .jfx-separator {
-  -fx-padding: 4px 0;
+  -fx-padding: 2px 0;
 }
 .jfx-separator .line {
   -fx-border-color: -color-border-muted;
@@ -2797,7 +2797,7 @@
 }
 .jfx-split-menu-button > .arrow-button {
   -fx-background-color: transparent;
-  -fx-padding: 6px 8px;
+  -fx-padding: 5px 6px;
   /* arrow-button 左侧分隔线 hover 时跟着变浅蓝，整块视觉更连贯 */
   -fx-border-color: transparent transparent transparent -color-border-muted;
   -fx-border-width: 0 0 0 1px;
@@ -2852,7 +2852,7 @@
   -fx-background-color: -color-accent-muted;
 }
 .table-cell {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 8px;
   -fx-text-fill: -color-fg-default;
   /* 默认垂直居中（水平由 align-* 复合类控制；不设的话默认 center-left）*/
   -fx-alignment: center-left;
@@ -2862,19 +2862,19 @@
    对齐 PC UI 规范：行高 = @table-row-height = @control-height（32px）。
    不用 -fx-cell-size（那个会强制裁切高内容），用 min-height 让行高自适应但有下限。 */
 .table-view .table-row-cell {
-  -fx-min-height: 32px;
+  -fx-min-height: 28px;
 }
 /* M11.2 三档尺寸（对齐桌面工具 Table size：SMALL / MIDDLE / LARGE）
    ============================================================ */
 /* SMALL：紧凑模式。表头/行高 = @control-height-sm（28px）/ padding 6×8 / 字号 13 */
 .table-view.jfx-table-small .column-header-background {
-  -fx-pref-height: 28px;
+  -fx-pref-height: 24px;
 }
 .table-view.jfx-table-small .column-header {
   -fx-padding: 6px 8px;
 }
 .table-view.jfx-table-small .table-row-cell {
-  -fx-min-height: 28px;
+  -fx-min-height: 24px;
 }
 .table-view.jfx-table-small .table-cell {
   -fx-padding: 6px 8px;
@@ -2884,13 +2884,13 @@
    .jfx-table-middle 仅用于 styleClass 标识，便于用户后续 grep 调试 */
 /* LARGE：宽松模式。表头/行高 = @control-height-lg（40px）/ padding 12×16 / 字号 15 */
 .table-view.jfx-table-large .column-header-background {
-  -fx-pref-height: 40px;
+  -fx-pref-height: 36px;
 }
 .table-view.jfx-table-large .column-header {
   -fx-padding: 12px 16px;
 }
 .table-view.jfx-table-large .table-row-cell {
-  -fx-min-height: 40px;
+  -fx-min-height: 36px;
 }
 .table-view.jfx-table-large .table-cell {
   -fx-padding: 12px 16px;
@@ -2989,11 +2989,11 @@
    ============================================ */
 .tab-pane .tab {
   -fx-background-color: transparent;
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 8px;
 }
 .tab-pane .tab .tab-label {
   -fx-text-fill: -color-fg-muted;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 .tab-pane .tab:selected .tab-label {
   -fx-text-fill: -color-accent-emphasis;
@@ -3038,7 +3038,7 @@
 .tree-cell {
   /* 水平 padding 改 0：AtlantaFX 范式，disclosure-node 自身吃水平 padding。
      这样箭头 indent 才不会被 cell 自身的 left padding 二次推挤。 */
-  -fx-padding: 8px 0;
+  -fx-padding: 6px 0;
   -fx-text-fill: -color-fg-default;
   -fx-background-color: transparent;
 }
@@ -3057,7 +3057,7 @@
    范式 — 容器必须 padding-x 留出缩进 + 背景透明。
    覆盖 modena 默认的 -fx-padding: 4 6 4 8（modena.css 第 2351 行）。 */
 .tree-cell > .tree-disclosure-node {
-  -fx-padding: 0.35em 12px 0 12px;
+  -fx-padding: 0.35em 8px 0 8px;
   -fx-background-color: transparent;
 }
 .tree-cell > .tree-disclosure-node > .arrow {
@@ -3119,7 +3119,7 @@
   -fx-border-width: 1px;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
 }
 .color-palette .color-picker-grid .color-square {
   -fx-background-color: transparent;
@@ -3149,11 +3149,11 @@
   -fx-text-fill: -color-fg-muted;
 }
 .jfx-slider-range-label {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
 }
 .jfx-slider-range-separator {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
 .jfx-slider-marks {
@@ -3263,7 +3263,7 @@
 .jfx-codeblock-header {
   -fx-background-color: -color-border-muted;
   -fx-padding: 8 12 8 12;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   /* 头部仅保留顶部圆角，与容器圆角配合，底部为直角让上下两段视觉连续 */
   -fx-background-radius: 6px 6px 0 0;
 }
@@ -3429,9 +3429,9 @@
   -fx-background-insets: 0;
   -fx-background-radius: 0;
   -fx-border-width: 0;
-  -fx-padding: 12px;
+  -fx-padding: 8px;
   -fx-font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
   -fx-highlight-fill: -color-accent-muted;
   -fx-highlight-text-fill: -color-fg-default;
@@ -3467,7 +3467,7 @@
   -fx-background-insets: 0;
   -fx-background-radius: 0;
   -fx-border-width: 0;
-  -fx-padding: 8px;
+  -fx-padding: 6px;
   -fx-font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
   -fx-font-size: 12px;
   -fx-text-fill: -color-fg-default;
@@ -3541,14 +3541,14 @@
 /* EmptyAnt：空状态 */
 .jfx-empty {
   -fx-padding: 48;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-empty-icon {
   -fx-fill: -color-fg-subtle;
 }
 .jfx-empty-description {
   -fx-text-fill: -color-fg-muted;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 /* BackTopAnt：回到顶部圆形按钮，hover 时背景与阴影加深 */
 .jfx-back-top {
@@ -3595,7 +3595,7 @@
   -fx-background-color: rgba(255, 255, 255, 0.85);
 }
 .jfx-spin-tip {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
 /* SpinAnt Indicator：三种加载动画样式 */
@@ -3619,7 +3619,7 @@
 /* TimePickerAnt：时分秒分隔符与 spinner 编辑器 */
 .jfx-time-picker {
   -fx-background-color: transparent;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-time-picker-separator {
   -fx-font-size: 16px;
@@ -3633,8 +3633,8 @@
   -fx-border-color: -color-border-default;
   -fx-border-radius: 4px;
   -fx-border-width: 1px;
-  -fx-pref-height: 32px;
-  -fx-min-height: 32px;
+  -fx-pref-height: 28px;
+  -fx-min-height: 28px;
 }
 .jfx-time-picker-spinner:focused,
 .jfx-time-picker-spinner:contains-focus {
@@ -3698,7 +3698,7 @@
    与上面 .jfx-time-picker-spinner .text-field 选择器互补，单挂也生效）。
    边框由外层 spinner 容器统一绘制，编辑器自身走透明边框避免双框。 */
 .jfx-time-picker-editor {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-padding: 4 2 4 2;
   -fx-pref-width: 40;
   -fx-background-color: transparent;
@@ -3723,10 +3723,10 @@
 }
 .jfx-popup-menu-item {
   -fx-padding: 8 12 8 12;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-cursor: hand;
   -fx-background-color: transparent;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
 }
 .jfx-popup-menu-item:hover {
@@ -3751,14 +3751,14 @@
 /* AnchorAnt 锚点导航 */
 .jfx-anchor {
   -fx-padding: 8 12 8 0;
-  -fx-spacing: 4px;
+  -fx-spacing: 2px;
 }
 .jfx-anchor-sub-group {
   -fx-spacing: 2;
   -fx-padding: 4 0 4 16;
 }
 .jfx-anchor-link {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-cursor: hand;
   -fx-padding: 4 8 4 8;
   -fx-text-fill: -color-fg-muted;
@@ -3778,7 +3778,7 @@
   -fx-border-color: -color-border-default;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 8 12 8 12;
 }
@@ -3791,7 +3791,7 @@
   -fx-background-color: -color-bg-subtle;
 }
 .jfx-image-fallback {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
 /* ============================================
@@ -3825,13 +3825,13 @@
   -fx-border-color: -color-border-default;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 8 12 8 12;
 }
 /* StatisticAnt 统计数值 */
 .jfx-statistic-title {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
 .jfx-statistic.jfx-statistic-small .jfx-statistic-title {
@@ -3874,11 +3874,11 @@
 }
 .jfx-typography-paragraph {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 .jfx-typography-text {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 /* Type 修饰类（Primary 已是默认） */
 .jfx-typography-text.jfx-typography-secondary {
@@ -3933,7 +3933,7 @@
   -fx-background-color: transparent;
 }
 .jfx-collapse-header {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-padding: 12 16 12 16;
   -fx-cursor: hand;
 }
@@ -3941,7 +3941,7 @@
   -fx-cursor: default;
 }
 .jfx-collapse-header-label {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-font-weight: 500;
   -fx-text-fill: -color-fg-default;
 }
@@ -3974,7 +3974,7 @@
   -fx-border-color: -color-border-default;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 8 32 8 12;
 }
@@ -3994,7 +3994,7 @@
   -fx-text-fill: -color-fg-muted;
 }
 .jfx-tree-select-label {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
 }
 .jfx-tree-select-row.jfx-tree-select-disabled .jfx-tree-select-label {
@@ -4032,7 +4032,7 @@
   -fx-background-color: -color-accent-muted;
 }
 .jfx-segmented-item-label {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
 .jfx-segmented-item.jfx-segmented-item-selected .jfx-segmented-item-label {
@@ -4058,7 +4058,7 @@
 }
 .jfx-input-number-prefix,
 .jfx-input-number-suffix {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
 .jfx-input-number-prefix {
@@ -4070,17 +4070,17 @@
 .jfx-input-number-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 8 4 8 4;
 }
 .jfx-input-number.jfx-input-number-small .jfx-input-number-field {
   -fx-font-size: 12px;
-  -fx-padding: 2px 7px 2px 7px;
+  -fx-padding: 1px 7px 1px 7px;
 }
 .jfx-input-number.jfx-input-number-large .jfx-input-number-field {
   -fx-font-size: 16px;
-  -fx-padding: 9px 15px 9px 15px;
+  -fx-padding: 7px 11px 7px 11px;
 }
 .jfx-input-number-btn {
   -fx-background-color: transparent;
@@ -4174,7 +4174,7 @@
 /* overlay 标题区（顶部边框 + 标题 + 关闭按钮） */
 .jfx-overlay-header {
   -fx-padding: 16 24 16 24;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
@@ -4216,17 +4216,17 @@
 }
 .jfx-overlay-footer {
   -fx-padding: 16 24 16 24;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1 0 0 0;
 }
 /* PromptDialogAnt */
 .jfx-prompt-dialog {
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
   -fx-padding: 20;
 }
 .jfx-prompt-dialog-footer {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 /* CascaderAnt */
 .jfx-cascader {
@@ -4240,7 +4240,7 @@
   -fx-border-color: -color-border-default;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
   -fx-padding: 8 12 8 12;
 }
@@ -4263,7 +4263,7 @@
   -fx-background-color: transparent;
 }
 .jfx-cascader-item-label {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
 }
 .jfx-cascader-item.jfx-cascader-item-disabled .jfx-cascader-item-label {
@@ -4281,7 +4281,7 @@
 }
 .jfx-cascader-clear {
   -fx-text-fill: -color-fg-muted;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-cursor: hand;
   -fx-padding: 0 8 0 8;
 }
@@ -4315,7 +4315,7 @@
 }
 .jfx-timeline-content {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 .jfx-timeline-line {
   -fx-stroke: -color-border-muted;
@@ -4345,7 +4345,7 @@
 }
 .jfx-timeline-pending-text {
   -fx-text-fill: -color-fg-muted;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 /* TransferAnt */
 .jfx-transfer {
@@ -4360,13 +4360,13 @@
 }
 .jfx-transfer-list-header {
   -fx-padding: 8 12 8 12;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
 .jfx-transfer-list-title {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-font-weight: 500;
 }
 .jfx-transfer-list-count {
@@ -4386,7 +4386,7 @@
 }
 /* Transfer 中间方向按钮区域 */
 .jfx-transfer-middle {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-padding: 8;
 }
 /* Transfer 中间方向按钮（hover 变主题色） */
@@ -4430,14 +4430,14 @@
   -fx-padding: 12 24 12 24;
 }
 .jfx-list-footer {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
   -fx-padding: 12 24 12 24;
 }
 .jfx-list-item {
   -fx-background-color: transparent;
   -fx-padding: 12 24 12 24;
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
 }
 .jfx-list-item.jfx-list-item-clickable {
   -fx-cursor: hand;
@@ -4446,16 +4446,16 @@
   -fx-background-color: -color-accent-subtle;
 }
 .jfx-list-item-title {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-font-weight: 500;
   -fx-text-fill: -color-fg-default;
 }
 .jfx-list-item-description {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
 .jfx-list-item-content {
-  -fx-spacing: 4px;
+  -fx-spacing: 2px;
 }
 .jfx-list-divider {
   -fx-background-color: -color-border-default;
@@ -4481,7 +4481,7 @@
 .jfx-menu-item {
   -fx-background-color: transparent;
   -fx-cursor: hand;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-menu-item:hover {
   -fx-background-color: -color-accent-subtle;
@@ -4515,13 +4515,13 @@
   -fx-border-width: 0 0 3 0;
 }
 .jfx-menu-item-label {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
 }
 .jfx-menu-submenu-header {
   -fx-background-color: transparent;
   -fx-cursor: hand;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-menu-submenu-header:hover {
   -fx-background-color: -color-accent-subtle;
@@ -4600,7 +4600,7 @@
 /* UploadAnt */
 .jfx-upload {
   -fx-background-color: transparent;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-upload-drag {
   -fx-background-color: -color-bg-subtle;
@@ -4612,7 +4612,7 @@
   -fx-padding: 32;
   -fx-min-height: 180;
   -fx-cursor: hand;
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
 }
 /* drag 激活态：拖拽进入时切换主题色边框 */
 .jfx-upload-drag.jfx-upload-drag-active {
@@ -4632,16 +4632,16 @@
   -fx-font-size: 12px;
 }
 .jfx-upload-list {
-  -fx-spacing: 4px;
+  -fx-spacing: 2px;
   -fx-padding: 8 0 8 0;
   -fx-background-color: transparent;
 }
 .jfx-upload-list.jfx-upload-list-picture,
 .jfx-upload-list.jfx-upload-list-picture-card {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-upload-file-item {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-padding: 8;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 4px;
@@ -4666,7 +4666,7 @@
 }
 .jfx-upload-file-name {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 .jfx-upload-file-error {
   -fx-text-fill: -color-danger-emphasis;
@@ -4693,15 +4693,15 @@
 }
 /* 水平布局步骤项：VBox 间距 icon/title/description */
 .jfx-steps .jfx-steps-item {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 /* 垂直布局步骤项：HBox 间距 icon列/content列 */
 .jfx-steps-vertical .jfx-steps-item {
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
 }
 /* 垂直布局步骤内容区：标题+描述间距 */
 .jfx-steps-content {
-  -fx-spacing: 4px;
+  -fx-spacing: 2px;
 }
 /* steps 圆圈 + 数字 + 标题 + 描述 + 连线，状态用修饰类切换 */
 .jfx-steps-circle {
@@ -4731,7 +4731,7 @@
   -fx-text-fill: -color-accent-emphasis;
 }
 .jfx-steps-title {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
   -fx-font-weight: 400;
 }
@@ -4758,7 +4758,7 @@
 }
 .jfx-breadcrumb-item {
   -fx-text-fill: -color-fg-muted;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-padding: 0 4 0 4;
 }
 /* 最后一项：高亮显示当前位置 */
@@ -4768,7 +4768,7 @@
 }
 .jfx-breadcrumb-link {
   -fx-text-fill: -color-fg-muted;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-padding: 0 4 0 4;
   -fx-border-color: transparent;
 }
@@ -4779,15 +4779,15 @@
 }
 .jfx-breadcrumb-separator {
   -fx-text-fill: -color-fg-muted;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-padding: 0 4 0 4;
 }
 /* SkeletonAnt */
 .jfx-skeleton-paragraph {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-skeleton-avatar-text {
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
 }
 .jfx-skeleton-shimmer {
   -fx-fill: -color-bg-default;
@@ -4807,13 +4807,13 @@
 }
 .jfx-descriptions-label {
   -fx-text-fill: -color-fg-muted;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-padding: 8 16 8 16;
   -fx-font-weight: 400;
 }
 .jfx-descriptions-content {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-padding: 8 16 8 16;
   -fx-font-weight: 500;
 }
@@ -4861,7 +4861,7 @@
 .jfx-calendar-nav-btn {
   -fx-background-color: transparent;
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-padding: 4 12 4 12;
   -fx-cursor: hand;
   -fx-background-radius: 4px;
@@ -4900,7 +4900,7 @@
 }
 /* 日期文本颜色：默认前景色，selected 反白，today 主题色，other-month 模糊色 */
 .jfx-calendar-day-label {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-padding: 4;
   -fx-text-fill: -color-fg-default;
 }
@@ -4921,7 +4921,7 @@
   -fx-background-color: transparent;
   -fx-text-fill: -color-fg-default;
   -fx-background-radius: 4px;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-cursor: hand;
 }
 .jfx-calendar-month-btn:hover {
@@ -4944,36 +4944,36 @@
 }
 /* 水平布局（GridPane）：label 列 + control 列 */
 .jfx-form-horizontal {
-  -fx-hgap: 16px;
+  -fx-hgap: 12px;
   /* 16px — label 与 control 水平间距 */
-  -fx-vgap: 16px;
+  -fx-vgap: 12px;
   /* 16px — 行间垂直间距（DEFAULT） */
 }
 /* 垂直布局（VBox）：item 之间的垂直间距 */
 .jfx-form-vertical {
-  -fx-spacing: 16px;
+  -fx-spacing: 12px;
   /* 16px — DEFAULT */
 }
 /* 内联布局（HBox）：item 之间的水平间距 */
 .jfx-form-inline {
-  -fx-spacing: 16px;
+  -fx-spacing: 12px;
   /* 16px */
 }
 /* 尺寸变体：覆盖 vgap / spacing */
 .jfx-form-size-small .jfx-form-horizontal {
-  -fx-vgap: 12px;
+  -fx-vgap: 8px;
   /* 12px */
 }
 .jfx-form-size-small .jfx-form-vertical {
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
   /* 12px */
 }
 .jfx-form-size-large .jfx-form-horizontal {
-  -fx-vgap: 24px;
+  -fx-vgap: 18px;
   /* 24px */
 }
 .jfx-form-size-large .jfx-form-vertical {
-  -fx-spacing: 24px;
+  -fx-spacing: 18px;
   /* 24px */
 }
 /* 尺寸调节：仅控制字号 */
@@ -4986,7 +4986,7 @@
 /* Label */
 .jfx-form-label {
   -fx-text-fill: -color-fg-default;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-font-weight: 500;
 }
 .jfx-form-label-required::after {
@@ -5031,16 +5031,16 @@
 /* Form item：label 与控件之间、控件与 help/error 之间的纵向间距 */
 .jfx-form-item-box,
 .jfx-form-item-wrapper {
-  -fx-spacing: 4px;
+  -fx-spacing: 2px;
 }
 /* Footer：顶部留间距 + 按钮间间距 */
 .jfx-form-footer {
-  -fx-padding: 16px 0 0 0;
-  -fx-spacing: 8px;
+  -fx-padding: 12px 0 0 0;
+  -fx-spacing: 6px;
 }
 /* Header 区：顶部 banner，底部加分隔线与表单体拉开 */
 .jfx-form-header {
-  -fx-padding: 0 0 12px 0;
+  -fx-padding: 0 0 8px 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
@@ -5049,7 +5049,7 @@
   -fx-font-size: 16px;
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
-  -fx-padding: 16px 0 8px 0;
+  -fx-padding: 12px 0 6px 0;
 }
 /* ============================================
    ProgressBar Sizes
@@ -5085,12 +5085,12 @@
 /* DividerAnt 文本与线条样式 */
 .jfx-divider {
   -fx-background-color: transparent;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-divider-text {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
-  -fx-padding: 0 12px 0 12px;
+  -fx-padding: 0 8px 0 8px;
 }
 .jfx-divider-line {
   /* 让带文本的 Divider 中线段保持与单独 Separator 一致的视觉粗细 */
@@ -5113,16 +5113,16 @@
   -fx-border-width: 1px;
   -fx-border-radius: 8px;
   -fx-background-radius: 8px;
-  -fx-padding: 16px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 16, 0, 0, 4);
+  -fx-padding: 12px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 16, 0, 0, 4);
 }
 .jfx-modal-header {
-  -fx-padding: 0 0 12px 0;
+  -fx-padding: 0 0 8px 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
 }
 .jfx-modal-footer {
-  -fx-padding: 12px 0 0 0;
+  -fx-padding: 8px 0 0 0;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
 }
@@ -5130,11 +5130,11 @@
    Input Sizes
    ============================================ */
 .text-field.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 1px 7px;
   -fx-font-size: 12px;
 }
 .text-field.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 7px 8px;
   -fx-font-size: 16px;
 }
 /* ============================================
@@ -5175,7 +5175,7 @@
   -fx-border-color: -color-accent-active;
 }
 .menu-button > .label {
-  -fx-padding: 6px 15px 6px 15px;
+  -fx-padding: 5px 11px 5px 11px;
   -fx-text-fill: -color-fg-default;
 }
 .menu-button:hover > .label {
@@ -5184,7 +5184,7 @@
 .menu-button > .arrow-button {
   /* 上下 padding 与 label 一致；水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），
      避免箭头区过宽显得不协调 */
-  -fx-padding: 6px 8px 6px 0;
+  -fx-padding: 5px 6px 5px 0;
   -fx-background-color: transparent;
 }
 .menu-button > .arrow-button > .arrow {
@@ -5248,7 +5248,7 @@
   -fx-cursor: default;
 }
 .split-menu-button > .label {
-  -fx-padding: 6px 15px 6px 15px;
+  -fx-padding: 5px 11px 5px 11px;
   -fx-background-color: transparent;
   -fx-text-fill: -color-fg-default;
   /* 左侧两角跟随容器圆角，避免方角盖住容器圆角露出"缺角"（M19.42 #3） */
@@ -5265,7 +5265,7 @@
 }
 .split-menu-button > .arrow-button {
   /* 水平 padding 减半（对齐 AtlantaFX `cfg.$padding-x / 2`），避免箭头区过宽 */
-  -fx-padding: 6px 8px 6px 8px;
+  -fx-padding: 5px 6px 5px 6px;
   -fx-background-color: transparent;
   /* 左侧分隔线默认 = border-muted；hover 时变 accent-muted 跟整块变蓝更协调 */
   -fx-border-color: transparent transparent transparent -color-border-muted;
@@ -5312,7 +5312,7 @@
 .toggle-button {
   -fx-background-radius: 4px;
   -fx-text-fill: -color-fg-default;
-  -fx-padding: 6px 15px;
+  -fx-padding: 5px 11px;
   -fx-cursor: hand;
   -fx-font-weight: 500;
   -fx-alignment: center;
@@ -5347,56 +5347,56 @@
 }
 /* ToggleButton sizes — 与 .button.small/.large 保持一致 */
 .toggle-button.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 1px 7px;
   -fx-font-size: 12px;
 }
 .toggle-button.large {
-  -fx-padding: 9px 15px;
+  -fx-padding: 7px 11px;
   -fx-font-size: 16px;
 }
 /* MenuButton sizes — padding 下放到 .label 和 .arrow-button（M19.6） */
 .menu-button.small > .label {
-  -fx-padding: 2px 7px 2px 7px;
+  -fx-padding: 1px 7px 1px 7px;
   -fx-font-size: 12px;
 }
 .menu-button.small > .arrow-button {
   /* 水平 padding 减半，对齐 AtlantaFX */
-  -fx-padding: 2px 4px 2px 0;
+  -fx-padding: 1px 2px 1px 0;
 }
 .menu-button.large > .label {
-  -fx-padding: 9px 15px 9px 15px;
+  -fx-padding: 7px 11px 7px 11px;
   -fx-font-size: 16px;
 }
 .menu-button.large > .arrow-button {
-  -fx-padding: 9px 12px 9px 0;
+  -fx-padding: 7px 8px 7px 0;
 }
 /* SplitMenuButton sizes — padding 下放到 .label 和 .arrow-button（M19.6） */
 .split-menu-button.small > .label {
-  -fx-padding: 2px 7px 2px 7px;
+  -fx-padding: 1px 7px 1px 7px;
   -fx-font-size: 12px;
 }
 .split-menu-button.small > .arrow-button {
   /* 水平 padding 减半，对齐 AtlantaFX */
-  -fx-padding: 2px 4px 2px 4px;
+  -fx-padding: 1px 2px 1px 2px;
 }
 .split-menu-button.large > .label {
-  -fx-padding: 9px 15px 9px 15px;
+  -fx-padding: 7px 11px 7px 11px;
   -fx-font-size: 16px;
 }
 .split-menu-button.large > .arrow-button {
-  -fx-padding: 9px 12px 9px 12px;
+  -fx-padding: 7px 8px 7px 8px;
 }
 /* ============================================
    PasswordField Component
    ============================================ */
 .password-field {
   -fx-background-color: #ffffff;
-  -fx-border-color: #e4e4e7;
+  -fx-border-color: #ddd8f5;
   -fx-border-width: 1px;
   -fx-border-radius: 4px;
   -fx-background-radius: 4px;
-  -fx-padding: 6px 11px;
-  -fx-text-fill: #09090b;
+  -fx-padding: 5px 8px;
+  -fx-text-fill: rgba(0, 0, 0, 0.88);
 }
 .password-field:hover {
   -fx-border-color: -color-accent-muted;
@@ -5406,11 +5406,11 @@
   -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
 }
 .password-field.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 1px 7px;
   -fx-font-size: 12px;
 }
 .password-field.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 7px 8px;
   -fx-font-size: 16px;
 }
 /* ============================================
@@ -5425,7 +5425,7 @@
 }
 .tree-table-view .column-header {
   -fx-background-color: -color-bg-subtle;
-  -fx-padding: 16px 16px;
+  -fx-padding: 12px 12px;
   -fx-font-weight: 600;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
@@ -5464,7 +5464,7 @@
   -fx-background-color: -color-accent-muted;
 }
 .tree-table-cell {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 8px;
   -fx-text-fill: -color-fg-default;
 }
 .tree-table-view .tree-disclosure-node .arrow {
@@ -5478,7 +5478,7 @@
 }
 .tree-table-view .tree-table-row-cell > .tree-disclosure-node {
   /* TreeTable 的展开箭头需要和第一列内容拉开间距，避免箭头和文本贴死 */
-  -fx-padding: 0.35em 12px 0 12px;
+  -fx-padding: 0.35em 8px 0 8px;
   -fx-background-color: transparent;
 }
 .tree-table-view .tree-disclosure-node:hover .arrow {
@@ -5807,7 +5807,7 @@
 .jfx-popconfirm-panel {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 12px 16px;
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
@@ -5831,7 +5831,7 @@
 .jfx-message-card {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 10px 16px;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
@@ -5849,7 +5849,7 @@
   -fx-border-width: 0;
   -fx-background-radius: 4px;
   -fx-border-radius: 4px;
-  -fx-padding: 4px;
+  -fx-padding: 2px;
   -fx-font-size: 16px;
   -fx-text-fill: -color-fg-muted;
   -fx-cursor: hand;
@@ -5862,7 +5862,7 @@
 .jfx-notification-card {
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 16px 24px;
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
   -fx-background-radius: 8px;
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
@@ -5880,13 +5880,13 @@
   -fx-font-size: 14px;
 }
 .jfx-notification-container {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-notification-card-header {
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
 }
 .jfx-notification-card-content {
-  -fx-spacing: 4px;
+  -fx-spacing: 2px;
 }
 /* Desktop Notification —— 透明 Stage 内的堆叠容器。
    -fx-background-color: transparent 必须显式覆盖 modena 给 Scene 根节点隐式添加的
@@ -5894,7 +5894,7 @@
    -fx-padding 给卡片 dropshadow 留渲染空间,否则阴影被 Stage 边界裁剪。 */
 .jfx-desktop-notification-container {
   -fx-background-color: transparent;
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-padding: 12px;
 }
 /* Result */
@@ -5912,10 +5912,10 @@
   -fx-text-fill: -color-fg-muted;
 }
 .jfx-filter-bar {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-filter-bar-group {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 /* TableAnt danger action button */
 .jfx-button-danger-text {
@@ -6023,7 +6023,7 @@
 }
 .dialog-pane.jfx-alert-dialog .jfx-alert-dialog-content .label {
   -fx-text-fill: -color-fg-muted;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-wrap-text: true;
 }
 .dialog-pane.jfx-alert-dialog .jfx-alert-dialog-button-bar {
@@ -6128,58 +6128,58 @@
 .text-field.small,
 .text-area.small,
 .password-field.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 1px 7px;
   -fx-font-size: 12px;
 }
 .text-field.large,
 .text-area.large,
 .password-field.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 7px 8px;
   -fx-font-size: 16px;
 }
 /* ComboBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
 .combo-box.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 1px 7px;
   -fx-font-size: 12px;
 }
 .combo-box.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 7px 8px;
   -fx-font-size: 16px;
 }
 /* ChoiceBox sizes — 与 .text-field.small/.large 保持完全一致的高度（M19.5 修复） */
 .choice-box.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 1px 7px;
   -fx-font-size: 12px;
 }
 .choice-box.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 7px 8px;
   -fx-font-size: 16px;
 }
 /* DatePicker sizes — 与 input-base 家族其他成员一致（M19.5 新增） */
 .date-picker.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 1px 7px;
   -fx-font-size: 12px;
 }
 .date-picker.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 7px 8px;
   -fx-font-size: 16px;
 }
 /* ColorPicker sizes — 与 input-base 家族其他成员一致（M19.5 新增） */
 .color-picker.small {
-  -fx-padding: 2px 7px;
+  -fx-padding: 1px 7px;
   -fx-font-size: 12px;
 }
 .color-picker.large {
-  -fx-padding: 9px 11px;
+  -fx-padding: 7px 8px;
   -fx-font-size: 16px;
 }
 /* Tag sizes */
 .jfx-tag.jfx-tag-small {
-  -fx-padding: 0 4px;
+  -fx-padding: 0 2px;
   -fx-font-size: 12px;
 }
 .jfx-tag.jfx-tag-large {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 6px;
   -fx-font-size: 12px;
 }
 .jfx-tag-close-icon {
@@ -6245,13 +6245,13 @@
   -fx-padding: 40 32 32 32;
 }
 .jfx-login-template-banner-brand-box {
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
 }
 .jfx-login-template-banner-features {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 .jfx-login-template-banner-feature-row {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 /* Banner 内部所有文字默认白色（半透明分级） */
 .jfx-login-template-banner-brand {
@@ -6287,7 +6287,7 @@
 }
 /* ----- 右 表单 ----- */
 .jfx-login-template-form {
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
   -fx-padding: 60 48 40 48;
 }
 .jfx-login-template-form-title {
@@ -6387,10 +6387,10 @@
 }
 /* 由 AppShellAnt 承载的 Header 区：这里仅调工作台模板的节奏感，不改底色 */
 .jfx-h-bar.jfx-workspace-template-header {
-  -fx-padding: 8px 16px;
+  -fx-padding: 6px 12px;
 }
 .jfx-workspace-template-header-brand {
-  -fx-spacing: 4px;
+  -fx-spacing: 2px;
 }
 .jfx-workspace-template-header-title {
   -fx-font-size: 16px;
@@ -6402,11 +6402,11 @@
   -fx-text-fill: -color-fg-muted;
 }
 .jfx-workspace-template-header-center {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
   -fx-alignment: center-left;
 }
 .jfx-workspace-template-header-actions {
-  -fx-spacing: 4px;
+  -fx-spacing: 2px;
   -fx-alignment: center-right;
 }
 /* ============================================================
@@ -6429,15 +6429,15 @@
    PanelHeader
    ------------------------------------------- */
 .jfx-panel-header {
-  -fx-spacing: 8px;
+  -fx-spacing: 6px;
 }
 /* -------------------------------------------
    PanelFooter
    ------------------------------------------- */
 .jfx-panel-footer {
   -fx-alignment: center-right;
-  -fx-spacing: 8px;
-  -fx-padding: 16px 24px;
+  -fx-spacing: 6px;
+  -fx-padding: 12px 16px;
 }
 .jfx-panel-footer-bordered {
   -fx-border-color: -color-border-muted transparent transparent transparent;
@@ -6455,7 +6455,7 @@
   -fx-border-color: -color-border-default;
   -fx-border-radius: 8px;
   -fx-background-radius: 8px;
-  -fx-padding: 12px;
+  -fx-padding: 8px;
 }
 /* -------------------------------------------
    TabsAnt — root + tab bar
@@ -6465,7 +6465,7 @@
 }
 .jfx-tabs-content {
   -fx-background-color: transparent;
-  -fx-padding: 16px;
+  -fx-padding: 12px;
 }
 .jfx-tabs-bar {
   -fx-background-color: transparent;
@@ -6513,28 +6513,28 @@
   -fx-font-size: 12px;
 }
 .jfx-tabs-label:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 /* LINE padding —— BUG #144：token 化（variables-base.less @tabs-label-padding-*），
    Java 端不再 setPadding（直设属性会覆盖样式表，导致紧凑模式失效） */
 .jfx-tabs-label-line.jfx-tabs-large {
-  -fx-padding: 16px 24px;
+  -fx-padding: 12px 16px;
 }
 .jfx-tabs-label-line.jfx-tabs-small {
-  -fx-padding: 8px 12px;
+  -fx-padding: 6px 8px;
 }
 .jfx-tabs-label-line:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-padding: 12px 16px;
+  -fx-padding: 8px 12px;
 }
 /* CARD padding */
 .jfx-tabs-label-card.jfx-tabs-large {
-  -fx-padding: 11px 16px;
+  -fx-padding: 7px 12px;
 }
 .jfx-tabs-label-card.jfx-tabs-small {
-  -fx-padding: 4px 8px;
+  -fx-padding: 2px 6px;
 }
 .jfx-tabs-label-card:not(.jfx-tabs-large):not(.jfx-tabs-small) {
-  -fx-padding: 8px 16px;
+  -fx-padding: 6px 12px;
 }
 /* Disabled */
 .jfx-tabs-label.jfx-tabs-disabled {
@@ -6661,7 +6661,7 @@
 .jfx-tag.jfx-tag-large {
   -fx-padding: 2 12 2 12;
   -fx-min-height: 28;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 /* 显式 inherit text-fill（HBox→Label 不在 Labeled 体系内，必须靠 inherit 透传父级颜色），
    不写 font-size: inherit —— JavaFX 派生 -fx-font 简写时会因子属性为 inherit 而 ClassCastException。 */
@@ -6775,7 +6775,7 @@
   -fx-max-height: 32;
   -fx-alignment: center;
   -fx-text-fill: -color-fg-on-emphasis;
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
 }
 .jfx-avatar.jfx-avatar-small {
   -fx-min-width: 24;
@@ -6833,7 +6833,7 @@
    ------------------------------------------- */
 .jfx-result {
   -fx-alignment: center;
-  -fx-spacing: 12px;
+  -fx-spacing: 8px;
   -fx-padding: 48 32 48 32;
 }
 .jfx-result-icon-box {
@@ -6895,7 +6895,7 @@
   -fx-background-radius: 9999;
 }
 .jfx-image-fallback {
-  -fx-font-size: 14px;
+  -fx-font-size: 13px;
   -fx-text-fill: -color-fg-muted;
 }
 .jfx-image-preview {

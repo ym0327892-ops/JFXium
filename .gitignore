@@ -5,6 +5,14 @@ target/
 .kotlin
 ant-design-ref/
 !**/ant-design/
+
+# 内部开发/AI 工具规范（不对外发布）
+/.qoder/
+/INTERNAL/
+/AGENTS.md
+/PROJECT_BUG.md
+/PROJECT_AUDIT_REPORT.md
+/PROJECT_ACCEPTANCE.md
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
