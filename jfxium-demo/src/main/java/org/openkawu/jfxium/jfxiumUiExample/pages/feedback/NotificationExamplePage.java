@@ -1,7 +1,7 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.scene.Node;
-import javafx.scene.control.Hyperlink;
+import org.openkawu.jfxium.component.control.HyperlinkAnt;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
@@ -212,7 +212,7 @@ public class NotificationExamplePage extends VBoxAnt {
                         .onClick(e -> NotificationAnt.create()
                                 .title("内容自定义")
                                 .description("content 接受任意 Node —— 点 Hyperlink 不再被 box click 截胡")
-                                .content(new Hyperlink("查看更新内容 →"))
+                                .content(HyperlinkAnt.create("查看更新内容 →"))
                                 .duration(0)
                                 .closable(true)
                                 .build().show()).build()
@@ -241,7 +241,7 @@ public class NotificationExamplePage extends VBoxAnt {
                 // (修复 Bug 3 前:点 Hyperlink 会被 box click 截胡关掉通知)
                 NotificationAnt.create()
                         .title("内容自定义")
-                        .content(new Hyperlink("查看更新内容 →"))
+                        .content(HyperlinkAnt.create("查看更新内容 →"))
                         .duration(0)
                         .closable(true)
                         .build()

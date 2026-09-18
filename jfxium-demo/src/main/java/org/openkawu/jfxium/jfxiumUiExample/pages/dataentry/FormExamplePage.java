@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
+import org.openkawu.jfxium.component.layout.BorderPaneAnt;
 import javafx.stage.Window;
 
 import org.openkawu.jfxium.component.control.TypographyAnt;
@@ -175,7 +176,7 @@ public class FormExamplePage extends VBoxAnt {
 
     /** 5. footer 对齐演示。 */
     private Node footerAlignSection() {
-        BorderPane preview = new BorderPane();
+        BorderPane preview = BorderPaneAnt.create();
         preview.setCenter(buildAlignedFooterForm(Pos.CENTER_RIGHT));
 
         Node alignSwitch = SegmentedAnt.create()
