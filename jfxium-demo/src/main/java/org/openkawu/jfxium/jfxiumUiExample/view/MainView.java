@@ -15,6 +15,7 @@ import org.openkawu.jfxium.core.theme.LightTheme;
 import org.openkawu.jfxium.core.theme.Theme;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
+import org.openkawu.jfxium.core.theme.ToolTheme;
 import org.openkawu.jfxium.component.layout.BorderPaneAnt;
 import org.openkawu.jfxium.component.layout.ScrollPaneAnt;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
@@ -98,11 +99,13 @@ public class MainView {
                 .size(Size.SMALL)
                 .option("light", "默认")
                 .option("dark", "暗色")
+                .option("tool", "工具")
                 .option("custom", "custom")
                 .selected(resolveThemeKey(themeManager.getCurrentTheme()))
                 .onChange(val -> {
                     Theme target = switch (val) {
                         case "dark" -> new DarkTheme();
+                        case "tool" -> new ToolTheme();
                         case "custom" -> new CustomTheme();
                         default -> new LightTheme();
                     };
@@ -191,6 +194,7 @@ public class MainView {
      */
     private static String resolveThemeKey(Theme theme) {
         if (theme instanceof DarkTheme) return "dark";
+        if (theme instanceof ToolTheme) return "tool";
         if (theme instanceof CustomTheme) return "custom";
         return "light";
     }

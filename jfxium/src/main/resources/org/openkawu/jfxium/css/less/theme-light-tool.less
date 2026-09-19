@@ -1,0 +1,230 @@
+// ============================================
+// JFXium Light Tool Theme —— "紧凑工具列"密度变体（对比实验用）
+// 目标:更接近真实桌面工具(IntelliJ/DBeaver/Qt 桌面)的紧凑观感 ——
+//   「字号不缩、行高压薄、cell 内边距打薄」,而不是"整体缩小一号"。
+//
+// 与 light-compact 的差异:
+//   compact : 字号也压(14→13) + 只动部分行高(32→28) + cell padding 实际没压到
+//   tool    : 字号保持 14 + 行高压到 26 + cell padding 显式打薄(y3/x8)
+// 配色完全复用 Light(variables.less 内联),只调尺寸 token。
+// ============================================
+
+// Step 1: 基础尺寸 token(拿默认定义,下面覆盖)
+@import "variables-base.less";
+
+// Step 2: 覆盖为 tool 尺寸
+// --------------------------------------------
+// Spacing —— 用紧凑档(xs=2/sm=6/md=8/lg=12)
+@spacing-xs: 2px;
+@spacing-sm: 6px;
+@spacing-md: 8px;
+@spacing-lg: 12px;
+@spacing-xl: 16px;
+
+// Control Height:比 compact(28) 更贴桌面工具 —— 28
+@control-height: 28px;
+@control-height-sm: 24px;
+@control-height-lg: 36px;
+
+// Table:行高压薄到 26(桌面工具式信息密度),cell 上/下 3px、左右 8px
+@table-header-height: 26px;
+@table-row-height: 26px;
+@table-cell-padding-y: 3px;
+@table-cell-padding-x: 8px;
+@table-header-padding-y: 5px;
+@table-header-padding-x: 12px;
+
+// Menu:菜单项贴紧
+@menu-item-padding-y: 4px;
+@menu-item-padding-x: 10px;
+@menu-inline-padding-y: 3px;
+@menu-bar-padding-y: 2px;
+
+// List:列表行薄
+@list-cell-padding-y: 3px;
+@list-cell-padding-x: 8px;
+
+// Tree:树节点薄
+@tree-cell-padding-y: 3px;
+@tree-cell-padding-x: 8px;
+
+// 控件 padding(与 compact 一致)
+@ctrl-padding-y: 5px;
+@ctrl-padding-x: 11px;
+@ctrl-padding-y-sm: 1px;
+@ctrl-padding-x-sm: 7px;
+@ctrl-padding-y-lg: 7px;
+@ctrl-padding-x-lg: 11px;
+@btn-padding-y: @ctrl-padding-y;
+@btn-padding-x: @ctrl-padding-x;
+@input-padding-y: @ctrl-padding-y;
+@input-padding-x: 8px;
+
+// Card
+@card-padding: 8px;
+
+// 字号:不缩 —— 与默认一致(↓ compact 是 13)
+@font-size-md: 14px;
+
+// Step 3: 内联 Light 配色(与 variables.less 一致,避免反向覆盖尺寸 token)
+// --------------------------------------------
+@color-base-0: #ffffff;
+@color-base-1: #f6f8fa;
+@color-base-2: #eaeef2;
+@color-base-3: #d0d7de;
+@color-base-4: #afb8c1;
+@color-base-5: #8c959f;
+@color-base-6: #6e7781;
+@color-base-7: #57606a;
+@color-base-8: #424a53;
+@color-base-9: #32383f;
+@color-base-10: #1f2328;
+
+@color-accent-0: #e6f4ff;
+@color-accent-1: #bae0ff;
+@color-accent-2: #91caff;
+@color-accent-3: #69b1ff;
+@color-accent-4: #4096ff;
+@color-accent-5: #1677ff;
+@color-accent-6: #0958d9;
+@color-accent-7: #003eb3;
+@color-accent-8: #002c8c;
+@color-accent-9: #001d66;
+
+@color-success-0: #f6ffed;
+@color-success-1: #d9f7be;
+@color-success-2: #b7eb8f;
+@color-success-3: #95de64;
+@color-success-4: #73d13d;
+@color-success-5: #52c41a;
+@color-success-6: #389e0d;
+@color-success-7: #237804;
+@color-success-8: #135200;
+@color-success-9: #092b00;
+
+@color-warning-0: #fffbe6;
+@color-warning-1: #fef1b8;
+@color-warning-2: #ffe58f;
+@color-warning-3: #ffd666;
+@color-warning-4: #ffc53d;
+@color-warning-5: #faad14;
+@color-warning-6: #d48806;
+@color-warning-7: #ad6800;
+@color-warning-8: #874d00;
+@color-warning-9: #613400;
+
+@color-danger-0: #fff2f0;
+@color-danger-1: #fee2e2;
+@color-danger-2: #fecaca;
+@color-danger-3: #ff7875;
+@color-danger-4: #ff4d4f;
+@color-danger-5: #f5222d;
+@color-danger-6: #cf1322;
+@color-danger-7: #a8071a;
+@color-danger-8: #820014;
+@color-danger-9: #5c0011;
+
+@color-fg-default: rgba(0, 0, 0, 0.88);
+@color-fg-muted: rgba(0, 0, 0, 0.65);
+@color-fg-subtle: rgba(0, 0, 0, 0.45);
+@color-fg-on-emphasis: #ffffff;
+
+@color-bg-default: #ffffff;
+@color-bg-overlay: #ffffff;
+@color-bg-subtle: #f6f8fa;
+@color-bg-inset: #f3f4f6;
+@color-bg-layout: #f0f2f5;
+
+@color-border-default: #d9d9d9;
+@color-border-muted: #f0f0f0;
+@color-border-subtle: rgba(0, 0, 0, 0.06);
+
+@color-accent-emphasis: @color-accent-5;
+@color-accent-hover: @color-accent-0;
+@color-accent-active: @color-accent-6;
+@color-accent-muted: @color-accent-2;
+@color-accent-subtle: @color-accent-0;
+
+@color-success-emphasis: @color-success-5;
+@color-success-hover: @color-success-0;
+@color-success-active: @color-success-6;
+@color-success-muted: @color-success-2;
+@color-success-subtle: @color-success-0;
+
+@color-warning-emphasis: @color-warning-5;
+@color-warning-hover: @color-warning-0;
+@color-warning-active: @color-warning-6;
+@color-warning-muted: @color-warning-2;
+@color-warning-subtle: @color-warning-0;
+
+@color-danger-emphasis: @color-danger-4;
+@color-danger-hover: @color-danger-0;
+@color-danger-active: @color-danger-6;
+@color-danger-muted: @color-danger-2;
+@color-danger-subtle: @color-danger-0;
+
+@color-shadow-default: rgba(0, 0, 0, 0.15);
+
+@color-primary: @color-accent-5;
+@color-primary-hover: @color-accent-4;
+@color-primary-active: @color-accent-6;
+@color-primary-text: @color-accent-7;
+@color-success: @color-success-5;
+@color-success-hover: @color-success-4;
+@color-success-active: @color-success-6;
+@color-success-text: @color-success-7;
+@color-warning: @color-warning-5;
+@color-warning-hover: @color-warning-4;
+@color-warning-active: @color-warning-6;
+@color-warning-text: @color-warning-7;
+@color-error: @color-danger-5;
+@color-error-hover: @color-danger-4;
+@color-error-active: @color-danger-6;
+@color-error-text: @color-danger-7;
+@color-info: @color-accent-5;
+
+@color-text: @color-fg-default;
+@color-text-secondary: @color-fg-muted;
+@color-text-tertiary: @color-fg-subtle;
+@color-text-on-color: @color-fg-on-emphasis;
+@color-bg: @color-bg-default;
+@color-bg-container: @color-bg-default;
+@color-bg-masked: rgba(0, 0, 0, 0.45);
+@color-border: @color-border-default;
+@color-border-secondary: @color-border-muted;
+@color-border-tertiary: @color-border-subtle;
+@color-shadow: @color-shadow-default;
+
+@color-table-row-hover: @color-bg-subtle;
+@color-table-selected-row: @color-primary-bg;
+@color-table-selected-color: @color-primary;
+@color-input: @color-bg-default;
+@color-input-bg: @color-bg-default;
+@color-input-border: @color-border-default;
+@color-input-hover-border: @color-border-default;
+@color-input-focus-border: @color-primary;
+@color-input-placeholder: @color-fg-subtle;
+@color-button-default: @color-bg-default;
+@color-button-default-hover: @color-bg-default;
+@color-button-default-active: @color-bg-subtle;
+@color-link: @color-primary;
+@color-link-hover: @color-primary-hover;
+@color-link-active: @color-primary-active;
+@color-slider-track: @color-primary;
+@color-slider-track-background: @color-border-muted;
+@color-switch: @color-bg-default;
+@color-switch-bg: rgba(0, 0, 0, 0.25);
+@color-switch-bg-hover: rgba(0, 0, 0, 0.45);
+@color-tag-default-bg: @color-bg-subtle;
+@color-tag-default-color: @color-text;
+@color-avatar-bg: @color-primary-bg;
+@color-avatar-color: @color-primary;
+@color-badge-count-bg: @color-error;
+@color-progress-default: @color-primary;
+
+@motion-duration-fast: 0.1s;
+@motion-duration-mid: 0.2s;
+@motion-duration-slow: 0.3s;
+
+// Step 4: 导入全部组件样式(用上面 tool token 重新生成)
+@import "theme-base.less";

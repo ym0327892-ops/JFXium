@@ -124,7 +124,8 @@
                                 def themes = [
                                         'theme-light', 'theme-dark',
                                         'theme-custom', 'theme-custom-compact',
-                                        'theme-light-compact', 'theme-dark-compact'
+                                        'theme-light-compact', 'theme-dark-compact',
+                                        'theme-light-tool'
                                 ]
 
                                 themes.each { name -&gt;
