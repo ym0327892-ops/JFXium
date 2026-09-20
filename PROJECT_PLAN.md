@@ -2559,3 +2559,24 @@ JFXium/                                          # 多模块 Maven 项目（pare
 - [x] 全量测试 1367/1367 通过；demo 下游编译验证通过；详见 PROJECT_BUG.md #144
 
 ---
+
+### 🎯 M21.27 滚动条三连修 + `:not()` 扫雷 + ToolTheme 紧凑工具列（2026-09-18，BUG #146~#148）
+
+**动机**：用户连续截图反馈三类滚动条/间距问题（MainView 换页不回顶、CodeBlock 双滚动条与空滚动条、TabsAnt 标签贴死）；随后提出「紧凑模式不够紧凑」的观感问题，确认根因后新做桌面工具式密度变体。
+
+**产出**：
+- [x] MainView 换页滚动回顶（`contentScroll` 提为字段 + `navigate()` 里 `setVvalue(0)`）——BUG #146
+- [x] CodeBlock 高度自适应重做：删 `rows(countLines)` 撑高、`prefViewportHeight(USE_COMPUTED_SIZE)` + `fitToHeight`、默认 maxHeight 400→220、demo 360→200、`.jfx-codeblock-scroll` padding 12→0 ——BUG #147
+- [x] TabsAnt 标签间距修复：发现 **JavaFX CSS 不支持 `:not()` 伪类**，`_component-aux.less` 里 6 条 `:not()` 规则被静默丢弃（padding 恒 0）。全部改为「默认基础类 + large/small 特异性覆盖」；JUnit 加载真实主题 CSS 布局断言复现+回归——BUG #148
+- [x] 全仓扫雷：`:not` / `box-shadow` / `transition` 在 LESS 源 + 6 个编译 CSS 中确认**仅 TabsAnt 一处中招**；`>` 子选择器合法
+- [x] 新增 **ToolTheme（紧凑工具列密度变体）**：`theme-light-tool.less`（复用 Light 配色，只覆盖尺寸 token）——字号保持 14 不缩、表格行高 26、Table/List/Tree/Menu cell padding 显式打薄（y3/x8）——针对现有 compact「字号也压 + cell padding 实际没压到」的观感缺陷。demo 顶栏主题切换加「工具」档，与「默认」来回切对比
+- [x] 全量测试 1372/1372 通过；demo 编译 + 启动存活
+
+**沉淀**：
+- JavaFX CSS 静默失效语法清单（应进红线）：`:not()`、`-fx-transition`（交互态）、`box-shadow`——web 语法无报错但不生效
+- JavaFX CSS 复现/回归测试法：JfxTestBase + Scene + 加载真实 `theme-*.css` + `applyCss()/layout()` 后断言 `getInsets()`/bounds——可直接查出「样式看着写了但没渲染」
+- ScrollPane 两条铁律：`-fx-padding` 会算进内容尺寸诱发滚动条（容器 padding 归 0，下放子节点）；「内容少贴合 + 内容多钳制滚动」用 `prefViewportHeight(USE_COMPUTED_SIZE)` + `fitToHeight(true)` + `maxHeight` 组合
+- LESS 排查时序坑：groovy 写入的是**源 css 目录**，target/classes 是资源复制产物——改 less 后查 target 不变 ≠ 插件假成功，clean 重建即同步（BUG #64 排查法的修正版）
+
+
+---
