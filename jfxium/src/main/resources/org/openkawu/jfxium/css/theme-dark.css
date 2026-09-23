@@ -2755,8 +2755,9 @@
   -fx-padding: 4px 0;
 }
 .jfx-separator .line {
-  -fx-border-color: -color-border-muted;
-  -fx-border-width: 0.5;
+  -fx-border-color: -color-border-default;
+  -fx-border-style: solid;
+  -fx-border-width: 1px;
 }
 /* ============================================
    SplitMenuButton (JFXium `.jfx-split-menu-button`)
