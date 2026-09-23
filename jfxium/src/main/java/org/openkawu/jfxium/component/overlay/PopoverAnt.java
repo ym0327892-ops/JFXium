@@ -151,6 +151,7 @@ public class PopoverAnt {
             });
 
             popup.getContent().add(panel);
+            PopupThemes.bind(popup, config.target);
 
             javafx.geometry.Bounds bounds = config.target.localToScreen(config.target.getBoundsInLocal());
             double x, y;

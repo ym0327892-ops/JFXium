@@ -197,34 +197,27 @@ public class PromptDialogAnt {
                 })
                 .build();
 
-        // 监听 locale 变化：若未显式指定 ok/cancel/title 文案，需同步刷新
-        if (cancelText == null) {
-            Messages.localeProperty().addListener((obs, ov, nv) ->
-                    cancelBtn.setText(Messages.get("prompt.cancel")));
-        }
-        if (okText == null) {
-            Messages.localeProperty().addListener((obs, ov, nv) ->
-                    okBtn.setText(Messages.get("prompt.ok")));
-        }
-        if (title == null) {
-            // title 在 ModalResult.open() 时渲染，这里暂存，build 时挂监听
-            // 由于 ModalResult.open() 内部已读取 title，我们在 build 末尾再处理 title 同步
-            // 见下方 modalResult.setLocaleSyncListener(...)
-        }
-
         buttons.children(cancelBtn, okBtn);
-        content.children(buttons);
 
-        // 使用 ModalAnt 构建（不打开，等 .open() 显式触发）
+        // 按钮作为 Modal 的自定义 footer（footer() 内部会置 noDefaultFooter=true），
+        // 否则 Modal 还会再渲染一份默认 footer，出现 4 个按钮，
+        // 且用户点的默认确定按钮只走 onOk（null），导致 onConfirm 不触发、输入值丢失。
         ModalAnt.ModalResult modalResult = ModalAnt.create()
             .title(resolvedTitle)
             .content(content)
+            .footer(buttons)
             .width(width)
             .build();
 
-        // 如果 title 是 i18n 默认值，挂上 locale 监听：ModalResult 暴露 title 同步接口
+        // title / 按钮的 locale 监听统一走 ModalResult 登记，随 stage hidden 自动注销（防泄漏）。
         if (title == null) {
             modalResult.onTitleLocaleChange(() -> Messages.get("prompt.title"));
+        }
+        if (cancelText == null) {
+            modalResult.bindToLocale((obs, ov, nv) -> cancelBtn.setText(Messages.get("prompt.cancel")));
+        }
+        if (okText == null) {
+            modalResult.bindToLocale((obs, ov, nv) -> okBtn.setText(Messages.get("prompt.ok")));
         }
 
         result.setModalResult(modalResult);

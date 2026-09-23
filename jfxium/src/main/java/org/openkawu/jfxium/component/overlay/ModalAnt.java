@@ -26,6 +26,8 @@ import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 import org.openkawu.jfxium.core.util.TextUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -245,8 +247,24 @@ public class ModalAnt {
         private VBoxAnt modalPanel;
         private boolean isOpen = false;
         // 标题 i18n 动态刷新回调：若调用方在 build() 之后、open() 之前挂上
-        // supplier，则会在 localeProperty() 变化时调用 supplier.get() 重新设置标题
         private Supplier<String> titleLocaleSupplier = null;
+        /** 所有挂在静态 localeProperty 上的监听，stage hidden 时统一注销（防泄漏）。 */
+        private final List<javafx.beans.value.ChangeListener<java.util.Locale>> localeListeners = new ArrayList<>();
+
+        /** 注册一个 locale 监听并登记，便于 hidden 时统一移除。 */
+        private void addLocaleListener(javafx.beans.value.ChangeListener<java.util.Locale> listener) {
+            Messages.localeProperty().addListener(listener);
+            localeListeners.add(listener);
+        }
+
+        /**
+         * 绑定一个 locale 监听（供基于 ModalAnt 的复合弹框使用）。
+         * 监听随本次 open 的 stage hidden 自动注销，不会泄漏；须在 {@link #open(Node)} 前调用。
+         */
+        public void bindToLocale(javafx.beans.value.ChangeListener<java.util.Locale> listener) {
+            addLocaleListener(listener);
+        }
+
 
         ModalResult(Builder config) {
             this.config = config;
@@ -368,6 +386,11 @@ public class ModalAnt {
                 ownerWindow.heightProperty().removeListener(heightListener);
                 ownerWindow.xProperty().removeListener(xListener);
                 ownerWindow.yProperty().removeListener(yListener);
+                // 注销本次 open 内挂到静态 localeProperty 的所有监听，避免整棵场景图被钉住泄漏。
+                for (javafx.beans.value.ChangeListener<java.util.Locale> l : localeListeners) {
+                    Messages.localeProperty().removeListener(l);
+                }
+                localeListeners.clear();
             });
 
             stage.show();
@@ -479,7 +502,7 @@ public class ModalAnt {
 
             // 5. 注册 title i18n 监听（如果调用方通过 onTitleLocaleChange() 注入）
             if (titleLocaleSupplier != null) {
-                Messages.localeProperty().addListener((obs, ov, nv) ->
+                addLocaleListener((obs, ov, nv) ->
                         titleLabel.setText(titleLocaleSupplier.get()));
             }
 
@@ -506,15 +529,14 @@ public class ModalAnt {
                 })
                 .build();
 
-            // 监听 locale 变化：若未显式指定 ok/cancel 文案，需同步刷新
-            if (config.cancelText == null) {
-                Messages.localeProperty().addListener((obs, ov, nv) ->
-                        cancelBtn.setText(Messages.get("modal.cancel")));
-            }
-            if (config.okText == null) {
-                Messages.localeProperty().addListener((obs, ov, nv) ->
-                        okBtn.setText(Messages.get("modal.ok")));
-            }
+            // locale 监听统一登记（默认文案时刷新）；显式文案时刷新为相同值无害，
+            // 关键是每次 open 重建 footer 都登记，hidden 时统一注销，不漏不积。
+            addLocaleListener((obs, ov, nv) -> {
+                if (config.cancelText == null) cancelBtn.setText(Messages.get("modal.cancel"));
+            });
+            addLocaleListener((obs, ov, nv) -> {
+                if (config.okText == null) okBtn.setText(Messages.get("modal.ok"));
+            });
 
             HBoxAnt footer = HBoxAnt.create()
                     .align(Pos.CENTER_RIGHT)

@@ -69,6 +69,7 @@ public class ContextMenuAnt {
         private boolean disabled;
         private final boolean divider;
         private KeyCombination accelerator;
+        private Runnable action;
 
         public MenuItem(String key, String label) {
             this(key, label, null, false, false);
@@ -101,6 +102,8 @@ public class ContextMenuAnt {
         public boolean isDivider() { return divider; }
         public KeyCombination getAccelerator() { return accelerator; }
         public void setAccelerator(KeyCombination accelerator) { this.accelerator = accelerator; }
+        public Runnable getAction() { return action; }
+        public void setAction(Runnable action) { this.action = action; }
         public void setDisabled(boolean disabled) { this.disabled = disabled; }
     }
 
@@ -118,6 +121,7 @@ public class ContextMenuAnt {
 
         public Builder item(String key, String label, Runnable action) {
             MenuItem item = new MenuItem(key, label);
+            item.setAction(action);
             this.items.add(item);
             this.currentItem = item;
             return this;
@@ -125,6 +129,7 @@ public class ContextMenuAnt {
 
         public Builder item(String key, String label, Node icon, Runnable action) {
             MenuItem item = new MenuItem(key, label, icon);
+            item.setAction(action);
             this.items.add(item);
             this.currentItem = item;
             return this;
@@ -187,6 +192,7 @@ public class ContextMenuAnt {
         ContextMenuResult(Builder config) {
             this.config = config;
             this.popup = new Popup();
+            PopupThemes.bind(popup, config.target);
             this.menuBox = createMenu();
             setupTrigger();
         }
@@ -233,6 +239,10 @@ public class ContextMenuAnt {
                 if (!item.isDisabled()) {
                     row.setOnMouseClicked(e -> {
                         popup.hide();
+                        // 逐条 action（item(key,label,action) 传入），之前被静默丢弃。
+                        if (item.getAction() != null) {
+                            item.getAction().run();
+                        }
                         if (config.onSelect != null) {
                             config.onSelect.accept(item.getKey());
                         }

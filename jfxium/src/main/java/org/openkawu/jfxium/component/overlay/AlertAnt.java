@@ -92,6 +92,9 @@ public class AlertAnt extends Alert {
     private Runnable onCancelCallback;
     /** 非阻塞回调：弹窗关闭时拿到最终 ButtonType（null 表示未设 result，如强制关闭） */
     private Consumer<ButtonType> onResultCallback;
+    /** locale 监听（具名引用，hidden 时注销，避免静态属性长期钉住已关闭弹窗）。 */
+    private final javafx.beans.value.ChangeListener<java.util.Locale> localeListener =
+        (obs, ov, nv) -> applyI18nButtonLabels();
 
     /**
      * 构造 AlertAnt（指定 AlertType + owner 父窗口）。
@@ -112,12 +115,15 @@ public class AlertAnt extends Alert {
         // 默认 OK / Cancel i18n 文案
         applyI18nButtonLabels();
 
-        // 监听 locale 变化：未显式 override 时自动刷新
-        Messages.localeProperty().addListener((obs, ov, nv) -> applyI18nButtonLabels());
+        // 监听 locale 变化（具名引用），弹窗 hidden 时注销，避免泄漏。
+        Messages.localeProperty().addListener(localeListener);
 
         // onShowing 时挂 styleClass（DialogPane 此时已创建到 Scene）
-        // 必须异步：JavaFX 在 showAndWait 内构造 dialog-pane 节点
         setOnShowing(e -> Platform.runLater(this::applyStyleClasses));
+
+        // hidden 时注销 locale 监听（addEventHandler 与业务 setOnHidden 并存，不互相覆盖）
+        addEventHandler(javafx.scene.control.DialogEvent.DIALOG_HIDDEN, e ->
+            Messages.localeProperty().removeListener(localeListener));
     }
 
     // ============================================================

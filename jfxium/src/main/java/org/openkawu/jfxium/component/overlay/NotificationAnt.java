@@ -94,11 +94,11 @@ public class NotificationAnt {
     }
 
     private static class NotificationEntry {
-        final Popup popup;
         final VBox box;
+        PauseTransition timer;
+        boolean closing = false;
 
-        NotificationEntry(Popup popup, VBox box) {
-            this.popup = popup;
+        NotificationEntry(VBox box) {
             this.box = box;
         }
     }
@@ -386,23 +386,27 @@ public class NotificationAnt {
             NotificationContainer container = containers.get(config.placement);
             container.attachWindow(window);
 
+            // entry 需在 X 的 onClose 里引用，而 onClose 又要在 card build 前设定，
+            // 用 1 元素 holder 打破先有鸡还是先有蛋（同 DesktopNotificationAnt 模式）。
+            final NotificationEntry[] ref = new NotificationEntry[1];
+
             NotificationCard.Builder cardBuilder = new NotificationCard.Builder()
                 .title(config.title)
                 .description(config.description)
                 .type(convertType(config.type))
                 .closable(config.closable)
-                // 透传 onClose：NotificationCard.onClose 收 Runnable,此处收 Consumer<Void>,包一层适配
-                // 修 Bug（M19.51）：之前漏传,导致 NotificationCard.L117 if (closable && onClose != null) 永远为 false,X 按钮从未渲染
-                .onClose(config.onClose == null ? null : () -> config.onClose.accept(null))
+                // X 按钮：先框架关闭（hide→removeEntry），再执行业务 onClose。
+                // 之前只执行业务回调、没有 hide，导致用户未传 onClose 时 X 是死按钮、卡片永久残留。
+                .onClose(() -> {
+                    hide(ref[0], config);
+                    if (config.onClose != null) config.onClose.accept(null);
+                })
                 .content(config.content);
 
             VBox notificationBox = cardBuilder.build();
 
-            Popup popup = new Popup();
-            popup.setAutoHide(true);
-            popup.getContent().add(notificationBox);
-
-            NotificationEntry entry = new NotificationEntry(popup, notificationBox);
+            NotificationEntry entry = new NotificationEntry(notificationBox);
+            ref[0] = entry;
 
             notificationBox.setOpacity(0);
             boolean fromLeft = config.placement == Placement.TOP_LEFT || config.placement == Placement.BOTTOM_LEFT;
@@ -418,25 +422,18 @@ public class NotificationAnt {
             slideIn.setToX(0);
             slideIn.setInterpolator(Interpolator.EASE_OUT);
 
-            javafx.animation.ParallelTransition pt = new javafx.animation.ParallelTransition(fadeIn, slideIn);
-            pt.play();
+            new javafx.animation.ParallelTransition(fadeIn, slideIn).play();
 
             if (config.durationSeconds > 0) {
                 PauseTransition delay = new PauseTransition(Duration.seconds(config.durationSeconds));
                 delay.setOnFinished(e -> hide(entry, config));
                 delay.play();
+                entry.timer = delay;
             }
 
-            // 关闭路径 3 条:
-            //   1) duration 计时器到点 → hide()       (L415)
-            //   2) NotificationCard 内部的 X 按钮 onAction → hide() (内嵌于 cardBuilder 内)
-            //   3) onClick 回调 —— 不触发 hide,只通知业务方用户点了 box(见下方 setOnMouseClicked)
-            //
-            // 修复 Bug 3 (M19.51 同族): 之前 box click handler 末尾也调用 hide(),
-            // 导致: ① 点 body 任何位置都关掉通知;② 点 X 时事件 bubble-up 重复触发 hide;
-            // ③ content(Hyperlink) 等自定义节点被 bubble-up 截胡,根本无法点击。
-            // 现仅触发 onClick,不再 hide —— 与 Ant Design Notification 默认语义对齐。
-            if (config.closable && config.onClick != null) {
+            // onClick 仅通知业务方，不触发 hide（Ant Design 点 body 不关闭约定）。
+            // 关闭统一走：X / duration；点外部因 container.popup autoHide=false 也不关闭。
+            if (config.onClick != null) {
                 notificationBox.setOnMouseClicked(e -> config.onClick.accept(null));
             }
 
@@ -444,12 +441,17 @@ public class NotificationAnt {
         });
     }
 
+
     private static void hide(NotificationEntry entry, Builder config) {
+        if (entry == null || entry.closing) return;
+        entry.closing = true;
+        if (entry.timer != null) {
+            entry.timer.stop();
+        }
         FadeTransition fadeOut = new FadeTransition(AnimationDuration.FAST, entry.box);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
         fadeOut.setOnFinished(e -> {
-            entry.popup.hide();
             NotificationContainer container = containers.get(config.placement);
             container.removeEntry(entry);
         });

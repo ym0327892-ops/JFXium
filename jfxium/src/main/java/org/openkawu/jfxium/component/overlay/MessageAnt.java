@@ -6,6 +6,7 @@ import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.layout.HBox;
 import javafx.stage.Popup;
+import javafx.stage.Window;
 import javafx.util.Duration;
 import org.openkawu.jfxium.component.base.MessageCard;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
@@ -30,22 +31,9 @@ import java.util.List;
  *
  * <h2>用法</h2>
  * <pre>{@code
- * // 顶部成功提示（默认 3 秒自动消失）
  * MessageAnt.success("保存成功");
- *
- * // 底部错误提示（指定 5 秒）
- * MessageAnt.error("网络错误", 5, MessageAnt.Position.BOTTOM);
- *
- * // 精确 Duration（支持亚秒级，如 500ms / 2.5s）
- * MessageAnt.show("提示", MessageAnt.Type.INFO, Duration.millis(500));
- *
- * // Loading（默认不自动消失，需手动 close）
- * MessageResult loading = MessageAnt.loading("正在处理...");
- * // ... 异步完成后
- * loading.close();
- *
- * // Loading 指定超时（6 秒后自动消失）
- * MessageAnt.loading("正在处理...", 6);
+ * MessageAnt.error("网络错误", 5);
+ * MessageAnt.loading("正在处理...").close();   // loading 返回句柄
  * }</pre>
  */
 public class MessageAnt {
@@ -62,29 +50,33 @@ public class MessageAnt {
 
     private static final int MAX_MESSAGES = 5;
     private static final List<MessageEntry> activeMessages = new ArrayList<>();
-    private static Position defaultPosition = Position.TOP;  // 默认位置
-    private static double defaultTopOffset = 24;  // 顶部提示距离窗口上边缘的距离（px）
+    private static volatile Position defaultPosition = Position.TOP;  // 默认位置
+    private static volatile double defaultEdgeOffset = 24;  // 顶部/底部距窗口边缘距离（px）
+    private static final double STACK_GAP = 8;  // 多条堆叠间距
 
-    /** 有界布局等待的失败计数（防止极端情况下重试循环永不退出）。 */
-    private static int layoutWaitAttempts = 0;
-    /**
-     * 设置顶部/底部提示相对窗口边缘的距离（像素）。默认 24。
-     * 传入负数或 NaN/Infinity 时回退为默认 24。
-     */
+    /** 设置顶部/底部提示相对窗口边缘的距离（像素），默认 24。非法值回退默认。 */
+    public static void setEdgeOffset(double offset) {
+        defaultEdgeOffset = Double.isFinite(offset) ? Math.max(0, offset) : 24;
+    }
+
+    /** @deprecated 命名含糊，请用 {@link #setEdgeOffset(double)}。 */
+    @Deprecated
     public static void setTopOffset(double offset) {
-        defaultTopOffset = Double.isFinite(offset) ? Math.max(0, offset) : 24;
+        setEdgeOffset(offset);
     }
 
     private static class MessageEntry {
         final Popup popup;
         final HBox box;
-        final long showTime;
+        final Window owner;
         final Position position;
+        PauseTransition timer;
+        boolean closing = false;
 
-        MessageEntry(Popup popup, HBox box, Position position) {
+        MessageEntry(Popup popup, HBox box, Window owner, Position position) {
             this.popup = popup;
             this.box = box;
-            this.showTime = System.currentTimeMillis();
+            this.owner = owner;
             this.position = position;
         }
     }
@@ -97,30 +89,31 @@ public class MessageAnt {
         private String content = "";
         private Type type = Type.INFO;
         private int durationSeconds = 3;
-        private Position position = defaultPosition;
+        private Position position = null;  // null = build 时取 defaultPosition
 
         public Builder content(String content) {
-            this.content = content;
+            this.content = content == null ? "" : content;
             return this;
         }
 
         public Builder type(Type type) {
-            this.type = type;
+            this.type = type == null ? Type.INFO : type;
             return this;
         }
 
         public Builder duration(int seconds) {
-            this.durationSeconds = seconds;
+            this.durationSeconds = Math.max(0, seconds);
             return this;
         }
 
         public Builder position(Position position) {
-            this.position = position;
+            this.position = position;  // null 合法 → build 时取 defaultPosition
             return this;
         }
 
         public MessageResult build() {
-            return new MessageResult(content, type, durationSeconds, position);
+            Position eff = position != null ? position : defaultPosition;
+            return new MessageResult(content, type, durationSeconds, eff);
         }
     }
 
@@ -130,6 +123,7 @@ public class MessageAnt {
         private final int durationSeconds;
         private final Position position;
         private MessageEntry entry;
+        private boolean closeRequested = false;
 
         MessageResult(String content, Type type, int durationSeconds, Position position) {
             this.content = content;
@@ -138,26 +132,45 @@ public class MessageAnt {
             this.position = position;
         }
 
-        public void show() {
-            this.entry = MessageAnt.showAndReturn(content, type, durationSeconds, position);
+        /** 显示。FX 线程上同步完成（entry 立即就绪）；其他线程异步显示。 */
+        public MessageResult show() {
+            if (javafx.application.Platform.isFxApplicationThread()) {
+                this.entry = showAndReturn(content, type, durationSeconds, position);
+                if (closeRequested) doClose();
+            } else {
+                javafx.application.Platform.runLater(() -> {
+                    this.entry = showAndReturn(content, type, durationSeconds, position);
+                    if (closeRequested) doClose();
+                });
+            }
+            return this;
         }
 
+        /** 关闭（幂等，可跨线程调用）。若消息尚未显示，登记为显示后立即关闭。 */
         public void close() {
+            closeRequested = true;
             if (entry != null) {
-                activeMessages.remove(entry);
-                hideMessage(entry);
-                // 重新定位剩余消息
-                javafx.stage.Window window = javafx.stage.Window.getWindows().stream()
-                    .filter(javafx.stage.Window::isShowing)
-                    .filter(w -> w instanceof javafx.stage.Stage)
-                    .findFirst()
-                    .orElse(null);
-                if (window != null) {
-                    repositionMessages(window);
+                if (javafx.application.Platform.isFxApplicationThread()) {
+                    doClose();
+                } else {
+                    javafx.application.Platform.runLater(this::doClose);
                 }
             }
         }
+
+        private void doClose() {
+            MessageEntry e = entry;
+            if (e == null || e.closing) return;
+            activeMessages.remove(e);
+            hideMessage(e);
+            repositionMessages(e.owner);
+            entry = null;
+        }
     }
+
+    // ============================================================
+    // 静态快捷方法
+    // ============================================================
 
     public static void show(String content) {
         show(content, Type.INFO, 3, defaultPosition);
@@ -179,161 +192,171 @@ public class MessageAnt {
         show(content, Type.INFO, 3, defaultPosition);
     }
 
-    public static void loading(String content) {
-        show(content, Type.LOADING, 0, defaultPosition);
+    /** Loading（默认不自动消失），返回句柄供手动 close()。 */
+    public static MessageResult loading(String content) {
+        return showResult(content, Type.LOADING, 0, defaultPosition);
     }
 
-    // ============================================================
-    // durationSeconds 重载（让业务方自由控制自动消失时间）
-    // - durationSeconds > 0：N 秒后自动消失
-    // - durationSeconds == 0：不自动消失（Loading 默认行为）
-    // - durationSeconds < 0：按 0 处理
-    // ============================================================
-
-    /** {@link #success(String)} 指定 durationSeconds 秒（覆盖默认 3 秒）。 */
+    /** {@link #success(String)} 指定秒数。 */
     public static void success(String content, int durationSeconds) {
         show(content, Type.SUCCESS, durationSeconds, defaultPosition);
     }
 
-    /** {@link #error(String)} 指定 durationSeconds 秒（覆盖默认 3 秒）。 */
+    /** {@link #error(String)} 指定秒数。 */
     public static void error(String content, int durationSeconds) {
         show(content, Type.ERROR, durationSeconds, defaultPosition);
     }
 
-    /** {@link #warning(String)} 指定 durationSeconds 秒（覆盖默认 3 秒）。 */
+    /** {@link #warning(String)} 指定秒数。 */
     public static void warning(String content, int durationSeconds) {
         show(content, Type.WARNING, durationSeconds, defaultPosition);
     }
 
-    /** {@link #info(String)} 指定 durationSeconds 秒（覆盖默认 3 秒）。 */
+    /** {@link #info(String)} 指定秒数。 */
     public static void info(String content, int durationSeconds) {
         show(content, Type.INFO, durationSeconds, defaultPosition);
     }
 
-    /** {@link #loading(String)} 指定 durationSeconds 秒后自动消失（默认 0 = 永不自动消失）。 */
-    public static void loading(String content, int durationSeconds) {
-        show(content, Type.LOADING, durationSeconds, defaultPosition);
+    /** {@link #loading(String)} 指定超时秒数（默认 0 = 永不自动消失）。 */
+    public static MessageResult loading(String content, int durationSeconds) {
+        return showResult(content, Type.LOADING, durationSeconds, defaultPosition);
     }
 
     public static void show(String content, Type type, int durationSeconds) {
         show(content, type, durationSeconds, defaultPosition);
     }
 
-    /**
-     * 精确 Duration 重载（支持亚秒级，如 {@code Duration.millis(500)} / {@code Duration.seconds(2.5)}）。
-     * null 走默认 3 秒。
-     */
+    /** 精确 Duration 重载，null 走默认 3 秒。 */
     public static void show(String content, Type type, Duration duration) {
         double seconds = duration == null ? 3.0 : Math.max(0.0, duration.toSeconds());
-        // 亚秒级向上取整（如 0.5s -> 1s，保证不立即消失）
         int secondsInt = (int) Math.ceil(seconds);
         show(content, type, secondsInt, defaultPosition);
     }
 
+    public static void show(String content, Type type, int durationSeconds, Position position) {
+        showResult(content, type, durationSeconds, position);
+    }
+
+    private static MessageResult showResult(String content, Type type, int durationSeconds, Position position) {
+        MessageResult result = new MessageResult(
+                content == null ? "" : content,
+                type == null ? Type.INFO : type,
+                Math.max(0, durationSeconds),
+                position == null ? defaultPosition : position);
+        result.show();
+        return result;
+    }
+
     /**
-     * 显示消息并返回 MessageEntry（供 MessageResult.close() 使用）
+     * 显示消息。调用方须在 FX 线程。返回的 MessageEntry 在 popup 定位完成后就绪。
      */
     private static MessageEntry showAndReturn(String content, Type type, int durationSeconds, Position position) {
-        final MessageEntry[] resultEntry = new MessageEntry[1];
-        
-        javafx.application.Platform.runLater(() -> {
-            javafx.stage.Window window = javafx.stage.Window.getWindows().stream()
-                .filter(javafx.stage.Window::isShowing)
-                .filter(w -> w instanceof javafx.stage.Stage)
-                .findFirst()
-                .orElse(null);
+        Window window = Window.getWindows().stream()
+            .filter(Window::isShowing)
+            .filter(w -> w instanceof javafx.stage.Stage)
+            .findFirst()
+            .orElse(null);
 
-            if (window == null) return;
+        if (window == null) return null;
 
-            while (activeMessages.size() >= MAX_MESSAGES) {
-                MessageEntry oldest = activeMessages.remove(0);
-                hideMessage(oldest);
+        // 同位置桶的容量上限（CENTER 固定 1，单独处理）
+        if (position != Position.CENTER) {
+            long sameBucket = activeMessages.stream()
+                .filter(e -> e.owner == window && e.position == position)
+                .count();
+            if (sameBucket >= MAX_MESSAGES) {
+                activeMessages.stream()
+                    .filter(e -> e.owner == window && e.position == position)
+                    .findFirst()
+                    .ifPresent(old -> {
+                        activeMessages.remove(old);
+                        hideMessage(old);
+                    });
             }
+        }
 
-            HBox messageBox = new MessageCard.Builder()
-                .content(content)
-                .type(convertType(type))
-                .build();
+        HBox messageBox = new MessageCard.Builder()
+            .content(content)
+            .type(convertType(type))
+            .build();
 
-            Popup popup = new Popup();
-            popup.getContent().add(messageBox);
+        Popup popup = new Popup();
+        popup.getContent().add(messageBox);
 
-            // 先显示 popup（不可见），让 messageBox 完成布局计算实际宽度
-            popup.setOpacity(0);
-            popup.show(window);
+        // 不可见显示，等布局取真实尺寸，避免量到 0 用占位尺寸导致错位。
+        popup.setOpacity(0);
+        popup.show(window);
 
-            // 等待布局完成后获取实际宽度/高度。单个 runLater 可能在 pulse 前触发，
-            // 量到的是 0 而回退成 300/40 占位尺寸，导致 popup 被摆到错误位置，
-            // 之后再跳到正确位置 —— 这就是「先闪烁一下再居中」的根因。
-            // 这里用有界轮询：等真实尺寸就绪后再定位，绝不闪现错误位置。
-            waitForLayout(messageBox, popup, window, position, durationSeconds, resultEntry);
+        MessageEntry entry = new MessageEntry(popup, messageBox, window, position);
+
+        // owner 关闭 → 清理僵尸 entry（popup 随 owner 隐藏但列表项不会自动移除）。
+        window.showingProperty().addListener(new javafx.beans.value.ChangeListener<Boolean>() {
+            @Override
+            public void changed(javafx.beans.value.ObservableValue<? extends Boolean> obs,
+                                Boolean ov, Boolean nv) {
+                if (!nv && activeMessages.remove(entry)) {
+                    if (entry.timer != null) entry.timer.stop();
+                }
+                window.showingProperty().removeListener(this);
+            }
         });
-        
-        return resultEntry[0];
+
+        waitForLayout(messageBox, popup, window, position, durationSeconds, entry, 0);
+        return entry;
     }
 
-    /** 有界等待 messageBox 完成布局，取到真实尺寸后一次性定位并播放入场动画。 */
-    private static void waitForLayout(HBox messageBox, Popup popup, javafx.stage.Window window,
-                                      Position position, int durationSeconds, MessageEntry[] resultEntry) {
+    /** 有界等待布局完成（计数为局部参数，跨消息不互相干扰），再定位与动画。 */
+    private static void waitForLayout(HBox messageBox, Popup popup, Window window,
+                                      Position position, int durationSeconds,
+                                      MessageEntry entry, int attempts) {
         double w = messageBox.getWidth();
         double h = messageBox.getHeight();
-        if (w > 0 && h > 0) {
-            layoutWaitAttempts = 0;
-            placeAndAnimate(messageBox, popup, window, position, durationSeconds, resultEntry, w, h);
+        if ((w > 0 && h > 0) || attempts >= 50) {
+            double ew = w > 0 ? w : 300;
+            double eh = h > 0 ? h : 40;
+            placeAndAnimate(messageBox, popup, window, position, durationSeconds, entry, ew, eh);
             return;
         }
-
         PauseTransition retry = new PauseTransition(Duration.millis(16));
-        retry.setOnFinished(e -> waitForLayout(messageBox, popup, window, position, durationSeconds, resultEntry));
-        // 有界：留 50 次（约 800ms）作为兜底，避免极端情况下永远不返回
-        if (++layoutWaitAttempts < 50) {
-            retry.play();
-        } else {
-            placeAndAnimate(messageBox, popup, window, position, durationSeconds, resultEntry, 300, 40);
-        }
+        retry.setOnFinished(e -> waitForLayout(messageBox, popup, window, position,
+                durationSeconds, entry, attempts + 1));
+        retry.play();
     }
 
-    private static void placeAndAnimate(HBox messageBox, Popup popup, javafx.stage.Window window,
-                                        Position position, int durationSeconds, MessageEntry[] resultEntry,
-                                        double messageWidth, double messageHeight) {
-        // 根据位置计算 X 和 Y 坐标
+    private static void placeAndAnimate(HBox messageBox, Popup popup, Window window,
+                                        Position position, int durationSeconds,
+                                        MessageEntry entry, double messageWidth, double messageHeight) {
         double x = window.getX() + (window.getWidth() - messageWidth) / 2;
         double y;
 
         if (position == Position.CENTER) {
-            // 中间：屏幕正中央（只显示一个，新消息替换旧消息）
+            // CENTER 只显示一个：替换同 owner 旧 CENTER。
             activeMessages.stream()
-                .filter(e -> e.position == Position.CENTER)
+                .filter(e -> e.owner == window && e.position == Position.CENTER)
                 .findFirst()
-                .ifPresent(oldEntry -> {
-                    activeMessages.remove(oldEntry);
-                    hideMessage(oldEntry);
+                .ifPresent(old -> {
+                    activeMessages.remove(old);
+                    hideMessage(old);
                 });
-
             y = window.getY() + (window.getHeight() - messageHeight) / 2;
-        } else if (position == Position.BOTTOM) {
-            // 底部：从窗口底部往上计算
-            int bottomIndex = (int) activeMessages.stream()
-                .filter(e -> e.position == Position.BOTTOM)
-                .count();
-            y = window.getY() + window.getHeight() - defaultTopOffset - ((bottomIndex + 1) * 50);
         } else {
-            // 顶部：从窗口顶部往下计算
-            int topIndex = (int) activeMessages.stream()
-                .filter(e -> e.position == Position.TOP)
+            int stackIndex = (int) activeMessages.stream()
+                .filter(e -> e.owner == window && e.position == position)
                 .count();
-            y = window.getY() + defaultTopOffset + (topIndex * 50);
+            double used = stackIndex * (messageHeight + STACK_GAP);
+            if (position == Position.BOTTOM) {
+                y = window.getY() + window.getHeight() - defaultEdgeOffset - messageHeight - used;
+            } else {
+                y = window.getY() + defaultEdgeOffset + used;
+            }
         }
 
         popup.setX(x);
         popup.setY(y);
 
-        MessageEntry entry = new MessageEntry(popup, messageBox, position);
         activeMessages.add(entry);
-        resultEntry[0] = entry;
 
         messageBox.setOpacity(0);
-        // 中间位置淡入淡出，顶部/底部滑入
         FadeTransition fadeIn = new FadeTransition(AnimationDuration.FAST, messageBox);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
@@ -346,28 +369,26 @@ public class MessageAnt {
             slideIn.setFromY(position == Position.BOTTOM ? 20 : -20);
             slideIn.setToY(0);
             slideIn.setInterpolator(Interpolator.EASE_OUT);
-
-            javafx.animation.ParallelTransition pt = new javafx.animation.ParallelTransition(fadeIn, slideIn);
-            pt.play();
+            new javafx.animation.ParallelTransition(fadeIn, slideIn).play();
         }
 
         if (durationSeconds > 0) {
             PauseTransition delay = new PauseTransition(Duration.seconds(durationSeconds));
             delay.setOnFinished(e -> {
-                activeMessages.remove(entry);
-                hideMessage(entry);
-                repositionMessages(window);
+                if (activeMessages.remove(entry) && !entry.closing) {
+                    hideMessage(entry);
+                    repositionMessages(window);
+                }
             });
             delay.play();
+            entry.timer = delay;
         }
     }
 
-
-    public static void show(String content, Type type, int durationSeconds, Position position) {
-        showAndReturn(content, type, durationSeconds, position);
-    }
-
     private static void hideMessage(MessageEntry entry) {
+        if (entry.closing) return;
+        entry.closing = true;
+        if (entry.timer != null) entry.timer.stop();
         FadeTransition fadeOut = new FadeTransition(AnimationDuration.FAST, entry.box);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
@@ -375,37 +396,25 @@ public class MessageAnt {
         fadeOut.play();
     }
 
-    private static void repositionMessages(javafx.stage.Window window) {
-        // 分别处理顶部、底部和中间的消息
+    /** 重定位指定 owner 的全部消息（按真实卡片高度堆叠）。 */
+    private static void repositionMessages(Window owner) {
         int topIndex = 0;
         int bottomIndex = 0;
-        
         for (MessageEntry entry : activeMessages) {
-            double messageWidth = entry.box.getWidth();
-            if (messageWidth == 0) {
-                messageWidth = 300;
-            }
-            double messageHeight = entry.box.getHeight();
-            if (messageHeight == 0) {
-                messageHeight = 40;
-            }
-            double baseX = window.getX() + (window.getWidth() - messageWidth) / 2;
-            
+            if (entry.owner != owner) continue;
+            double w = entry.box.getWidth() > 0 ? entry.box.getWidth() : 300;
+            double h = entry.box.getHeight() > 0 ? entry.box.getHeight() : 40;
+            entry.popup.setX(owner.getX() + (owner.getWidth() - w) / 2);
+
             if (entry.position == Position.CENTER) {
-                // 中间：屏幕正中央
-                entry.popup.setX(baseX);
-                entry.popup.setY(window.getY() + (window.getHeight() - messageHeight) / 2);
+                entry.popup.setY(owner.getY() + (owner.getHeight() - h) / 2);
             } else if (entry.position == Position.BOTTOM) {
-                // 底部消息：从下往上排列
-                double baseY = window.getY() + window.getHeight() - defaultTopOffset;
-                entry.popup.setX(baseX);
-                entry.popup.setY(baseY - ((bottomIndex + 1) * 50));
+                double used = bottomIndex * (h + STACK_GAP);
+                entry.popup.setY(owner.getY() + owner.getHeight() - defaultEdgeOffset - h - used);
                 bottomIndex++;
             } else {
-                // 顶部消息：从上往下排列
-                double baseY = window.getY() + defaultTopOffset;
-                entry.popup.setX(baseX);
-                entry.popup.setY(baseY + (topIndex * 50));
+                double used = topIndex * (h + STACK_GAP);
+                entry.popup.setY(owner.getY() + defaultEdgeOffset + used);
                 topIndex++;
             }
         }

@@ -423,14 +423,23 @@ public class DesktopNotificationAnt {
                 this.root.heightProperty().addListener((obs, ov, nv) -> updatePosition());
             }
 
-            // 未 initOwner，独立 Stage 在 showing 时会阻止 JVM 退出。主窗口关闭(showing→false)时
-            // 清空并收起本 toast，避免残留通知拖住应用不退出。
-            owner.showingProperty().addListener((obs, was, showing) -> {
-                if (!showing) {
-                    root.getChildren().clear();
-                    stage.hide();
-                }
-            });
+            // 主窗口关闭(showing→false)时收起 toast 并把 container 从静态 map 移除：
+            // ① 独立 Stage 不拖住 JVM 退出；② owner 死后下次同 placement 通知需用新 owner
+            // 重建 container，否则 owner 永久固化首个 Stage，新主窗不弹通知、焦点归还到死窗口。
+            javafx.beans.value.ChangeListener<Boolean> ownerCloseListener =
+                new javafx.beans.value.ChangeListener<>() {
+                    @Override
+                    public void changed(javafx.beans.value.ObservableValue<? extends Boolean> obs,
+                                        Boolean was, Boolean showing) {
+                        if (!showing) {
+                            owner.showingProperty().removeListener(this);
+                            root.getChildren().clear();
+                            stage.hide();
+                            containers.remove(placement);
+                        }
+                    }
+                };
+            owner.showingProperty().addListener(ownerCloseListener);
         }
 
         void addEntry(DesktopEntry entry) {

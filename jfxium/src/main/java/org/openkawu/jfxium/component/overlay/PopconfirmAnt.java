@@ -130,7 +130,7 @@ public class PopconfirmAnt {
             if (config.target == null) return;
 
             popup = new Popup();
-
+            PopupThemes.bind(popup, config.target);
             VBox panel = new PopconfirmPanel.Builder()
                 .title(config.title)
                 .description(config.description)
