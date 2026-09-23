@@ -97,9 +97,12 @@ public class SeparatorExamplePage extends VBoxAnt {
     private Node wrapWithContent(Node separator, Orientation o, String label) {
         Node textNode = TypographyAnt.text(label).build();
         if (o == Orientation.HORIZONTAL) {
-            return Demos.column(textNode, separator, textNode);
+            // 上下两条标签必须是不同实例，同一节点不能出现两次
+            return Demos.column(textNode, separator,
+                    TypographyAnt.text(label).build());
         } else {
-            return Demos.row(textNode, separator, textNode);
+            return Demos.row(textNode, separator,
+                    TypographyAnt.text(label).build());
         }
     }
 }

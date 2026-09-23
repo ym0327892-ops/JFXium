@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component.overlay;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
@@ -8,6 +9,7 @@ import org.openkawu.jfxium.component.base.PopconfirmPanel;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.AnimationDuration;
+import javafx.util.Duration;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 import java.util.function.Consumer;
@@ -118,6 +120,7 @@ public class PopconfirmAnt {
     public static class Popconfirm {
         private final Builder config;
         private Popup popup;
+        private int positionAttempts = 0;
 
         private Popconfirm(Builder config) {
             this.config = config;
@@ -149,27 +152,53 @@ public class PopconfirmAnt {
 
             popup.getContent().add(panel);
 
+            // 先以不可见状态 show，让 panel 完成布局得到真实尺寸，
+            // 避免 TOP 位置首次 getHeight()=0 / 对齐量 getWidth()=0 算出错位的 x/y。
+            popup.setOpacity(0);
+            popup.setX(0);
+            popup.setY(0);
+            popup.show(config.target, 0, 0);
+            positionAttempts = 0;
+            schedulePosition(panel);
+        }
+
+        /** 有界等待 panel 布局完成后再定位并可见（无错位闪烁）。 */
+        private void schedulePosition(javafx.scene.layout.Region panel) {
+            PauseTransition retry = new PauseTransition(Duration.millis(16));
+            retry.setOnFinished(e -> {
+                double w = panel.getWidth();
+                double h = panel.getHeight();
+                if (w > 0 && h > 0 || ++positionAttempts >= 50) {
+                    applyPosition(panel, w, h);
+                } else {
+                    retry.play();
+                }
+            });
+            retry.play();
+        }
+
+        private void applyPosition(javafx.scene.layout.Region panel, double panelWidth, double panelHeight) {
             javafx.geometry.Bounds bounds = config.target.localToScreen(config.target.getBoundsInLocal());
             double x, y;
             switch (config.placement) {
                 case TOP -> {
                     x = bounds.getMinX();
-                    y = bounds.getMinY() - 8 - panel.getHeight();
+                    y = bounds.getMinY() - 8 - panelHeight;
                 }
                 case TOP_LEFT -> {
                     x = bounds.getMinX();
-                    y = bounds.getMinY() - 8 - panel.getHeight();
+                    y = bounds.getMinY() - 8 - panelHeight;
                 }
                 case TOP_RIGHT -> {
-                    x = bounds.getMaxX() - panel.getWidth();
-                    y = bounds.getMinY() - 8 - panel.getHeight();
+                    x = bounds.getMaxX() - panelWidth;
+                    y = bounds.getMinY() - 8 - panelHeight;
                 }
                 case BOTTOM_LEFT -> {
                     x = bounds.getMinX();
                     y = bounds.getMaxY() + 8;
                 }
                 case BOTTOM_RIGHT -> {
-                    x = bounds.getMaxX() - panel.getWidth();
+                    x = bounds.getMaxX() - panelWidth;
                     y = bounds.getMaxY() + 8;
                 }
                 default -> {
@@ -178,7 +207,9 @@ public class PopconfirmAnt {
                     y = bounds.getMaxY() + 8;
                 }
             }
-            popup.show(config.target, x, y);
+            popup.setX(x);
+            popup.setY(y);
+            popup.setOpacity(1);
 
             FadeTransition fade = new FadeTransition(AnimationDuration.ULTRA_FAST, popup.getContent().get(0));
             fade.setFromValue(0);

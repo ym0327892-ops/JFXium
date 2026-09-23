@@ -63,6 +63,17 @@ public class MessageAnt {
     private static final int MAX_MESSAGES = 5;
     private static final List<MessageEntry> activeMessages = new ArrayList<>();
     private static Position defaultPosition = Position.TOP;  // 默认位置
+    private static double defaultTopOffset = 24;  // 顶部提示距离窗口上边缘的距离（px）
+
+    /** 有界布局等待的失败计数（防止极端情况下重试循环永不退出）。 */
+    private static int layoutWaitAttempts = 0;
+    /**
+     * 设置顶部/底部提示相对窗口边缘的距离（像素）。默认 24。
+     * 传入负数或 NaN/Infinity 时回退为默认 24。
+     */
+    public static void setTopOffset(double offset) {
+        defaultTopOffset = Double.isFinite(offset) ? Math.max(0, offset) : 24;
+    }
 
     private static class MessageEntry {
         final Popup popup;
@@ -251,96 +262,106 @@ public class MessageAnt {
             popup.setOpacity(0);
             popup.show(window);
 
-            // 等待布局完成后获取实际宽度
-            javafx.application.Platform.runLater(() -> {
-                double messageWidth = messageBox.getWidth();
-                if (messageWidth == 0) {
-                    messageWidth = 300;
-                }
-                double messageHeight = messageBox.getHeight();
-                if (messageHeight == 0) {
-                    messageHeight = 40;
-                }
-
-                // 根据位置计算 X 和 Y 坐标
-                double x = window.getX() + (window.getWidth() - messageWidth) / 2;
-                double y;
-                
-                if (position == Position.CENTER) {
-                    // 中间：屏幕正中央（只显示一个，新消息替换旧消息）
-                    // 先移除旧的中间消息
-                    activeMessages.stream()
-                        .filter(e -> e.position == Position.CENTER)
-                        .findFirst()
-                        .ifPresent(oldEntry -> {
-                            activeMessages.remove(oldEntry);
-                            hideMessage(oldEntry);
-                        });
-                    
-                    y = window.getY() + (window.getHeight() - messageHeight) / 2;
-                } else if (position == Position.BOTTOM) {
-                    // 底部：从窗口底部往上计算
-                    int bottomIndex = (int) activeMessages.stream()
-                        .filter(e -> e.position == Position.BOTTOM)
-                        .count();
-                    y = window.getY() + window.getHeight() - 24 - ((bottomIndex + 1) * 50);
-                } else {
-                    // 顶部：从窗口顶部往下计算
-                    int topIndex = (int) activeMessages.stream()
-                        .filter(e -> e.position == Position.TOP)
-                        .count();
-                    y = window.getY() + 24 + (topIndex * 50);
-                }
-
-                popup.setX(x);
-                popup.setY(y);
-                popup.setOpacity(1);
-
-                MessageEntry entry = new MessageEntry(popup, messageBox, position);
-                activeMessages.add(entry);
-                resultEntry[0] = entry;
-
-                messageBox.setOpacity(0);
-                // 中间位置使用淡入淡出，顶部/底部使用滑入
-                if (position == Position.CENTER) {
-                    messageBox.setTranslateY(0);  // 中间不需要位移
-                } else {
-                    messageBox.setTranslateY(position == Position.BOTTOM ? 20 : -20);
-                }
-
-                FadeTransition fadeIn = new FadeTransition(AnimationDuration.FAST, messageBox);
-                fadeIn.setFromValue(0);
-                fadeIn.setToValue(1);
-                fadeIn.setInterpolator(Interpolator.EASE_OUT);
-
-                if (position == Position.CENTER) {
-                    // 中间位置只用淡入动画
-                    fadeIn.play();
-                } else {
-                    // 顶部/底部使用滑入 + 淡入
-                    TranslateTransition slideIn = new TranslateTransition(AnimationDuration.FAST, messageBox);
-                    slideIn.setFromY(position == Position.BOTTOM ? 20 : -20);
-                    slideIn.setToY(0);
-                    slideIn.setInterpolator(Interpolator.EASE_OUT);
-
-                    javafx.animation.ParallelTransition pt = new javafx.animation.ParallelTransition(fadeIn, slideIn);
-                    pt.play();
-                }
-
-                if (durationSeconds > 0) {
-                    PauseTransition delay = new PauseTransition(Duration.seconds(durationSeconds));
-                    delay.setOnFinished(e -> {
-                        activeMessages.remove(entry);
-                        hideMessage(entry);
-                        repositionMessages(window);
-                    });
-                    delay.play();
-                }
-            });
+            // 等待布局完成后获取实际宽度/高度。单个 runLater 可能在 pulse 前触发，
+            // 量到的是 0 而回退成 300/40 占位尺寸，导致 popup 被摆到错误位置，
+            // 之后再跳到正确位置 —— 这就是「先闪烁一下再居中」的根因。
+            // 这里用有界轮询：等真实尺寸就绪后再定位，绝不闪现错误位置。
+            waitForLayout(messageBox, popup, window, position, durationSeconds, resultEntry);
         });
         
         return resultEntry[0];
     }
+
+    /** 有界等待 messageBox 完成布局，取到真实尺寸后一次性定位并播放入场动画。 */
+    private static void waitForLayout(HBox messageBox, Popup popup, javafx.stage.Window window,
+                                      Position position, int durationSeconds, MessageEntry[] resultEntry) {
+        double w = messageBox.getWidth();
+        double h = messageBox.getHeight();
+        if (w > 0 && h > 0) {
+            layoutWaitAttempts = 0;
+            placeAndAnimate(messageBox, popup, window, position, durationSeconds, resultEntry, w, h);
+            return;
+        }
+
+        PauseTransition retry = new PauseTransition(Duration.millis(16));
+        retry.setOnFinished(e -> waitForLayout(messageBox, popup, window, position, durationSeconds, resultEntry));
+        // 有界：留 50 次（约 800ms）作为兜底，避免极端情况下永远不返回
+        if (++layoutWaitAttempts < 50) {
+            retry.play();
+        } else {
+            placeAndAnimate(messageBox, popup, window, position, durationSeconds, resultEntry, 300, 40);
+        }
+    }
+
+    private static void placeAndAnimate(HBox messageBox, Popup popup, javafx.stage.Window window,
+                                        Position position, int durationSeconds, MessageEntry[] resultEntry,
+                                        double messageWidth, double messageHeight) {
+        // 根据位置计算 X 和 Y 坐标
+        double x = window.getX() + (window.getWidth() - messageWidth) / 2;
+        double y;
+
+        if (position == Position.CENTER) {
+            // 中间：屏幕正中央（只显示一个，新消息替换旧消息）
+            activeMessages.stream()
+                .filter(e -> e.position == Position.CENTER)
+                .findFirst()
+                .ifPresent(oldEntry -> {
+                    activeMessages.remove(oldEntry);
+                    hideMessage(oldEntry);
+                });
+
+            y = window.getY() + (window.getHeight() - messageHeight) / 2;
+        } else if (position == Position.BOTTOM) {
+            // 底部：从窗口底部往上计算
+            int bottomIndex = (int) activeMessages.stream()
+                .filter(e -> e.position == Position.BOTTOM)
+                .count();
+            y = window.getY() + window.getHeight() - defaultTopOffset - ((bottomIndex + 1) * 50);
+        } else {
+            // 顶部：从窗口顶部往下计算
+            int topIndex = (int) activeMessages.stream()
+                .filter(e -> e.position == Position.TOP)
+                .count();
+            y = window.getY() + defaultTopOffset + (topIndex * 50);
+        }
+
+        popup.setX(x);
+        popup.setY(y);
+
+        MessageEntry entry = new MessageEntry(popup, messageBox, position);
+        activeMessages.add(entry);
+        resultEntry[0] = entry;
+
+        messageBox.setOpacity(0);
+        // 中间位置淡入淡出，顶部/底部滑入
+        FadeTransition fadeIn = new FadeTransition(AnimationDuration.FAST, messageBox);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.setInterpolator(Interpolator.EASE_OUT);
+
+        if (position == Position.CENTER) {
+            fadeIn.play();
+        } else {
+            TranslateTransition slideIn = new TranslateTransition(AnimationDuration.FAST, messageBox);
+            slideIn.setFromY(position == Position.BOTTOM ? 20 : -20);
+            slideIn.setToY(0);
+            slideIn.setInterpolator(Interpolator.EASE_OUT);
+
+            javafx.animation.ParallelTransition pt = new javafx.animation.ParallelTransition(fadeIn, slideIn);
+            pt.play();
+        }
+
+        if (durationSeconds > 0) {
+            PauseTransition delay = new PauseTransition(Duration.seconds(durationSeconds));
+            delay.setOnFinished(e -> {
+                activeMessages.remove(entry);
+                hideMessage(entry);
+                repositionMessages(window);
+            });
+            delay.play();
+        }
+    }
+
 
     public static void show(String content, Type type, int durationSeconds, Position position) {
         showAndReturn(content, type, durationSeconds, position);
@@ -376,13 +397,13 @@ public class MessageAnt {
                 entry.popup.setY(window.getY() + (window.getHeight() - messageHeight) / 2);
             } else if (entry.position == Position.BOTTOM) {
                 // 底部消息：从下往上排列
-                double baseY = window.getY() + window.getHeight() - 24;
+                double baseY = window.getY() + window.getHeight() - defaultTopOffset;
                 entry.popup.setX(baseX);
                 entry.popup.setY(baseY - ((bottomIndex + 1) * 50));
                 bottomIndex++;
             } else {
                 // 顶部消息：从上往下排列
-                double baseY = window.getY() + 24;
+                double baseY = window.getY() + defaultTopOffset;
                 entry.popup.setX(baseX);
                 entry.popup.setY(baseY + (topIndex * 50));
                 topIndex++;

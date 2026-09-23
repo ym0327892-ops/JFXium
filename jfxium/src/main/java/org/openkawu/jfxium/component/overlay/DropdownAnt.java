@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.overlay;
 
+import javafx.animation.PauseTransition;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -8,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.style.JfxStyles;
 
@@ -198,6 +200,7 @@ public class DropdownAnt {
         private final Node trigger;
         private final Popup popup;
         private final VBox menu;
+        private int positionAttempts = 0;
 
         DropdownResult(Builder config) {
             this.config = config;
@@ -205,6 +208,7 @@ public class DropdownAnt {
             this.popup = new Popup();
             // Popup 有独立 Scene，不继承宿主节点的主题样式表。
             // 显示时把宿主 Scene 的 stylesheets 注入 Popup Scene，确保暗色等主题下文字/背景颜色正确。
+
             this.popup.showingProperty().addListener((obs, wasShowing, isShowing) -> {
                 if (isShowing && this.popup.getScene() != null && trigger.getScene() != null) {
                     this.popup.getScene().getStylesheets().setAll(trigger.getScene().getStylesheets());
@@ -273,6 +277,30 @@ public class DropdownAnt {
         }
 
         private void showAtTrigger() {
+            if (popup.isShowing()) return;
+            positionAttempts = 0;
+            popup.setX(0);
+            popup.setY(0);
+            popup.show(trigger, 0, 0);
+            schedulePosition();
+        }
+
+        /** 有界等待 menu 完成布局后一次性定位，并恢复可见（无错位闪烁）。 */
+        private void schedulePosition() {
+            PauseTransition retry = new PauseTransition(Duration.millis(16));
+            retry.setOnFinished(e -> {
+                double w = menu.getWidth();
+                double h = menu.getHeight();
+                if (w > 0 && h > 0 || ++positionAttempts >= 50) {
+                    applyPosition(w, h);
+                } else {
+                    retry.play();
+                }
+            });
+            retry.play();
+        }
+
+        private void applyPosition(double menuWidth, double menuHeight) {
             Bounds bounds = trigger.localToScreen(trigger.getBoundsInLocal());
             double x = bounds.getMinX();
             double y = bounds.getMaxY() + 4;
@@ -281,10 +309,12 @@ public class DropdownAnt {
                 default -> {}
             }
             switch (config.placement) {
-                case TOP_LEFT, TOP_RIGHT -> y = bounds.getMinY() - menu.getHeight() - 4;
+                case TOP_LEFT, TOP_RIGHT -> y = bounds.getMinY() - menuHeight - 4;
                 default -> {}
             }
-            popup.show(trigger, x, y);
+            popup.setX(x);
+            popup.setY(y);
+            popup.setOpacity(1);
         }
 
         public Node getTrigger() { return trigger; }
