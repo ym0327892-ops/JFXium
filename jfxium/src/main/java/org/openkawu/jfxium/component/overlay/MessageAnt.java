@@ -353,6 +353,9 @@ public class MessageAnt {
 
         popup.setX(x);
         popup.setY(y);
+        // 恢复 popup 窗口透明度：定位前为取尺寸临时置 0，不恢复会让 messageBox
+        // 的淡入被窗口整体 0 透明度乘掉 —— Windows 下消息完全不显示。
+        popup.setOpacity(1);
 
         activeMessages.add(entry);
 

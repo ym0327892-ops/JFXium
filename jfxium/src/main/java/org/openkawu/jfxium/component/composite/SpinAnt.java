@@ -3,13 +3,24 @@ package org.openkawu.jfxium.component.composite;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
@@ -261,36 +272,105 @@ public class SpinAnt {
 
     public static class Overlay {
         private final Node target;
-        private final Parent originalParent;
-        private final int originalIndex;
         private final StackPane wrapper;
         private final StackPane overlay;
 
         private Overlay(Node target) {
             this.target = target;
-            this.originalParent = target.getParent();
-            if (originalParent == null) {
-                throw new IllegalArgumentException("SpinAnt.overlay() requires a node already in a scene graph");
-            }
+            Parent parent = target.getParent();
+            Scene scene = target.getScene();
 
-            // 找到 target 在父容器中的位置
-            if (originalParent instanceof javafx.scene.layout.Pane pane) {
-                this.originalIndex = pane.getChildren().indexOf(target);
-                pane.getChildren().remove(originalIndex);
-
-                // 包裹层
-                overlay = new StackPane();
+            // scene.getRoot() 没有父节点，用 scene.setRoot(wrapper) 顶替，同样覆盖全窗口。
+            if (parent == null && scene != null && scene.getRoot() == target) {
+                this.overlay = new StackPane();
                 overlay.getStyleClass().add(JfxStyles.SPIN_OVERLAY);
                 overlay.setVisible(false);
+                this.wrapper = new StackPane(target, overlay);
+                scene.setRoot(wrapper);
+                return;
+            }
 
-                wrapper = new StackPane(target, overlay);
-                pane.getChildren().add(originalIndex, wrapper);
-            } else {
-                // Parent 但不是 Pane（如 Group），直接替换子节点列表
-                this.originalIndex = 0;
-                this.wrapper = null;
-                this.overlay = null;
-                throw new IllegalArgumentException("SpinAnt.overlay() target parent must be a Pane subclass");
+            if (parent == null) {
+                throw new IllegalArgumentException(
+                        "SpinAnt.overlay() requires a node already in a scene graph");
+            }
+            if (!(parent instanceof Pane pane)) {
+                throw new IllegalArgumentException(
+                        "SpinAnt.overlay() target parent must be a Pane subclass");
+            }
+
+            int index = pane.getChildren().indexOf(target);
+            pane.getChildren().remove(index);
+
+            this.overlay = new StackPane();
+            overlay.getStyleClass().add(JfxStyles.SPIN_OVERLAY);
+            overlay.setVisible(false);
+
+            this.wrapper = new StackPane(target, overlay);
+            // 关键：把父容器记在 target 上的布局约束迁移到 wrapper，
+            // 否则 wrapper 顶替 target 后父容器读到的是无约束节点，
+            // vgrow/hgrow/margin/Grid 定位等全部失效（布局静默塌缩且不自愈）。
+            transferConstraints(pane, target, wrapper);
+            pane.getChildren().add(index, wrapper);
+        }
+
+        /**
+         * 把父容器记在 target 上的布局约束迁移到 wrapper。
+         *
+         * <p>vgrow/hgrow/margin、GridPane 行列定位、AnchorPane 锚点等都是节点属性，
+         * wrapper 顶替 target 后必须复制，否则父容器按无约束节点布局。</p>
+         */
+        private static void transferConstraints(Parent parent, Node target, Node wrapper) {
+            if (parent instanceof VBox) {
+                VBox.setVgrow(wrapper, VBox.getVgrow(target));
+                VBox.setMargin(wrapper, VBox.getMargin(target));
+            } else if (parent instanceof HBox) {
+                HBox.setHgrow(wrapper, HBox.getHgrow(target));
+                HBox.setMargin(wrapper, HBox.getMargin(target));
+            } else if (parent instanceof GridPane) {
+                Integer row = GridPane.getRowIndex(target);
+                Integer col = GridPane.getColumnIndex(target);
+                if (row != null) GridPane.setRowIndex(wrapper, row);
+                if (col != null) GridPane.setColumnIndex(wrapper, col);
+                Integer rowSpan = GridPane.getRowSpan(target);
+                Integer colSpan = GridPane.getColumnSpan(target);
+                if (rowSpan != null) GridPane.setRowSpan(wrapper, rowSpan);
+                if (colSpan != null) GridPane.setColumnSpan(wrapper, colSpan);
+                HPos halign = GridPane.getHalignment(target);
+                VPos valign = GridPane.getValignment(target);
+                if (halign != null) GridPane.setHalignment(wrapper, halign);
+                if (valign != null) GridPane.setValignment(wrapper, valign);
+                GridPane.setHgrow(wrapper, GridPane.getHgrow(target));
+                GridPane.setVgrow(wrapper, GridPane.getVgrow(target));
+                Boolean fillW = GridPane.isFillWidth(target);
+                Boolean fillH = GridPane.isFillHeight(target);
+                if (fillW != null) GridPane.setFillWidth(wrapper, fillW);
+                if (fillH != null) GridPane.setFillHeight(wrapper, fillH);
+                GridPane.setMargin(wrapper, GridPane.getMargin(target));
+            } else if (parent instanceof BorderPane) {
+                BorderPane.setAlignment(wrapper, BorderPane.getAlignment(target));
+                BorderPane.setMargin(wrapper, BorderPane.getMargin(target));
+            } else if (parent instanceof AnchorPane) {
+                copyAnchor(AnchorPane.getTopAnchor(target), AnchorPane::setTopAnchor, wrapper);
+                copyAnchor(AnchorPane.getBottomAnchor(target), AnchorPane::setBottomAnchor, wrapper);
+                copyAnchor(AnchorPane.getLeftAnchor(target), AnchorPane::setLeftAnchor, wrapper);
+                copyAnchor(AnchorPane.getRightAnchor(target), AnchorPane::setRightAnchor, wrapper);
+            } else if (parent instanceof FlowPane) {
+                FlowPane.setMargin(wrapper, FlowPane.getMargin(target));
+            } else if (parent instanceof TilePane) {
+                TilePane.setMargin(wrapper, TilePane.getMargin(target));
+                TilePane.setAlignment(wrapper, TilePane.getAlignment(target));
+            } else if (parent instanceof StackPane) {
+                StackPane.setMargin(wrapper, StackPane.getMargin(target));
+                StackPane.setAlignment(wrapper, StackPane.getAlignment(target));
+            }
+        }
+
+        private static void copyAnchor(Double value,
+                                       java.util.function.BiConsumer<Node, Double> setter,
+                                       Node wrapper) {
+            if (value != null) {
+                setter.accept(wrapper, value);
             }
         }
 

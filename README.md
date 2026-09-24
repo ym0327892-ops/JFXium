@@ -30,7 +30,7 @@
 <dependency>
     <groupId>org.openkawu</groupId>
     <artifactId>jfxium</artifactId>
-    <version>1.31.0</version>
+    <version>1.31.1</version>
 </dependency>
 ```
 
