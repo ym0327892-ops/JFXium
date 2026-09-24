@@ -14,7 +14,7 @@
 
 - **Comprehensive UI Library** — Controls, composites, overlays, layouts, and business templates
 - **Ant Design 6.x Style** — Pixel-perfect implementation of Ant Design's design language
-- **Built-in Theme Entries** — Light/Dark + custom theme template, with compact density variants
+- **Built-in Theme Entries** — Light/Dark/Tool + custom theme template, with compact density variants
 - **Builder Pattern** — Fluent API for all components: `XxxAnt.create()...build()`
 - **LESS-based Theming** — Modify one LESS file to generate your own theme
 - **i18n** — Built-in Chinese/English with `Messages.get(key)` API
@@ -30,7 +30,7 @@
 <dependency>
     <groupId>org.openkawu</groupId>
     <artifactId>jfxium</artifactId>
-    <version>1.31.1</version>
+    <version>1.32.0</version>
 </dependency>
 ```
 
