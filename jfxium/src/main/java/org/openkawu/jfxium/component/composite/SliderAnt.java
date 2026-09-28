@@ -237,6 +237,10 @@ public class SliderAnt {
                 contentBox.getChildren().add(tipLabel);
             }
 
+            // 值载体契约：FormContext 直接观察/写入 slider.valueProperty()
+            // （见 FormContext.VALUE_PROPERTY_KEY）。range 模式是双值，不属于单值字段。
+            wrapper.getProperties().put(org.openkawu.jfxium.core.form.FormContext.VALUE_PROPERTY_KEY,
+                    slider.valueProperty());
             // 用户 style/styleClass 在所有内置类后应用，便于覆盖
             applyStyles(wrapper);
             return wrapper;

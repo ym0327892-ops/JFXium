@@ -10,6 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.form.FormContext;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 import org.openkawu.jfxium.core.util.Bindings;
@@ -159,6 +160,8 @@ public class SwitchAnt {
                 Bindings.bindBidirectional(valueProperty, bindProperty);
             }
             selected = valueProperty.get();
+            // 值载体契约：FormContext 直接观察/写入这个权威 Property（见 FormContext.VALUE_PROPERTY_KEY）
+            container.getProperties().put(FormContext.VALUE_PROPERTY_KEY, valueProperty);
 
             if (selected) {
                 switchPane.getStyleClass().add(JfxStyles.SWITCH_SELECTED);

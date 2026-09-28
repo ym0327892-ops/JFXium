@@ -542,6 +542,12 @@ public final class JfxStyles {
     public static final String SEGMENTED_ITEM_LABEL = "jfx-segmented-item-label";
 
     /** InputNumberAnt 数字输入框 */
+    /* ============================================
+       InputAnt 校验状态（对标 Ant Design Input status）
+       ============================================ */
+    public static final String INPUT_STATUS_ERROR   = "jfx-input-status-error";
+    public static final String INPUT_STATUS_WARNING = "jfx-input-status-warning";
+
     public static final String INPUT_NUMBER = "jfx-input-number";
     public static final String INPUT_NUMBER_DISABLED = "jfx-input-number-disabled";
     public static final String INPUT_NUMBER_SMALL = "jfx-input-number-small";
@@ -816,6 +822,13 @@ public final class JfxStyles {
     public static final String INPUT_PASSWORD_VISIBLE = "jfx-input-password-visible";
 
     /* ============================================
+       SearchInputAnt — 带清除按钮的输入框（allowClear）
+       ============================================ */
+    public static final String SEARCH_INPUT       = "jfx-search-input";
+    public static final String SEARCH_INPUT_FIELD = "jfx-search-input-field";
+    public static final String SEARCH_INPUT_CLEAR = "jfx-search-input-clear";
+
+    /* ============================================
        ColorPickerAnt — 颜色选择器
        ============================================ */
     public static final String COLOR_PICKER = "jfx-color-picker";
@@ -1015,7 +1028,6 @@ public final class JfxStyles {
     public static final String BORDER_LEFT   = "jfx-border-left";
     public static final String BORDER_RIGHT  = "jfx-border-right";
 
-    public static final String FOCUS_VISIBLE      = "jfx-focus-visible";
     public static final String CODEBLOCK_HIGHLIGHT = "jfx-codeblock-highlight";
 
     /* ============================================

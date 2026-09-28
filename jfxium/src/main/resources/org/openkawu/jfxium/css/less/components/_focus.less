@@ -7,21 +7,59 @@
 }
 
 /* ============================================
-   Focus Visible (Accessibility)
+   Focus Visible（键盘焦点可见）
+   --------------------------------------------
+   为什么必须自己补：
+     主题通过 Application.setUserAgentStylesheet 整体替换 modena
+     （见 ThemeManager.applyTheme），modena 中所有靠 -fx-focus-color
+     绘制焦点环的规则随之整体消失 —— 例如
+       .check-box:focused > .box { -fx-background-color: -fx-focus-color, ... }
+       .radio-button:focused > .radio { ... }
+       .slider:focused .thumb { ... }
+     而 JFXium 主题从未定义 -fx-focus-color 的真实颜色（只有 transparent），
+     于是复选框/单选/滑块/开关/表格等「可聚焦但没写 :focused 规则」的控件，
+     键盘聚焦时**零视觉反馈**。
+
+   为什么用 :focus-visible 而非自造 class：
+     JavaFX 21 原生支持该伪类（Node.FOCUS_VISIBLE_PSEUDOCLASS_STATE
+     + Node#focusVisibleProperty）。仅键盘遍历置位
+     （TopMostTraversalEngine.focusAndNotify → TraversalMethod.KEY 时
+     requestFocusVisible），鼠标按下由 Scene 的 pressedHandler 清除 ——
+     语义与 web :focus-visible 完全一致：鼠标点不闪环、键盘永远看得见。
+       ⚠ 历史遗留：曾留下 `.focus-visible` 类 + JfxStyles.FOCUS_VISIBLE
+       常量，但没有任何 Java 代码挂载过它，是一对死代码（已随本次修复删除）。
    ============================================ */
-.button:focused,
-.text-field:focused,
-.text-area:focused,
-.password-field:focused,
-.combo-box:focused,
-.choice-box:focused {
-  -fx-focus-color: transparent;
-  -fx-faint-focus-color: transparent;
+
+/* 复选框 / 单选：描边 + 轻外发光（与 _input.less 的 :focused 观感统一） */
+.check-box:focus-visible > .box,
+.radio-button:focus-visible > .radio {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
 }
 
-/* Accessibility focus ring (applied via AccessibilityUtils) */
-.focus-visible {
-  -fx-focus-color: -color-accent-emphasis;
-  -fx-faint-focus-color: -color-accent-subtle;
+/* 滑块：拖动块平时就是 accent 描边 + 阴影，仅换色区分不出来，
+   因此键盘焦点用「加粗描边 + 更强光晕」表达。
+   （原 _slider.less 写成 `.slider .slider:focused .thumb` —— 后代选择器要求
+   .slider 内再套 .slider，永不匹配，是条僵尸规则，已一并修正） */
+.slider:focus-visible .thumb {
+  -fx-border-width: 3px;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 5, 0, 0, 0);
 }
 
+/* 按钮 / 切换按钮：底色随 variant 各异（default/accent/ghost…），
+   焦点统一落在边框色上 —— 基线已有 1px 边框，改色不产生任何布局位移。
+   用 :focus-visible（而非 :focused）保证鼠标点击不闪蓝框。 */
+.button:focus-visible,
+.toggle-button:focus-visible {
+  -fx-border-color: -color-accent-emphasis;
+}
+
+/* 长列表容器：焦点在整表上，用内描边表达 */
+.table-view:focus-visible,
+.tree-view:focus-visible,
+.tree-table-view:focus-visible,
+.list-view:focus-visible {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: @border-width-default;
+  -fx-border-style: solid;
+}

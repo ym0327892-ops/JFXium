@@ -40,3 +40,46 @@
   -fx-opacity: 0.6;
 }
 
+/* ============================================
+   校验状态（对标 Ant Design Input status）
+   ERROR / WARNING 染边框；后接的 hover/focused 规则会覆盖边框色，
+   因此状态规则放在基础态之后、并显式重述 hover/focused 以保住状态色。
+   ============================================ */
+.text-field.jfx-input-status-error {
+  -fx-border-color: -color-danger-emphasis;
+}
+.text-field.jfx-input-status-error:hover,
+.text-field.jfx-input-status-error:focused {
+  -fx-border-color: -color-danger-emphasis;
+}
+
+.text-field.jfx-input-status-warning {
+  -fx-border-color: -color-warning-emphasis;
+}
+.text-field.jfx-input-status-warning:hover,
+.text-field.jfx-input-status-warning:focused {
+  -fx-border-color: -color-warning-emphasis;
+}
+
+.text-area.jfx-input-status-error,
+.text-area.jfx-input-status-error:hover,
+.text-area.jfx-input-status-error:focused {
+  -fx-border-color: -color-danger-emphasis;
+}
+.text-area.jfx-input-status-warning,
+.text-area.jfx-input-status-warning:hover,
+.text-area.jfx-input-status-warning:focused {
+  -fx-border-color: -color-warning-emphasis;
+}
+
+/* SearchInputAnt 容器继承同一状态语义 */
+.jfx-search-input.jfx-input-status-error,
+.jfx-search-input.jfx-input-status-error:hover,
+.jfx-search-input.jfx-input-status-error:focus-within {
+  -fx-border-color: -color-danger-emphasis;
+}
+.jfx-search-input.jfx-input-status-warning,
+.jfx-search-input.jfx-input-status-warning:hover,
+.jfx-search-input.jfx-input-status-warning:focus-within {
+  -fx-border-color: -color-warning-emphasis;
+}

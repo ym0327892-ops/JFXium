@@ -15,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
+import org.openkawu.jfxium.component.control.InputAnt;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.form.FormContext;
@@ -1032,7 +1033,7 @@ class FormAntTest extends JfxTestBase {
         }
 
         @Test
-        @DisplayName("CheckBox / DatePicker / RadioButton / ToggleButton 控件值提取")
+        @DisplayName("CheckBox / DatePicker 控件值提取")
         void controlValueExtraction() {
             FormContext ctx = new FormContext();
             CheckBox cb = new CheckBox();
@@ -1046,9 +1047,69 @@ class FormAntTest extends JfxTestBase {
             ctx.setValue("dp", LocalDate.of(2024, 1, 15));
             assertEquals(LocalDate.of(2024, 1, 15), dp.getValue());
         }
+
+        @Test
+        @DisplayName("组合控件（Switch/InputNumber/Slider/Rate）通过值载体契约取值 / 写值 / 重置")
+        void compositeControlsUseValueCarrier() {
+            // 组合控件的值是隐藏的内部状态，FormContext 不可能靠 instanceof 猜到；
+            // 控件必须在返回节点上挂载权威 Property（值载体契约），否则表单取不到值、
+            // 写值/重置静默失效 —— 这正是 #149 的缺陷。
+            HBox switchBox = SwitchAnt.create().selected(true).build();
+            HBox inputNumber = InputNumberAnt.create().value(7).min(0).max(100).build();
+            javafx.scene.Node slider = SliderAnt.create().min(0).max(100).value(30).build();
+            HBox rate = RateAnt.create().count(5).value(3).build();
+
+            FormContext ctx = new FormContext();
+            ctx.registerField("sw", switchBox, List.of());
+            ctx.registerField("num", inputNumber, List.of());
+            ctx.registerField("sld", slider, List.of());
+            ctx.registerField("rate", rate, List.of());
+
+            // 初始值必须可读（不是 null、不是占位默认）
+            assertEquals(true, ctx.getValue("sw"));
+            assertEquals(7.0, ctx.getValue("num"));
+            assertEquals(30.0, ctx.getValue("sld"));
+            assertEquals(3.0, ctx.getValue("rate"));
+
+            // setValue 必须落到控件上
+            ctx.setValue("sw", false);
+            ctx.setValue("num", 42.0);
+            ctx.setValue("sld", 80.0);
+            ctx.setValue("rate", 5.0);
+            assertEquals(false, ctx.getValue("sw"));
+            assertEquals(42.0, ctx.getValue("num"));
+            assertEquals(80.0, ctx.getValue("sld"));
+            assertEquals(5.0, ctx.getValue("rate"));
+            assertEquals(false, carrier(switchBox));
+            assertEquals(42.0, ((Number) carrier(inputNumber)).doubleValue());
+            assertEquals(80.0, ((Number) carrier(slider)).doubleValue());
+            assertEquals(5.0, ((Number) carrier(rate)).doubleValue());
+
+            // 控件侧变更必须回流到 context（模拟用户拨动开关）
+            ((javafx.beans.property.BooleanProperty) carrierProperty(switchBox)).set(true);
+            assertEquals(true, ctx.getValue("sw"));
+
+            // 重置：数值/布尔 Property 收到 null 不得 NPE，且控件回到语义默认值
+            assertDoesNotThrow(ctx::reset);
+            assertEquals(false, carrier(switchBox));
+            assertEquals(0.0, ((Number) carrier(inputNumber)).doubleValue());
+            assertEquals(0.0, ((Number) carrier(slider)).doubleValue());
+            assertEquals(0.0, ((Number) carrier(rate)).doubleValue());
+        }
+
+        /** 读控件挂在返回节点上的权威值 Property（值载体契约）。 */
+        private javafx.beans.property.Property<?> carrierProperty(javafx.scene.Node node) {
+            javafx.beans.property.Property<?> p = (javafx.beans.property.Property<?>)
+                    node.getProperties().get(FormContext.VALUE_PROPERTY_KEY);
+            assertNotNull(p, "组合控件必须在返回节点上挂载值载体 Property");
+            return p;
+        }
+
+        private Object carrier(javafx.scene.Node node) {
+            return carrierProperty(node).getValue();
+        }
     }
 
-    // ============================================================
     // 全链式串联
     // ============================================================
 
@@ -1089,5 +1150,128 @@ class FormAntTest extends JfxTestBase {
         // body 是 GridPane + 包含 2 个 section + 3 个 item 共 5 行
         GridPane body = (GridPane) form.getChildren().get(1);
         assertEquals(5, body.getRowCount());
+    }
+
+    // ============================================================
+    // Enter 提交（onSubmit）
+    // ============================================================
+
+    @Nested
+    @DisplayName("Enter 提交")
+    class SubmitTests {
+
+        @Test
+        @DisplayName("校验不通过不回调；通过回调一次；单次回车只触发一次")
+        void enterSubmitsOnlyWhenValid() {
+            runOnFxThreadAndWait(() -> {
+                AtomicInteger calls = new AtomicInteger();
+                TextField field = new TextField();
+                FormAnt.Result result = FormAnt.create()
+                        .layout(FormAnt.Layout.HORIZONTAL)
+                        .item("用户名", field, "username")
+                            .required()
+                            .rule(Rule.minLength(3, "至少 3 个字符"))
+                            .end()
+                        .onSubmit(calls::incrementAndGet)
+                        .buildResult();
+                show(result.getRoot());
+
+                field.setText("ab");
+                pressEnter(field);
+                assertEquals(0, calls.get(), "校验不通过时不得回调 onSubmit");
+
+                field.setText("abcd");
+                pressEnter(field);
+                assertEquals(1, calls.get(), "单次回车只应提交一次");
+            });
+        }
+
+        @Test
+        @DisplayName("未配置 onSubmit 时回车不报错、不影响原有 onAction")
+        void enterWithoutHandlerKeepsFieldAction() {
+            runOnFxThreadAndWait(() -> {
+                AtomicInteger fieldAction = new AtomicInteger();
+                TextField field = new TextField();
+                field.setOnAction(e -> fieldAction.incrementAndGet());
+                FormAnt.Result result = FormAnt.create()
+                        .item("备注", field, "note")
+                            .end()
+                        .buildResult();
+                show(result.getRoot());
+
+                pressEnter(field);
+                assertEquals(1, fieldAction.get(), "表单未配 onSubmit 时字段自身 onAction 必须照常触发");
+            });
+        }
+
+        /** 模拟真实回车：TextFieldBehavior 把 KEY_PRESSED(ENTER) 转成 ActionEvent。 */
+        private void pressEnter(TextField field) {
+            field.fireEvent(new javafx.scene.input.KeyEvent(
+                    javafx.scene.input.KeyEvent.KEY_PRESSED, "", "",
+                    javafx.scene.input.KeyCode.ENTER, false, false, false, false));
+        }
+
+        /**
+         * 挂进 Scene 并显示：TextField 的 Enter→ActionEvent 转换由 TextFieldBehavior
+         * 完成，而 Behavior 随 Skin 创建（需要真实 Scene），不挂场景则回车静默无效。
+         */
+        private void show(javafx.scene.Parent root) {
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setScene(new javafx.scene.Scene(new VBox(root), 400, 200));
+            stage.show();
+            root.applyCss();
+            root.layout();
+        }
+    }
+
+    // ============================================================
+    // 校验状态样式（status）
+    // ============================================================
+
+    @Nested
+    @DisplayName("校验状态")
+    class StatusTests {
+
+        @Test
+        @DisplayName("validateStatus 把状态类落到控件本体（不是只给 helpText 上色）")
+        void statusClassLandsOnControl() {
+            TextField ok = new TextField();
+            TextField bad = new TextField();
+            TextField warn = new TextField();
+            FormAnt.create()
+                    .item("ok", ok, "ok").end()
+                    .item("bad", bad, "bad")
+                        .validateStatus(FormAnt.ValidateStatus.ERROR).end()
+                    .item("warn", warn, "warn")
+                        .validateStatus(FormAnt.ValidateStatus.WARNING).end()
+                    .build();
+
+            assertTrue(bad.getStyleClass().contains(JfxStyles.INPUT_STATUS_ERROR),
+                    "ERROR 状态类必须挂在控件本体上，否则 LESS 的 .text-field.xxx 匹配不到");
+            assertTrue(warn.getStyleClass().contains(JfxStyles.INPUT_STATUS_WARNING),
+                    "WARNING 状态类必须挂在控件本体上");
+            assertFalse(ok.getStyleClass().contains(JfxStyles.INPUT_STATUS_ERROR),
+                    "默认状态不得染成错误色");
+        }
+
+        @Test
+        @DisplayName("InputAnt.status() 幂等切换：重复设置不重复挂类，可清除")
+        void inputStatusIsIdempotent() {
+            InputAnt input = InputAnt.create().build();
+            input.status(FormAnt.ValidateStatus.ERROR);
+            input.status(FormAnt.ValidateStatus.ERROR);
+            assertEquals(1, input.getStyleClass().stream()
+                    .filter(JfxStyles.INPUT_STATUS_ERROR::equals).count(),
+                    "重复设置同一状态不得累积样式类");
+
+            input.status(FormAnt.ValidateStatus.WARNING);
+            assertFalse(input.getStyleClass().contains(JfxStyles.INPUT_STATUS_ERROR),
+                    "切换到 WARNING 必须清掉 ERROR");
+            assertTrue(input.getStyleClass().contains(JfxStyles.INPUT_STATUS_WARNING));
+
+            input.status(null);
+            assertFalse(input.getStyleClass().contains(JfxStyles.INPUT_STATUS_WARNING),
+                    "status(null) 应清除状态色");
+        }
     }
 }

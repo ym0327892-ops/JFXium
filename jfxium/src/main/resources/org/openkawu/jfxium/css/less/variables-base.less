@@ -67,30 +67,16 @@
 
 // Control Height (Base)
 // --------------------------------------------
-// 控件基准高度（PC UI 规范 §3：4 档 22/28/32/40，无 24/26/30/34）
+// 控件基准高度（PC UI 规范 §3：3 档 28/32/40，无 24/26/30/34）
 // 使用位置：
-//   xs (22px) → CheckBox / Radio / Switch
 //   sm (28px) → Toolbar 按钮、MenuItem、Breadcrumb、TreeRow
 //   md (32px) → Button / Input / ComboBox / DatePicker / TableHeader / TableRow
 //   lg (40px) → 大操作按钮、MenuBar HORIZONTAL 模式
-@control-height-xs: 22px;
+// Switch 的 22px 轨道高度直接写在 _switch.less（不在本表：它由轨道自身宽高比决定，
+// 不随控件尺寸档位变化，因此不作为可覆写 token 暴露）。
 @control-height-sm: 28px;
 @control-height: 32px;
 @control-height-lg: 40px;
-
-// Animation
-// --------------------------------------------
-// 动画开关与时长
-// 使用位置：全局动画效果、过渡动画
-@motion: true;
-@motion-unit: 0.1s;
-@motion-base: 0s;
-
-// Wireframe Mode (for debugging)
-// --------------------------------------------
-// 线框调式模式
-@wireframe: false;
-
 // ============================================
 // Component Padding Variables
 // ============================================
@@ -268,12 +254,6 @@
 @modal-header-padding-bottom: @spacing-md;
 @modal-footer-padding-top: @spacing-md;
 
-// Form Padding
-// 使用位置：.form-label、表单布局内部间距
-// 影响组件：FormAnt
-@form-item-padding-y: @spacing-sm;
-@form-item-padding-x: @spacing-md;
-
 // Tooltip Padding
 // 使用位置：.tooltip
 // 影响组件：TooltipAnt
@@ -341,11 +321,6 @@
 @color-spin-overlay-normal: rgba(255, 255, 255, 0.65);
 @color-spin-overlay-strong: rgba(255, 255, 255, 0.85);
 
-// Switch Padding
-// 使用位置：.toggle-button.switch
-// 影响组件：SwitchAnt
-@switch-padding: 2px;
-
 // Close Button Padding
 // 使用位置：.tab-pane .tab .tab-close-button
 // 影响组件：TabsAnt 关闭按钮
@@ -370,11 +345,6 @@
 // 影响组件：ContextMenu
 @context-menu-padding-y: @spacing-xs;
 @context-menu-padding-x: 0;
-
-// Spinner Arrow Button Padding
-// 使用位置：.spinner .increment-arrow-button、.spinner .decrement-arrow-button
-// 影响组件：SpinnerAnt
-@spinner-arrow-padding: 0;
 
 // ============================================
 // Mixins

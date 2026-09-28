@@ -46,15 +46,9 @@
   -fx-background-color: -color-accent-active;
 }
 
-.slider .slider:focused .thumb {
-  -fx-border-color: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
-}
-
-.slider:focused {
-  -fx-focus-color: transparent;
-  -fx-faint-focus-color: transparent;
-}
+/* 焦点态统一由 _focus.less 的 .slider:focus-visible 处理。
+   注意：这里原先是 `.slider .slider:focused .thumb` —— 后代选择器要求
+   .slider 内再套一个 .slider，永远不会匹配，是条僵尸规则（同 #148/#149）。 */
 
 .slider .colored-track {
   -fx-background-color: -color-accent-emphasis;

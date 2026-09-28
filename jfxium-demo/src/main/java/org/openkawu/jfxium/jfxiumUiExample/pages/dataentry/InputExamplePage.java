@@ -8,6 +8,8 @@ import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround;
 import org.openkawu.jfxium.jfxiumUiExample.util.PlayGround.Binder;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.control.InputAnt;
+import org.openkawu.jfxium.component.control.SearchInputAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.core.token.Size;
 
 import java.util.function.Supplier;
@@ -26,6 +28,7 @@ public class InputExamplePage extends VBoxAnt {
                         sizeSection(),
                         stateSection(),
                         placeholderSection(),
+                        allowClearSection(),
                         playgroundSection()
                 )
                 .padding(24)
@@ -86,6 +89,28 @@ public class InputExamplePage extends VBoxAnt {
                 code, demo);
     }
 
+    private Node allowClearSection() {
+        // 搜索框：清除按钮 + 回车提交，对标 Ant Design Input allowClear
+        SearchInputAnt search = SearchInputAnt.create()
+                .placeholder("搜索组件…")
+                .text("Tabs")
+                .build();
+        Node demo = Demos.row(
+                search,
+                TypographyAnt.text("输入内容后出现清除按钮；回车触发 onSearch")
+                        .type(TypographyAnt.TextColor.SECONDARY).build()
+        );
+        String code = """
+                SearchInputAnt.create()
+                        .placeholder("搜索组件…")
+                        .onSearch(keyword -> System.out.println("搜索：" + keyword))
+                        .build();
+                """;
+        return Demos.sectionWithCode("5. 可清除输入框（allowClear）",
+                "有内容时显示清除按钮，回车提交搜索关键词；allowClear(false) 可关闭。",
+                code, demo);
+    }
+
     private Node playgroundSection() {
         Binder<String> sizeBinder = PlayGround.binder("default");
         Binder<String> stateBinder = PlayGround.binder("normal");
@@ -96,7 +121,7 @@ public class InputExamplePage extends VBoxAnt {
                 .readOnly("readonly".equals(stateBinder.get()))
                 .placeholder(placeholderBinder.get().isEmpty() ? "请输入内容" : placeholderBinder.get())
                 .build();
-        return Demos.section("5. 交互演示",
+        return Demos.section("6. 交互演示",
                 "通过左侧控件实时改变输入框的尺寸、状态和占位符。",
                 PlayGround.rebindRebuild(factory, null,
                         PlayGround.row("尺寸", PlayGround.segmented(sizeBinder,

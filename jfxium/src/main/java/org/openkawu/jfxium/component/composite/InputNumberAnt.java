@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.style.JfxStyles;
+import org.openkawu.jfxium.core.form.FormContext;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.TextUtils;
 
@@ -114,18 +115,25 @@ public class InputNumberAnt {
             field.getStyleClass().add(JfxStyles.INPUT_NUMBER_FIELD);
             HBox.setHgrow(field, Priority.ALWAYS);
 
-            if (bindProperty != null) {
-                bindProperty.addListener((obs, oldVal, newVal) -> {
-                    double normalized = normalizeValue(newVal.doubleValue());
-                    if (Double.compare(normalized, value) != 0) {
-                        value = normalized;
-                        field.setText(formatValue(value));
-                    }
-                    if (Double.compare(newVal.doubleValue(), normalized) != 0) {
-                        bindProperty.set(normalized);
-                    }
-                });
+            // 值载体契约：权威 Property 由控件自身观察，FormContext 的 setValue/reset 直接写入
+            // （见 FormContext.VALUE_PROPERTY_KEY）。绑定时复用 bindProperty，保证同一真值只此一份。
+            final DoubleProperty valueProperty =
+                    bindProperty != null ? bindProperty : new javafx.beans.property.SimpleDoubleProperty(value);
+            if (bindProperty == null) {
+                valueProperty.set(value);
             }
+            valueProperty.addListener((obs, oldVal, newVal) -> {
+                if (newVal == null || !Double.isFinite(newVal.doubleValue())) return;
+                double normalized = normalizeValue(newVal.doubleValue());
+                if (Double.compare(normalized, value) != 0) {
+                    value = normalized;
+                    field.setText(formatValue(value));
+                }
+                if (Double.compare(newVal.doubleValue(), normalized) != 0) {
+                    valueProperty.set(normalized);
+                }
+            });
+            container.getProperties().put(FormContext.VALUE_PROPERTY_KEY, valueProperty);
 
             field.setOnAction(e -> {
                 try {

@@ -1,0 +1,72 @@
+/* ============================================
+   SearchInputAnt Component（带清除按钮的输入框，对标 Ant Design allowClear）
+   --------------------------------------------
+   结构：.jfx-search-input > .jfx-search-input-field + .jfx-search-input-clear
+   容器自身不吞 padding（红线 5），间距/内边距全在子节点上。
+   ============================================ */
+.jfx-search-input {
+  -fx-padding: 0;
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: @border-width-default;
+  -fx-border-radius: @border-radius-sm;
+  -fx-background-radius: @border-radius-sm;
+}
+
+.jfx-search-input:hover {
+  -fx-border-color: -color-accent-muted;
+}
+
+/* 聚焦态：JavaFX 的 :focused 只挂在真正持有焦点的节点上。
+   容器本身聚焦（有内容时点容器）与内部输入框聚焦都要有反馈。 */
+.jfx-search-input:focused,
+.jfx-search-input:focus-within,
+.jfx-search-input .jfx-search-input-field:focused {
+  -fx-border-color: -color-accent-emphasis;
+}
+
+.jfx-search-input:focus-within .jfx-search-input-field:focused {
+  /* 内层输入框不再重复画自己的边框与光晕，避免双线 */
+  -fx-border-color: transparent;
+  -fx-effect: none;
+}
+
+/* 输入框本体：边框由容器统一绘制，内部只保留内边距与文字 */
+.jfx-search-input .jfx-search-input-field {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: @input-padding-y @input-padding-x;
+}
+
+.jfx-search-input .jfx-search-input-field:hover,
+.jfx-search-input .jfx-search-input-field:focused {
+  -fx-background-color: transparent;
+  -fx-effect: none;
+}
+
+/* 清除按钮：可聚焦 + 键盘可达 */
+.jfx-search-input-clear {
+  -fx-padding: 0 8 0 8;
+  -fx-cursor: hand;
+  -fx-background-color: transparent;
+}
+
+.jfx-search-input-clear .jfx-icon {
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-search-input-clear:hover .jfx-icon {
+  -fx-text-fill: -color-fg-default;
+}
+
+/* 键盘焦点可见（与 _focus.less 的语义一致：鼠标点击不闪环） */
+.jfx-search-input-clear:focus-visible {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-radius: @border-radius-sm;
+  -fx-border-style: solid;
+}
+
+.jfx-search-input:disabled {
+  -fx-opacity: 0.6;
+}

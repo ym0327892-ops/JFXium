@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import org.openkawu.jfxium.component.layout.BorderPaneAnt;
 import javafx.stage.Window;
 
@@ -39,12 +40,14 @@ public class FormExamplePage extends VBoxAnt {
                 .sections(
                         basicSection(),
                         validateSection(),
+                        submitOnEnterSection(),
                         linkedSection(),
                         headerFooterSection(),
                         footerAlignSection(),
                         sectionDemoSection(),
                         layoutCompareSection(),
                         playgroundSection(),
+                        statusSection(),
                         alertAntSection()
                 )
                 .padding(24)
@@ -114,7 +117,34 @@ public class FormExamplePage extends VBoxAnt {
                 code, holder[0].getRoot());
     }
 
-    /** 3. 字段联动（password / confirm）。 */
+    /** 3. Enter 提交（onSubmit：回车即校验 + 提交）。 */
+    private Node submitOnEnterSection() {
+        FormAnt.Result form = FormAnt.create()
+                .layout(FormAnt.Layout.HORIZONTAL)
+                .item("关键词", InputAnt.create().placeholder("至少 2 个字符").build(), "keyword")
+                    .required()
+                    .rule(Rule.minLength(2, "关键词至少 2 个字符"))
+                    .end()
+                .onSubmit(() -> MessageAnt.success("回车提交成功"))
+                .buildResult();
+
+        String code = """
+                FormAnt.create()
+                        .item("关键词", input, "keyword")
+                            .required()
+                            .rule(Rule.minLength(2, "关键词至少 2 个字符"))
+                            .end()
+                        .onSubmit(() -> MessageAnt.success("回车提交成功"))
+                        .buildResult();
+
+                // 在任一单行输入框按 Enter：先校验，通过才回调
+                """;
+        return Demos.sectionWithCode("3. 回车提交（onSubmit）",
+                "在输入框内按 Enter 触发提交；校验不通过只显示错误、不回调。",
+                code, form.getRoot());
+    }
+
+    /** 4. 字段联动（password / confirm）。 */
     private Node linkedSection() {
         var pwdField = InputAnt.create().placeholder("密码").build();
         var confirmField = InputAnt.create().placeholder("确认密码").build();
@@ -142,12 +172,12 @@ public class FormExamplePage extends VBoxAnt {
         String code = """
                 result.onChange("password", (val, ctx) -> ctx.validateField("confirm"));
                 """;
-        return Demos.sectionWithCode("3. 字段联动",
+        return Demos.sectionWithCode("4. 字段联动",
                 "password 变化时自动重新校验 confirm 字段。",
                 code, holder[0].getRoot());
     }
 
-    /** 4. header + 多按钮 footer。 */
+    /** 5. header + 多按钮 footer。 */
     private Node headerFooterSection() {
         Node form = FormAnt.create()
                 .layout(FormAnt.Layout.HORIZONTAL)
@@ -169,12 +199,12 @@ public class FormExamplePage extends VBoxAnt {
                         .footer(cancelBtn, resetBtn, submitBtn)   // 变长重载
                         .build();
                 """;
-        return Demos.sectionWithCode("4. header + 多按钮 footer",
+        return Demos.sectionWithCode("5. header + 多按钮 footer",
                 "header(Node) 顶部 banner；footer(Node...) 变长重载支持多按钮。",
                 code, form);
     }
 
-    /** 5. footer 对齐演示。 */
+    /** 6. footer 对齐演示。 */
     private Node footerAlignSection() {
         BorderPane preview = BorderPaneAnt.create();
         preview.setCenter(buildAlignedFooterForm(Pos.CENTER_RIGHT));
@@ -197,7 +227,7 @@ public class FormExamplePage extends VBoxAnt {
                         .build();
                 """;
 
-        return Demos.sectionWithCode("5. footer 对齐",
+        return Demos.sectionWithCode("6. footer 对齐",
                 "footerAlign(Pos.*) 控制按钮组在 footer 区内的对齐方式；默认是右对齐。",
                 code,
                 Demos.column(
@@ -207,7 +237,7 @@ public class FormExamplePage extends VBoxAnt {
                         preview));
     }
 
-    /** 6. section 分段标题。 */
+    /** 7. section 分段标题。 */
     private Node sectionDemoSection() {
         Node form = FormAnt.create()
                 .layout(FormAnt.Layout.HORIZONTAL)
@@ -234,12 +264,12 @@ public class FormExamplePage extends VBoxAnt {
                         .footer(saveBtn)
                         .build();
                 """;
-        return Demos.sectionWithCode("6. section 分段",
+        return Demos.sectionWithCode("7. section 分段",
                 "section(String) 在长表单中按业务语义分组字段。",
                 code, form);
     }
 
-    /** 7. 三种 layout 对比。 */
+    /** 8. 三种 layout 对比。 */
     private Node layoutCompareSection() {
         Node horizontal = FormAnt.create()
                 .layout(FormAnt.Layout.HORIZONTAL)
@@ -263,7 +293,7 @@ public class FormExamplePage extends VBoxAnt {
                 FormAnt.create().layout(FormAnt.Layout.VERTICAL)...build();
                 FormAnt.create().layout(FormAnt.Layout.INLINE)...build();
                 """;
-        return Demos.sectionWithCode("7. 三种 layout 对比",
+        return Demos.sectionWithCode("8. 三种 layout 对比",
                 "HORIZONTAL（标签左 + 控件右）/ VERTICAL（标签上 + 控件下）/ INLINE（一行内联）。",
                 code, Demos.column(
                         TypographyAnt.text("HORIZONTAL:").build(), horizontal,
@@ -296,7 +326,7 @@ public class FormExamplePage extends VBoxAnt {
         return Pos.CENTER_RIGHT;
     }
 
-    /** 8. 交互演示：实时切换 layout / size / labelAlign / colon。 */
+    /** 9. 交互演示：实时切换 layout / size / labelAlign / colon。 */
     private Node playgroundSection() {
         Binder<String> layoutBinder = PlayGround.binder("horizontal");
         Binder<String> sizeBinder = PlayGround.binder("default");
@@ -313,7 +343,7 @@ public class FormExamplePage extends VBoxAnt {
                 .footer(ButtonAnt.create("提交").type(ButtonAnt.Type.PRIMARY)
                         .onClick(e -> MessageAnt.success("已提交")).build())
                 .build();
-        return Demos.section("8. 交互演示",
+        return Demos.section("9. 交互演示",
                 "通过左侧控件实时改变 Form 的 layout / size / labelAlign / colon，右侧表单实时重建反映配置。",
                 PlayGround.rebindRebuild(factory, null,
                         PlayGround.row("布局", PlayGround.segmented(layoutBinder,
@@ -349,7 +379,7 @@ public class FormExamplePage extends VBoxAnt {
         return FormAnt.Align.RIGHT;
     }
 
-    /** 9. AlertAnt 独立 Stage 模态弹窗（继承 JavaFX 原生 Alert）。 */
+    /** 10. AlertAnt 独立 Stage 模态弹窗（继承 JavaFX 原生 Alert）。 */
     private Node alertAntSection() {
         // 当前 Scene 的 owner 窗口：弹窗会 initOwner 该窗口并 APPLICATION_MODAL 阻塞
         Window owner = getScene() != null ? getScene().getWindow() : null;
@@ -415,9 +445,45 @@ public class FormExamplePage extends VBoxAnt {
                 // 继承自 Alert：showAndWait() / getResult() / setOnHidden() 等 API 完全兼容
                 """;
 
-        return Demos.sectionWithCode("9. AlertAnt 模态弹窗",
+        return Demos.sectionWithCode("10. AlertAnt 模态弹窗",
                 "独立 Stage 模态对话框（继承 javafx.scene.control.Alert），4 种 type 切换 header 配色与 icon。",
                 code, preview);
+    }
+
+    /** 11. 校验状态样式（status：error / warning 染控件边框 + helpText）。 */
+    private Node statusSection() {
+        VBox form = FormAnt.create()
+                .layout(FormAnt.Layout.VERTICAL)
+                .item("用户名", InputAnt.create().text("默认状态").build(), "s-user")
+                    .end()
+                .item("邮箱", InputAnt.create().text("wrong-address").build(), "s-email")
+                    .validateStatus(FormAnt.ValidateStatus.ERROR)
+                    .helpText("请输入有效邮箱")
+                    .end()
+                .item("手机", InputAnt.create().text("12345").build(), "s-phone")
+                    .validateStatus(FormAnt.ValidateStatus.WARNING)
+                    .helpText("格式可能不正确")
+                    .end()
+                .build();
+
+        String code = """
+                FormAnt.create()
+                        .item("邮箱", emailInput, "email")
+                            .validateStatus(ValidateStatus.ERROR)
+                            .helpText("请输入有效邮箱")
+                            .end()
+                        .item("手机", phoneInput, "phone")
+                            .validateStatus(ValidateStatus.WARNING)
+                            .helpText("格式可能不正确")
+                            .end()
+                        .build();
+
+                // 也可以不经过表单，直接在控件上设定状态：
+                InputAnt.create().status(ValidateStatus.ERROR).build();
+                """;
+        return Demos.sectionWithCode("11. 校验状态（status）",
+                "validateStatus(ERROR / WARNING) 同时染控件边框与 helpText 文字色，一眼看出问题字段。",
+                code, form);
     }
 
     /** 蓝色信息提示横幅（作为 FormAnt.header 的占位 Node）。 */

@@ -717,6 +717,108 @@
   -fx-opacity: 0.6;
 }
 /* ============================================
+   校验状态（对标 Ant Design Input status）
+   ERROR / WARNING 染边框；后接的 hover/focused 规则会覆盖边框色，
+   因此状态规则放在基础态之后、并显式重述 hover/focused 以保住状态色。
+   ============================================ */
+.text-field.jfx-input-status-error {
+  -fx-border-color: -color-danger-emphasis;
+}
+.text-field.jfx-input-status-error:hover,
+.text-field.jfx-input-status-error:focused {
+  -fx-border-color: -color-danger-emphasis;
+}
+.text-field.jfx-input-status-warning {
+  -fx-border-color: -color-warning-emphasis;
+}
+.text-field.jfx-input-status-warning:hover,
+.text-field.jfx-input-status-warning:focused {
+  -fx-border-color: -color-warning-emphasis;
+}
+.text-area.jfx-input-status-error,
+.text-area.jfx-input-status-error:hover,
+.text-area.jfx-input-status-error:focused {
+  -fx-border-color: -color-danger-emphasis;
+}
+.text-area.jfx-input-status-warning,
+.text-area.jfx-input-status-warning:hover,
+.text-area.jfx-input-status-warning:focused {
+  -fx-border-color: -color-warning-emphasis;
+}
+/* SearchInputAnt 容器继承同一状态语义 */
+.jfx-search-input.jfx-input-status-error,
+.jfx-search-input.jfx-input-status-error:hover,
+.jfx-search-input.jfx-input-status-error:focus-within {
+  -fx-border-color: -color-danger-emphasis;
+}
+.jfx-search-input.jfx-input-status-warning,
+.jfx-search-input.jfx-input-status-warning:hover,
+.jfx-search-input.jfx-input-status-warning:focus-within {
+  -fx-border-color: -color-warning-emphasis;
+}
+/* ============================================
+   SearchInputAnt Component（带清除按钮的输入框，对标 Ant Design allowClear）
+   --------------------------------------------
+   结构：.jfx-search-input > .jfx-search-input-field + .jfx-search-input-clear
+   容器自身不吞 padding（红线 5），间距/内边距全在子节点上。
+   ============================================ */
+.jfx-search-input {
+  -fx-padding: 0;
+  -fx-background-color: -color-bg-default;
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
+}
+.jfx-search-input:hover {
+  -fx-border-color: -color-accent-muted;
+}
+/* 聚焦态：JavaFX 的 :focused 只挂在真正持有焦点的节点上。
+   容器本身聚焦（有内容时点容器）与内部输入框聚焦都要有反馈。 */
+.jfx-search-input:focused,
+.jfx-search-input:focus-within,
+.jfx-search-input .jfx-search-input-field:focused {
+  -fx-border-color: -color-accent-emphasis;
+}
+.jfx-search-input:focus-within .jfx-search-input-field:focused {
+  /* 内层输入框不再重复画自己的边框与光晕，避免双线 */
+  -fx-border-color: transparent;
+  -fx-effect: none;
+}
+/* 输入框本体：边框由容器统一绘制，内部只保留内边距与文字 */
+.jfx-search-input .jfx-search-input-field {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 5px 8px;
+}
+.jfx-search-input .jfx-search-input-field:hover,
+.jfx-search-input .jfx-search-input-field:focused {
+  -fx-background-color: transparent;
+  -fx-effect: none;
+}
+/* 清除按钮：可聚焦 + 键盘可达 */
+.jfx-search-input-clear {
+  -fx-padding: 0 8 0 8;
+  -fx-cursor: hand;
+  -fx-background-color: transparent;
+}
+.jfx-search-input-clear .jfx-icon {
+  -fx-text-fill: -color-fg-muted;
+}
+.jfx-search-input-clear:hover .jfx-icon {
+  -fx-text-fill: -color-fg-default;
+}
+/* 键盘焦点可见（与 _focus.less 的语义一致：鼠标点击不闪环） */
+.jfx-search-input-clear:focus-visible {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-radius: 4px;
+  -fx-border-style: solid;
+}
+.jfx-search-input:disabled {
+  -fx-opacity: 0.6;
+}
+/* ============================================
    GroupBox 分组框
    - 带标题边框的内容容器，用于表单分块
    - 桌面端风格：紧凑、小圆角、底色衬托
@@ -1423,14 +1525,9 @@
 .slider .thumb:armed {
   -fx-background-color: -color-accent-active;
 }
-.slider .slider:focused .thumb {
-  -fx-border-color: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
-}
-.slider:focused {
-  -fx-focus-color: transparent;
-  -fx-faint-focus-color: transparent;
-}
+/* 焦点态统一由 _focus.less 的 .slider:focus-visible 处理。
+   注意：这里原先是 `.slider .slider:focused .thumb` —— 后代选择器要求
+   .slider 内再套一个 .slider，永远不会匹配，是条僵尸规则（同 #148/#149）。 */
 .slider .colored-track {
   -fx-background-color: -color-accent-emphasis;
   /* 同 .track：避免 9999px 圆角撑爆视觉边界 */
@@ -6115,21 +6212,57 @@
   -fx-faint-focus-color: transparent;
 }
 /* ============================================
-   Focus Visible (Accessibility)
+   Focus Visible（键盘焦点可见）
+   --------------------------------------------
+   为什么必须自己补：
+     主题通过 Application.setUserAgentStylesheet 整体替换 modena
+     （见 ThemeManager.applyTheme），modena 中所有靠 -fx-focus-color
+     绘制焦点环的规则随之整体消失 —— 例如
+       .check-box:focused > .box { -fx-background-color: -fx-focus-color, ... }
+       .radio-button:focused > .radio { ... }
+       .slider:focused .thumb { ... }
+     而 JFXium 主题从未定义 -fx-focus-color 的真实颜色（只有 transparent），
+     于是复选框/单选/滑块/开关/表格等「可聚焦但没写 :focused 规则」的控件，
+     键盘聚焦时**零视觉反馈**。
+
+   为什么用 :focus-visible 而非自造 class：
+     JavaFX 21 原生支持该伪类（Node.FOCUS_VISIBLE_PSEUDOCLASS_STATE
+     + Node#focusVisibleProperty）。仅键盘遍历置位
+     （TopMostTraversalEngine.focusAndNotify → TraversalMethod.KEY 时
+     requestFocusVisible），鼠标按下由 Scene 的 pressedHandler 清除 ——
+     语义与 web :focus-visible 完全一致：鼠标点不闪环、键盘永远看得见。
+       ⚠ 历史遗留：曾留下 `.focus-visible` 类 + JfxStyles.FOCUS_VISIBLE
+       常量，但没有任何 Java 代码挂载过它，是一对死代码（已随本次修复删除）。
    ============================================ */
-.button:focused,
-.text-field:focused,
-.text-area:focused,
-.password-field:focused,
-.combo-box:focused,
-.choice-box:focused {
-  -fx-focus-color: transparent;
-  -fx-faint-focus-color: transparent;
+/* 复选框 / 单选：描边 + 轻外发光（与 _input.less 的 :focused 观感统一） */
+.check-box:focus-visible > .box,
+.radio-button:focus-visible > .radio {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
 }
-/* Accessibility focus ring (applied via AccessibilityUtils) */
-.focus-visible {
-  -fx-focus-color: -color-accent-emphasis;
-  -fx-faint-focus-color: -color-accent-subtle;
+/* 滑块：拖动块平时就是 accent 描边 + 阴影，仅换色区分不出来，
+   因此键盘焦点用「加粗描边 + 更强光晕」表达。
+   （原 _slider.less 写成 `.slider .slider:focused .thumb` —— 后代选择器要求
+   .slider 内再套 .slider，永不匹配，是条僵尸规则，已一并修正） */
+.slider:focus-visible .thumb {
+  -fx-border-width: 3px;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 5, 0, 0, 0);
+}
+/* 按钮 / 切换按钮：底色随 variant 各异（default/accent/ghost…），
+   焦点统一落在边框色上 —— 基线已有 1px 边框，改色不产生任何布局位移。
+   用 :focus-visible（而非 :focused）保证鼠标点击不闪蓝框。 */
+.button:focus-visible,
+.toggle-button:focus-visible {
+  -fx-border-color: -color-accent-emphasis;
+}
+/* 长列表容器：焦点在整表上，用内描边表达 */
+.table-view:focus-visible,
+.tree-view:focus-visible,
+.tree-table-view:focus-visible,
+.list-view:focus-visible {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-border-width: 1px;
+  -fx-border-style: solid;
 }
 /* ============================================
    Size Variants (Small / Large)

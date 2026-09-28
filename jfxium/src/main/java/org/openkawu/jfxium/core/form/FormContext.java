@@ -169,10 +169,38 @@ public class FormContext {
     }
 
     // ============================================================
-    // 控件值的提取 / 写入：覆盖最常用的几种 JavaFX 控件
+    // 控件值的提取 / 写入
+    //   1) 值载体契约（推荐）—— 组合控件在返回节点上挂载自己的权威 Property，
+    //      FormContext 直接观察/写入，不猜控件类型、不做结构查找
+    //   2) 原生控件 instanceof 兜底（TextField / CheckBox / ComboBox / DatePicker …）
     // ============================================================
 
+    /**
+     * 值载体契约：组合控件（SwitchAnt / InputNumberAnt / SliderAnt / RateAnt 等）
+     * 在 {@code build()} 返回节点的 {@code getProperties()} 上，以本键挂载自己
+     * **权威**值的 {@link javafx.beans.property.Property}。
+     *
+     * <p>为什么必须由控件自己挂载：组合控件（如 SwitchAnt）返回的是 HBox 这类普通容器，
+     * 真值藏在内部节点里。FormContext 若靠 {@code instanceof} 或结构查找去猜，
+     * 既猜不准（同一容器里可能有多个滑块），也会在 CSS 未应用时失效。
+     * 控件自己最清楚自己的值在哪里。</p>
+     *
+     * <p>为什么要求「权威」：FormContext 的 setValue / reset 会写入该 Property，
+     * 控件必须观察它（内部状态由它派生），否则写入静默丢失。
+     * 只写不读的镜像属性不满足契约。</p>
+     */
+    public static final String VALUE_PROPERTY_KEY = "jfxium.form.value";
+
+    /** 取节点上的值载体 Property；未挂载返回 null。 */
+    private static javafx.beans.property.Property<?> carrierOf(Node control) {
+        Object carrier = control.getProperties().get(VALUE_PROPERTY_KEY);
+        return carrier instanceof javafx.beans.property.Property<?> p ? p : null;
+    }
+
     private static Object extractValue(Node control) {
+        javafx.beans.property.Property<?> carrier = carrierOf(control);
+        if (carrier != null) return carrier.getValue();
+
         if (control instanceof TextInputControl tic) return tic.getText();
         if (control instanceof CheckBox cb)          return cb.isSelected();
         if (control instanceof RadioButton rb)       return rb.isSelected();
@@ -184,6 +212,12 @@ public class FormContext {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static void applyValueToControl(Node control, Object value) {
+        javafx.beans.property.Property carrier = carrierOf(control);
+        if (carrier != null) {
+            setCarrierValue(carrier, value);
+            return;
+        }
+
         if (control instanceof TextInputControl tic) {
             tic.setText(value == null ? "" : value.toString());
         } else if (control instanceof CheckBox cb) {
@@ -199,7 +233,41 @@ public class FormContext {
         }
     }
 
+    /**
+     * 写入值载体 —— null 必须映射为各 Property 的语义空值，
+     * 否则 {@code reset()} 会在数值/布尔 Property 上抛 NPE（拆箱）。
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static void setCarrierValue(javafx.beans.property.Property carrier, Object value) {
+        if (carrier instanceof javafx.beans.property.DoubleProperty dp) {
+            dp.set(toDouble(value));
+        } else if (carrier instanceof javafx.beans.property.BooleanProperty bp) {
+            bp.set(Boolean.TRUE.equals(value));
+        } else if (carrier instanceof javafx.beans.property.StringProperty sp) {
+            sp.set(value == null ? "" : String.valueOf(value));
+        } else {
+            carrier.setValue(value);
+        }
+    }
+
+    /** null/非数值 → 0（控件自身会按 min/max/precision 再归一化）。 */
+    private static double toDouble(Object value) {
+        if (value instanceof Number n) return n.doubleValue();
+        if (value == null) return 0d;
+        try {
+            return Double.parseDouble(String.valueOf(value).trim());
+        } catch (NumberFormatException ignored) {
+            return 0d;
+        }
+    }
+
     private void bindControlToProperty(Node control, ObjectProperty<Object> prop, String name) {
+        javafx.beans.property.Property<?> carrier = carrierOf(control);
+        if (carrier != null) {
+            carrier.addListener((obs, ov, nv) -> { prop.set(nv); onChangeValidate(name); });
+            return;
+        }
+
         if (control instanceof TextInputControl tic) {
             tic.textProperty().addListener((obs, ov, nv) -> { prop.set(nv); onChangeValidate(name); });
         } else if (control instanceof CheckBox cb) {
@@ -213,7 +281,8 @@ public class FormContext {
         } else if (control instanceof DatePicker dp) {
             dp.valueProperty().addListener((obs, ov, nv) -> { prop.set(nv); onChangeValidate(name); });
         }
-        // 其他控件类型不绑定（业务可手动 setValue 同步）
+        // 仍是其他控件类型：值载体契约未挂载且非原生受支持控件，不绑定
+        // （业务可自行 bindValue 后手动同步）
     }
 
     private void onChangeValidate(String name) {

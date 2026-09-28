@@ -157,6 +157,23 @@ public class RateAnt {
 
             int starSize = size.getValue();
             SVGPath[] stars = new SVGPath[count];
+            // 权威值 Property：复用 bindProperty 时外部赋值才能生效
+            // （此前 RateAnt 只写不读，setValue 会静默丢失）。
+            final DoubleProperty rateValue = bindProperty != null
+                    ? bindProperty
+                    : new javafx.beans.property.SimpleDoubleProperty(value);
+            rateBox.getProperties().put(org.openkawu.jfxium.core.form.FormContext.VALUE_PROPERTY_KEY, rateValue);
+            rateValue.addListener((obs, ov, nv) -> {
+                if (nv == null || Double.isNaN(nv.doubleValue())) return;
+                double normalized = normalizeValue(nv.doubleValue());
+                value = normalized;
+                for (int j = 0; j < count; j++) {
+                    updateStarColor(stars[j], j + 1, normalized, inactiveColor, activeColor);
+                }
+                if (Double.compare(nv.doubleValue(), normalized) != 0) {
+                    rateValue.set(normalized);
+                }
+            });
 
             for (int i = 0; i < count; i++) {
                 final int starIndex = i + 1;
@@ -185,15 +202,12 @@ public class RateAnt {
 
                     star.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                         double newValue = allowHalf ? calculateHalfValue(index, e.getX(), starSize) : starIndex;
-                        value = normalizeValue(newValue);
-                        if (bindProperty != null) {
-                            bindProperty.set(value);
-                        }
-                        for (int j = 0; j < count; j++) {
-                            updateStarColor(stars[j], j + 1, value, inactiveColor, activeColor);
+                        double normalized = normalizeValue(newValue);
+                        if (Double.compare(rateValue.get(), normalized) != 0) {
+                            rateValue.set(normalized);   // 监听器负责归一化 + 重绘
                         }
                         if (onChange != null) {
-                            onChange.accept(value);
+                            onChange.accept(normalized);
                         }
                     });
                 }

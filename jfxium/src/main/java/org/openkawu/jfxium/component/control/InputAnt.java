@@ -9,6 +9,7 @@ import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.builder.Radius;
+import org.openkawu.jfxium.component.composite.FormAnt;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.token.Size;
@@ -128,6 +129,25 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt>, Disab
      */
     public InputAnt size(Size size) {
         return ApplySizeUtil.apply(this, size);
+    }
+
+    /**
+     * 校验状态（对标 Ant Design Input {@code status}）。
+     *
+     * <p>{@code ERROR} / {@code WARNING} 会让输入框边框染成危险色 / 警告色，
+     * 与 FormAnt 的 helpText 状态色配套使用。{@code null} 或 {@code DEFAULT}
+     * 清除状态色（幂等，先移旧类再挂新类）。</p>
+     *
+     * @param status 目标状态；{@code null} 视为 DEFAULT
+     */
+    public InputAnt status(FormAnt.ValidateStatus status) {
+        getStyleClass().removeAll(JfxStyles.INPUT_STATUS_ERROR, JfxStyles.INPUT_STATUS_WARNING);
+        if (status == FormAnt.ValidateStatus.ERROR) {
+            getStyleClass().add(JfxStyles.INPUT_STATUS_ERROR);
+        } else if (status == FormAnt.ValidateStatus.WARNING) {
+            getStyleClass().add(JfxStyles.INPUT_STATUS_WARNING);
+        }
+        return this;
     }
 
     // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）

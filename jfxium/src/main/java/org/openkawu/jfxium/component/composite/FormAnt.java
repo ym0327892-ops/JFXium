@@ -3,7 +3,10 @@ package org.openkawu.jfxium.component.composite;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.layout.*;
 import org.openkawu.jfxium.component.control.TooltipAnt;
@@ -19,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * JFXium 表单组件 - 对标 Ant Design Form。
@@ -274,6 +278,10 @@ public class FormAnt {
         private final List<Node> footerNodes = new ArrayList<>();
         private Pos footerAlign = Pos.CENTER_RIGHT;
 
+        // Enter 提交（对标 Ant Design Form onFinish）：null = 不接管回车
+        private Runnable submitHandler = null;
+        private Consumer<FormContext> submitHandlerWithCtx = null;
+
         private Builder() {}
 
         public Builder layout(Layout layout) { this.layout = layout != null ? layout : Layout.HORIZONTAL; return this; }
@@ -386,6 +394,38 @@ public class FormAnt {
         /** footer 按钮组右对齐（默认）。 */
         public Builder footerAlignRight() {
             return footerAlign(Pos.CENTER_RIGHT);
+        }
+
+        // ===========================================================
+        // Enter 提交（对标 Ant Design Form onFinish）
+        // ===========================================================
+
+        /**
+         * 表单提交：用户在任一文本输入框按 <b>Enter</b> 时触发。
+         *
+         * <p>触发前置条件（与 Ant Design 一致）：<b>先跑全量校验</b>，
+         * 校验不通过则只展示错误、不回调；通过才执行 handler。</p>
+         *
+         * <pre>{@code
+         * FormAnt.Result form = FormAnt.create()
+         *     .item("用户名", InputAnt.create().build(), "username").end()
+         *     .onSubmit(() -> System.out.println("提交通过"))
+         *     .buildResult();
+         * }</pre>
+         *
+         * <p>需要读取表单值时用 {@link #onSubmit(Consumer)} 重载；两者都设时以后设的为准。</p>
+         */
+        public Builder onSubmit(Runnable handler) {
+            this.submitHandler = handler;
+            this.submitHandlerWithCtx = null;
+            return this;
+        }
+
+        /** 表单提交（带 FormContext）：Enter 触发且校验通过后回调，参数为表单上下文。 */
+        public Builder onSubmit(Consumer<FormContext> handler) {
+            this.submitHandlerWithCtx = handler;
+            this.submitHandler = null;
+            return this;
         }
 
         /**
@@ -510,8 +550,43 @@ public class FormAnt {
                 footerBox.getChildren().addAll(footerNodes);
                 form.getChildren().add(footerBox);
             }
+            // Enter 提交：装上后 Result.submit() 与回车走同一条链路（校验 → 回调）
+            Result result = new Result(form, ctx, this);
+            if (submitHandler != null || submitHandlerWithCtx != null) {
+                installSubmitOnEnter(result);
+            }
             applyStyles(form);
-            return new Result(form, ctx);
+            return result;
+        }
+
+        /**
+         * 把「Enter → 提交」挂到表单内所有单行文本输入控件上。
+         *
+         * <p>实现选择：用每个输入控件自身的 {@code onAction}（TextField 系在按下
+         * Enter 时触发），而不是在表单根上挂 KeyEvent 过滤器。两者都能覆盖，
+         * 但 onAction 由控件原生判定「这是我的回车」，无需在过滤器里反查焦点归属；
+         * 多行输入（TextArea）本就不产生 onAction，天然不会被误当作提交。</p>
+         *
+         * <p>覆盖范围：{@link TextField} 及其子类（{@code InputAnt} / {@code PasswordField}
+         * 等）。ComboBox / DatePicker 编辑器的回车由控件自身弹层语义占用，不在此列。</p>
+         *
+         * <p>不覆盖控件原有的 onAction：原回调被保留并「前置」执行，即
+         * 原回调 → 校验 → {@code onSubmit}。</p>
+         *
+         * <p>注意：表单内若自建了提交按钮，Enter 与按钮点击都会走 {@code submit()}，
+         * 业务回调只执行一次；无需也不应再给按钮加 defaultButton（JavaFX 的默认
+         * 按钮加速键在 macOS 上不生效，行为跨平台不一致）。</p>
+         */
+        private void installSubmitOnEnter(Result result) {
+            for (Object entry : entries) {
+                if (entry instanceof FormItem item && item.control instanceof TextField tf) {
+                    EventHandler<ActionEvent> previous = tf.getOnAction();
+                    tf.setOnAction(e -> {
+                        if (previous != null) previous.handle(e);
+                        result.submit();
+                    });
+                }
+            }
         }
 
         // ===========================================================
@@ -669,6 +744,9 @@ public class FormAnt {
             VBox wrapper = new VBox();
             wrapper.getStyleClass().add(JfxStyles.FORM_ITEM_WRAPPER);
             wrapper.getChildren().add(item.control);
+            // 把 item 级校验状态落成控件样式（error/warning 染边框），
+            // 否则 helpText 变色而控件本身毫无提示，用户看不出哪个字段有问题。
+            applyStatusToControl(item.control, item.validateStatus);
 
             // 静态 helpText（不变）
             if (!item.helpText.isEmpty()) {
@@ -707,6 +785,27 @@ public class FormAnt {
             };
         }
 
+        /**
+         * 把校验状态落成控件自身的样式类。
+         *
+         * <p>状态类挂在控件本体（而非仅 wrapper）——LESS 里
+         * {@code .text-field.jfx-input-status-error} 这类规则要求状态类与控件选择器同节点，
+         * 挂在 wrapper 上匹配不到。</p>
+         *
+         * <p>支持 {@link InputAnt} 的 {@code status()} 链式 API；其余控件走通用 styleClass，
+         * 需要专属视觉的控件在 LESS 里响应同一组类名即可。</p>
+         */
+        private static void applyStatusToControl(Node control, ValidateStatus status) {
+            if (control == null) return;
+            control.getStyleClass().removeAll(
+                    JfxStyles.INPUT_STATUS_ERROR, JfxStyles.INPUT_STATUS_WARNING);
+            if (status == ValidateStatus.ERROR) {
+                control.getStyleClass().add(JfxStyles.INPUT_STATUS_ERROR);
+            } else if (status == ValidateStatus.WARNING) {
+                control.getStyleClass().add(JfxStyles.INPUT_STATUS_WARNING);
+            }
+        }
+
     }
 
     /**
@@ -722,10 +821,12 @@ public class FormAnt {
     public static class Result {
         private final VBox root;
         private final FormContext ctx;
+        private final Builder builder;
 
-        Result(VBox root, FormContext ctx) {
+        Result(VBox root, FormContext ctx, Builder builder) {
             this.root = root;
             this.ctx = ctx;
+            this.builder = builder;
         }
 
         public VBox getRoot() { return root; }
@@ -739,6 +840,20 @@ public class FormAnt {
 
         /** 重置单个字段值 + 清除其错误。 */
         public void resetField(String name) { ctx.resetField(name); }
+
+        /**
+         * 手动触发提交（Enter 提交走的是同一条链路）。
+         *
+         * <p>先跑全量校验；全部通过才执行 {@code onSubmit} 回调，校验失败只展示错误。</p>
+         *
+         * @return 校验是否通过（{@code false} = 有字段未过校验，回调未执行）
+         */
+        public boolean submit() {
+            if (!ctx.validate()) return false;
+            if (builder.submitHandler != null) builder.submitHandler.run();
+            if (builder.submitHandlerWithCtx != null) builder.submitHandlerWithCtx.accept(ctx);
+            return true;
+        }
 
         /** 字段联动语法糖（直接转发到 context.onChange）。 */
         public void onChange(String dependency, BiConsumer<Object, FormContext> handler) {
