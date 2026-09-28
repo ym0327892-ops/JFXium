@@ -1685,19 +1685,33 @@
   -fx-background-color: -color-accent-hover;
   -fx-cursor: hand;
 }
-.date-picker-popup .day-cell:armed {
+/* 按下态：DateCell extends Cell，没有 ButtonBase 的 :armed 伪类，
+   只能用 Cell 自己的 :pressed（JavaFX 中 Cell 继承了 Node 的按下态）。 */
+.date-picker-popup .day-cell:pressed {
   -fx-background-color: -color-accent-active;
 }
-.date-picker-popup .day-cell:selected {
+/* 选中态：DateCell 的选中标记是 **class `selected`**（DatePickerContent
+   dayCell.getStyleClass().add("selected")），不是 Cell 的 :selected 伪类 —— 写成
+   :selected 同样永不匹配（与 :today 同一类错误）。 */
+.date-picker-popup .day-cell.selected {
   -fx-background-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
   -fx-font-weight: 600;
 }
-.date-picker-popup .day-cell:today {
+/* 今日标记：JavaFX 给今天的单元格挂的是 **class `today`**（DatePickerContent
+   dayCell.getStyleClass().add("today")），不是 :today 伪类 —— 写成 :today 规则永不匹配。
+   按 Ant Design：今日**只描一圈 accent 边**，不动背景、不动文字色。
+   这样 .day-cell.selected（实心 accent 底 + 白字）无需任何提权规则即可正常叠加：
+   今日选中 = 实心蓝底白字，今日未选中 = 蓝框 + 默认文字色。 */
+.date-picker-popup .day-cell.today {
   -fx-border-color: -color-accent-emphasis;
   -fx-border-width: 1px;
-  -fx-border-radius: 4px;
-  -fx-background-radius: 4px;
+  -fx-border-style: solid;
+}
+/* 跨月视图里的今日：弱化描边，避免与当月今日抢焦点 */
+.date-picker-popup .previous-month.today,
+.date-picker-popup .next-month.today {
+  -fx-border-color: -color-border-default;
 }
 .date-picker-popup .day-cell:disabled {
   -fx-text-fill: -color-fg-subtle;
