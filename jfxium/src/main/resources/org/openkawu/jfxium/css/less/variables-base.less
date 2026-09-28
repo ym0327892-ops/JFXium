@@ -126,6 +126,15 @@
 @input-padding-y-lg: @ctrl-padding-y-lg;
 @input-padding-x-lg: 11px;
 
+// SearchInputAnt 右侧悬浮区（清除按钮）恒定预留宽度
+// 语义：输入框右内边距 = 该宽度 × 2，按钮悬浮其间。
+// 无论有无清除按钮占位都不变 —— 避免空 ↔ 有内容时组件宽度抖动（BUG #152）。
+// 使用位置：_search-input.less
+// 影响组件：SearchInputAnt
+// 取值依据：Ant Design 桌面版 affix 预留 24px（按钮 icon 12px + 左右各 6px 热区），
+//           在此取 24px 与之对齐；紧凑模式由 compact 主题覆盖同值即可，无需派生。
+@search-input-affix-width: 24px;
+
 // Card Padding
 // 使用位置：.card
 // 影响组件：GroupBoxAnt

@@ -759,7 +759,18 @@
 /* ============================================
    SearchInputAnt Component（带清除按钮的输入框，对标 Ant Design allowClear）
    --------------------------------------------
-   结构：.jfx-search-input > .jfx-search-input-field + .jfx-search-input-clear
+   结构：.jfx-search-input (StackPane) > .jfx-search-input-field (InputAnt)
+                                    + .jfx-search-input-clear (悬浮层)
+
+   布局契约（BUG #152）：
+     清除按钮是**叠加层**，不是并排子节点。容器宽度由输入框单独决定，
+     因此「空 ↔ 有内容」切换时宽度恒定，不会把整行布局顶得来回抖。
+
+   右侧留白恒定预留：输入框右内边距 = @search-input-affix-width * 2
+     —— 即「按钮宽度 + 右侧对称留白」。按钮始终在预留区内居中悬浮，
+     所以文本在有无清除按钮时都提前让位，视觉偏移量为零。
+     若只预留按钮宽度（不乘 2），按钮会紧贴右边缘、文字贴到按钮上。
+
    容器自身不吞 padding（红线 5），间距/内边距全在子节点上。
    ============================================ */
 .jfx-search-input {
@@ -774,32 +785,38 @@
   -fx-border-color: -color-accent-muted;
 }
 /* 聚焦态：JavaFX 的 :focused 只挂在真正持有焦点的节点上。
-   容器本身聚焦（有内容时点容器）与内部输入框聚焦都要有反馈。 */
-.jfx-search-input:focused,
-.jfx-search-input:focus-within,
-.jfx-search-input .jfx-search-input-field:focused {
+   :focus-within 才是「容器内有焦点」的正确表达（JavaFX 原生支持，
+   见 Node.FocusWithinProperty），对齐 Ant Design 的 .ant-input-affix-wrapper:focus。
+   注意不要用 :focused 代替 —— 容器在没有直接持焦时不会置位。 */
+.jfx-search-input:focus-within {
   -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
 }
-.jfx-search-input:focus-within .jfx-search-input-field:focused {
-  /* 内层输入框不再重复画自己的边框与光晕，避免双线 */
-  -fx-border-color: transparent;
-  -fx-effect: none;
-}
-/* 输入框本体：边框由容器统一绘制，内部只保留内边距与文字 */
-.jfx-search-input .jfx-search-input-field {
+/* 输入框本体：边框/背景/光晕全由容器统一绘制，内部只留内边距与文字。
+   右内边距恒定预留清除按钮位置（左右各一份 affix 宽度）。 */
+.jfx-search-input > .jfx-search-input-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-border-width: 0;
-  -fx-padding: 5px 8px;
-}
-.jfx-search-input .jfx-search-input-field:hover,
-.jfx-search-input .jfx-search-input-field:focused {
-  -fx-background-color: transparent;
   -fx-effect: none;
+  -fx-padding: 5px 24px 5px 8px;
 }
-/* 清除按钮：可聚焦 + 键盘可达 */
+/* 尺寸档位需重述 padding —— .text-field.small/.large（_sizes.less）会覆盖
+   .jfx-search-input 的 padding，把右侧预留一起抹掉，文字就会钻到按钮底下。
+   _sizes.less 在 _index.less 中后导入，故此处用 (0,2,0) 选择器保证胜出：
+   类选择器计数同为 2，后者按源码顺序胜出。 */
+.jfx-search-input.small > .jfx-search-input-field {
+  -fx-padding: 1px 24px 1px 7px;
+}
+.jfx-search-input.large > .jfx-search-input-field {
+  -fx-padding: 7px 24px 7px 11px;
+}
+/* 清除按钮：悬浮层。
+   -fx-padding 含左右各 6px 热区 + 12px 图标 = 24px，与 @search-input-affix-width 对齐；
+   由 Java 侧 StackPane 的 CENTER_RIGHT 对齐 + USE_PREF_SIZE 钳制定位。
+   可聚焦 + 键盘可达（Java 侧绑定了 SPACE / ENTER）。 */
 .jfx-search-input-clear {
-  -fx-padding: 0 8 0 8;
+  -fx-padding: 0 6 0 6;
   -fx-cursor: hand;
   -fx-background-color: transparent;
 }

@@ -4,8 +4,8 @@ import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import org.openkawu.jfxium.component.layout.AbstractHBoxAnt;
+import javafx.scene.layout.Region;
+import org.openkawu.jfxium.component.layout.AbstractStackPaneAnt;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.ApplySizeUtil;
@@ -16,14 +16,19 @@ import java.util.function.Consumer;
 /**
  * JFXium 带清除按钮的输入框 - 对标 Ant Design Input allowClear（继承式组合）。
  *
- * <p><b>定位</b>：文本输入的「可清除」变体。{@link InputAnt} 继承自 {@link javafx.scene.control.TextField}
+ * <p><b>定位</b>：文本输入的「可清除」变体。{@link InputAnt} 继承自 {@link javafx.scene.text.TextField}
  * 无法自带兄弟按钮，因此本组件按项目既定的「继承式组合」范式提供：
- * 自身 {@code extends HBoxAnt} 承载布局能力，内部放一个 {@link InputAnt} + 一个清除按钮。</p>
+ * 自身 {@code extends StackPaneAnt} 承载布局能力，内部放一个 {@link InputAnt}
+ * + 一个<b>悬浮</b>在其右端的清除按钮。</p>
  *
- * <h2>为什么不是 InputAnt 的一个 flag</h2>
- * <p>{@code InputAnt extends TextField} 是单一节点，没有可以挂清除按钮的父容器；
- * 硬塞只能改 {@code InputAnt} 的继承关系（破坏既有 {@code extends InputAnt} 的业务子类），
- * 或让 {@code size()} 之类的方法返回类型撒谎——两者都违反项目红线。</p>
+ * <h2>为什么清除按钮是「悬浮」而不是「并排」</h2>
+ * <p>它是<b>叠加层</b>（{@code StackPane} 子节点 + {@code USE_PREF_SIZE} 尺寸钳制），
+ * 不参与父容器布局。若做成 {@code HBox} 的并排子节点，按钮的出现/消失会直接改变
+ * 组件自身宽度（实测 ±28px），空 ↔ 有内容的切换会把整行布局顶得来回抖 ——
+ * 这正是「清除后长度变短、X 号还占着长度」的成因。</p>
+ * <p>Ant Design 的解法是<b>恒定预留</b>右侧空间：输入框右内边距始终等于按钮宽度
+ * （{@code @search-input-affix-width}），有无按钮都一样。文字提前让位，
+ * 因此视觉上按钮「盖在」留白区，宽度恒定不抖动。</p>
  *
  * <h2>用法</h2>
  * <pre>{@code
@@ -36,7 +41,7 @@ import java.util.function.Consumer;
  * <h2>清除按钮的显隐</h2>
  * 仅在有内容时可见（对齐 Ant Design）。{@code allowClear(false)} 则整个按钮不创建。
  */
-public class SearchInputAnt extends AbstractHBoxAnt<SearchInputAnt> {
+public class SearchInputAnt extends AbstractStackPaneAnt<SearchInputAnt> {
 
     private final InputAnt field = InputAnt.create();
     private final HBox clearBtn = new HBox();
@@ -46,16 +51,18 @@ public class SearchInputAnt extends AbstractHBoxAnt<SearchInputAnt> {
 
     private SearchInputAnt() {
         super();
-        setAlignment(Pos.CENTER_LEFT);
+        setAlignment(Pos.CENTER_RIGHT);
         getStyleClass().add(JfxStyles.SEARCH_INPUT);
 
         field.getStyleClass().add(JfxStyles.SEARCH_INPUT_FIELD);
-        HBox.setHgrow(field, Priority.ALWAYS);
 
         // 清除按钮：结构与图标由 IconAnt 收口，视觉走 LESS（.jfx-search-input-clear）
         clearBtn.setAlignment(Pos.CENTER);
         clearBtn.getStyleClass().add(JfxStyles.SEARCH_INPUT_CLEAR);
         clearBtn.getChildren().add(IconAnt.symbol(IconAnt.Symbol.CLOSE, 12));
+        // 叠加层必须钳到自身 pref 尺寸：否则 StackPane 会把它拉伸到容器大小，
+        // 对齐方式（CENTER_RIGHT 右端其对）失效，点击热区也会糊满整行。
+        clearBtn.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         clearBtn.setOnMouseClicked(e -> clear());
         // 键盘可达：清除按钮是可聚焦控件之外的交互元素，需显式支持空格/回车触发
         clearBtn.setFocusTraversable(true);
