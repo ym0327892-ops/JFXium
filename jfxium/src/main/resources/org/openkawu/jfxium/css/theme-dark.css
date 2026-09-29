@@ -99,6 +99,32 @@
   -color-danger-muted: #5b2522;
   -color-danger-subtle: #2b1211;
   -color-shadow-default: rgba(0, 0, 0, 0.4);
+  /* Chart Category Palette —— 跨主题固定的 8 色定性色板
+     （值定义在 variables-base.less，暗色主题不覆盖；详见该文件注释）*/
+  -color-chart-1: #5b8ff9;
+  -color-chart-2: #5ad8a6;
+  -color-chart-3: #f6bd16;
+  -color-chart-4: #e8684a;
+  -color-chart-5: #6dc8ec;
+  -color-chart-6: #9270ca;
+  -color-chart-7: #ff9d4d;
+  -color-chart-8: #5d7092;
+  -color-chart-1-alpha20: rgba(91, 143, 249, 0.2);
+  -color-chart-2-alpha20: rgba(90, 216, 166, 0.2);
+  -color-chart-3-alpha20: rgba(246, 189, 22, 0.2);
+  -color-chart-4-alpha20: rgba(232, 104, 74, 0.2);
+  -color-chart-5-alpha20: rgba(109, 200, 236, 0.2);
+  -color-chart-6-alpha20: rgba(146, 112, 202, 0.2);
+  -color-chart-7-alpha20: rgba(255, 157, 77, 0.2);
+  -color-chart-8-alpha20: rgba(93, 112, 146, 0.2);
+  -color-chart-1-alpha70: rgba(91, 143, 249, 0.7);
+  -color-chart-2-alpha70: rgba(90, 216, 166, 0.7);
+  -color-chart-3-alpha70: rgba(246, 189, 22, 0.7);
+  -color-chart-4-alpha70: rgba(232, 104, 74, 0.7);
+  -color-chart-5-alpha70: rgba(109, 200, 236, 0.7);
+  -color-chart-6-alpha70: rgba(146, 112, 202, 0.7);
+  -color-chart-7-alpha70: rgba(255, 157, 77, 0.7);
+  -color-chart-8-alpha70: rgba(93, 112, 146, 0.7);
 }
 /* ============================================
    Global Styles
@@ -5632,6 +5658,468 @@
 .tree-table-view.bordered .tree-table-cell {
   -fx-border-color: transparent -color-border-muted -color-border-muted transparent;
   -fx-border-width: 0 1px 1px 0;
+}
+/* ============================================
+   原生图表 (javafx.scene.chart.*)
+   ============================================
+   背景（BUG #153）：
+     ThemeManager 通过 Application.setUserAgentStylesheet() **整体替换** modena，
+     而 UA 样式表是独占的 —— modena 不会被垫在下面。
+     JFXium 从未移植 modena 的图表规则，导致启用主题后所有原生图表
+     （LineChart / BarChart / PieChart / AreaChart / ScatterChart / BubbleChart /
+       StackedAreaChart / StackedBarChart）全部失去样式：
+       · 绘图区背景丢失
+       · 系列线/柱/饼片全部回落黑色（Chart 默认色）
+       · 网格线与坐标轴边框丢失
+     modena 的图表规则数 = 23 个选择器块，JFXium 主题里为 0。
+
+   本文件按 modena.css（JavaFX 21 权威源）+ AtlantaFX _chart.scss 逐类型移植，
+   并改造为 JFXium 的语义令牌体系：
+     · 颜色一律走 -color-* 查找色（由 _tokens.less 暴露，值在 variables-base.less）
+     · 尺寸/字号一律走 @spacing-* / @font-size-* / @border-radius-* 令牌
+       → 紧凑主题覆盖 token 后图表自动跟随，无需额外派生
+     · 图表分类色板 -color-chart-1..8 为跨主题固定色板（明暗不换板，理由见
+       variables-base.less 该组变量注释）
+     · 不使用 modena 的 derive() 渐变 —— JFXium 是 Ant Design 血统的扁平视觉，
+       分类色以实色填充更契合，且避免引入项目未使用的颜色函数
+
+   注意：选择器沿用的 .chart-* / .axis / .default-colorN 是 JavaFX Chart 皮肤
+   自己挂的 styleClass（不是新建 styleClass），与 _button.less 处理 .button 同理。
+   ============================================ */
+/* ============================================
+   1. 容器 / 标题 / 图例
+   ============================================ */
+.chart {
+  -fx-padding: 4px;
+}
+.chart-content {
+  -fx-padding: 8px;
+}
+/* 绘图区背景 —— 与卡片/容器同色，让图表嵌在任意容器里都不突兀 */
+.chart-plot-background {
+  -fx-background-color: -color-bg-default;
+}
+.chart-title {
+  -fx-font-size: 16px;
+  -fx-text-fill: -color-fg-default;
+}
+/* 图例底板透明 —— 扁平化，不再画 modena 的立体渐变条 */
+.chart-legend {
+  -fx-background-color: transparent;
+  -fx-padding: 8px;
+}
+.chart-legend-item {
+  -fx-text-fill: -color-fg-default;
+}
+/* ============================================
+   2. 坐标轴
+   ============================================ */
+.axis {
+  -fx-tick-label-font-size: 12px;
+  -fx-tick-label-fill: -color-fg-muted;
+}
+/* 轴标题（Label）比刻度略重，但仍属辅助信息 */
+.axis-label {
+  -fx-text-fill: -color-fg-muted;
+}
+/* 轴线：四向各自只留贴边的那一条（modena 同构） */
+.axis:top {
+  -fx-border-color: transparent transparent -color-border-default transparent;
+}
+.axis:right {
+  -fx-border-color: transparent transparent transparent -color-border-default;
+}
+.axis:bottom {
+  -fx-border-color: -color-border-default transparent transparent transparent;
+}
+.axis:left {
+  -fx-border-color: transparent -color-border-default transparent transparent;
+}
+/* 轴标题内边距：上/左轴标题贴轴，下/右轴标题留 4px 间隙 */
+.axis:top > .axis-label,
+.axis:left > .axis-label {
+  -fx-padding: 0 0 4px 0;
+}
+.axis:bottom > .axis-label,
+.axis:right > .axis-label {
+  -fx-padding: 4px 0 0 0;
+}
+/* 刻度线（Path）—— 红线#9：形状节点必须显式给 stroke，不能只给颜色 */
+.axis-tick-mark,
+.axis-minor-tick-mark {
+  -fx-fill: null;
+  -fx-stroke: -color-border-default;
+}
+/* ============================================
+   3. 网格线 / 零线 / 交替填充
+   ============================================ */
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+  -fx-stroke: -color-border-muted;
+  /* em 单位随字号缩放：紧凑主题调小 @font-size-md 时网格间距同步收细 */
+  -fx-stroke-dash-array: 0.25em, 0.25em;
+}
+/* 交替行/列底色：JFXium 不画斑马底，保持干净（modena 同为 null） */
+.chart-alternative-row-fill,
+.chart-alternative-column-fill {
+  -fx-fill: null;
+  -fx-stroke: null;
+}
+.chart-vertical-zero-line,
+.chart-horizontal-zero-line {
+  -fx-stroke: -color-border-default;
+}
+/* ============================================
+   4. ScatterChart —— 散点符号
+   ============================================
+   各系列用不同形状 + 不同色，保证灰度打印/色弱下仍可区分。
+   ============================================ */
+/* 实心圆
+   注：此处用 @border-radius-full(9999px) 是**红线#6 的正确用法** ——
+   散点符号由 -fx-padding 定尺寸（5px 固定），不是拉伸节点；
+   9999px 只作用于等宽高的方形容器，渲染为纯圆。
+   （进展条/track 那种宽度由父布局决定的节点才会用 @border-radius-md） */
+.chart-symbol {
+  -fx-background-color: -color-chart-1;
+  -fx-background-radius: 9999px;
+  -fx-padding: 5px;
+}
+/* 实心方 */
+.default-color1.chart-symbol {
+  -fx-background-radius: 0;
+}
+/* 实心菱形 */
+.default-color2.chart-symbol {
+  -fx-background-radius: 0;
+  -fx-padding: 7px 5px 7px 5px;
+  -fx-shape: "M5,0 L10,9 L5,18 L0,9 Z";
+}
+/* 十字 —— 靠 shape 表达，颜色仍走色板 */
+.default-color3.chart-symbol {
+  -fx-background-radius: 0;
+  -fx-background-insets: 0;
+  -fx-shape: "M2,0 L5,4 L8,0 L10,0 L10,2 L6,5 L10,8 L10,10 L8,10 L5,6 L2,10 L0,10 L0,8 L4,5 L0,2 L0,0 Z";
+}
+/* 实心三角 */
+.default-color4.chart-symbol {
+  -fx-background-radius: 0;
+  -fx-background-insets: 0;
+  -fx-shape: "M5,0 L10,8 L0,8 Z";
+}
+/* 空心圆（外色环 + 内白心） */
+.default-color5.chart-symbol {
+  -fx-background-insets: 0, 2;
+  -fx-background-radius: 9999px;
+  -fx-padding: 5px;
+}
+/* 空心方 */
+.default-color6.chart-symbol {
+  -fx-background-insets: 0, 2;
+  -fx-background-radius: 0;
+}
+/* 空心菱形 */
+.default-color7.chart-symbol {
+  -fx-background-insets: 0, 2.5;
+  -fx-background-radius: 0;
+  -fx-padding: 7px 5px 7px 5px;
+  -fx-shape: "M5,0 L10,9 L5,18 L0,9 Z";
+}
+/* 系列配色 —— 散点/折线点/面积点共用一个色序（8 系列） */
+.default-color0.chart-symbol,
+.default-color0.chart-line-symbol,
+.default-color0.chart-area-symbol {
+  -fx-background-color: -color-chart-1, -color-bg-default;
+}
+.default-color1.chart-symbol,
+.default-color1.chart-line-symbol,
+.default-color1.chart-area-symbol {
+  -fx-background-color: -color-chart-2, -color-bg-default;
+}
+.default-color2.chart-symbol,
+.default-color2.chart-line-symbol,
+.default-color2.chart-area-symbol {
+  -fx-background-color: -color-chart-3, -color-bg-default;
+}
+.default-color3.chart-symbol,
+.default-color3.chart-line-symbol,
+.default-color3.chart-area-symbol {
+  -fx-background-color: -color-chart-4, -color-bg-default;
+}
+.default-color4.chart-symbol,
+.default-color4.chart-line-symbol,
+.default-color4.chart-area-symbol {
+  -fx-background-color: -color-chart-5, -color-bg-default;
+}
+.default-color5.chart-symbol,
+.default-color5.chart-line-symbol,
+.default-color5.chart-area-symbol {
+  -fx-background-color: -color-chart-6, -color-bg-default;
+}
+.default-color6.chart-symbol,
+.default-color6.chart-line-symbol,
+.default-color6.chart-area-symbol {
+  -fx-background-color: -color-chart-7, -color-bg-default;
+}
+.default-color7.chart-symbol,
+.default-color7.chart-line-symbol,
+.default-color7.chart-area-symbol {
+  -fx-background-color: -color-chart-8, -color-bg-default;
+}
+/* ============================================
+   5. LineChart —— 折线
+   ============================================ */
+.chart-line-symbol {
+  -fx-background-color: -color-chart-1, -color-bg-default;
+  -fx-background-insets: 0, 2;
+  -fx-background-radius: 9999px;
+  -fx-padding: 5px;
+}
+.chart-series-line {
+  -fx-stroke: -color-chart-1;
+  -fx-stroke-width: 3px;
+}
+/* ============================================
+   6. AreaChart —— 面积
+   ============================================ */
+.chart-area-symbol {
+  -fx-background-color: -color-chart-1, -color-bg-default;
+  -fx-background-insets: 0, 1;
+  -fx-background-radius: 4px;
+  -fx-padding: 3px;
+}
+.chart-series-area-line {
+  -fx-stroke: -color-chart-1;
+  -fx-stroke-width: 1px;
+}
+.chart-series-area-fill {
+  -fx-stroke: none;
+  -fx-fill: -color-chart-1-alpha20;
+}
+/* 折线 + 面积线共用色序 */
+.default-color0.chart-series-line,
+.default-color0.chart-series-area-line {
+  -fx-stroke: -color-chart-1;
+}
+.default-color1.chart-series-line,
+.default-color1.chart-series-area-line {
+  -fx-stroke: -color-chart-2;
+}
+.default-color2.chart-series-line,
+.default-color2.chart-series-area-line {
+  -fx-stroke: -color-chart-3;
+}
+.default-color3.chart-series-line,
+.default-color3.chart-series-area-line {
+  -fx-stroke: -color-chart-4;
+}
+.default-color4.chart-series-line,
+.default-color4.chart-series-area-line {
+  -fx-stroke: -color-chart-5;
+}
+.default-color5.chart-series-line,
+.default-color5.chart-series-area-line {
+  -fx-stroke: -color-chart-6;
+}
+.default-color6.chart-series-line,
+.default-color6.chart-series-area-line {
+  -fx-stroke: -color-chart-7;
+}
+.default-color7.chart-series-line,
+.default-color7.chart-series-area-line {
+  -fx-stroke: -color-chart-8;
+}
+/* 面积填充：同色相 20% 透明度 */
+.default-color0.chart-series-area-fill {
+  -fx-fill: -color-chart-1-alpha20;
+}
+.default-color1.chart-series-area-fill {
+  -fx-fill: -color-chart-2-alpha20;
+}
+.default-color2.chart-series-area-fill {
+  -fx-fill: -color-chart-3-alpha20;
+}
+.default-color3.chart-series-area-fill {
+  -fx-fill: -color-chart-4-alpha20;
+}
+.default-color4.chart-series-area-fill {
+  -fx-fill: -color-chart-5-alpha20;
+}
+.default-color5.chart-series-area-fill {
+  -fx-fill: -color-chart-6-alpha20;
+}
+.default-color6.chart-series-area-fill {
+  -fx-fill: -color-chart-7-alpha20;
+}
+.default-color7.chart-series-area-fill {
+  -fx-fill: -color-chart-8-alpha20;
+}
+.area-legend-symbol {
+  -fx-padding: 8px;
+  -fx-background-radius: 6px;
+  -fx-background-insets: 0, 3;
+}
+/* ============================================
+   7. BubbleChart —— 气泡
+   ============================================ */
+.bubble-legend-symbol {
+  -fx-background-radius: 8px;
+  -fx-padding: 8px;
+}
+.chart-bubble {
+  -fx-bubble-fill: -color-chart-1-alpha70;
+  -fx-background-color: -color-chart-1-alpha70;
+}
+.default-color0.chart-bubble {
+  -fx-bubble-fill: -color-chart-1-alpha70;
+  -fx-background-color: -color-chart-1-alpha70;
+}
+.default-color1.chart-bubble {
+  -fx-bubble-fill: -color-chart-2-alpha70;
+  -fx-background-color: -color-chart-2-alpha70;
+}
+.default-color2.chart-bubble {
+  -fx-bubble-fill: -color-chart-3-alpha70;
+  -fx-background-color: -color-chart-3-alpha70;
+}
+.default-color3.chart-bubble {
+  -fx-bubble-fill: -color-chart-4-alpha70;
+  -fx-background-color: -color-chart-4-alpha70;
+}
+.default-color4.chart-bubble {
+  -fx-bubble-fill: -color-chart-5-alpha70;
+  -fx-background-color: -color-chart-5-alpha70;
+}
+.default-color5.chart-bubble {
+  -fx-bubble-fill: -color-chart-6-alpha70;
+  -fx-background-color: -color-chart-6-alpha70;
+}
+.default-color6.chart-bubble {
+  -fx-bubble-fill: -color-chart-7-alpha70;
+  -fx-background-color: -color-chart-7-alpha70;
+}
+.default-color7.chart-bubble {
+  -fx-bubble-fill: -color-chart-8-alpha70;
+  -fx-background-color: -color-chart-8-alpha70;
+}
+/* ============================================
+   8. BarChart / StackedBarChart —— 柱状
+   ============================================
+   -fx-bar-fill 是 JavaFX 柱状皮肤读取的属性，必须给值；
+   同时显式给 -fx-background-color，避免皮肤行为差异导致柱子无色。
+   ============================================ */
+.chart-bar {
+  -fx-bar-fill: -color-chart-1;
+  -fx-background-color: -color-chart-1;
+  -fx-background-insets: 0;
+}
+.chart-bar.negative {
+  -fx-background-insets: 1 0 0 0;
+}
+.bar-chart:horizontal .chart-bar,
+.stacked-bar-chart:horizontal .chart-bar {
+  -fx-background-insets: 0 0 0 1;
+}
+.default-color0.chart-bar {
+  -fx-bar-fill: -color-chart-1;
+  -fx-background-color: -color-chart-1;
+}
+.default-color1.chart-bar {
+  -fx-bar-fill: -color-chart-2;
+  -fx-background-color: -color-chart-2;
+}
+.default-color2.chart-bar {
+  -fx-bar-fill: -color-chart-3;
+  -fx-background-color: -color-chart-3;
+}
+.default-color3.chart-bar {
+  -fx-bar-fill: -color-chart-4;
+  -fx-background-color: -color-chart-4;
+}
+.default-color4.chart-bar {
+  -fx-bar-fill: -color-chart-5;
+  -fx-background-color: -color-chart-5;
+}
+.default-color5.chart-bar {
+  -fx-bar-fill: -color-chart-6;
+  -fx-background-color: -color-chart-6;
+}
+.default-color6.chart-bar {
+  -fx-bar-fill: -color-chart-7;
+  -fx-background-color: -color-chart-7;
+}
+.default-color7.chart-bar {
+  -fx-bar-fill: -color-chart-8;
+  -fx-background-color: -color-chart-8;
+}
+.bar-legend-symbol {
+  -fx-padding: 8px;
+}
+/* ============================================
+   9. PieChart —— 饼图
+   ============================================
+   -fx-pie-color 同理为皮肤读取属性；额外给 background 兜底。
+   -fx-border-color 用作相邻饼片之间的分隔线（取画布底色）。
+   ============================================ */
+.chart-pie {
+  -fx-pie-color: -color-chart-1;
+  -fx-background-color: -color-chart-1;
+  -fx-background-insets: 1;
+  -fx-border-color: -color-bg-default;
+}
+.chart-pie-label {
+  -fx-padding: 4px;
+  -fx-fill: -color-fg-default;
+}
+.chart-pie-label-line {
+  -fx-stroke: -color-border-default;
+}
+.default-color0.chart-pie {
+  -fx-pie-color: -color-chart-1;
+  -fx-background-color: -color-chart-1;
+}
+.default-color1.chart-pie {
+  -fx-pie-color: -color-chart-2;
+  -fx-background-color: -color-chart-2;
+}
+.default-color2.chart-pie {
+  -fx-pie-color: -color-chart-3;
+  -fx-background-color: -color-chart-3;
+}
+.default-color3.chart-pie {
+  -fx-pie-color: -color-chart-4;
+  -fx-background-color: -color-chart-4;
+}
+.default-color4.chart-pie {
+  -fx-pie-color: -color-chart-5;
+  -fx-background-color: -color-chart-5;
+}
+.default-color5.chart-pie {
+  -fx-pie-color: -color-chart-6;
+  -fx-background-color: -color-chart-6;
+}
+.default-color6.chart-pie {
+  -fx-pie-color: -color-chart-7;
+  -fx-background-color: -color-chart-7;
+}
+.default-color7.chart-pie {
+  -fx-pie-color: -color-chart-8;
+  -fx-background-color: -color-chart-8;
+}
+.pie-legend-symbol.chart-pie {
+  -fx-background-radius: 8px;
+  -fx-padding: 8px;
+  -fx-border-color: none;
+}
+/* ============================================
+   10. 禁用态
+   ============================================
+   标签不叠两次透明度（modena 同款处理）。
+   ============================================ */
+.chart:disabled > .chart-content {
+  -fx-opacity: 0.6;
+}
+.chart:disabled > .chart-content .label {
+  -fx-opacity: 1;
 }
 /* ============================================
    Button Color Variants (Success/Danger/Warning)

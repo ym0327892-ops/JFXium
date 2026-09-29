@@ -58,6 +58,63 @@
 @color-code-dark-fg: #e1e4e8;
 @color-code-dark-fg-muted: #8b949e;
 
+// Chart Category Palette (Theme-agnostic)
+// --------------------------------------------
+// 原生图表 (javafx.scene.chart.*) 的分类色板 —— **跨主题固定，暗色主题不覆盖**。
+//
+// 为什么需要它？
+//   图表系列色是「定性色板 (qualitative palette)」：8 个色相必须彼此可区分，
+//   且化学上不能像语义色 (accent/success/...) 那样只有 4 个色相。
+//   JFXium 的语义令牌体系凑不出 8 个可区分色相，故独立定义一把固定色板。
+//   参照实现同此口径：modena 用 CHART_COLOR_1..8 (#f3622d ...)、
+//   AtlantaFX 用 $chart-1..8 (#f3622d ...)，两者都不随明暗切换换板。
+//
+// 为什么不做明暗两套？
+//   1. 图表画在 plot 背景 (白 / #0d1117) 上，两种背景对中高明度色都有足够对比；
+//   2. 明暗换板会让用户在切换主题时丢失「哪条线是哪条」的视觉记忆
+//      —— 数据可视化工具普遍不随主题换分类色；
+//   3. 单一色板 = 单一事实来源，避免 6 个主题入口文件各自漂移。
+//
+// 取值依据（Ant Design 血统）：
+//   JFXium 的基础色阶即 Ant Design 各色系的 6 级基色 ——
+//     成功 @color-success-5=#52c41a、警告 @color-warning-5=#faad14、
+//     危险 @color-danger-5=#f5222d、主色 @color-accent-5=#1677ff。
+//   故图表板同样取 **Ant Design 官方数据可视化分类色板 (AntV category10) 的前 8 色**，
+//   与 UI 主色系同源，天然契合整套 JFXium 观感。
+//   末位 8 号取中性灰，作为「第 8 条兜底系列」与彩色系列拉开区分度。
+//
+// 使用位置：components/_chart.less（经 _tokens.less 暴露为 -color-chart-N）
+// 变更成本：一旦发布，改动会让既有图表换色 —— 只在确有品牌需求时整体替换。
+@color-chart-1: #5b8ff9;  // 蓝
+@color-chart-2: #5ad8a6;  // 青绿
+@color-chart-3: #f6bd16;  // 金黄
+@color-chart-4: #e8684a;  // 砖红橙
+@color-chart-5: #6dc8ec;  // 浅蓝
+@color-chart-6: #9270ca;  // 紫
+@color-chart-7: #ff9d4d;  // 橙
+@color-chart-8: #5d7092;  // 蓝灰（兜底）
+
+// 图表半透明变体（面积图填充用）
+// 背景透明度在本色板上直接内联 rgba —— 不依赖 JavaFX 侧颜色函数，
+// 因为图表填充需要的是「同色相降透明度」，而 LESS 变量没有 alpha 通道运算能力。
+@color-chart-1-alpha20: rgba(91, 143, 249, 0.2);
+@color-chart-2-alpha20: rgba(90, 216, 166, 0.2);
+@color-chart-3-alpha20: rgba(246, 189, 22, 0.2);
+@color-chart-4-alpha20: rgba(232, 104, 74, 0.2);
+@color-chart-5-alpha20: rgba(109, 200, 236, 0.2);
+@color-chart-6-alpha20: rgba(146, 112, 202, 0.2);
+@color-chart-7-alpha20: rgba(255, 157, 77, 0.2);
+@color-chart-8-alpha20: rgba(93, 112, 146, 0.2);
+
+@color-chart-1-alpha70: rgba(91, 143, 249, 0.7);
+@color-chart-2-alpha70: rgba(90, 216, 166, 0.7);
+@color-chart-3-alpha70: rgba(246, 189, 22, 0.7);
+@color-chart-4-alpha70: rgba(232, 104, 74, 0.7);
+@color-chart-5-alpha70: rgba(109, 200, 236, 0.7);
+@color-chart-6-alpha70: rgba(146, 112, 202, 0.7);
+@color-chart-7-alpha70: rgba(255, 157, 77, 0.7);
+@color-chart-8-alpha70: rgba(93, 112, 146, 0.7);
+
 // Font Family
 // --------------------------------------------
 // 全局字体族
