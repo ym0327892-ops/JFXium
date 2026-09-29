@@ -1,53 +1,49 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.kotlin
-ant-design-ref/
-!**/ant-design/
 
+!**/ant-design/
+!**/src/main/**/build/
+!**/src/main/**/target/
+!**/src/test/**/build/
+!**/src/test/**/target/
+!.mvn/wrapper/maven-wrapper.jar
+# jpackage 打包产物（scripts/build-app.sh 输出）
 # 内部开发/AI 工具规范（不对外发布）
-/.qoder/
-/INTERNAL/
-/AGENTS.md
-/PROJECT_BUG.md
-/PROJECT_AUDIT_REPORT.md
-/PROJECT_ACCEPTANCE.md
+### Eclipse ###
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
+### Mac OS ###
+### NetBeans ###
+### VS Code ###
 *.iml
 *.ipr
-
-### Eclipse ###
+*.iws
+.DS_Store
 .apt_generated
 .classpath
 .factorypath
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/libraries/
+.idea/modules.xml
+.kotlin
 .project
 .settings
 .springBeans
 .sts4-cache
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-# jpackage 打包产物（scripts/build-app.sh 输出）
-/dist/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
 .vscode/
-
-### Mac OS ###
-.DS_Store
-/ant-design-ref/
-/.junie/
 /.idea/
+/.junie/
+/.nb-gradle/
+/.qoder/
+/AGENTS.md
+/INTERNAL/
+/PROJECT_ACCEPTANCE.md
+/PROJECT_AUDIT_REPORT.md
+/PROJECT_BUG.md
+/PROJECT_PLAN.md
+/ant-design-ref/
+/dist/
+/nbbuild/
+/nbdist/
+/nbproject/private/
+ant-design-ref/
+build/
+target/

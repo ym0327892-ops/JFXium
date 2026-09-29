@@ -24,9 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *   <li>1 套模板主题（custom）CSS 资源可加载（可手挂 Scene / 支持密度派生）</li>
  * </ol>
  *
- * <p>本测试不替代人工 UI 走查，但能给出"主题切换可用"的机器可验证结论。
- * 对应 {@code PROJECT_ACCEPTANCE.md} 第 1 节「全局主题切换」中"主题颜色整体跟随"、
- * "暗色系下对比度安全"、"紧凑模式控件高度收紧"的可机器验证子项。</p>
+ * <p>本测试不替代人工 UI 走查，但能给出"主题切换可用"的机器可验证结论：
+ * 主题颜色整体跟随、暗色系下对比度安全、紧凑模式控件高度收紧。</p>
  */
 @DisplayName("主题冒烟测试 (5 套 CSS 加载 + 状态机 4 组合)")
 class ThemeSmokeTest extends JfxTestBase {
