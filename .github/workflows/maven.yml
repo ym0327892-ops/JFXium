@@ -32,7 +32,7 @@ jobs:
           cache: maven
 
       - name: Build & Test (with virtual display)
-        run: xvfb-run --auto-servernum ./mvnw verify -pl jfxium -B -ntp
+        run: xvfb-run --auto-servernum ./mvnw install -pl jfxium -am -B -ntp
 
       - name: Build Demo (verify downstream)
         run: xvfb-run --auto-servernum ./mvnw verify -pl jfxium-demo -B -ntp -DskipTests
