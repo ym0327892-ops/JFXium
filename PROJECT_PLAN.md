@@ -2580,3 +2580,27 @@ JFXium/                                          # 多模块 Maven 项目（pare
 
 
 ---
+---
+
+### 🎯 M21.28 数据录入三缺口 + 死 token 清理 + SearchInputAnt 宽度抖动（2026-09-28~29，BUG #150~#152）
+
+**动机**：用户对 demo 做验收反馈，提出三条并列的「数据录入控件体验缺口」——输入框没有一键清空、表单内按 Enter 无反应、校验失败只有文字变红而控件本身毫无提示。修复过程中又暴露出「清除按钮参与父容器布局导致宽度抖动」的布局契约缺陷；另在做全仓 token 清理时确认 69 个 LESS token 为零引用。
+
+**产出**：
+- [x] **新增 SearchInputAnt**（`component/control`，继承式组合）：`InputAnt` + 清除按钮，`allowClear` 可控，仅有内容时可见。聚焦反馈用 JavaFX **原生伪类 `:focus-within`**（`Node.FocusWithinProperty`）——容器要响应「内部输入框聚焦」，`:focused` 只挂真正持焦节点，做不到。新 `_search-input.less` + `jfx-` styleClass——BUG #150
+- [x] **FormAnt 新增 Enter 提交**：`onSubmit(Runnable/Consumer<FormContext>)` + `Result.submit()`。走每个 `TextField` 自身的 `onAction`，而非表单根的 KeyEvent 过滤器：原生判定归属、无需反查焦点，`TextArea` 换行天然不会被误判；原 `onAction` 前置保留。语义对齐 Ant Design「先全量校验，不通过只展示错误、不回调」。刻意**不加** `defaultButton`——`ButtonSkin` 的默认按钮加速键在 macOS 不生效，跨平台行为不一致
+- [x] **校验状态落到控件本体**：新增 `InputAnt.status(ValidateStatus)`（幂等）+ `FormAnt.applyStatusToControl()`。此前 `validateStatus` 仅用于给 helpText 选色，控件本体无提示；而 LESS `.text-field.jfx-*` 要求状态类与控件**同节点**才匹配，挂在 wrapper 上无用。`_input.less` 补齐边框色并**显式重述 `:hover`/`:focused`**（否则基础态规则覆盖状态色）
+- [x] **SearchInputAnt 宽度抖动修复（BUG #152）**：清除按钮从 HBox 并排子节点改为 **StackPane 悬浮叠加层**，组件宽度不再随按钮显隐变化（实测 180→208→180 修至 193 恒定）。右内边距恒定预留 `@search-input-affix-width × 2`；叠加层用 `USE_PREF_SIZE` 钳尺寸
+- [x] **清理 69 个零引用 LESS token**：`variables.less` 57 个从 Ant Design **Web** 版搬运的颜色别名（只在 light 文件存在，换主题即失效）+ `variables-base.less` 9 个 + 主题文件里 7 处 `@motion-duration-*`——BUG #151
+- [x] 附带修复 `InputNumberAnt` 值载体改造误删的 `INPUT_NUMBER_DISABLED` styleClass（`InputNumberAntTest.disabled` 因此转红）
+- [x] 版本 1.32.1 → 1.33.1；全量 **1392/1392** 通过；demo 编译 + 页面渲染验证通过
+
+**沉淀**：
+- **叠加层（affix）绝不能用 `managed` 控制显隐**（应进红线）：`managed=false` 的语义是「退出布局」——对并排布局正是所需，对叠加层却会连 `StackPane` 的定位一起丢掉。叠加层应始终 `managed=true` + `setVisible()`，并用 `USE_PREF_SIZE` 钳尺寸防被父容器拉伸。判定信号：**该元素的出现不应改变容器尺寸**（清除按钮、下拉箭头、字数计数、单位后缀）
+- **恒定预留优于动态伸缩**：Ant Design 的 affix 方案是「输入框右内边距始终 = 按钮宽度 × 2」，文字提前让位，有无按钮视觉零偏移。只预留按钮宽度（不 ×2）会让按钮紧贴右边缘、文字贴到按钮上
+- **尺寸档位必须重述容器 padding**：`.text-field.small/.large` 会覆盖组合容器上的 padding，把预留一起抹掉（SMALL 下文字钻到按钮底下）。组合控件的 padding 类规则要按每个尺寸档位重述，且需核对编译产物验证源码顺序确实胜出
+- **死 token 判定三查**：LESS 引用 / CSS 变量空间（`-<token>:` 桥接）/ 文档。只查 LESS 会把「CSS 侧消费的桥接变量」误删。特征识别：命名来自另一套体系（Web camelCase）+ 只在单主题文件存在 + 无引用 = 典型的「搬运未收口」
+- **回归测试须验证「修复前转红」**：本次 `SearchInputAntTest` 的宽度断言在修复前报出的正是 `expected: <180.0> but was: <208.0>`，证明断言真的覆盖了该缺陷而非恒真
+- **headless 下 `Stage.isFocused()==false`**：会连带 `requestFocus()` 后 `Node.isFocused()` / `isFocusWithin()` 仍为 false（此时 `scene.getFocusOwner()` 已正确）。伪类生效性不能只看运行期取值，必要时用 `javap` 核对框架是否维护该属性+伪类字符串
+- **验证归档完整性用 worktree**：`git worktree add --detach <dir> HEAD` + 独立 `clean install` + 全量测试，证明提交自包含、可独立构建（不依赖工作区残留）
+
