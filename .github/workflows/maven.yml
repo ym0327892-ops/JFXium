@@ -54,18 +54,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Scan red line #1 — setStyle with color/px
+      - name: "Scan red line #1 — setStyle with color/px"
         run: |
-          violations=$(grep -rn 'setStyle.*#[0-9a-fA-F]\|setStyle.*[0-9]px' jfxium/src/main/java --include="*.java" | grep -v '//\|test' | wc -l)
+          # Strip comments first: javadoc prose such as "SKILL #1" would otherwise
+          # satisfy the hex pattern and fail the whole job on a docs-only change.
+          violations=$(find jfxium/src/main/java -name '*.java' -print0 \
+            | xargs -0 perl -0777 -pe 's{/\*.*?\*/}{}gs; s{//[^\n]*}{}g' \
+            | grep -cE 'setStyle[^;]*(#[0-9a-fA-F]{3,8}\b|[0-9]+(\.[0-9]+)?px)' || true)
           echo "Red Line #1 (setStyle magic values): $violations"
           [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
 
-      - name: Scan red line #11 — demo new native controls
+      - name: "Scan red line #11 — demo new native controls"
         run: |
-          violations=$(grep -rnE 'new (Label|Button|TextField|HBox|VBox|ComboBox|RadioButton|CheckBox|TextArea|Slider|ProgressBar|TableView|TreeView|StackPane)\b' jfxium-demo/src/main/java --include="*.java" | grep -v 'new Label\[\]\|new ButtonAnt\|new ButtonType\|new Stage' | wc -l)
+          # Require a constructor call `new Label(`: array creation `new Label[]{...}`
+          # is not a control instance, and the optional (Ant|Type) capture lets the
+          # inverse filter drop ButtonAnt / ButtonType wrappers.
+          pattern='new (Label|Button|TextField|HBox|VBox|ComboBox|RadioButton|CheckBox|TextArea|Slider|ProgressBar|TableView|TreeView|StackPane)(Ant|Type)?\('
+          inverse='new (Label|Button|TextField|HBox|VBox|ComboBox|RadioButton|CheckBox|TextArea|Slider|ProgressBar|TableView|TreeView|StackPane)(Ant|Type)\('
+          violations=$(grep -rnE "$pattern" jfxium-demo/src/main/java --include="*.java" \
+            | grep -vE "$inverse" | wc -l)
           echo "Red Line #11 (demo new native controls): $violations"
           echo "Open items:"
-          grep -rnE 'new (Label|Button|TextField|HBox|VBox|ComboBox|RadioButton|CheckBox|TextArea|Slider|ProgressBar|TableView|TreeView|StackPane)\b' jfxium-demo/src/main/java --include="*.java" | grep -v 'new Label\[\]\|new ButtonAnt\|new ButtonType\|new Stage' || true
+          grep -rnE "$pattern" jfxium-demo/src/main/java --include="*.java" \
+            | grep -vE "$inverse" || true
           [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
 
       - name: Scan red line #2 — CSS box-shadow
@@ -74,17 +85,28 @@ jobs:
           echo "Red Line #2 (CSS box-shadow): $violations"
           [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
 
-      - name: Scan red line #3 — CSS :active/:focus
+      - name: "Scan red line #3 — CSS :active/:focus"
         run: |
-          violations=$(grep -rn ':active\|:focus[^e]' jfxium/src/main/resources --include="*.less" | wc -l)
+          # Strip comments, then flag only bare :active / :focus.
+          # :focused / :focus-visible / :focus-within are JavaFX-native states and are
+          # the sanctioned replacements (see components/_focus.less); the dead-code trap
+          # is the custom `.focus-visible` class, which is checked explicitly.
+          violations=$(find jfxium/src/main/resources -name '*.less' -print0 \
+            | xargs -0 perl -0777 -pe 's{/\*.*?\*/}{}gs; s{//[^\n]*}{}g' \
+            | grep -cE ':active([^-a-zA-Z]|$)|:focus([^-a-zA-Z]|$)|\.focus-visible' || true)
           echo "Red Line #3 (CSS :active/:focus): $violations"
           [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
 
-      - name: Scan red line #8 — styleClass without jfx- prefix
+      - name: "Scan red line #8 — styleClass without jfx- prefix"
         run: |
-          violations=$(grep -rn 'getStyleClass().*add("' jfxium/src/main/java --include="*.java" | grep -v 'jfx-' | grep -v '".*"' | wc -l)
+          # Only literal additions; concatenated names ("a" + x) resolve at runtime.
+          line='getStyleClass\(\)\.add\("'
+          violations=$(grep -rnE "$line" jfxium/src/main/java --include="*.java" \
+            | grep -vE 'add\("jfx-' | wc -l)
           echo "Red Line #8 (no jfx- prefix): $violations"
-          echo "⚠️ Manual review recommended — check output above"
+          grep -rnE "$line" jfxium/src/main/java --include="*.java" \
+            | grep -vE 'add\("jfx-' || true
+          [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
 
       - name: Scan architecture — core→component reverse deps
         run: |
@@ -94,8 +116,9 @@ jobs:
 
       - name: Scan i18n — key count
         run: |
-          zh=$(grep -c '=' jfxium/src/main/resources/org/openkawu/jfxium/i18n/messages_zh_CN.properties)
-          en=$(grep -c '=' jfxium/src/main/resources/org/openkawu/jfxium/i18n/messages_en.properties)
+          count_keys() { grep -cE '^[[:space:]]*[^#![:space:]][^=]*=' "$1" || true; }
+          zh=$(count_keys jfxium/src/main/resources/org/openkawu/jfxium/i18n/messages_zh_CN.properties)
+          en=$(count_keys jfxium/src/main/resources/org/openkawu/jfxium/i18n/messages_en.properties)
           echo "i18n keys: zh_CN=$zh, en=$en"
           [ "$zh" -eq "$en" ] || { echo "❌ FAILED: key count mismatch"; exit 1; }
 

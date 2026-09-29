@@ -48,3 +48,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/ant-design-ref/
+/.junie/
+/.idea/
