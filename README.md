@@ -26,6 +26,16 @@
 
 ### 1. Add Dependency
 
+> ⚠️ 该库**未发布到 Maven Central / 任何远程仓库**，`pom.xml` 里直接写坐标无法下载。必须先本地构建：
+
+```bash
+git clone https://github.com/ym0327892-ops/JFXium.git
+cd JFXium
+./mvnw install -pl jfxium -DskipTests -q     # 安装到本地 ~/.m2/repository
+```
+
+之后才能引用：
+
 ```xml
 <dependency>
     <groupId>org.openkawu</groupId>
@@ -67,6 +77,7 @@ public void start(Stage stage) {
 ### 3. Run Demo
 
 ```bash
+# 在仓库根目录执行
 ./mvnw javafx:run -pl jfxium-demo
 ```
 

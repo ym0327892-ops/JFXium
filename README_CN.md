@@ -30,6 +30,16 @@
 
 ### 1. 添加依赖
 
+> ⚠️ 该库**未发布到 Maven Central / 任何远程仓库**，直接写坐标无法解析依赖。先本地构建安装：
+
+```bash
+git clone https://github.com/ym0327892-ops/JFXium.git
+cd JFXium
+./mvnw install -pl jfxium -DskipTests -q     # 安装到本地 ~/.m2/repository
+```
+
+然后才能引用：
+
 ```xml
 <dependency>
     <groupId>org.openkawu</groupId>
@@ -161,7 +171,7 @@ ThemeManager.getInstance().setPrimaryColor("#ff6b6b");
 ThemeManager.getInstance().setPrimaryColor(ThemeColor.Preset.PURPLE);
 ```
 
-**编译时修改**：编辑 `src/main/resources/org/openkawu/jfxium/css/less/variables.less` 中的 `@color-accent-5` 变量，然后 `mvn -pl jfxium compile`。
+**编译时修改**：编辑 `src/main/resources/org/openkawu/jfxium/css/less/variables.less` 中的 `@color-accent-5` 变量，然后 `./mvnw compile -pl jfxium`。
 
 详见 **[主题系统](docs/cn/主题系统.md)**。
 
@@ -189,7 +199,7 @@ A: 所有组件都基于 JavaFX 布局系统。GridAnt 24 栅格已支持响应�
 
 ### Q: 构建报错找不到 LESS 编译产物怎么办？
 
-A: LESS 编译使用 jlessc（纯 Java），通过 Maven 插件自动执行，无需 Node.js。如遇构建问题请运行 `mvn clean install -pl jfxium -DskipTests`。
+A: LESS 编译使用 jlessc（纯 Java），通过 Maven 插件自动执行，无需 Node.js。如遇构建问题请运行 `./mvnw clean install -pl jfxium -DskipTests`。
 
 ---
 
