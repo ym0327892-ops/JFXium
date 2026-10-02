@@ -28,17 +28,22 @@
 
 ## 快速开始
 
-### 1. 添加依赖
+### 1. 引入依赖
 
-> ⚠️ 该库**未发布到 Maven Central / 任何远程仓库**，直接写坐标无法解析依赖。先本地构建安装：
+> ⚠️ **JFXium 未发布到 Maven Central，也没有任何远程仓库。**
+> 直接写 `org.openkawu:jfxium` 坐标必然失败：
+> `Could not find artifact org.openkawu:jfxium:jar:1.33.1 in central`。
+> **必须自己把 jar 提供给项目**，不能指望 Maven 远程下载。
+
+**方式 A：本地构建安装（推荐）**
 
 ```bash
 git clone https://github.com/ym0327892-ops/JFXium.git
 cd JFXium
-./mvnw install -pl jfxium -DskipTests -q     # 安装到本地 ~/.m2/repository
+./mvnw install -pl jfxium -DskipTests -q     # 装进本地 ~/.m2/repository
 ```
 
-然后才能引用：
+装完本机才能引用（**换台机器要重新装**，远程仓库里没有）：
 
 ```xml
 <dependency>
@@ -47,6 +52,38 @@ cd JFXium
     <version>1.33.1</version>
 </dependency>
 ```
+
+**方式 B：直接把 jar 放进项目（完全不依赖仓库）**
+
+产物在 `jfxium/target/jfxium-1.33.1.jar`，拷进项目 `libs/`：
+
+```xml
+<dependency>
+    <groupId>org.openkawu</groupId>
+    <artifactId>jfxium</artifactId>
+    <version>1.33.1</version>
+    <scope>system</scope>
+    <systemPath>${project.basedir}/libs/jfxium-1.33.1.jar</systemPath>
+</dependency>
+```
+
+不写 `pom.xml` 也行——IDE 里把它挂到模块的 Libraries / classpath 即可。
+（`system` scope 在 Maven 3.9+ 会告警且不参与依赖传递；要分发给别人请用方式 A 或 `mvn install:install-file`。）
+
+**还需要哪些 jar**
+
+用方式 A 时，下面这些由 Maven 从 Central 自动解析；用方式 B 要自己备齐。
+**版本由你自己的项目决定**——本框架只依赖 `javafx-controls` 这一个 JavaFX 模块，
+你用什么版本、要不要额外加 `javafx-fxml` / `javafx-media` / `javafx-web`，都按你项目的需要来。
+你自己 pom 里声明的 JavaFX 版本优先（Maven 就近原则）；没声明时才会用到本框架验证过的 21.0.6。
+
+| jar | 必需 | 说明 |
+|---|---|---|
+| `jfxium-1.33.1.jar` | ✅ | 主库；CSS 主题与 i18n 资源都已打进包内 |
+| JavaFX `base` / `graphics` / `controls` | ✅ | 版本自选（本框架验证过 21.0.6）；需带平台分类器，如 `javafx-controls-<版本>-mac-aarch64.jar` |
+| JavaFX `fxml` / `media` / `web` / `swing` | ❌ 本框架不涉及 | 按你自己的项目按需添加 |
+
+若 JDK 自带 JavaFX（如 Liberica Full JDK），上表 JavaFX 各项可省。
 
 ### 2. 引入主题
 

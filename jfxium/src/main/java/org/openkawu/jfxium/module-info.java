@@ -1,6 +1,5 @@
 module org.openkawu.jfxium {
     requires javafx.controls;
-    requires javafx.fxml;
     // M19.18 i18n 入口 Messages.java 使用 java.util.logging 打缺失 key 的 WARNING
     requires java.logging;
 
