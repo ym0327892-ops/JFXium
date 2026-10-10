@@ -28,7 +28,7 @@
 
 > ⚠️ **JFXium 未发布到 Maven Central，也没有任何远程仓库。**
 > 直接写 `org.openkawu:jfxium` 坐标必然失败：
-> `Could not find artifact org.openkawu:jfxium:jar:1.33.1 in central`。
+> `Could not find artifact org.openkawu:jfxium:jar:1.34.0 in central`。
 > **必须自己把 jar 提供给项目**，不能指望 Maven 远程下载。
 
 **方式 A：本地构建安装（推荐）**
@@ -36,8 +36,13 @@
 ```bash
 git clone https://github.com/ym0327892-ops/JFXium.git
 cd JFXium
-./mvnw install -pl jfxium -DskipTests -q     # 装进本地 ~/.m2/repository
+./mvnw install -pl jfxium -am -DskipTests -q   # -am 必须带：parent POM 也要装进本地仓库
 ```
+
+> **为什么必须 `-am`**：`jfxium` 的 pom 里 `<parent>` 指向 `org.openkawu:jfxium-parent`。
+> 只装 `-pl jfxium` 会让 **依赖它的项目解析失败**（报
+> `Could not find artifact org.openkawu:jfxium-parent:pom:1.34.0`）——
+> 因为本机仓库里没有 parent，远程仓库更没有。`-am`（also make）会一并安装 parent。
 
 装完本机才能引用（**换台机器要重新装**，远程仓库里没有）：
 
@@ -45,21 +50,21 @@ cd JFXium
 <dependency>
     <groupId>org.openkawu</groupId>
     <artifactId>jfxium</artifactId>
-    <version>1.33.1</version>
+    <version>1.34.0</version>
 </dependency>
 ```
 
 **方式 B：直接把 jar 放进项目（完全不依赖仓库）**
 
-产物在 `jfxium/target/jfxium-1.33.1.jar`，拷进项目 `libs/`：
+产物在 `jfxium/target/jfxium-1.34.0.jar`，拷进项目 `libs/`：
 
 ```xml
 <dependency>
     <groupId>org.openkawu</groupId>
     <artifactId>jfxium</artifactId>
-    <version>1.33.1</version>
+    <version>1.34.0</version>
     <scope>system</scope>
-    <systemPath>${project.basedir}/libs/jfxium-1.33.1.jar</systemPath>
+    <systemPath>${project.basedir}/libs/jfxium-1.34.0.jar</systemPath>
 </dependency>
 ```
 
@@ -69,17 +74,24 @@ cd JFXium
 **还需要哪些 jar**
 
 用方式 A 时，下面这些由 Maven 从 Central 自动解析；用方式 B 要自己备齐。
-**版本由你自己的项目决定**——本框架只依赖 `javafx-controls` 这一个 JavaFX 模块，
+**版本由你自己的项目决定**——本框架只依赖 `javafx-controls` 一个 JavaFX 模块
+（**除 JavaFX 外零第三方运行时依赖**），
 你用什么版本、要不要额外加 `javafx-fxml` / `javafx-media` / `javafx-web`，都按你项目的需要来。
-你自己 pom 里声明的 JavaFX 版本优先（Maven 就近原则）；没声明时才会用到本框架验证过的 21.0.6。
+你用什么版本的 JavaFX 都可以，想升级就升级，本框架不做版本锁死。
+你自己 pom 里声明的 JavaFX 版本优先（Maven 就近原则）；没声明时才会用到本框架默认的 21.0.6。
 
 | jar | 必需 | 说明 |
 |---|---|---|
-| `jfxium-1.33.1.jar` | ✅ | 主库；CSS 主题与 i18n 资源都已打进包内 |
-| JavaFX `base` / `graphics` / `controls` | ✅ | 版本自选（本框架验证过 21.0.6）；需带平台分类器，如 `javafx-controls-<版本>-mac-aarch64.jar` |
+| `jfxium-1.34.0.jar` | ✅ | 主库；CSS 主题与 i18n 资源都已打进包内 |
+| JavaFX `base` / `graphics` / `controls` | ✅ | 版本自选；需带平台分类器，如 `javafx-controls-<版本>-mac-aarch64.jar` |
 | JavaFX `fxml` / `media` / `web` / `swing` | ❌ 本框架不涉及 | 按你自己的项目按需添加 |
 
 若 JDK 自带 JavaFX（如 Liberica Full JDK），上表 JavaFX 各项可省。
+
+> **升级 JavaFX 时别忘了平台分类器**：`javafx-controls` 主 jar **不含原生库**，
+> 运行期必须带 `<classifier>`（`mac-aarch64` / `win` / `linux` 等）。
+> 你若在自己 pom 里覆盖框架默认的 JavaFX 版本，请保持分类器不丢 ——
+> 推荐用 `javafx-maven-plugin` 或 `os-maven-plugin` 自动注入，否则运行期才报原生库加载失败。
 
 ### 2. 引入主题并使用组件
 
@@ -135,7 +147,7 @@ public void start(Stage stage) {
 ## 环境要求
 
 - Java 21
-- JavaFX 21.0.6
+- JavaFX 21+（本仓库构建用 21.0.6 验证；你项目声明的版本优先，不做版本锁死）
 - Maven 3.8+（或直接用仓库自带的 `./mvnw`，无需预装 Maven）
 
 ---

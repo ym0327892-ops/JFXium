@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.openkawu</groupId>
         <artifactId>jfxium-parent</artifactId>
-        <version>1.33.1</version>
+        <version>1.34.0</version>
 
     </parent>
 
@@ -17,19 +17,12 @@
     <description>Core UI components for JFXium</description>
 
     <dependencies>
+        <!-- JavaFX 版本显式钉死（不依赖 parent 的 dependencyManagement）。
+             下游项目的 dependencyManagement 仍可覆盖（就近优先）。 -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-javafx</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-antdesignicons-pack</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -41,8 +34,6 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 
     <build>

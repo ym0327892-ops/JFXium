@@ -122,6 +122,61 @@ jobs:
           echo "i18n keys: zh_CN=$zh, en=$en"
           [ "$zh" -eq "$en" ] || { echo "❌ FAILED: key count mismatch"; exit 1; }
 
+      - name: "Scan deps — phantom module requirements (BUG #154)"
+        run: |
+          # Every `requires X;` in module-info must be backed by real source usage.
+          # javafx.fxml was once declared with zero imports, breaking module-path consumers.
+          fail=0
+          for m in javafx.controls java.logging; do
+            grep -q "requires $m;" jfxium/src/main/java/org/openkawu/jfxium/module-info.java || continue
+            case "$m" in
+              javafx.controls) pat='javafx\.scene\.control' ;;
+              java.logging)    pat='java\.util\.logging' ;;
+            esac
+            if ! grep -rqE "$pat" jfxium/src/main/java --include='*.java' --exclude=module-info.java; then
+              echo "❌ FAILED: requires $m but no source usage"; fail=1
+            fi
+          done
+          [ "$fail" -eq 0 ] || exit 1
+
+      - name: "Scan deps — phantom third-party compile deps (BUG #155)"
+        run: |
+          # Every non-test dependency in jfxium/pom.xml must be backed by an import in main
+          # sources. ikonli was declared compile-scope with zero imports (2 jars forced on
+          # consumers). NOTE: artifact groupId != java package, so the map is explicit;
+          # extend it when adding a dependency — that forces a real usage check.
+          deps=$(awk '/<build>/{exit} 1' jfxium/pom.xml | perl -0777 -ne '
+            while (/<dependency>(.*?)<\/dependency>/gs) {
+              my $b = $1;
+              next if $b =~ /<scope>test<\/scope>/;
+              print "$1\n" if $b =~ /<groupId>\s*([^<\s]+)\s*<\/groupId>/;
+            }' | sort -u)
+          fail=0
+          for g in $deps; do
+            case "$g" in
+              org.openjfx)        pat='javafx\.' ;;
+              org.kordamp.ikonli) pat='org\.kordamp' ;;
+              *)                  pat=$(echo "$g" | sed 's|\.|\\.|g') ;;
+            esac
+            if ! grep -rqE "import $pat" jfxium/src/main/java --include='*.java'; then
+              echo "❌ FAILED: compile dep '$g' has no matching import in main sources"; fail=1
+            fi
+          done
+          echo "compile deps checked: $(echo $deps | tr '\n' ' ')"
+          [ "$fail" -eq 0 ] || exit 1
+
+      - name: "Scan deps — consumer-install command must include -am (BUG #156)"
+        run: |
+          # The jfxium module's <parent> is jfxium-parent. Installing with `-pl jfxium`
+          # alone leaves the parent uninstalled, so downstream resolution of
+          # org.openkawu:jfxium fails with "Could not find artifact ...jfxium-parent:pom".
+          # Every documented one-shot install command must therefore carry -am.
+          hits=$(grep -rnE 'install -pl jfxium' README.md README_CN.md INTERNAL/QUICKSTART.md \
+            docs/cn/快速上手.md AGENTS.md .qoder/skills/workflow.md 2>/dev/null \
+            | grep -v -- '-am' || true)
+          echo "$hits"
+          [ -z "$hits" ] || { echo "❌ FAILED: 'install -pl jfxium' without -am"; exit 1; }
+
   summary:
     name: CI Summary
     if: always()
