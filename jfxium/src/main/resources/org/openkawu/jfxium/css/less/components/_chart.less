@@ -562,3 +562,18 @@
 .chart:disabled > .chart-content .label {
   -fx-opacity: 1;
 }
+
+/* ============================================
+   11. ChartAnt 标记类
+   ============================================
+   ChartAnt（Java Builder）给根节点挂的 jfx- 前缀标记，便于业务侧
+   只对「框架构建的图表」做统一微调，而不影响裸 new 出来的原生图表。
+   样式主体仍是上方 .chart / .axis / .default-colorN 系列。
+   ============================================ */
+
+.jfx-chart {
+  /* 图表在业务布局里常需要撑满容器，这里给出默认的最小可视尺寸，
+     避免放进 HBox/VBox 后被压缩成一条线；业务侧可用 minSize/prefSize 覆盖。 */
+  -fx-min-width: 320px;
+  -fx-min-height: 200px;
+}

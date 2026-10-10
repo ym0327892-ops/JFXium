@@ -1177,4 +1177,10 @@ public final class JfxStyles {
     /** MenuButton/SplitMenuButton arrow style 修饰类（M19.6.1） */
     public static final String JFX_ARROW_TRIANGLE = "jfx-arrow-triangle";
     public static final String JFX_NO_ARROW = "jfx-no-arrow";
+
+    /* ============================================
+       ChartAnt —— javafx.scene.chart.* 包装
+       ============================================ */
+    /** 图表根节点标记类（样式主体仍是原生 {@code .chart} 系列选择器）。 */
+    public static final String JFX_CHART = "jfx-chart";
 }

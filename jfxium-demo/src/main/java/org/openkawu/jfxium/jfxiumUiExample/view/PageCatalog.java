@@ -28,6 +28,7 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.AvatarBadgeExampleP
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CalendarExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CanvasExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CarouselExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.ChartExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CollapseExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.DescriptionsExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.DividerExamplePage;
@@ -233,6 +234,7 @@ final class PageCatalog {
         register(registry, "datadisplay.treetable", "TreeTable 树表格", PageRegistry.Category.DATA_DISPLAY, TreeTableExamplePage::new);
         register(registry, "datadisplay.listview", "ListView 列表视图", PageRegistry.Category.DATA_DISPLAY, ListViewExamplePage::new);
         register(registry, "datadisplay.canvas", "Canvas 画布", PageRegistry.Category.DATA_DISPLAY, CanvasExamplePage::new);
+        register(registry, "datadisplay.chart", "Chart 图表", PageRegistry.Category.DATA_DISPLAY, ChartExamplePage::new);
     }
 
     private static void registerFeedback(PageRegistry registry) {
