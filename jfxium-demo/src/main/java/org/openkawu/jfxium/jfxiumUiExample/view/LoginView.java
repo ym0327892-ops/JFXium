@@ -51,14 +51,14 @@ public class LoginView {
 
     /** 演示用的登录处理：非空校验通过即视为成功。 */
     private void handleLogin(String username, String password) {
-        if (username == null || username.isBlank()) {
-            MessageAnt.error("请输入用户名");
-            return;
-        }
-        if (password == null || password.isBlank()) {
-            MessageAnt.error("请输入密码");
-            return;
-        }
+//        if (username == null || username.isBlank()) {
+//            MessageAnt.error("请输入用户名");
+//            return;
+//        }
+//        if (password == null || password.isBlank()) {
+//            MessageAnt.error("请输入密码");
+//            return;
+//        }
 
         MessageAnt.success("欢迎，" + username);
         if (onLoginSuccess != null) {
