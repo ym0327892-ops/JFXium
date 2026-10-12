@@ -44,6 +44,11 @@ public abstract class JfxTestBase {
             try {
                 Platform.startup(latch::countDown);
                 latch.await();
+                // 关掉隐式退出：测试里 `stage.hide()` 关掉最后一个窗口时，JavaFX 会顺手
+                // 关掉整个 Toolkit（控制台出现 `QuantumRenderer: shutdown`），此后任何
+                // `Platform.runLater` 都不再执行 —— 同一 fork 里后续所有测试集体卡死。
+                // 本类是全项目唯一的 JavaFX 测试启动点，故在此统一兜住。
+                Platform.setImplicitExit(false);
                 FX_AVAILABLE.set(true);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

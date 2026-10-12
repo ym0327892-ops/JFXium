@@ -18,6 +18,7 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.SelectExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.SliderExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.SwitchExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.TextAreaExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.DateTimePickerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.TimePickerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.ToggleButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.TransferExamplePage;
@@ -203,6 +204,7 @@ final class PageCatalog {
         register(registry, "dataentry.treeselect", "TreeSelect 树选择", PageRegistry.Category.DATA_ENTRY, TreeSelectExamplePage::new);
         register(registry, "dataentry.colorpicker", "ColorPicker 颜色选择", PageRegistry.Category.DATA_ENTRY, ColorPickerExamplePage::new);
         register(registry, "dataentry.timepicker", "TimePicker 时间选择", PageRegistry.Category.DATA_ENTRY, TimePickerExamplePage::new);
+        register(registry, "dataentry.datetimepicker", "DateTimePicker 日期时间", PageRegistry.Category.DATA_ENTRY, DateTimePickerExamplePage::new);
         register(registry, "dataentry.rate", "Rate 评分", PageRegistry.Category.DATA_ENTRY, RateExamplePage::new);
         register(registry, "dataentry.textarea", "TextArea 多行输入", PageRegistry.Category.DATA_ENTRY, TextAreaExamplePage::new);
         register(registry, "dataentry.togglebutton", "ToggleButton 切换按钮", PageRegistry.Category.DATA_ENTRY, ToggleButtonExamplePage::new);

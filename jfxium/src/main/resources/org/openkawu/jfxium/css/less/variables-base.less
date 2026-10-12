@@ -192,6 +192,65 @@
 //           在此取 24px 与之对齐；紧凑模式由 compact 主题覆盖同值即可，无需派生。
 @search-input-affix-width: 24px;
 
+// 时间面板尺寸。全部由基础 token **推导**而非写死 px：紧凑主题（compact / tool）会把
+// @spacing-* / @font-size-md / @control-height 压小，派生值随之自动收紧。
+// 面板是「时 / 分 / 秒 三条取值列」（00-23 / 00-59 / 00-59，对照 Ant Design）：
+// 每列可滚动、列高恒等于日期网格高，当前值由 Java 侧 scrollTo 滚进视野。
+// 依据 @font-size-md = 14px 时两位数字约 16px，加上左右各 4px 内边距与 4px 滚动条预留，
+// 取 2 倍字号（28px）—— 数字居中后与滚动条各得其所。
+@time-panel-value-width: ceil(@font-size-md * 2);
+// 滚动条预留宽：列右内边距取此值，滑块压在其中，不挤占数字宽度（Ant 同款「轨道隐形」处理）
+@time-panel-scrollbar-width: 4px;
+// AM/PM 是文字列（上午/下午），比两位数字列宽
+@time-panel-meridiem-width: ceil(@font-size-md * 3);
+// —— 日历几何:全部**镜像原生 DatePicker 面板**(modena 实测值,与 density 无关) ——
+// CalendarAnt 月视图直接内嵌原生面板,故整块日历的几何由 modena 写死:
+//   .date-picker-popup .calendar-grid { -fx-padding: 8px; -fx-hgap: 4px; -fx-vgap: 2px }
+//   .date-picker-popup .day-cell      { -fx-cell-size: 32px }
+//   .date-picker-popup .day-name-cell { -fx-pref-height: 24px }
+// 因此 7 列内容宽 = 7×32 + 6×4 = 248,加左右 padding 8 → 面板内容区 264;
+// 面板总宽 264 + 2×1px 边框 = 266(实测)。这些值**故意不走 @control-height**:
+// 原生面板不随 density 变(紧凑主题下实测仍是 264×246),年视图必须跟它走,
+// 否则月↔年切换时整块日历横向伸缩(实测 266 → 286)。
+// 正向对齐(?):要改日历密度需同步改 _datepicker.less 的原生面板硬编码值,
+// 二者是一处契约(CalendarAntTest.ViewProportionContract 把它钉死)。
+@calendar-cell-size: 32px;
+@calendar-cell-hgap: 4px;
+@calendar-cell-vgap: 2px;
+@calendar-day-header-height: 24px;
+// 统一内边距:原生面板 8px。月视图与年视图共用,切换时不跳。
+@calendar-panel-padding: 8px;
+// 面板内容区宽(含 padding):原生 7 列网格实测值
+@calendar-grid-width: (@calendar-cell-size * 7) + (@calendar-cell-hgap * 6) + (@calendar-panel-padding * 2);
+// 年视图月按钮宽:3 列 + 2 条 hgap + 2×padding 必须正好等于 @calendar-grid-width
+@calendar-month-btn-width: ceil((@calendar-grid-width - (@calendar-cell-hgap * 2) - (@calendar-panel-padding * 2)) / 3);
+// 月视图面板高:8/8 行(表头 24 + 6 数据行 32) + 7×vgap + 2×padding;
+// 年视图 4 行必须补到同一高度(CalendarAnt.java 给月份按钮 vgrow,行内 centering),
+// 否则月↔年切换时高度从 290 掉到 ~130。
+@calendar-month-btn-height: 32px;
+// 顶部导航条(年视图的「< 2026 >」)高度:镜像原生 .month-year-pane 实测 43px
+// (8px 上下内边距 + 27px 内容)。月视图的导航条由原生面板自带,年视图必须补到同高,
+// 否则月↔年切换时整块日历高度从 291 掉到 ~276。
+@calendar-nav-height: 43px;
+@calendar-grid-height: @calendar-day-header-height + (@calendar-cell-size * 6) + (@calendar-cell-vgap * 7) + (@calendar-panel-padding * 2);
+// —— 时间列:与日历行同源,日期区/时间区节奏一致 ——
+// 段标题带与日期网格行高同源
+@calendar-row-height: @calendar-day-header-height;
+// 必须与 @calendar-row-height 同源，否则日期区第一条行线对不上时间区标题带。
+@time-panel-header-height: @calendar-row-height;
+// 取值清单的单元格行高（数字行）：与日历行同源，两侧节奏一致
+@time-panel-cell-height: @control-height-sm;
+// 取值列高：对齐 Ant Design 的 `timeColumnHeight: 28 * 8` —— **恒为 8 行**，
+// 列表自身滚动、选中项由 Java 侧 scrollTo 滚进视野。8 行是「能看出上下还有内容」
+// 与「不把弹层撑成一根高柱」的折中；取 10 行会把弹层撑到 400px 上下，视觉上过高。
+@time-panel-list-height: @time-panel-cell-height * 8;
+
+// TimePickerAnt / DateTimePickerAnt 右侧悬浮区（清除按钮 + 下拉箭头）恒定预留宽度
+// 语义与 SearchInputAnt 的 @search-input-affix-width 一致：右内边距 = 该宽度 × 2。
+// 箭头常驻 + 清除按钮悬停时替换，两者都不参与父布局 —— 组件宽度恒不抖动（BUG #152 同源结论）。
+// 取值依据：箭头 10px + 清除图标 12px，取 26px 容纳两者且与 32px 控件高协调。
+@time-picker-affix-width: 26px;
+
 // Card Padding
 // 使用位置：.card
 // 影响组件：GroupBoxAnt

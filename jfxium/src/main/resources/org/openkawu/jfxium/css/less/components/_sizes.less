@@ -93,3 +93,21 @@
   -fx-font-size: @font-size-sm;
 }
 
+/* ============================================
+   TimePicker / DateTimePicker 触发器右侧预留
+   ============================================
+   本文件在 _index.less 中后于 _tier1.less 导入。若把右侧预留写在 _tier1.less 里，
+   会被上面的 `.text-field.small/.large`（同为类选择器计数，后者按源码顺序胜出）
+   整体覆盖掉 padding，导致文字钻到清除按钮 / 箭头底下。故在此重述完整 padding。 */
+.text-field.jfx-time-picker-field {
+  -fx-padding: @input-padding-y (@time-picker-affix-width * 2) @input-padding-y @input-padding-x;
+}
+
+.text-field.jfx-time-picker-field.small {
+  -fx-padding: @input-padding-y-sm (@time-picker-affix-width * 2) @input-padding-y-sm @input-padding-x-sm;
+}
+
+.text-field.jfx-time-picker-field.large {
+  -fx-padding: @input-padding-y-lg (@time-picker-affix-width * 2) @input-padding-y-lg @input-padding-x-lg;
+}
+

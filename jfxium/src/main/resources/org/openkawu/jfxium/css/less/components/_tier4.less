@@ -54,7 +54,11 @@
   -fx-border-width: @border-width-default;
 }
 
-/* CalendarAnt */
+/* CalendarAnt
+   月视图 = 内嵌原生 date-picker-popup 面板（见 CalendarAnt 类注释），因此这里只负责：
+   ① 外壳 .jfx-calendar 的圆角/边框；② 把内嵌面板自带的外框压平（避免与外壳叠成双框）；
+   ③ 年视图（自绘，原生无月/年选择面板）的样式。
+   原生面板内部的排版（周一起始、本地化星期、格子尺寸）走 _datepicker.less 的 .date-picker-popup 规则。 */
 .jfx-calendar {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
@@ -63,8 +67,24 @@
   -fx-background-radius: @border-radius-md;
 }
 
+/* 内嵌的原生面板：底色/边框/圆角/阴影全部交给外层 .jfx-calendar，
+   否则会出现「双重边框 + 双重圆角」——正是当年 ModalAnt 内嵌 CalendarAnt 时踩过的坑。
+   内边距也由外层控制（弹层宿主 DateTimePickerAnt 只需外壳留一次 padding）。 */
+.jfx-calendar .date-picker-popup.jfx-calendar-embedded {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+  -fx-effect: null;
+  -fx-padding: 0;
+}
+
+/* 年视图导航条：高度对齐原生面板的 .month-year-pane（43px），切视图时不跳动 */
 .jfx-calendar-header {
-  -fx-padding: 12 16 12 16;
+  -fx-min-height: @calendar-nav-height;
+  -fx-pref-height: @calendar-nav-height;
+  -fx-padding: 8 12 8 12;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
@@ -75,86 +95,53 @@
   -fx-text-fill: -color-fg-default;
 }
 
-/* 导航按钮（上一月/下一月），hover 浅色背景 */
+/* 年视图导航按钮（上一/下一年）：镜像原生 .date-picker-popup .spinner .button ——
+   无边框、无圆角、透明底，只有箭头/文字在 hover 时变色。若不显式清掉边框，
+   会继承全局 .button 的 1px 灰边，年视图顶部就出现「方框按钮」，与原生不一致。 */
 .jfx-calendar-nav-btn {
   -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
   -fx-text-fill: -color-fg-default;
   -fx-font-size: @font-size-md;
-  -fx-padding: 4 12 4 12;
+  -fx-padding: 4 6 4 6;
   -fx-cursor: hand;
-  -fx-background-radius: @border-radius-sm;
 }
 
 .jfx-calendar-nav-btn:hover {
   -fx-background-color: -color-accent-subtle;
 }
 
-.jfx-calendar-grid {
-  -fx-padding: 8;
-}
-
-.jfx-calendar-day-header {
-  -fx-text-fill: -color-fg-muted;
-  -fx-font-size: @font-size-sm;
-  -fx-font-weight: 500;
-  -fx-padding: 8 4 8 4;
+/* 年视图栅格：内边距取 @calendar-panel-padding（与原生月网格同为 8），
+   高度钉到 @calendar-grid-height（246，已含该内边距）；配合 4 行 vgrow →
+   月份按钮等分该高度，整块日历因此与月视图同高（291）。VBox 自身不留内边距，
+   导航条才能像原生 .month-year-pane 一样横向通铺、分隔线通长。 */
+.jfx-calendar-year-view .jfx-calendar-grid {
+  -fx-min-height: @calendar-grid-height;
+  -fx-pref-height: @calendar-grid-height;
+  -fx-padding: @calendar-panel-padding;
+  -fx-hgap: @calendar-cell-hgap;
+  -fx-vgap: @calendar-cell-vgap;
   -fx-alignment: center;
 }
 
-/* 日期单元格：默认透明，hover 浅色，selected 主题色，today 主题色 subtle */
-.jfx-calendar-cell {
-  -fx-background-color: transparent;
-  -fx-background-radius: @border-radius-sm;
-  -fx-cursor: hand;
-}
-
-.jfx-calendar-cell:hover {
-  -fx-background-color: -color-accent-subtle;
-}
-
-.jfx-calendar-cell.jfx-calendar-cell-today {
-  -fx-background-color: -color-accent-subtle;
-}
-
-.jfx-calendar-cell.jfx-calendar-cell-today:hover {
-  -fx-background-color: -color-accent-subtle;
-}
-
-.jfx-calendar-cell.jfx-calendar-cell-selected,
-.jfx-calendar-cell.jfx-calendar-cell-selected:hover {
-  -fx-background-color: -color-accent-emphasis;
-}
-
-/* 日期文本颜色：默认前景色，selected 反白，today 主题色，other-month 模糊色 */
-.jfx-calendar-day-label {
-  -fx-font-size: @font-size-md;
-  -fx-padding: 4;
-  -fx-text-fill: -color-fg-default;
-}
-
-.jfx-calendar-cell.jfx-calendar-cell-other-month .jfx-calendar-day-label {
-  -fx-text-fill: -color-fg-subtle;
-}
-
-.jfx-calendar-cell.jfx-calendar-cell-today .jfx-calendar-day-label {
-  -fx-text-fill: -color-accent-emphasis;
-}
-
-.jfx-calendar-cell.jfx-calendar-cell-selected .jfx-calendar-day-label {
-  -fx-text-fill: -color-fg-on-emphasis;
-}
-
-/* Year View */
-.jfx-calendar-year-view {
-  -fx-padding: 16;
-}
-
+/* 月份按钮：底色/圆角对齐原生日格子（透明底 + @border-radius-sm + accent 选中），
+   但必须显式去掉全局 .button 的 1px 灰边，否则 12 个按钮呈方框状、与原生格子不一致。 */
 .jfx-calendar-month-btn {
   -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
   -fx-text-fill: -color-fg-default;
   -fx-background-radius: @border-radius-sm;
   -fx-font-size: @font-size-md;
   -fx-cursor: hand;
+  -fx-min-width: @calendar-month-btn-width;
+  -fx-pref-width: @calendar-month-btn-width;
+  -fx-min-height: @calendar-month-btn-height;
+  -fx-pref-height: @calendar-month-btn-height;
 }
 
 .jfx-calendar-month-btn:hover {

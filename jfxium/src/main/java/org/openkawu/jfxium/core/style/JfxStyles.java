@@ -439,11 +439,36 @@ public final class JfxStyles {
     public static final String SPIN_BG_LIGHT = "jfx-spin-bg-light";
     public static final String SPIN_BG_STRONG = "jfx-spin-bg-strong";
 
-    /** TimePickerAnt 时间选择器 */
+    /** TimePickerAnt / DateTimePickerAnt 时间选择器 */
     public static final String TIME_PICKER = "jfx-time-picker";
-    public static final String TIME_PICKER_SEPARATOR = "jfx-time-picker-separator";
-    public static final String TIME_PICKER_SPINNER = "jfx-time-picker-spinner";
-    public static final String TIME_PICKER_EDITOR = "jfx-time-picker-editor";
+    /** 时间面板(弹出列表面板,TimePicker 与 DateTimePicker 共用):时/分/秒三列 + 底部「此刻/确定」 */
+    public static final String TIME_PANEL = "jfx-time-panel";
+    /**
+     * 嵌入模式:同一份时间面板被并进 DateTimePicker 弹层时,去掉自身圆角/边框/阴影/内边距,
+     * 避免与外壳叠成双框(视觉上像两个控件硬拼)。
+     */
+    public static final String TIME_PANEL_EMBEDDED = "jfx-time-panel-embedded";
+    /** 时间面板单段(时/分/秒)容器:含一个段标题 + 一条取值列表 */
+    public static final String TIME_PANEL_UNIT = "jfx-time-panel-unit";
+    /** 段标题(时/分/秒):与日期面板表头带同高同基线 */
+    public static final String TIME_PANEL_UNIT_HEADER = "jfx-time-panel-unit-header";
+    /** 时间面板取值列内 ListView */
+    public static final String TIME_PANEL_LIST = "jfx-time-panel-list";
+    /** 时间面板底部操作栏 */
+    public static final String TIME_PANEL_FOOTER = "jfx-time-panel-footer";
+    /** 时间面板操作按钮(此刻) */
+    public static final String TIME_PANEL_NOW = "jfx-time-panel-now";
+    /** 时间/日期时间选择器触发器输入框(只读文本域,点击弹面板) */
+    public static final String TIME_PICKER_FIELD = "jfx-time-picker-field";
+    /** 时间/日期时间选择器清除按钮(悬浮叠加层,不参与父布局,避免宽度抖动) */
+    public static final String TIME_PICKER_CLEAR = "jfx-time-picker-clear";
+    /** 时间/日期时间选择器下拉箭头(悬浮叠加层) */
+    public static final String TIME_PICKER_ARROW = "jfx-time-picker-arrow";
+
+    /** 时间面板 12 小时制 AM/PM 列(仅 format 含 a 时出现) */
+    public static final String TIME_PANEL_MERIDIEM = "jfx-time-panel-meridiem";
+    /** AM/PM 列的单元格：文字列(上午/下午)比两位数字列宽，由 CSS 单独放宽 */
+    public static final String TIME_PANEL_MERIDIEM_ITEM = "jfx-time-panel-meridiem-item";
 
     /* ============================================
        通用 Popup 菜单（DropdownAnt / AutoCompleteAnt / MentionsAnt 共用）
@@ -718,19 +743,19 @@ public final class JfxStyles {
     public static final String DESCRIPTIONS_SIZE_MIDDLE = "jfx-descriptions-middle";
     public static final String DESCRIPTIONS_SIZE_LARGE = "jfx-descriptions-large";
 
-    /** CalendarAnt 日历 */
+    /**
+     * CalendarAnt 日历。
+     *
+     * <p>月视图自 M21.29 起直接内嵌原生 DatePickerSkin 面板（统一到框架唯一实现），
+     * 因此自绘日期相关常量（day-header / cell / day-label 系列）已删除；
+     * 保留的是年视图（自绘）、导航条与外壳使用的那批。</p>
+     */
     public static final String CALENDAR = "jfx-calendar";
     public static final String CALENDAR_HEADER = "jfx-calendar-header";
     public static final String CALENDAR_HEADER_LABEL = "jfx-calendar-header-label";
     public static final String CALENDAR_NAV_BTN = "jfx-calendar-nav-btn";
-    public static final String CALENDAR_GRID = "jfx-calendar-grid";
-    public static final String CALENDAR_DAY_HEADER = "jfx-calendar-day-header";
-    public static final String CALENDAR_CELL = "jfx-calendar-cell";
-    public static final String CALENDAR_CELL_TODAY = "jfx-calendar-cell-today";
-    public static final String CALENDAR_CELL_SELECTED = "jfx-calendar-cell-selected";
-    public static final String CALENDAR_CELL_OTHER_MONTH = "jfx-calendar-cell-other-month";
-    public static final String CALENDAR_DAY_LABEL = "jfx-calendar-day-label";
     public static final String CALENDAR_YEAR_VIEW = "jfx-calendar-year-view";
+    public static final String CALENDAR_GRID = "jfx-calendar-grid";
     public static final String CALENDAR_MONTH_BTN = "jfx-calendar-month-btn";
     public static final String CALENDAR_MONTH_BTN_CURRENT = "jfx-calendar-month-btn-current";
 
@@ -1153,6 +1178,20 @@ public final class JfxStyles {
        ============================================ */
     public static final String JFX_COMBO_BOX = "jfx-combo-box";
     public static final String JFX_DATE_PICKER = "jfx-date-picker";
+
+    /**
+     * DateTimePickerAnt 日期+时间组合选择器。
+     *
+     * <p>弹层结构(对标 Ant Design 桌面端 DatePicker showTime)：
+     * 左侧日期面板 + 右侧时间面板横向并排，共享一套「此刻 / 确定」页脚。</p>
+     */
+    public static final String DATE_TIME_PICKER = "jfx-date-time-picker";
+    /** DateTimePicker 弹层：日期面板与时间面板并排的容器 */
+    public static final String DATE_TIME_PICKER_BODY = "jfx-date-time-picker-body";
+    /** DateTimePicker 弹层：左侧日期面板容器(内嵌 CalendarAnt,压平其自身边框) */
+    public static final String DATE_TIME_PICKER_DATE_PANEL = "jfx-date-time-picker-date-panel";
+    /** DateTimePicker 弹层外壳：独占圆角/边框/阴影/内边距(内层时间面板为 embedded 无框模式) */
+    public static final String DATE_TIME_PICKER_SHELL = "jfx-date-time-picker-shell";
 
     /* ============================================
        SeparatorAnt — Separator 包装

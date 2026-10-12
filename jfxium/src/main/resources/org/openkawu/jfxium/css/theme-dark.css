@@ -1877,12 +1877,22 @@
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
+/* 星期表头带高度**显式定死**：右侧时间列「段标题带」取 @time-panel-header-height
+   (= @calendar-row-height = @calendar-day-header-height = 24)，两者必须同高，
+   否则 DateTimePickerAnt 内日期区与时间区从第一条行线起就错位。
+   modena 里该高度由 padding 4 + 文本间接撑出（实测 24/23），不可依赖 ——
+   这里写死 min/pref，并保持 -fx-padding 的横向值（4 7 = modena 原值）。 */
 .date-picker-popup .day-name-cell {
-  -fx-text-fill: -color-fg-muted;
+  -fx-min-height: 24px;
+  -fx-pref-height: 24px;
   -fx-font-size: 12px;
   -fx-font-weight: 500;
+  -fx-text-fill: -color-fg-muted;
   -fx-alignment: center;
-  -fx-padding: 4px;
+  /* 横向必须 ≤ 4：列宽被原生面板钉死 32px（= 文字 24 + 2×padding），
+     取 7 会把每列撑到 38 → 整块面板从 266 涨到 308、与年视图错位。
+     竖向由上面的 min/pref-height 定死，padding 只留横向。 */
+  -fx-padding: 0 4 0 4;
 }
 .date-picker-popup .week-number-cell {
   -fx-text-fill: -color-fg-muted;
@@ -3706,6 +3716,42 @@
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 14px;
 }
+/* TimePickerAnt / DateTimePickerAnt：触发器(只读输入框 + 悬浮清除 / 箭头)
+
+   布局契约(对齐 BUG #152 的「叠加层不参与父布局」结论)：
+     清除按钮与下拉箭头都是**叠加层**，不是并排子节点。容器宽度只由输入框决定，
+     因此「空 ↔ 有值 / 悬停 ↔ 离开」切换时宽度恒定，不会把整行布局顶得来回抖。
+     输入框右侧预留内边距的完整声明见 _sizes.less（本文件被其覆盖，不能写在这里）。 */
+.jfx-time-picker {
+  -fx-background-color: transparent;
+}
+.jfx-time-picker:disabled {
+  -fx-opacity: 0.6;
+}
+.jfx-time-picker-field {
+  -fx-cursor: hand;
+}
+/* 下拉箭头：悬浮叠加层，常驻不替换(清除按钮悬停时才盖上来) */
+.jfx-time-picker-arrow {
+  -fx-shape: "M7 10l5 5 5-5z";
+  -fx-min-width: 10px;
+  -fx-min-height: 5px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 5px;
+  -fx-background-color: -color-fg-muted;
+  -fx-cursor: hand;
+}
+.jfx-time-picker-arrow:hover {
+  -fx-background-color: -color-fg-default;
+}
+/* 清除按钮：与箭头同占位(仅替换，不改宽)；内嵌 IconAnt.symbol 默认 -color-fg-subtle */
+.jfx-time-picker-clear {
+  -fx-cursor: hand;
+  -fx-padding: 0 4 0 4;
+}
+.jfx-time-picker-clear:hover .jfx-icon {
+  -fx-text-fill: -color-fg-default;
+}
 /* BackTopAnt：回到顶部圆形按钮，hover 时背景与阴影加深 */
 .jfx-back-top {
   -fx-background-color: -color-bg-overlay;
@@ -3772,96 +3818,215 @@
   -fx-background-color: -color-accent-emphasis;
   -fx-background-radius: 2;
 }
-/* TimePickerAnt：时分秒分隔符与 spinner 编辑器 */
-.jfx-time-picker {
-  -fx-background-color: transparent;
+/* TimePickerAnt / DateTimePickerAnt：时间面板（时 / 分 / 秒 三列取值列表）
+
+   交互对标 Ant Design TimePicker：每段一条可滚动列表（00-23 / 00-59 / 00-59），
+   列高恒等于日期网格高，当前值自动滚进视野，故选择是一次定点点击。
+   滚动条压到 4px 且不占位（列表右内边距预留），数字本身仍是完整两位数。
+   底部「此刻」一键回当前时间。
+   M21.29 废弃 Spinner 步进；M21.32 短暂改用十位/个位两列；M21.37 回到三列长列表。 */
+/* 面板：白底 + 圆角 + 边框 + 阴影，与 jfx-popup-menu 同一视觉语言 */
+.jfx-time-panel {
+  -fx-background-color: -color-bg-default;
+  -fx-background-radius: 6px;
+  -fx-border-color: -color-border-default;
+  -fx-border-radius: 6px;
+  -fx-border-width: 1px;
+  -fx-effect: dropshadow(gaussian, -color-shadow-default, 8, 0, 0, 4);
+  -fx-padding: 8px 0 8px 0;
   -fx-spacing: 8px;
 }
-.jfx-time-picker-separator {
-  -fx-font-size: 16px;
-  -fx-text-fill: -color-fg-muted;
-}
-/* spinner 容器：与 .spinner 基类（_spinner.less）对齐，完整四边边框 + 圆角背景。
-   M19.55 旧策略（纯底线 Material 风格）废弃——箭头按钮区域无边线，视觉上残缺断开。 */
-.jfx-time-picker-spinner {
-  -fx-background-color: -color-bg-default;
-  -fx-background-radius: 4px;
-  -fx-border-color: -color-border-default;
-  -fx-border-radius: 4px;
-  -fx-border-width: 1px;
-  -fx-pref-height: 32px;
-  -fx-min-height: 32px;
-}
-.jfx-time-picker-spinner:focused,
-.jfx-time-picker-spinner:contains-focus {
-  -fx-border-color: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
-}
-.jfx-time-picker-spinner .text-field {
-  /* 编辑框：透明边框（外层 spinner 已画框，避免双框） */
+/* 嵌入模式：并进 DateTimePicker 弹层时不再自画边框/圆角/阴影 —— 否则与外壳叠成双框，
+   视觉上像两个控件硬拼（本次问题的直接来源）。 */
+.jfx-time-panel.jfx-time-panel-embedded {
   -fx-background-color: transparent;
-  -fx-background-radius: 4px 0 0 4px;
   -fx-border-color: transparent;
   -fx-border-width: 0;
-  -fx-padding: 4 2 4 2;
-  -fx-pref-width: 40;
-  -fx-focus-color: transparent;
-  -fx-faint-focus-color: transparent;
+  -fx-effect: null;
+  -fx-padding: 0;
 }
-.jfx-time-picker-spinner .increment-arrow-button,
-.jfx-time-picker-spinner .decrement-arrow-button {
+/* 一个段（时/分/秒/上午下午）：标题带 + 一条取值列表 */
+.jfx-time-panel-unit {
+  -fx-padding: 0 12px 0 12px;
+}
+/* 段标题带：高度取自 @time-panel-header-height（= @calendar-row-height，见 variables-base）。
+   注意**不要**声称两侧内容逐行对齐：数字行高 30、日历行高 40（紧凑 26 / 36），
+   行距不同就不可能逐行配对；能保证的只有两条表头带同高、顶端齐。
+   时间侧总高（表头 + 8 行）短于日期面板，底部留白 —— 见下方 .jfx-time-panel-list。 */
+.jfx-time-panel-unit-header {
+  -fx-font-size: 12px;
+  -fx-text-fill: -color-fg-subtle;
+  -fx-alignment: center;
+  -fx-max-width: infinity;
+  -fx-min-height: 24px;
+  -fx-pref-height: 24px;
+}
+/* 上午/下午只有两项，列高必须收到 2 行 —— 否则跟随长列表拉出一大片空行 */
+.jfx-time-panel-unit.jfx-time-panel-meridiem .jfx-time-panel-list {
+  -fx-min-height: 56px;
+  -fx-pref-height: 56px;
+  -fx-max-height: 56px;
+}
+/* AM/PM 是文字列（上午/下午），比两位数字列宽：宽度落在单元格上
+   （名单列宽由最宽单元格决定，设在列表上没有意义） */
+.jfx-time-panel-meridiem-item .list-cell {
+  -fx-min-width: 42px;
+  -fx-pref-width: 42px;
+}
+/* 取值列：去掉边框/圆角/背景，只保留列表本体。
+   右内边距 = 滚动条预留宽：滚动条悬浮其上，不挤占数字的排布宽度。
+
+   高度恒为 @time-panel-list-height（8 行，对齐 Ant 的 timeColumnHeight = 28 × 8）。
+   三种高度都钉死同一个值：列内滚动、不参与父布局的伸缩。与日期面板并排时
+   时间侧**短于**日历、底边留白 —— 这正是 Ant 的形态（其 time-panel content 高 224，
+   日期面板更高），不要把列拉伸去凑齐底边，那会把弹层撑成一根高柱。 */
+.jfx-time-panel-list {
   -fx-background-color: transparent;
-  -fx-border-color: transparent transparent transparent -color-border-muted;
-  -fx-border-width: 0 0 0 1px;
-  -fx-padding: 4px;
-  -fx-pref-width: 24px;
-  -fx-min-width: 24px;
-  -fx-pref-height: 14px;
-  -fx-min-height: 14px;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  /* 宽度必须显式给：留空则 ListView 的 pref 宽度按「内容宽 + 50%」算（实测 240+），
+     列与列之间会被撑成很宽的空档。取值 = 单元格宽 + 滚动条预留。 */
+  -fx-min-width: 32px;
+  -fx-pref-width: 32px;
+  -fx-max-width: 32px;
+  /* 右内边距即滚动条预留：滑块压在其中，不挤占数字 */
+  -fx-padding: 0 4px 0 0;
+  -fx-min-height: 224px;
+  -fx-pref-height: 224px;
+  -fx-max-height: 224px;
 }
-.jfx-time-picker-spinner .increment-arrow-button:hover,
-.jfx-time-picker-spinner .decrement-arrow-button:hover {
+/* AM/PM 段：整段比两位数字列宽（文字"上午/下午"），列表宽度随之加宽 */
+.jfx-time-panel-meridiem .jfx-time-panel-list {
+  -fx-min-width: 46px;
+  -fx-pref-width: 46px;
+  -fx-max-width: 46px;
+}
+/* 滚动条：细、无轨道、圆角滑块。Ant 同款「轨道隐形」处理 ——
+   滑块只在列表真的可滚动时出现，且压在预留内边距上，不遮数字。 */
+.jfx-time-panel-list .scroll-bar:vertical,
+.jfx-time-panel-list .scroll-bar:horizontal {
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+}
+.jfx-time-panel-list .scroll-bar:vertical {
+  -fx-pref-width: 4px;
+  -fx-min-width: 4px;
+  -fx-max-width: 4px;
+}
+.jfx-time-panel-list .scroll-bar:horizontal {
+  -fx-pref-height: 0;
+  -fx-max-height: 0;
+  -fx-opacity: 0;
+}
+.jfx-time-panel-list .scroll-bar .increment-button,
+.jfx-time-panel-list .scroll-bar .decrement-button {
+  -fx-padding: 0;
+  -fx-pref-height: 0;
+  -fx-opacity: 0;
+}
+.jfx-time-panel-list .scroll-bar .thumb {
+  -fx-background-color: -color-fg-subtle;
+  -fx-background-radius: 2;
+  -fx-opacity: 0.45;
+}
+.jfx-time-panel-list .scroll-bar .thumb:hover {
+  -fx-opacity: 0.75;
+}
+/* 行高由 CSS 独占定义（禁止再在 Java 侧 setFixedCellSize，双份来源必分叉）。
+   单元格宽度 = 取值列宽 − 滚动条预留：名单列宽由最宽的单元格决定，
+   把这份宽度交给单元格，列表与滚动条才各自有位置、不会互相压。 */
+.jfx-time-panel-list .list-cell {
+  -fx-padding: 0 4px 0 4px;
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-min-width: 28px;
+  -fx-pref-width: 28px;
+  -fx-alignment: center;
+  -fx-font-size: 14px;
+  -fx-background-color: transparent;
+  -fx-text-fill: -color-fg-default;
+  -fx-background-radius: 4px;
+}
+/* 选中态特异性必须压过 modena 默认 `.list-view:focused .list-cell:selected`（0,4,2）。
+   否则会「背景取自全局规则(#1677ff)、文字色取自本规则(#1677ff)」撞成同色，
+   选中项文字在浅色主题下完全不可见（深色主题同理）。 */
+.jfx-time-panel-list:focused .list-cell:selected,
+.jfx-time-panel-list .list-view:focused .list-cell:selected,
+.jfx-time-panel-list .virtual-flow:focused .list-cell:selected,
+.jfx-time-panel-list .list-cell:selected {
+  -fx-background-color: -color-accent-subtle;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+}
+/* hover：同样成组声明，避免背景与文字分别落进不同规则 */
+.jfx-time-panel-list .list-cell:filled:hover,
+.jfx-time-panel-list .list-cell:selected:hover {
+  -fx-background-color: -color-accent-hover;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-font-weight: 600;
+}
+/* 底部操作栏：细分隔线 + 右对齐按钮 */
+.jfx-time-panel-footer {
+  -fx-padding: 8px 8px 0 8px;
+  -fx-spacing: 8px;
+  -fx-alignment: center-right;
+  -fx-border-color: -color-border-muted transparent transparent transparent;
+  -fx-border-width: 1 0 0 0;
+}
+/* 「此刻」按钮：无边框文字按钮 */
+.jfx-time-panel-now {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-padding: 4 8 4 8;
+  -fx-font-size: 14px;
+  -fx-text-fill: -color-accent-emphasis;
+  -fx-cursor: hand;
+  -fx-background-radius: 4px;
+}
+.jfx-time-panel-now:hover {
   -fx-background-color: -color-accent-hover;
 }
-/* ⚠️ 选择器 specificity 必须 ≥ modena 的
-   .spinner .increment-arrow-button .increment-arrow（3 类，modena.css 第 3252 行），
-   否则 modena 后定义时会覆盖我们的样式（jfxium 主题在 modena 之后加载）。
-   ⚠️ 红线#9：必须显式 -fx-shape + min/pref 尺寸（modena 已有但要保留以防主题不加载）。
-   箭头水平 padding 从 0.333em 缩到 0.167em（~2.3px），给 24px 宽按钮留呼吸空间。 */
-.jfx-time-picker-spinner .increment-arrow-button .increment-arrow {
-  -fx-background-color: -color-fg-muted;
-  -fx-shape: "M 0 4 h 7 l -3.5 -4 z";
-  -fx-min-width: 7px;
-  -fx-min-height: 4px;
-  -fx-pref-width: 7px;
-  -fx-pref-height: 4px;
-  -fx-padding: 0.166667em 0.166667em 0.166667em 0.166667em;
-}
-.jfx-time-picker-spinner .decrement-arrow-button .decrement-arrow {
-  -fx-background-color: -color-fg-muted;
-  -fx-shape: "M 0 0 h 7 l -3.5 4 z";
-  -fx-min-width: 7px;
-  -fx-min-height: 4px;
-  -fx-pref-width: 7px;
-  -fx-pref-height: 4px;
-  -fx-padding: 0.166667em 0.166667em 0.166667em 0.166667em;
-}
-.jfx-time-picker-spinner:hover .increment-arrow-button .increment-arrow,
-.jfx-time-picker-spinner:hover .decrement-arrow-button .decrement-arrow {
-  -fx-background-color: -color-accent-emphasis;
-}
-/* 编辑器独立样式（Java 端 spinner.getEditor() 挂 jfx-time-picker-editor，
-   与上面 .jfx-time-picker-spinner .text-field 选择器互补，单挂也生效）。
-   边框由外层 spinner 容器统一绘制，编辑器自身走透明边框避免双框。 */
-.jfx-time-picker-editor {
-  -fx-font-size: 14px;
-  -fx-padding: 4 2 4 2;
-  -fx-pref-width: 40;
+/* DateTimePickerAnt：弹层外壳独占框架，内部日期面板 + 时间面板横向并排，共享页脚「此刻 / 确定」 */
+.jfx-date-time-picker {
   -fx-background-color: transparent;
+  -fx-spacing: 0;
+}
+.jfx-date-time-picker:disabled {
+  -fx-opacity: 0.6;
+}
+/* 外壳：圆角/边框/阴影/内边距全部收归一处，内层时间面板以 embedded 模式并入 */
+.jfx-date-time-picker-shell {
+  -fx-padding: 8px;
+  -fx-spacing: 8px;
+}
+/* 左右两块并排：从同一条顶线开始，等高铺满 —— 时间侧三列比日期侧宽，越宽的一侧
+   越该吃下剩余空间，否则日期侧会把时间侧压窄、右侧又留一片死白。 */
+.jfx-date-time-picker-body {
+  -fx-spacing: 12px;
+  -fx-alignment: top-left;
+  -fx-padding: 0 0 8px 0;
+}
+/* 日期侧定宽（日历本身是固定栅格），高度由日历自己的内容决定 ——
+   注意**不要**用时间列的高度 token 去撑它，也不要写 -fx-max-width：
+   Region 受约束时会回退到 `min = pref`，而它唯一的子节点最大宽是无限，
+   会被撑到比日历更宽、整行右移并凭空多出右侧空档。 */
+.jfx-date-time-picker-date-panel {
+  -fx-padding: 0;
+}
+.jfx-date-time-picker-body .jfx-time-panel-embedded {
+  -fx-hgrow: always;
+  /* 日期区与时间区之间一道细分隔线：两块内容各自独立，但视觉上仍是一个控件。
+     只画左边框，避免与外壳边框重复描边。 */
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1;
+  -fx-padding: 0 0 0 12px;
+}
+/* 嵌入的 CalendarAnt 自身已画边框/圆角，此处压平避免与外层弹层双框 */
+.jfx-date-time-picker-date-panel .jfx-calendar {
   -fx-border-color: transparent;
   -fx-border-width: 0;
-  -fx-focus-color: transparent;
-  -fx-faint-focus-color: transparent;
+  -fx-background-color: transparent;
 }
 /* ============================================
    通用 Popup 菜单
@@ -4995,7 +5160,11 @@
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
 }
-/* CalendarAnt */
+/* CalendarAnt
+   月视图 = 内嵌原生 date-picker-popup 面板（见 CalendarAnt 类注释），因此这里只负责：
+   ① 外壳 .jfx-calendar 的圆角/边框；② 把内嵌面板自带的外框压平（避免与外壳叠成双框）；
+   ③ 年视图（自绘，原生无月/年选择面板）的样式。
+   原生面板内部的排版（周一起始、本地化星期、格子尺寸）走 _datepicker.less 的 .date-picker-popup 规则。 */
 .jfx-calendar {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
@@ -5003,8 +5172,23 @@
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
 }
+/* 内嵌的原生面板：底色/边框/圆角/阴影全部交给外层 .jfx-calendar，
+   否则会出现「双重边框 + 双重圆角」——正是当年 ModalAnt 内嵌 CalendarAnt 时踩过的坑。
+   内边距也由外层控制（弹层宿主 DateTimePickerAnt 只需外壳留一次 padding）。 */
+.jfx-calendar .date-picker-popup.jfx-calendar-embedded {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+  -fx-effect: null;
+  -fx-padding: 0;
+}
+/* 年视图导航条：高度对齐原生面板的 .month-year-pane（43px），切视图时不跳动 */
 .jfx-calendar-header {
-  -fx-padding: 12 16 12 16;
+  -fx-min-height: 43px;
+  -fx-pref-height: 43px;
+  -fx-padding: 8 12 8 12;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
@@ -5013,72 +5197,50 @@
   -fx-font-weight: 600;
   -fx-text-fill: -color-fg-default;
 }
-/* 导航按钮（上一月/下一月），hover 浅色背景 */
+/* 年视图导航按钮（上一/下一年）：镜像原生 .date-picker-popup .spinner .button ——
+   无边框、无圆角、透明底，只有箭头/文字在 hover 时变色。若不显式清掉边框，
+   会继承全局 .button 的 1px 灰边，年视图顶部就出现「方框按钮」，与原生不一致。 */
 .jfx-calendar-nav-btn {
   -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
-  -fx-padding: 4 12 4 12;
+  -fx-padding: 4 6 4 6;
   -fx-cursor: hand;
-  -fx-background-radius: 4px;
 }
 .jfx-calendar-nav-btn:hover {
   -fx-background-color: -color-accent-subtle;
 }
-.jfx-calendar-grid {
-  -fx-padding: 8;
-}
-.jfx-calendar-day-header {
-  -fx-text-fill: -color-fg-muted;
-  -fx-font-size: 12px;
-  -fx-font-weight: 500;
-  -fx-padding: 8 4 8 4;
+/* 年视图栅格：内边距取 @calendar-panel-padding（与原生月网格同为 8），
+   高度钉到 @calendar-grid-height（246，已含该内边距）；配合 4 行 vgrow →
+   月份按钮等分该高度，整块日历因此与月视图同高（291）。VBox 自身不留内边距，
+   导航条才能像原生 .month-year-pane 一样横向通铺、分隔线通长。 */
+.jfx-calendar-year-view .jfx-calendar-grid {
+  -fx-min-height: 246px;
+  -fx-pref-height: 246px;
+  -fx-padding: 8px;
+  -fx-hgap: 4px;
+  -fx-vgap: 2px;
   -fx-alignment: center;
 }
-/* 日期单元格：默认透明，hover 浅色，selected 主题色，today 主题色 subtle */
-.jfx-calendar-cell {
-  -fx-background-color: transparent;
-  -fx-background-radius: 4px;
-  -fx-cursor: hand;
-}
-.jfx-calendar-cell:hover {
-  -fx-background-color: -color-accent-subtle;
-}
-.jfx-calendar-cell.jfx-calendar-cell-today {
-  -fx-background-color: -color-accent-subtle;
-}
-.jfx-calendar-cell.jfx-calendar-cell-today:hover {
-  -fx-background-color: -color-accent-subtle;
-}
-.jfx-calendar-cell.jfx-calendar-cell-selected,
-.jfx-calendar-cell.jfx-calendar-cell-selected:hover {
-  -fx-background-color: -color-accent-emphasis;
-}
-/* 日期文本颜色：默认前景色，selected 反白，today 主题色，other-month 模糊色 */
-.jfx-calendar-day-label {
-  -fx-font-size: 14px;
-  -fx-padding: 4;
-  -fx-text-fill: -color-fg-default;
-}
-.jfx-calendar-cell.jfx-calendar-cell-other-month .jfx-calendar-day-label {
-  -fx-text-fill: -color-fg-subtle;
-}
-.jfx-calendar-cell.jfx-calendar-cell-today .jfx-calendar-day-label {
-  -fx-text-fill: -color-accent-emphasis;
-}
-.jfx-calendar-cell.jfx-calendar-cell-selected .jfx-calendar-day-label {
-  -fx-text-fill: -color-fg-on-emphasis;
-}
-/* Year View */
-.jfx-calendar-year-view {
-  -fx-padding: 16;
-}
+/* 月份按钮：底色/圆角对齐原生日格子（透明底 + @border-radius-sm + accent 选中），
+   但必须显式去掉全局 .button 的 1px 灰边，否则 12 个按钮呈方框状、与原生格子不一致。 */
 .jfx-calendar-month-btn {
   -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
   -fx-text-fill: -color-fg-default;
   -fx-background-radius: 4px;
   -fx-font-size: 14px;
   -fx-cursor: hand;
+  -fx-min-width: 80px;
+  -fx-pref-width: 80px;
+  -fx-min-height: 32px;
+  -fx-pref-height: 32px;
 }
 .jfx-calendar-month-btn:hover {
   -fx-background-color: -color-accent-subtle;
@@ -6860,6 +7022,21 @@
 .jfx-badge.jfx-badge-large {
   -fx-padding: 2px 10px;
   -fx-font-size: 12px;
+}
+/* ============================================
+   TimePicker / DateTimePicker 触发器右侧预留
+   ============================================
+   本文件在 _index.less 中后于 _tier1.less 导入。若把右侧预留写在 _tier1.less 里，
+   会被上面的 `.text-field.small/.large`（同为类选择器计数，后者按源码顺序胜出）
+   整体覆盖掉 padding，导致文字钻到清除按钮 / 箭头底下。故在此重述完整 padding。 */
+.text-field.jfx-time-picker-field {
+  -fx-padding: 6px 52px 6px 11px;
+}
+.text-field.jfx-time-picker-field.small {
+  -fx-padding: 2px 52px 2px 7px;
+}
+.text-field.jfx-time-picker-field.large {
+  -fx-padding: 9px 52px 9px 11px;
 }
 /* ============================================
    Animation Utilities

@@ -207,13 +207,24 @@
   -fx-text-fill: -color-fg-default;
 }
 
+/* 星期表头带高度**显式定死**：右侧时间列「段标题带」取 @time-panel-header-height
+   (= @calendar-row-height = @calendar-day-header-height = 24)，两者必须同高，
+   否则 DateTimePickerAnt 内日期区与时间区从第一条行线起就错位。
+   modena 里该高度由 padding 4 + 文本间接撑出（实测 24/23），不可依赖 ——
+   这里写死 min/pref，并保持 -fx-padding 的横向值（4 7 = modena 原值）。 */
 .date-picker-popup .day-name-cell {
-  -fx-text-fill: -color-fg-muted;
+  -fx-min-height: @calendar-day-header-height;
+  -fx-pref-height: @calendar-day-header-height;
   -fx-font-size: 12px;
   -fx-font-weight: 500;
+  -fx-text-fill: -color-fg-muted;
   -fx-alignment: center;
-  -fx-padding: 4px;
+  /* 横向必须 ≤ 4：列宽被原生面板钉死 32px（= 文字 24 + 2×padding），
+     取 7 会把每列撑到 38 → 整块面板从 266 涨到 308、与年视图错位。
+     竖向由上面的 min/pref-height 定死，padding 只留横向。 */
+  -fx-padding: 0 4 0 4;
 }
+
 
 .date-picker-popup .week-number-cell {
   -fx-text-fill: -color-fg-muted;
