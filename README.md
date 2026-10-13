@@ -95,33 +95,66 @@ cd JFXium
 
 ### 2. 引入主题并使用组件
 
+一个完整可运行的最小程序（不是片段 —— 照着贴就能跑）：
+
 ```java
-@Override
-public void start(Stage stage) {
-    Scene scene = new Scene(root, 800, 600);
-    scene.getStylesheets().add(
-        getClass().getResource("/org/openkawu/jfxium/css/theme-light.css").toExternalForm()
-    );
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-    // 按钮
-    Button btn = ButtonAnt.create("点击我")
-        .type(ButtonAnt.Type.PRIMARY)
-        .onClick(e -> System.out.println("Hello JFXium!"))
-        .build();
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.InputAnt;
+import org.openkawu.jfxium.component.layout.VBoxAnt;
+import org.openkawu.jfxium.core.theme.LightTheme;
+import org.openkawu.jfxium.core.theme.ThemeManager;
 
-    // 输入框
-    TextField input = InputAnt.create()
-        .placeholder("请输入内容...")
-        .build();
+public class HelloJfxium extends Application {
+    @Override
+    public void start(Stage stage) {
+        // 1) 加载主题（全局一次；换 DarkTheme 即切暗色）
+        ThemeManager.getInstance().applyTheme(new LightTheme());
 
-    // 模态框
-    ModalAnt.create().title("确认").content("确定要继续吗？")
-        .build().open(stage);
+        // 2) Builder 造组件
+        Button btn = ButtonAnt.create("点击我")
+                .type(ButtonAnt.Type.PRIMARY)
+                .onClick(e -> System.out.println("Hello JFXium!"))
+                .build();
+        TextField input = InputAnt.create()
+                .placeholder("请输入内容...")
+                .build();
 
-    stage.setScene(scene);
-    stage.show();
+        // 3) 组装布局（container → children → build）
+        VBox root = VBoxAnt.create()
+                .spacing(16)
+                .padding(24)
+                .children(input, btn)
+                .build();
+
+        // 4) 进场景
+        stage.setScene(new Scene(root, 360, 200));
+        stage.setTitle("Hello JFXium");
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
 ```
+
+三个容易踩的坑，示例里已经避开：
+
+| 坑 | 说明 |
+|---|---|
+| **别用 `getClass().getResource("/org/openkawu/jfxium/css/theme-light.css")`** | 模块化项目（module-path）下该资源在**另一个模块**里，本模块读不到 → 运行期 NPE。用 `ThemeManager.applyTheme(new LightTheme())`，由框架自己定位 |
+| **别再写 `new Button()`** | 原生控件没有 `jfx-` styleClass 与主题接线，长得和你选的主题不一样。统一走 `ButtonAnt.create(...).build()` |
+| **`build()` 的返回值必须进场景图** | `VBoxAnt...children(input, btn).build()` 的返回值才是根节点；把 `btn` 直接丢给 `Scene` 而不经容器，控件不会显示 |
+
+> 主题色、暗色切换、运行时改色：见 [主题系统](docs/cn/主题系统.md)。
+> 弹窗（`ModalAnt` / `DrawerAnt` 等）是 `Result` 包装，`build()` 后要调 `.open(owner)` 才显示，且 `owner` 是 **Node** 不是 `Stage` —— 见 [组件参考](docs/cn/组件参考.md)。
 
 ### 3. 运行 Demo
 

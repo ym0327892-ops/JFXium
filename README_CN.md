@@ -97,35 +97,77 @@ cd JFXium
 > 你若在自己 pom 里覆盖框架默认的 JavaFX 版本，请保持分类器不丢 ——
 > 推荐用 `javafx-maven-plugin` 或 `os-maven-plugin` 自动注入，否则运行期才报原生库加载失败。
 
-### 2. 引入主题
+### 2. 引入主题并使用组件
+
+一个完整可运行的最小程序（不是片段 —— 照着贴就能跑）：
 
 ```java
-import org.openkawu.jfxium.core.theme.ThemeManager;
-import org.openkawu.jfxium.core.theme.LightTheme;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-@Override
-public void start(Stage stage) {
-    Scene scene = new Scene(root, 800, 600);
-    ThemeManager.getInstance().applyTheme(new LightTheme());
-    // 要运行时切主题色才需要：
-    // ThemeManager.getInstance().registerScene(scene);
-    stage.setScene(scene);
-    stage.show();
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.InputAnt;
+import org.openkawu.jfxium.component.layout.VBoxAnt;
+import org.openkawu.jfxium.core.theme.LightTheme;
+import org.openkawu.jfxium.core.theme.ThemeManager;
+
+public class HelloJfxium extends Application {
+    @Override
+    public void start(Stage stage) {
+        // 1) 加载主题（全局一次；换 DarkTheme 即切暗色）
+        ThemeManager.getInstance().applyTheme(new LightTheme());
+
+        // 2) Builder 造组件
+        Button btn = ButtonAnt.create("点击我")
+                .type(ButtonAnt.Type.PRIMARY)
+                .onClick(e -> System.out.println("Hello JFXium!"))
+                .build();
+        TextField input = InputAnt.create()
+                .placeholder("请输入内容...")
+                .build();
+
+        // 3) 组装布局（container → children → build）
+        VBox root = VBoxAnt.create()
+                .spacing(16)
+                .padding(24)
+                .children(input, btn)
+                .build();
+
+        // 4) 进场景
+        stage.setScene(new Scene(root, 360, 200));
+        stage.setTitle("Hello JFXium");
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
 ```
 
+主题相关的两个 API：
+
 | API | 作用 | 何时调用 |
 |---|---|---|
-| `applyTheme(theme)` | 全局应用主题（切换亮/暗/紧凑） | 启动时调用一次 |
-| `registerScene(scene)` | 注册 Scene，支持 `setPrimaryColor` 动态切色 | 需要运行时换主题色时 |
+| `applyTheme(theme)` | **全局**应用主题（`Application.setUserAgentStylesheet`），所有 Scene 自动生效 | 启动时调用一次 |
+| `registerScene(scene)` | 注册单个 Scene，供 `setPrimaryColor` 运行时改主题色注入变量 | 需要运行时换主题色时 |
 
-### 3. 三行示例
+换个密度用 `setDensity(ThemeDensity.COMPACT)`；切亮暗用 `setDark(true)`（或 `applyTheme(new DarkTheme())`）。
 
-```java
-Button btn = ButtonAnt.create("保存").type(ButtonAnt.Type.PRIMARY).onClick(e -> save()).build();
-TextField input = InputAnt.create().placeholder("姓名").build();
-VBox layout = VBoxAnt.create().spacing(16).padding(24).children(input, btn).build();
-```
+三个容易踩的坑，示例里已经避开：
+
+| 坑 | 说明 |
+|---|---|
+| **别用 `scene.getStylesheets().add(getClass().getResource("…/theme-light.css"))` 引入主题** | 那是 **per-scene** 挂载，且模块化项目（module-path）下该资源在**框架模块**里、你的模块读不到 → 运行期 NPE（实测：classpath 侥幸能跑，module-path 必挂）。统一用 `ThemeManager.applyTheme(new LightTheme())`，由框架自己定位 CSS |
+| **别再写 `new Button()`** | 原生控件没有 `jfx-` styleClass 与主题接线，长得和你选的主题不一样。统一走 `ButtonAnt.create(...).build()` |
+| **`build()` 的返回值必须进场景图** | `VBoxAnt...children(input, btn).build()` 的返回值才是根节点；把 `btn` 直接丢给 `Scene` 而不经容器，控件不会显示 |
+
+> 弹窗（`ModalAnt` / `DrawerAnt` 等）是 `Result` 包装：`build()` 后要调 `.open(owner)` 才显示，
+> 且 `owner` 是 **Node** 不是 `Stage` —— 见 [组件参考](docs/cn/组件参考.md)。
 
 > 完整 CRUD 页写法、5 个业务场景示例见 **[快速上手](docs/cn/快速上手.md)**。
 

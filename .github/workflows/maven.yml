@@ -108,6 +108,23 @@ jobs:
             | grep -vE 'add\("jfx-' || true
           [ "$violations" -eq 0 ] || { echo "❌ FAILED"; exit 1; }
 
+      - name: "Scan docs — theme must be loaded via ThemeManager (module-path safe)"
+        run: |
+          # JFXium is a named module. A consumer's getResource() CANNOT read CSS that
+          # lives inside org.openkawu.jfxium, so teaching
+          #   scene.getStylesheets().add(getClass().getResource("/org/openkawu/jfxium/css/..."))
+          # produces a runtime NPE on module-path (verified). The only sanctioned entry
+          # point is ThemeManager.applyTheme(new XxxTheme()), which locates the CSS on
+          # the framework side.
+          # Lines that explicitly forbid it (⚠️ 别用/不要用) and the ~/.m2 install
+          # examples are allowed; the pattern below only matches positive examples.
+          hits=$(grep -rnE 'getStylesheets\(\)\.add\(.*getResource\(.*org/openkawu/jfxium/css' \
+            README.md README_CN.md docs/ INTERNAL/ 2>/dev/null \
+            | grep -vE '别用|不要用|⚠️' || true)
+          echo "Docs theme-loading pattern:"
+          [ -z "$hits" ] && echo "  0 hits - OK" || echo "$hits"
+          [ -z "$hits" ] || { echo "❌ FAILED: docs teach the module-path-unsafe theme pattern"; exit 1; }
+
       - name: Scan architecture — core→component reverse deps
         run: |
           violations=$(grep -rn 'import.*component\.' jfxium/src/main/java/org/openkawu/jfxium/core/ --include="*.java" | wc -l)
