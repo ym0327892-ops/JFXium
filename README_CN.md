@@ -77,17 +77,21 @@ cd JFXium
 
 **还需要哪些 jar**
 
-用方式 A 时，下面这些由 Maven 从 Central 自动解析；用方式 B 要自己备齐。
-**版本由你自己的项目决定**——本框架只依赖 `javafx-controls` 一个 JavaFX 模块
-（**除 JavaFX 外零第三方运行时依赖**），
-你用什么版本、要不要额外加 `javafx-fxml` / `javafx-media` / `javafx-web`，都按你项目的需要来。
-你用什么版本的 JavaFX 都可以，想升级就升级，本框架不做版本锁死。
-你自己 pom 里声明的 JavaFX 版本优先（Maven 就近原则）；没声明时才会用到本框架默认的 21.0.6。
+用方式 A 时，下面这些由 Maven 从 Central 自动解析 —— 但 **JavaFX 不会随本框架自动带进来**：
+主库把 `javafx-controls` 声明为 `optional`，**不向下游传递**（这正是你要的行为）。所以
+**JavaFX 得由你自己的项目显式声明**；用方式 B 还要自己备齐 jar。
+本框架除 JavaFX 外零第三方运行时依赖。
+你用什么版本、要不要额外加 `javafx-fxml` / `javafx-media` / `javafx-web`，都按你项目的需要来；
+本框架不做版本锁死，也不会拿自己的 JavaFX 版本顶掉你的。
+
+> 💡 **就是这么设计的**：桌面应用的 JavaFX 版本应该由应用自己定 —— 由
+> `javafx-maven-plugin` / `jlink` / 启动脚本挂到 module-path 上。框架只负责「我编译时需要它」，
+> 不替你做这个决定。（`javafx-controls` 也**不在** `jfxium.jar` 里：jar 只有 1.2 MB、
+> 全是 JFXium 自己的 class 与资源，0 个 JavaFX 类。）
 
 | jar | 必需 | 说明 |
-|---|---|---|
 | `jfxium-1.34.1.jar` | ✅ | 主库；CSS 主题与 i18n 资源都已打进包内 |
-| JavaFX `base` / `graphics` / `controls` | ✅ | 版本自选；需带平台分类器，如 `javafx-controls-<版本>-mac-aarch64.jar` |
+| JavaFX `base` / `graphics` / `controls` | ✅ **需你显式声明**（框架不传递） | 版本自选；需带平台分类器，如 `javafx-controls-<版本>-mac-aarch64.jar` |
 | JavaFX `fxml` / `media` / `web` / `swing` | ❌ 本框架不涉及 | 按你自己的项目按需添加 |
 
 若 JDK 自带 JavaFX（如 Liberica Full JDK），上表 JavaFX 各项可省。

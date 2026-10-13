@@ -18,11 +18,23 @@
 
     <dependencies>
         <!-- JavaFX 版本显式钉死（不依赖 parent 的 dependencyManagement）。
-             下游项目的 dependencyManagement 仍可覆盖（就近优先）。 -->
+             下游仍可按就近原则用自己的 dependencyManagement 覆盖。
+
+             <optional>true</optional>：JavaFX 不在 jfxium.jar 里，它是宿主环境
+             提供的运行期依赖。jfxium 自己需要它编译（module-info 的
+             requires javafx.controls），但**不向下游传递**——桌面应用的 JavaFX
+             版本应由应用自己定，由 javafx-maven-plugin / jlink / 启动脚本挂到
+             module-path 上。
+
+             别写成 <scope>test</scope>：那会让 JavaFX 在编译主源码时从类路径
+             消失，非-FX JDK（如 CI 的 Temurin）直接报「找不到模块:
+             javafx.controls」（本地 Liberica-FX JDK 自带宽 jmods，掩盖此问题，
+             已实测复现）。 -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

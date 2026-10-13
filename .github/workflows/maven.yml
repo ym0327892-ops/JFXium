@@ -125,6 +125,21 @@ jobs:
           [ -z "$hits" ] && echo "  0 hits - OK" || echo "$hits"
           [ -z "$hits" ] || { echo "❌ FAILED: docs teach the module-path-unsafe theme pattern"; exit 1; }
 
+      - name: "Scan deps — javafx-controls must stay compile+optional"
+        run: |
+          # javafx-controls 的名字出现在 module-info.java 的 requires 里，
+          # 所以它在主源码编译期必须可见（非 test / runtime scope）；
+          # 同时它要「不向下游传递」（optional），由应用自选版本。
+          # 本地 Liberica-FX JDK 自带宽 jmod，会掩盖 scope 错误 —— 只有 CI 能拦。
+          # 参考 BUG #161。
+          block=$(awk '/<artifactId>javafx-controls<\/artifactId>/{f=1} f{print} /<\/dependency>/{if(f)exit}' jfxium/pom.xml)
+          echo "$block"
+          echo "$block" | grep -q "<optional>true</optional>" \
+            || { echo "❌ javafx-controls 必须是 <optional>true</optional>（不向下游传递）"; exit 1; }
+          echo "$block" | grep -qE "<scope>(test|runtime|provided)</scope>" \
+            && { echo "❌ javafx-controls 不能是 test/runtime/provided scope（需要主源码编译期可见）"; exit 1; }
+          echo "OK: javafx-controls = compile + optional"
+
       - name: Scan architecture — core→component reverse deps
         run: |
           violations=$(grep -rn 'import.*component\.' jfxium/src/main/java/org/openkawu/jfxium/core/ --include="*.java" | wc -l)
