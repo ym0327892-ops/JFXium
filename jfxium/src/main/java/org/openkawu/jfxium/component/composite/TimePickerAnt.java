@@ -49,8 +49,10 @@ import java.util.function.Consumer;
  *       超出该位合法范围的行渲染为空行、点之无效，因此「第 n 行就是数字 n」</li>
  *   <li><b>此刻 / 确定</b>：页脚「此刻」把面板拨到当前时间；「确定」提交并收起面板
  *       （提交时才触发 {@link Builder#onChange} 与回写绑定）</li>
- *   <li><b>可清除</b>：{@link Builder#allowClear(boolean)} 默认开启，悬停出现清除按钮，
- *       清除后回到未选中（placeholder）状态</li>
+ *   <li><b>可清除</b>：{@link Builder#allowClear(boolean)} 默认开启，有值时悬停出现
+ *       清除按钮，点它回到未选中（placeholder 空文本）并回调 {@code null}；
+ *       此后重新打开面板，显示的是**当前时刻**这一未提交默认值，而不是 {@code 00:00}
+ *       —— 后者会被误读成「清除把时间变成了 0 点」（BUG #168）</li>
  *   <li><b>宽度恒定</b>：清除按钮与下拉箭头都是叠加层（{@code USE_PREF_SIZE} 钳制），
  *       不参与父布局；「空 ↔ 有值 / 悬停 ↔ 离开」切换时组件宽度不抖（沿用 BUG #152 结论）</li>
  * </ul>
@@ -283,16 +285,20 @@ public class TimePickerAnt {
          * 点击输入框区域切换面板显隐。
          *
          * <p>单击照旧开面板（不改鼠标用户的肌肉记忆），同时把焦点留在输入框上，
-         * 因此面板弹着也能直接敲数字录入。右侧箭头同样可开面板；
-         * 清除按钮的单击不会顺带触发开面板。</p>
+         * 因此面板弹着也能直接敲数字录入。右侧箭头同样可开面板。</p>
+         *
+         * <p><b>清除按钮不需要（也不能）在这里拦截</b>：它与输入框是 {@link StackPane}
+         * 下的<b>兄弟节点</b>，点击本就不会冒泡到输入框上，所以「点 × 不会顺带开面板」
+         * 是布局天然保证的。曾经在这里加过一条
+         * {@code clearBtn.addEventFilter(MOUSE_CLICKED, Event::consume)} 来表达同一意图，
+         * 结果把 {@link #onClear} 挂在<b>同一节点、同一事件类型</b>上的处理器一起吃掉
+         * （过滤器先于处理器执行），清除按钮从此变成纯装饰 —— 点了没反应。</p>
          */
         void onToggle(Runnable action) {
             arrow.setOnMouseClicked(e -> {
                 action.run();
                 e.consume();
             });
-            clearBtn.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED,
-                    javafx.event.Event::consume);
             field.setOnMouseClicked(e -> {
                 action.run();
                 field.requestFocus();
@@ -449,7 +455,10 @@ public class TimePickerAnt {
                 if (popup.isShowing()) {
                     popup.hide();
                 } else {
-                    panel.setValue(committed[0]);
+                    if (committed[0] != null) {
+                        // 已提交值才回拨面板；为空时保留面板上的既有选择（见 setValue 注释）
+                        panel.setValue(committed[0]);
+                    }
                     PopupPositioner.showBelow(popup, trigger.root);
                 }
             });
@@ -541,6 +550,9 @@ public class TimePickerAnt {
      * 共用（两者内嵌的是同一个面板，保证面板视觉与交互完全一致）。</p>
      */
     static final class TimePanel extends VBox {
+
+        /** 上午/下午列的项目数：只有「上午 / 下午」两项。 */
+        private static final int MERIDIEM_ITEM_COUNT = 2;
 
         private final Visibility vis;
         private final boolean twelveHour;
@@ -801,9 +813,20 @@ public class TimePickerAnt {
             setValue(time);
         }
 
-        /** 把面板选择同步到给定时间；{@code null} 时归零。 */
+        /**
+         * 把面板选择同步到给定时间；{@code null} 表示「未选中」。
+         *
+         * <p><b>未选中时取当前时刻，而不是 00:00</b>。清除按钮把值置空后重新打开面板，
+         * 用户看到的是面板的一次全新默认（尚未提交，框里仍是空的）：此刻最贴近
+         * 「我现在想选几点」的默认就是当前时间。演示 00:00 会让用户以为「点 × 把时间
+         * 变成 0 点了」（BUG #168）。这与左邻的日期侧一致 —— 日期面板在未选中时
+         * 落在今天（{@code CalendarAnt.value(null) → LocalDate.now()}，
+         * {@code DateTimePickerAnt} 同样取 {@code LocalDate.now()}）。</p>
+         *
+         * <p>注意它只影响面板显示，不改已提交值：面板值要等用户点「确定」才提交。</p>
+         */
         void setValue(LocalTime time) {
-            LocalTime target = time != null ? time : LocalTime.MIDNIGHT;
+            LocalTime target = time != null ? time : LocalTime.now().withNano(0);
             hour = target.getHour();
             minute = target.getMinute();
             second = target.getSecond();
@@ -832,10 +855,15 @@ public class TimePickerAnt {
          * <p><b>为什么必须显式滚动</b>：JavaFX 的 {@code ListView} 只在改动选中<b>索引</b>
          * （{@code select(int)}）时自动滚动；走 {@code select(Object)} 这条按值选中的路径，
          * 选中确实生效、列表却停在原处 —— 于是面板打开时可能看到「09:30 高亮在视野外」，
-         * 与「列高只有 5 行、其余靠滚」的滚动列方案直接冲突。</p>
+         * 与「列高只有 8 行、其余靠滚」的滚动列方案直接冲突。</p>
          *
-         * <p>滚动调用会在列表尚未装壳时自动延后（{@code scrollTo} 走
-         * {@code executeOnceWhenPropertyIsNonNull(skinProperty())}），因此面板还没进场景也安全。</p>
+         * <p><b>上午/下午列例外：它不需要滚动，也不能滚</b>。该列只有 2 项，且高度被
+         * LESS 钳在 {@code 2 × @time-panel-cell-height}（见 {@code .jfx-time-panel-unit
+         * .jfx-time-panel-meridiem .jfx-time-panel-list}），两行本就同屏。而
+         * {@code scrollTo(i)} 会把第 {@code i} 行<b>顶到视口首行</b> —— 哪怕它本来就在
+         * 视口内：选中「下午」（第 2 行）会把「上午」整行顶出视口且不再回落，用户看到的
+         * 就是「选完下午，上午不见了」，此后无法改回上午。时/分/秒列有 24-60 行，顶到
+         * 首行仍属将目标行置中的正常行为，故只有 2 行的时段列跳过滚动。</p>
          */
         private static void selectValue(ListViewAnt<Object> col, Object value, String label) {
             if (col == null) {
@@ -845,7 +873,9 @@ public class TimePickerAnt {
                 throw new IllegalStateException("时间面板「" + label + "」列缺少取值 " + value);
             }
             col.getSelectionModel().select(value);
-            col.scrollTo(value);
+            if (col.getItems().size() > MERIDIEM_ITEM_COUNT) {
+                col.scrollTo(value);
+            }
         }
 
         void setOnCommit(Consumer<LocalTime> onCommit) {

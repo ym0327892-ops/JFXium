@@ -3,11 +3,13 @@ package org.openkawu.jfxium.component.composite;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.css.PseudoClass;
+import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ListCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -24,6 +26,7 @@ import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * TimePickerAnt 单元测试 —— M21.29 弹出面板重构后的核心契约。
@@ -44,6 +47,12 @@ class TimePickerAntTest extends JfxTestBase {
         stage.show();
         root.applyCss();
         root.layout();
+    }
+
+    /** 主键单击事件：必须走 {@code Event.fireEvent} 派发，过滤器链才会生效。 */
+    private static MouseEvent click() {
+        return new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1,
+                false, false, false, false, true, false, false, true, false, false, null);
     }
 
     @Nested
@@ -184,7 +193,7 @@ class TimePickerAntTest extends JfxTestBase {
         }
 
         @Test
-        @DisplayName("clear 回调 null，且不再有值（清除按钮显隐的驱动源）")
+        @DisplayName("点清除按钮真的清除：值置空 + 回调 null + 不顺带开面板（BUG #168）")
         void clearSemantics() {
             runOnFxThreadAndWait(() -> {
                 AtomicReference<LocalTime> captured = new AtomicReference<>(LocalTime.of(9, 30));
@@ -192,15 +201,37 @@ class TimePickerAntTest extends JfxTestBase {
                         .value(LocalTime.of(9, 30))
                         .onChange(captured::set)
                         .build();
+                layoutInScene(node);
                 TimePickerAnt.Controller ctrl = TimePickerAnt.controllerOf(node);
                 Node clear = node.lookup("." + JfxStyles.TIME_PICKER_CLEAR);
                 assertNotNull(clear, "allowClear 默认应创建清除按钮");
-                clear.getOnMouseClicked().handle(new javafx.scene.input.MouseEvent(
-                        javafx.scene.input.MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0,
-                        javafx.scene.input.MouseButton.PRIMARY, 1,
-                        false, false, false, false, true, false, false, false, false, false, null));
+
+                // 必须走真实派发：曾经挂在同一节点上的 MOUSE_CLICKED 过滤器会先吃掉事件，
+                // 直接调 getOnMouseClicked().handle(...) 绕过了过滤器，因此查不出这个 bug。
+                Event.fireEvent(clear, click());
+
                 assertNull(captured.get(), "清除应回调 null");
                 assertNull(ctrl.getValue());
+                assertEquals("", ((javafx.scene.control.TextField) node.lookup(
+                        "." + JfxStyles.TIME_PICKER_FIELD)).getText(), "清除后文本框应清空");
+                assertFalse(ctrl.isPanelShowing(), "点清除不应顺带打开面板");
+            });
+        }
+
+        @Test
+        @DisplayName("清除后重开面板落在当前时刻，而不是 00:00（BUG #168）")
+        void clearThenReopenIsNotMidnight() {
+            runOnFxThreadAndWait(() -> {
+                StackPane node = TimePickerAnt.create().value(LocalTime.of(9, 30)).build();
+                layoutInScene(node);
+                TimePickerAnt.Controller ctrl = TimePickerAnt.controllerOf(node);
+                Event.fireEvent(node.lookup("." + JfxStyles.TIME_PICKER_CLEAR), click());
+
+                ctrl.showPanel();
+                LocalTime shown = ((TimePickerAnt.TimePanel) ctrl.getPanelNode()).getValue();
+                long diff = Math.abs(java.time.Duration.between(shown, LocalTime.now()).getSeconds());
+                assertTrue(Math.min(diff, 86400 - diff) <= 60,
+                        "未选中时面板应是「此刻」（对齐日期侧取今天），实测 " + shown);
             });
         }
 
@@ -392,6 +423,39 @@ class TimePickerAntTest extends JfxTestBase {
             });
         }
 
+        @Test
+        @DisplayName("下午被选中后「上午」仍在视口内，可改回（BUG #168）")
+        void meridiemKeepsBothRowsVisible() {
+            runOnFxThreadAndWait(() -> {
+                TimePickerAnt.TimePanel p = new TimePickerAnt.TimePanel(
+                        TimePickerAnt.parseVisibility("HH:mm a"), false);
+                layoutInScene(p);
+
+                // 上午/下午列只有 2 行且同屏；选中第 2 行时若还去 scrollTo，
+                // VirtualFlow 会把第 2 行顶到首行，「上午」整行滚出视口且不回落。
+                p.setValue(LocalTime.of(15, 30)); // 下午
+                assertTrue(fullRowVisible(p, JfxStyles.TIME_PANEL_MERIDIEM_ITEM, "上午"),
+                        "「上午」必须仍整行可见 —— 否则用户选完下午就再也改不回上午");
+                assertTrue(fullRowVisible(p, JfxStyles.TIME_PANEL_MERIDIEM_ITEM, "下午"),
+                        "被选中的「下午」必须整行可见");
+                pick(p, JfxStyles.TIME_PANEL_MERIDIEM_ITEM, Boolean.FALSE);
+                assertEquals(3, p.getValue().getHour(), "应能从下午改回上午 3 时");
+            });
+        }
+
+        /** 指定列中文字为 {@code text} 的单元格是否整行落在该列视口内。 */
+        private boolean fullRowVisible(TimePickerAnt.TimePanel p, String styleClass, String text) {
+            javafx.scene.control.ListView<?> lv =
+                    (javafx.scene.control.ListView<?>) p.lookup("." + styleClass);
+            double vTop = lv.localToScene(lv.getBoundsInLocal()).getMinY();
+            double vBottom = lv.localToScene(lv.getBoundsInLocal()).getMaxY();
+            return lv.lookupAll(".list-cell").stream()
+                    .map(ListCell.class::cast)
+                    .filter(c -> text.equals(c.getText()))
+                    .anyMatch(c -> c.localToScene(c.getBoundsInLocal()).getMinY() >= vTop - 0.5
+                            && c.localToScene(c.getBoundsInLocal()).getMaxY() <= vBottom + 0.5);
+        }
+
         /** 取列表内部的 VirtualFlow（可见单元格范围只能从这里读）。 */
         private javafx.scene.control.skin.VirtualFlow<?> virtualFlow(
                 javafx.scene.control.ListView<?> lv) {
@@ -403,6 +467,14 @@ class TimePickerAntTest extends JfxTestBase {
             javafx.scene.control.ListView<Object> lv =
                     (javafx.scene.control.ListView<Object>) p.lookup("#" + id);
             lv.getSelectionModel().select(Integer.valueOf(value));
+        }
+
+        /** 时段列的选项是 {@code Boolean}，取不了 {@link Integer} 重载。 */
+        private void pick(TimePickerAnt.TimePanel p, String styleClass, Boolean value) {
+            @SuppressWarnings("unchecked")
+            javafx.scene.control.ListView<Object> lv =
+                    (javafx.scene.control.ListView<Object>) p.lookup("." + styleClass);
+            lv.getSelectionModel().select(value);
         }
     }
 
