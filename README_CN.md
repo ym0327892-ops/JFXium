@@ -35,7 +35,25 @@
 > `Could not find artifact org.openkawu:jfxium:jar:1.34.1 in central`。
 > **必须自己把 jar 提供给项目**，不能指望 Maven 远程下载。
 
-**方式 A：本地构建安装（推荐）**
+**方式 A：从 GitHub Releases 下载（最省事）**
+
+[Releases](https://github.com/ym0327892-ops/JFXium/releases) 页面每个版本都挂着现成产物：
+`jfxium-<版本>.jar`、`-sources.jar`、`-javadoc.jar`，外加两个 pom（由 CI 在推 `v*` tag 时自动发布）。
+下载后装进本地仓库：
+
+```bash
+V=1.34.1   # 换成你下载的版本号
+mvn install:install-file -Dfile=jfxium-parent-$V.pom -DpomFile=jfxium-parent-$V.pom
+mvn install:install-file -Dfile=jfxium-$V.jar -DpomFile=jfxium-$V.pom
+# 可选：源码/文档 jar，装了 IDE 里能直接跳进源码
+mvn install:install-file -Dfile=jfxium-$V-sources.jar -DpomFile=jfxium-$V.pom -Dclassifier=sources
+```
+
+> **两个 pom 一个都不能少**：`jfxium.jar` 内的 pom 带着 `<parent>jfxium-parent</parent>`，
+> 只跑 `install-file -Dfile=jfxium-$V.jar`（不给 `-DpomFile`）会报
+> `Could not find artifact org.openkawu:jfxium-parent:pom:<版本>`。
+
+**方式 B：本地构建安装（需 JDK 21 + Maven）**
 
 ```bash
 git clone https://github.com/ym0327892-ops/JFXium.git
@@ -58,7 +76,7 @@ cd JFXium
 </dependency>
 ```
 
-**方式 B：直接把 jar 放进项目（完全不依赖仓库）**
+**方式 C：直接把 jar 放进项目（完全不依赖仓库）**
 
 产物在 `jfxium/target/jfxium-1.34.1.jar`，拷进项目 `libs/`：
 
@@ -73,13 +91,13 @@ cd JFXium
 ```
 
 不写 `pom.xml` 也行——IDE 里把它挂到模块的 Libraries / classpath 即可。
-（`system` scope 在 Maven 3.9+ 会告警且不参与依赖传递；要分发给别人请用方式 A 或 `mvn install:install-file`。）
+（`system` scope 在 Maven 3.9+ 会告警且不参与依赖传递；要分发给别人请用方式 A、B 或 `mvn install:install-file`。）
 
 **还需要哪些 jar**
 
-用方式 A 时，下面这些由 Maven 从 Central 自动解析 —— 但 **JavaFX 不会随本框架自动带进来**：
+用方式 A、B 时，下面这些由 Maven 从 Central 自动解析 —— 但 **JavaFX 不会随本框架自动带进来**：
 主库把 `javafx-controls` 声明为 `optional`，**不向下游传递**（这正是你要的行为）。所以
-**JavaFX 得由你自己的项目显式声明**；用方式 B 还要自己备齐 jar。
+**JavaFX 得由你自己的项目显式声明**；用方式 C 还要自己备齐 jar。
 本框架除 JavaFX 外零第三方运行时依赖。
 你用什么版本、要不要额外加 `javafx-fxml` / `javafx-media` / `javafx-web`，都按你项目的需要来；
 本框架不做版本锁死，也不会拿自己的 JavaFX 版本顶掉你的。

@@ -180,6 +180,30 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- ============================================
+                 源码 / Javadoc jar（GitHub Releases 附件）
+                 release CI 用 `source:jar javadoc:jar` 生成这两个附件。
+
+                 为什么 <sourcepath> 必须显式配置：
+                 主源码树根包 org.openkawu.jfxium 下**没有 package-info.java**，
+                 javadoc 靠默认推导找不到源文件，报
+                 「没有程序包 org.openkawu.jfxium 的源文件」——但
+                 maven-javadoc-plugin 仍返回 BUILD SUCCESS，产出**只有空 src/
+                 目录的假 jar**（527 字节，实测）。显式给 <sourcepath> +
+                 <doclint>none</doclint> 才真正生成内容。
+
+                 未绑定生命周期：只在显式调用 javadoc:jar 时运行，
+                 `mvn install` 打包速度不受影响。
+                 ============================================ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <configuration>
+                    <sourcepath>${project.basedir}/src/main/java</sourcepath>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
