@@ -108,13 +108,17 @@
   .focus-ring(@border-radius-sm);
 }
 
-/* 超链接：静止态 -fx-border-color: transparent（只 1 类选择器，与 .button:focus-visible
-   同为 0x110，靠源顺序取胜）。焦点时给单色外环 + 2px 外扩 —— 圆角不贴合文字基线，
-   故用 0 圆角小方框；作为「仅键盘可见」的焦点标记足够。 */
+/* 超链接：静止态 -fx-border-color: transparent（1 类选择器，与 .button:focus-visible
+   同为 0x110，靠源顺序取胜）。
+   必须走**双色环**（与其余控件一致）：曾用单色 @color-focus-outer，
+   实测暗色主题（外环=白）叠在浅色底上环不可见 —— 违反「焦点环在任意底色上可见」
+   这一核心断言（探针实测：dark 主题 + 白底 diff=0）。
+   内外均外扩 2px，整体在盒子外 2px 处，圆角 0（矩形框更贴合文字行），
+   不申请布局空间 → 无位移。 */
 .jfx-hyperlink:focus-visible {
-  -fx-border-color: -color-focus-outer;
-  -fx-border-style: solid;
-  -fx-border-width: @border-width-default;
-  -fx-border-insets: -2;
-  -fx-border-radius: 0;
+  -fx-border-color: -color-focus-outer, -color-focus-inner;
+  -fx-border-style: solid, solid;
+  -fx-border-width: @border-width-default, @border-width-default;
+  -fx-border-insets: -3, -2;
+  -fx-border-radius: 0, 0;
 }

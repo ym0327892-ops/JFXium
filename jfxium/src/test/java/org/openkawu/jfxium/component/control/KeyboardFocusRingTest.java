@@ -5,7 +5,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -318,10 +321,12 @@ class KeyboardFocusRingTest extends JfxTestBase {
             holder[0].getRoot().applyCss();
             holder[0].getRoot().layout();
 
-            // 超链接只取单色外环（圆角不贴合文字基线，故用方框）
+            // 超链接：双色环（与其余控件一致）。曾用单色外环，
+            // 实测暗色主题（外环=白）叠浅色底时环不可见，故改为双色。
             List<BorderStroke> ls = strokes(link);
-            if (ls.size() != 1 || !LIGHT_OUTER.equals(ls.get(0).getTopStroke())) {
-                err.set("jfx-hyperlink 焦点环不符（选择器没匹配上？）：" + describe(link));
+            if (ls.size() != 2 || !LIGHT_OUTER.equals(ls.get(0).getTopStroke())
+                    || !LIGHT_INNER.equals(ls.get(1).getTopStroke())) {
+                err.set("jfx-hyperlink 焦点环应为双色（选择器没匹配上？）：" + describe(link));
                 return;
             }
             List<BorderStroke> cs = strokes(clear);
@@ -332,5 +337,78 @@ class KeyboardFocusRingTest extends JfxTestBase {
             assertNotEquals(null, cs.get(0).getTopStroke());
         });
         if (err.get() != null) throw new AssertionError(err.get());
+    }
+
+    @Nested
+    @DisplayName("5. #169 覆盖审计补齐的目标（分页容器 / TitledPane 标题 / 超链接双色）")
+    class CoverageAudit {
+
+        @Test
+        @DisplayName("jfx-pagination 容器聚焦时拿到双色环")
+        void paginationContainer() {
+            AtomicReference<String> err = new AtomicReference<>();
+            runOnFxThreadAndWait(() -> {
+                Scene[] holder = new Scene[1];
+                Pagination pg = new Pagination(3);
+                pg.getStyleClass().add("jfx-pagination");
+                mount(holder, LIGHT, pg);
+                // 内部箭头/页码按钮 focusTraversable=false（JavaFX 21 实测），
+                // 焦点指示只能落在容器上
+                pg.pseudoClassStateChanged(FV, true);
+                holder[0].getRoot().applyCss();
+                holder[0].getRoot().layout();
+                try {
+                    assertTwoToneRing(pg, LIGHT_OUTER, LIGHT_INNER, "jfx-pagination");
+                } catch (AssertionError e) {
+                    err.set(e.getMessage());
+                }
+            });
+            if (err.get() != null) throw new AssertionError(err.get());
+        }
+
+        @Test
+        @DisplayName("TitledPane 标题条聚焦时拿到双色环（Accordion 亦复用该结构）")
+        void titledPaneTitle() {
+            AtomicReference<String> err = new AtomicReference<>();
+            runOnFxThreadAndWait(() -> {
+                Scene[] holder = new Scene[1];
+                TitledPane tp = new TitledPane("t", new Label("c"));
+                mount(holder, LIGHT, tp);
+                Node title = tp.lookup(".title");
+                if (title == null) { err.set("找不到 .title 节点"); return; }
+                title.pseudoClassStateChanged(FV, true);
+                holder[0].getRoot().applyCss();
+                holder[0].getRoot().layout();
+                try {
+                    assertTwoToneRing(title, LIGHT_OUTER, LIGHT_INNER, "titled-pane .title");
+                } catch (AssertionError e) {
+                    err.set(e.getMessage());
+                }
+            });
+            if (err.get() != null) throw new AssertionError(err.get());
+        }
+
+        @Test
+        @DisplayName("超链接在「暗色主题 + 浅色底」上仍有可见环（单色环会隐形）")
+        void hyperlinkVisibleInDarkOnLightBackground() {
+            AtomicReference<String> err = new AtomicReference<>();
+            runOnFxThreadAndWait(() -> {
+                Scene[] holder = new Scene[1];
+                Hyperlink link = new Hyperlink("link");
+                link.getStyleClass().add("jfx-hyperlink");
+                StackPane root = mount(holder, DARK, link);
+                root.setStyle("-fx-background-color: white;");
+                link.pseudoClassStateChanged(FV, true);
+                holder[0].getRoot().applyCss();
+                holder[0].getRoot().layout();
+                try {
+                    // 暗色下外环白；若写成单色，白环压在白底上 = 不可见，故必须双色
+                    assertTwoToneRing(link, DARK_OUTER, DARK_INNER, "jfx-hyperlink(dark on white)");
+                } catch (AssertionError e) {
+                    err.set(e.getMessage());
+                }
+            });
+            if (err.get() != null) throw new AssertionError(err.get());
+        }
     }
 }

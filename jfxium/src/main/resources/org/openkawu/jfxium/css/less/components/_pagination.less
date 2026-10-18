@@ -65,3 +65,13 @@
   -fx-text-fill: -color-fg-on-emphasis;
 }
 
+/* 键盘焦点（#169 覆盖审计补充）：
+   Pagination 本体 focusTraversable=true，但内部箭头/页码按钮全部
+   focusTraversable=false（JavaFX 21 实测：left/right-arrow-button 是 Button、
+   页码是 IndicatorButton，均不可单独 Tab 到）—— 故焦点指示只能画在**容器**上，
+   与 list-view / table-view 的处理一致。
+   本体背景 transparent、静止无边框，环不与任何既有边冲突。 */
+.jfx-pagination:focus-visible {
+  .focus-ring(@border-radius-sm);
+}
+

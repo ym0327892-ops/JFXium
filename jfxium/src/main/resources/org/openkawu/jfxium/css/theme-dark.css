@@ -2100,6 +2100,22 @@
   -fx-font-weight: 500;
   -fx-background-radius: 6px 6px 0 0;
 }
+/* 键盘焦点（#169 覆盖审计补充）：
+   TitledPane 整块 focusTraversable，实际可点区域是 > .title 标题条
+   （Accordion 亦复用同一结构）。环画在标题条上，上圆角对称、
+   下沿直线 —— 折叠时视觉重心在标题，语义正确。
+   静止态标题条已有 1px 边框（.titled-pane 的 border），环外扩 1px 不位移。
+   用普通档即可：.titled-pane > .title 是 2 类选择器(0x200)，
+   与 :focus-visible(0x10) 相加后源顺序决定，本规则位于文件后段；
+   若后续新增 `.titled-pane.custom > .title` 之类 3 类规则需改 strong 档。 */
+.titled-pane > .title:focus-visible,
+.jfx-accordion .titled-pane > .title:focus-visible {
+  -fx-border-color: rgba(255, 255, 255, 0.9), rgba(0, 0, 0, 0.9);
+  -fx-border-style: solid;
+  -fx-border-width: 1px, 1px;
+  -fx-border-insets: -1, 0;
+  -fx-border-radius: 7px, 6px;
+}
 .titled-pane > .content {
   -fx-background-color: -color-bg-default;
   -fx-padding: 16px;
@@ -2200,6 +2216,19 @@
   -fx-background-color: -color-accent-emphasis;
   -fx-border-color: -color-accent-emphasis;
   -fx-text-fill: -color-fg-on-emphasis;
+}
+/* 键盘焦点（#169 覆盖审计补充）：
+   Pagination 本体 focusTraversable=true，但内部箭头/页码按钮全部
+   focusTraversable=false（JavaFX 21 实测：left/right-arrow-button 是 Button、
+   页码是 IndicatorButton，均不可单独 Tab 到）—— 故焦点指示只能画在**容器**上，
+   与 list-view / table-view 的处理一致。
+   本体背景 transparent、静止无边框，环不与任何既有边冲突。 */
+.jfx-pagination:focus-visible {
+  -fx-border-color: rgba(255, 255, 255, 0.9), rgba(0, 0, 0, 0.9);
+  -fx-border-style: solid;
+  -fx-border-width: 1px, 1px;
+  -fx-border-insets: -1, 0;
+  -fx-border-radius: 5px, 4px;
 }
 /* ============================================
    ScrollBar Component
@@ -7017,15 +7046,19 @@
   -fx-border-insets: -1, 0;
   -fx-border-radius: 5px, 4px;
 }
-/* 超链接：静止态 -fx-border-color: transparent（只 1 类选择器，与 .button:focus-visible
-   同为 0x110，靠源顺序取胜）。焦点时给单色外环 + 2px 外扩 —— 圆角不贴合文字基线，
-   故用 0 圆角小方框；作为「仅键盘可见」的焦点标记足够。 */
+/* 超链接：静止态 -fx-border-color: transparent（1 类选择器，与 .button:focus-visible
+   同为 0x110，靠源顺序取胜）。
+   必须走**双色环**（与其余控件一致）：曾用单色 @color-focus-outer，
+   实测暗色主题（外环=白）叠在浅色底上环不可见 —— 违反「焦点环在任意底色上可见」
+   这一核心断言（探针实测：dark 主题 + 白底 diff=0）。
+   内外均外扩 2px，整体在盒子外 2px 处，圆角 0（矩形框更贴合文字行），
+   不申请布局空间 → 无位移。 */
 .jfx-hyperlink:focus-visible {
-  -fx-border-color: -color-focus-outer;
-  -fx-border-style: solid;
-  -fx-border-width: 1px;
-  -fx-border-insets: -2;
-  -fx-border-radius: 0;
+  -fx-border-color: -color-focus-outer, -color-focus-inner;
+  -fx-border-style: solid, solid;
+  -fx-border-width: 1px, 1px;
+  -fx-border-insets: -3, -2;
+  -fx-border-radius: 0, 0;
 }
 /* ============================================
    Size Variants (Small / Large)
