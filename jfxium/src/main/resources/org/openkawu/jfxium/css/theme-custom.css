@@ -99,6 +99,8 @@
   -color-danger-muted: #ffadd2;
   -color-danger-subtle: #fff0f6;
   -color-shadow-default: rgba(0, 0, 0, 0.15);
+  -color-focus-outer: rgba(0, 0, 0, 0.9);
+  -color-focus-inner: rgba(255, 255, 255, 0.95);
   /* Chart Category Palette —— 跨主题固定的 8 色定性色板
      （值定义在 variables-base.less，暗色主题不覆盖；详见该文件注释）*/
   -color-chart-1: #5b8ff9;
@@ -852,11 +854,17 @@
 .jfx-search-input-clear:hover .jfx-icon {
   -fx-text-fill: -color-fg-default;
 }
-/* 键盘焦点可见（与 _focus.less 的语义一致：鼠标点击不闪环） */
+/* 键盘焦点可见（统一走 _focus.less 的双色环）：
+   清除按钮是纯图标节点（无填充、无宽度），单色 accent 环在浅色输入框上偏弱，
+   注意必须走 strong 档：该按钮会被赋予 .button 类（与工具栏图标按钮同族），
+   而 `.jfx-search-input-clear:focus-visible`(0x110) 是打不赢 `.button.*` 变体的。
+   外环外扩 1px 且不申请布局空间，不改变 affix 区 24px 预留宽度（BUG #152 契约）。 */
 .jfx-search-input-clear:focus-visible {
-  -fx-border-color: -color-accent-emphasis;
-  -fx-border-radius: 4px;
-  -fx-border-style: solid;
+  -fx-border-color: rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.95) !important;
+  -fx-border-style: solid !important;
+  -fx-border-width: 1px, 1px !important;
+  -fx-border-insets: -1, 0 !important;
+  -fx-border-radius: 5px, 4px !important;
 }
 .jfx-search-input:disabled {
   -fx-opacity: 0.6;
@@ -6914,35 +6922,110 @@
        ⚠ 历史遗留：曾留下 `.focus-visible` 类 + JfxStyles.FOCUS_VISIBLE
        常量，但没有任何 Java 代码挂载过它，是一对死代码（已随本次修复删除）。
    ============================================ */
-/* 复选框 / 单选：描边 + 轻外发光（与 _input.less 的 :focused 观感统一） */
-.check-box:focus-visible > .box,
-.radio-button:focus-visible > .radio {
-  -fx-border-color: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
-}
-/* 滑块：拖动块平时就是 accent 描边 + 阴影，仅换色区分不出来，
-   因此键盘焦点用「加粗描边 + 更强光晕」表达。
-   （原 _slider.less 写成 `.slider .slider:focused .thumb` —— 后代选择器要求
-   .slider 内再套 .slider，永不匹配，是条僵尸规则，已一并修正） */
-.slider:focus-visible .thumb {
-  -fx-border-width: 3px;
-  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 5, 0, 0, 0);
-}
-/* 按钮 / 切换按钮：底色随 variant 各异（default/accent/ghost…），
-   焦点统一落在边框色上 —— 基线已有 1px 边框，改色不产生任何布局位移。
-   用 :focus-visible（而非 :focused）保证鼠标点击不闪蓝框。 */
-.button:focus-visible,
-.toggle-button:focus-visible {
-  -fx-border-color: -color-accent-emphasis;
-}
-/* 长列表容器：焦点在整表上，用内描边表达 */
+/* ----------------------------------------------------------------------------
+   统一实现：外深内浅双色环（.focus-ring()，定义在 variables-base.less）
+
+   为什么是「双色」而不是把 accent 环加粗：
+     单色 accent 环在主色填充的控件上不可见 —— 实测 .button.accent（静止填充 =
+     -color-accent-emphasis）的焦点环与自身填充同色，等于键盘焦点零反馈；
+     outline 变体的边框本身就是 accent，同样淹没。
+     双色对（外环深、内环浅）保证「无论控件填充是什么色、无论页面底色是什么色，
+     总有一环与之形成对比」—— 这也是 WinUI/Fluent 的通用做法：浅色控件用深色环、
+     深色控件用浅色环，并在环与控件之间留一圈底色做分隔（暗色主题翻转两色，见
+     variables-dark.less 的 @color-focus-* 覆盖）。
+
+   为什么外环画在盒子外（insets -1px）：
+     要保持控件**布局零位移**。见 .focus-ring() 注释（负 inset 不申请布局空间）。
+     .button 基类本就占着 1px 边框位（default/outlined 可见、text/link 透明），
+     内环正好落在这一格上，四态位置天然重合。
+
+   为什么每类控件选不同的外环线宽（实测 resolved Border）：
+     按钮 / 输入框 / 表格等 → 外 1px + 内 1px = 总环 2px；
+     复选框方框(16px) / 单选圆框 / 滑块拉手(14px) → 外 2px + 内 1px = 总环 3px，
+     与这些小组件的体量相称（1px 环在 16px 方框上细到几乎看不出）。
+   ---------------------------------------------------------------------------- */
+/* 容器类：表格 / 树 / 列表 —— 整块持焦，贴合自身 @border-radius-lg 圆角 */
 .table-view:focus-visible,
 .tree-view:focus-visible,
 .tree-table-view:focus-visible,
 .list-view:focus-visible {
-  -fx-border-color: -color-accent-emphasis;
-  -fx-border-width: 1px;
+  -fx-border-color: rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.95);
   -fx-border-style: solid;
+  -fx-border-width: 1px, 1px;
+  -fx-border-insets: -1, 0;
+  -fx-border-radius: 9px, 8px;
+}
+/* 输入类：文本框 / 组合框 / 日期 / 颜色 / 数字 —— 均为 @border-radius-sm 外框 */
+.text-field:focus-visible,
+.text-area:focus-visible,
+.combo-box:focus-visible,
+.date-picker:focus-visible,
+.color-picker:focus-visible,
+.choice-box:focus-visible,
+.spinner:focus-visible {
+  -fx-border-color: rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.95);
+  -fx-border-style: solid;
+  -fx-border-width: 1px, 1px;
+  -fx-border-insets: -1, 0;
+  -fx-border-radius: 5px, 4px;
+}
+/* 按钮类：variant（default / accent / ghost / text / link / danger / success / warning）
+   各自设了 -fx-border-color，且都是 `.button.variant`（2 类选择器）——
+   在 JavaFX 的伪类=0x10 / 类=0x100 计分下压过 `.button:focus-visible`(0x110)。
+   故本组走 .focus-ring-strong()（带 !important）；详见 variables-base.less 注释。 */
+.button:focus-visible,
+.toggle-button:focus-visible,
+.menu-button:focus-visible,
+.split-menu-button:focus-visible,
+.jfx-split-menu-button:focus-visible {
+  -fx-border-color: rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.95) !important;
+  -fx-border-style: solid !important;
+  -fx-border-width: 1px, 1px !important;
+  -fx-border-insets: -1, 0 !important;
+  -fx-border-radius: 5px, 4px !important;
+}
+/* 检查类：复选框方框 / 单选圆框（16×16 见视觉验收图，外环加粗到 2px，总环 3px） */
+.check-box:focus-visible > .box,
+.radio-button:focus-visible > .radio {
+  -fx-border-color: rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.95);
+  -fx-border-style: solid;
+  -fx-border-width: 2px, 1px;
+  -fx-border-insets: -1, 0;
+  -fx-border-radius: 5px, 4px;
+}
+/* 滑块拉手：圆形（@border-radius-full）、尺寸 14×14，
+   外环同样取 2px 才与自身体量相称 */
+.slider:focus-visible .thumb {
+  -fx-border-color: rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.95);
+  -fx-border-style: solid;
+  -fx-border-width: 2px, 1px;
+  -fx-border-insets: -1, 0;
+  -fx-border-radius: 10000px, 9999px;
+}
+/* 标签页头部：走与其他控件一致的双色环。
+   曾试过「保留 tab 自身底边 2px accent 下划线、其余三边补环」的定制方案，
+   实测那样会在选中 tab 上糊出一整圈 2px 蓝框（.tab-pane .tab:selected 的
+   `-fx-border-color: transparent transparent accent transparent` 被 4 边覆盖），
+   是一个视觉异类。统一环虽然会压住底边下划线的 1px，但形状/语义全局一致。
+   tab 底角是直角（3 3 0 0），外扩 1px 的圆角在直角处有极轻的阶梯，
+   1px 线宽下不可辨（见视觉验收图）。 */
+.tab-pane > .tab-header-area > .headers-region > .tab:focus-visible,
+.tab-pane > .tab-header-area > .headers-region > .tab:selected:focus-visible {
+  -fx-border-color: rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.95);
+  -fx-border-style: solid;
+  -fx-border-width: 1px, 1px;
+  -fx-border-insets: -1, 0;
+  -fx-border-radius: 5px, 4px;
+}
+/* 超链接：静止态 -fx-border-color: transparent（只 1 类选择器，与 .button:focus-visible
+   同为 0x110，靠源顺序取胜）。焦点时给单色外环 + 2px 外扩 —— 圆角不贴合文字基线，
+   故用 0 圆角小方框；作为「仅键盘可见」的焦点标记足够。 */
+.jfx-hyperlink:focus-visible {
+  -fx-border-color: -color-focus-outer;
+  -fx-border-style: solid;
+  -fx-border-width: 1px;
+  -fx-border-insets: -2;
+  -fx-border-radius: 0;
 }
 /* ============================================
    Size Variants (Small / Large)

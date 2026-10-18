@@ -516,6 +516,19 @@
 @color-shadow-popover: rgba(0, 0, 0, 0.15);
 @color-mask-default: rgba(0, 0, 0, 0.45);
 
+// 焦点环色对（Focus Ring）
+// --------------------------------------------
+// 键盘焦点可见性（:focus-visible）用「外深内浅」双色描边表达：
+//   外环 = @color-focus-outer（深色，靠页面上任何底色都压得住）
+//   内环 = @color-focus-inner（浅色，紧贴控件自身填充，把外环与控件隔开）
+// 借鉴 Fluent 的焦点视觉预算（FocusStrokeWidthOuter=2 / Inner=1、外黑 0.9 / 内白 0.7）：
+// 双色是「在任意底色上都可见」的最小充分解 —— 单色 accent 环在 accent 填充的按钮上
+// 不可见（实测：蓝色主按钮的 accent 环与填充同色，键盘焦点零反馈）。
+// 实现走 -fx-border-* 双色多值（见 .focus-ring() mixin），不占 -fx-effect，
+// 因为 JavaFX 一个节点只能挂一个 effect，而 .shadow-* 已经占用了它。
+@color-focus-outer: rgba(0, 0, 0, 0.9);
+@color-focus-inner: rgba(255, 255, 255, 0.95);
+
 .shadow-sm() {
   -fx-effect: dropshadow(gaussian, @color-shadow-default, 4, 0, 0, 1);
 }
@@ -526,4 +539,61 @@
 
 .shadow-lg() {
   -fx-effect: dropshadow(gaussian, @color-shadow-default, 16, 0, 0, 4);
+}
+
+// 焦点环混入 —— 外环 1px 外扩 + 内环 1px 贴边。
+//
+// 参数：
+//   @r        控件自身的圆角 token（内环半径）；外环自动 +1 保持同心
+//   @outer-w  外环线宽，默认 1px（「细」档）
+//   @outer-i  外环内缩，默认 -1px（负值 = 画在控件盒子**外侧**，不挤占内容）
+//
+// 为什么用 @outer-i: -1px 而不是把线宽加到 2px？
+//   JavaFX 的 -fx-border-insets 负值会让描边画到盒子外且**不申请额外布局空间**
+//   （实测：layoutX / layoutBounds / 父容器 pref 全部不变，只有 boundsInParent 扩大）——
+//   对 .button 这类「选中时布局绝不能跳动」的控件，这是唯一不产生位移的实现。
+//   ⚠ 副作用：外环落在父容器既有内容之上（不推开邻居）。按钮处于贴边布局（工具栏首/尾项）时
+//   外环会压到 1px 邻居上；按「焦点环是瞬态、只 1px」取舍，接受。
+//
+// 两个环同心：内环贴控件边缘（insets 0，半径 @r），外环在它外面一圈
+// （insets -1px，半径 @r + 1）。四个半径参数必须分开写 ——
+// 多值列表按「环」逐个对应，写成 @r, (@r + 1) 才配对。
+//
+// 为什么不用 dropshadow 做外环？
+//   effect 的输入矩形会裁剪掉外扩的描边：实测 blur 0/1/2/5/20 + spread 0/0.5/1/2
+//   在盒子外产出 0 个像素；滑块/复选框那套 dropshadow 光晕只在盒子**内侧**可见。
+//   故焦点环走 -fx-border-*，与 .shadow-* 的 effect 通道互不干涉（可同时生效）。
+//
+// ⚠ 为什么按钮组必须 !important —— JavaFX 特异度模型与 Web 相反：
+//   伪类记 0x10，类选择器记 0x100（见 javafx.css.Selector#createMatch 的
+//   computeSpecificity）。于是 `.button.accent`(0x200) **压过**
+//   `.button:focus-visible`(0x110)：实测主色按钮聚焦时边框仍是强调色，
+//   焦点环与填充同色 = 键盘用户零反馈。
+//   验证过的两条出路：
+//     1) `!important` → 生效（实测），这是唯一能压过多类选择器的办法；
+//     2) 加类提权 `.button.button.button:focus-visible` → **无效**，伪类不参与
+//        class 计数，仍输给 3 类的链式规则（且无法穷举 `.button.*` 组合）。
+//
+// 但 !important 不可全局滥用 —— 它会连**语义色**一起压掉。实测教训：
+//   `.text-field.jfx-input-status-error:focus-visible`(0x210) 的 !important 焦点环
+//   会把校验错误红边换成黑白环，错误信号在聚焦瞬间消失。
+// 故拆成两档：
+//   .focus-ring-strong()  → 按钮组（.button.* 变体打不赢，必须强压）
+//   .focus-ring()         → 其余控件（1~2 类选择器，靠源码顺序即可胜出，保留语义色）
+//     例外：`.check-box:focus-visible > .box`(0x210) 与 `.check-box:hover:selected .box`(0x220)
+//     打成平手，靠 _focus.less 在 _index.less 里最后一个 @import 的顺序取胜。
+.focus-ring-strong(@r; @outer-w: @border-width-default; @outer-i: -1) {
+  -fx-border-color: @color-focus-outer, @color-focus-inner !important;
+  -fx-border-style: solid !important;
+  -fx-border-width: @outer-w, @border-width-default !important;
+  -fx-border-insets: @outer-i, 0 !important;
+  -fx-border-radius: (@r + 1), @r !important;
+}
+
+.focus-ring(@r; @outer-w: @border-width-default; @outer-i: -1) {
+  -fx-border-color: @color-focus-outer, @color-focus-inner;
+  -fx-border-style: solid;
+  -fx-border-width: @outer-w, @border-width-default;
+  -fx-border-insets: @outer-i, 0;
+  -fx-border-radius: (@r + 1), @r;
 }

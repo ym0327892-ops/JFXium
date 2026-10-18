@@ -119,6 +119,12 @@
 
 @color-shadow-default: rgba(0, 0, 0, 0.4);
 
+// 焦点环色对（Dark）—— 与亮色相反：外环白、内环黑。
+// 依据 Fluent 的暗色焦点视觉：双色对必须与所在底色反向，才能同时压住
+// 深色面板（#202020 系）与强调色填充的按钮。详见 variables-base.less 的 .focus-ring()。
+@color-focus-outer: rgba(255, 255, 255, 0.9);
+@color-focus-inner: rgba(0, 0, 0, 0.9);
+
 // Motion
 @motion-duration-fast: 0.1s;
 @motion-duration-mid: 0.2s;

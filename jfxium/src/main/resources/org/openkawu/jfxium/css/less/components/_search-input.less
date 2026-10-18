@@ -77,11 +77,13 @@
   -fx-text-fill: -color-fg-default;
 }
 
-/* 键盘焦点可见（与 _focus.less 的语义一致：鼠标点击不闪环） */
+/* 键盘焦点可见（统一走 _focus.less 的双色环）：
+   清除按钮是纯图标节点（无填充、无宽度），单色 accent 环在浅色输入框上偏弱，
+   注意必须走 strong 档：该按钮会被赋予 .button 类（与工具栏图标按钮同族），
+   而 `.jfx-search-input-clear:focus-visible`(0x110) 是打不赢 `.button.*` 变体的。
+   外环外扩 1px 且不申请布局空间，不改变 affix 区 24px 预留宽度（BUG #152 契约）。 */
 .jfx-search-input-clear:focus-visible {
-  -fx-border-color: -color-accent-emphasis;
-  -fx-border-radius: @border-radius-sm;
-  -fx-border-style: solid;
+  .focus-ring-strong(@border-radius-sm);
 }
 
 .jfx-search-input:disabled {
