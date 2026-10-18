@@ -25,7 +25,7 @@ package org.openkawu.jfxium.core.style;
  *   <tr><td>状态色</td><td>{@code success / warning / error / info / processing / default} (裸名,部分)</td><td>{@code jfx-alert-success/info/warning/error / jfx-tag-success/processing/error/warning/default / jfx-badge-status-success/warning/error/default / jfx-result-status-success/info/warning/error/404/403/500}</td><td>⚠️ 不一致：{@code PROGRESS_SUCCESS/WARNING/ERROR} 裸名, {@code ALERT_SUCCESS} 已 jfx- 前缀</td></tr>
  *   <tr><td>选中/激活</td><td>{@code active / selected / disabled / hoverable / checkable / checked} (裸名,部分)</td><td>{@code jfx-menu-item-selected / jfx-segmented-item-selected / jfx-collapse-disabled / jfx-steps-finished/current/wait / jfx-tabs-active/disabled / jfx-tag-checkable/checked}</td><td>⚠️ 不一致：{@code SWITCH_SELECTED=switch-selected}、{@code GROUP_BOX_TAB_ITEM_ACTIVE=active}、{@code GROUP_BOX_HOVERABLE=hoverable} 裸名</td></tr>
  *   <tr><td>方向</td><td>{@code horizontal / vertical / both} (裸名)</td><td>{@code jfx-flex-horizontal/vertical / jfx-flex-wrap / jfx-space-horizontal/vertical/split / jfx-anchor-horizontal/vertical / jfx-divider-horizontal/vertical / jfx-form-horizontal/vertical/inline / jfx-steps-vertical / jfx-collapse-*}</td><td>✅ 一致：{@code RESIZABLE_PANEL_HANDLE_*} 用裸名，{@code FLEX_*} / {@code SPACE_*} 用 jfx- 前缀（不统一但语义清晰）</td></tr>
- *   <tr><td>阴影</td><td>{@code shadow-sm / shadow-md / shadow-lg}</td><td>—</td><td>✅ 裸名（仅 {@code SURFACE_SHADOW_*} 用）</td></tr>
+ *   <tr><td>阴影</td><td>{@code shadow-sm / shadow-md / shadow-lg}（3 档，公开 API）</td><td>{@code shadow-hairline / shadow-xl / shadow-2xl}（elev 2/24/28）</td><td>⚠️ 部分：公开的 3 档为历史命名（对应 elev 4/8/16），新增 3 档已对齐 elevation 数字</td></tr>
  *   <tr><td>类名前缀</td><td>—</td><td>{@code JFX_LIST_VIEW / JFX_CHOICE_BOX / JFX_SEPARATOR / JFX_SPLIT_MENU_BUTTON}</td><td>⚠️ 命名异类：JFX_xxx_yyy 大写 JFX_ 前缀，常量名风格不统一（其他都用 JFX_xxx_yyy 不带连字符 JFX_）</td></tr>
  * </table>
  * <p><b>统一建议</b>（不在本次 P4 范围内，仅作未来参考）：</p>
@@ -148,6 +148,12 @@ public final class JfxStyles {
     public static final String SURFACE_SHADOW_SM = "shadow-sm";
     public static final String SURFACE_SHADOW_MD = "shadow-md";
     public static final String SURFACE_SHADOW_LG = "shadow-lg";
+    /** Elevation 阶梯 24px 档（强浮层：AlertDialog 等） */
+    public static final String SURFACE_SHADOW_XL = "shadow-xl";
+    /** Elevation 阶梯 28px 档（最高浮层：Modal / Drawer） */
+    public static final String SURFACE_SHADOW_2XL = "shadow-2xl";
+    /** Elevation 阶梯 2px 档（紧贴投影：开关滑块等极小部件） */
+    public static final String SURFACE_SHADOW_HAIRLINE = "shadow-hairline";
 
     /** FilterBarAnt 通用筛选+操作工具条（admin 列表页上栏标配） */
     public static final String FILTER_BAR = "jfx-filter-bar";

@@ -508,12 +508,35 @@
   -fx-border-radius: @border-radius-sm;
 }
 
-// 阴影效果混入
-// 使用位置：.tooltip、.modal-content、.combo-box-popup 等
+// 阴影 / 浮层色 token
+// --------------------------------------------
+// 命名对齐 WinUI/Fluent 的 Elevation 阶梯（6 档：2/4/8/16/28/64），
+// 但**仅用于浮层投影**（Popup / Modal / 下拉 / 卡片），不含发光（glow）。
+//
+// ⚠ 两类 effect 必须区分，历史上混在一起是「阴影随明暗漂移」的根因：
+//   1) 浮层投影（本组）—— 影子必须随明暗翻转：浅色用淡黑、深色用重黑（否则深色主题下阴影看不见）。
+//   2) 焦点光晕（-color-accent-emphasis 那批 dropshadow，共 12 处）—— 属焦点视觉族，
+//      色相固定为强调色，不参与明暗翻转，也不是 elevation。见 _focus.less / .focus-ring()。
+//
+// 参照 Fluent 各档 (blur, y-offset, opacity)，这里把 blur 作为档位主键：
+//   elev-2  → blur 2  （紧贴，如开关滑块）
+//   elev-4  → blur 4  （卡片静止）
+//   elev-8  → blur 8  （卡片悬浮 / 下拉 / 气泡）
+//   elev-16 → blur 16 （浮层 / 对话框）
+//   elev-24 → blur 24 （警告对话框等强浮层）
+//   elev-28 → blur 28 （模态 / 抽屉，最高档）
+// ⚠ 取 24 而非 Fluent 的 28 作为「强浮层」档，是因为既有值就是 24（下拉/对话框已用它）；
+//   仅新增的模态档取 28，避免为对齐数字而改动既有观感。
+//
+// 深色下不透明度整体抬高（阴影在深色底上必须更重才可辨）：
+//   浅色 elev-alpha-default = 0.15；深色 = 0.4（见 variables-dark.less）。
+@color-shadow-elev-2: rgba(0, 0, 0, 0.10);
+@color-shadow-elev-4: @color-shadow-default;
+@color-shadow-elev-8: @color-shadow-default;
+@color-shadow-elev-16: @color-shadow-default;
+@color-shadow-elev-24: @color-shadow-default;
+@color-shadow-elev-28: @color-shadow-default;
 
-// 阴影/遮罩色 token（P1-2: 从 rgba 硬编码提取）
-@color-shadow-thumb: rgba(0, 0, 0, 0.1);
-@color-shadow-popover: rgba(0, 0, 0, 0.15);
 @color-mask-default: rgba(0, 0, 0, 0.45);
 
 // 焦点环色对（Focus Ring）
@@ -525,20 +548,32 @@
 // 双色是「在任意底色上都可见」的最小充分解 —— 单色 accent 环在 accent 填充的按钮上
 // 不可见（实测：蓝色主按钮的 accent 环与填充同色，键盘焦点零反馈）。
 // 实现走 -fx-border-* 双色多值（见 .focus-ring() mixin），不占 -fx-effect，
-// 因为 JavaFX 一个节点只能挂一个 effect，而 .shadow-* 已经占用了它。
+// 因为 JavaFX 一个节点只能挂一个 effect，而 .shadow-elev-* 已经占用了它。
 @color-focus-outer: rgba(0, 0, 0, 0.9);
 @color-focus-inner: rgba(255, 255, 255, 0.95);
 
-.shadow-sm() {
-  -fx-effect: dropshadow(gaussian, @color-shadow-default, 4, 0, 0, 1);
+.shadow-elev-2() {
+  -fx-effect: dropshadow(gaussian, @color-shadow-elev-2, 2, 0, 0, 1);
 }
 
-.shadow-md() {
-  -fx-effect: dropshadow(gaussian, @color-shadow-default, 8, 0, 0, 2);
+.shadow-elev-4() {
+  -fx-effect: dropshadow(gaussian, @color-shadow-elev-4, 4, 0, 0, 1);
 }
 
-.shadow-lg() {
-  -fx-effect: dropshadow(gaussian, @color-shadow-default, 16, 0, 0, 4);
+.shadow-elev-8() {
+  -fx-effect: dropshadow(gaussian, @color-shadow-elev-8, 8, 0, 0, 2);
+}
+
+.shadow-elev-16() {
+  -fx-effect: dropshadow(gaussian, @color-shadow-elev-16, 16, 0, 0, 4);
+}
+
+.shadow-elev-24() {
+  -fx-effect: dropshadow(gaussian, @color-shadow-elev-24, 24, 0, 0, 6);
+}
+
+.shadow-elev-28() {
+  -fx-effect: dropshadow(gaussian, @color-shadow-elev-28, 28, 0, 0, 8);
 }
 
 // 焦点环混入 —— 外环 1px 外扩 + 内环 1px 贴边。

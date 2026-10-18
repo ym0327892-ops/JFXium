@@ -105,12 +105,12 @@
   -fx-border-width: @border-width-default;
   -fx-padding: 12;
   -fx-cursor: hand;
-  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
+  .shadow-elev-8();
 }
 
 .jfx-back-top:hover {
   -fx-background-color: -color-accent-subtle;
-  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 3);
+  .shadow-elev-16();
 }
 
 .jfx-back-top-arrow {
@@ -188,7 +188,7 @@
   -fx-border-color: -color-border-default;
   -fx-border-radius: @border-radius-md;
   -fx-border-width: @border-width-default;
-  -fx-effect: dropshadow(gaussian, -color-shadow-default, 8, 0, 0, 4);
+  .shadow-elev-8();
   -fx-padding: @spacing-sm 0 @spacing-sm 0;
   -fx-spacing: @spacing-sm;
 }

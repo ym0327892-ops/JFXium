@@ -226,6 +226,15 @@
 .jfx-surface.shadow-lg {
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 16, 0, 0, 4);
 }
+.jfx-surface.shadow-xl {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 24, 0, 0, 6);
+}
+.jfx-surface.shadow-2xl {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 28, 0, 0, 8);
+}
+.jfx-surface.shadow-hairline {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.32), 2, 0, 0, 1);
+}
 .jfx-surface-header {
   -fx-background-color: transparent;
   -fx-padding: 0 0 8px 0;
@@ -2564,7 +2573,7 @@
   -fx-border-width: 1px;
   -fx-border-style: solid;
   -fx-border-radius: 9px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.32), 2, 0, 0, 1);
 }
 .jfx-switch.switch-selected .jfx-switch-track {
   -fx-background-color: -color-accent-emphasis;
@@ -3798,11 +3807,11 @@
   -fx-border-width: 1px;
   -fx-padding: 12;
   -fx-cursor: hand;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
 }
 .jfx-back-top:hover {
   -fx-background-color: -color-accent-subtle;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 3);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 16, 0, 0, 4);
 }
 .jfx-back-top-arrow {
   -fx-fill: -color-fg-default;
@@ -3869,7 +3878,7 @@
   -fx-border-color: -color-border-default;
   -fx-border-radius: 6px;
   -fx-border-width: 1px;
-  -fx-effect: dropshadow(gaussian, -color-shadow-default, 8, 0, 0, 4);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
   -fx-padding: 6px 0 6px 0;
   -fx-spacing: 6px;
 }
@@ -4075,7 +4084,7 @@
   -fx-border-color: -color-border-default;
   -fx-border-radius: 6px;
   -fx-border-width: 1px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 4);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
   -fx-padding: 4 0 4 0;
   -fx-min-width: 160;
 }
@@ -4484,7 +4493,7 @@
   -fx-font-weight: 700;
   -fx-padding: 0;
   -fx-cursor: hand;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.18), 6, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
 }
 .button.jfx-carousel-arrow-btn:hover {
   -fx-background-color: rgba(0, 0, 0, 0.6);
@@ -4507,7 +4516,7 @@
 .jfx-carousel-dot {
   -fx-fill: rgba(255, 255, 255, 0.55);
   -fx-cursor: hand;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 4, 0, 0, 1);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 4, 0, 0, 1);
 }
 .jfx-carousel-dot.jfx-carousel-dot-active {
   -fx-fill: white;
@@ -4523,7 +4532,7 @@
 /* 通用面板"圆角 + 阴影 + 背景"（Drawer 与 Modal 主体复用） */
 .jfx-overlay-panel {
   -fx-background-color: -color-bg-overlay;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 16, 0, 0, 4);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 28, 0, 0, 8);
 }
 .jfx-overlay-panel.jfx-overlay-panel-rounded {
   -fx-background-radius: 8px;
@@ -6643,7 +6652,7 @@
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-style: solid;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
 }
 .jfx-popconfirm-icon {
   -fx-fill: -color-warning-emphasis;
@@ -6667,7 +6676,7 @@
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-style: solid;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
 }
 .jfx-message-card-content {
   -fx-text-fill: -color-fg-default;
@@ -6698,7 +6707,7 @@
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
   -fx-border-style: solid;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
 }
 .jfx-notification-card-title {
   -fx-text-fill: -color-fg-default;
@@ -6821,7 +6830,7 @@
   -fx-border-color: -color-border-muted;
   -fx-border-width: 1px;
   -fx-border-radius: 8px;
-  -fx-effect: dropshadow(gaussian, -color-shadow-default, 24, 0, 0, 8);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 24, 0, 0, 6);
   /* header：图标 + 标题 */
   /* 图形容器（左侧 icon 区，Java 端已钳制 48 宽） */
   /* content：正文 */
@@ -6906,7 +6915,7 @@
   -fx-border-radius: 8px;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
 }
 .jfx-popover-title-box {
   -fx-padding: 12px 16px;
@@ -7377,7 +7386,7 @@
   -fx-cursor: hand;
 }
 .jfx-feature-card-clickable:hover {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 12, 0, 0, 4);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 16, 0, 0, 4);
 }
 /* ============================================
    Component Auxiliary Styles
@@ -7534,12 +7543,12 @@
   -fx-border-style: solid;
   -fx-border-radius: 9999px;
   -fx-cursor: hand;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
 }
 .jfx-float-button-primary:hover {
   -fx-background-color: -color-accent-4;
   -fx-border-color: -color-accent-4;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0, 0, 4);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 16, 0, 0, 4);
 }
 .jfx-float-button-primary:armed,
 .jfx-float-button-primary:pressed {
@@ -7554,12 +7563,12 @@
   -fx-border-style: solid;
   -fx-border-radius: 9999px;
   -fx-cursor: hand;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
 }
 .jfx-float-button-default:hover {
   -fx-border-color: -color-accent-muted;
   -fx-text-fill: -color-accent-emphasis;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0, 0, 4);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 16, 0, 0, 4);
 }
 .jfx-float-button-default:armed,
 .jfx-float-button-default:pressed {

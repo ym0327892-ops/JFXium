@@ -72,16 +72,30 @@
   -fx-border-style: solid;
 }
 
+// 公开 API 类名（JfxStyles.SURFACE_SHADOW_SM/MD/LG，SurfaceAnt.Shadow 映射到它们）
+// 保持 3 档不变，仅把实现接到 elevation 阶梯的对应档；另加 3 档新类供内部/新代码使用。
 .jfx-surface.shadow-sm {
-  .shadow-sm();
+  .shadow-elev-4();
 }
 
 .jfx-surface.shadow-md {
-  .shadow-md();
+  .shadow-elev-8();
 }
 
 .jfx-surface.shadow-lg {
-  .shadow-lg();
+  .shadow-elev-16();
+}
+
+.jfx-surface.shadow-xl {
+  .shadow-elev-24();
+}
+
+.jfx-surface.shadow-2xl {
+  .shadow-elev-28();
+}
+
+.jfx-surface.shadow-hairline {
+  .shadow-elev-2();
 }
 
 .jfx-surface-header {

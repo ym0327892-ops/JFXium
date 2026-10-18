@@ -118,6 +118,9 @@
 @color-danger-subtle: @color-danger-0;     // 背景
 
 @color-shadow-default: rgba(0, 0, 0, 0.4);
+// 深色下最低档阴影同样要抬不透明度 —— 否则开关滑块那种 2px 紧贴投影在深色底上不可辨。
+// 其余档（elev-4..28）全部引用 @color-shadow-default，自动跟随上面的 0.4。
+@color-shadow-elev-2: rgba(0, 0, 0, 0.32);
 
 // 焦点环色对（Dark）—— 与亮色相反：外环白、内环黑。
 // 依据 Fluent 的暗色焦点视觉：双色对必须与所在底色反向，才能同时压住

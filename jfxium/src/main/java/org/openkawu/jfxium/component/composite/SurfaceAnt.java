@@ -42,11 +42,19 @@ import java.util.List;
  */
 public class SurfaceAnt {
 
+    /**
+     * 阴影档位 —— 对齐 elevation 阶梯（见 {@code variables-base.less} 的 {@code .shadow-elev-*}）。
+     * 三档历史名（SMALL/MEDIUM/LARGE）保持原名与语义不变，避免破坏下游调用；
+     * 另补 HAIRLINE（2px 紧贴）与 XL / XXL（24 / 28px 强浮层）覆盖全阶梯。
+     */
     public enum Shadow {
         NONE,
+        HAIRLINE,
         SMALL,
         MEDIUM,
-        LARGE
+        LARGE,
+        XL,
+        XXL
     }
 
     public static Builder create() {
@@ -111,9 +119,12 @@ public class SurfaceAnt {
                 surface.getStyleClass().add(JfxStyles.SURFACE_BORDERED);
             }
             switch (shadow) {
+                case HAIRLINE -> surface.getStyleClass().add(JfxStyles.SURFACE_SHADOW_HAIRLINE);
                 case SMALL -> surface.getStyleClass().add(JfxStyles.SURFACE_SHADOW_SM);
                 case MEDIUM -> surface.getStyleClass().add(JfxStyles.SURFACE_SHADOW_MD);
                 case LARGE -> surface.getStyleClass().add(JfxStyles.SURFACE_SHADOW_LG);
+                case XL -> surface.getStyleClass().add(JfxStyles.SURFACE_SHADOW_XL);
+                case XXL -> surface.getStyleClass().add(JfxStyles.SURFACE_SHADOW_2XL);
                 case NONE -> {
                 }
             }
