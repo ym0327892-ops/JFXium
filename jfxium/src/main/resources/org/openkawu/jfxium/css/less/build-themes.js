@@ -17,7 +17,8 @@ const themes = [
   { input: 'theme-light-compact.less', output: 'theme-light-compact.css' },
   { input: 'theme-dark-compact.less', output: 'theme-dark-compact.css' },
   { input: 'theme-custom.less', output: 'theme-custom.css' },
-  { input: 'theme-custom-compact.less', output: 'theme-custom-compact.css' }
+  { input: 'theme-custom-compact.less', output: 'theme-custom-compact.css' },
+  { input: 'theme-light-tool.less', output: 'theme-light-tool.css' }
 ];
 
 function compileTheme(inputFile, outputFile) {

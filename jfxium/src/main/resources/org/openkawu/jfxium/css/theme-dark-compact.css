@@ -67,7 +67,7 @@
   -color-fg-subtle: rgba(255, 255, 255, 0.45);
   -color-fg-on-emphasis: #ffffff;
   -color-bg-default: #0d1117;
-  -color-bg-overlay: #161b22;
+  -color-bg-overlay: #21262d;
   -color-bg-subtle: #161b22;
   -color-bg-inset: #010409;
   -color-bg-container: #0d1117;
@@ -2049,7 +2049,7 @@
   -fx-background-color: -color-accent-active;
 }
 .jfx-accordion .titled-pane > .content {
-  -fx-background-color: -color-bg-default;
+  -fx-background-color: -color-bg-overlay;
   -fx-padding: 8px 12px;
 }
 .jfx-accordion .titled-pane:expanded > .title {
@@ -2088,7 +2088,7 @@
   -fx-border-radius: 7px, 6px;
 }
 .titled-pane > .content {
-  -fx-background-color: -color-bg-default;
+  -fx-background-color: -color-bg-overlay;
   -fx-padding: 12px;
   -fx-background-radius: 0 0 6px 6px;
 }
@@ -3837,7 +3837,7 @@
    M21.29 废弃 Spinner 步进；M21.32 短暂改用十位/个位两列；M21.37 回到三列长列表。 */
 /* 面板：白底 + 圆角 + 边框 + 阴影，与 jfx-popup-menu 同一视觉语言 */
 .jfx-time-panel {
-  -fx-background-color: -color-bg-default;
+  -fx-background-color: -color-bg-overlay;
   -fx-background-radius: 6px;
   -fx-border-color: -color-border-default;
   -fx-border-radius: 6px;
@@ -4043,7 +4043,7 @@
    DropdownAnt / AutoCompleteAnt / MentionsAnt 等浮层共用同一套视觉
    ============================================ */
 .jfx-popup-menu {
-  -fx-background-color: -color-bg-default;
+  -fx-background-color: -color-bg-overlay;
   -fx-background-radius: 6px;
   -fx-border-color: -color-border-default;
   -fx-border-radius: 6px;
