@@ -57,7 +57,7 @@
 }
 .jfx-form-label-required::after {
   -fx-content: " *";
-  -fx-text-fill: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-text;
 }
 /* 自定义 requiredMark 时抑制 CSS ::after 双重显示（* 已由 Java 端拼接进 label 文本） */
 .jfx-form-label-required-custom::after {
@@ -89,13 +89,13 @@
 
 /* 校验状态色：通过修饰类切换 helpText 颜色 */
 .jfx-form-help-text.jfx-form-help-error {
-  -fx-text-fill: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-text;
 }
 .jfx-form-help-text.jfx-form-help-warning {
-  -fx-text-fill: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-text;
 }
 .jfx-form-help-text.jfx-form-help-success {
-  -fx-text-fill: -color-success-emphasis;
+  -fx-text-fill: -color-success-text;
 }
 
 /* Form item：label 与控件之间、控件与 help/error 之间的纵向间距 */

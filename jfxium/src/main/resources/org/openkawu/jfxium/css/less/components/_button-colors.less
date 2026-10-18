@@ -1,6 +1,11 @@
 /* ============================================
-   Button Color Variants (Success/Danger/Warning)
-   ============================================ */
+   Button Color Variants (Success / Danger / Warning)
+   ============================================
+   对标 AtlantaFX antdesign-light.css 行 1259-1306。
+   状态色独立存在，与 .button.default 叠加时靠选择器顺序实现覆盖。
+   状态：base / :hover / :armed+:pressed（disabled 走 .button:disabled 统一 opacity 0.6）
+   fix #102。历史问题：_button.less 曾有同一批实心规则的旧副本（直引 @color-*-5 色阶），
+   因 _button 先于 _button-colors 导入而整体覆盖语义规则，已于本次清理删除。 */
 .button.success {
   -fx-background-color: -color-success-emphasis;
   -fx-border-color: -color-success-emphasis;
@@ -8,8 +13,8 @@
 }
 
 .button.success:hover {
-  -fx-background-color: -color-success-4;
-  -fx-border-color: -color-success-4;
+  -fx-background-color: -color-success-hover-shade;
+  -fx-border-color: -color-success-hover-shade;
   -fx-text-fill: -color-fg-on-emphasis;
 }
 
@@ -27,8 +32,8 @@
 }
 
 .button.danger:hover {
-  -fx-background-color: -color-danger-4;
-  -fx-border-color: -color-danger-4;
+  -fx-background-color: -color-danger-hover-shade;
+  -fx-border-color: -color-danger-hover-shade;
   -fx-text-fill: -color-fg-on-emphasis;
 }
 
@@ -46,8 +51,8 @@
 }
 
 .button.warning:hover {
-  -fx-background-color: -color-warning-4;
-  -fx-border-color: -color-warning-4;
+  -fx-background-color: -color-warning-hover-shade;
+  -fx-border-color: -color-warning-hover-shade;
   -fx-text-fill: -color-fg-on-emphasis;
 }
 
@@ -62,13 +67,13 @@
 .button.outlined.success {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-success-emphasis;
-  -fx-text-fill: -color-success-emphasis;
+  -fx-text-fill: -color-success-text;
 }
 
 .button.outlined.success:hover {
   -fx-background-color: -color-success-hover;
   -fx-border-color: -color-success-muted;
-  -fx-text-fill: -color-success-emphasis;
+  -fx-text-fill: -color-success-text;
 }
 
 .button.outlined.success:armed,
@@ -81,13 +86,13 @@
 .button.outlined.danger {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-danger-emphasis;
-  -fx-text-fill: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-text;
 }
 
 .button.outlined.danger:hover {
   -fx-background-color: -color-danger-hover;
   -fx-border-color: -color-danger-muted;
-  -fx-text-fill: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-text;
 }
 
 .button.outlined.danger:armed,
@@ -100,13 +105,13 @@
 .button.outlined.warning {
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-warning-emphasis;
-  -fx-text-fill: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-text;
 }
 
 .button.outlined.warning:hover {
   -fx-background-color: -color-warning-hover;
   -fx-border-color: -color-warning-muted;
-  -fx-text-fill: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-text;
 }
 
 .button.outlined.warning:armed,
@@ -118,7 +123,7 @@
 
 /* Text variants */
 .button.text.success {
-  -fx-text-fill: -color-success-emphasis;
+  -fx-text-fill: -color-success-text;
 }
 
 .button.text.success:hover {
@@ -126,7 +131,7 @@
 }
 
 .button.text.danger {
-  -fx-text-fill: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-text;
 }
 
 .button.text.danger:hover {
@@ -134,7 +139,7 @@
 }
 
 .button.text.warning {
-  -fx-text-fill: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-text;
 }
 
 .button.text.warning:hover {
@@ -160,7 +165,7 @@
 .button.ghost:hover {
   -fx-background-color: transparent;
   -fx-border-color: -color-accent-emphasis;
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-text;
 }
 
 .button.ghost:armed,
@@ -174,33 +179,33 @@
 .button.ghost.accent {
   -fx-background-color: transparent;
   -fx-border-color: -color-accent-emphasis;
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-text;
 }
 
 .button.ghost.accent:hover {
   -fx-background-color: transparent;
-  -fx-border-color: -color-accent-4;
-  -fx-text-fill: -color-accent-4;
+  -fx-border-color: -color-accent-hover-shade;
+  -fx-text-fill: -color-accent-active;
 }
 
 .button.ghost.accent:armed,
 .button.ghost.accent:pressed {
   -fx-background-color: transparent;
-  -fx-border-color: -color-accent-6;
-  -fx-text-fill: -color-accent-6;
+  -fx-border-color: -color-accent-active;
+  -fx-text-fill: -color-accent-active;
 }
 
 /* success ghost */
 .button.ghost.success {
   -fx-background-color: transparent;
   -fx-border-color: -color-success-emphasis;
-  -fx-text-fill: -color-success-emphasis;
+  -fx-text-fill: -color-success-text;
 }
 
 .button.ghost.success:hover {
   -fx-background-color: transparent;
   -fx-border-color: -color-success-muted;
-  -fx-text-fill: -color-success-emphasis;
+  -fx-text-fill: -color-success-text;
 }
 
 .button.ghost.success:armed,
@@ -214,13 +219,13 @@
 .button.ghost.warning {
   -fx-background-color: transparent;
   -fx-border-color: -color-warning-emphasis;
-  -fx-text-fill: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-text;
 }
 
 .button.ghost.warning:hover {
   -fx-background-color: transparent;
   -fx-border-color: -color-warning-muted;
-  -fx-text-fill: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-text;
 }
 
 .button.ghost.warning:armed,
@@ -234,13 +239,13 @@
 .button.ghost.danger {
   -fx-background-color: transparent;
   -fx-border-color: -color-danger-emphasis;
-  -fx-text-fill: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-text;
 }
 
 .button.ghost.danger:hover {
   -fx-background-color: transparent;
   -fx-border-color: -color-danger-muted;
-  -fx-text-fill: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-text;
 }
 
 .button.ghost.danger:armed,

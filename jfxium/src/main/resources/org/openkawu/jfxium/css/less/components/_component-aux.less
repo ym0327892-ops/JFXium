@@ -78,7 +78,7 @@
 }
 
 .jfx-tabs-label-line.jfx-tabs-active {
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-text;
   -fx-font-weight: 600;
 }
 
@@ -90,7 +90,7 @@
 
 .jfx-tabs-label-card.jfx-tabs-active {
   -fx-background-color: -color-bg-default;
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-text;
   -fx-border-color: -color-border-muted -color-border-muted transparent -color-border-muted;
   -fx-border-width: 1px 1px 0 1px;
   -fx-background-radius: @border-radius-lg @border-radius-lg 0 0;
@@ -187,15 +187,15 @@
 }
 
 .jfx-float-button-primary:hover {
-  -fx-background-color: -color-accent-4;
-  -fx-border-color: -color-accent-4;
+  -fx-background-color: -color-accent-hover-shade;
+  -fx-border-color: -color-accent-hover-shade;
   .shadow-elev-16();
 }
 
 .jfx-float-button-primary:armed,
 .jfx-float-button-primary:pressed {
-  -fx-background-color: -color-accent-6;
-  -fx-border-color: -color-accent-6;
+  -fx-background-color: -color-accent-active;
+  -fx-border-color: -color-accent-active;
 }
 
 .jfx-float-button-default {
@@ -211,7 +211,7 @@
 
 .jfx-float-button-default:hover {
   -fx-border-color: -color-accent-muted;
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-text;
   .shadow-elev-16();
 }
 
@@ -227,7 +227,7 @@
 }
 
 .jfx-float-button-default:hover .label {
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-text;
 }
 
 .jfx-float-button-default:armed .label,
@@ -318,25 +318,25 @@
 .jfx-tag.jfx-tag-primary,
 .jfx-tag.jfx-tag-processing {
   -fx-background-color: -color-accent-subtle;
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-text;
   -fx-border-color: -color-accent-muted;
 }
 
 .jfx-tag.jfx-tag-success {
   -fx-background-color: -color-success-subtle;
-  -fx-text-fill: -color-success-emphasis;
+  -fx-text-fill: -color-success-text;
   -fx-border-color: -color-success-muted;
 }
 
 .jfx-tag.jfx-tag-warning {
   -fx-background-color: -color-warning-subtle;
-  -fx-text-fill: -color-warning-emphasis;
+  -fx-text-fill: -color-warning-text;
   -fx-border-color: -color-warning-muted;
 }
 
 .jfx-tag.jfx-tag-error {
   -fx-background-color: -color-danger-subtle;
-  -fx-text-fill: -color-danger-emphasis;
+  -fx-text-fill: -color-danger-text;
   -fx-border-color: -color-danger-muted;
 }
 
@@ -534,7 +534,7 @@
    ------------------------------------------- */
 .jfx-tree-select-row.jfx-tree-select-active {
   -fx-background-color: -color-accent-subtle;
-  -fx-text-fill: -color-accent-emphasis;
+  -fx-text-fill: -color-accent-text;
 }
 
 .jfx-tree-select-row.jfx-tree-select-leaf {

@@ -79,85 +79,58 @@
 @color-bg-subtle: #f6f8fa;
 @color-bg-inset: #f3f4f6;
 
+@color-bg-layout: #f0f2f5;
+@color-bg-masked: rgba(0, 0, 0, 0.45);
+
 @color-border-default: #d9d9d9;
 @color-border-muted: #f0f0f0;
 @color-border-subtle: rgba(0, 0, 0, 0.06);
 
 // Accent Color Scale (完整色阶: Base/Hover/Active)
-// Base: 主色，Hover: 浅色背景，Active: 深色按压
+// 语义三层：emphasis = 主色(填充) / hover = 浅色底(悬停背景) / active = 深色按压
+// ⚠ hover 与 hover-shade 的区别必须分清（历史上混用是 bug 来源）：
+//   hover       = 色阶 0，浅色**底**（ghost/菜单/列表行悬停背景）
+//   text        = 色阶 7（warning 取 8，其色相在 7 处仅 4.25:1，达不到 AA 4.5），
+//                 用于**浅色底上的文字**（描边/幽灵按钮、次要文字按钮、浅底徽标与提示）
+//   emphasis 是主色/填充色，当文字用在浅色底上时对比度只有 1.8~3.3（不达标）
+//   hover-shade = 色阶 4，比主色**浅一档的实体色**（实心/描边按钮悬停填充）
+//   实心按钮若用 hover 当填充，文字/背景对比度只有 1.1~1.2（近乎不可辨）；用 hover-shade 可达 2.5~4
 @color-accent-emphasis: @color-accent-5;      // Base (主色)
-@color-accent-hover: @color-accent-0;       // Hover (浅色背景)
-@color-accent-active: @color-accent-6;      // Active (深色按压)
-@color-accent-muted: @color-accent-2;       // 边框/图标
-@color-accent-subtle: @color-accent-0;      // 背景
+@color-accent-hover: @color-accent-0;         // Hover (浅色底)
+@color-accent-hover-shade: @color-accent-4;   // Hover (浅一档实体色)
+@color-accent-text: @color-accent-7;
+@color-accent-active: @color-accent-6;        // Active (深色按压)
+@color-accent-muted: @color-accent-2;         // 边框/图标
+@color-accent-subtle: @color-accent-0;        // 背景
 
 // Success Color Scale
 @color-success-emphasis: @color-success-5;    // Base (主色)
-@color-success-hover: @color-success-0;      // Hover (浅色背景)
-@color-success-active: @color-success-6;     // Active (深色按压)
-@color-success-muted: @color-success-2;     // 边框/图标
-@color-success-subtle: @color-success-0;    // 背景
+@color-success-hover: @color-success-0;       // Hover (浅色底)
+@color-success-hover-shade: @color-success-4; // Hover (浅一档实体色)
+@color-success-text: @color-success-7;
+@color-success-active: @color-success-6;      // Active (深色按压)
+@color-success-muted: @color-success-2;       // 边框/图标
+@color-success-subtle: @color-success-0;      // 背景
 
 // Warning Color Scale
-@color-warning-emphasis: @color-warning-5;   // Base (主色)
-@color-warning-hover: @color-warning-0;     // Hover (浅色背景)
-@color-warning-active: @color-warning-6;     // Active (深色按压)
-@color-warning-muted: @color-warning-2;     // 边框/图标
-@color-warning-subtle: @color-warning-0;   // 背景
+@color-warning-emphasis: @color-warning-5;    // Base (主色)
+@color-warning-hover: @color-warning-0;       // Hover (浅色底)
+@color-warning-hover-shade: @color-warning-4; // Hover (浅一档实体色)
+@color-warning-text: @color-warning-8;
+@color-warning-active: @color-warning-6;      // Active (深色按压)
+@color-warning-muted: @color-warning-2;       // 边框/图标
+@color-warning-subtle: @color-warning-0;      // 背景
 
 // Danger Color Scale
-@color-danger-emphasis: @color-danger-4;   // Base (主色)
-@color-danger-hover: @color-danger-0;      // Hover (浅色背景)
-@color-danger-active: @color-danger-6;      // Active (深色按压)
-@color-danger-muted: @color-danger-2;       // 边框/图标
-@color-danger-subtle: @color-danger-0;     // 背景
+@color-danger-emphasis: @color-danger-4;      // Base (主色)
+@color-danger-hover: @color-danger-0;         // Hover (浅色底)
+@color-danger-hover-shade: @color-danger-6;   // Hover (浅一档实体色) —— 危险色是特殊色阶，6 才是「浅一档」
+@color-danger-text: @color-danger-7;
+@color-danger-active: @color-danger-6;        // Active (深色按压)
+@color-danger-muted: @color-danger-2;         // 边框/图标
+@color-danger-subtle: @color-danger-0;        // 背景
 
 @color-shadow-default: rgba(0, 0, 0, 0.15);
-
-// ============================================
-// 语义别名 (Seed Token)
-// ============================================
-
-// Seed Token (主色色阶)
-@color-primary: @color-accent-5;       // Base (主色)
-@color-primary-hover: @color-accent-4; // Hover (浅一点)
-@color-primary-active: @color-accent-6; // Active (深一点)
-
-@color-success-hover: @color-success-4; // Hover
-@color-success-active: @color-success-6; // Active
-
-@color-warning-hover: @color-warning-4; // Hover
-@color-warning-active: @color-warning-6; // Active
-
-@color-error: @color-danger-5;       // Base (主色)
-
-
-// Alias Token (语义颜色)
-@color-text: @color-fg-default;
-
-@color-bg-container: @color-bg-default;
-@color-bg-layout: #f0f2f5;
-@color-bg-masked: rgba(0, 0, 0, 0.45);
-
-@color-border: @color-border-default;
-
-
-// Map Token (衍生颜色)
-@color-primary-bg: @color-accent-0;
-
-
-
-
-// Component Token
-
-
-
-
-
-
-
-
-
 
 // Motion
 @motion-duration-fast: 0.1s;
