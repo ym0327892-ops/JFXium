@@ -7069,6 +7069,33 @@
   -fx-border-insets: -3, -2;
   -fx-border-radius: 0, 0;
 }
+/* ----------------------------------------------------------------------------
+   自绘交互容器（icon-only / 自绘开关）
+   ----------------------------------------------------------------------------
+   这批节点原本不可聚焦（鼠标专属），#170 起为无障碍接入了 Tab 焦点
+   （见 core/util/A11y.java：FirePane / FireBox / FireLabel）。**一旦可聚焦就必须有可见焦点指示**，
+   否则键盘用户会「焦点掉了找不到」，正是 #169 的缺陷类别。
+
+   两处都走 strong 档：这两个类在别处有 2 类选择器的变体规则
+   （`.jfx-switch.switch-selected`、`.jfx-tag-close:hover`），
+   0x110 的单类伪类规则打不赢，必须带 !important。
+   ---------------------------------------------------------------------------- */
+/* 开关：轨道尺寸 44×22、@border-radius 11px —— 环贴合自身圆角 */
+.jfx-switch:focus-visible {
+  -fx-border-color: rgba(255, 255, 255, 0.9), rgba(0, 0, 0, 0.9) !important;
+  -fx-border-style: solid !important;
+  -fx-border-width: 1px, 1px !important;
+  -fx-border-insets: -1, 0 !important;
+  -fx-border-radius: 12px, 11px !important;
+}
+/* 标签关闭按钮：12×12 的小方形，外环取 2px 才与体量相称（同复选框方框） */
+.jfx-tag-close:focus-visible {
+  -fx-border-color: rgba(255, 255, 255, 0.9), rgba(0, 0, 0, 0.9) !important;
+  -fx-border-style: solid !important;
+  -fx-border-width: 2px, 1px !important;
+  -fx-border-insets: -1, 0 !important;
+  -fx-border-radius: 5px, 4px !important;
+}
 /* ============================================
    Size Variants (Small / Large)
    ============================================

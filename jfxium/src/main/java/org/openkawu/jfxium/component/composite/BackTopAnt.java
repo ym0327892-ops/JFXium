@@ -10,6 +10,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.style.JfxStyles;
+import org.openkawu.jfxium.core.util.A11y;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 import org.openkawu.jfxium.core.util.IconPath;
 
@@ -89,7 +90,15 @@ public class BackTopAnt {
 
             // hover 由 LESS .jfx-back-top:hover 控制，不再通过 Java 事件回调
             // 仅保留点击回调（业务逻辑非视觉）
+            A11y.name(backTop, A11y.A11yRole.BUTTON, "a11y.back_to_top");
+            backTop.setFocusTraversable(true);
             backTop.setOnMouseClicked(e -> scrollToTop());
+            backTop.setOnKeyPressed(e -> {
+                switch (e.getCode()) {
+                    case SPACE, ENTER -> scrollToTop();
+                    default -> { /* 其它按键不处理 */ }
+                }
+            });
 
             setupScrollListener(backTop);
             applyStyles(backTop);

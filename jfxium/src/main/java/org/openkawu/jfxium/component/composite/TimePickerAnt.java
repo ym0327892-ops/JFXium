@@ -24,6 +24,7 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.A11y;
 import org.openkawu.jfxium.core.util.ApplySizeUtil;
 import org.openkawu.jfxium.core.util.PopupPositioner;
 import org.openkawu.jfxium.core.util.Spacers;
@@ -214,7 +215,9 @@ public class TimePickerAnt {
 
         final StackPane root = new StackPane();
         final InputAnt field = InputAnt.create();
-        private final Label clearBtn = new Label();
+        // 清除按钮换成 A11y.FireLabel：图形按钮无可见文本，读屏只有靠 accessibleText
+        // 才有名字；角色 + 名字 + 鼠标/键盘/读屏三路激活动作一次性接齐。
+        private final A11y.FireLabel clearBtn = A11y.label("a11y.clear", null);
         private final Region arrow = new Region();
 
         Trigger(String styleClass, String fieldStyleClass, String placeholderText, Size size,
@@ -265,19 +268,10 @@ public class TimePickerAnt {
         }
 
         void onClear(Runnable action) {
-            clearBtn.setOnMouseClicked(e -> {
+            // 鼠标 / 键盘空格回车 / 读屏 FIRE 三路统一由 FireLabel 的动作槽承担；
+            // 此前三处各写一遍（且读屏那路没人接），现在只在此绑定一次即可。
+            clearBtn.setAction(() -> {
                 action.run();
-                e.consume();
-            });
-            // 键盘可达：空格 / 回车触发清除
-            clearBtn.setOnKeyPressed(e -> {
-                switch (e.getCode()) {
-                    case SPACE, ENTER -> {
-                        action.run();
-                        e.consume();
-                    }
-                    default -> { /* 其它按键不处理 */ }
-                }
             });
         }
 

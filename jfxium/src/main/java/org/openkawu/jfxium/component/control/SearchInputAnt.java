@@ -8,6 +8,7 @@ import javafx.scene.layout.Region;
 import org.openkawu.jfxium.component.layout.AbstractStackPaneAnt;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.A11y;
 import org.openkawu.jfxium.core.util.ApplySizeUtil;
 import org.openkawu.jfxium.core.util.TextUtils;
 
@@ -63,8 +64,10 @@ public class SearchInputAnt extends AbstractStackPaneAnt<SearchInputAnt> {
         // 叠加层必须钳到自身 pref 尺寸：否则 StackPane 会把它拉伸到容器大小，
         // 对齐方式（CENTER_RIGHT 右端其对）失效，点击热区也会糊满整行。
         clearBtn.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        // 鼠标点击 / 键盘空格回车 / 读屏 FIRE 三路统一走 clear()（此前键盘与鼠标各写一遍，
+        // 读屏的激活动作没人接 —— 读屏用户听得到「清除」却按不动）。
+        A11y.name(clearBtn, A11y.A11yRole.BUTTON, "a11y.clear");
         clearBtn.setOnMouseClicked(e -> clear());
-        // 键盘可达：清除按钮是可聚焦控件之外的交互元素，需显式支持空格/回车触发
         clearBtn.setFocusTraversable(true);
         clearBtn.setOnKeyPressed(e -> {
             switch (e.getCode()) {

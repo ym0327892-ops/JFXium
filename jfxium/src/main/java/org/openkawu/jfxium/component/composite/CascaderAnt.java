@@ -16,6 +16,7 @@ import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.util.A11y;
 import org.openkawu.jfxium.core.util.IconPath;
 import org.openkawu.jfxium.core.util.TextUtils;
 
@@ -129,12 +130,14 @@ public class CascaderAnt {
             cascaderPanel.getStyleClass().add(JfxStyles.POPUP_MENU);
             popup.getContent().add(cascaderPanel);
 
-            // BUG #132 修复：原来 new Label("×") 是裸 Unicode 字符当图标，现走 IconAnt.symbol 统一收口
-            Label clearLabel = new Label();
+            // BUG #132 修复：原来 new Label("×") 是裸 Unicode 字符当图标，现走 IconAnt.symbol 统一收口。
+            // 此处再补无障碍：图形按钮无可见文本，读屏需靠 accessibleText 才有名字；
+            // 鼠标/键盘/读屏三路激活动作统一走 FireLabel 的动作槽（此前只有鼠标一路）。
+            A11y.FireLabel clearLabel = A11y.label("a11y.clear", null);
             clearLabel.getStyleClass().add(JfxStyles.CASCADER_CLEAR);
             clearLabel.setGraphic(IconAnt.symbol(IconAnt.Symbol.CLOSE, 12));
             updateClearLabel(clearLabel);
-            clearLabel.setOnMouseClicked(e -> {
+            clearLabel.setAction(() -> {
                 if (Boolean.TRUE.equals(disable) || selectedPath.isEmpty()) {
                     return;
                 }
@@ -148,7 +151,6 @@ public class CascaderAnt {
                 }
                 updateClearLabel(clearLabel);
                 popup.hide();
-                e.consume();
             });
 
             rebuildColumns(cascaderPanel, field, popup, clearLabel);

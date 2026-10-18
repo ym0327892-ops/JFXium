@@ -8,6 +8,7 @@ import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
+import org.openkawu.jfxium.core.util.A11y;
 import org.openkawu.jfxium.core.util.IconPath;
 import org.openkawu.jfxium.core.util.NumericUtils;
 import org.openkawu.jfxium.core.util.TextUtils;
@@ -184,14 +185,15 @@ public class TagAnt {
 
             // Close button
             if (closable) {
-                StackPane closeBtn = createCloseButton();
-                closeBtn.setOnMouseClicked(e -> {
+                // 关闭动作在「鼠标点击」之外的路径（键盘空格/回车、读屏 FIRE）由 A11y.FirePane 收敛
+                Runnable closeAction = () -> {
                     if (onClose != null) {
                         onClose.run();
                     }
                     tag.setVisible(false);
                     tag.setManaged(false);
-                });
+                };
+                StackPane closeBtn = createCloseButton(closeAction);
                 tag.getChildren().add(closeBtn);
             }
 
@@ -199,8 +201,10 @@ public class TagAnt {
             return tag;
         }
 
-        private StackPane createCloseButton() {
-            StackPane closeBtn = new StackPane();
+        private StackPane createCloseButton(Runnable closeAction) {
+            // 原来是裸 StackPane + onMouseClicked：鼠标能关，但读屏读不出名字也激活不了。
+            // 换成 A11y.FirePane 后角色/名字/鼠标/键盘/FIRE 四路收敛到同一个 closeAction。
+            A11y.FirePane closeBtn = A11y.button("a11y.close", closeAction);
             closeBtn.getStyleClass().add(JfxStyles.TAG_CLOSE);
             closeBtn.setPrefSize(12, 12);
             closeBtn.setMaxSize(12, 12);

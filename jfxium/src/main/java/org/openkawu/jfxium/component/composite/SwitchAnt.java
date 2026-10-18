@@ -12,6 +12,7 @@ import javafx.scene.layout.StackPane;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.form.FormContext;
 import org.openkawu.jfxium.core.style.JfxStyles;
+import org.openkawu.jfxium.core.util.A11y;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 import org.openkawu.jfxium.core.util.Bindings;
 import org.openkawu.jfxium.core.util.TextUtils;
@@ -147,7 +148,13 @@ public class SwitchAnt {
 
             thumbContainer.getChildren().add(thumb);
 
-            StackPane switchPane = new StackPane(track, thumbContainer);
+            // 原来是裸 StackPane：鼠标能切、键盘不能、读屏完全无感知（读不出角色/状态/名字）。
+            // 换成 A11y.FirePane 承载 role + 名字 + 三路激活动作；状态通知在 valueProperty
+            // 建好后接上（见下方 A11y.bindSelected）。
+            A11y.FirePane switchPane = new A11y.FirePane(A11y.A11yRole.TOGGLE_BUTTON, "a11y.switch");
+            // 轨道与滑块必须显式重新挂上：换成 FirePane 时原构造参数 (track, thumbContainer)
+            // 一并丢失，会让整个开关渲染成空白（视觉回归，肉眼可见）。
+            switchPane.getChildren().addAll(track, thumbContainer);
             switchPane.setMinSize(44, 22);
             switchPane.setMaxSize(44, 22);
             switchPane.setPrefSize(44, 22);
@@ -193,7 +200,7 @@ public class SwitchAnt {
             // 初值播种到「一个防抖窗口之前」（相对 nanoTime 任意原点）：既保证首次点击必过，
             // 又避免用 Long.MIN_VALUE 造成 now - last 减法溢出误判。
             final long[] lastToggleNanos = { System.nanoTime() - TOGGLE_DEBOUNCE_NANOS };
-            switchPane.setOnMouseClicked(e -> {
+            Runnable toggle = () -> {
                 if (isDisabled) {
                     return;
                 }
@@ -203,7 +210,12 @@ public class SwitchAnt {
                 }
                 lastToggleNanos[0] = now;
                 valueProperty.set(!valueProperty.get());
-            });
+            };
+            // 鼠标点击 / 键盘空格回车 / 读屏 FIRE 三路收敛到同一个 toggle（含防抖）；
+            // 此前只有 onMouseClicked 一路，键盘与读屏都切不动这个自绘开关。
+            switchPane.setAction(toggle);
+            // 状态变化通知读屏（念「已打开 / 已关闭」要靠 SELECTED 属性变更通知）
+            A11y.bindSelected(switchPane, valueProperty);
 
             HBox.setHgrow(switchPane, Priority.NEVER);
             container.getChildren().add(switchPane);
