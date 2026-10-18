@@ -45,6 +45,26 @@
 @font-size-xl: 20px;
 @font-size-xxl: 28px;
 
+// Line Height Scale (Base)
+// --------------------------------------------
+// ★ JavaFX 语义与 Web 的 line-height 不同:这里算的是「额外行距」(leading),
+//   作用在「行与行之间」,单行文本完全不受影响(实测 14px 单行 16.5px 恒定)。
+//   字体自身的行盒 ≈ 字号的 1.18 倍(实测 14px→16.5 / 13px→15.3 / 20px→23.5),
+//   所以「目标行高 = 字号 × 倍率 × 1.18」,本组令牌即按此标定。
+// ★ 值用 em 不用 px:字号随密度变化(紧凑 14→13px),em 会自动等比收缩,
+//   不必在 3 个 compact 主题里各抄一份数字(单一事实来源)。
+// 使用位置:多行文本、描述/说明文字、弹窗正文;表单标签、列表行(需要更紧凑)
+// - tight   0.07em → 等效行高 ≈1.26(表单标签、列表行等紧凑排版场景)
+// - normal  0.28em → 等效行高 ≈1.45(正文默认;14px 时 ≈20.3px,
+//                        对齐 FontTokens.LINE_HEIGHT_NORMAL = 20)
+// - relaxed 0.45em → 等效行高 ≈1.63(长段落、说明/帮助文字)
+// ⚠ 禁止把 @line-height-* 直接喂给 -fx-line-spacing：它们是行距增量(em)，不是行高倍率，
+//   也不是行高绝对值。@font-size-* 的像素变量就是字号本身，不需要额外的行高像素令牌
+//   （Java 侧需要绝对行高时用 FontTokens.LINE_HEIGHT_NORMAL）。
+@line-height-tight: 0.07em;
+@line-height-normal: 0.28em;
+@line-height-relaxed: 0.45em;
+
 // CodeBlockAnt 局部 light/dark 主题（固定语义，不跟随全局明暗反转）
 // 使用位置：components/_codeblock.less 的 Builder.theme(LIGHT/DARK) 变体
 @color-code-light-bg: #f6f8fa;
@@ -506,6 +526,24 @@
   -fx-background-color: @color-bg-default;
   -fx-background-radius: @border-radius-sm;
   -fx-border-radius: @border-radius-sm;
+}
+
+// 文本行距 mixin
+// --------------------------------------------
+// ⚠ 只能用于**多行**文本。JavaFX 的 -fx-line-spacing 是「行间额外距」,
+//   单行文本不受影响(可安全批量套用);但它对多行会抬高整体高度,
+//   所以带固定高度钳制的场景(ellipsis(rows) / 表格行高)要另算。
+// 使用位置:描述段落、弹窗正文、说明文字
+.leading-normal() {
+  -fx-line-spacing: @line-height-normal;
+}
+
+.leading-tight() {
+  -fx-line-spacing: @line-height-tight;
+}
+
+.leading-relaxed() {
+  -fx-line-spacing: @line-height-relaxed;
 }
 
 // 阴影 / 浮层色 token

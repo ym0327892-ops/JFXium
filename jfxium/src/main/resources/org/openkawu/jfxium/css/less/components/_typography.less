@@ -4,6 +4,7 @@
 .jfx-typography-text {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: @font-size-md;
+  .leading-normal();  // 单行无副作用;多行(wrap)才生效
 }
 
 .jfx-typography-text.muted {

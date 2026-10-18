@@ -202,6 +202,7 @@
   -fx-font-size: 14px;
   -fx-text-fill: -color-fg-muted;
   -fx-wrap-text: true;
+  -fx-line-spacing: 0.28em;
 }
 .jfx-page-template-body {
   -fx-background-color: transparent;
@@ -2654,6 +2655,7 @@
 .jfx-typography-text {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
+  -fx-line-spacing: 0.28em;
 }
 .jfx-typography-text.muted {
   -fx-text-fill: -color-fg-muted;
@@ -3520,6 +3522,7 @@
   -fx-font-size: 12px;
   -fx-text-fill: -color-fg-default;
   -fx-wrap-text: true;
+  -fx-line-spacing: 0.28em;
 }
 /* selectable 模式：只读 TextArea 单色渲染，可拖选 + Ctrl+C。
    去掉 TextArea 默认 chrome（背景/边框/焦点环），让它融入代码块容器。
@@ -4683,6 +4686,7 @@
 .jfx-timeline-content {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
+  -fx-line-spacing: 0.28em;
 }
 .jfx-timeline-line {
   -fx-stroke: -color-border-muted;
@@ -5352,6 +5356,7 @@
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 14px;
   -fx-font-weight: 500;
+  -fx-line-spacing: 0.07em;
 }
 .jfx-form-label-required::after {
   -fx-content: " *";
@@ -6665,6 +6670,7 @@
 .jfx-popconfirm-desc {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 12px;
+  -fx-line-spacing: 0.28em;
 }
 /* Message */
 .jfx-message-card {
@@ -6717,6 +6723,7 @@
 .jfx-notification-card-desc {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 14px;
+  -fx-line-spacing: 0.28em;
 }
 .jfx-notification-container {
   -fx-spacing: 6px;
@@ -6745,6 +6752,7 @@
 .jfx-result-subtitle {
   -fx-font-size: 14px;
   -fx-text-fill: -color-fg-muted;
+  -fx-line-spacing: 0.28em;
 }
 /* FilterBar label */
 .jfx-filter-bar-label {
@@ -6848,6 +6856,7 @@
   -fx-font-size: 16px;
   -fx-font-weight: bold;
   -fx-wrap-text: true;
+  -fx-line-spacing: 0.07em;
 }
 .dialog-pane.jfx-alert-dialog .jfx-alert-dialog-graphic {
   -fx-padding: 0;
@@ -6864,6 +6873,7 @@
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 14px;
   -fx-wrap-text: true;
+  -fx-line-spacing: 0.28em;
 }
 .dialog-pane.jfx-alert-dialog .jfx-alert-dialog-button-bar {
   -fx-padding: 12 24;
@@ -7872,6 +7882,7 @@
 .jfx-result-subtitle {
   -fx-font-size: 14px;
   -fx-text-fill: -color-fg-muted;
+  -fx-line-spacing: 0.28em;
 }
 .jfx-result-extra {
   -fx-padding: 16 0 0 0;

@@ -72,12 +72,23 @@ public final class FontTokens {
     public static final double TITLE_H5 = 16;
 
     // ============================================================
-    // 正文/行高（与 LESS @font-size-md / @line-height-normal 对齐）
+    // 正文 / 行高（与 LESS @font-size-md / @line-height-normal 对齐）
     // ============================================================
 
     /** 正文字号（14px），对应 LESS {@code @font-size-md}。 */
     public static final double FONT_SIZE_MD = 14;
 
-    /** 行高（20px），用于 ellipsis 高度计算。对应 {@code @font-size-md * @line-height-normal ≈ 14 * 1.4}。 */
+    /**
+     * 正文字号对应的行高（20px），用于 {@code ellipsis(rows)} 的高度钳制。
+     *
+     * <p>含义是<b>目标行高</b>（14 × 1.45 ≈ 20.3），不是字体渲染出的行盒。
+     * 实测字体行盒 ≈ 字号 × 1.18（14px → 16.5px，20px → 23.5px），
+     * 多行间距由 {@code -fx-line-spacing: 0.28em} 补齐 ≈ 3.9px/行，
+     * 合成后每行约占 20.42px，与本常量 20px 的差在 5% 以内 ——
+     * 因此 {@code ellipsis(rows)} 的钳制在 rows ≤ 9 时够用（典型用法 1~3 行）。</p>
+     *
+     * <p>⚠ 紧凑密度下 CSS 字号降到 13px，本常量仍返回 20（Java 侧无密度感知），
+     * 偏差约 8%。真要精确时调用方应按 {@code ThemeManager.getInstance().getDensity()} 折算。</p>
+     */
     public static final double LINE_HEIGHT_NORMAL = 20;
 }
