@@ -13,8 +13,8 @@
 ## 特性
 
 - **组件齐全** — 覆盖控件、组合组件、浮层、布局与业务模板
-- **Ant Design 6.x 风格** — 像素级还原 Ant Design 设计语言
-- **内置主题入口** — Light/Dark/Tool + 自定义主题模板，均带紧凑密度变体
+- **双设计语言** — Ant Design 6.x 风格 + 微软 Fluent 2（Windows 11 / WinUI 3）风格，同一批组件换主题即换设计语言
+- **内置主题入口** — Ant Design 系（Light/Dark/Tool）+ Fluent 2 系（Fluent/Fluent Dark）+ custom 模板，均带紧凑密度变体；Fluent 采用微软官方 token 与固定品牌蓝
 - **Builder 模式** — 全组件链式 API：`XxxAnt.create()...build()`
 - **LESS 主题体系** — 只需改一个 LESS 文件即可生成自己的主题
 - **国际化** — 内置中英文，`Messages.get(key)` API
