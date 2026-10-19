@@ -12,26 +12,23 @@
 /* ============================================
    Layout Primitive 命名空间挂载点
    FlexAnt / GridAnt / SpaceAnt / DividerAnt 的 styleClass。
-   当前仅作为外部主题/扩展的样式锚点，本基础主题不为它们注入特殊样式，
-   保持"布局原语保持原生 JavaFX 行为"的原则。
+   仅作为外部主题/扩展的样式锚点，本基础主题不为它们注入特殊样式，
+   保持"布局原语保持原生 JavaFX 行为"的原则 —— 故这里不允许写
+   -fx-background-color: transparent：
+   这些类名被 GridAnt 挂到调用方自己的节点上，一旦声明背景，
+   就会以「同特异性 + 靠后」压掉调用方通过 {@code background(Background.*)}
+   挂上的 .jfx-bg-*（BUG #176）。
    ============================================ */
 .jfx-flex,
 .jfx-flex-horizontal,
 .jfx-flex-vertical,
-.jfx-flex-wrap {
-  -fx-background-color: transparent;
-}
-
+.jfx-flex-wrap,
 .jfx-grid,
 .jfx-grid-row,
-.jfx-grid-col {
-  -fx-background-color: transparent;
-}
-
+.jfx-grid-col,
 .jfx-space,
 .jfx-space-horizontal,
 .jfx-space-vertical {
-  -fx-background-color: transparent;
 }
 
 /* DividerAnt 文本与线条样式 */
