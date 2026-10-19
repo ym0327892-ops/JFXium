@@ -29,13 +29,21 @@
   
 }
 
-/* 统一下拉箭头（可挂到任意 Region 上复用） */
+/* 统一下拉箭头（可挂到任意 Region 上复用）
+   ⚠️ max 三件套不能省：-fx-shape 是「按 Region 边界缩放」的，
+   只给 min/pref 时，放进 HBox（fillHeight=true）、VBox（fillWidth=true）
+   或 maxHeight=MAX_VALUE 的容器里会被拉伸成整行/整列高，
+   SVG 随边界等比放大 → 本来 10×5 的小三角渲染成又黑又大的楔形。
+   历史缺陷见 BUG #179（DropdownAnt.showArrow 的触发器）。
+   与 .combo-box .arrow 的 arrow-drop-down 处理保持一致。 */
 .jfx-arrow-dropdown {
   -fx-shape: "M7 10l5 5 5-5z";
   -fx-min-width: 10px;
   -fx-min-height: 5px;
   -fx-pref-width: 10px;
   -fx-pref-height: 5px;
+  -fx-max-width: 10px;
+  -fx-max-height: 5px;
   -fx-background-color: -color-fg-muted;
 }
 
