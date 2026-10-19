@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 // ============================================
-// JFXium LESS Theme Builder
+// JFXium LESS Theme Builder（离线备用脚本）
 // Usage: node build-themes.js
 // Requires: npm install -g less
+//
+// 注意：日常构建**不需要**本脚本——Maven 构建链已由 jlessc（纯 Java）
+// 在 generate-resources 阶段编译全部主题，清单见 jfxium/pom.xml 的 themes 列表。
+// 本脚本仅在无 Maven 环境下手工核对产物时使用，因此主题清单必须与 pom.xml 手工同步。
 // ============================================
 
 const { execSync } = require('child_process');
@@ -18,7 +22,11 @@ const themes = [
   { input: 'theme-dark-compact.less', output: 'theme-dark-compact.css' },
   { input: 'theme-custom.less', output: 'theme-custom.css' },
   { input: 'theme-custom-compact.less', output: 'theme-custom-compact.css' },
-  { input: 'theme-light-tool.less', output: 'theme-light-tool.css' }
+  { input: 'theme-light-tool.less', output: 'theme-light-tool.css' },
+  { input: 'theme-fluent.less', output: 'theme-fluent.css' },
+  { input: 'theme-fluent-compact.less', output: 'theme-fluent-compact.css' },
+  { input: 'theme-fluent-dark.less', output: 'theme-fluent-dark.css' },
+  { input: 'theme-fluent-dark-compact.less', output: 'theme-fluent-dark-compact.css' }
 ];
 
 function compileTheme(inputFile, outputFile) {

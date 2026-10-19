@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.style.JfxStyles;
+import org.openkawu.jfxium.core.theme.Theme;
 import org.openkawu.jfxium.core.theme.ThemeColor;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
@@ -51,9 +52,12 @@ class WorkspaceSettingsTemplateTest extends JfxTestBase {
             assertNotNull(root);
             assertEquals(5, root.getChildren().size(), "标题 + 4 个设置分组");
 
-            ComboBox<?> familySelect = findComboBox(root, ThemeManager.Family.values().length);
-            assertNotNull(familySelect);
-            assertEquals(ThemeManager.Family.ANT_DESIGN, familySelect.getValue());
+            ComboBox<?> styleSelect = findComboBox(root, 4);
+            assertNotNull(styleSelect);
+            assertTrue(styleSelect.getValue() instanceof Theme,
+                    "设计风格下拉应绑定具体 Theme 实例");
+            assertEquals("JFXium Dark", ((Theme) styleSelect.getValue()).getName(),
+                    "ANT_DESIGN + dark 时应回显 JFXium Dark");
 
             ComboBox<?> colorSelect = findComboBox(root, ThemeColor.Preset.values().length);
             assertNotNull(colorSelect);

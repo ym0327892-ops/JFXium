@@ -28,8 +28,11 @@ public class ThemeManager {
     private static ThemeManager instance;
 
     // 四个 Theme 实现均为无状态，缓存为单例避免反复 new
+    // 六个 Theme 实现均为无状态，缓存为单例避免反复 new
     private static final Theme LIGHT_THEME = new LightTheme();
     private static final Theme DARK_THEME = new DarkTheme();
+    private static final Theme FLUENT_THEME = new FluentTheme();
+    private static final Theme FLUENT_DARK_THEME = new FluentDarkTheme();
 
     private Theme currentTheme;
     private ThemeColor currentThemeColor;
@@ -37,13 +40,40 @@ public class ThemeManager {
     private final List<Scene> registeredScenes = new ArrayList<>();
     private final List<Region> registeredRegions = new ArrayList<>();
 
-    /** 主题家族（设计风格）。当前仅 Ant Design 一种。 */
+    /**
+     * 主题家族（设计风格）。
+     *
+     * <p>{@link #ANT_DESIGN}（历史遗留名）承载 Light/Dark/Custom/Tool 四个主题；
+     * {@link #FLUENT} 承载 Fluent / Fluent Dark。家族 × 明暗两轴经
+     * {@link #applyComposite()} 组合出具体 {@link Theme}。</p>
+     */
     public enum Family {
-        ANT_DESIGN("Ant Design");
+        ANT_DESIGN("Ant Design") {
+            @Override public String styleName(boolean dark) {
+                return "Ant Design";
+            }
+            @Override public Theme theme(boolean dark) {
+                return dark ? DARK_THEME : LIGHT_THEME;
+            }
+        },
+        FLUENT("Fluent 2") {
+            @Override public String styleName(boolean dark) {
+                return "Fluent 2" + (dark ? " Dark" : "");
+            }
+            @Override public Theme theme(boolean dark) {
+                return dark ? FLUENT_DARK_THEME : FLUENT_THEME;
+            }
+        };
 
         private final String displayName;
         Family(String displayName) { this.displayName = displayName; }
         public String getDisplayName() { return displayName; }
+
+        /** 该家族在给定明暗下的设计风格名称(用于状态展示)。 */
+        public abstract String styleName(boolean dark);
+
+        /** 该家族在给定明暗下对应的具体主题实例(无状态,可复用单例)。 */
+        public abstract Theme theme(boolean dark);
     }
 
     // 两个正交维度的当前状态（family × dark），用于组合出具体 Theme（PC UI 规范 §12.3）
@@ -115,6 +145,25 @@ public class ThemeManager {
         // 关键：userAgentStylesheet 重置后，之前 inline 注入的 accent 色阶会被覆盖，
         // 必须重新应用一次，否则切风格 / 切明暗后主题色回退到 CSS 默认蓝。
         applyPrimaryColorToAll();
+        // 同步 family / dark 两轴，保证「直接 applyTheme 某具体主题」后
+        // setDark / setFamily / getCurrentFamily 仍然自洽（不再回退到 Ant 蓝）。
+        this.dark = theme.getType() == Theme.ThemeType.DARK;
+        this.currentFamily = familyOf(theme);
+        // applyTheme 与 setDark / setFamily 改的是同一批状态，通知语义必须一致；
+        // 否则「直接 applyTheme」路径下监听者（如 CodeBlockAnt 的 AUTO 配色、
+        // 示例页的状态回显）会一直拿到陈旧状态。
+        notifyListeners();
+    }
+
+    /** 由具体主题实例反查其所属家族（按类匹配，允许非单例实例）；未知实现归入 ANT_DESIGN。 */
+    private static Family familyOf(Theme theme) {
+        Class<?> cls = theme.getClass();
+        for (Family f : Family.values()) {
+            if (f.theme(false).getClass() == cls || f.theme(true).getClass() == cls) {
+                return f;
+            }
+        }
+        return Family.ANT_DESIGN;
     }
 
     // ============================================================
@@ -123,11 +172,23 @@ public class ThemeManager {
 
     /**
      * 根据当前 family × dark 二维状态组合出具体 Theme 并应用。
-     * 2 个 Theme 类 = 明(light) / 暗(dark)。密度不再参与主题类选择（见 §15.3）。
+     * 家族决定候选主题（Ant Design / Fluent），dark 决定取候选中的亮/暗变体。
+     * 密度不再参与主题类选择（见 §15.3）。
      */
     private void applyComposite() {
-        Theme theme = dark ? DARK_THEME : LIGHT_THEME;
-        applyTheme(theme);
+        applyTheme(currentFamily.theme(dark));
+    }
+
+    /**
+     * 当前生效设计风格的展示名（供状态卡 / 设置页读取）。
+     *
+     * <p>取自当前主题自身的 {@link Theme#getName()}，而不是遗留的 family 枚举名 ——
+     * 后者在 Fluent 主题下会继续显示「Ant Design」。</p>
+     */
+    public String getActiveThemeName() {
+        return currentTheme == null || currentTheme.getName() == null
+                ? currentFamily.getDisplayName()
+                : currentTheme.getName();
     }
 
     /** 切换主题家族（设计风格），保持明暗 / 密度 / 主题色不变。 */
@@ -156,9 +217,8 @@ public class ThemeManager {
     public void setDensity(ThemeDensity density) {
         if (density == null || density == this.density) return;
         this.density = density;
-        // 重新应用当前主题：applyTheme 会按新密度挑选整套 UA 样式表。
+        // 重新应用当前主题：applyTheme 按新密度挑整套 UA 样式表，并负责发出变更通知。
         applyTheme(currentTheme);
-        notifyListeners();
     }
 
     /** 获取当前密度。 */
@@ -206,6 +266,27 @@ public class ThemeManager {
         Theme.ThemeType currentType = currentTheme.getType();
         String previousAccentStylesheet = accentStylesheet;
 
+        // 固定 accent 的主题（如 Fluent）自带完整品牌色阶，注入会把它覆盖成
+        // 通用预设蓝，故这里「只撤旧、不注新」。
+        if (currentTheme.hasFixedAccent()) {
+            for (Scene scene : registeredScenes) {
+                if (previousAccentStylesheet != null) {
+                    scene.getStylesheets().remove(previousAccentStylesheet);
+                }
+            }
+            accentStylesheet = null;
+            cachedAccentHex = null;
+            cachedAccentThemeType = null;
+            cachedAccentFixed = true;
+            return;
+        }
+        // 从「固定 accent 主题」切回可注入主题时，绕过缓存强制重建 data-URI。
+        if (cachedAccentFixed) {
+            cachedAccentHex = null;
+            cachedAccentThemeType = null;
+            cachedAccentFixed = false;
+        }
+
         // 短路：hex + 明暗类型均未变化时复用缓存 data-URI
         String dataUri;
         if (hex.equals(cachedAccentHex) && currentType == cachedAccentThemeType && accentStylesheet != null) {
@@ -247,6 +328,8 @@ public class ThemeManager {
         accentStylesheet = dataUri;
     }
 
+    /** 上一次注入决策是否为「固定 accent 主题」（用于切回可注入主题时强制重建 data-URI）。 */
+    private boolean cachedAccentFixed;
     /** 上一次注入的 accent data-URI stylesheet，用于切换时移除旧的。 */
     private String accentStylesheet;
 
@@ -279,6 +362,16 @@ public class ThemeManager {
     }
 
     /**
+     * @deprecated 名字有歧义且对 Fluent 主题会误报。请改用
+     *             {@link #getCurrentFamily()} 取家族对象，
+     *             或 {@link #getActiveThemeName()} 取当前主题展示名。
+     */
+    @Deprecated(since = "1.35.0", forRemoval = false)
+    public String getCurrentThemeFamily() {
+        return currentFamily.getDisplayName();
+    }
+
+    /**
      * 注册状态变更监听器。在 Family / Dark / Density / PrimaryColor 任一维度变更时触发。
      * 监听器在 JavaFX Application Thread 上执行。
      */
@@ -305,8 +398,4 @@ public class ThemeManager {
         setDark(!dark);
     }
 
-    /** 获取当前主题家族名称。 */
-    public String getCurrentThemeFamily() {
-        return currentFamily.getDisplayName();
-    }
 }

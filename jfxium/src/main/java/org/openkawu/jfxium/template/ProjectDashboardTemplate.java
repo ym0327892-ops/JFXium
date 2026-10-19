@@ -9,6 +9,7 @@ import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
+import org.openkawu.jfxium.core.theme.Theme;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.core.util.Callbacks;
 import org.openkawu.jfxium.core.util.NumericUtils;
@@ -393,14 +394,9 @@ public final class ProjectDashboardTemplate {
 
         private Node buildHero() {
             ThemeManager mgr = ThemeManager.getInstance();
-            String currentTheme = mgr.getCurrentFamily().getDisplayName();
-            String currentPreset = mgr.getCurrentPrimaryPreset() != null
-                    ? mgr.getCurrentPrimaryPreset().getDisplayName()
-                    : "自定义";
-            String themeHex = mgr.getCurrentThemeColor() != null
-                    ? TextUtils.safeText(mgr.getCurrentThemeColor().getHexColor())
-                    : "";
+            String currentTheme = mgr.getActiveThemeName();
             String density = mgr.getDensity() == ThemeDensity.COMPACT ? "紧凑" : "默认";
+            String accentDetail = accentDetail(mgr);
 
             ButtonAnt consoleButton = ButtonAnt.compactLink("工程控制台")
                     .onClick(e -> Callbacks.fire(onAction, ACTION_PROJECT_CONSOLE))
@@ -425,9 +421,9 @@ public final class ProjectDashboardTemplate {
                     .status(snapshot.buildStatus(), TagAnt.Type.SUCCESS)
                     .status("零 FXML", TagAnt.Type.PRIMARY)
                     .status("工程展示", TagAnt.Type.SUCCESS)
-                    .meta("当前主题", currentTheme + " / " + currentPreset)
+                    .meta("当前主题", currentTheme)
                     .meta("当前密度", density)
-                    .meta("主题色", themeHex)
+                    .meta("主题色", accentDetail)
                     .action(consoleButton)
                     .action(workspaceButton)
                     .action(watermarkButton)
@@ -437,15 +433,9 @@ public final class ProjectDashboardTemplate {
 
         private Node buildOverview() {
             ThemeManager mgr = ThemeManager.getInstance();
-            String currentTheme = mgr.getCurrentFamily().getDisplayName();
-            String currentPreset = mgr.getCurrentPrimaryPreset() != null
-                    ? mgr.getCurrentPrimaryPreset().getDisplayName()
-                    : "自定义";
-            String themeHex = mgr.getCurrentThemeColor() != null
-                    ? TextUtils.safeText(mgr.getCurrentThemeColor().getHexColor())
-                    : "";
+            String currentTheme = mgr.getActiveThemeName();
+            String accentDetail = accentDetail(mgr);
             String density = mgr.getDensity() == ThemeDensity.COMPACT ? "紧凑" : "默认";
-
             return ProjectOverviewTemplate.create()
                     .title("项目概览")
                     .description("运行态、技术栈、里程碑与近期动作。")
@@ -455,7 +445,7 @@ public final class ProjectDashboardTemplate {
                     .meta("分支", snapshot.branch())
                     .meta("构建", TagAnt.create(snapshot.buildStatus()).type(TagAnt.Type.SUCCESS).build())
                     .meta("模式", snapshot.mode())
-                    .metric("当前主题", currentTheme, currentPreset + " / " + themeHex, IconAnt.Path.SETTINGS)
+                    .metric("当前主题", currentTheme, accentDetail, IconAnt.Path.SETTINGS)
                     .metric("当前密度", density, "default / compact 由 ThemeManager 统一切换", IconAnt.Path.DASHBOARD)
                     .metric("模板沉淀", snapshot.templateCount(),
                             "ProjectConsole / ProjectHero / ProjectOverview / ProjectRelease / ProjectShowcase / LaunchPad / Workspace 等模板已可复用",
@@ -482,6 +472,21 @@ public final class ProjectDashboardTemplate {
                             "概览、发布和快捷入口的一页组合", "打开")
                     .onAction(this::fire)
                     .build();
+        }
+
+        /** 主题色描述：固定品牌色的主题显示「固定」，否则显示预设名 / hex。 */
+        private static String accentDetail(ThemeManager mgr) {
+            Theme active = mgr.getCurrentTheme();
+            if (active != null && active.hasFixedAccent()) {
+                return "主题品牌色（固定）";
+            }
+            String preset = mgr.getCurrentPrimaryPreset() != null
+                    ? mgr.getCurrentPrimaryPreset().getDisplayName()
+                    : "自定义";
+            String hex = mgr.getCurrentThemeColor() != null
+                    ? TextUtils.safeText(mgr.getCurrentThemeColor().getHexColor())
+                    : "";
+            return preset + " / " + hex;
         }
 
         private Node buildRelease() {

@@ -1,0 +1,164 @@
+// JFXium Fluent Dark 调色板（纯颜色 + 动效令牌，不含尺寸，供 fluent-dark 系主题 @import）
+// ============================================
+// 值来源:微软 **Windows 11 原生口径**（WinUI 3 theme resources）
+//   microsoft-ui-xaml / controls/dev/CommonStyles/Common_themeresources_any.xaml
+//     "Default"(暗色) 字典 → 中性文本/表面/描边 + 系统填充色
+//   SystemAccentColor 七档（默认蓝 #0078d4 派生）
+//     Dark 强调填充 AccentFillColorDefault = SystemAccentColorLight2 = #4cc2ff
+//     Dark 链接文字 AccentTextFillColorPrimary = SystemAccentColorLight3 = #99ebff
+//     悬停/按压 = 同色 0.9 / 0.8 不透明度
+//
+// ⚠ 两条与旧版（Fluent 2 Web 口径）相反的关键行为,均为 WinUI 官方语义:
+//   1. 暗色强调色**变亮**:#4cc2ff 亮青（Web 线用深靛蓝 #115ea3）。暗底上品牌色必须提亮,
+//      这就是「暗色不再暗沉」的主因。
+//   2. 亮底强调填充配**黑字**:TextOnAccentFillColorPrimary(dark) = #000000。
+//      因此本主题的 -color-fg-on-emphasis 为黑色,且 success/warning/danger 的实心填充
+//      同步改用 WinUI 暗色系统填充（#6ccb5f / #fce100 / #ff99a4）——三者与黑字对比度
+//      分别为 10.4 / 15.9 / 10.3:1,而旧的深色填充配黑字仅 3.9 / 6.7 / 3.5:1 甚至更低。
+//      （旧的深色填充 + 白字方案与亮底强调色的黑字方案无法共存于同一个
+//       -color-fg-on-emphasis 令牌 —— 该令牌被 accent 与 status 实心控件共用。）
+//
+// 折算规则同 palette-fluent.less（0-9 十档 + 7 语义槽制式）。
+//
+// 语义槽 → 档位 → WinUI 3 token 对照（dark）
+//   emphasis    5  AccentFillColorDefault   = SystemAccentColorLight2
+//   hover       0  accent 暗色底（ghost/行悬停）
+//   hover-shade 6  基准提亮档（AccentFillColorSecondary 的等效）
+//   text        7  AccentTextFillColorPrimary = SystemAccentColorLight3
+//   active      7  AccentFillColorTertiary 的等效
+//   muted       2  accent 暗档（描边）
+//   subtle      0  同 hover
+// ============================================
+
+// Neutral（WinUI 3 dark 表面与文本层;括号内为官方 alpha 原值）
+@color-base-0: #0a0a0a;   // SolidBackgroundFillColorBaseAlt
+@color-base-1: #1c1c1c;   // SolidBackgroundFillColorSecondary
+@color-base-2: #202020;   // SolidBackgroundFillColorBase（页面底 = ApplicationBackgroundColor）
+@color-base-3: #282828;   // SolidBackgroundFillColorTertiary
+@color-base-4: #2c2c2c;   // SolidBackgroundFillColorQuarternary / Acrylic fallback
+@color-base-5: #3f3f3f;   // 补档（卡片悬浮/描边）
+@color-base-6: #7a7a7a;   // 补档
+@color-base-7: #969696;   // TextFillColorTertiary(#87FFFFFF) 叠 #202020
+@color-base-8: #cccccc;   // TextFillColorSecondary(#C5FFFFFF) 叠 #202020
+@color-base-9: #e6e6e6;
+@color-base-10: #ffffff;  // TextFillColorPrimary
+
+// Accent（Windows 11 强调色七档;暗色基准 = SystemAccentColorLight2）
+@color-accent-0: #0d3346;  // accent 暗色底（hover/subtle）
+@color-accent-1: #12415a;
+@color-accent-2: #1a5f85;  // muted/描边档
+@color-accent-3: #43a2d2;
+@color-accent-4: #48b2e9;
+@color-accent-5: #4cc2ff;  // ← 基准 SystemAccentColorLight2(AccentFillColorDefault)
+@color-accent-6: #70d6ff;  // hover 提亮档
+@color-accent-7: #99ebff;  // SystemAccentColorLight3(AccentTextFillColorPrimary)
+@color-accent-8: #ccf0ff;
+@color-accent-9: #e6f8ff;
+
+// Success（暗→亮;emphasis 取 WinUI 暗色系统填充）
+@color-success-0: #052505;
+@color-success-1: #094509;
+@color-success-2: #0c5e0c;
+@color-success-3: #0e700e;
+@color-success-4: #248c24;
+@color-success-5: #6ccb5f;  // ← SystemFillColorSuccess(dark)
+@color-success-6: #85d879;
+@color-success-7: #9fe497;
+@color-success-8: #b8efb1;
+@color-success-9: #d2f7ce;
+
+// Warning
+@color-warning-0: #4a1e04;
+@color-warning-1: #8a3707;
+@color-warning-2: #bc4b09;
+@color-warning-3: #de590b;
+@color-warning-4: #f08a2a;
+@color-warning-5: #fce100;  // ← SystemFillColorCaution(dark)
+@color-warning-6: #fde63f;
+@color-warning-7: #fded6e;
+@color-warning-8: #fef39d;
+@color-warning-9: #fef9cc;
+
+// Danger（cranberry）
+@color-danger-0: #3b0509;
+@color-danger-1: #6e0811;
+@color-danger-2: #960b18;
+@color-danger-3: #b10e1c;
+@color-danger-4: #cc4a55;
+@color-danger-5: #ff99a4;   // ← SystemFillColorCritical(dark)
+@color-danger-6: #ffb0b9;
+@color-danger-7: #ffc7cd;
+@color-danger-8: #ffdde1;
+@color-danger-9: #fff3f5;
+
+// Semantic Variables（WinUI 3 dark 等效不透明值）
+// --------------------------------------------
+@color-fg-default: #ffffff;                 // TextFillColorPrimary(dark) = #FFFFFF
+@color-fg-muted: #cccccc;                   // TextFillColorSecondary #C5FFFFFF 叠 #202020
+@color-fg-subtle: #969696;                  // TextFillColorTertiary #87FFFFFF 叠 #202020
+@color-fg-on-emphasis: #000000;             // TextOnAccentFillColorPrimary(dark)
+
+@color-bg-default: #2c2c2c;                 // SolidBackgroundFillColorQuarternary（卡片/输入面）
+@color-bg-overlay: #2c2c2c;
+@color-bg-subtle: #282828;                  // SolidBackgroundFillColorTertiary
+@color-bg-inset: #1c1c1c;                   // SolidBackgroundFillColorSecondary
+@color-bg-layout: #202020;                  // SolidBackgroundFillColorBase（页面底）
+@color-bg-masked: rgba(0, 0, 0, 0.5);       // SmokeFillColorDefault #4D000000
+
+@color-border-default: #3a3a3a;             // ControlStrokeColorSecondary(#18FFFFFF) 叠 #202020 提可见度
+@color-border-muted: #333333;               // ControlStrokeColorDefault(#12FFFFFF) 叠 #202020
+@color-border-subtle: rgba(255, 255, 255, 0.08); // DividerStrokeColorDefault(#15FFFFFF)
+
+// SpinAnt 加载遮罩背景色（Dark 覆盖，同 palette-dark.less）
+@color-spin-overlay-light: rgba(0, 0, 0, 0.30);
+@color-spin-overlay-normal: rgba(0, 0, 0, 0.65);
+@color-spin-overlay-strong: rgba(0, 0, 0, 0.85);
+
+// Accent Color Scale（dark 强调填充 = 亮青;悬停/按压走档 4/6,与全仓槽位约定一致）
+@color-accent-emphasis: @color-accent-5;      // AccentFillColorDefault
+@color-accent-hover: @color-accent-0;         // accent 暗色底
+@color-accent-hover-shade: @color-accent-4;   // 悬停:浅一档实体色（槽位=档4;暗底上与 WinUI 0.9 叠加方向一致）
+@color-accent-text: @color-accent-7;          // AccentTextFillColorPrimary
+@color-accent-active: @color-accent-6;        // 按压:强一档（槽位=档6）
+@color-accent-muted: @color-accent-2;
+@color-accent-subtle: @color-accent-0;
+
+// Success Color Scale（Dark）
+@color-success-emphasis: @color-success-5;
+@color-success-hover: @color-success-0;
+@color-success-hover-shade: @color-success-4; // 悬停（槽位=档4）
+@color-success-text: @color-success-8;
+@color-success-active: @color-success-6;      // 按压（槽位=档6）
+@color-success-muted: @color-success-4;
+@color-success-subtle: @color-success-0;
+
+// Warning Color Scale（Dark）
+@color-warning-emphasis: @color-warning-5;
+@color-warning-hover: @color-warning-0;
+@color-warning-hover-shade: @color-warning-4; // 悬停（槽位=档4）
+@color-warning-text: @color-warning-8;
+@color-warning-active: @color-warning-6;      // 按压（槽位=档6）
+@color-warning-muted: @color-warning-4;
+@color-warning-subtle: @color-warning-0;
+
+// Danger Color Scale（Dark）
+@color-danger-emphasis: @color-danger-5;
+@color-danger-hover: @color-danger-0;
+@color-danger-hover-shade: @color-danger-4;   // 悬停（槽位=档4）
+@color-danger-text: @color-danger-8;
+@color-danger-active: @color-danger-6;        // 按压（槽位=档6）
+@color-danger-muted: @color-danger-4;
+@color-danger-subtle: @color-danger-0;
+
+// 阴影（WinUI dark 投影更重）
+@color-shadow-default: rgba(0, 0, 0, 0.28);
+@color-shadow-elev-2: rgba(0, 0, 0, 0.24);
+
+// 焦点环色对（Dark）—— 与亮色相反:外环白、内环黑（同 palette-dark.less）
+@color-focus-outer: rgba(255, 255, 255, 0.9);
+@color-focus-inner: rgba(0, 0, 0, 0.9);
+
+// Motion（Fluent durations）
+@motion-duration-fast: 0.1s;
+@motion-duration-mid: 0.2s;
+@motion-duration-slow: 0.3s;

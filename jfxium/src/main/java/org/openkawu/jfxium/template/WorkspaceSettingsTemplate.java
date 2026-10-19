@@ -14,6 +14,11 @@ import org.openkawu.jfxium.component.overlay.DrawerAnt;
 import org.openkawu.jfxium.component.layout.HBoxAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
+import org.openkawu.jfxium.core.theme.DarkTheme;
+import org.openkawu.jfxium.core.theme.FluentDarkTheme;
+import org.openkawu.jfxium.core.theme.FluentTheme;
+import org.openkawu.jfxium.core.theme.LightTheme;
+import org.openkawu.jfxium.core.theme.Theme;
 import org.openkawu.jfxium.core.theme.ThemeColor;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
@@ -139,29 +144,35 @@ public final class WorkspaceSettingsTemplate {
             return header;
         }
 
+        /** 可切换的具体设计风格（= Theme 实例，1:1 覆盖 Ant 明/暗 与 Fluent 明/暗）。 */
+        private static final Theme[] STYLE_OPTIONS = {
+                new LightTheme(), new DarkTheme(),
+                new FluentTheme(), new FluentDarkTheme()
+        };
+
         private Node buildFamilySelect(ThemeManager mgr) {
-            ComboBox<ThemeManager.Family> familySelect = ComboBoxAnt.<ThemeManager.Family>create()
-                    .items(ThemeManager.Family.values())
-                    .value(mgr.getCurrentFamily())
+            ComboBox<Theme> styleSelect = ComboBoxAnt.<Theme>create()
+                    .items(STYLE_OPTIONS)
+                    .value(mgr.getCurrentTheme())
                     .size(Size.SMALL)
-                    .onChange(family -> {
-                        if (family != null) {
-                            mgr.setFamily(family);
+                    .onChange(theme -> {
+                        if (theme != null) {
+                            mgr.applyTheme(theme);
                         }
                     })
                     .build();
-            familySelect.setConverter(new StringConverter<>() {
+            styleSelect.setConverter(new StringConverter<>() {
                 @Override
-                public String toString(ThemeManager.Family value) {
-                    return value == null ? "" : value.getDisplayName();
+                public String toString(Theme value) {
+                    return value == null ? "" : value.getName();
                 }
 
                 @Override
-                public ThemeManager.Family fromString(String string) {
+                public Theme fromString(String string) {
                     return null;
                 }
             });
-            return familySelect;
+            return styleSelect;
         }
 
         private Node buildDarkSwitch(ThemeManager mgr) {
@@ -183,10 +194,15 @@ public final class WorkspaceSettingsTemplate {
         }
 
         private Node buildPrimaryColorSelect(ThemeManager mgr) {
+            // 固定品牌色的主题（如 Fluent）忽略运行时主色切换，故禁用该下拉并给出提示。
+            Theme active = mgr.getCurrentTheme();
+            boolean accentFixed = active != null && active.hasFixedAccent();
             ComboBox<ThemeColor.Preset> colorSelect = ComboBoxAnt.<ThemeColor.Preset>create()
                     .items(ThemeColor.Preset.values())
-                    .value(mgr.getCurrentPrimaryPreset())
-                    .placeholder(mgr.getCurrentThemeColor().getHexColor())
+                    .value(accentFixed ? null : mgr.getCurrentPrimaryPreset())
+                    .placeholder(accentFixed
+                            ? Messages.get("settings.accent_fixed")
+                            : mgr.getCurrentThemeColor().getHexColor())
                     .size(Size.SMALL)
                     .onChange(preset -> {
                         if (preset != null) {
@@ -194,6 +210,7 @@ public final class WorkspaceSettingsTemplate {
                         }
                     })
                     .build();
+            colorSelect.setDisable(accentFixed);
             colorSelect.setConverter(new StringConverter<>() {
                 @Override
                 public String toString(ThemeColor.Preset value) {

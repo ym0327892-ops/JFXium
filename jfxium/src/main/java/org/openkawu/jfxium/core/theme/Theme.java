@@ -43,6 +43,28 @@ public interface Theme {
         return ThemeDensity.DEFAULT;
     }
 
+    /**
+     * 本主题是否把 accent（主色）色阶固定为品牌色 —— 即「主题自带 accent，不接受
+     * 运行时主色注入」。
+     *
+     * <p>返回 {@code false}（默认）时，{@link ThemeManager} 会按用户选定的主色预设
+     * 生成色阶并以 data-URI 注入 {@code .root}，覆盖 CSS 里的 {@code -color-accent-*}
+     * （Ant Design 系主题的既有行为）。</p>
+     *
+     * <p>返回 {@code true} 时，本主题的 CSS 已定义好完整且自洽的 accent 色阶
+     * （10 档 + emphasis/hover/active/muted/subtle/hover-shade/text 语义槽），
+     * ThemeManager <b>不再注入</b> —— 否则会把品牌色覆盖成通用预设蓝
+     * （如 Ant 蓝 {@code #1677ff}），使主题失去自身设计语言。
+     * {@link FluentTheme} / {@link FluentDarkTheme} 即属此类：其 accent 固定为
+     * WinUI 3 强调色阶（light {@code #0067c0}、dark 提亮 {@code #4cc2ff}）。</p>
+     *
+     * <p>启用固定 accent 的主题，如需换主色须自备该色的整套色阶
+     * （{@link ThemeColor#generateColorScale()} 产不出 Fluent 色相）。</p>
+     */
+    default boolean hasFixedAccent() {
+        return false;
+    }
+
     /** 主题明暗类型。 */
     enum ThemeType {
         /** 亮色主题 */
