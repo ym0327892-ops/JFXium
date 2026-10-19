@@ -1228,4 +1228,28 @@ public final class JfxStyles {
        ============================================ */
     /** 图表根节点标记类（样式主体仍是原生 {@code .chart} 系列选择器）。 */
     public static final String JFX_CHART = "jfx-chart";
+    /* ============================================
+       WindowControlAnt / TitleBarAnt —— Win11 风格窗口按钮 + 自绘标题栏
+       ============================================ */
+    /** 窗口控制按钮组(最小化/最大化/关闭)容器 */
+    public static final String WINDOW_CONTROL = "jfx-window-control";
+    /** 单个窗口控制按钮 */
+    public static final String WINDOW_CONTROL_BUTTON = "jfx-window-control-button";
+    /** 窗口控制按钮内的矢量字形(-fx-fill 上色) */
+    public static final String WINDOW_CONTROL_GLYPH = "jfx-window-control-glyph";
+    /** 最小化按钮 */
+    public static final String WINDOW_CONTROL_MINIMIZE = "jfx-window-control-minimize";
+    /** 最大化按钮 */
+    public static final String WINDOW_CONTROL_MAXIMIZE = "jfx-window-control-maximize";
+    /** 还原按钮(已最大化时最大化按钮切换为此态) */
+    public static final String WINDOW_CONTROL_RESTORE = "jfx-window-control-restore";
+    /** 关闭按钮(悬停变系统危险色) */
+    public static final String WINDOW_CONTROL_CLOSE = "jfx-window-control-close";
+
+    /** 自绘标题栏 */
+    public static final String TITLE_BAR = "jfx-title-bar";
+    /** 标题栏窗口图标 */
+    public static final String TITLE_BAR_ICON = "jfx-title-bar-icon";
+    /** 标题栏文本 */
+    public static final String TITLE_BAR_TITLE = "jfx-title-bar-title";
 }

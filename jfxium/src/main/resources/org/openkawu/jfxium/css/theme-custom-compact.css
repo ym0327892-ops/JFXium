@@ -1427,13 +1427,21 @@
   -fx-pref-height: 5px;
   -fx-background-color: -color-fg-muted;
 }
-/* 统一下拉箭头（可挂到任意 Region 上复用） */
+/* 统一下拉箭头（可挂到任意 Region 上复用）
+   ⚠️ max 三件套不能省：-fx-shape 是「按 Region 边界缩放」的，
+   只给 min/pref 时，放进 HBox（fillHeight=true）、VBox（fillWidth=true）
+   或 maxHeight=MAX_VALUE 的容器里会被拉伸成整行/整列高，
+   SVG 随边界等比放大 → 本来 10×5 的小三角渲染成又黑又大的楔形。
+   历史缺陷见 BUG #179（DropdownAnt.showArrow 的触发器）。
+   与 .combo-box .arrow 的 arrow-drop-down 处理保持一致。 */
 .jfx-arrow-dropdown {
   -fx-shape: "M7 10l5 5 5-5z";
   -fx-min-width: 10px;
   -fx-min-height: 5px;
   -fx-pref-width: 10px;
   -fx-pref-height: 5px;
+  -fx-max-width: 10px;
+  -fx-max-height: 5px;
   -fx-background-color: -color-fg-muted;
 }
 .jfx-arrow-dropdown:hover {
@@ -5393,25 +5401,13 @@
 /* ============================================
    Layout Primitive 命名空间挂载点
    FlexAnt / GridAnt / SpaceAnt / DividerAnt 的 styleClass。
-   当前仅作为外部主题/扩展的样式锚点，本基础主题不为它们注入特殊样式，
-   保持"布局原语保持原生 JavaFX 行为"的原则。
+   仅作为外部主题/扩展的样式锚点，本基础主题不为它们注入特殊样式，
+   保持"布局原语保持原生 JavaFX 行为"的原则 —— 故这里不允许写
+   -fx-background-color: transparent：
+   这些类名被 GridAnt 挂到调用方自己的节点上，一旦声明背景，
+   就会以「同特异性 + 靠后」压掉调用方通过 {@code background(Background.*)}
+   挂上的 .jfx-bg-*（BUG #176）。
    ============================================ */
-.jfx-flex,
-.jfx-flex-horizontal,
-.jfx-flex-vertical,
-.jfx-flex-wrap {
-  -fx-background-color: transparent;
-}
-.jfx-grid,
-.jfx-grid-row,
-.jfx-grid-col {
-  -fx-background-color: transparent;
-}
-.jfx-space,
-.jfx-space-horizontal,
-.jfx-space-vertical {
-  -fx-background-color: transparent;
-}
 /* DividerAnt 文本与线条样式 */
 .jfx-divider {
   -fx-background-color: transparent;
@@ -7920,6 +7916,129 @@
 }
 .jfx-icon-muted {
   -fx-fill: -color-fg-muted;
+}
+/* ============================================
+   WindowControlAnt / TitleBarAnt —— Win11 / WinUI 3 窗口外壳
+   ============================================
+   几何口径（WinUI 3 标题栏）：
+     · 按钮 46 × @window-control-button-height（默认 32，紧凑 28 → 同比例收窄 40）
+     · 字形 10×10（最小化 10×1），见 IconPath.WINDOW_GLYPH_*
+     · 标题栏高 @title-bar-height，标题字号 @font-size-sm
+
+   颜色口径 —— 全部落在主题语义槽上，11 套主题自动适配：
+     · 字形           -color-fg-default
+     · 悬停/按压      fade(@color-fg-default, 6% / 4%)（WinUI SubtleFillColorSecondary/Tertiary
+                      的「前景色 6%/4% 叠加」同构；编译期求值 → 亮色得黑、暗色得白）
+     · 关闭悬停       -color-danger-emphasis（WinUI SystemFillColorCritical ≈ Fluent 危险色）
+                      + -color-fg-on-emphasis 字形（与各主题 emphasis 填充的对偶留白一致）
+
+   ⚠ 与 WinUI 逐像素的两处已知偏差（都是「主题自洽优先」的有意选择）：
+     1. WinUI 的标题栏按钮悬停是 alpha 叠加层（#0F000000 / #0FFFFFFF）；
+        这里由 palette 的 fg-default 求 alpha，语义等价但 Fluent 亮色下 fg 是 #1a1a1a
+        而非纯黑 → 悬停层略偏灰，肉眼不可辨。
+     2. WinUI 关闭按钮悬停固定 #C42B1C + 白字；这里用主题危险色 + 对偶留白色，
+        因此 Fluent 暗色下是「浅粉底 + 黑字」（该主题 danger-5 = #ff99a4），
+        而不是 Windows 的「深红底 + 白字」。这样在 Ant 系主题下也得到 Ant 红而非微软红。
+
+   选择器为什么带 .jfx-window-control 前缀（2 类 = 0x200）：
+     ButtonAnt 自带 .button + .button.text / .button.xs 等变体，
+     单元类选择器 (0x100) 打不过 .button.text:hover (0x110)。带上容器前缀后，
+     基础态 0x200、伪类态 0x210/0x310，稳定压过所有内建变体；本文件又是
+     _index.less 最后一个 @import，同特异性时按源码顺序胜出。
+   ============================================ */
+/* ---- 按钮组容器：不留 padding / 间距，全部由子按钮自己承担 ---- */
+.jfx-window-control {
+  -fx-padding: 0;
+  -fx-spacing: 0;
+  -fx-background-color: transparent;
+}
+/* ---- 单个标题栏按钮 ---- */
+.jfx-window-control .jfx-window-control-button {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-border-radius: 0;
+  -fx-padding: 0;
+  -fx-effect: null;
+  -fx-alignment: center;
+  /* Win11 标题栏按钮是箭头光标，不是手型 */
+  -fx-cursor: default;
+  /* 尺寸必须钳死：字形 SVGPath 的 layoutBounds 仍是 2048 网格（缩放不参与布局），
+     不钉 min/pref/max 的话 graphic 的 pref 会把按钮撑到 2048px。 */
+  -fx-min-width: 40px;
+  -fx-pref-width: 40px;
+  -fx-max-width: 40px;
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
+}
+.jfx-window-control .jfx-window-control-button:hover {
+  -fx-background-color: rgba(0, 0, 0, 0.06);
+}
+.jfx-window-control .jfx-window-control-button:pressed,
+.jfx-window-control .jfx-window-control-button:armed {
+  -fx-background-color: rgba(0, 0, 0, 0.04);
+}
+/* 键盘焦点可见性 —— 按钮可 Tab 到，必须有可见焦点环（项目 a11y 规范）。
+   角半径 0：标题栏按钮是直角，圆角焦点环会浮在栏外。 */
+.jfx-window-control .jfx-window-control-button:focus-visible {
+  -fx-border-color: rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.95) !important;
+  -fx-border-style: solid !important;
+  -fx-border-width: 1px, 1px !important;
+  -fx-border-insets: -1, 0 !important;
+  -fx-border-radius: 1, 0 !important;
+}
+/* ---- 关闭按钮：悬停/按压转危险色 ---- */
+.jfx-window-control .jfx-window-control-button.jfx-window-control-close:hover {
+  -fx-background-color: -color-danger-emphasis;
+}
+.jfx-window-control .jfx-window-control-button.jfx-window-control-close:pressed,
+.jfx-window-control .jfx-window-control-button.jfx-window-control-close:armed {
+  -fx-background-color: rgba(247, 89, 171, 0.9);
+}
+/* ---- 字形填充 ---- */
+.jfx-window-control-glyph {
+  -fx-fill: -color-fg-default;
+}
+.jfx-window-control .jfx-window-control-button.jfx-window-control-close:hover .jfx-window-control-glyph {
+  -fx-fill: -color-fg-on-emphasis;
+}
+.jfx-window-control .jfx-window-control-button.jfx-window-control-close:pressed .jfx-window-control-glyph,
+.jfx-window-control .jfx-window-control-button.jfx-window-control-close:armed .jfx-window-control-glyph {
+  /* WinUI 按压态：白字 0.7 不透明度 */
+  -fx-fill: rgba(255, 255, 255, 0.7);
+}
+/* ---- 自绘标题栏 ----
+   容器带左侧 12px 内边距属于「bar 类容器」的既有权衡（与 _toolbar.less / _statusbar.less
+   一致：窗口级条状容器自带左内边距，右侧必须为 0 才能让窗口按钮贴边）；
+   TitleBarAnt 继承的 padding(...) 可覆盖此默认值。 */
+.jfx-title-bar {
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
+  /* 与 WinUI 一致：标题栏与窗口内容同色（Mica 延伸），靠 1px 底边分隔 */
+  -fx-background-color: -color-bg-layout;
+  -fx-padding: 0 0 0 8px;
+  -fx-spacing: 6px;
+}
+/* 复用 LayoutCommon 的 .jfx-border-bottom 开关（TitleBarAnt 构造里默认开启）。
+   这里是 2 类选择器 → 压过通用 .jfx-border-bottom（1 类）的 border-default 色，
+   改用它主题的弱描边色 border-muted（WinUI CardStrokeColorDefault 等效值）。 */
+.jfx-title-bar.jfx-border-bottom {
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1px 0;
+}
+.jfx-title-bar-title {
+  -fx-font-size: 12px;
+  -fx-text-fill: -color-fg-default;
+  -fx-padding: 0 6px 0 0;
+}
+/* 图标同时兼容 Shape（-fx-fill）与文本型图标（-fx-text-fill） */
+.jfx-title-bar-icon {
+  -fx-fill: -color-fg-default;
+  -fx-text-fill: -color-fg-default;
 }
 /* ============================================
    通用圆角修饰 —— 任意组件可挂

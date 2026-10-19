@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.core.util;
 
+import javafx.scene.shape.FillRule;
 import javafx.scene.shape.SVGPath;
 
 /**
@@ -130,6 +131,45 @@ public final class IconPath {
     /** 500 / 服务器内部错误（人形 + 卡片）。*/
     public static final String ICON_INTERNAL_ERROR = "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z";
 
+    // ----- Win11 / WinUI 3 窗口控制字形(caption buttons)-----
+    //
+    // 几何口径：WinUI 3 标题栏按钮字形画在 **2048 单位 em 网格**上（Segoe Fluent Icons
+    // 的图标网格），不是 Material 常用的 24 单位网格。下面四条路径取自 WinUI 3
+    // CommonStyles/CaptionButtons（与 Avalonia Fluent 主题移植版 caption.axaml 一致），
+    // 渲染时统一缩放 WINDOW_GLYPH_SCALE（10 / 2048）→ 最小化 10×1、其余 10×10，
+    // 与 Windows 11 实际标题栏字形尺寸一致。
+    //
+    // ⚠ 这些路径用「反向子路径」挖空（方框、还原的叠框）。JavaFX 默认 NON_ZERO，
+    // 依赖子路径绕向；官方数据绕向是对的，但为免以后改路径时踩坑，工厂方法显式设
+    // FillRule.EVEN_ODD —— 挖空不再依赖绕向。
+
+    /** WinUI 3 caption glyph 设计网格边长（官方图标 em 网格）。*/
+    public static final double WINUI_GLYPH_BOX = 2048.0;
+
+    /** WinUI 3 caption glyph 渲染尺寸（px）—— 最小化/最大化/还原/关闭同口径。*/
+    public static final double WINDOW_GLYPH_SIZE = 10.0;
+
+    /** WinUI 3 caption glyph 缩放系数 = WINDOW_GLYPH_SIZE / WINUI_GLYPH_BOX。*/
+    public static final double WINDOW_GLYPH_SCALE = WINDOW_GLYPH_SIZE / WINUI_GLYPH_BOX;
+
+    /** 窗口控制:最小化(10×1 细横线)。*/
+    public static final String WINDOW_MINIMIZE = "M2048 1229v-205h-2048v205h2048z";
+
+    /** 窗口控制:最大化(10×10 空心方框,窗口未最大化时显示)。*/
+    public static final String WINDOW_MAXIMIZE =
+            "M2048 2048v-2048h-2048v2048h2048zM1843 1843h-1638v-1638h1638v1638z";
+
+    /** 窗口控制:还原(两个错位方框,已最大化时显示)。*/
+    public static final String WINDOW_RESTORE =
+            "M2048 410h-410v-410h-1638v1638h410v410h1638v-1638z"
+                    + "M1434 1434h-1229v-1229h1229v1229z"
+                    + "M1843 1843h-1229v-205h1024v-1024h205v1229z";
+
+    /** 窗口控制:关闭(X)。*/
+    public static final String WINDOW_CLOSE =
+            "M1169 1024l879 -879l-145 -145l-879 879l-879 -879l-145 145l879 879"
+                    + "l-879 879l145 145l879 -879l879 879l145 -145z";
+
     // ============================================================
     // 工厂方法
     // ============================================================
@@ -206,5 +246,41 @@ public final class IconPath {
     /** BackTopAnt 上箭头（默认缩放 1.5x，匹配原实现）。*/
     public static SVGPath arrowUpScaled() {
         return create(ARROW_UP, 1.5);
+    }
+
+    /** 窗口控制:最小化字形(10×1)。*/
+    public static SVGPath windowMinimize() {
+        return windowGlyph(WINDOW_MINIMIZE);
+    }
+
+    /** 窗口控制:最大化字形(10×10 空心方框)。*/
+    public static SVGPath windowMaximize() {
+        return windowGlyph(WINDOW_MAXIMIZE);
+    }
+
+    /** 窗口控制:还原字形(10×10 叠框,已最大化时显示)。*/
+    public static SVGPath windowRestore() {
+        return windowGlyph(WINDOW_RESTORE);
+    }
+
+    /** 窗口控制:关闭字形(10×10 X)。*/
+    public static SVGPath windowClose() {
+        return windowGlyph(WINDOW_CLOSE);
+    }
+
+    /**
+     * WinUI caption glyph 工厂 —— 2048 网格路径 + 统一缩放 + 偶奇填充。
+     *
+     * <p>用 {@link FillRule#EVEN_ODD} 而不是默认 NON_ZERO：空心方框/叠框靠子路径挖空，
+     * 偶奇规则下挖空与子路径绕向无关，后续换路径数据不会因为绕向写反变成实心块。</p>
+     *
+     * <p><b>注意布局语义</b>：{@code setScaleX/Y} 只影响渲染，不影响 {@code layoutBounds}
+     * （仍是 2048 网格）。放进按钮时按钮尺寸必须由 CSS 钳死（见 {@code _window-control.less}
+     * 的 {@code -fx-min/pref/max-width/height}），否则 graphic 的 pref 会把按钮撑开。</p>
+     */
+    private static SVGPath windowGlyph(String content) {
+        SVGPath glyph = create(content, WINDOW_GLYPH_SCALE);
+        glyph.setFillRule(FillRule.EVEN_ODD);
+        return glyph;
     }
 }

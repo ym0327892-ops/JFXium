@@ -491,6 +491,21 @@
 @context-menu-padding-y: @spacing-xs;
 @context-menu-padding-x: 0;
 
+// WindowControl / TitleBar — Win11 标题栏与窗口按钮
+// 使用位置：.jfx-window-control / .jfx-title-bar
+// 影响组件：WindowControlAnt、TitleBarAnt
+// 几何口径取自 WinUI 3 标题栏：标题栏高 32（= @control-height，紧凑 28），
+// 窗口按钮 46×32（紧凑 40×28），标题字号 @font-size-sm。
+// 仅定尺寸、不涉及颜色 —— 颜色语义（悬停/按压/关闭红）由 _window-control.less 消费
+// 通用槽位（-color-bg-subtle / -color-fg-default / -color-danger-emphasis），
+// 因此本组件无需在各 palette 里新增配色 token。
+@title-bar-height: @control-height;
+// WinUI 3 按钮宽 : 高 = 46 : 32 —— 按同一比例派生，紧凑主题把 @control-height 改成 28 时
+// 宽度自动收敛到 40（46*28/32 = 40.25 → round），无需各 compact 主题重复覆盖。
+// LESS 变量惰性求值：compact 主题在 @import 之后覆盖 @control-height 仍然生效。
+@window-control-button-width: round(@control-height * 46 / 32);
+@window-control-button-height: @control-height;
+
 // ============================================
 // Mixins
 // ============================================
