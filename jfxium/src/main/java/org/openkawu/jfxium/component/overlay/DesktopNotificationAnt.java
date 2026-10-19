@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.component.overlay;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
@@ -23,6 +22,7 @@ import org.openkawu.jfxium.core.util.AnimationDuration;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.openkawu.jfxium.core.util.MotionCurve;
 
 /**
  * JFXium 桌面级通知组件 —— 锚定操作系统屏幕（{@link Screen} 坐标）四角，默认右下角。
@@ -308,10 +308,10 @@ public class DesktopNotificationAnt {
             FadeTransition fadeIn = new FadeTransition(AnimationDuration.SLOW, card);
             fadeIn.setFromValue(0);
             fadeIn.setToValue(1);
-            fadeIn.setInterpolator(Interpolator.EASE_OUT);
+            fadeIn.setInterpolator(MotionCurve.ENTER);
 
             TranslateTransition slideIn = new TranslateTransition(AnimationDuration.SLOW, card);
-            slideIn.setInterpolator(Interpolator.EASE_OUT);
+            slideIn.setInterpolator(MotionCurve.ENTER);
             if (center) {
                 card.setTranslateY(-20);
                 slideIn.setFromY(-20);

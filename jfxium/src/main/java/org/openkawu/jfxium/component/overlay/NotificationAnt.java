@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.component.overlay;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
 import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Bounds;
@@ -21,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.openkawu.jfxium.core.util.MotionCurve;
 
 /**
  * JFXium 全局通知组件 - 对标 Ant Design Notification。
@@ -415,12 +415,12 @@ public class NotificationAnt {
             FadeTransition fadeIn = new FadeTransition(AnimationDuration.SLOW, notificationBox);
             fadeIn.setFromValue(0);
             fadeIn.setToValue(1);
-            fadeIn.setInterpolator(Interpolator.EASE_OUT);
+            fadeIn.setInterpolator(MotionCurve.ENTER);
 
             TranslateTransition slideIn = new TranslateTransition(AnimationDuration.SLOW, notificationBox);
             slideIn.setFromX(fromLeft ? -20 : 20);
             slideIn.setToX(0);
-            slideIn.setInterpolator(Interpolator.EASE_OUT);
+            slideIn.setInterpolator(MotionCurve.ENTER);
 
             new javafx.animation.ParallelTransition(fadeIn, slideIn).play();
 

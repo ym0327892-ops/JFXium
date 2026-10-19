@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.component.overlay;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -30,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import org.openkawu.jfxium.core.util.MotionCurve;
 
 /**
  * JFXium 对话框组件 - 对标 Ant Design Modal 6.x 规范。
@@ -561,14 +561,14 @@ public class ModalAnt {
             FadeTransition fade = new FadeTransition(AnimationDuration.FAST, modalPanel);
             fade.setFromValue(0);
             fade.setToValue(1);
-            fade.setInterpolator(Interpolator.EASE_OUT);
+            fade.setInterpolator(MotionCurve.ENTER);
 
             ScaleTransition scale = new ScaleTransition(AnimationDuration.FAST, modalPanel);
             scale.setFromX(0.9);
             scale.setFromY(0.9);
             scale.setToX(1);
             scale.setToY(1);
-            scale.setInterpolator(Interpolator.EASE_OUT);
+            scale.setInterpolator(MotionCurve.ENTER);
 
             javafx.animation.ParallelTransition pt = new javafx.animation.ParallelTransition(fade, scale);
             pt.play();
@@ -578,14 +578,14 @@ public class ModalAnt {
             FadeTransition fade = new FadeTransition(AnimationDuration.ULTRA_FAST, modalPanel);
             fade.setFromValue(1);
             fade.setToValue(0);
-            fade.setInterpolator(Interpolator.EASE_IN);
+            fade.setInterpolator(MotionCurve.EXIT);
 
             ScaleTransition scale = new ScaleTransition(AnimationDuration.ULTRA_FAST, modalPanel);
             scale.setFromX(1);
             scale.setFromY(1);
             scale.setToX(0.95);
             scale.setToY(0.95);
-            scale.setInterpolator(Interpolator.EASE_IN);
+            scale.setInterpolator(MotionCurve.EXIT);
 
             javafx.animation.ParallelTransition pt = new javafx.animation.ParallelTransition(fade, scale);
             pt.setOnFinished(e -> onFinished.run());

@@ -13,6 +13,7 @@ import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.A11y;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 import org.openkawu.jfxium.core.util.IconPath;
+import org.openkawu.jfxium.core.util.MotionCurve;
 
 /**
  * JFXium 回到顶部组件 - 对标 Ant Design BackTop（组合式，Builder 模式）。
@@ -128,13 +129,13 @@ public class BackTopAnt {
                 FadeTransition fadeIn = new FadeTransition(AnimationDuration.FAST, backTop);
                 fadeIn.setFromValue(0);
                 fadeIn.setToValue(1);
-                fadeIn.setInterpolator(Interpolator.EASE_OUT);
+                fadeIn.setInterpolator(MotionCurve.ENTER);
                 fadeIn.play();
             } else if (!shouldShow && backTop.isVisible()) {
                 FadeTransition fadeOut = new FadeTransition(AnimationDuration.FAST, backTop);
                 fadeOut.setFromValue(1);
                 fadeOut.setToValue(0);
-                fadeOut.setInterpolator(Interpolator.EASE_IN);
+                fadeOut.setInterpolator(MotionCurve.EXIT);
                 fadeOut.setOnFinished(e -> {
                     backTop.setVisible(false);
                     backTop.setManaged(false);
@@ -149,7 +150,7 @@ public class BackTopAnt {
                         new KeyFrame(Duration.ZERO,
                                 new KeyValue(scrollPane.vvalueProperty(), scrollPane.getVvalue())),
                         new KeyFrame(duration,
-                                new KeyValue(scrollPane.vvalueProperty(), 0, Interpolator.EASE_BOTH))
+                                new KeyValue(scrollPane.vvalueProperty(), 0, MotionCurve.STANDARD))
                 );
                 timeline.play();
             }

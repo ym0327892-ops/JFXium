@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.component.overlay;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -24,6 +23,7 @@ import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 
 import java.util.function.Consumer;
+import org.openkawu.jfxium.core.util.MotionCurve;
 
 /**
  * JFXium 抽屉组件 - 对标 Ant Design Drawer 6.x 规范。
@@ -456,7 +456,7 @@ public class DrawerAnt {
             FadeTransition fade = new FadeTransition(AnimationDuration.NORMAL, drawerPanel);
             fade.setFromValue(0);
             fade.setToValue(1);
-            fade.setInterpolator(Interpolator.EASE_OUT);
+            fade.setInterpolator(MotionCurve.ENTER);
 
             TranslateTransition slide = new TranslateTransition(AnimationDuration.NORMAL, drawerPanel);
             switch (config.placement) {
@@ -477,7 +477,7 @@ public class DrawerAnt {
                     slide.setToY(0);
                 }
             }
-            slide.setInterpolator(Interpolator.EASE_OUT);
+            slide.setInterpolator(MotionCurve.ENTER);
 
             javafx.animation.ParallelTransition pt = new javafx.animation.ParallelTransition(fade, slide);
             pt.play();
@@ -487,7 +487,7 @@ public class DrawerAnt {
             FadeTransition fade = new FadeTransition(AnimationDuration.FAST, drawerPanel);
             fade.setFromValue(1);
             fade.setToValue(0);
-            fade.setInterpolator(Interpolator.EASE_IN);
+            fade.setInterpolator(MotionCurve.EXIT);
 
             TranslateTransition slide = new TranslateTransition(AnimationDuration.FAST, drawerPanel);
             switch (config.placement) {
@@ -496,7 +496,7 @@ public class DrawerAnt {
                 case TOP -> slide.setToY(-config.height);
                 case BOTTOM -> slide.setToY(config.height);
             }
-            slide.setInterpolator(Interpolator.EASE_IN);
+            slide.setInterpolator(MotionCurve.EXIT);
 
             javafx.animation.ParallelTransition pt = new javafx.animation.ParallelTransition(fade, slide);
             pt.setOnFinished(e -> onFinished.run());

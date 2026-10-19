@@ -16,6 +16,7 @@ import org.openkawu.jfxium.core.util.AnimationDuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.openkawu.jfxium.core.util.MotionCurve;
 
 /**
  * JFXium 走马灯组件 - 对标 Ant Design Carousel（组合式，Builder 模式）。
@@ -254,12 +255,12 @@ public class CarouselAnt {
                 TranslateTransition slideOut = new TranslateTransition(AnimationDuration.SLIDE, currentItem);
                 slideOut.setFromX(0);
                 slideOut.setToX(oldToX);
-                slideOut.setInterpolator(Interpolator.EASE_OUT);
+                slideOut.setInterpolator(MotionCurve.ENTER);
 
                 TranslateTransition slideIn = new TranslateTransition(AnimationDuration.SLIDE, newItem);
                 slideIn.setFromX(newFromX);
                 slideIn.setToX(0);
-                slideIn.setInterpolator(Interpolator.EASE_OUT);
+                slideIn.setInterpolator(MotionCurve.ENTER);
 
                 slideOut.setOnFinished(e -> {
                     // 动画完后：复位 currentItem 的 translateX，并隐藏（下次复用时再 setVisible(true)）

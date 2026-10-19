@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.component.overlay;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
 import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.layout.HBox;
@@ -14,6 +13,7 @@ import org.openkawu.jfxium.core.util.AnimationDuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.openkawu.jfxium.core.util.MotionCurve;
 
 /**
  * JFXium 全局消息提示组件 - 对标 Ant Design Message（组合式，静态方法调用）。
@@ -363,7 +363,7 @@ public class MessageAnt {
         FadeTransition fadeIn = new FadeTransition(AnimationDuration.FAST, messageBox);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
-        fadeIn.setInterpolator(Interpolator.EASE_OUT);
+        fadeIn.setInterpolator(MotionCurve.ENTER);
 
         if (position == Position.CENTER) {
             fadeIn.play();
@@ -371,7 +371,7 @@ public class MessageAnt {
             TranslateTransition slideIn = new TranslateTransition(AnimationDuration.FAST, messageBox);
             slideIn.setFromY(position == Position.BOTTOM ? 20 : -20);
             slideIn.setToY(0);
-            slideIn.setInterpolator(Interpolator.EASE_OUT);
+            slideIn.setInterpolator(MotionCurve.ENTER);
             new javafx.animation.ParallelTransition(fadeIn, slideIn).play();
         }
 
