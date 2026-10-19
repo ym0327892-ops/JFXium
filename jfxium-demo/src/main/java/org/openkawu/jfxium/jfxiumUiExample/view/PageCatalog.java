@@ -66,16 +66,19 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.SpinnerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.TooltipExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.ButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.CodeBlockExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.general.FluentExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.HyperlinkExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.IconExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.LabelExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.MenuButtonExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.general.MotionCurveExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SelectableTextExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SegmentedExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SplitButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.SplitMenuButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.TypographyExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.WatermarkExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.general.WindowChromeExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.FlexExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.GridExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.LayoutContainerExamplePage;
@@ -148,6 +151,9 @@ final class PageCatalog {
         register(registry, "general.splitbutton", "SplitButton 分裂按钮", PageRegistry.Category.GENERAL, SplitButtonExamplePage::new);
         register(registry, "general.splitmenu", "SplitMenuButton 分裂菜单", PageRegistry.Category.GENERAL, SplitMenuButtonExamplePage::new);
         register(registry, "general.hyperlink", "Hyperlink 超链接", PageRegistry.Category.GENERAL, HyperlinkExamplePage::new);
+        register(registry, "general.motioncurve", "MotionCurve 动效曲线", PageRegistry.Category.GENERAL, MotionCurveExamplePage::new);
+        register(registry, "general.fluent", "Fluent 主题（Win11）", PageRegistry.Category.GENERAL, FluentExamplePage::new);
+        register(registry, "general.windowchrome", "TitleBar 窗口外壳", PageRegistry.Category.GENERAL, WindowChromeExamplePage::new);
     }
 
     private static void registerLayout(PageRegistry registry) {

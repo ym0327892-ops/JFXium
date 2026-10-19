@@ -279,3 +279,92 @@
 .jfx-demo-playground .jfx-segmented .jfx-segmented-item-label {
   -fx-wrap-text: false;
 }
+
+/* ============================================
+   MotionCurve 示例页（general.motioncurve）
+   —— 演示盒与卡片容器；颜色全部走语义变量，
+      保证主题切换 / 主色切换自动适配。
+   ============================================ */
+
+/* 演示卡片内的「卡片本体」：动画作用在这张卡上，不被外部容器裁剪 */
+.jfx-demo-motion-card {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-background-radius: 6;
+  -fx-padding: 10 16 10 16;
+  -fx-min-width: 180;
+  -fx-alignment: center;
+  -fx-font-size: 12px;
+}
+
+/* 「同曲线 · 不同时长」里每行左侧的时长标签保持定宽，右侧盒子左端对齐 */
+.jfx-demo-motion-duration-label {
+  -fx-min-width: 96;
+}
+
+
+/* ============================================
+   Fluent 主题示例页（general.fluent）
+   —— 品牌色阶 / 语义色色块。颜色全部绑定主题令牌，
+      切换 Fluent 亮暗与密度时自动跟随。
+   ============================================ */
+
+.jfx-demo-fluent-swatch {
+  -fx-min-width: 62;
+  -fx-min-height: 46;
+  -fx-background-radius: 4;
+  -fx-padding: 6 4 6 4;
+}
+
+.jfx-demo-fluent-swatch .label {
+  -fx-font-size: 11px;
+}
+
+/* 强调色 10 档（亮: #e8f3fc → #0067c0；暗: 深→浅，填充 #4cc2ff） */
+.jfx-demo-fluent-s0 { -fx-background-color: -color-accent-0; }
+.jfx-demo-fluent-s1 { -fx-background-color: -color-accent-1; }
+.jfx-demo-fluent-s2 { -fx-background-color: -color-accent-2; }
+.jfx-demo-fluent-s3 { -fx-background-color: -color-accent-3; }
+.jfx-demo-fluent-s4 { -fx-background-color: -color-accent-4; }
+.jfx-demo-fluent-s5 { -fx-background-color: -color-accent-5; }
+.jfx-demo-fluent-s6 { -fx-background-color: -color-accent-6; }
+.jfx-demo-fluent-s7 { -fx-background-color: -color-accent-7; }
+.jfx-demo-fluent-s8 { -fx-background-color: -color-accent-8; }
+.jfx-demo-fluent-s9 { -fx-background-color: -color-accent-9; }
+
+/* 深档位上的标签用反色，保证可读 */
+.jfx-demo-fluent-s5 .label,
+.jfx-demo-fluent-s6 .label,
+.jfx-demo-fluent-s7 .label,
+.jfx-demo-fluent-s8 .label,
+.jfx-demo-fluent-s9 .label {
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* 语义槽 */
+.jfx-demo-fluent-accent  { -fx-background-color: -color-accent-emphasis; }
+.jfx-demo-fluent-success { -fx-background-color: -color-success-emphasis; }
+.jfx-demo-fluent-warning { -fx-background-color: -color-warning-emphasis; }
+.jfx-demo-fluent-danger  { -fx-background-color: -color-danger-emphasis; }
+.jfx-demo-fluent-surface { -fx-background-color: -color-bg-subtle; }
+.jfx-demo-fluent-inset   { -fx-background-color: -color-bg-inset; }
+
+.jfx-demo-fluent-accent .label,
+.jfx-demo-fluent-success .label,
+.jfx-demo-fluent-warning .label,
+.jfx-demo-fluent-danger .label {
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+
+/* ============================================
+   窗口外壳预览（general.fluent §5）
+   —— 一个「假窗口」：标题栏 + 内容区，1px 描边 + 4px 圆角。
+      颜色走语义令牌，切换到任何主题都自洽。
+   ============================================ */
+.jfx-demo-window-shell {
+  -fx-border-color: -color-border-default;
+  -fx-border-width: 1px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
+  -fx-background-color: -color-bg-layout;
+}

@@ -11,6 +11,8 @@ import org.openkawu.jfxium.component.composite.MenuAnt;
 import org.openkawu.jfxium.component.composite.SegmentedAnt;
 import org.openkawu.jfxium.core.theme.CustomTheme;
 import org.openkawu.jfxium.core.theme.DarkTheme;
+import org.openkawu.jfxium.core.theme.FluentDarkTheme;
+import org.openkawu.jfxium.core.theme.FluentTheme;
 import org.openkawu.jfxium.core.theme.LightTheme;
 import org.openkawu.jfxium.core.theme.Theme;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
@@ -93,20 +95,24 @@ public class MainView {
                         "compact".equals(val) ? ThemeDensity.COMPACT : ThemeDensity.DEFAULT))
                 .build();
 
-        // 顶栏主题切换：默认(light) / 暗色(dark) / custom（模板主题）。
-        // 直接 applyTheme 具体 Theme 实例；custom 支持密度派生（配合密度开关联动）。
+        // 顶栏主题切换：默认(light) / 暗色(dark) / 工具(tool) / custom / Fluent 2 / Fluent Dark。
+        // 直接 applyTheme 具体 Theme 实例；custom、fluent 支持密度派生（配合密度开关联动）。
         Node themeToggle = SegmentedAnt.create()
                 .size(Size.SMALL)
                 .option("light", "默认")
                 .option("dark", "暗色")
                 .option("tool", "工具")
                 .option("custom", "custom")
+                .option("fluent", "Fluent")
+                .option("fluentDark", "Fluent 暗")
                 .selected(resolveThemeKey(themeManager.getCurrentTheme()))
                 .onChange(val -> {
                     Theme target = switch (val) {
                         case "dark" -> new DarkTheme();
                         case "tool" -> new ToolTheme();
                         case "custom" -> new CustomTheme();
+                        case "fluent" -> new FluentTheme();
+                        case "fluentDark" -> new FluentDarkTheme();
                         default -> new LightTheme();
                     };
                     themeManager.applyTheme(target);
@@ -193,6 +199,8 @@ public class MainView {
      * 按类名匹配具体主题；未知实例降到 "light"。
      */
     private static String resolveThemeKey(Theme theme) {
+        if (theme instanceof FluentDarkTheme) return "fluentDark";
+        if (theme instanceof FluentTheme) return "fluent";
         if (theme instanceof DarkTheme) return "dark";
         if (theme instanceof ToolTheme) return "tool";
         if (theme instanceof CustomTheme) return "custom";
