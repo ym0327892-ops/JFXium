@@ -262,8 +262,9 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt>, Disab
             // 可见切换按钮
             ToggleButton eyeBtn = new ToggleButton();
             eyeBtn.getStyleClass().add(JfxStyles.INPUT_PASSWORD_EYE);
-            // P0-F3 修复：眼睛 emoji 国际化（zh_CN=en_US，避免在 Java 端硬编码字符）
-            eyeBtn.setText(Messages.get("input.password.eye"));
+            // SVG 线性图标（颜色走 .jfx-icon-path token），i18n 只用于无障碍文本
+            eyeBtn.setGraphic(IconAnt.path(IconAnt.Path.EYE, 16));
+            eyeBtn.setAccessibleText(Messages.get("input.password.eye"));
             eyeBtn.setFocusTraversable(false);
             eyeBtn.setDisable(disabled);
             eyeBtn.setMaxHeight(Double.MAX_VALUE);
@@ -276,7 +277,8 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt>, Disab
                 to.setText(from.getText());
                 to.positionCaret(from.getCaretPosition());
                 container.getChildren().set(0, to);
-                eyeBtn.setText(Messages.get(selected ? "input.password.eye_off" : "input.password.eye"));
+                eyeBtn.setGraphic(IconAnt.path(selected ? IconAnt.Path.EYE_OFF : IconAnt.Path.EYE, 16));
+                eyeBtn.setAccessibleText(Messages.get(selected ? "input.password.eye_off" : "input.password.eye"));
                 to.requestFocus();
             });
 

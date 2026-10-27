@@ -210,8 +210,12 @@ class InputAntTest extends JfxTestBase {
         masked.setText("secret");
         masked.positionCaret(3);
         ToggleButton eye = (ToggleButton) group.getChildren().get(1);
+        assertNotNull(eye.getGraphic());
+        assertTrue(eye.getGraphic().getStyleClass().contains(JfxStyles.ICON_PATH));
+        var eyeIcon = eye.getGraphic();
 
         eye.setSelected(true);
+        assertNotSame(eyeIcon, eye.getGraphic());
         TextField plain = (TextField) group.getChildren().get(0);
         assertFalse(plain instanceof PasswordField);
         assertEquals("secret", plain.getText());
