@@ -154,6 +154,12 @@
 @control-height-sm: 28px;
 @control-height: 32px;
 @control-height-lg: 40px;
+
+// Spinner 右侧步进区宽度（Ant Design InputNumber handler 量级）。
+// 派生自 @control-height：紧凑 / tool 主题覆写高度后自动收紧（32→26px，28→22px）。
+// 使用位置：_spinner.less（.increment-arrow-button / .decrement-arrow-button）
+@spinner-handler-width: @control-height - 6px;
+
 // ============================================
 // Component Padding Variables
 // ============================================

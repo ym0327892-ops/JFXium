@@ -21,7 +21,9 @@ import java.util.function.Consumer;
  * JFXium 数字输入框组件 - 对标 Ant Design InputNumber（组合式，Builder 模式）。
  *
  * <p><b>定位</b>：带 +/- 按钮的数字输入控件，支持范围限制、步长、精度控制，
- * 与 SpinnerAnt（加载旋转）严格区分。</p>
+ * 与 {@link org.openkawu.jfxium.component.control.SpinnerAnt}（原生 Spinner 包装）严格区分：
+ * 本组件为自绘 HBox + 输入框 + 上下按钮，支持 prefix/suffix；SpinnerAnt 直接继承
+ * {@code Spinner<Double>}，保留 JavaFX Spinner 的 {@code valueProperty()} / 行内编辑语义。</p>
  *
  * <h2>功能特性</h2>
  * <ul>

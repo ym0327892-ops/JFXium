@@ -1610,7 +1610,7 @@
   -fx-progress-color: -color-danger-emphasis;
 }
 /* ============================================
-   jfx-spinner — SpinnerAnt 旋转加载指示器
+   jfx-spinner — SpinAnt SPINNER 旋转加载指示器
    显式覆盖 indeterminate 态样式，确保旋转动画 + 主题色
    对齐 AtlantaFX _progress.scss indeterminate 段
    ============================================ */
@@ -2836,11 +2836,14 @@
   -fx-padding: 6px 11px;
   -fx-text-fill: rgba(255, 255, 255, 0.85);
   -fx-padding: 0;
+  /* 重置 modena 的 background-insets: 0, 1（单层填充，避免双层叠色） */
+  -fx-background-insets: 0;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
-  -fx-focus-traversable: false;
 }
-.spinner:focused {
+/* 控件自身获焦（只读形态）或内部 editor 获焦（可编辑形态）都显示主色边框 */
+.spinner:focused,
+.spinner:focus-within {
   -fx-border-color: -color-accent-emphasis;
   -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
 }
@@ -2854,8 +2857,23 @@
 .spinner .increment-arrow-button,
 .spinner .decrement-arrow-button {
   -fx-background-color: transparent;
+  /* 重置 modena 三层 insets / radius（0 0 -1 0, 1 1 0 1, 2 2 1 2），
+     否则 hover 上色会向相邻按钮溢出 1px */
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
   -fx-border-color: transparent transparent transparent -color-border-muted;
   -fx-border-width: 0 0 0 1px;
+  /* 步进区宽度：SpinnerSkin.layoutChildren 按“箭头 pref 宽 + 按钮 insets”算，
+     -fx-pref-width 会被忽略，所以用 padding 推导：
+     1px 左边框 + padding + 9px 箭头 + padding = @spinner-handler-width（默认 26 / compact 22）。 */
+  -fx-padding: 0 8px;
+}
+/* 外角与容器同半径：hover/armed 填充贴合圆角边框，不留白边 */
+.spinner .increment-arrow-button {
+  -fx-background-radius: 0 4px 0 0;
+}
+.spinner .decrement-arrow-button {
+  -fx-background-radius: 0 0 4px 0;
 }
 .spinner .increment-arrow-button:hover,
 .spinner .decrement-arrow-button:hover {
@@ -2870,21 +2888,23 @@
 /* M19.44+ 红线#9 修复：显式设 shape + 尺寸（对齐全项目 arrow 规范，modena 默认 shape 保留作为显式声明） */
 .spinner .increment-arrow {
   -fx-background-color: -color-fg-muted;
-  -fx-shape: "M 0 4 h 7 l -3.5 -4 z";
-  -fx-min-width: 4px;
-  -fx-min-height: 7px;
-  -fx-pref-width: 4px;
-  -fx-pref-height: 7px;
-  -fx-padding: 0 5px 0 5px;
+  -fx-background-insets: 0;
+  -fx-shape: "M 0 6 h 9 l -4.5 -6 z";
+  -fx-min-width: 9px;
+  -fx-min-height: 6px;
+  -fx-pref-width: 9px;
+  -fx-pref-height: 6px;
+  -fx-padding: 0;
 }
 .spinner .decrement-arrow {
   -fx-background-color: -color-fg-muted;
-  -fx-shape: "M 0 0 h 7 l -3.5 4 z";
-  -fx-min-width: 4px;
-  -fx-min-height: 7px;
-  -fx-pref-width: 4px;
-  -fx-pref-height: 7px;
-  -fx-padding: 0 5px 0 5px;
+  -fx-background-insets: 0;
+  -fx-shape: "M 0 0 h 9 l -4.5 6 z";
+  -fx-min-width: 9px;
+  -fx-min-height: 6px;
+  -fx-pref-width: 9px;
+  -fx-pref-height: 6px;
+  -fx-padding: 0;
 }
 .spinner .increment-arrow-button:hover .increment-arrow,
 .spinner .decrement-arrow-button:hover .decrement-arrow {
@@ -2895,6 +2915,18 @@
 .spinner .decrement-arrow-button:armed .decrement-arrow,
 .spinner .decrement-arrow-button:pressed .decrement-arrow {
   -fx-background-color: -color-fg-on-emphasis;
+}
+/* ============================================
+   Size 档位（SpinnerAnt.size(Size) → .spinner.small / .spinner.large）
+   与 _input-sizes.less 的 .text-field.small/.large 对齐
+   ============================================ */
+.spinner.small .text-field {
+  -fx-padding: 2px 7px;
+  -fx-font-size: 12px;
+}
+.spinner.large .text-field {
+  -fx-padding: 9px 11px;
+  -fx-font-size: 16px;
 }
 /* ============================================
    SplitPane
