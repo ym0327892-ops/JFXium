@@ -190,9 +190,6 @@ public final class JfxStyles {
     public static final String SCROLL_PANE = "jfx-scroll-pane";
     public static final String SCROLL_PANE_VIEWPORT = "jfx-scroll-pane-viewport";
 
-    /** AccordionAnt 手风琴（仅作容器选择器，标题/内容走 .titled-pane 内置） */
-    public static final String ACCORDION = "jfx-accordion";
-
     /* ============================================
        布局原语（FlexAnt / GridAnt / SpaceAnt / DividerAnt）
        对标 Ant Design 的 Flex/Row/Col/Space/Divider

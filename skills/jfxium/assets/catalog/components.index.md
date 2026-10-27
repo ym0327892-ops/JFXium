@@ -52,7 +52,6 @@
 | **VBarAnt** | component.composite | `VBarAnt` | top, center, bottom, gap, alignment, compact |
 | **WatermarkAnt** | component.composite | `StackPane` | content, text, image, customNode, rotate, opacity, fontSize, gapX, gapY, imageWidth, imageHeight, color, fontFamily, fontWeight, fontGap, preventRemoval, wrap, controllerOf |
 | **WindowControlAnt** | component.composite | `WindowControlAnt` | target, minimizeVisible, maximizeVisible, closeVisible, maximized, requestClose |
-| **AccordionAnt** | component.control | `VBox` | pane, activeKey, activeKeys |
 | **ButtonAnt** | component.control | `ButtonAnt` | link, compactLink, iconOnly, type, size, shape, rounded, square, loading, ghost, block, text, icon, contentDisplay, onClick, command |
 | **CanvasAnt** | component.control | `CanvasAnt` | size, onDraw, gc, clear, fill, stroke, redraw |
 | **CheckBoxAnt** | component.control | `CheckBoxAnt` | text, selected, indeterminate, allowIndeterminate, size, shape, onChange, bindValue |

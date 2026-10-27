@@ -25,7 +25,6 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.ToggleButtonExamplePa
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.TransferExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.TreeSelectExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.UploadExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.AccordionExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.AvatarBadgeExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CalendarExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.CanvasExamplePage;
@@ -238,7 +237,6 @@ final class PageCatalog {
         register(registry, "datadisplay.calendar", "Calendar 日历", PageRegistry.Category.DATA_DISPLAY, CalendarExamplePage::new);
         register(registry, UiExampleConstants.ROUTE_WATERMARK, "Watermark 水印", PageRegistry.Category.DATA_DISPLAY, WatermarkExamplePage::new);
         register(registry, "datadisplay.skeleton", "Skeleton 骨架屏", PageRegistry.Category.DATA_DISPLAY, SkeletonExamplePage::new);
-        register(registry, "datadisplay.accordion", "Accordion 手风琴", PageRegistry.Category.DATA_DISPLAY, AccordionExamplePage::new);
         register(registry, "datadisplay.titledpane", "TitledPane 标题面板", PageRegistry.Category.DATA_DISPLAY, TitledPaneExamplePage::new);
         register(registry, "datadisplay.treetable", "TreeTable 树表格", PageRegistry.Category.DATA_DISPLAY, TreeTableExamplePage::new);
         register(registry, "datadisplay.listview", "ListView 列表视图", PageRegistry.Category.DATA_DISPLAY, ListViewExamplePage::new);

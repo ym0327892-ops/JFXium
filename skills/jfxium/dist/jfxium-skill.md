@@ -68,7 +68,7 @@ Targets **JFXium 1.34.2** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 | `Menu` / `MenuItem` | `MenuAnt` | |
 | `ContextMenu` / `Tooltip` | `ContextMenuAnt` / `TooltipAnt` | |
 | `DatePicker` / `ColorPicker` | `DatePickerAnt` / `ColorPickerAnt` | 日期时间 `DateTimePickerAnt` |
-| `TitledPane` / `Accordion` | `TitledPaneAnt` / `AccordionAnt` | |
+| `TitledPane` / `Accordion` | `TitledPaneAnt` / `CollapseAnt.accordion(true)` | 单面板用前者，多面板互斥用后者 |
 | `Pagination` / `Separator` / `ToolBar` | `PaginationAnt` / `SeparatorAnt` / `ToolBarAnt` | |
 | `TabPane` / `Tab` | `TabsAnt` | `TabsAnt.controllerOf(node)` |
 | `ScrollPane` / `SplitPane` | `ScrollPaneAnt` / `SplitPaneAnt` | |
@@ -412,7 +412,6 @@ java skills/jfxium/scripts/JfxLint.java src/main/java
 | **VBarAnt** | component.composite | `VBarAnt` | top, center, bottom, gap, alignment, compact |
 | **WatermarkAnt** | component.composite | `StackPane` | content, text, image, customNode, rotate, opacity, fontSize, gapX, gapY, imageWidth, imageHeight, color, fontFamily, fontWeight, fontGap, preventRemoval, wrap, controllerOf |
 | **WindowControlAnt** | component.composite | `WindowControlAnt` | target, minimizeVisible, maximizeVisible, closeVisible, maximized, requestClose |
-| **AccordionAnt** | component.control | `VBox` | pane, activeKey, activeKeys |
 | **ButtonAnt** | component.control | `ButtonAnt` | link, compactLink, iconOnly, type, size, shape, rounded, square, loading, ghost, block, text, icon, contentDisplay, onClick, command |
 | **CanvasAnt** | component.control | `CanvasAnt` | size, onDraw, gc, clear, fill, stroke, redraw |
 | **CheckBoxAnt** | component.control | `CheckBoxAnt` | text, selected, indeterminate, allowIndeterminate, size, shape, onChange, bindValue |

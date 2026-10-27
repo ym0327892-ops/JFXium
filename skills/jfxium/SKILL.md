@@ -72,7 +72,7 @@ Targets **JFXium 1.34.2** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 | `Menu` / `MenuItem` | `MenuAnt` | |
 | `ContextMenu` / `Tooltip` | `ContextMenuAnt` / `TooltipAnt` | |
 | `DatePicker` / `ColorPicker` | `DatePickerAnt` / `ColorPickerAnt` | 日期时间 `DateTimePickerAnt` |
-| `TitledPane` / `Accordion` | `TitledPaneAnt` / `AccordionAnt` | |
+| `TitledPane` / `Accordion` | `TitledPaneAnt` / `CollapseAnt.accordion(true)` | 单面板用前者，多面板互斥用后者 |
 | `Pagination` / `Separator` / `ToolBar` | `PaginationAnt` / `SeparatorAnt` / `ToolBarAnt` | |
 | `TabPane` / `Tab` | `TabsAnt` | `TabsAnt.controllerOf(node)` |
 | `ScrollPane` / `SplitPane` | `ScrollPaneAnt` / `SplitPaneAnt` | |

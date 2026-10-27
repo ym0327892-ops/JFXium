@@ -1,37 +1,4 @@
 /* ============================================
-   Accordion Component
-   ============================================ */
-.jfx-accordion .titled-pane {
-  -fx-background-color: -color-bg-default;
-  -fx-border-color: transparent transparent -color-border-muted transparent;
-  -fx-border-width: 0 0 1px 0;
-}
-
-.jfx-accordion .titled-pane > .title {
-  -fx-background-color: -color-bg-default;
-  -fx-padding: @accordion-title-padding-y @accordion-title-padding-x;
-  -fx-font-weight: 500;
-  
-}
-
-.jfx-accordion .titled-pane > .title:hover {
-  -fx-background-color: -color-accent-hover;
-}
-
-.jfx-accordion .titled-pane > .title:armed {
-  -fx-background-color: -color-accent-active;
-}
-
-.jfx-accordion .titled-pane > .content {
-  -fx-background-color: -color-bg-overlay;
-  -fx-padding: @accordion-content-padding-y @accordion-content-padding-x;
-}
-
-.jfx-accordion .titled-pane:expanded > .title {
-  -fx-text-fill: -color-accent-text;
-}
-
-/* ============================================
    TitledPane Component
    ============================================ */
 .titled-pane {
@@ -50,15 +17,14 @@
 }
 
 /* 键盘焦点（#169 覆盖审计补充）：
-   TitledPane 整块 focusTraversable，实际可点区域是 > .title 标题条
-   （Accordion 亦复用同一结构）。环画在标题条上，上圆角对称、
+   TitledPane 整块 focusTraversable，实际可点区域是 > .title 标题条。
+   环画在标题条上，上圆角对称、
    下沿直线 —— 折叠时视觉重心在标题，语义正确。
    静止态标题条已有 1px 边框（.titled-pane 的 border），环外扩 1px 不位移。
    用普通档即可：.titled-pane > .title 是 2 类选择器(0x200)，
    与 :focus-visible(0x10) 相加后源顺序决定，本规则位于文件后段；
    若后续新增 `.titled-pane.custom > .title` 之类 3 类规则需改 strong 档。 */
-.titled-pane > .title:focus-visible,
-.jfx-accordion .titled-pane > .title:focus-visible {
+.titled-pane > .title:focus-visible {
   .focus-ring(@border-radius-md);
 }
 

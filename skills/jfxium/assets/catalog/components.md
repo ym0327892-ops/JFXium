@@ -63,7 +63,6 @@
 
 | 组件 | extends | 工厂 | build() | 关键 API | 定位 |
 |---|---|---|---|---|---|
-| **AccordionAnt** | — | `create() -> Builder` | `VBox` | pane, activeKey, activeKeys | CollapseAnt 的互斥折叠快捷入口。始终以 accordion 模式运行 |
 | **ButtonAnt** | `Button` | `create() -> ButtonAnt`<br>`create(String text) -> ButtonAnt`<br>`create(String text, Node graphic) -> ButtonAnt` | `ButtonAnt` | link, compactLink, iconOnly, type, size, shape, rounded, square, loading, ghost, block, text, icon, contentDisplay, onClick, command | 项目最基础的交互控件，继承自 Button， |
 | **CanvasAnt** | `Canvas` | `create() -> CanvasAnt` | `CanvasAnt` | size, onDraw, gc, clear, fill, stroke, redraw | 2D 绘图容器，继承自 JavaFX Canvas。 |
 | **CheckBoxAnt** | `CheckBox` | `create() -> CheckBoxAnt`<br>`create(String text) -> CheckBoxAnt` | `CheckBoxAnt` | text, selected, indeterminate, allowIndeterminate, size, shape, onChange, bindValue | 多选控件，继承自 CheckBox， |

@@ -33,7 +33,7 @@
 | `DatePicker` | `DatePickerAnt`（日期时间用 `DateTimePickerAnt`，时间用 `TimePickerAnt`） |
 | `ColorPicker` | `ColorPickerAnt` |
 | `TitledPane` | `TitledPaneAnt` |
-| `Accordion` | `AccordionAnt` |
+| `Accordion` | `CollapseAnt.create().accordion(true)` | 多面板互斥；单面板用 `TitledPaneAnt` |
 | `Pagination` | `PaginationAnt` |
 | `Separator` | `SeparatorAnt` |
 | `Canvas` | `CanvasAnt` |

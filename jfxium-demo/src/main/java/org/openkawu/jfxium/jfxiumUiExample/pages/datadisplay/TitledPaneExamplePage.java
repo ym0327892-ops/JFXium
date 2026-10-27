@@ -105,7 +105,7 @@ public class TitledPaneExamplePage extends VBoxAnt {
                     .build();
                 """;
         return Demos.sectionWithCode("2. 嵌套使用",
-                "TitledPane 支持多级嵌套，形成层级折叠结构。也可配合 AccordionAnt 实现互斥折叠。",
+                "TitledPane 支持多级嵌套，形成层级折叠结构。多面板互斥折叠用 CollapseAnt.create().accordion(true)。",
                 code, outer);
     }
 
