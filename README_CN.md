@@ -225,6 +225,22 @@ public class HelloJfxium extends Application {
 
 ---
 
+## AI 辅助开发
+
+`skills/jfxium/` 是标准 Agent Skill 包（Claude Code / Qoder / Cursor / Copilot / Codex / 任意聊天 AI），
+目标：AI 生成 UI 时优先且正确地使用 JFXium，而不是 `new Label()` / `setStyle()` / FXML。
+
+- `SKILL.md`：自包含技能入口，可直接复制为 `.qoder/skills/jfxium.md` 或 `.claude/skills/jfxium/SKILL.md`
+- `skills/jfxium/dist/jfxium-skill.md`：单文件技能包，直接粘贴给任意 AI 即可
+- `assets/catalog/`：全量组件的工厂、`build()` 返回类型、关键 API（自动生成）
+- `references/`：11 条红线、原生→Ant 完整对照、可复制片段、system prompt
+- 自检：`java skills/jfxium/scripts/JfxLint.java src/main/java`
+- 维护：`java skills/jfxium/scripts/CatalogGen.java && java skills/jfxium/scripts/Bundle.java`
+
+接入步骤见 [skills/jfxium/README.md](skills/jfxium/README.md)。
+
+---
+
 ## 已知限制 / 绕行方案
 
 > 业务侧实测「想这么干但当前 API 不够顺」的场景。**这些不是 bug**，是 API 演进期的边界，列在这避免你撞墙。

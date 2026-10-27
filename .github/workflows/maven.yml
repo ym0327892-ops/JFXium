@@ -55,6 +55,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up JDK 21 (AI kit tools)
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
       - name: "Scan red line #1 — setStyle with color/px"
         run: |
           # Strip comments first: javadoc prose such as "SKILL #1" would otherwise
@@ -210,6 +216,19 @@ jobs:
           echo "$hits"
           [ -z "$hits" ] || { echo "❌ FAILED: 'install -pl jfxium' without -am"; exit 1; }
 
+      - name: "AI skill — catalog + single-file bundle drift"
+        run: |
+          # catalog / dist 是生成物；组件 API 或 SKILL 改了却没重跑会让下游 AI 拿到旧技能。
+          java skills/jfxium/scripts/CatalogGen.java
+          java skills/jfxium/scripts/Bundle.java
+          git diff --exit-code -- skills/jfxium/assets/catalog skills/jfxium/dist \
+            || { echo "❌ 生成物过期：运行 CatalogGen + Bundle 并提交产物"; exit 1; }
+
+      - name: "AI skill — red-line lint (demo + module exports)"
+        run: |
+          java skills/jfxium/scripts/JfxLint.java jfxium-demo/src
+          java skills/jfxium/scripts/JfxLint.java jfxium/src/main/java
+
   summary:
     name: CI Summary
     if: always()
@@ -316,6 +335,8 @@ jobs:
           cp jfxium/target/jfxium-*.jar release/
           cp pom.xml       "release/jfxium-parent-${GITHUB_REF_NAME#v}.pom"
           cp jfxium/pom.xml "release/jfxium-${GITHUB_REF_NAME#v}.pom"
+          # 下游 AI Skill：与 jar 同 tag 发布，消费者无需 clone 仓库即可拿到 SKILL/catalog/lint
+          tar -czf "release/jfxium-agent-skill-${GITHUB_REF_NAME#v}.tgz" skills/jfxium
           ls -la release/
 
       - name: Create GitHub Release

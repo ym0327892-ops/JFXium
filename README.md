@@ -197,6 +197,7 @@ public class HelloJfxium extends Application {
 | [主题系统](docs/cn/主题系统.md) | 主题切换、自定义主题、styleClass |
 | [业务模板](docs/cn/业务模板.md) | CrudTemplate / LoginTemplate / DashboardTemplate |
 | [最佳实践](docs/cn/最佳实践.md) | Builder 模式、EventBus、页面骨架 |
+| [AI Skill](skills/jfxium/README.md) | Portable Agent Skill: single-file prompt, component catalog, native→Ant map, red-line lint |
 
 ---
 

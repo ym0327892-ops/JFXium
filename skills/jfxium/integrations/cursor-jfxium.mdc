@@ -1,0 +1,23 @@
+---
+description: JFXium UI rules. Use when writing or reviewing JavaFX 21 UI in this project.
+alwaysApply: true
+---
+
+# JFXium UI
+
+When writing JavaFX UI, follow `skills/jfxium/SKILL.md` (or `dist/jfxium-skill.md` if present).
+Do not write FXML.
+
+Hard rules:
+
+1. No `new` native JavaFX controls (Label, Button, TextField, ComboBox, Spinner, TableView, …).
+   Use `XxxAnt.create()...build()`.
+2. No `setStyle()` with colors/px; use styleClass + LESS.
+3. No `box-shadow`, `-fx-transition`, CSS `:active` or `:focus`.
+4. New styleClass must start with `jfx-`.
+5. Overlay `build()` returns a Result — call `.open(owner)` / `.show()`.
+6. i18n via `Messages.get("key")`, resolved lazily in `build()`.
+7. Async code must return to the FX thread before touching nodes.
+8. New public classes must be exported in `module-info.java`.
+
+Before finishing: `java skills/jfxium/scripts/JfxLint.java <changed dir>` (zero ERRORs).
