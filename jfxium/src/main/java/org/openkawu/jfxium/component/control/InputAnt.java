@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.control;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -9,6 +10,7 @@ import javafx.scene.layout.Priority;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.builder.Radius;
+import org.openkawu.jfxium.core.form.FormContext;
 import org.openkawu.jfxium.component.composite.FormAnt;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.i18n.Messages;
@@ -225,47 +227,68 @@ public class InputAnt extends TextField implements LayoutCommon<InputAnt>, Disab
             container.getStyleClass().add(JfxStyles.INPUT_PASSWORD);
             container.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-            PasswordField pwdField = new PasswordField();
-            // 取消裸名 "text-input"（P0-F1 修复）：
-            // 1) 该类名在 LESS 端未定义，加载无效
-            // 2) 违反 red-lines "禁止新建 styleClass 不带 jfx- 前缀"
-            // PasswordField 沿用 .text-field 根类自动继承 _input.less 通用样式
-            ApplySizeUtil.apply(pwdField.getStyleClass(), size);
-            pwdField.setPromptText(placeholder);
-            pwdField.setDisable(disabled);
-            HBox.setHgrow(pwdField, Priority.ALWAYS);
+            // 单一真值：外部 bindValue / FormContext 都观察这个 Property。
+            // PasswordField 无法通过 CSS 解除掩码，明/密文切换必须换控件，
+            // 因此两个字段共享同一个 value，避免切换时丢文本 / 光标。
+            StringProperty value = bindProperty != null ? bindProperty : new SimpleStringProperty("");
+            String initial = value.get() == null ? "" : value.get();
+
+            PasswordField masked = new PasswordField();
+            masked.setText(initial);
+            TextField plain = new TextField(initial);
+            for (TextField field : java.util.List.of(masked, plain)) {
+                // 沿用 .password-field / .text-field 根类，尺寸类与输入框一致
+                ApplySizeUtil.apply(field.getStyleClass(), size);
+                field.setPromptText(TextUtils.safeText(placeholder));
+                field.setDisable(disabled);
+                HBox.setHgrow(field, Priority.ALWAYS);
+            }
+
+            Runnable syncFields = () -> {
+                String text = value.get() == null ? "" : value.get();
+                if (!masked.getText().equals(text)) masked.setText(text);
+                if (!plain.getText().equals(text)) plain.setText(text);
+            };
+            value.addListener((obs, old, val) -> syncFields.run());
+            masked.textProperty().addListener((obs, old, val) -> {
+                String text = val == null ? "" : val;
+                if (!text.equals(value.get())) value.set(text);
+            });
+            plain.textProperty().addListener((obs, old, val) -> {
+                String text = val == null ? "" : val;
+                if (!text.equals(value.get())) value.set(text);
+            });
 
             // 可见切换按钮
             ToggleButton eyeBtn = new ToggleButton();
             eyeBtn.getStyleClass().add(JfxStyles.INPUT_PASSWORD_EYE);
             // P0-F3 修复：眼睛 emoji 国际化（zh_CN=en_US，避免在 Java 端硬编码字符）
             eyeBtn.setText(Messages.get("input.password.eye"));
+            eyeBtn.setFocusTraversable(false);
+            eyeBtn.setDisable(disabled);
+            eyeBtn.setMaxHeight(Double.MAX_VALUE);
             eyeBtn.setSelected(false);
 
-            // 切换密码可见性
+            // 切换密码可见性：交换 PasswordField ↔ TextField，文本/光标跟随
             eyeBtn.selectedProperty().addListener((obs, old, selected) -> {
-                if (selected) {
-                    pwdField.setPromptText(placeholder);
-                    // PasswordField 不能直接设 echo char，需要替换为 TextField
-                    // 简化实现：通过 CSS 控制显示
-                    pwdField.getStyleClass().remove(JfxStyles.INPUT_PASSWORD_MASKED);
-                    pwdField.getStyleClass().add(JfxStyles.INPUT_PASSWORD_VISIBLE);
-                } else {
-                    pwdField.getStyleClass().remove(JfxStyles.INPUT_PASSWORD_VISIBLE);
-                    pwdField.getStyleClass().add(JfxStyles.INPUT_PASSWORD_MASKED);
-                }
+                TextField from = (TextField) container.getChildren().get(0);
+                TextField to = selected ? plain : masked;
+                to.setText(from.getText());
+                to.positionCaret(from.getCaretPosition());
+                container.getChildren().set(0, to);
+                eyeBtn.setText(Messages.get(selected ? "input.password.eye_off" : "input.password.eye"));
+                to.requestFocus();
             });
-            pwdField.getStyleClass().add(JfxStyles.INPUT_PASSWORD_MASKED);
 
             // 回调
             if (onChange != null) {
-                pwdField.textProperty().addListener((obs, old, val) -> onChange.accept(val));
+                value.addListener((obs, old, val) -> onChange.accept(val == null ? "" : val));
             }
 
-            // 绑定
-            Bindings.bindBidirectional(pwdField.textProperty(), bindProperty);
+            // FormContext 值载体契约：FormAnt 的 setValue/reset 直接写入该 Property
+            container.getProperties().put(FormContext.VALUE_PROPERTY_KEY, value);
 
-            container.getChildren().addAll(pwdField, eyeBtn);
+            container.getChildren().addAll(masked, eyeBtn);
             return container;
         }
     }

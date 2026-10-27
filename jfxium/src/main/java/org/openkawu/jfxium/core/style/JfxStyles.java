@@ -850,8 +850,6 @@ public final class JfxStyles {
        ============================================ */
     public static final String INPUT_PASSWORD = "jfx-input-password";
     public static final String INPUT_PASSWORD_EYE = "jfx-input-password-eye";
-    public static final String INPUT_PASSWORD_MASKED = "jfx-input-password-masked";
-    public static final String INPUT_PASSWORD_VISIBLE = "jfx-input-password-visible";
 
     /* ============================================
        SearchInputAnt — 带清除按钮的输入框（allowClear）

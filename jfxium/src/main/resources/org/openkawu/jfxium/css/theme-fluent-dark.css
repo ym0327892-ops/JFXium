@@ -5791,6 +5791,71 @@
   -fx-font-size: 16px;
 }
 /* ============================================
+   Password Input Group（InputAnt.createPassword）
+   容器画边框；内部 PasswordField/TextField 透明；
+   眼睛按钮贴右，明/密文字段共享同一个 StringProperty。
+   ============================================ */
+.jfx-input-password {
+  -fx-background-color: #2c2c2c;
+  -fx-border-color: #3a3a3a;
+  -fx-border-width: 1px;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
+  -fx-padding: 6px 11px;
+  -fx-text-fill: #ffffff;
+  -fx-padding: 0;
+  -fx-spacing: 0;
+}
+.jfx-input-password > .password-field,
+.jfx-input-password > .text-field {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-padding: 6px 11px;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+.jfx-input-password > .password-field.small,
+.jfx-input-password > .text-field.small {
+  -fx-padding: 2px 7px;
+  -fx-font-size: 12px;
+}
+.jfx-input-password > .password-field.large,
+.jfx-input-password > .text-field.large {
+  -fx-padding: 9px 11px;
+  -fx-font-size: 16px;
+}
+/* 内部字段的 hover/focus 边框由容器统一表达 */
+.jfx-input-password > .password-field:hover,
+.jfx-input-password > .text-field:hover,
+.jfx-input-password > .password-field:focused,
+.jfx-input-password > .text-field:focused {
+  -fx-border-color: transparent;
+  -fx-effect: null;
+}
+.jfx-input-password:focused,
+.jfx-input-password:focus-within {
+  -fx-border-color: -color-accent-emphasis;
+  -fx-effect: dropshadow(gaussian, -color-accent-emphasis, 2, 0, 0, 1);
+}
+.jfx-input-password .jfx-input-password-eye {
+  -fx-background-color: transparent;
+  -fx-background-radius: 0 4px 4px 0;
+  -fx-border-color: transparent transparent transparent -color-border-muted;
+  -fx-border-width: 0 0 0 1px;
+  -fx-padding: 0 10px;
+  -fx-cursor: hand;
+  -fx-text-fill: -color-fg-muted;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+.jfx-input-password .jfx-input-password-eye:hover {
+  -fx-background-color: -color-accent-hover;
+}
+.jfx-input-password .jfx-input-password-eye:selected {
+  -fx-background-color: -color-accent-active;
+  -fx-text-fill: -color-fg-on-emphasis;
+}
+/* ============================================
    TreeTableView Component
    ============================================ */
 .tree-table-view {

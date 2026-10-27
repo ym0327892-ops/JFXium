@@ -29,6 +29,7 @@ public class InputExamplePage extends VBoxAnt {
                         stateSection(),
                         placeholderSection(),
                         allowClearSection(),
+                        passwordSection(),
                         playgroundSection()
                 )
                 .padding(24)
@@ -111,6 +112,23 @@ public class InputExamplePage extends VBoxAnt {
                 code, demo);
     }
 
+    private Node passwordSection() {
+        Node demo = Demos.row(
+                InputAnt.createPassword().placeholder("请输入密码").build(),
+                InputAnt.createPassword().placeholder("小尺寸密码").size(Size.SMALL).build()
+        );
+        String code = """
+                // 明/密文切换内置（眼睛按钮），两个字段共享同一个 StringProperty
+                HBox pwd = InputAnt.createPassword()
+                        .placeholder("请输入密码")
+                        .bindValue(pwdProperty)
+                        .build();
+                """;
+        return Demos.sectionWithCode("6. 密码输入",
+                "PasswordField 包装：眼睛切换、尺寸、bindValue 双向同步与 FormContext 值载体。",
+                code, demo);
+    }
+
     private Node playgroundSection() {
         Binder<String> sizeBinder = PlayGround.binder("default");
         Binder<String> stateBinder = PlayGround.binder("normal");
@@ -121,7 +139,7 @@ public class InputExamplePage extends VBoxAnt {
                 .readOnly("readonly".equals(stateBinder.get()))
                 .placeholder(placeholderBinder.get().isEmpty() ? "请输入内容" : placeholderBinder.get())
                 .build();
-        return Demos.section("6. 交互演示",
+        return Demos.section("7. 交互演示",
                 "通过左侧控件实时改变输入框的尺寸、状态和占位符。",
                 PlayGround.rebindRebuild(factory, null,
                         PlayGround.row("尺寸", PlayGround.segmented(sizeBinder,

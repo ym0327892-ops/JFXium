@@ -2,9 +2,14 @@ package org.openkawu.jfxium.component.control;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.HBox;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
+import org.openkawu.jfxium.core.form.FormContext;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
 
@@ -180,5 +185,65 @@ class InputAntTest extends JfxTestBase {
         input.disabled(true);
         assertTrue(input.isDisable());
         assertTrue(input.getStyleClass().contains(JfxStyles.SIZE_SMALL));
+    }
+
+    // ---------- 密码输入 ----------
+
+    @Test
+    @DisplayName("createPassword 返回 HBox：PasswordField + 眼睛按钮 + 值载体")
+    void createPassword_buildsGroupWithCarrier() {
+        HBox group = InputAnt.createPassword().placeholder("密码").build();
+
+        assertTrue(group.getStyleClass().contains(JfxStyles.INPUT_PASSWORD));
+        assertEquals(2, group.getChildren().size());
+        assertInstanceOf(PasswordField.class, group.getChildren().get(0));
+        assertInstanceOf(ToggleButton.class, group.getChildren().get(1));
+        assertInstanceOf(StringProperty.class,
+                group.getProperties().get(FormContext.VALUE_PROPERTY_KEY));
+    }
+
+    @Test
+    @DisplayName("眼睛切换：PasswordField ↔ TextField，文本与光标保留")
+    void createPassword_eyeToggle_swapsFieldAndKeepsText() {
+        HBox group = InputAnt.createPassword().build();
+        TextField masked = (TextField) group.getChildren().get(0);
+        masked.setText("secret");
+        masked.positionCaret(3);
+        ToggleButton eye = (ToggleButton) group.getChildren().get(1);
+
+        eye.setSelected(true);
+        TextField plain = (TextField) group.getChildren().get(0);
+        assertFalse(plain instanceof PasswordField);
+        assertEquals("secret", plain.getText());
+        assertEquals(3, plain.getCaretPosition());
+
+        eye.setSelected(false);
+        assertInstanceOf(PasswordField.class, group.getChildren().get(0));
+        assertEquals("secret", ((TextField) group.getChildren().get(0)).getText());
+    }
+
+    @Test
+    @DisplayName("bindValue 双向同步，切换字段不丢值")
+    void createPassword_bindValue_syncsBothWays() {
+        StringProperty property = new SimpleStringProperty("init");
+        HBox group = InputAnt.createPassword().bindValue(property).build();
+        TextField field = (TextField) group.getChildren().get(0);
+
+        assertEquals("init", field.getText());
+        field.setText("typed");
+        assertEquals("typed", property.get());
+
+        property.set("external");
+        assertEquals("external", field.getText());
+    }
+
+    @Test
+    @DisplayName("FormContext 载体写入可驱动当前字段")
+    void createPassword_formCarrier_drivesField() {
+        HBox group = InputAnt.createPassword().build();
+        StringProperty carrier = (StringProperty) group.getProperties().get(FormContext.VALUE_PROPERTY_KEY);
+
+        carrier.set("from-form");
+        assertEquals("from-form", ((TextField) group.getChildren().get(0)).getText());
     }
 }
