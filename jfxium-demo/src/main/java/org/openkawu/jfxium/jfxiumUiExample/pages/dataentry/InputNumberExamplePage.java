@@ -24,7 +24,8 @@ public class InputNumberExamplePage extends VBoxAnt {
     public InputNumberExamplePage() {
         spacing(0).children(PageTemplate.create()
                 .title("InputNumber 数字输入框")
-                .description("带 +/- 步进按钮的数字输入框，支持范围限制、步长、精度、前后缀。")
+                .description("带 +/- 步进按钮的数字输入框，支持范围限制、步长、精度、前后缀。"
+                        + "常规数字输入推荐本组件（FormAnt 校验 / reset 已接线）；需要原生 Spinner 语义时用 Spinner 数字步进页。")
                 .sections(basicSection(), rangeStepSection(), precisionSection(), affixSection(), valueSection(), playgroundSection())
                 .padding(24)
                 .build());

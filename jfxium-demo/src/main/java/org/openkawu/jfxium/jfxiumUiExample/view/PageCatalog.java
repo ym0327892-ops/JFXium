@@ -16,6 +16,7 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.RadioExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.RateExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.SelectExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.SliderExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.SpinnerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.SwitchExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.TextAreaExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.dataentry.DateTimePickerExamplePage;
@@ -62,7 +63,6 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.PopoverExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.PromptDialogExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.ResultExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.SpinExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.SpinnerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.TooltipExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.ButtonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.CodeBlockExamplePage;
@@ -203,6 +203,7 @@ final class PageCatalog {
         register(registry, "dataentry.slider", "Slider 滑块", PageRegistry.Category.DATA_ENTRY, SliderExamplePage::new);
         register(registry, "dataentry.datepicker", "DatePicker 日期", PageRegistry.Category.DATA_ENTRY, DatePickerExamplePage::new);
         register(registry, "dataentry.inputnumber", "InputNumber 数字输入", PageRegistry.Category.DATA_ENTRY, InputNumberExamplePage::new);
+        register(registry, "dataentry.spinner", "Spinner 数字步进", PageRegistry.Category.DATA_ENTRY, SpinnerExamplePage::new);
         register(registry, "dataentry.transfer", "Transfer 穿梭框", PageRegistry.Category.DATA_ENTRY, TransferExamplePage::new);
         register(registry, "dataentry.upload", "Upload 上传", PageRegistry.Category.DATA_ENTRY, UploadExamplePage::new);
         register(registry, "dataentry.autocomplete", "AutoComplete 自动完成", PageRegistry.Category.DATA_ENTRY, AutoCompleteExamplePage::new);
@@ -259,7 +260,6 @@ final class PageCatalog {
         register(registry, "feedback.contextmenu", "ContextMenu 右键菜单", PageRegistry.Category.FEEDBACK, ContextMenuExamplePage::new);
         register(registry, "feedback.floatbutton", "FloatButton 悬浮按钮", PageRegistry.Category.FEEDBACK, FloatButtonExamplePage::new);
         register(registry, "feedback.promptdialog", "PromptDialog 输入弹框", PageRegistry.Category.FEEDBACK, PromptDialogExamplePage::new);
-        register(registry, "feedback.spinner", "Spinner 旋转加载", PageRegistry.Category.FEEDBACK, SpinnerExamplePage::new);
         register(registry, "feedback.popover", "Popover 气泡卡片", PageRegistry.Category.FEEDBACK, PopoverExamplePage::new);
     }
 
