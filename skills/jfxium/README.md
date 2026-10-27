@@ -12,6 +12,8 @@ skills/jfxium/
 │   ├── rules.md                 # 完整 11 条红线 + API 契约
 │   ├── native-map.md            # 原生 JavaFX → *Ant 完整对照
 │   ├── recipes.md               # 表单/表格/弹窗/主题/i18n/线程完整片段
+│   ├── theme-colors.md          # 颜色/背景必须走主题 token
+│   ├── pitfalls.md              # 下游高频坑与概念对齐
 │   └── agent-prompt.md          # 非 Skill 型工具用的 system prompt
 ├── assets/catalog/
 │   ├── components.md            # 全量组件详情（生成物）
@@ -49,7 +51,7 @@ Agent 读 `SKILL.md` 的 frontmatter 判断触发；`references/`、`assets/` �
 
 ### 3. 纯聊天 / 不支持 Skill 的工具
 
-直接粘贴 **`skills/jfxium/dist/jfxium-skill.md`**（SKILL 正文 + 组件速查索引，单文件、无外部依赖）。
+直接粘贴 **`skills/jfxium/dist/jfxium-skill.md`**（SKILL 正文 + 避坑指南 + 组件速查索引，单文件、无外部依赖）。
 
 ### 规则型工具（Cursor / Copilot / AGENTS.md）
 

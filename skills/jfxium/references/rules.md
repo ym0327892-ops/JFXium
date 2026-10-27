@@ -74,6 +74,9 @@
 
 ## 六、验收
 
+高频踩坑（build 返回类型、`Background` 重名、弹层 `open(owner)`、表单 `validate()`、
+主题入口、`size` 重载）见 `pitfalls.md`。
+
 ```bash
 java skills/jfxium/scripts/JfxLint.java <改动目录>    # ERROR 必须清零
 ./mvnw install -pl jfxium -am -DskipTests

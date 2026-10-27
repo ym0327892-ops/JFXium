@@ -29,6 +29,8 @@ Targets **JFXium 1.34.2** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 3. 到 `jfxium-demo` 找同类页面，复用结构与交互。
 4. 写 Builder 链；视觉全部走 styleClass → LESS。
 5. 自检：`java skills/jfxium/scripts/JfxLint.java <改动目录>`，ERROR 必须为 0。
+6. 遇到反直觉行为，先看 `references/pitfalls.md`（build 返回类型、`Background` 重名、
+   弹层 `open(owner)`、表单 `validate()`、主题入口等）。
 
 ## 硬规则（违反即无效）
 
@@ -179,6 +181,7 @@ SpinnerAnt latitude = SpinnerAnt.create(-90, 90, 0, 0.01)
 | `references/native-map.md` | 控件/弹层完整对照、无包装控件说明 |
 | `references/recipes.md` | 表单/表格/弹窗/主题/i18n/线程等完整片段 |
 | `references/theme-colors.md` | 背景分层、语义 token、禁止写死颜色、明暗主题验收 |
+| `references/pitfalls.md` | 下游高频坑：build 返回、Background 重名、弹层 open、表单 validate、主题入口… |
 | `references/agent-prompt.md` | 不是 Skill 型工具时，粘贴到 AGENTS.md |
 | `assets/catalog/components.md` | 全量组件：extends / 工厂 / build / 关键 API / 源文件 |
 | `assets/catalog/components.json` | 工具链检索 |

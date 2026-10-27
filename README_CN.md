@@ -326,6 +326,14 @@ A: 继承 `AbstractStyleBuilder<SELF>`，详见 **[主题系统 → 自定义组
 
 A: 所有组件都基于 JavaFX 布局系统。GridAnt 24 栅格已支持响应式断点（xs/sm/md/lg/xl/xxl），详见 [组件参考](docs/cn/组件参考.md)。
 
+### Q: 新手最容易在哪些地方踩坑？
+
+A: 见 [下游高频坑](skills/jfxium/references/pitfalls.md)，覆盖：`build()` 返回类型（弹层必须 `.open(owner)`）、
+`Background` 与 `javafx.scene.layout.Background` 重名、表单用 `buildResult()` 才能 `validate()`、
+主题必须走 `ThemeManager`、`size(Size)` 与 `size(double)` 重载、i18n 字段不要锁死 Locale、
+自定义背景色导致暗色主题白块等。生成代码后跑
+`java skills/jfxium/scripts/JfxLint.java src/main/java` 自检。
+
 ### Q: 构建报错找不到 LESS 编译产物怎么办？
 
 A: LESS 编译使用 jlessc（纯 Java），通过 Maven 插件自动执行，无需 Node.js。如遇构建问题请运行 `./mvnw clean install -pl jfxium -am -DskipTests`。
