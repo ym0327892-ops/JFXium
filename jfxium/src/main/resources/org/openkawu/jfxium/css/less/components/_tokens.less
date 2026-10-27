@@ -168,6 +168,20 @@
 }
 
 /* ============================================
+   modena 内置墨色桥接（主题完整性）
+   ============================================
+   modena 的 -fx-mark-color 由 -fx-color ladder 推导，JFXium 不覆写 -fx-base，
+   因此暗色主题下它仍是浅色主题的深灰（如 #575757），分页箭头 / Tab 关闭 /
+   菜单勾选 / TitledPane 折叠箭头都会低对比度“消失”。
+   统一桥接到主题 token；组件级规则（如 _pagination.less / _accordion.less）
+   仍可覆盖具体颜色。
+*/
+.root {
+  -fx-mark-color: -color-fg-muted;
+  -fx-mark-highlight-color: transparent;
+}
+
+/* ============================================
    通用背景层级（M19.35）— Background 枚举对应的 styleClass
    ============================================
    用法：组件挂 .jfx-bg-* 后，对应 LESS 变量驱动的色随主题切换自动适配。

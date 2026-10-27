@@ -145,6 +145,19 @@
   -fx-background-color: -color-bg-layout;
 }
 /* ============================================
+   modena 内置墨色桥接（主题完整性）
+   ============================================
+   modena 的 -fx-mark-color 由 -fx-color ladder 推导，JFXium 不覆写 -fx-base，
+   因此暗色主题下它仍是浅色主题的深灰（如 #575757），分页箭头 / Tab 关闭 /
+   菜单勾选 / TitledPane 折叠箭头都会低对比度“消失”。
+   统一桥接到主题 token；组件级规则（如 _pagination.less / _accordion.less）
+   仍可覆盖具体颜色。
+*/
+.root {
+  -fx-mark-color: -color-fg-muted;
+  -fx-mark-highlight-color: transparent;
+}
+/* ============================================
    通用背景层级（M19.35）— Background 枚举对应的 styleClass
    ============================================
    用法：组件挂 .jfx-bg-* 后，对应 LESS 变量驱动的色随主题切换自动适配。
@@ -2099,6 +2112,33 @@
   -fx-background-color: -color-bg-overlay;
   -fx-padding: 12px;
   -fx-background-radius: 0 0 6px 6px;
+}
+/* ============================================
+   折叠箭头
+   modena 用 -fx-mark-color（ladder 自 -fx-color，不随 JFXium 主题走）：
+   暗色主题下 #575757 叠在 #161b22 上对比度仅 ~2.4:1，视觉上“箭头消失了”。
+   这里显式用主题 token + 单层填充 + 固定尺寸（红线 #9）。
+   ============================================ */
+.titled-pane > .title > .arrow-button > .arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-background-insets: 0;
+  -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+  -fx-min-width: 10px;
+  -fx-pref-width: 10px;
+  -fx-min-height: 7px;
+  -fx-pref-height: 7px;
+}
+/* 覆盖 modena 的 focused 双色 + dropshadow，避免与标题条 focus ring 叠加 */
+.titled-pane:focused > .title > .arrow-button > .arrow {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-insets: 0;
+  -fx-effect: null;
+}
+.titled-pane:expanded > .title > .arrow-button > .arrow {
+  -fx-background-color: -color-accent-text;
+}
+.titled-pane > .title:hover > .arrow-button > .arrow {
+  -fx-background-color: -color-accent-emphasis;
 }
 /* ============================================
    Tooltip Component

@@ -68,3 +68,34 @@
   -fx-background-radius: 0 0 @border-radius-md @border-radius-md;
 }
 
+/* ============================================
+   折叠箭头
+   modena 用 -fx-mark-color（ladder 自 -fx-color，不随 JFXium 主题走）：
+   暗色主题下 #575757 叠在 #161b22 上对比度仅 ~2.4:1，视觉上“箭头消失了”。
+   这里显式用主题 token + 单层填充 + 固定尺寸（红线 #9）。
+   ============================================ */
+.titled-pane > .title > .arrow-button > .arrow {
+  -fx-background-color: -color-fg-muted;
+  -fx-background-insets: 0;
+  -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+  -fx-min-width: 10px;
+  -fx-pref-width: 10px;
+  -fx-min-height: 7px;
+  -fx-pref-height: 7px;
+}
+
+/* 覆盖 modena 的 focused 双色 + dropshadow，避免与标题条 focus ring 叠加 */
+.titled-pane:focused > .title > .arrow-button > .arrow {
+  -fx-background-color: -color-accent-emphasis;
+  -fx-background-insets: 0;
+  -fx-effect: null;
+}
+
+.titled-pane:expanded > .title > .arrow-button > .arrow {
+  -fx-background-color: -color-accent-text;
+}
+
+.titled-pane > .title:hover > .arrow-button > .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
