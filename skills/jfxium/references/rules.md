@@ -34,7 +34,28 @@
 | **幂等** | `build()` 可重复调用，不累积子节点/监听器 | 替换内容前先解绑旧 parent |
 | **模块** | 新 public 类必须同步 `module-info.java` exports；新增依赖同步 `jfxium/pom.xml` | `exports org.openkawu.jfxium.component.control;` |
 
-## 三、数字输入选型（容易选错）
+## 三、颜色与背景（主题安全）
+
+11 套主题 × 明/暗，任何写死的背景/文字/边框色都会在某套主题下变成白块、黑块或不可读文字。
+
+| 禁止 | 正确做法 |
+|---|---|
+| `setBackground(new Background(new BackgroundFill(Color.web("#fff"), ...)))` | `Background.DEFAULT/LAYOUT/SUBTLE`，或 `Backgrounds.apply(node, Background.DEFAULT)` |
+| `setStyle("-fx-background-color: #fff")` | `styleClass("jfx-promo-banner")` + LESS 用 `-color-bg-*` |
+| LESS 组件样式写 `-fx-background-color: #f5f5f5` / `rgb(...)` / `white` | `-color-bg-subtle` / `-color-accent-subtle` / `-color-danger-subtle` |
+| 裸类名 `.card { background: white }` | `.jfx-card { -fx-background-color: -color-bg-default; }` |
+
+- 背景四层：`-color-bg-layout`（页面）/ `-color-bg-subtle`（侧栏·标题条）/
+  `-color-bg-default`（内容）/ `-color-bg-overlay`（弹层）；另有 `-color-bg-inset`、`-color-bg-masked`。
+- 文字：`-color-fg-default` / `-color-fg-muted` / `-color-fg-subtle`；强调底反色 `-color-fg-on-emphasis`。
+- 状态色：`-color-{success,warning,danger,accent}-{emphasis,hover,active,text,subtle,muted}`。
+- **例外**：Canvas 绘图、ColorPicker 选中值等内容色可以固定，但必须人工确认明暗主题可读。
+- 验收：Light / Dark / Fluent / Fluent Dark + compact 各切一次；
+  `JfxLint` 的 `HARDCODED_BACKGROUND` 必须为 0。
+
+完整说明见 `theme-colors.md`。
+
+## 四、数字输入选型（容易选错）
 
 | 场景 | 用法 |
 |---|---|
@@ -42,7 +63,7 @@
 | 需要 JavaFX `Spinner` 语义（`valueProperty`、`increment()`、第三方 API 要求 `Spinner`） | `SpinnerAnt`（默认可键入，`editable(false)` 只读；进 FormAnt 需自行 `bindValue`） |
 | 加载动画 | `SpinAnt`（SPINNER / DOTS / BARS），不是 `ProgressIndicator` |
 
-## 四、常见“看起来正确”的错误
+## 五、常见“看起来正确”的错误
 
 - `ModalAnt.create()...build()` 直接 `add(node)` → 不会显示，必须 `.open(owner)`。
 - `TableAnt` 每列重建 `TableColumn` 而不走 `.column(...)` → 丢失主题与排序封装。
@@ -51,7 +72,7 @@
 - 给组件加 `"card"`、`"menu"` 这类裸 styleClass → 与 modena 冲突，必须 `jfx-` 前缀。
 - 用 `box-shadow` / `-fx-transition` / `:focus` → JavaFX 不支持或伪类名不同，检查器会直接报错。
 
-## 五、验收
+## 六、验收
 
 ```bash
 java skills/jfxium/scripts/JfxLint.java <改动目录>    # ERROR 必须清零

@@ -41,6 +41,9 @@ Targets **JFXium 1.34.2** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 6. 不用 FXML；i18n 用 `Messages.get("key")`，字段初始化为 `null`，`build()` 内懒解析。
 7. 异步回调触碰场景图前回到 FX 线程（`Platform.runLater`）。
 8. 新 public 类必须同步 `module-info.java` exports。
+9. 背景/文字/边框颜色必须来自 `-color-*` 语义 token：禁止 `setBackground(...Color.web/#hex)`、
+   禁止组件 LESS 写死 `background-color`；自定义区域挂 `jfx-` styleClass，在 LESS 用 token，
+   并验证明/暗主题（细节见 `references/theme-colors.md`）。
 
 ## 控件速查
 
@@ -175,6 +178,7 @@ SpinnerAnt latitude = SpinnerAnt.create(-90, 90, 0, 0.01)
 | `references/rules.md` | 需要完整 11 条红线与 API 契约 |
 | `references/native-map.md` | 控件/弹层完整对照、无包装控件说明 |
 | `references/recipes.md` | 表单/表格/弹窗/主题/i18n/线程等完整片段 |
+| `references/theme-colors.md` | 背景分层、语义 token、禁止写死颜色、明暗主题验收 |
 | `references/agent-prompt.md` | 不是 Skill 型工具时，粘贴到 AGENTS.md |
 | `assets/catalog/components.md` | 全量组件：extends / 工厂 / build / 关键 API / 源文件 |
 | `assets/catalog/components.json` | 工具链检索 |
