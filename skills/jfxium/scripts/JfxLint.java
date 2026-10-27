@@ -40,6 +40,10 @@ public final class JfxLint {
             "\\.setStyle\\s*\\(\\s*\"[^\"]*(?:#[0-9a-fA-F]{3,8}|rgba?\\s*\\(|-fx-[a-z-]+\\s*:|\\d+\\s*px)");
     private static final Pattern RAW_STYLE_CLASS = Pattern.compile(
             "getStyleClass\\s*\\(\\s*\\)\\s*\\.add(?:All)?\\s*\\(\\s*\"(?!jfx-)([a-z][\\w-]*)\"");
+    private static final Pattern BACKGROUND_LITERAL = Pattern.compile(
+            "Color\\.(?:web|rgb|hsv|valueOf|color)\\s*\\(|#[0-9a-fA-F]{3,8}|rgba?\\s*\\(");
+    private static final Pattern CSS_BACKGROUND_LITERAL = Pattern.compile(
+            "-fx-background(?:-color)?\\s*:[^;}]*?(#[0-9a-fA-F]{3,8}|rgba?\\s*\\(|\\b(?:white|black)\\b)");
     private static final Pattern EXPORT = Pattern.compile("^\\s*exports\\s+([\\w.]+)\\s*;", Pattern.MULTILINE);
     private static final Pattern PKG = Pattern.compile("^\\s*package\\s+([\\w.]+);", Pattern.MULTILINE);
     private static final Pattern PUBLIC_CLASS = Pattern.compile(
@@ -132,6 +136,13 @@ public final class JfxLint {
                     add(file, i + 1, "ERROR", "INLINE_STYLE",
                             "禁止 setStyle() 写颜色/尺寸，改用 styleClass + LESS");
                 }
+                if (line.contains(".setBackground(") || line.contains("new BackgroundFill(")) {
+                    if (BACKGROUND_LITERAL.matcher(statement(lines, i)).find()) {
+                        add(file, i + 1, "ERROR", "HARDCODED_BACKGROUND",
+                                "背景色禁止写死（Color.web/#hex）：用 Background.DEFAULT/LAYOUT/SUBTLE "
+                                        + "或 jfx- styleClass + -color-bg-* token，否则暗色主题出现白块");
+                    }
+                }
             }
             if (line.contains("-fx-transition")) {
                 add(file, i + 1, "ERROR", "FX_TRANSITION",
@@ -174,6 +185,10 @@ public final class JfxLint {
             }
             if (focus.matcher(line).find()) {
                 add(file, i + 1, "ERROR", "CSS_FOCUS", "JavaFX 用 :focused（或 :focus-within），不是 :focus");
+            }
+            if (!isPaletteFile(file) && CSS_BACKGROUND_LITERAL.matcher(line).find()) {
+                add(file, i + 1, "ERROR", "HARDCODED_BACKGROUND",
+                        "组件背景色必须用 -color-bg-* / -color-*-subtle token，禁止 hex/rgb/white/black");
             }
         }
     }
@@ -222,6 +237,24 @@ public final class JfxLint {
                         "public 包未 exports：" + entry.getKey() + " -> " + String.join(", ", entry.getValue()));
             }
         }
+    }
+
+    /** 把一条可能跨行的语句拼起来（最多 8 行，遇到分号停止），用于背景色检查。 */
+    private static String statement(List<String> lines, int start) {
+        StringBuilder b = new StringBuilder();
+        for (int i = start; i < lines.size() && i < start + 8; i++) {
+            b.append(lines.get(i)).append(' ');
+            if (lines.get(i).contains(";")) {
+                break;
+            }
+        }
+        return b.toString();
+    }
+
+    /** 配色单一来源文件允许字面色值（palette / variables / theme）。 */
+    private static boolean isPaletteFile(Path file) {
+        String name = file.getFileName().toString();
+        return name.startsWith("palette-") || name.startsWith("variables") || name.startsWith("theme-");
     }
 
     private static void add(Path file, int line, String severity, String rule, String message) {

@@ -65,6 +65,8 @@ cat skills/jfxium/references/agent-prompt.md >> AGENTS.md
 
 ```bash
 # 红线检查（ERROR 退出码 1）
+# 覆盖：原生控件 / setStyle 颜色 / 写死背景色 / box-shadow / -fx-transition /
+#       :active·:focus / 非 jfx- styleClass / module exports
 java skills/jfxium/scripts/JfxLint.java src/main/java
 
 # 维护者：重建组件目录与单文件包
