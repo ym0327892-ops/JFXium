@@ -21,7 +21,7 @@
 | **CascaderAnt** | — | `create() -> Builder` | `HBox` | hasChildren, options, allowClear, showSearch, onChange, value, bindValue | 多级下拉选择器，常用于省市区三级联动、分类目录选择等场景。 |
 | **ChartAnt** | — | `create() -> Builder` | `Chart` | line, bar, area, stackedBar, stackedArea, scatter, bubble, data, slice, point, pointSeries, typeOf, pie, controllerOf, type, title, xAxisLabel, yAxisLabel | JFXium Chart 图表组件 —— 封装 javafx.scene.chart.* 的 Builder 入口。 |
 | **CodeBlockAnt** | — | `create() -> Builder` | `BorderPane` | main, language, code, showLineNumbers, theme, maxHeight, showCopyButton, title, selectable | CodeBlockAnt - 代码块显示组件（不可编辑，可复制）。 |
-| **CollapseAnt** | — | `create() -> Builder` | `VBox` | disabled, controllerOf, panel, panels, accordion, activeKey, activeKeys, expandIcon, controller, expand, collapse, toggle, expandAll, collapseAll | 可展开/收缩的内容面板，支持多个 Panel，常用于 FAQ、详情分组、 |
+| **CollapseAnt** | — | `create() -> Builder` | `VBox` | disabled, controllerOf, panel, panels, accordion, activeKey, activeKeys, expandIcon, showExpandIcon, expandIconPosition, controller, expand, collapse, toggle, expandAll, collapseAll | 可展开/收缩的内容面板，支持多个 Panel，常用于 FAQ、详情分组、 |
 | **DateTimePickerAnt** | — | `create() -> Builder` | `StackPane` | controllerOf, value, editable, format, allowClear, size, onChange, bindValue, showPanel, hidePanel | 只读输入框 + 弹出面板（左侧日期面板 + 右侧时间面板并排）， |
 | **DescriptionsAnt** | — | `create() -> Builder` | `VBox` | title, size, column, bordered, item | 以列表形式展示多个字段的详情（标签 + 值对），常用于详情页、 |
 | **EmptyAnt** | — | `create() -> Builder`<br>`create(String description) -> Builder` | `VBox` | description, image, extra, extraButton | 空数据占位提示，用于列表 / 表格 / 搜索无结果时展示友好提示。 |

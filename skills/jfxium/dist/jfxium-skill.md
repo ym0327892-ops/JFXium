@@ -375,7 +375,7 @@ java skills/jfxium/scripts/JfxLint.java src/main/java
 | **CascaderAnt** | component.composite | `HBox` | hasChildren, options, allowClear, showSearch, onChange, value, bindValue |
 | **ChartAnt** | component.composite | `Chart` | line, bar, area, stackedBar, stackedArea, scatter, bubble, data, slice, point, pointSeries, typeOf, pie, controllerOf, type, title, xAxisLabel, yAxisLabel |
 | **CodeBlockAnt** | component.composite | `BorderPane` | main, language, code, showLineNumbers, theme, maxHeight, showCopyButton, title, selectable |
-| **CollapseAnt** | component.composite | `VBox` | disabled, controllerOf, panel, panels, accordion, activeKey, activeKeys, expandIcon, controller, expand, collapse, toggle, expandAll, collapseAll |
+| **CollapseAnt** | component.composite | `VBox` | disabled, controllerOf, panel, panels, accordion, activeKey, activeKeys, expandIcon, showExpandIcon, expandIconPosition, controller, expand, collapse, toggle, expandAll, collapseAll |
 | **DateTimePickerAnt** | component.composite | `StackPane` | controllerOf, value, editable, format, allowClear, size, onChange, bindValue, showPanel, hidePanel |
 | **DescriptionsAnt** | component.composite | `VBox` | title, size, column, bordered, item |
 | **EmptyAnt** | component.composite | `VBox` | description, image, extra, extraButton |

@@ -544,6 +544,10 @@ public final class JfxStyles {
     public static final String COLLAPSE_HEADER = "jfx-collapse-header";
     public static final String COLLAPSE_HEADER_LABEL = "jfx-collapse-header-label";
     public static final String COLLAPSE_ARROW = "jfx-collapse-arrow";
+    /** 隐藏展开箭头（内容区左内边距同步收窄）。 */
+    public static final String COLLAPSE_NO_ARROW = "jfx-collapse-no-arrow";
+    /** 展开箭头在标题右侧（内容区左内边距同步收窄）。 */
+    public static final String COLLAPSE_ARROW_RIGHT = "jfx-collapse-arrow-right";
     public static final String COLLAPSE_CONTENT = "jfx-collapse-content";
     public static final String COLLAPSE_DIVIDER = "jfx-collapse-divider";
     public static final String COLLAPSE_DISABLED = "jfx-collapse-disabled";

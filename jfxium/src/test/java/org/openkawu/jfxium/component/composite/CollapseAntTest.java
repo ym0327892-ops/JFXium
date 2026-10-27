@@ -1,6 +1,8 @@
 package org.openkawu.jfxium.component.composite;
 
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -167,6 +169,71 @@ class CollapseAntTest extends JfxTestBase {
                 .expandIcon(new Label("▼"))
                 .build();
         assertNotNull(collapse);
+    }
+
+    // ---------------------------------------------------------------
+    // 箭头显隐 / 位置
+    // ---------------------------------------------------------------
+
+    @Test
+    @DisplayName("showExpandIcon(false) 隐藏箭头，header 只剩标题")
+    void showExpandIcon_false_hidesArrow() {
+        VBox collapse = CollapseAnt.create()
+                .showExpandIcon(false)
+                .panel("k1", "标题", new Label("内容"))
+                .build();
+
+        assertTrue(collapse.getStyleClass().contains(JfxStyles.COLLAPSE_NO_ARROW));
+        assertFalse(collapse.getStyleClass().contains(JfxStyles.COLLAPSE_ARROW_RIGHT));
+        HBox header = headerOf(collapse);
+        assertEquals(1, header.getChildren().size());
+        assertTrue(header.getChildren().get(0) instanceof Label);
+    }
+
+    @Test
+    @DisplayName("expandIconPosition(RIGHT) 标题在前、箭头贴右并让标题占满")
+    void expandIconPosition_right_ordersLabelThenArrow() {
+        VBox collapse = CollapseAnt.create()
+                .expandIconPosition(CollapseAnt.ExpandIconPosition.RIGHT)
+                .panel("k1", "标题", new Label("内容"))
+                .build();
+
+        assertTrue(collapse.getStyleClass().contains(JfxStyles.COLLAPSE_ARROW_RIGHT));
+        HBox header = headerOf(collapse);
+        assertEquals(2, header.getChildren().size());
+        assertTrue(header.getChildren().get(0) instanceof Label);
+        assertTrue(header.getChildren().get(1).getStyleClass().contains(JfxStyles.COLLAPSE_ARROW));
+        assertSame(Priority.ALWAYS, HBox.getHgrow(header.getChildren().get(0)));
+    }
+
+    @Test
+    @DisplayName("expandIconPosition(null) 回退左侧")
+    void expandIconPosition_null_defaultsLeft() {
+        VBox collapse = CollapseAnt.create()
+                .expandIconPosition(null)
+                .panel("k1", "标题", new Label("内容"))
+                .build();
+
+        assertFalse(collapse.getStyleClass().contains(JfxStyles.COLLAPSE_ARROW_RIGHT));
+        HBox header = headerOf(collapse);
+        assertTrue(header.getChildren().get(0).getStyleClass().contains(JfxStyles.COLLAPSE_ARROW));
+    }
+
+    @Test
+    @DisplayName("隐藏箭头时 Controller.expand 不抛 NPE")
+    void hiddenArrow_controllerExpand_noNpe() {
+        CollapseAnt.Builder builder = CollapseAnt.create()
+                .showExpandIcon(false)
+                .panel("k1", "标题", new Label("内容"));
+        builder.build();
+
+        assertDoesNotThrow(() -> builder.controller().expand("k1"));
+        assertTrue(builder.controller().isExpanded("k1"));
+    }
+
+    private static HBox headerOf(VBox collapse) {
+        VBox panelBox = (VBox) collapse.getChildren().get(0);
+        return (HBox) panelBox.getChildren().get(0);
     }
 
     // ---------------------------------------------------------------

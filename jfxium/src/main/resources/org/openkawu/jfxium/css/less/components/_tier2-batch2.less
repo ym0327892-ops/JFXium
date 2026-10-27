@@ -86,7 +86,13 @@
 
 .jfx-collapse-content {
   -fx-background-color: -color-bg-default;
-  -fx-padding: 0 16 16 40;
+  -fx-padding: 0 16 16 40;   /* 左侧 40 = 24px 箭头列 + 16 padding */
+}
+
+/* 箭头在右 / 隐藏：不再为左侧箭头预留 24px */
+.jfx-collapse-arrow-right .jfx-collapse-content,
+.jfx-collapse-no-arrow .jfx-collapse-content {
+  -fx-padding: 0 16 16 16;
 }
 
 .jfx-collapse-divider {

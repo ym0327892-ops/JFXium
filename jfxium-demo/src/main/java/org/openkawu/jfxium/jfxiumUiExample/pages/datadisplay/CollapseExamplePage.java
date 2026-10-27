@@ -21,7 +21,7 @@ public class CollapseExamplePage extends VBoxAnt {
         spacing(0).children(PageTemplate.create()
                 .title("Collapse 折叠面板")
                 .description("可以折叠/展开的内容区域，用于将复杂内容分组收纳。")
-                .sections(basicSection(), accordionSection(), disabledSection(), playgroundSection())
+                .sections(basicSection(), accordionSection(), disabledSection(), arrowSection(), playgroundSection())
                 .padding(24)
                 .build());
     }
@@ -83,8 +83,40 @@ public class CollapseExamplePage extends VBoxAnt {
                 "panel 第四个参数 disabled=true 禁止该面板展开/收起。", code, collapse);
     }
 
+    private Node arrowSection() {
+        Node demo = Demos.row(
+                CollapseAnt.create().prefWidth(240)
+                        .panel("1", "默认（左）", TypographyAnt.text("箭头在标题左侧。").build())
+                        .build(),
+                CollapseAnt.create().prefWidth(240)
+                        .expandIconPosition(CollapseAnt.ExpandIconPosition.RIGHT)
+                        .panel("1", "箭头在右", TypographyAnt.text("标题占满，箭头贴右。").build())
+                        .build(),
+                CollapseAnt.create().prefWidth(240)
+                        .showExpandIcon(false)
+                        .panel("1", "隐藏箭头", TypographyAnt.text("整行可点击，不占箭头列。").build())
+                        .build()
+        );
+        String code = """
+                // 箭头在右
+                CollapseAnt.create()
+                        .expandIconPosition(CollapseAnt.ExpandIconPosition.RIGHT)
+                        .panel("1", "标题", content)
+                        .build();
+
+                // 隐藏箭头
+                CollapseAnt.create()
+                        .showExpandIcon(false)
+                        .panel("1", "标题", content)
+                        .build();
+                """;
+        return Demos.sectionWithCode("4. 箭头显隐与位置",
+                "showExpandIcon(false) 隐藏；expandIconPosition(RIGHT) 贴右；内容区左内边距自动收窄。",
+                code, demo);
+    }
+
     // ============================================================
-    // 4. 交互演示 (PlayGround)
+    // 5. 交互演示 (PlayGround)
     // ============================================================
 
     /**
@@ -122,7 +154,7 @@ public class CollapseExamplePage extends VBoxAnt {
         };
 
         // 3. 串起来
-        return Demos.section("4. 交互演示",
+        return Demos.section("5. 交互演示",
                 "通过左侧控件实时改变 Collapse 的模式 / 面板数 / 默认展开 —— Builder 无 Controller，所有变更通过 build 重建生效。",
                 PlayGround.rebindRebuild(factory, null,
                         PlayGround.row("模式", PlayGround.segmented(mode,

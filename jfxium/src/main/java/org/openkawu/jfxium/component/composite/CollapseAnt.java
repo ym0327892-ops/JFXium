@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
@@ -34,6 +35,8 @@ import java.util.HashSet;
  *   <li><b>默认展开</b>：defaultActiveKeys(keys)</li>
  *   <li><b>禁用</b>：panel 级别 disabled</li>
  *   <li><b>展开动画</b>：内容区高度动画过渡</li>
+ *   <li><b>箭头控制</b>：{@code showExpandIcon(false)} 隐藏；
+ *       {@code expandIconPosition(LEFT/RIGHT)} 调整位置；{@code expandIcon(node)} 自定义图标</li>
  *   <li><b>运行时控制</b>：通过 {@link Controller} 编程式展开/折叠面板</li>
  * </ul>
  *
@@ -52,6 +55,14 @@ import java.util.HashSet;
  * }</pre>
  */
 public class CollapseAnt {
+
+    /** 展开箭头位置（对标 Ant Design {@code expandIconPosition: start | end}）。 */
+    public enum ExpandIconPosition {
+        /** 标题左侧（默认）。 */
+        LEFT,
+        /** 标题右侧。 */
+        RIGHT
+    }
 
     public static class Panel {
         private final String key;
@@ -89,6 +100,8 @@ public class CollapseAnt {
         private boolean accordion = false;
         private List<String> activeKeys = new ArrayList<>();
         private Node expandIcon = null;  // null = 用默认右箭头
+        private boolean showExpandIcon = true;
+        private ExpandIconPosition expandIconPosition = ExpandIconPosition.LEFT;
         private Controller controller;
 
         public Builder panel(String key, String header, Node content) {
@@ -109,12 +122,44 @@ public class CollapseAnt {
         public Builder activeKey(String key) { this.activeKeys.add(key); return this; }
         public Builder activeKeys(List<String> keys) { this.activeKeys = keys != null ? keys : new ArrayList<>(); return this; }
 
-        /** 自定义展开箭头图标（null = 默认右箭头，展开时旋转 180°）。 */
+        /**
+         * 自定义展开箭头图标（null = 默认右箭头，展开时旋转 180°）。
+         *
+         * <p>{@link #showExpandIcon(boolean) showExpandIcon(false)} 时本设置不生效；
+         * 位置由 {@link #expandIconPosition(ExpandIconPosition)} 决定。</p>
+         */
         public Builder expandIcon(Node icon) { this.expandIcon = icon; return this; }
+
+        /**
+         * 是否显示展开箭头（默认 {@code true}）。
+         *
+         * <p>关闭后标题条只保留文字、整行可点击；内容区左内边距同步收窄，
+         * 不再为箭头预留 24px。</p>
+         */
+        public Builder showExpandIcon(boolean show) {
+            this.showExpandIcon = show;
+            return this;
+        }
+
+        /**
+         * 箭头位置（默认 {@link ExpandIconPosition#LEFT}）。
+         *
+         * <p>右侧时标题文字占满剩余宽度、箭头贴右；内容区左内边距同步收窄。
+         * {@code null} 视为 {@code LEFT}。</p>
+         */
+        public Builder expandIconPosition(ExpandIconPosition position) {
+            this.expandIconPosition = position != null ? position : ExpandIconPosition.LEFT;
+            return this;
+        }
 
         public VBox build() {
             VBox collapse = new VBox(0);
             collapse.getStyleClass().add(JfxStyles.COLLAPSE);
+            if (!showExpandIcon) {
+                collapse.getStyleClass().add(JfxStyles.COLLAPSE_NO_ARROW);
+            } else if (expandIconPosition == ExpandIconPosition.RIGHT) {
+                collapse.getStyleClass().add(JfxStyles.COLLAPSE_ARROW_RIGHT);
+            }
 
             this.controller = new Controller(collapse, this);
 
@@ -132,21 +177,34 @@ public class CollapseAnt {
                     header.getStyleClass().add(JfxStyles.COLLAPSE_DISABLED);
                 }
 
-                Node arrowNode;
-                if (expandIcon != null) {
-                    arrowNode = expandIcon;
-                    header.getChildren().add(arrowNode);
-                } else {
-                    SVGPath defaultArrow = IconPath.chevronDownCollapse();
-                    defaultArrow.getStyleClass().add(JfxStyles.COLLAPSE_ARROW);
-                    arrowNode = defaultArrow;
-                    header.getChildren().add(defaultArrow);
+                Node arrowNode = null;
+                if (showExpandIcon) {
+                    if (expandIcon != null) {
+                        arrowNode = expandIcon;
+                    } else {
+                        SVGPath defaultArrow = IconPath.chevronDownCollapse();
+                        defaultArrow.getStyleClass().add(JfxStyles.COLLAPSE_ARROW);
+                        arrowNode = defaultArrow;
+                    }
+                    if (isActive) {
+                        arrowNode.setRotate(180);
+                    }
                 }
-                if (isActive) arrowNode.setRotate(180);
 
                 Label headerLabel = new Label(panel.getHeader());
                 headerLabel.getStyleClass().add(JfxStyles.COLLAPSE_HEADER_LABEL);
-                header.getChildren().add(headerLabel);
+
+                if (arrowNode != null && expandIconPosition == ExpandIconPosition.RIGHT) {
+                    // 标题占满剩余宽度，箭头贴右
+                    HBox.setHgrow(headerLabel, Priority.ALWAYS);
+                    headerLabel.setMaxWidth(Double.MAX_VALUE);
+                    header.getChildren().addAll(headerLabel, arrowNode);
+                } else {
+                    if (arrowNode != null) {
+                        header.getChildren().add(arrowNode);
+                    }
+                    header.getChildren().add(headerLabel);
+                }
 
                 VBox contentBox = new VBox(0);
                 contentBox.getStyleClass().add(JfxStyles.COLLAPSE_CONTENT);
@@ -361,6 +419,9 @@ public class CollapseAnt {
         }
 
         private void animateArrow(Node arrowNode, boolean expanding) {
+            if (arrowNode == null) {
+                return; // showExpandIcon(false)
+            }
             Timeline arrowAnim = new Timeline(
                     new KeyFrame(AnimationDuration.FAST,
                             new KeyValue(arrowNode.rotateProperty(), expanding ? 180 : 0))
