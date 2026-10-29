@@ -6,7 +6,7 @@
 
 # JFXium UI Skill
 
-Targets **JFXium 1.34.3** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
+Targets **JFXium 1.34.4** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 
 本文件可**单独复制**为技能（Qoder: `.qoder/skills/jfxium.md`；Claude Code: `.claude/skills/jfxium/SKILL.md`）。
 若同目录包含 `references/` 与 `assets/catalog/`，按需深读；只复制本文件时，按本文件规则执行即可。
@@ -372,7 +372,7 @@ java skills/jfxium/scripts/JfxLint.java src/main/java
 
 ---
 
-# JFXium 组件速查（v1.34.3）
+# JFXium 组件速查（v1.34.4）
 
 > 生成物，禁止手改。完整信息（extends / 定位 / source）见 `components.md` / `components.json`。
 
