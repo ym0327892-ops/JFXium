@@ -161,7 +161,20 @@ String text = placeholder != null ? placeholder : Messages.get("user.name");
 2. 重新读 `references/rules.md` / `pitfalls.md`（可能有破坏性变更）。
 3. 跑 `JfxLint` + 切 Light/Dark/Fluent/FluentDark/compact 各看一遍。
 
-## 14. 生成代码后的 30 秒自检
+## 14. 多窗口：MessageAnt 显示到主窗口
+
+```java
+// ❌ 默认解析是“焦点 Stage → 第一个 showing Stage”，副窗口里调用可能显示到主窗口
+MessageAnt.success("已保存");
+
+// ✅ 显式 owner（Window / Stage）
+MessageAnt.success("已保存", secondaryStage);
+MessageAnt.create().owner(secondaryStage).content("已保存").build().show();
+```
+
+`ModalAnt` / `DrawerAnt` 本来就要求 `open(owner)`；`NotificationAnt` 目前仍取首个 Stage，多窗口下需注意。
+
+## 15. 生成代码后的 30 秒自检
 
 ```bash
 java skills/jfxium/scripts/JfxLint.java src/main/java

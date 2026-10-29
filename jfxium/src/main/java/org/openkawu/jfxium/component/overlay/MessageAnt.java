@@ -34,6 +34,11 @@ import org.openkawu.jfxium.core.util.MotionCurve;
  * MessageAnt.success("保存成功");
  * MessageAnt.error("网络错误", 5);
  * MessageAnt.loading("正在处理...").close();   // loading 返回句柄
+ *
+ * // 多窗口 / 副窗口：显式指定 owner，消息只在目标窗口显示
+ * MessageAnt.success("已保存", secondaryStage);
+ * MessageAnt.create().owner(secondaryStage)
+ *         .content("已保存").type(Type.SUCCESS).build().show();
  * }</pre>
  */
 public class MessageAnt {
@@ -90,6 +95,7 @@ public class MessageAnt {
         private Type type = Type.INFO;
         private int durationSeconds = 3;
         private Position position = null;  // null = build 时取 defaultPosition
+        private Window owner = null;        // null = 自动：焦点 Stage → 首个展示 Stage
 
         public Builder content(String content) {
             this.content = content == null ? "" : content;
@@ -111,9 +117,20 @@ public class MessageAnt {
             return this;
         }
 
+        /**
+         * 指定显示在哪个窗口（多窗口 / 副窗口场景必填）。
+         *
+         * <p>{@code null} 时自动解析：当前焦点 Stage → 首个 showing Stage。
+         * 传入未 showing 的窗口会回退到自动解析。</p>
+         */
+        public Builder owner(Window owner) {
+            this.owner = owner;
+            return this;
+        }
+
         public MessageResult build() {
             Position eff = position != null ? position : defaultPosition;
-            return new MessageResult(content, type, durationSeconds, eff);
+            return new MessageResult(content, type, durationSeconds, eff, owner);
         }
     }
 
@@ -122,24 +139,26 @@ public class MessageAnt {
         private final Type type;
         private final int durationSeconds;
         private final Position position;
+        private final Window owner;
         private MessageEntry entry;
         private boolean closeRequested = false;
 
-        MessageResult(String content, Type type, int durationSeconds, Position position) {
+        MessageResult(String content, Type type, int durationSeconds, Position position, Window owner) {
             this.content = content;
             this.type = type;
             this.durationSeconds = durationSeconds;
             this.position = position;
+            this.owner = owner;
         }
 
         /** 显示。FX 线程上同步完成（entry 立即就绪）；其他线程异步显示。 */
         public MessageResult show() {
             if (javafx.application.Platform.isFxApplicationThread()) {
-                this.entry = showAndReturn(content, type, durationSeconds, position);
+                this.entry = showAndReturn(content, type, durationSeconds, position, owner);
                 if (closeRequested) doClose();
             } else {
                 javafx.application.Platform.runLater(() -> {
-                    this.entry = showAndReturn(content, type, durationSeconds, position);
+                    this.entry = showAndReturn(content, type, durationSeconds, position, owner);
                     if (closeRequested) doClose();
                 });
             }
@@ -173,76 +192,143 @@ public class MessageAnt {
     // ============================================================
 
     public static void show(String content) {
-        show(content, Type.INFO, 3, defaultPosition);
+        showResult(content, Type.INFO, 3, defaultPosition, null);
     }
 
     public static void success(String content) {
-        show(content, Type.SUCCESS, 3, defaultPosition);
+        showResult(content, Type.SUCCESS, 3, defaultPosition, null);
     }
 
     public static void error(String content) {
-        show(content, Type.ERROR, 3, defaultPosition);
+        showResult(content, Type.ERROR, 3, defaultPosition, null);
     }
 
     public static void warning(String content) {
-        show(content, Type.WARNING, 3, defaultPosition);
+        showResult(content, Type.WARNING, 3, defaultPosition, null);
     }
 
     public static void info(String content) {
-        show(content, Type.INFO, 3, defaultPosition);
+        showResult(content, Type.INFO, 3, defaultPosition, null);
     }
 
     /** Loading（默认不自动消失），返回句柄供手动 close()。 */
     public static MessageResult loading(String content) {
-        return showResult(content, Type.LOADING, 0, defaultPosition);
+        return showResult(content, Type.LOADING, 0, defaultPosition, null);
     }
 
     /** {@link #success(String)} 指定秒数。 */
     public static void success(String content, int durationSeconds) {
-        show(content, Type.SUCCESS, durationSeconds, defaultPosition);
+        showResult(content, Type.SUCCESS, durationSeconds, defaultPosition, null);
     }
 
     /** {@link #error(String)} 指定秒数。 */
     public static void error(String content, int durationSeconds) {
-        show(content, Type.ERROR, durationSeconds, defaultPosition);
+        showResult(content, Type.ERROR, durationSeconds, defaultPosition, null);
     }
 
     /** {@link #warning(String)} 指定秒数。 */
     public static void warning(String content, int durationSeconds) {
-        show(content, Type.WARNING, durationSeconds, defaultPosition);
+        showResult(content, Type.WARNING, durationSeconds, defaultPosition, null);
     }
 
     /** {@link #info(String)} 指定秒数。 */
     public static void info(String content, int durationSeconds) {
-        show(content, Type.INFO, durationSeconds, defaultPosition);
+        showResult(content, Type.INFO, durationSeconds, defaultPosition, null);
     }
 
     /** {@link #loading(String)} 指定超时秒数（默认 0 = 永不自动消失）。 */
     public static MessageResult loading(String content, int durationSeconds) {
-        return showResult(content, Type.LOADING, durationSeconds, defaultPosition);
+        return showResult(content, Type.LOADING, durationSeconds, defaultPosition, null);
     }
 
     public static void show(String content, Type type, int durationSeconds) {
-        show(content, type, durationSeconds, defaultPosition);
+        showResult(content, type, durationSeconds, defaultPosition, null);
     }
 
     /** 精确 Duration 重载，null 走默认 3 秒。 */
     public static void show(String content, Type type, Duration duration) {
-        double seconds = duration == null ? 3.0 : Math.max(0.0, duration.toSeconds());
-        int secondsInt = (int) Math.ceil(seconds);
-        show(content, type, secondsInt, defaultPosition);
+        int secondsInt = durationSeconds(duration);
+        showResult(content, type, secondsInt, defaultPosition, null);
     }
 
     public static void show(String content, Type type, int durationSeconds, Position position) {
-        showResult(content, type, durationSeconds, position);
+        showResult(content, type, durationSeconds, position, null);
     }
 
-    private static MessageResult showResult(String content, Type type, int durationSeconds, Position position) {
+    // ============================================================
+    // owner 重载（多窗口 / 副窗口）
+    // ============================================================
+
+    /** 在指定窗口显示 INFO。{@code owner} 为 null / 未 showing 时自动解析。 */
+    public static void show(String content, Window owner) {
+        showResult(content, Type.INFO, 3, defaultPosition, owner);
+    }
+
+    public static void success(String content, Window owner) {
+        showResult(content, Type.SUCCESS, 3, defaultPosition, owner);
+    }
+
+    public static void error(String content, Window owner) {
+        showResult(content, Type.ERROR, 3, defaultPosition, owner);
+    }
+
+    public static void warning(String content, Window owner) {
+        showResult(content, Type.WARNING, 3, defaultPosition, owner);
+    }
+
+    public static void info(String content, Window owner) {
+        showResult(content, Type.INFO, 3, defaultPosition, owner);
+    }
+
+    public static MessageResult loading(String content, Window owner) {
+        return showResult(content, Type.LOADING, 0, defaultPosition, owner);
+    }
+
+    public static void success(String content, int durationSeconds, Window owner) {
+        showResult(content, Type.SUCCESS, durationSeconds, defaultPosition, owner);
+    }
+
+    public static void error(String content, int durationSeconds, Window owner) {
+        showResult(content, Type.ERROR, durationSeconds, defaultPosition, owner);
+    }
+
+    public static void warning(String content, int durationSeconds, Window owner) {
+        showResult(content, Type.WARNING, durationSeconds, defaultPosition, owner);
+    }
+
+    public static void info(String content, int durationSeconds, Window owner) {
+        showResult(content, Type.INFO, durationSeconds, defaultPosition, owner);
+    }
+
+    public static MessageResult loading(String content, int durationSeconds, Window owner) {
+        return showResult(content, Type.LOADING, durationSeconds, defaultPosition, owner);
+    }
+
+    public static void show(String content, Type type, Window owner) {
+        showResult(content, type, 3, defaultPosition, owner);
+    }
+
+    public static void show(String content, Type type, int durationSeconds, Window owner) {
+        showResult(content, type, durationSeconds, defaultPosition, owner);
+    }
+
+    public static void show(String content, Type type, int durationSeconds, Position position, Window owner) {
+        showResult(content, type, durationSeconds, position, owner);
+    }
+
+    private static int durationSeconds(Duration duration) {
+        double seconds = duration == null ? 3.0 : Math.max(0.0, duration.toSeconds());
+        return (int) Math.ceil(seconds);
+    }
+
+    private static MessageResult showResult(String content, Type type, int durationSeconds,
+                                            Position position, Window owner) {
         MessageResult result = new MessageResult(
                 content == null ? "" : content,
                 type == null ? Type.INFO : type,
                 Math.max(0, durationSeconds),
-                position == null ? defaultPosition : position);
+                position == null ? defaultPosition : position,
+                owner);
         result.show();
         return result;
     }
@@ -250,13 +336,9 @@ public class MessageAnt {
     /**
      * 显示消息。调用方须在 FX 线程。返回的 MessageEntry 在 popup 定位完成后就绪。
      */
-    private static MessageEntry showAndReturn(String content, Type type, int durationSeconds, Position position) {
-        Window window = Window.getWindows().stream()
-            .filter(Window::isShowing)
-            .filter(w -> w instanceof javafx.stage.Stage)
-            .findFirst()
-            .orElse(null);
-
+    private static MessageEntry showAndReturn(String content, Type type, int durationSeconds,
+                                              Position position, Window requestedOwner) {
+        Window window = resolveOwner(requestedOwner);
         if (window == null) return null;
 
         // 同位置桶的容量上限（CENTER 固定 1，单独处理）
@@ -303,6 +385,28 @@ public class MessageAnt {
 
         waitForLayout(messageBox, popup, window, position, durationSeconds, entry, 0);
         return entry;
+    }
+
+    /**
+     * 解析消息宿主窗口：显式 owner（showing）优先 → 当前焦点 Stage → 首个 showing Stage。
+     */
+    static Window resolveOwner(Window requested) {
+        if (requested != null && requested.isShowing()) {
+            return requested;
+        }
+        Window first = null;
+        for (Window w : Window.getWindows()) {
+            if (!w.isShowing() || !(w instanceof javafx.stage.Stage)) {
+                continue;
+            }
+            if (w.isFocused()) {
+                return w;
+            }
+            if (first == null) {
+                first = w;
+            }
+        }
+        return first;
     }
 
     /** 有界等待布局完成（计数为局部参数，跨消息不互相干扰），再定位与动画。 */

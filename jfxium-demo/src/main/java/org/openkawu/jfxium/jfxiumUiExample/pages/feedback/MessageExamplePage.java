@@ -1,12 +1,16 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.overlay.MessageAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.core.theme.ThemeManager;
 
 /**
  * Message 全局消息 —— 4 种类型、3 个位置、loading 持久 + 手动关闭。
@@ -25,7 +29,8 @@ public class MessageExamplePage extends VBoxAnt {
                         typesSection(),
                         positionsSection(),
                         loadingSection(),
-                        durationSection()
+                        durationSection(),
+                        ownerSection()
                 )
                 .padding(24)
                 .build());
@@ -157,5 +162,49 @@ public class MessageExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("4. 持续时长",
                 "duration(秒) —— 自定义停留时长，0 表示不自动关闭。",
                 code, row);
+    }
+
+    /** 5. 多窗口：owner 指定消息显示在哪个 Stage。 */
+    private Node ownerSection() {
+        ButtonAnt open = ButtonAnt.create("打开副窗口")
+                .type(ButtonAnt.Type.PRIMARY)
+                .onClick(e -> {
+                    Stage stage = new Stage();
+                    stage.setTitle("副窗口");
+
+                    ButtonAnt showHere = ButtonAnt.create("在本窗口显示 Message")
+                            .onClick(ev -> MessageAnt.success("来自副窗口的消息", stage))
+                            .build();
+                    VBoxAnt root = VBoxAnt.create()
+                            .spacing(16)
+                            .padding(24)
+                            .children(
+                                    TypographyAnt.text("这是一个独立 Stage。").build(),
+                                    showHere);
+                    Scene scene = new Scene(root, 360, 180);
+                    ThemeManager.getInstance().registerScene(scene);
+                    stage.setScene(scene);
+                    stage.show();
+                })
+                .build();
+
+        String code = """
+                Stage second = new Stage();
+                second.setScene(scene);
+                second.show();
+
+                // owner = 副窗口：消息只显示在该窗口
+                MessageAnt.success("已保存", second);
+
+                MessageAnt.create()
+                        .owner(second)
+                        .content("已保存")
+                        .type(MessageAnt.Type.SUCCESS)
+                        .build()
+                        .show();
+                """;
+        return Demos.sectionWithCode("5. 多窗口（owner）",
+                "不传 owner 时按“焦点 Stage → 首个 showing Stage”解析；副窗口请显式传 owner。",
+                code, open);
     }
 }
