@@ -2863,6 +2863,8 @@
 .spinner .text-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
+  /* 数值右对齐：步进后 caret 落在编辑器最右侧，而不是文本左侧 */
+  -fx-alignment: center-right;
   -fx-padding: 6px 11px;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
