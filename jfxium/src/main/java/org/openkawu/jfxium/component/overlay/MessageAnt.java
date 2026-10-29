@@ -391,22 +391,7 @@ public class MessageAnt {
      * 解析消息宿主窗口：显式 owner（showing）优先 → 当前焦点 Stage → 首个 showing Stage。
      */
     static Window resolveOwner(Window requested) {
-        if (requested != null && requested.isShowing()) {
-            return requested;
-        }
-        Window first = null;
-        for (Window w : Window.getWindows()) {
-            if (!w.isShowing() || !(w instanceof javafx.stage.Stage)) {
-                continue;
-            }
-            if (w.isFocused()) {
-                return w;
-            }
-            if (first == null) {
-                first = w;
-            }
-        }
-        return first;
+        return WindowOwnerResolver.resolve(requested);
     }
 
     /** 有界等待布局完成（计数为局部参数，跨消息不互相干扰），再定位与动画。 */

@@ -125,7 +125,7 @@
 | **DropdownAnt** | — | `create() -> Builder` | `DropdownResult` | divider, trigger, showArrow, item, items, onSelect, onSelectItem, placement, show, hide | 点击触发节点弹出菜单列表，支持图标、禁用、分隔线。 |
 | **MessageAnt** | — | `create() -> Builder` | `MessageResult` | content, type, duration, position, owner, show, close, success, error, warning, info, loading, changed | 全局顶部 / 底部 / 中心短暂提示，自动消失， |
 | **ModalAnt** | — | `create() -> Builder` | `ModalResult` | title, content, maskClosable, width, height, maxHeight, minHeight, onClose, footer, noFooter, centered, keyboard, closePlacement, confirmLoading, okText, cancelText, onOk, bindToLocale | 屏幕中央弹出的模态对话框，适合需要用户明确响应的场景（确认、警告、表单输入）。 |
-| **NotificationAnt** | — | `create() -> Builder` | `NotificationResult` | title, description, content, type, placement, duration, closable, onClose, onClick, show, success, error, warning, info | 在窗口四个角落弹出通知卡片（标题 + 描述 + 可选自定义内容）， |
+| **NotificationAnt** | — | `create() -> Builder` | `NotificationResult` | title, description, content, type, placement, duration, closable, onClose, onClick, owner, show, success, error, warning, info | 在窗口四个角落弹出通知卡片（标题 + 描述 + 可选自定义内容）， |
 | **PopconfirmAnt** | — | `create() -> Builder` | `Popconfirm` | title, description, okText, cancelText, onConfirm, onCancel, target, placement, show, hide | 在目标元素旁弹出轻量确认面板，包含标题 + 描述 + 确认/取消按钮， |
 | **PopoverAnt** | — | `create() -> Builder` | `Popover` | title, content, target, placement, trigger, onOpenChange, show, hide, close | 在目标元素旁弹出内容卡片（标题 + 自定义内容）， |
 | **PromptDialogAnt** | — | `create() -> PromptDialogAnt` | `PromptDialogResult` | title, message, defaultValue, placeholder, okText, cancelText, onConfirm, onCancel, width, open, close | 轻量级弹框，用于快速获取用户输入（文本）。 |

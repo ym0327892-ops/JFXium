@@ -16,6 +16,7 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.util.AnimationDuration;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,12 @@ import org.openkawu.jfxium.core.util.MotionCurve;
  * // 快捷调用：右上角成功通知
  * NotificationAnt.success("保存成功", "数据已保存到服务器");
  *
+ * // 多窗口 / 副窗口：owner 指定通知只显示在目标窗口
+ * NotificationAnt.success("保存成功", "数据已保存", secondaryStage);
+ * NotificationAnt.create().owner(secondaryStage)
+ *         .title("保存成功").description("数据已保存")
+ *         .build().show();
+ *
  * // Builder 用法：左下角错误通知，不自动消失
  * NotificationAnt.create()
  *     .title("连接失败")
@@ -85,21 +92,45 @@ public class NotificationAnt {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
-    private static final Map<Placement, NotificationContainer> containers = new HashMap<>();
+    /** key = owner Window；value = placement → container。多窗口各自独立。 */
+    private static final Map<Window, Map<Placement, NotificationContainer>> containers = new HashMap<>();
+    private static final Map<Window, javafx.beans.value.ChangeListener<Boolean>> windowWatchers = new HashMap<>();
 
-    static {
-        for (Placement p : Placement.values()) {
-            containers.put(p, new NotificationContainer(p));
+    private static NotificationContainer containerFor(Window window, Placement placement) {
+        Map<Placement, NotificationContainer> byPlacement = containers.computeIfAbsent(window, w -> {
+            javafx.beans.value.ChangeListener<Boolean> watcher = (obs, was, showing) -> {
+                if (!showing) {
+                    disposeWindow(w);
+                }
+            };
+            windowWatchers.put(w, watcher);
+            w.showingProperty().addListener(watcher);
+            return new EnumMap<>(Placement.class);
+        });
+        return byPlacement.computeIfAbsent(placement, p -> new NotificationContainer(window, p));
+    }
+
+    /** 窗口关闭：拆除监听、清理卡片、隐藏 popup，避免僵尸窗口与内存泄漏。 */
+    private static void disposeWindow(Window window) {
+        javafx.beans.value.ChangeListener<Boolean> watcher = windowWatchers.remove(window);
+        if (watcher != null) {
+            window.showingProperty().removeListener(watcher);
+        }
+        Map<Placement, NotificationContainer> byPlacement = containers.remove(window);
+        if (byPlacement != null) {
+            byPlacement.values().forEach(NotificationContainer::dispose);
         }
     }
 
     private static class NotificationEntry {
         final VBox box;
+        final NotificationContainer container;
         PauseTransition timer;
         boolean closing = false;
 
-        NotificationEntry(VBox box) {
+        NotificationEntry(VBox box, NotificationContainer container) {
             this.box = box;
+            this.container = container;
         }
     }
 
@@ -116,8 +147,9 @@ public class NotificationAnt {
          */
         private final javafx.beans.InvalidationListener windowChangeListener = obs -> updatePosition();
 
-        NotificationContainer(Placement placement) {
+        NotificationContainer(Window window, Placement placement) {
             this.placement = placement;
+            this.window = window;
             this.container = new VBox();
             this.container.getStyleClass().add(org.openkawu.jfxium.core.style.JfxStyles.NOTIFICATION_CONTAINER);
             this.container.setAlignment(Pos.TOP_LEFT);
@@ -135,24 +167,26 @@ public class NotificationAnt {
             if (placement == Placement.BOTTOM_LEFT || placement == Placement.BOTTOM_RIGHT) {
                 this.container.heightProperty().addListener((obs, ov, nv) -> updatePosition());
             }
+
+            // 窗口拖动 / 缩放时通知跟随
+            window.xProperty().addListener(windowChangeListener);
+            window.yProperty().addListener(windowChangeListener);
+            window.widthProperty().addListener(windowChangeListener);
+            window.heightProperty().addListener(windowChangeListener);
         }
 
-        /**
-         * 把 container 关联到 window —— 同时挂位置 / 尺寸 listener，
-         * 窗口被拖动 / 缩放时通知卡片自动跟随。
-         *
-         * <p>如果换了 window（多 Stage 应用），先拆旧的 listener 再装新的，避免泄漏。</p>
-         */
-        void attachWindow(Window newWindow) {
-            if (this.window == newWindow) return;
+        /** 窗口关闭时清理：拆监听、停计时器、清节点、藏 popup。 */
+        void dispose() {
             detachWindowListeners();
-            this.window = newWindow;
-            if (newWindow != null) {
-                newWindow.xProperty().addListener(windowChangeListener);
-                newWindow.yProperty().addListener(windowChangeListener);
-                newWindow.widthProperty().addListener(windowChangeListener);
-                newWindow.heightProperty().addListener(windowChangeListener);
+            for (NotificationEntry entry : entries) {
+                if (entry.timer != null) {
+                    entry.timer.stop();
+                }
             }
+            entries.clear();
+            container.getChildren().clear();
+            popup.hide();
+            window = null;
         }
 
         private void detachWindowListeners() {
@@ -237,6 +271,7 @@ public class NotificationAnt {
         private boolean closable = true;
         private Consumer<Void> onClose = null;
         private Consumer<Void> onClick = null;
+        private Window owner = null;   // null = 焦点 Stage → 首个 showing Stage
 
         public Builder title(String title) {
             this.title = title;
@@ -280,6 +315,17 @@ public class NotificationAnt {
 
         public Builder onClick(Consumer<Void> onClick) {
             this.onClick = onClick;
+            return this;
+        }
+
+        /**
+         * 指定通知显示在哪个窗口（多窗口 / 副窗口场景必填）。
+         *
+         * <p>不同 Window 的通知栈互相独立；窗口关闭时自动清理其 popup 与监听。
+         * {@code null} 时按“焦点 Stage → 首个 showing Stage”解析。</p>
+         */
+        public Builder owner(Window owner) {
+            this.owner = owner;
             return this;
         }
 
@@ -364,27 +410,80 @@ public class NotificationAnt {
         showStatic(title, description, Type.INFO, 4, placement);
     }
 
-    private static void showStatic(String title, String description, Type type, int durationSeconds, Placement placement) {
+    // ============================================================
+    // owner 重载（多窗口 / 副窗口）
+    // ============================================================
+
+    public static void success(String title, String description, Window owner) {
+        showStatic(title, description, Type.SUCCESS, 4, Placement.TOP_RIGHT, owner);
+    }
+
+    public static void error(String title, String description, Window owner) {
+        showStatic(title, description, Type.ERROR, 4, Placement.TOP_RIGHT, owner);
+    }
+
+    public static void warning(String title, String description, Window owner) {
+        showStatic(title, description, Type.WARNING, 4, Placement.TOP_RIGHT, owner);
+    }
+
+    public static void info(String title, String description, Window owner) {
+        showStatic(title, description, Type.INFO, 4, Placement.TOP_RIGHT, owner);
+    }
+
+    public static void success(String title, String description, int durationSeconds, Window owner) {
+        showStatic(title, description, Type.SUCCESS, durationSeconds, Placement.TOP_RIGHT, owner);
+    }
+
+    public static void error(String title, String description, int durationSeconds, Window owner) {
+        showStatic(title, description, Type.ERROR, durationSeconds, Placement.TOP_RIGHT, owner);
+    }
+
+    public static void warning(String title, String description, int durationSeconds, Window owner) {
+        showStatic(title, description, Type.WARNING, durationSeconds, Placement.TOP_RIGHT, owner);
+    }
+
+    public static void info(String title, String description, int durationSeconds, Window owner) {
+        showStatic(title, description, Type.INFO, durationSeconds, Placement.TOP_RIGHT, owner);
+    }
+
+    public static void success(String title, String description, Placement placement, Window owner) {
+        showStatic(title, description, Type.SUCCESS, 4, placement, owner);
+    }
+
+    public static void error(String title, String description, Placement placement, Window owner) {
+        showStatic(title, description, Type.ERROR, 4, placement, owner);
+    }
+
+    public static void warning(String title, String description, Placement placement, Window owner) {
+        showStatic(title, description, Type.WARNING, 4, placement, owner);
+    }
+
+    public static void info(String title, String description, Placement placement, Window owner) {
+        showStatic(title, description, Type.INFO, 4, placement, owner);
+    }
+
+    private static void showStatic(String title, String description, Type type,
+                                   int durationSeconds, Placement placement) {
+        showStatic(title, description, type, durationSeconds, placement, null);
+    }
+
+    private static void showStatic(String title, String description, Type type,
+                                   int durationSeconds, Placement placement, Window owner) {
         create()
             .title(title).description(description)
             .type(type)
             .duration(durationSeconds)
             .placement(placement)
+            .owner(owner)
             .build().show();
     }
 
     private static void show(Builder config) {
         javafx.application.Platform.runLater(() -> {
-            Window window = Window.getWindows().stream()
-                .filter(Window::isShowing)
-                .filter(w -> w instanceof javafx.stage.Stage)
-                .findFirst()
-                .orElse(null);
-
+            Window window = WindowOwnerResolver.resolve(config.owner);
             if (window == null) return;
 
-            NotificationContainer container = containers.get(config.placement);
-            container.attachWindow(window);
+            NotificationContainer container = containerFor(window, config.placement);
 
             // entry 需在 X 的 onClose 里引用，而 onClose 又要在 card build 前设定，
             // 用 1 元素 holder 打破先有鸡还是先有蛋（同 DesktopNotificationAnt 模式）。
@@ -405,7 +504,7 @@ public class NotificationAnt {
 
             VBox notificationBox = cardBuilder.build();
 
-            NotificationEntry entry = new NotificationEntry(notificationBox);
+            NotificationEntry entry = new NotificationEntry(notificationBox, container);
             ref[0] = entry;
 
             notificationBox.setOpacity(0);
@@ -451,10 +550,7 @@ public class NotificationAnt {
         FadeTransition fadeOut = new FadeTransition(AnimationDuration.FAST, entry.box);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
-        fadeOut.setOnFinished(e -> {
-            NotificationContainer container = containers.get(config.placement);
-            container.removeEntry(entry);
-        });
+        fadeOut.setOnFinished(e -> entry.container.removeEntry(entry));
         fadeOut.play();
     }
 

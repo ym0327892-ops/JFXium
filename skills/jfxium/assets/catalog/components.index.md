@@ -104,7 +104,7 @@
 | **DropdownAnt** | component.overlay | `DropdownResult` | divider, trigger, showArrow, item, items, onSelect, onSelectItem, placement, show, hide |
 | **MessageAnt** | component.overlay | `MessageResult` | content, type, duration, position, owner, show, close, success, error, warning, info, loading, changed |
 | **ModalAnt** | component.overlay | `ModalResult` | title, content, maskClosable, width, height, maxHeight, minHeight, onClose, footer, noFooter, centered, keyboard, closePlacement, confirmLoading, okText, cancelText, onOk, bindToLocale |
-| **NotificationAnt** | component.overlay | `NotificationResult` | title, description, content, type, placement, duration, closable, onClose, onClick, show, success, error, warning, info |
+| **NotificationAnt** | component.overlay | `NotificationResult` | title, description, content, type, placement, duration, closable, onClose, onClick, owner, show, success, error, warning, info |
 | **PopconfirmAnt** | component.overlay | `Popconfirm` | title, description, okText, cancelText, onConfirm, onCancel, target, placement, show, hide |
 | **PopoverAnt** | component.overlay | `Popover` | title, content, target, placement, trigger, onOpenChange, show, hide, close |
 | **PromptDialogAnt** | component.overlay | `PromptDialogResult` | title, message, defaultValue, placeholder, okText, cancelText, onConfirm, onCancel, width, open, close |

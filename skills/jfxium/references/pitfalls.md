@@ -172,7 +172,8 @@ MessageAnt.success("已保存", secondaryStage);
 MessageAnt.create().owner(secondaryStage).content("已保存").build().show();
 ```
 
-`ModalAnt` / `DrawerAnt` 本来就要求 `open(owner)`；`NotificationAnt` 目前仍取首个 Stage，多窗口下需注意。
+`ModalAnt` / `DrawerAnt` 本来就要求 `open(owner)`；`NotificationAnt` 已支持 `owner(Window)`；
+`DesktopNotificationAnt` 仍按屏幕角落 + 首个 Stage 解析。
 
 ## 15. 生成代码后的 30 秒自检
 

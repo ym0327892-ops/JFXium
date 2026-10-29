@@ -358,7 +358,8 @@ MessageAnt.success("已保存", secondaryStage);
 MessageAnt.create().owner(secondaryStage).content("已保存").build().show();
 ```
 
-`ModalAnt` / `DrawerAnt` 本来就要求 `open(owner)`；`NotificationAnt` 目前仍取首个 Stage，多窗口下需注意。
+`ModalAnt` / `DrawerAnt` 本来就要求 `open(owner)`；`NotificationAnt` 已支持 `owner(Window)`；
+`DesktopNotificationAnt` 仍按屏幕角落 + 首个 Stage 解析。
 
 ## 15. 生成代码后的 30 秒自检
 
@@ -477,7 +478,7 @@ java skills/jfxium/scripts/JfxLint.java src/main/java
 | **DropdownAnt** | component.overlay | `DropdownResult` | divider, trigger, showArrow, item, items, onSelect, onSelectItem, placement, show, hide |
 | **MessageAnt** | component.overlay | `MessageResult` | content, type, duration, position, owner, show, close, success, error, warning, info, loading, changed |
 | **ModalAnt** | component.overlay | `ModalResult` | title, content, maskClosable, width, height, maxHeight, minHeight, onClose, footer, noFooter, centered, keyboard, closePlacement, confirmLoading, okText, cancelText, onOk, bindToLocale |
-| **NotificationAnt** | component.overlay | `NotificationResult` | title, description, content, type, placement, duration, closable, onClose, onClick, show, success, error, warning, info |
+| **NotificationAnt** | component.overlay | `NotificationResult` | title, description, content, type, placement, duration, closable, onClose, onClick, owner, show, success, error, warning, info |
 | **PopconfirmAnt** | component.overlay | `Popconfirm` | title, description, okText, cancelText, onConfirm, onCancel, target, placement, show, hide |
 | **PopoverAnt** | component.overlay | `Popover` | title, content, target, placement, trigger, onOpenChange, show, hide, close |
 | **PromptDialogAnt** | component.overlay | `PromptDialogResult` | title, message, defaultValue, placeholder, okText, cancelText, onConfirm, onCancel, width, open, close |

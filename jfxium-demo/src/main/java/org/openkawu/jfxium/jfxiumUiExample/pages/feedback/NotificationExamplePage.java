@@ -1,6 +1,8 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.feedback;
 
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.openkawu.jfxium.component.control.HyperlinkAnt;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
@@ -8,6 +10,8 @@ import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
 import org.openkawu.jfxium.component.overlay.NotificationAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.core.theme.ThemeManager;
 
 /**
  * Notification 通知提醒 —— 4 种类型 + 4 个角落位置 + 自定义时长 + X 按钮 + 回调事件。
@@ -26,7 +30,8 @@ public class NotificationExamplePage extends VBoxAnt {
                         placementsSection(),
                         durationSection(),
                         closableSection(),
-                        eventsSection()
+                        eventsSection(),
+                        ownerSection()
                 )
                 .padding(24)
                 .build());
@@ -250,5 +255,47 @@ public class NotificationExamplePage extends VBoxAnt {
         return Demos.sectionWithCode("5. 回调与自定义内容",
                 "onClick 触发于 body 点击但不关闭;onClose 触发于 X 点击且关闭;content 接受任意 Node。",
                 code, row);
+    }
+
+    /** 6. 多窗口：owner 指定通知显示在哪个 Stage。 */
+    private Node ownerSection() {
+        ButtonAnt open = ButtonAnt.create("打开副窗口")
+                .type(ButtonAnt.Type.PRIMARY)
+                .onClick(e -> {
+                    Stage stage = new Stage();
+                    stage.setTitle("副窗口");
+
+                    ButtonAnt showHere = ButtonAnt.create("在本窗口显示 Notification")
+                            .onClick(ev -> NotificationAnt.success("副窗口", "通知只显示在本窗口", stage))
+                            .build();
+                    VBoxAnt root = VBoxAnt.create()
+                            .spacing(16)
+                            .padding(24)
+                            .children(
+                                    TypographyAnt.text("这是一个独立 Stage。").build(),
+                                    showHere);
+                    Scene scene = new Scene(root, 380, 180);
+                    ThemeManager.getInstance().registerScene(scene);
+                    stage.setScene(scene);
+                    stage.show();
+                })
+                .build();
+
+        String code = """
+                Stage second = new Stage();
+                second.setScene(scene);
+                second.show();
+
+                // owner = 副窗口：通知栈与主窗口独立
+                NotificationAnt.success("已保存", "数据已写入", second);
+
+                NotificationAnt.create()
+                        .owner(second)
+                        .title("已保存").description("数据已写入")
+                        .build().show();
+                """;
+        return Demos.sectionWithCode("6. 多窗口（owner）",
+                "通知容器按 owner Window 分栈；窗口关闭时自动清理 popup 与监听。",
+                code, open);
     }
 }
