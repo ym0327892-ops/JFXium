@@ -1207,6 +1207,8 @@ public final class JfxStyles {
        TitledPaneAnt / ToggleButtonAnt — 原生控件包装
        ============================================ */
     public static final String JFX_TITLED_PANE = "jfx-titled-pane";
+    /** TitledPaneAnt 自绘展开箭头（原生 arrow-button 已隐藏）。 */
+    public static final String JFX_TITLED_PANE_ARROW = "jfx-titled-pane-arrow";
     public static final String JFX_TOGGLE_BUTTON = "jfx-toggle-button";
 
     /* ============================================

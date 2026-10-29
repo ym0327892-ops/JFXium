@@ -35,6 +35,37 @@
 }
 
 /* ============================================
+   TitledPaneAnt 自绘箭头
+   原生 arrow-button 固定左侧且不可配置位置；TitledPaneAnt 隐藏它，
+   改用 Labeled.graphic + contentDisplay(LEFT/RIGHT)，间距走 graphic-text-gap。
+   ============================================ */
+.jfx-titled-pane {
+  -fx-graphic-text-gap: @spacing-sm;
+}
+
+.jfx-titled-pane > .title > .arrow-button {
+  -fx-opacity: 0;
+  -fx-padding: 0;
+  -fx-min-width: 0;
+  -fx-pref-width: 0;
+  -fx-max-width: 0;
+}
+
+.jfx-titled-pane-arrow {
+  -fx-stroke: -color-fg-muted;
+  -fx-stroke-width: 2;
+  -fx-fill: none;
+}
+
+.jfx-titled-pane > .title:hover .jfx-titled-pane-arrow {
+  -fx-stroke: -color-accent-emphasis;
+}
+
+.jfx-titled-pane:expanded > .title .jfx-titled-pane-arrow {
+  -fx-stroke: -color-accent-text;
+}
+
+/* ============================================
    折叠箭头
    modena 用 -fx-mark-color（ladder 自 -fx-color，不随 JFXium 主题走）：
    暗色主题下 #575757 叠在 #161b22 上对比度仅 ~2.4:1，视觉上“箭头消失了”。

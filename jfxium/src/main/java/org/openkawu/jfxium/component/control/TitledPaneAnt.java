@@ -1,10 +1,13 @@
 package org.openkawu.jfxium.component.control;
 
 import javafx.scene.Node;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TitledPane;
+import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.style.JfxStyles;
+import org.openkawu.jfxium.core.util.IconPath;
 import org.openkawu.jfxium.core.util.TextUtils;
 
 /**
@@ -64,6 +67,18 @@ import org.openkawu.jfxium.core.util.TextUtils;
 public class TitledPaneAnt extends TitledPane
         implements LayoutCommon<TitledPaneAnt>, DisabledSupport<TitledPaneAnt> {
 
+    /** 展开箭头位置（对标 CollapseAnt / Ant Design expandIconPosition）。 */
+    public enum ExpandIconPosition {
+        /** 标题左侧（默认）。 */
+        LEFT,
+        /** 标题右侧。 */
+        RIGHT
+    }
+
+    private boolean showExpandIcon = true;
+    private ExpandIconPosition expandIconPosition = ExpandIconPosition.LEFT;
+    private Node expandIcon = null;   // null = 内置 chevron
+
     // ============================================================
     // 工厂入口
     // ============================================================
@@ -104,6 +119,65 @@ public class TitledPaneAnt extends TitledPane
 
     private void init() {
         getStyleClass().add(JfxStyles.JFX_TITLED_PANE);
+        setContentDisplay(ContentDisplay.LEFT);
+        applyExpandIcon();
+        expandedProperty().addListener((obs, old, expanded) -> updateArrowRotation());
+    }
+
+    /**
+     * 箭头位置（默认 {@link ExpandIconPosition#LEFT}）。{@code null} 视为 LEFT。
+     *
+     * <p>JavaFX 原生 TitledPane 的箭头固定左侧且不可配置；本组件隐藏原生 arrow-button，
+     * 改用 {@code graphic} 自绘，因此支持左右位置与隐藏。</p>
+     */
+    public TitledPaneAnt expandIconPosition(ExpandIconPosition position) {
+        this.expandIconPosition = position != null ? position : ExpandIconPosition.LEFT;
+        setContentDisplay(this.expandIconPosition == ExpandIconPosition.RIGHT
+                ? ContentDisplay.RIGHT : ContentDisplay.LEFT);
+        applyExpandIcon();
+        return this;
+    }
+
+    /** 是否显示展开箭头（默认 true）。关闭后标题只剩文字，整行仍可点击。 */
+    public TitledPaneAnt showExpandIcon(boolean show) {
+        this.showExpandIcon = show;
+        applyExpandIcon();
+        return this;
+    }
+
+    /**
+     * 自定义箭头图标（null = 内置 chevron）。
+     *
+     * <p>图标随展开状态旋转：折叠 -90°（朝右），展开 0°（朝下）。</p>
+     */
+    public TitledPaneAnt expandIcon(Node icon) {
+        this.expandIcon = icon;
+        applyExpandIcon();
+        return this;
+    }
+
+    private void applyExpandIcon() {
+        if (!showExpandIcon) {
+            setGraphic(null);
+            return;
+        }
+        Node arrow;
+        if (expandIcon != null) {
+            arrow = expandIcon;
+        } else {
+            SVGPath chevron = IconPath.chevronDownCollapse();
+            chevron.getStyleClass().add(JfxStyles.JFX_TITLED_PANE_ARROW);
+            arrow = chevron;
+        }
+        setGraphic(arrow);
+        updateArrowRotation();
+    }
+
+    private void updateArrowRotation() {
+        Node arrow = getGraphic();
+        if (arrow != null) {
+            arrow.setRotate(isExpanded() ? 0 : -90);
+        }
     }
 
     // disabled(boolean) / disabled() 由 DisabledSupport 接口默认提供（P2-S7 抽取 + P1 升级为 default 方法）

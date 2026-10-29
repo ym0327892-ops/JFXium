@@ -76,7 +76,7 @@
 | **StatusBarAnt** | component.control | `StatusBarAnt` | info, status, progress, action, left, center, right, updateInfo, updateProgress, updateStatus |
 | **TableAnt** | component.control | `TableAnt<T>` | column, numberColumn, booleanColumn, nodeColumn, actionColumn, columnWidth, columnMinWidth, columnMaxWidth, columnResizable, columnSortable, columnSorter, columnAlign, headerAlign, contentAlign, columnVisible, action, type, danger |
 | **TextAreaAnt** | component.control | `TextAreaAnt` | placeholder, text, rows, wrapText, editable, onChange, bindValue, readOnly |
-| **TitledPaneAnt** | component.control | `TitledPaneAnt` | title, content, expanded, animated, collapsible |
+| **TitledPaneAnt** | component.control | `TitledPaneAnt` | expandIconPosition, showExpandIcon, expandIcon, title, content, expanded, animated, collapsible |
 | **ToggleButtonAnt** | component.control | `ToggleButtonAnt` | mandatoryGroup, text, icon, contentDisplay, size, shape, rounded, square, selected, toggleGroup, onAction, onChange, bindValue |
 | **ToolBarAnt** | component.control | `ToolBarAnt` | orientation, button, item, divider, spacer, addButton, addItem, addDivider, addSpacer, clear |
 | **TooltipAnt** | component.control | `TooltipAnt` | text, styleClass, style, delay, duration, hideDelay, install |

@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.component.control;
 
 import javafx.scene.Node;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import org.junit.jupiter.api.DisplayName;
@@ -232,5 +233,74 @@ class TitledPaneAntTest extends JfxTestBase {
         assertTrue(pane.isDisable());
         pane.disabled(false);
         assertFalse(pane.isDisable());
+    }
+
+    // ============================================================
+    // 展开箭头：位置 / 显隐 / 自定义 / 旋转
+    // ============================================================
+
+    @Nested
+    @DisplayName("展开箭头")
+    class ExpandIcon {
+
+        @Test
+        @DisplayName("默认箭头在左，且带 jfx-titled-pane-arrow")
+        void default_left() {
+            TitledPaneAnt pane = TitledPaneAnt.create("t").build();
+            assertNotNull(pane.getGraphic());
+            assertTrue(pane.getGraphic().getStyleClass().contains(JfxStyles.JFX_TITLED_PANE_ARROW));
+            assertEquals(ContentDisplay.LEFT, pane.getContentDisplay());
+        }
+
+        @Test
+        @DisplayName("expandIconPosition(RIGHT) → ContentDisplay.RIGHT")
+        void right() {
+            TitledPaneAnt pane = TitledPaneAnt.create("t")
+                    .expandIconPosition(TitledPaneAnt.ExpandIconPosition.RIGHT)
+                    .build();
+            assertEquals(ContentDisplay.RIGHT, pane.getContentDisplay());
+            assertNotNull(pane.getGraphic());
+        }
+
+        @Test
+        @DisplayName("expandIconPosition(null) 回退 LEFT")
+        void nullPosition_left() {
+            TitledPaneAnt pane = TitledPaneAnt.create("t")
+                    .expandIconPosition(null)
+                    .build();
+            assertEquals(ContentDisplay.LEFT, pane.getContentDisplay());
+        }
+
+        @Test
+        @DisplayName("showExpandIcon(false) 移除 graphic")
+        void hidden() {
+            TitledPaneAnt pane = TitledPaneAnt.create("t")
+                    .showExpandIcon(false)
+                    .build();
+            assertNull(pane.getGraphic());
+        }
+
+        @Test
+        @DisplayName("expandIcon 自定义图标原样使用")
+        void custom() {
+            Node icon = new Label(">");
+            TitledPaneAnt pane = TitledPaneAnt.create("t")
+                    .expandIcon(icon)
+                    .build();
+            assertSame(icon, pane.getGraphic());
+        }
+
+        @Test
+        @DisplayName("展开/折叠切换箭头旋转")
+        void rotation() {
+            TitledPaneAnt pane = TitledPaneAnt.create("t").expanded(false).build();
+            assertEquals(-90, pane.getGraphic().getRotate());
+
+            pane.setExpanded(true);
+            assertEquals(0, pane.getGraphic().getRotate());
+
+            pane.setExpanded(false);
+            assertEquals(-90, pane.getGraphic().getRotate());
+        }
     }
 }

@@ -25,6 +25,7 @@ public class TitledPaneExamplePage extends VBoxAnt {
                 .sections(
                         basicSection(),
                         nestedSection(),
+                        arrowSection(),
                         playgroundSection()
                 )
                 .padding(24)
@@ -110,23 +111,69 @@ public class TitledPaneExamplePage extends VBoxAnt {
     }
 
     // ============================================================
-    // 3. 交互演示 (PlayGround)
+    // 3. 箭头位置与显隐
+    // ============================================================
+
+    /** 3. 箭头左 / 右 / 隐藏对照。 */
+    private Node arrowSection() {
+        Node demo = VBarAnt.create()
+                .compact()
+                .gap(8)
+                .top(
+                        TitledPaneAnt.create()
+                                .title("箭头在左（默认）")
+                                .content(TypographyAnt.text("graphicTextGap = 8，箭头与文字有间隔。")
+                                        .type(TypographyAnt.TextColor.SECONDARY).build())
+                                .build(),
+                        TitledPaneAnt.create()
+                                .title("箭头在右")
+                                .expandIconPosition(TitledPaneAnt.ExpandIconPosition.RIGHT)
+                                .content(TypographyAnt.text("contentDisplay=RIGHT，箭头贴标题右侧。")
+                                        .type(TypographyAnt.TextColor.SECONDARY).build())
+                                .build(),
+                        TitledPaneAnt.create()
+                                .title("隐藏箭头")
+                                .showExpandIcon(false)
+                                .content(TypographyAnt.text("整行仍可点击展开/折叠。")
+                                        .type(TypographyAnt.TextColor.SECONDARY).build())
+                                .build()
+                )
+                .build();
+        String code = """
+                // 左侧（默认）
+                TitledPaneAnt.create().title("标题").content(content).build();
+
+                // 右侧
+                TitledPaneAnt.create()
+                        .expandIconPosition(TitledPaneAnt.ExpandIconPosition.RIGHT)
+                        .title("标题").content(content).build();
+
+                // 隐藏箭头（仍可点击标题）
+                TitledPaneAnt.create()
+                        .showExpandIcon(false)
+                        .title("标题").content(content).build();
+                """;
+        return Demos.sectionWithCode("3. 箭头位置与显隐",
+                "原生 TitledPane 箭头固定左侧；这里改为自绘 graphic，支持左/右/隐藏，间距 8px。",
+                code, demo);
+    }
+
+    // ============================================================
+    // 4. 交互演示 (PlayGround)
     // ============================================================
 
     /**
-     * 可交互演示区 —— 实时改变 TitledPane 的 3 个维度：初始展开状态 / 折叠动画 / 是否可折叠。
+     * 可交互演示区 —— 实时改变初始展开状态 / 折叠动画 / 是否可折叠 / 箭头位置。
      *
-     * <p>TitledPaneAnt 没有暴露 modify() / Controller，所有属性（expanded / animated /
-     * collapsible）都是 build-time。所以采用 {@link PlayGround#rebindRebuild}：每次 binder
-     * 变化都重新 {@code build()}，并用 {@link PlayGround#replaceDisplay} 替换展示区节点。</p>
-     *
-     * <p><b>关于动画开关</b>：关闭 animated 时，折叠/展开瞬间完成，没有过渡动画；开启时
-     * 高度平滑变化 —— 这一对比能在交互演示里直观看到。</p>
+     * <p>TitledPaneAnt 没有暴露 modify() / Controller，所有属性都是 build-time。
+     * 采用 {@link PlayGround#rebindRebuild}：每次 binder 变化都重新 {@code build()}，
+     * 并用 {@link PlayGround#replaceDisplay} 替换展示区节点。</p>
      */
     private Node playgroundSection() {
         Binder<String> initial     = PlayGround.binder("expanded");  // expanded / collapsed
         Binder<String> animated    = PlayGround.binder("yes");       // yes / no
         Binder<String> collapsible = PlayGround.binder("yes");       // yes / no
+        Binder<String> arrowPos    = PlayGround.binder("left");      // left / right / hidden
 
         Node innerContent = VBarAnt.create()
                 .compact()
@@ -137,17 +184,27 @@ public class TitledPaneExamplePage extends VBoxAnt {
                 )
                 .build();
 
-        Supplier<Node> factory = () -> TitledPaneAnt.create()
-                .title("交互演示面板")
-                .content(innerContent)
-                .expanded("expanded".equals(initial.get()))
-                .animated("yes".equals(animated.get()))
-                .collapsible("yes".equals(collapsible.get()))
-                .build();
+        Supplier<Node> factory = () -> {
+            String arrow = arrowPos.get();
+            TitledPaneAnt pane = TitledPaneAnt.create()
+                    .title("交互演示面板")
+                    .content(innerContent)
+                    .expanded("expanded".equals(initial.get()))
+                    .animated("yes".equals(animated.get()))
+                    .collapsible("yes".equals(collapsible.get()));
+            if ("hidden".equals(arrow)) {
+                pane.showExpandIcon(false);
+            } else {
+                pane.expandIconPosition("right".equals(arrow)
+                        ? TitledPaneAnt.ExpandIconPosition.RIGHT
+                        : TitledPaneAnt.ExpandIconPosition.LEFT);
+            }
+            return pane.build();
+        };
 
-        return Demos.section("3. 交互演示",
-                "通过左侧控件实时改变 TitledPane 的初始展开状态、折叠动画、是否可折叠 —— 三个开关任意组合，立刻在右侧看到效果。",
-                PlayGround.rebindRebuild(factory, "初始状态 / 动画 / 可折叠",
+        return Demos.section("4. 交互演示",
+                "实时改变初始展开状态、折叠动画、是否可折叠、箭头位置 —— 任意组合立即生效。",
+                PlayGround.rebindRebuild(factory, "初始状态 / 动画 / 可折叠 / 箭头",
                         PlayGround.row("初始状态", PlayGround.segmented(initial,
                                 PlayGround.entry("expanded",  "展开"),
                                 PlayGround.entry("collapsed", "折叠"))),
@@ -156,6 +213,10 @@ public class TitledPaneExamplePage extends VBoxAnt {
                                 PlayGround.entry("no",  "关"))),
                         PlayGround.row("可折叠", PlayGround.segmented(collapsible,
                                 PlayGround.entry("yes", "可折叠"),
-                                PlayGround.entry("no",  "禁止折叠")))));
+                                PlayGround.entry("no",  "禁止折叠"))),
+                        PlayGround.row("箭头", PlayGround.segmented(arrowPos,
+                                PlayGround.entry("left",   "左侧"),
+                                PlayGround.entry("right",  "右侧"),
+                                PlayGround.entry("hidden", "隐藏")))));
     }
 }
