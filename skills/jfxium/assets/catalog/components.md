@@ -1,4 +1,4 @@
-# JFXium 组件目录（v1.34.2）
+# JFXium 组件目录（v1.34.3）
 
 > 由 `skills/jfxium/scripts/CatalogGen.java` 生成，**禁止手改**。
 > 改动组件公开 API 后重跑：`java skills/jfxium/scripts/CatalogGen.java`
