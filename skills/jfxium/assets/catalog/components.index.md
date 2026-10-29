@@ -71,7 +71,7 @@
 | **RadioButtonAnt** | component.control | `RadioButtonAnt` | text, selected, size, shape, toggleGroup, onChange, bindValue |
 | **SearchInputAnt** | component.control | — | placeholder, text, size, allowClear, onChange, onSearch, bindValue, clear, input, clearButton |
 | **SeparatorAnt** | component.control | `SeparatorAnt` | orientation, halignment, valignment |
-| **SpinnerAnt** | component.control | `SpinnerAnt` | value, min, max, step, precision, editable, placeholder, onChange, bindValue, size, fromString |
+| **SpinnerAnt** | component.control | `SpinnerAnt` | value, min, max, step, precision, editable, placeholder, onChange, bindValue, size, increment, decrement, fromString |
 | **SplitButtonAnt** | component.control | `SplitButtonAnt` | text, size, arrowStyle, rounded, square, icon, contentDisplay, onClick, item, itemDisabled, separator, add, focusTraversable |
 | **StatusBarAnt** | component.control | `StatusBarAnt` | info, status, progress, action, left, center, right, updateInfo, updateProgress, updateStatus |
 | **TableAnt** | component.control | `TableAnt<T>` | column, numberColumn, booleanColumn, nodeColumn, actionColumn, columnWidth, columnMinWidth, columnMaxWidth, columnResizable, columnSortable, columnSorter, columnAlign, headerAlign, contentAlign, columnVisible, action, type, danger |

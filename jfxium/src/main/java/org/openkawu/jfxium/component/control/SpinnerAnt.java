@@ -257,6 +257,38 @@ public class SpinnerAnt extends Spinner<Double> implements LayoutCommon<SpinnerA
         return ApplySizeUtil.apply(this, size);
     }
 
+    // ============================================================
+    // 步进（caret 固定在末尾）
+    // ============================================================
+
+    // Spinner 的 value 变化会用 converter 重写 editor 文本，TextField 会把 caret 重置到 0。
+    // 点箭头时视觉上就是“光标跳回最前面”，因此在每次步进后把 caret 放到末尾
+    // （即使已到 min/max、值没变化也要放，否则停在边界的点击仍显示 caret=0）。
+
+    @Override
+    public void increment() {
+        super.increment();
+        moveCaretToEnd();
+    }
+
+    @Override
+    public void increment(int steps) {
+        super.increment(steps);
+        moveCaretToEnd();
+    }
+
+    @Override
+    public void decrement() {
+        super.decrement();
+        moveCaretToEnd();
+    }
+
+    @Override
+    public void decrement(int steps) {
+        super.decrement(steps);
+        moveCaretToEnd();
+    }
+
     /**
      * Builder 模式终结调用——返回自身（{@code SpinnerAnt} 就是节点）。
      */
@@ -288,6 +320,7 @@ public class SpinnerAnt extends Spinner<Double> implements LayoutCommon<SpinnerA
             if (onChange != null) {
                 onChange.accept(newValue);
             }
+            moveCaretToEnd();
         });
     }
 
@@ -352,6 +385,15 @@ public class SpinnerAnt extends Spinner<Double> implements LayoutCommon<SpinnerA
             return;
         }
         getEditor().setText(factory.getConverter().toString(getValue()));
+        moveCaretToEnd();
+    }
+
+    /** 光标移到末尾：箭头步进 / 文本重写后不再跳回开头。 */
+    private void moveCaretToEnd() {
+        var editor = getEditor();
+        if (editor != null) {
+            editor.positionCaret(editor.getLength());
+        }
     }
 
     private double clamp(double value) {
