@@ -330,16 +330,6 @@ public final class JfxStyles {
        ============================================ */
     /** AlertAnt 根 styleClass：挂在 Alert 实例的 DialogPane 上 */
     public static final String ALERT_DIALOG = "jfx-alert-dialog";
-    /** AlertDialog 内容容器（dialog-pane） */
-    public static final String ALERT_DIALOG_PANE = "jfx-alert-dialog-pane";
-    /** AlertDialog header 区域 */
-    public static final String ALERT_DIALOG_HEADER = "jfx-alert-dialog-header";
-    /** AlertDialog 内容区域 */
-    public static final String ALERT_DIALOG_CONTENT = "jfx-alert-dialog-content";
-    /** AlertDialog 按钮区 */
-    public static final String ALERT_DIALOG_BUTTON_BAR = "jfx-alert-dialog-button-bar";
-    /** AlertDialog 图形容器（左侧 icon 区） */
-    public static final String ALERT_DIALOG_GRAPHIC = "jfx-alert-dialog-graphic";
     /** AlertDialog 默认图形节点（Ikonli 字符 Label），仅 .jfx-alert-dialog-info/warning/error/confirm 作用域内生效 */
     public static final String ALERT_DIALOG_GRAPHIC_DEFAULT = "jfx-alert-dialog-default-graphic";
     /** AlertDialog 类型修饰类 */

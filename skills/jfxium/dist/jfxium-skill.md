@@ -361,7 +361,21 @@ MessageAnt.create().owner(secondaryStage).content("已保存").build().show();
 `ModalAnt` / `DrawerAnt` 本来就要求 `open(owner)`；`NotificationAnt` 已支持 `owner(Window)`；
 `DesktopNotificationAnt` 仍按屏幕角落 + 首个 Stage 解析。
 
-## 15. 生成代码后的 30 秒自检
+## 15. 原生 `new Alert(...)` 主题不完整 / 圆角来源
+
+```java
+// ⚠ 原生 Alert：只命中通用 .dialog-pane 基础主题（背景/边框/按钮区/文字色），
+//   类型 header 配色与 JFXium 图标不会生效 —— 它不挂 .jfx-alert-dialog 修饰类。
+Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+// ✅ 需要完整 JFXium 视觉（类型配色/图标/间距）用 AlertAnt
+AlertAnt.info("标题", "内容", ownerWindow).showAndWait();
+```
+
+结构容器（原生 DialogPane / 布局 pane）默认**不圆角**；圆角只属于 AlertAnt / Modal /
+Dropdown 等浮层表面。不要在业务里给 `VBoxAnt` / `DialogPane` 手写 radius。
+
+## 16. 生成代码后的 30 秒自检
 
 ```bash
 java skills/jfxium/scripts/JfxLint.java src/main/java

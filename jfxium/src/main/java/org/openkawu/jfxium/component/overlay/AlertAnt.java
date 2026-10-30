@@ -7,7 +7,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
 import javafx.stage.Window;
 import org.openkawu.jfxium.component.control.IconAnt;
@@ -83,9 +82,6 @@ public class AlertAnt extends Alert {
     /** i18n key：AlertAnt 默认 Cancel 按钮文案 */
     private static final String I18N_CANCEL = "alert.cancel";
 
-    /** 缓存 dialog-pane 的 styleClass 挂载（onShowing 时一次即可） */
-    private boolean styled = false;
-
     /** 非阻塞回调：OK 按钮被点击时触发（需配合 .show() 使用） */
     private Runnable onOkCallback;
     /** 非阻塞回调：Cancel 按钮被点击时触发（需配合 .show() 使用） */
@@ -118,8 +114,13 @@ public class AlertAnt extends Alert {
         // 监听 locale 变化（具名引用），弹窗 hidden 时注销，避免泄漏。
         Messages.localeProperty().addListener(localeListener);
 
-        // onShowing 时挂 styleClass（DialogPane 此时已创建到 Scene）
-        setOnShowing(e -> Platform.runLater(this::applyStyleClasses));
+        // 根/类型 class + 默认图标都不依赖 skin，构造期完成；
+        // DialogPane 内部子结构由 LESS 的 > .header-panel / > .content 选择器直接命中，
+        // 不再依赖 onShown 里 lookup（skin 创建时机不稳定，曾导致子 class 丢失）。
+        applyRootStyleClasses();
+        if (getGraphic() == null) {
+            setGraphic(defaultGraphicFor(getAlertType()));
+        }
 
         // hidden 时注销 locale 监听（addEventHandler 与业务 setOnHidden 并存，不互相覆盖）
         addEventHandler(javafx.scene.control.DialogEvent.DIALOG_HIDDEN, e ->
@@ -273,59 +274,24 @@ public class AlertAnt extends Alert {
         applyI18nButton(ButtonType.CANCEL, cancelOverride, I18N_CANCEL);
     }
 
-    /**
-     * 把 lookup 出来的节点（如 .header-panel / .content）安全挂上 jfx- 子类 class。
-     * lookup 在 JavaFX 内部结构变化或节点尚未渲染时可能返回 null，必须容忍。
-     */
-    private static void addClassIfPresent(DialogPane pane, String selector, String styleClass) {
-        Node n = pane.lookup(selector);
-        if (n != null) {
-            n.getStyleClass().add(styleClass);
+    /** 幂等挂 styleClass（重复 show 不会叠加）。 */
+    private static void addStyleClass(Node node, String styleClass) {
+        if (!node.getStyleClass().contains(styleClass)) {
+            node.getStyleClass().add(styleClass);
         }
     }
 
-    /**
-     * 给 DialogPane + 内部子节点挂 styleClass，让 LESS 端的选择器命中。
-     * - dialog-pane 挂 {@code jfx-alert-dialog} 根 + 4 个 type 修饰类
-     * - header-panel / content / button-bar / graphic-container 挂细化 class
-     */
-    private void applyStyleClasses() {
-        if (styled) return;
-        styled = true;
-
+    /** 根 class + 类型修饰类（构造期即可，不依赖 skin）。 */
+    private void applyRootStyleClasses() {
         DialogPane pane = getDialogPane();
         if (pane == null) return;
-
-        // 根 class + 类型修饰类
-        pane.getStyleClass().add(JfxStyles.ALERT_DIALOG);
+        addStyleClass(pane, JfxStyles.ALERT_DIALOG);
         switch (getAlertType()) {
-            case INFORMATION -> pane.getStyleClass().add(JfxStyles.ALERT_DIALOG_INFO);
-            case WARNING     -> pane.getStyleClass().add(JfxStyles.ALERT_DIALOG_WARNING);
-            case ERROR       -> pane.getStyleClass().add(JfxStyles.ALERT_DIALOG_ERROR);
-            case CONFIRMATION -> pane.getStyleClass().add(JfxStyles.ALERT_DIALOG_CONFIRM);
+            case INFORMATION -> addStyleClass(pane, JfxStyles.ALERT_DIALOG_INFO);
+            case WARNING     -> addStyleClass(pane, JfxStyles.ALERT_DIALOG_WARNING);
+            case ERROR       -> addStyleClass(pane, JfxStyles.ALERT_DIALOG_ERROR);
+            case CONFIRMATION -> addStyleClass(pane, JfxStyles.ALERT_DIALOG_CONFIRM);
             default -> { /* NONE 不加修饰类 */ }
-        }
-
-        // 内部子结构细化 class（用 lookup 而非 getChildren——避免破坏 JavaFX 内部布局）
-        // 关键：必须容忍 null——NONE AlertType 未设 headerText 时 header-panel 不存在
-        addClassIfPresent(pane, ".header-panel", JfxStyles.ALERT_DIALOG_HEADER);
-        addClassIfPresent(pane, ".content",     JfxStyles.ALERT_DIALOG_CONTENT);
-        addClassIfPresent(pane, ".button-bar",  JfxStyles.ALERT_DIALOG_BUTTON_BAR);
-        Node graphic = pane.lookup(".graphic-container");
-        if (graphic != null) {
-            graphic.getStyleClass().add(JfxStyles.ALERT_DIALOG_GRAPHIC);
-        }
-
-        // 图形容器默认宽度钳制（JavaFX 默认 0 宽度让 icon 看不见）
-        if (graphic instanceof Region r) {
-            r.setMinWidth(48);
-            r.setPrefWidth(48);
-            r.setMaxWidth(48);
-        }
-
-        // 设置默认图形（若调用方未通过 graphic() 显式指定）
-        if (getGraphic() == null) {
-            setGraphic(defaultGraphicFor(getAlertType()));
         }
     }
 

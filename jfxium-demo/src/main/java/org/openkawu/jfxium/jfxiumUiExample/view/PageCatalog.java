@@ -50,6 +50,7 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TimelineExamplePage
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TitledPaneExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TreeExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TreeTableExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.AlertExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.ContextMenuExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.DrawerExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.feedback.DesktopNotificationExamplePage;
@@ -245,6 +246,7 @@ final class PageCatalog {
     }
 
     private static void registerFeedback(PageRegistry registry) {
+        register(registry, "feedback.alert", "Alert 模态弹窗", PageRegistry.Category.FEEDBACK, AlertExamplePage::new);
         register(registry, "feedback.message", "Message 全局消息", PageRegistry.Category.FEEDBACK, MessageExamplePage::new);
         register(registry, "feedback.notification", "Notification 通知提醒", PageRegistry.Category.FEEDBACK, NotificationExamplePage::new);
         register(registry, "feedback.desktopnotification", "DesktopNotification 桌面通知", PageRegistry.Category.FEEDBACK, DesktopNotificationExamplePage::new);

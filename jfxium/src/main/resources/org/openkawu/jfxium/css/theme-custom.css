@@ -2499,13 +2499,45 @@
   -fx-background-color: -color-bg-overlay;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
-  -fx-border-radius: 8px;
-  -fx-background-radius: 8px;
+  /* 结构容器 / 原生 DialogPane 不圆角；圆角只属于 AlertAnt/Modal 等浮层表面 */
+  -fx-border-radius: 0;
+  -fx-background-radius: 0;
 }
 .dialog-pane > .button-bar {
   -fx-padding: 16px;
   -fx-background-color: -color-bg-subtle;
-  -fx-background-radius: 0 0 8px 8px;
+  -fx-background-radius: 0;
+}
+/* ============================================
+   原生 Dialog / Alert 的基础主题（未使用 AlertAnt 时）
+   ============================================
+   原生 new Alert(...) 的 DialogPane 会命中这里：背景/边框/按钮区走 JFXium token，
+   header / content 的文字在暗色主题下也可读。
+   注意：类型配色（信息/警告/错误/确认）与 JFXium 图标仍需要 AlertAnt，
+   因为原生 Alert 不会挂 .jfx-alert-dialog-* 修饰类。
+*/
+.dialog-pane > .header-panel {
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: 16 24;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+.dialog-pane > .header-panel > .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-wrap-text: true;
+}
+.dialog-pane > .content,
+.dialog-pane > .content.label {
+  -fx-padding: 16 24;
+  -fx-text-fill: -color-fg-muted;
+}
+.dialog-pane > .content .label {
+  -fx-text-fill: -color-fg-muted;
+}
+.dialog-pane > .graphic-container {
+  -fx-padding: 0 16 0 0;
 }
 /* ============================================
    Switch (ToggleButton) Component
@@ -6933,17 +6965,16 @@
    ============================================
    定位：覆盖 JavaFX 原生 Alert（javafx.scene.control.Alert<ButtonType>）
    的 DialogPane 视觉，按 4 种 AlertType（INFO / WARNING / ERROR / CONFIRM）
-   切换配色。JFXium 的 AlertAnt 在 Java 端已挂上 jfx-alert-dialog 根 class +
-   jfx-alert-dialog-{info|warning|error|confirm} 修饰类 + header/content/
-   button-bar/graphic 子结构细化 class，本文件按这些 class 写视觉。
+   切换配色。
 
-   关键设计：
-   1. 整体圆角 + 阴影（独立 Stage 浮层感）
-   2. header 区域配色按 type 切换（subtle 色背景 + emphasis 色 icon）
-   3. 默认图形用 Ikonli 字符 Label（非 PNG），颜色由 text-fill 控制
-   4. 按钮区底部次级色背景，与 header 形成上下对称视觉锚点
+   ⚠ 不使用 Java 端 lookup 子节点挂 class（skin 创建时机不稳定，导致
+   header/button-bar 子 class 丢失）。这里直接使用 DialogPaneSkin 的
+   稳定结构选择器：> .header-panel / > .content / > .button-bar / .graphic-container。
+
+   原生 new Alert(...) 不挂 .jfx-alert-dialog，只命中 _overlay.less 的通用
+   .dialog-pane 基础主题；完整类型配色/图标需要 AlertAnt。
    ============================================ */
-/* 根容器：覆盖基础 .dialog-pane（_overlay.less 中已有的通用样式） */
+/* 根容器 */
 .dialog-pane.jfx-alert-dialog {
   -fx-padding: 0;
   -fx-max-width: 560px;
@@ -6953,78 +6984,81 @@
   -fx-border-width: 1px;
   -fx-border-radius: 8px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 24, 0, 0, 6);
-  /* header：图标 + 标题 */
-  /* 图形容器（左侧 icon 区，Java 端已钳制 48 宽） */
-  /* content：正文 */
-  /* button-bar：底部按钮区 */
 }
-.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-header {
+/* header：图标 + 标题 */
+.dialog-pane.jfx-alert-dialog > .header-panel {
   -fx-padding: 20 24;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 8px 8px 0 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
-.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-header .label {
+.dialog-pane.jfx-alert-dialog > .header-panel > .label {
   -fx-text-fill: -color-fg-default;
   -fx-font-size: 16px;
   -fx-font-weight: bold;
   -fx-wrap-text: true;
   -fx-line-spacing: 0.07em;
 }
-.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-graphic {
+/* 图形容器（左侧 icon 区） */
+.dialog-pane.jfx-alert-dialog .graphic-container {
   -fx-padding: 0;
   -fx-alignment: CENTER;
+  -fx-min-width: 48px;
+  -fx-pref-width: 48px;
+  -fx-max-width: 48px;
 }
-.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-graphic .jfx-alert-dialog-default-graphic {
+.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-default-graphic {
   -fx-alignment: CENTER;
   -fx-font-size: 28px;
 }
-.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-content {
+/* content：正文 */
+.dialog-pane.jfx-alert-dialog > .content,
+.dialog-pane.jfx-alert-dialog > .content.label {
   -fx-padding: 20 24;
-}
-.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-content .label {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 14px;
   -fx-wrap-text: true;
   -fx-line-spacing: 0.28em;
 }
-.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-button-bar {
+.dialog-pane.jfx-alert-dialog > .content .label {
+  -fx-text-fill: -color-fg-muted;
+  -fx-font-size: 14px;
+  -fx-wrap-text: true;
+}
+/* button-bar：底部按钮区 */
+.dialog-pane.jfx-alert-dialog > .button-bar {
   -fx-padding: 12 24;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 0 0 8px 8px;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1 0 0 0;
 }
-.dialog-pane.jfx-alert-dialog .jfx-alert-dialog-button-bar .button {
-  -fx-min-width: 80;
+.dialog-pane.jfx-alert-dialog > .button-bar .button {
+  -fx-min-width: 80px;
 }
 /* ============================================
    类型配色：info / warning / error / confirm
    ============================================ */
-/* INFO：蓝色主题（accent） */
-.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-info .jfx-alert-dialog-header {
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-info > .header-panel {
   -fx-background-color: -color-accent-subtle;
 }
 .dialog-pane.jfx-alert-dialog.jfx-alert-dialog-info .jfx-alert-dialog-default-graphic {
   -fx-text-fill: -color-accent-text;
 }
-/* WARNING：黄色主题（warning） */
-.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-warning .jfx-alert-dialog-header {
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-warning > .header-panel {
   -fx-background-color: -color-warning-subtle;
 }
 .dialog-pane.jfx-alert-dialog.jfx-alert-dialog-warning .jfx-alert-dialog-default-graphic {
   -fx-text-fill: -color-warning-text;
 }
-/* ERROR：红色主题（danger） */
-.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-error .jfx-alert-dialog-header {
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-error > .header-panel {
   -fx-background-color: -color-danger-subtle;
 }
 .dialog-pane.jfx-alert-dialog.jfx-alert-dialog-error .jfx-alert-dialog-default-graphic {
   -fx-text-fill: -color-danger-text;
 }
-/* CONFIRM：success 绿色（语义：确认=OK 操作） */
-.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-confirm .jfx-alert-dialog-header {
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-confirm > .header-panel {
   -fx-background-color: -color-success-subtle;
 }
 .dialog-pane.jfx-alert-dialog.jfx-alert-dialog-confirm .jfx-alert-dialog-default-graphic {

@@ -5,13 +5,50 @@
   -fx-background-color: -color-bg-overlay;
   -fx-border-color: -color-border-default;
   -fx-border-width: @border-width-default;
-  -fx-border-radius: @border-radius-lg;
-  -fx-background-radius: @border-radius-lg;
+  /* 结构容器 / 原生 DialogPane 不圆角；圆角只属于 AlertAnt/Modal 等浮层表面 */
+  -fx-border-radius: 0;
+  -fx-background-radius: 0;
 }
 
 .dialog-pane > .button-bar {
   -fx-padding: @dialog-padding;
   -fx-background-color: -color-bg-subtle;
-  -fx-background-radius: 0 0 @border-radius-lg @border-radius-lg;
+  -fx-background-radius: 0;
+}
+
+/* ============================================
+   原生 Dialog / Alert 的基础主题（未使用 AlertAnt 时）
+   ============================================
+   原生 new Alert(...) 的 DialogPane 会命中这里：背景/边框/按钮区走 JFXium token，
+   header / content 的文字在暗色主题下也可读。
+   注意：类型配色（信息/警告/错误/确认）与 JFXium 图标仍需要 AlertAnt，
+   因为原生 Alert 不会挂 .jfx-alert-dialog-* 修饰类。
+*/
+.dialog-pane > .header-panel {
+  -fx-background-color: -color-bg-subtle;
+  -fx-padding: 16 24;
+  -fx-border-color: transparent transparent -color-border-muted transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+.dialog-pane > .header-panel > .label {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: @font-size-lg;
+  -fx-font-weight: bold;
+  -fx-wrap-text: true;
+}
+
+.dialog-pane > .content,
+.dialog-pane > .content.label {
+  -fx-padding: 16 24;
+  -fx-text-fill: -color-fg-muted;
+}
+
+.dialog-pane > .content .label {
+  -fx-text-fill: -color-fg-muted;
+}
+
+.dialog-pane > .graphic-container {
+  -fx-padding: 0 16 0 0;
 }
 

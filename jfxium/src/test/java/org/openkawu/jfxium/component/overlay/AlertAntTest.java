@@ -5,6 +5,7 @@ import javafx.scene.control.ButtonType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
+import org.openkawu.jfxium.core.style.JfxStyles;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -185,6 +186,30 @@ class AlertAntTest extends JfxTestBase {
                  .onCancel(() -> {})
                  .onResult(btn -> {});
             assertNotNull(alert);
+        });
+    }
+
+    // ---------------------------------------------------------------
+    // 主题 class / 默认图形（构造期即生效，不依赖 onShown/lookup）
+    // ---------------------------------------------------------------
+
+    @Test
+    @DisplayName("构造期挂根 class + 类型修饰类 + 默认图形")
+    void themeClasses_appliedAtConstruction() {
+        runOnFxThreadAndWait(() -> {
+            AlertAnt info = AlertAnt.info("t", "c", null);
+            assertTrue(info.getDialogPane().getStyleClass().contains(JfxStyles.ALERT_DIALOG));
+            assertTrue(info.getDialogPane().getStyleClass().contains(JfxStyles.ALERT_DIALOG_INFO));
+            assertNotNull(info.getGraphic());
+
+            AlertAnt warning = AlertAnt.warning("t", "c", null);
+            assertTrue(warning.getDialogPane().getStyleClass().contains(JfxStyles.ALERT_DIALOG_WARNING));
+
+            AlertAnt error = AlertAnt.error("t", "c", null);
+            assertTrue(error.getDialogPane().getStyleClass().contains(JfxStyles.ALERT_DIALOG_ERROR));
+
+            AlertAnt confirm = AlertAnt.confirm("t", "c", null);
+            assertTrue(confirm.getDialogPane().getStyleClass().contains(JfxStyles.ALERT_DIALOG_CONFIRM));
         });
     }
 }
