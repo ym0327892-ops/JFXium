@@ -26,12 +26,24 @@
 }
 
 /* header：图标 + 标题 */
-.dialog-pane.jfx-alert-dialog > .header-panel {
-  -fx-padding: 20 24;
+/* 自定义 header 节点（DialogPane 直接子节点）承担 band 背景/间距 */
+.dialog-pane.jfx-alert-dialog > .jfx-alert-header-box {
+  -fx-padding: 16 24;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: @border-radius-lg @border-radius-lg 0 0;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
+}
+
+/* headerText 对应的默认 Grid 已被 setHeader 取代，折叠掉避免双 header */
+.dialog-pane.jfx-alert-dialog > .header-panel {
+  -fx-padding: 0;
+  -fx-min-height: 0;
+  -fx-pref-height: 0;
+  -fx-max-height: 0;
+  -fx-opacity: 0;
+  -fx-background-color: transparent;
+  -fx-border-width: 0;
 }
 
 /* 自定义 header：图标固定在左，标题占满 */
@@ -64,7 +76,7 @@
 /* content：正文 */
 .dialog-pane.jfx-alert-dialog > .content,
 .dialog-pane.jfx-alert-dialog > .content.label {
-  -fx-padding: 20 24;
+  -fx-padding: 16 24;
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: @font-size-md;
   -fx-wrap-text: true;
@@ -79,11 +91,16 @@
 
 /* button-bar：底部按钮区 */
 .dialog-pane.jfx-alert-dialog > .button-bar {
-  -fx-padding: 12 24;
+  /* ButtonBar 自身 padding 不参与 skin 布局，用内部 .container 撑出真实上下间隔 */
+  -fx-padding: 0;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 0 0 @border-radius-lg @border-radius-lg;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1 0 0 0;
+}
+
+.dialog-pane.jfx-alert-dialog > .button-bar > .container {
+  -fx-padding: @spacing-sm @spacing-xl;
 }
 
 .dialog-pane.jfx-alert-dialog > .button-bar .button {
@@ -94,28 +111,28 @@
    类型配色：info / warning / error / confirm
    ============================================ */
 
-.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-info > .header-panel {
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-info > .jfx-alert-header-box {
   -fx-background-color: -color-accent-subtle;
 }
 .dialog-pane.jfx-alert-dialog.jfx-alert-dialog-info .jfx-alert-dialog-default-graphic {
   -fx-text-fill: -color-accent-text;
 }
 
-.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-warning > .header-panel {
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-warning > .jfx-alert-header-box {
   -fx-background-color: -color-warning-subtle;
 }
 .dialog-pane.jfx-alert-dialog.jfx-alert-dialog-warning .jfx-alert-dialog-default-graphic {
   -fx-text-fill: -color-warning-text;
 }
 
-.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-error > .header-panel {
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-error > .jfx-alert-header-box {
   -fx-background-color: -color-danger-subtle;
 }
 .dialog-pane.jfx-alert-dialog.jfx-alert-dialog-error .jfx-alert-dialog-default-graphic {
   -fx-text-fill: -color-danger-text;
 }
 
-.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-confirm > .header-panel {
+.dialog-pane.jfx-alert-dialog.jfx-alert-dialog-confirm > .jfx-alert-header-box {
   -fx-background-color: -color-success-subtle;
 }
 .dialog-pane.jfx-alert-dialog.jfx-alert-dialog-confirm .jfx-alert-dialog-default-graphic {

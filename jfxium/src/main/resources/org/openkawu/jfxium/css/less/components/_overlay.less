@@ -11,9 +11,14 @@
 }
 
 .dialog-pane > .button-bar {
-  -fx-padding: @dialog-padding;
+  /* ButtonBar 自身 padding 不参与 skin 布局，用内部 .container 撑出真实间隔 */
+  -fx-padding: 0;
   -fx-background-color: -color-bg-subtle;
   -fx-background-radius: 0;
+}
+
+.dialog-pane > .button-bar > .container {
+  -fx-padding: @spacing-sm @spacing-lg;
 }
 
 /* ============================================
