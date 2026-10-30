@@ -1,4 +1,4 @@
-# JFXium 组件目录（v1.34.4）
+# JFXium 组件目录（v1.34.5）
 
 > 由 `skills/jfxium/scripts/CatalogGen.java` 生成，**禁止手改**。
 > 改动组件公开 API 后重跑：`java skills/jfxium/scripts/CatalogGen.java`
@@ -118,7 +118,7 @@
 
 | 组件 | extends | 工厂 | build() | 关键 API | 定位 |
 |---|---|---|---|---|---|
-| **AlertAnt** | `Alert` | — | — | info, warning, error, confirm, title, content, okText, cancelText, onOk, onCancel, onResult, graphic, showAndWaitForOk | 独立 Stage 模态对话框。调用方可自由选择两种风格： |
+| **AlertAnt** | `Alert` | — | — | info, warning, error, confirm, title, graphic, content, okText, cancelText, onOk, onCancel, onResult, showAndWaitForOk | 独立 Stage 模态对话框。调用方可自由选择两种风格： |
 | **ContextMenuAnt** | — | `create() -> Builder` | `ContextMenuResult` | divider, target, item, disabled, accelerator, onSelect, onSelectItem, show, hide | 在目标元素上右键弹出的上下文菜单，支持分组、图标、快捷键提示、 |
 | **DesktopNotificationAnt** | — | `create() -> Builder` | `DesktopResult` | title, description, content, type, placement, duration, closable, closeOnClick, onClose, onClick, show, success, error, warning, info, changed | 与 NotificationAnt（锚定应用窗口的 javafx.stage.Popup） |
 | **DrawerAnt** | — | `create() -> Builder` | `DrawerResult` | title, content, placement, width, height, maskClosable, onClose, footer, size, extra, keyboard, closePlacement, open, close | 从屏幕边缘滑入的覆盖式面板，适合详情展示、表单编辑、筛选面板等场景。 |

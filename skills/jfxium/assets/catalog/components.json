@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "library": "JFXium",
-  "version": "1.34.4",
+  "version": "1.34.5",
   "generatedBy": "skills/jfxium/scripts/CatalogGen.java",
   "count": 124,
   "entries": [
@@ -98,7 +98,7 @@
     {"class": "TextFlowAnt", "package": "org.openkawu.jfxium.component.layout", "exports": true, "extends": "AbstractTextFlowAnt", "factories": ["create() -> TextFlowAnt", "create(Node... children) -> TextFlowAnt"], "build": null, "api": [], "summary": "TextFlowAnt - 继承式 TextFlow 容器。", "source": "jfxium/src/main/java/org/openkawu/jfxium/component/layout/TextFlowAnt.java"},
     {"class": "TilePaneAnt", "package": "org.openkawu.jfxium.component.layout", "exports": true, "extends": "AbstractTilePaneAnt", "factories": ["create() -> TilePaneAnt"], "build": null, "api": [], "summary": "平铺排列容器，继承自 JavaFX TilePane。", "source": "jfxium/src/main/java/org/openkawu/jfxium/component/layout/TilePaneAnt.java"},
     {"class": "VBoxAnt", "package": "org.openkawu.jfxium.component.layout", "exports": true, "extends": "AbstractVBoxAnt", "factories": ["create() -> VBoxAnt", "create(Node... children) -> VBoxAnt"], "build": null, "api": [], "summary": "垂直布局容器的\"双工厂模式\"——既能当工厂用，也能被业务继承。", "source": "jfxium/src/main/java/org/openkawu/jfxium/component/layout/VBoxAnt.java"},
-    {"class": "AlertAnt", "package": "org.openkawu.jfxium.component.overlay", "exports": true, "extends": "Alert", "factories": [], "build": null, "api": ["info", "warning", "error", "confirm", "title", "content", "okText", "cancelText", "onOk", "onCancel", "onResult", "graphic", "showAndWaitForOk"], "summary": "独立 Stage 模态对话框。调用方可自由选择两种风格：", "source": "jfxium/src/main/java/org/openkawu/jfxium/component/overlay/AlertAnt.java"},
+    {"class": "AlertAnt", "package": "org.openkawu.jfxium.component.overlay", "exports": true, "extends": "Alert", "factories": [], "build": null, "api": ["info", "warning", "error", "confirm", "title", "graphic", "content", "okText", "cancelText", "onOk", "onCancel", "onResult", "showAndWaitForOk"], "summary": "独立 Stage 模态对话框。调用方可自由选择两种风格：", "source": "jfxium/src/main/java/org/openkawu/jfxium/component/overlay/AlertAnt.java"},
     {"class": "ContextMenuAnt", "package": "org.openkawu.jfxium.component.overlay", "exports": true, "extends": null, "factories": ["create() -> Builder"], "build": "ContextMenuResult", "api": ["divider", "target", "item", "disabled", "accelerator", "onSelect", "onSelectItem", "show", "hide"], "summary": "在目标元素上右键弹出的上下文菜单，支持分组、图标、快捷键提示、", "source": "jfxium/src/main/java/org/openkawu/jfxium/component/overlay/ContextMenuAnt.java"},
     {"class": "DesktopNotificationAnt", "package": "org.openkawu.jfxium.component.overlay", "exports": true, "extends": null, "factories": ["create() -> Builder"], "build": "DesktopResult", "api": ["title", "description", "content", "type", "placement", "duration", "closable", "closeOnClick", "onClose", "onClick", "show", "success", "error", "warning", "info", "changed"], "summary": "与 NotificationAnt（锚定应用窗口的 javafx.stage.Popup）", "source": "jfxium/src/main/java/org/openkawu/jfxium/component/overlay/DesktopNotificationAnt.java"},
     {"class": "DrawerAnt", "package": "org.openkawu.jfxium.component.overlay", "exports": true, "extends": null, "factories": ["create() -> Builder"], "build": "DrawerResult", "api": ["title", "content", "placement", "width", "height", "maskClosable", "onClose", "footer", "size", "extra", "keyboard", "closePlacement", "open", "close"], "summary": "从屏幕边缘滑入的覆盖式面板，适合详情展示、表单编辑、筛选面板等场景。", "source": "jfxium/src/main/java/org/openkawu/jfxium/component/overlay/DrawerAnt.java"},

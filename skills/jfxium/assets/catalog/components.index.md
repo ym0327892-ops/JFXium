@@ -1,4 +1,4 @@
-# JFXium 组件速查（v1.34.4）
+# JFXium 组件速查（v1.34.5）
 
 > 生成物，禁止手改。完整信息（extends / 定位 / source）见 `components.md` / `components.json`。
 
@@ -97,7 +97,7 @@
 | **TextFlowAnt** | component.layout | — | — |
 | **TilePaneAnt** | component.layout | — | — |
 | **VBoxAnt** | component.layout | — | — |
-| **AlertAnt** | component.overlay | — | info, warning, error, confirm, title, content, okText, cancelText, onOk, onCancel, onResult, graphic, showAndWaitForOk |
+| **AlertAnt** | component.overlay | — | info, warning, error, confirm, title, graphic, content, okText, cancelText, onOk, onCancel, onResult, showAndWaitForOk |
 | **ContextMenuAnt** | component.overlay | `ContextMenuResult` | divider, target, item, disabled, accelerator, onSelect, onSelectItem, show, hide |
 | **DesktopNotificationAnt** | component.overlay | `DesktopResult` | title, description, content, type, placement, duration, closable, closeOnClick, onClose, onClick, show, success, error, warning, info, changed |
 | **DrawerAnt** | component.overlay | `DrawerResult` | title, content, placement, width, height, maskClosable, onClose, footer, size, extra, keyboard, closePlacement, open, close |
