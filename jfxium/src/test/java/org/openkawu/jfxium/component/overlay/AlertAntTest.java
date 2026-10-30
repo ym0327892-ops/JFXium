@@ -2,6 +2,9 @@ package org.openkawu.jfxium.component.overlay;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
@@ -200,7 +203,12 @@ class AlertAntTest extends JfxTestBase {
             AlertAnt info = AlertAnt.info("t", "c", null);
             assertTrue(info.getDialogPane().getStyleClass().contains(JfxStyles.ALERT_DIALOG));
             assertTrue(info.getDialogPane().getStyleClass().contains(JfxStyles.ALERT_DIALOG_INFO));
-            assertNotNull(info.getGraphic());
+            var header = info.getDialogPane().getHeader();
+            assertNotNull(header);
+            assertTrue(header.getStyleClass().contains(JfxStyles.ALERT_HEADER_BOX));
+            StackPane iconBox = (StackPane) ((HBox) header).getChildren().get(0);
+            assertTrue(iconBox.getStyleClass().contains(JfxStyles.ALERT_ICON_BOX));
+            assertFalse(iconBox.getChildren().isEmpty());
 
             AlertAnt warning = AlertAnt.warning("t", "c", null);
             assertTrue(warning.getDialogPane().getStyleClass().contains(JfxStyles.ALERT_DIALOG_WARNING));
@@ -210,6 +218,18 @@ class AlertAntTest extends JfxTestBase {
 
             AlertAnt confirm = AlertAnt.confirm("t", "c", null);
             assertTrue(confirm.getDialogPane().getStyleClass().contains(JfxStyles.ALERT_DIALOG_CONFIRM));
+        });
+    }
+
+    @Test
+    @DisplayName("graphic() 替换 header 左侧图标")
+    void graphic_replacesHeaderIcon() {
+        runOnFxThreadAndWait(() -> {
+            Label icon = new Label("!");
+            AlertAnt alert = AlertAnt.info("t", "c", null).graphic(icon);
+            HBox header = (HBox) alert.getDialogPane().getHeader();
+            StackPane iconBox = (StackPane) header.getChildren().get(0);
+            assertSame(icon, iconBox.getChildren().get(0));
         });
     }
 }

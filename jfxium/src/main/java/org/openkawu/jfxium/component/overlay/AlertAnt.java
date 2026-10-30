@@ -5,8 +5,12 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar;
+import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Window;
 import org.openkawu.jfxium.component.control.IconAnt;
@@ -88,6 +92,9 @@ public class AlertAnt extends Alert {
     private Runnable onCancelCallback;
     /** 非阻塞回调：弹窗关闭时拿到最终 ButtonType（null 表示未设 result，如强制关闭） */
     private Consumer<ButtonType> onResultCallback;
+    /** 当前图标节点（默认按 AlertType，或调用方 graphic() 指定）。 */
+    private Node alertGraphic;
+
     /** locale 监听（具名引用，hidden 时注销，避免静态属性长期钉住已关闭弹窗）。 */
     private final javafx.beans.value.ChangeListener<java.util.Locale> localeListener =
         (obs, ov, nv) -> applyI18nButtonLabels();
@@ -118,9 +125,8 @@ public class AlertAnt extends Alert {
         // DialogPane 内部子结构由 LESS 的 > .header-panel / > .content 选择器直接命中，
         // 不再依赖 onShown 里 lookup（skin 创建时机不稳定，曾导致子 class 丢失）。
         applyRootStyleClasses();
-        if (getGraphic() == null) {
-            setGraphic(defaultGraphicFor(getAlertType()));
-        }
+        alertGraphic = defaultGraphicFor(getAlertType());
+        refreshHeader();
 
         // hidden 时注销 locale 监听（addEventHandler 与业务 setOnHidden 并存，不互相覆盖）
         addEventHandler(javafx.scene.control.DialogEvent.DIALOG_HIDDEN, e ->
@@ -170,7 +176,48 @@ public class AlertAnt extends Alert {
     /** 设置标题（即 JavaFX Alert 的 headerText）。 */
     public AlertAnt title(String title) {
         setHeaderText(TextUtils.safeText(title));
+        refreshHeader();
         return this;
+    }
+
+    /**
+     * 自定义左侧图形节点。
+     *
+     * <p>图标固定在标题左侧（Ant Design 语义）；JavaFX 原生 DialogPane 默认把
+     * graphic 放在标题右侧，这里用自定义 header 覆盖。</p>
+     */
+    public AlertAnt graphic(Node graphic) {
+        this.alertGraphic = graphic;
+        refreshHeader();
+        return this;
+    }
+
+    /** 重建自定义 header：图标（48px 槽） + 标题，图标固定在左。 */
+    private void refreshHeader() {
+        DialogPane pane = getDialogPane();
+        if (pane == null) return;
+
+        String title = getHeaderText();
+        if (title == null || title.isEmpty()) {
+            pane.setHeader(null);
+            return;
+        }
+
+        LabelAnt titleLabel = LabelAnt.create(title);
+        titleLabel.getStyleClass().add(JfxStyles.ALERT_TITLE);
+        titleLabel.setWrapText(true);
+
+        StackPane iconBox = new StackPane();
+        iconBox.getStyleClass().add(JfxStyles.ALERT_ICON_BOX);
+        if (alertGraphic != null) {
+            iconBox.getChildren().add(alertGraphic);
+        }
+
+        HBox header = new HBox(iconBox, titleLabel);
+        header.getStyleClass().add(JfxStyles.ALERT_HEADER_BOX);
+        header.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(titleLabel, Priority.ALWAYS);
+        pane.setHeader(header);
     }
 
     /** 设置内容（即 JavaFX Alert 的 contentText）。 */
@@ -228,12 +275,6 @@ public class AlertAnt extends Alert {
     public AlertAnt onResult(Consumer<ButtonType> callback) {
         this.onResultCallback = callback;
         bindResultCallback();
-        return this;
-    }
-
-    /** 自定义左侧图形节点（默认按 AlertType 用 Ikonli 字符图标）。 */
-    public AlertAnt graphic(Node graphic) {
-        setGraphic(graphic);
         return this;
     }
 

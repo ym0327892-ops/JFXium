@@ -332,6 +332,12 @@ public final class JfxStyles {
     public static final String ALERT_DIALOG = "jfx-alert-dialog";
     /** AlertDialog 默认图形节点（Ikonli 字符 Label），仅 .jfx-alert-dialog-info/warning/error/confirm 作用域内生效 */
     public static final String ALERT_DIALOG_GRAPHIC_DEFAULT = "jfx-alert-dialog-default-graphic";
+    /** AlertDialog 自定义 header 容器（图标左 + 标题右） */
+    public static final String ALERT_HEADER_BOX = "jfx-alert-header-box";
+    /** AlertDialog 图标槽（固定 48px） */
+    public static final String ALERT_ICON_BOX = "jfx-alert-icon-box";
+    /** AlertDialog 标题文字 */
+    public static final String ALERT_TITLE = "jfx-alert-title";
     /** AlertDialog 类型修饰类 */
     public static final String ALERT_DIALOG_INFO = "jfx-alert-dialog-info";
     public static final String ALERT_DIALOG_WARNING = "jfx-alert-dialog-warning";

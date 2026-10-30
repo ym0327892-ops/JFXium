@@ -6993,20 +6993,24 @@
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1 0;
 }
-.dialog-pane.jfx-alert-dialog > .header-panel > .label {
-  -fx-text-fill: -color-fg-default;
-  -fx-font-size: 16px;
-  -fx-font-weight: bold;
-  -fx-wrap-text: true;
-  -fx-line-spacing: 0.07em;
+/* 自定义 header：图标固定在左，标题占满 */
+.dialog-pane.jfx-alert-dialog .jfx-alert-header-box {
+  -fx-spacing: 12px;
+  -fx-alignment: CENTER_LEFT;
 }
-/* 图形容器（左侧 icon 区） */
-.dialog-pane.jfx-alert-dialog .graphic-container {
+.dialog-pane.jfx-alert-dialog .jfx-alert-icon-box {
   -fx-padding: 0;
   -fx-alignment: CENTER;
   -fx-min-width: 48px;
   -fx-pref-width: 48px;
   -fx-max-width: 48px;
+}
+.dialog-pane.jfx-alert-dialog .jfx-alert-title {
+  -fx-text-fill: -color-fg-default;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-wrap-text: true;
+  -fx-line-spacing: 0.07em;
 }
 .dialog-pane.jfx-alert-dialog .jfx-alert-dialog-default-graphic {
   -fx-alignment: CENTER;
