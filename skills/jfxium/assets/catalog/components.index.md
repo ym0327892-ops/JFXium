@@ -1,4 +1,4 @@
-# JFXium 组件速查（v1.34.5）
+# JFXium 组件速查（v1.34.6）
 
 > 生成物，禁止手改。完整信息（extends / 定位 / source）见 `components.md` / `components.json`。
 
