@@ -33,7 +33,7 @@
 
 > ⚠️ **JFXium 未发布到 Maven Central，也没有任何远程仓库。**
 > 直接写 `org.openkawu:jfxium` 坐标必然失败：
-> `Could not find artifact org.openkawu:jfxium:jar:1.34.1 in central`。
+> `Could not find artifact org.openkawu:jfxium:jar:1.34.6 in central`。
 > **必须自己把 jar 提供给项目**，不能指望 Maven 远程下载。
 
 **方式 A：从 GitHub Releases 下载（最省事）**
@@ -43,7 +43,7 @@
 下载后装进本地仓库：
 
 ```bash
-V=1.34.1   # 换成你下载的版本号
+V=1.34.6   # 换成你下载的版本号
 mvn install:install-file -Dfile=jfxium-parent-$V.pom -DpomFile=jfxium-parent-$V.pom
 mvn install:install-file -Dfile=jfxium-$V.jar -DpomFile=jfxium-$V.pom
 # 可选：源码/文档 jar，装了 IDE 里能直接跳进源码
@@ -64,7 +64,7 @@ cd JFXium
 
 > **为什么必须 `-am`**：`jfxium` 的 pom 里 `<parent>` 指向 `org.openkawu:jfxium-parent`。
 > 只装 `-pl jfxium` 会让 **依赖它的项目解析失败**（报
-> `Could not find artifact org.openkawu:jfxium-parent:pom:1.34.1`）——
+> `Could not find artifact org.openkawu:jfxium-parent:pom:1.34.6`）——
 > 因为本机仓库里没有 parent，远程仓库更没有。`-am`（also make）会一并安装 parent。
 
 装完本机才能引用（**换台机器要重新装**，远程仓库里没有）：
@@ -73,21 +73,21 @@ cd JFXium
 <dependency>
     <groupId>org.openkawu</groupId>
     <artifactId>jfxium</artifactId>
-    <version>1.34.1</version>
+    <version>1.34.6</version>
 </dependency>
 ```
 
 **方式 C：直接把 jar 放进项目（完全不依赖仓库）**
 
-产物在 `jfxium/target/jfxium-1.34.1.jar`，拷进项目 `libs/`：
+产物在 `jfxium/target/jfxium-1.34.6.jar`，拷进项目 `libs/`：
 
 ```xml
 <dependency>
     <groupId>org.openkawu</groupId>
     <artifactId>jfxium</artifactId>
-    <version>1.34.1</version>
+    <version>1.34.6</version>
     <scope>system</scope>
-    <systemPath>${project.basedir}/libs/jfxium-1.34.1.jar</systemPath>
+    <systemPath>${project.basedir}/libs/jfxium-1.34.6.jar</systemPath>
 </dependency>
 ```
 
@@ -109,7 +109,7 @@ cd JFXium
 > 全是 JFXium 自己的 class 与资源，0 个 JavaFX 类。）
 
 | jar | 必需 | 说明 |
-| `jfxium-1.34.1.jar` | ✅ | 主库；CSS 主题与 i18n 资源都已打进包内 |
+| `jfxium-1.34.6.jar` | ✅ | 主库；CSS 主题与 i18n 资源都已打进包内 |
 | JavaFX `base` / `graphics` / `controls` | ✅ **需你显式声明**（框架不传递） | 版本自选；需带平台分类器，如 `javafx-controls-<版本>-mac-aarch64.jar` |
 | JavaFX `fxml` / `media` / `web` / `swing` | ❌ 本框架不涉及 | 按你自己的项目按需添加 |
 
