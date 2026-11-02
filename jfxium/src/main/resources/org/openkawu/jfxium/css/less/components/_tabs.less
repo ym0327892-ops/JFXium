@@ -37,19 +37,45 @@
   -fx-max-height: 3;
 }
 
-/* TabsAnt indicator —— 垂直形态（LEFT/RIGHT placement，BUG #144：补齐垂直指示条） */
-.jfx-tabs-indicator-pane-vertical {
-  -fx-background-color: -color-border-muted;
-  -fx-pref-width: 3;
-  -fx-min-width: 3;
-  -fx-max-width: 3;
+
+/* ============================================
+   TabsAnt — closable × / right-side actions
+   ============================================ */
+.jfx-tabs-label {
+  -fx-graphic-text-gap: 6px;
 }
 
-.jfx-tabs-indicator-bar-vertical {
-  -fx-background-color: -color-accent-emphasis;
-  -fx-background-radius: 2px;
-  -fx-pref-width: 3;
-  -fx-min-width: 3;
-  -fx-max-width: 3;
+.jfx-tabs-close {
+  -fx-cursor: hand;
+  -fx-padding: 0;
+  -fx-min-width: 14px;
+  -fx-min-height: 14px;
+  -fx-pref-width: 14px;
+  -fx-pref-height: 14px;
+  -fx-max-width: 14px;
+  -fx-max-height: 14px;
+  -fx-background-color: transparent;
+  -fx-background-radius: @border-radius-sm;
 }
 
+.jfx-tabs-close:hover {
+  -fx-background-color: -color-danger-subtle;
+}
+
+.jfx-tabs-close-icon .jfx-icon {
+  -fx-text-fill: -color-fg-muted;
+}
+
+.jfx-tabs-close:hover .jfx-tabs-close-icon .jfx-icon {
+  -fx-text-fill: -color-danger-emphasis;
+}
+
+.jfx-tabs-actions-host {
+  -fx-padding: 0 0 0 @spacing-sm;
+  -fx-alignment: center;
+}
+
+.jfx-tabs-actions {
+  -fx-padding: 0 4px;
+  -fx-background-color: transparent;
+}

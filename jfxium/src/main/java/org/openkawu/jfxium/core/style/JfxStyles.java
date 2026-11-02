@@ -945,8 +945,10 @@ public final class JfxStyles {
     public static final String TABS_INDICATOR_PANE = "jfx-tabs-indicator-pane";
     public static final String TABS_INDICATOR_BAR = "jfx-tabs-indicator-bar";
     // 垂直形态指示条（LEFT/RIGHT placement，BUG #144）
-    public static final String TABS_INDICATOR_PANE_VERTICAL = "jfx-tabs-indicator-pane-vertical";
-    public static final String TABS_INDICATOR_BAR_VERTICAL = "jfx-tabs-indicator-bar-vertical";
+    public static final String TABS_CLOSE         = "jfx-tabs-close";
+    public static final String TABS_CLOSE_ICON    = "jfx-tabs-close-icon";
+    public static final String TABS_ACTIONS       = "jfx-tabs-actions";
+    public static final String TABS_ACTIONS_HOST  = "jfx-tabs-actions-host";
 
     /* ============================================
        PanelFooter — 面板底部

@@ -1281,19 +1281,40 @@
   -fx-min-height: 3;
   -fx-max-height: 3;
 }
-/* TabsAnt indicator —— 垂直形态（LEFT/RIGHT placement，BUG #144：补齐垂直指示条） */
-.jfx-tabs-indicator-pane-vertical {
-  -fx-background-color: -color-border-muted;
-  -fx-pref-width: 3;
-  -fx-min-width: 3;
-  -fx-max-width: 3;
+/* ============================================
+   TabsAnt — closable × / right-side actions
+   ============================================ */
+.jfx-tabs-label {
+  -fx-graphic-text-gap: 6px;
 }
-.jfx-tabs-indicator-bar-vertical {
-  -fx-background-color: -color-accent-emphasis;
-  -fx-background-radius: 2px;
-  -fx-pref-width: 3;
-  -fx-min-width: 3;
-  -fx-max-width: 3;
+.jfx-tabs-close {
+  -fx-cursor: hand;
+  -fx-padding: 0;
+  -fx-min-width: 14px;
+  -fx-min-height: 14px;
+  -fx-pref-width: 14px;
+  -fx-pref-height: 14px;
+  -fx-max-width: 14px;
+  -fx-max-height: 14px;
+  -fx-background-color: transparent;
+  -fx-background-radius: 4px;
+}
+.jfx-tabs-close:hover {
+  -fx-background-color: -color-danger-subtle;
+}
+.jfx-tabs-close-icon .jfx-icon {
+  -fx-text-fill: -color-fg-muted;
+}
+.jfx-tabs-close:hover .jfx-tabs-close-icon .jfx-icon {
+  -fx-text-fill: -color-danger-emphasis;
+}
+.jfx-tabs-actions-host {
+  -fx-padding: 0 0 0 6px;
+  -fx-alignment: center;
+}
+.jfx-tabs-actions {
+  -fx-padding: 0 4px;
+  -fx-background-color: transparent;
 }
 /* ============================================
    Tree Component
@@ -7271,6 +7292,14 @@
 }
 /* 标签关闭按钮：12×12 的小方形，外环取 2px 才与体量相称（同复选框方框） */
 .jfx-tag-close:focus-visible {
+  -fx-border-color: rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.95) !important;
+  -fx-border-style: solid !important;
+  -fx-border-width: 2px, 1px !important;
+  -fx-border-insets: -1, 0 !important;
+  -fx-border-radius: 5px, 4px !important;
+}
+/* 标签页关闭按钮：14×14 小方块，与 Tag 关闭按钮同档 */
+.jfx-tabs-close:focus-visible {
   -fx-border-color: rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.95) !important;
   -fx-border-style: solid !important;
   -fx-border-width: 2px, 1px !important;
