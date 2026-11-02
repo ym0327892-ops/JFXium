@@ -21,8 +21,9 @@
 | [快速上手](docs/cn/快速上手.md) | 完整入门教程 + 5 个可运行的业务场景示例 |
 | [业务模板](docs/cn/业务模板.md) | PageTemplate / CrudTemplate / LoginTemplate / DashboardTemplate |
 | [最佳实践](docs/cn/最佳实践.md) | Builder 规范 / EventBus + record / 页面骨架继承式写法 |
+| [视图开发规范](docs/cn/视图开发规范.md) | View / ViewModel / Model 分层 + 谁 new 谁持 VM + 弹窗新增流程 + 下游 AI Checklist |
 
-> **新人推荐阅读顺序**：本页「快速开始」→「按场景找组件」→ 「已知限制」→ 然后按需读分文档：[快速上手](docs/cn/快速上手.md)（学会写 CRUD 页）→ [组件参考](docs/cn/组件参考.md)（查具体组件）→ [最佳实践](docs/cn/最佳实践.md)（写出规范代码）
+> **新人推荐阅读顺序**：本页「快速开始」→「按场景找组件」→ 「已知限制」→ 然后按需读分文档：[快速上手](docs/cn/快速上手.md)（学会写 CRUD 页）→ [组件参考](docs/cn/组件参考.md)（查具体组件）→ [最佳实践](docs/cn/最佳实践.md)（写出规范代码）→ [视图开发规范](docs/cn/视图开发规范.md)（分层与弹窗）
 
 ---
 
