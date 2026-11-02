@@ -70,7 +70,7 @@ Targets **JFXium 1.34.6** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 | `DatePicker` / `ColorPicker` | `DatePickerAnt` / `ColorPickerAnt` | 日期时间 `DateTimePickerAnt` |
 | `TitledPane` / `Accordion` | `TitledPaneAnt` / `CollapseAnt.accordion(true)` | 单面板用前者，多面板互斥用后者 |
 | `Pagination` / `Separator` / `ToolBar` | `PaginationAnt` / `SeparatorAnt` / `ToolBarAnt` | |
-| `TabPane` / `Tab` | `TabsAnt` | `TabsAnt.controllerOf(node)` |
+| `TabPane` / `Tab` | `TabsAnt` | `TabsAnt.controllerOf(node)`；动态增删用 `addTab/removeTab`，关闭用 `closeTab/closeAll` |
 | `ScrollPane` / `SplitPane` | `ScrollPaneAnt` / `SplitPaneAnt` | |
 | `BorderPane` | `BorderPaneAnt` | |
 | `VBox` / `HBox` | `VBoxAnt` / `HBoxAnt` | 条状用 `HBarAnt` / `VBarAnt` |
@@ -297,7 +297,7 @@ if (form.validate()) { ... }               // 校验在 Result 上，不在 Buil
 
 ```java
 TabsAnt.Controller ctrl = TabsAnt.controllerOf(tabsNode);
-ctrl.select("tab-2");        // ✅ 运行时切状态
+ctrl.selectByKey("tab-2");   // ✅ 运行时切状态
 ```
 
 需要改状态时先找 `controllerOf`；没有 Controller 的组件才考虑重建。

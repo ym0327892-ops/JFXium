@@ -38,7 +38,7 @@
 | `Separator` | `SeparatorAnt` |
 | `Canvas` | `CanvasAnt` |
 | `ToolBar` | `ToolBarAnt` |
-| `TabPane` / `Tab` | `TabsAnt`（`TabsAnt.controllerOf(...)` 切页） |
+| `TabPane` / `Tab` | `TabsAnt`（`controllerOf(...)` 切页；`addTab/removeTab/closeTab` 动态增删关闭） |
 | `ScrollPane` | `ScrollPaneAnt` |
 | `SplitPane` | `SplitPaneAnt` |
 | `BorderPane` | `BorderPaneAnt` |

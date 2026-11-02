@@ -74,7 +74,7 @@ Targets **JFXium 1.34.6** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 | `DatePicker` / `ColorPicker` | `DatePickerAnt` / `ColorPickerAnt` | 日期时间 `DateTimePickerAnt` |
 | `TitledPane` / `Accordion` | `TitledPaneAnt` / `CollapseAnt.accordion(true)` | 单面板用前者，多面板互斥用后者 |
 | `Pagination` / `Separator` / `ToolBar` | `PaginationAnt` / `SeparatorAnt` / `ToolBarAnt` | |
-| `TabPane` / `Tab` | `TabsAnt` | `TabsAnt.controllerOf(node)` |
+| `TabPane` / `Tab` | `TabsAnt` | `TabsAnt.controllerOf(node)`；动态增删用 `addTab/removeTab`，关闭用 `closeTab/closeAll` |
 | `ScrollPane` / `SplitPane` | `ScrollPaneAnt` / `SplitPaneAnt` | |
 | `BorderPane` | `BorderPaneAnt` | |
 | `VBox` / `HBox` | `VBoxAnt` / `HBoxAnt` | 条状用 `HBarAnt` / `VBarAnt` |

@@ -24,7 +24,7 @@
 |---|---|---|
 | **`build()` 两类返回** | 常驻场景图 → 直接 Node；按需弹层 → Result（必须 `open(owner)` / `show()`） | `ModalAnt...build().open(owner)`；`MessageAnt.success("已保存")` |
 | **Builder vs 继承式** | 控制类多为 `extends Native`（`InputAnt`、`ButtonAnt`、`SpinnerAnt`），`build()` 返回自身；组合类 `create()` 返回 Builder，`build()` 返回 Node | `TableAnt.<T>create()...build()` 返回 `TableAnt<T>` |
-| **Controller** | 构建后要改运行时状态，用 `XxxAnt.controllerOf(node)`；不要整棵树重建 | `TabsAnt.controllerOf(tabs).select("tab2")` |
+| **Controller** | 构建后要改运行时状态，用 `XxxAnt.controllerOf(node)`；不要整棵树重建 | `TabsAnt.controllerOf(tabs).selectByKey("tab2")` |
 | **尺寸** | `size(Size)` 走 `.small/.large` 修饰类；间距/内边距走 token，不写 `new HBox(8)` | `HBoxAnt.create().spacing(8)` |
 | **布局** | 页面/表单用 `VBoxAnt`/`HBoxAnt`/`GridAnt`/`PageTemplate`，别退回原生 `VBox` | `VBoxAnt.create().spacing(12).padding(16)` |
 | **主题** | `ThemeManager.getInstance()`：`applyTheme` / `registerScene` / `setDensity` / `setPrimaryColor` | Fluent 主题禁运行时注入主色（`hasFixedAccent`） |

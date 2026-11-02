@@ -111,7 +111,7 @@ if (form.validate()) { ... }               // 校验在 Result 上，不在 Buil
 
 ```java
 TabsAnt.Controller ctrl = TabsAnt.controllerOf(tabsNode);
-ctrl.select("tab-2");        // ✅ 运行时切状态
+ctrl.selectByKey("tab-2");   // ✅ 运行时切状态
 ```
 
 需要改状态时先找 `controllerOf`；没有 Controller 的组件才考虑重建。
