@@ -41,7 +41,7 @@
 | **StepsAnt** | component.composite | `Node` | step, current, direction, size, controller, next, prev |
 | **SurfaceAnt** | component.composite | `VBox` | title, extra, content, children, bordered, shadow, gap |
 | **SwitchAnt** | component.composite | `HBox` | selected, checkedText, uncheckedText, shape, onChange, bindValue |
-| **TabsAnt** | component.composite | `Node` | controllerOf, tab, type, size, tabPlacement, centered, extraLeft, extraRight, onChange, activeIndex, activeKey, controller, selectByKey, next, prev |
+| **TabsAnt** | component.composite | `Node` | controllerOf, tab, type, size, tabPlacement, centered, extraLeft, extraRight, onChange, closable, overflowMenu, showCloseCurrent, showCloseOthers, showCloseAll, onBeforeClose, onClose, activeIndex, activeKey |
 | **TagAnt** | component.composite | `HBox` | modify, text, type, size, shape, closable, bordered, noBorder, color, onClose, apply |
 | **TimePickerAnt** | component.composite | `StackPane` | controllerOf, value, format, allowClear, size, onChange, bindValue, editable, showPanel, hidePanel |
 | **TimelineAnt** | component.composite | `VBox` | mode, pending, item |

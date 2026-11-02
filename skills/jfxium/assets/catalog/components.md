@@ -47,7 +47,7 @@
 | **StepsAnt** | — | `create() -> Builder` | `Node` | step, current, direction, size, controller, next, prev | 引导用户按流程完成任务的导航条，常用于注册流程、订单状态、 |
 | **SurfaceAnt** | — | `create() -> Builder` | `VBox` | title, extra, content, children, bordered, shadow, gap | 轻量的内容承载面板，带可选标题 + 额外操作区， |
 | **SwitchAnt** | — | `create() -> Builder` | `HBox` | selected, checkedText, uncheckedText, shape, onChange, bindValue | 二态切换开关（开/关），用于切换某个配置项的启用状态， |
-| **TabsAnt** | — | `create() -> Builder` | `Node` | controllerOf, tab, type, size, tabPlacement, centered, extraLeft, extraRight, onChange, activeIndex, activeKey, controller, selectByKey, next, prev | 内容切换标签页,支持多个标签页之间的内容切换, |
+| **TabsAnt** | — | `create() -> Builder` | `Node` | controllerOf, tab, type, size, tabPlacement, centered, extraLeft, extraRight, onChange, closable, overflowMenu, showCloseCurrent, showCloseOthers, showCloseAll, onBeforeClose, onClose, activeIndex, activeKey | 内容切换标签页,支持多个标签页之间的内容切换, |
 | **TagAnt** | — | `create(String text) -> Builder`<br>`create() -> Builder` | `HBox` | modify, text, type, size, shape, closable, bordered, noBorder, color, onClose, apply | 小型语义化标签，用于标记状态、分类、属性等， |
 | **TimePickerAnt** | — | `create() -> Builder` | `StackPane` | controllerOf, value, format, allowClear, size, onChange, bindValue, editable, showPanel, hidePanel | 只读输入框 + 弹出时间面板，用于日程安排、提醒设置、营业时间配置等场景。 |
 | **TimelineAnt** | — | `create() -> Builder` | `VBox` | mode, pending, item | 垂直时间线展示事件序列，常用于操作日志、订单流程、 |
