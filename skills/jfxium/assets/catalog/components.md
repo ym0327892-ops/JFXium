@@ -108,7 +108,7 @@
 | **HBoxAnt** | `AbstractHBoxAnt` | `create() -> HBoxAnt`<br>`create(Node... children) -> HBoxAnt` | — | — | HBoxAnt - 继承式 HBox 容器（M19.36 引入）。 |
 | **ScrollPaneAnt** | `AbstractScrollPaneAnt` | `create() -> ScrollPaneAnt`<br>`create(Node content) -> ScrollPaneAnt` | — | padding | ScrollPaneAnt - 继承式滚动容器（M19.36 升级为双工厂模式 + 改名自 ScrollContainerAnt）。 |
 | **SpaceAnt** | — | `create() -> Builder`<br>`createVertical() -> Builder` | `Pane` | createVertical, direction, size, align, split, children | JFXium 间距组件 - 对标 Ant Design Space。 |
-| **SplitPaneAnt** | `AbstractSplitPaneAnt` | `create() -> SplitPaneAnt` | — | — | SplitPaneAnt - 继承式 SplitPane 容器（M19.36 升级为双工厂模式）。 |
+| **SplitPaneAnt** | `AbstractSplitPaneAnt` | `create() -> SplitPaneAnt` | — | gripStyle | SplitPaneAnt - 继承式 SplitPane 容器（M19.36 升级为双工厂模式）。 |
 | **StackPaneAnt** | `AbstractStackPaneAnt` | `create() -> StackPaneAnt`<br>`create(Node... children) -> StackPaneAnt` | — | — | StackPaneAnt - 继承式 StackPane 容器（M19.36 引入）。 |
 | **TextFlowAnt** | `AbstractTextFlowAnt` | `create() -> TextFlowAnt`<br>`create(Node... children) -> TextFlowAnt` | — | — | TextFlowAnt - 继承式 TextFlow 容器。 |
 | **TilePaneAnt** | `AbstractTilePaneAnt` | `create() -> TilePaneAnt` | — | — | 平铺排列容器，继承自 JavaFX TilePane。 |

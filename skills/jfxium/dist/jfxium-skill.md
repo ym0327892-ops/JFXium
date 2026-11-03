@@ -480,7 +480,7 @@ java skills/jfxium/scripts/JfxLint.java src/main/java
 | **HBoxAnt** | component.layout | — | — |
 | **ScrollPaneAnt** | component.layout | — | padding |
 | **SpaceAnt** | component.layout | `Pane` | createVertical, direction, size, align, split, children |
-| **SplitPaneAnt** | component.layout | — | — |
+| **SplitPaneAnt** | component.layout | — | gripStyle |
 | **StackPaneAnt** | component.layout | — | — |
 | **TextFlowAnt** | component.layout | — | — |
 | **TilePaneAnt** | component.layout | — | — |
