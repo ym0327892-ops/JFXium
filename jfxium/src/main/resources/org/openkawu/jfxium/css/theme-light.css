@@ -3059,6 +3059,53 @@
   -fx-background-color: -color-base-4;
   -fx-padding: 2px 10px 2px 10px;
 }
+/* --------------------------------------------
+   GripStyle.LINES：五条杠抓手
+   中间最长（14），两侧递减（10 / 6）
+   -------------------------------------------- */
+.jfx-split-grip {
+  -fx-alignment: center;
+  -fx-spacing: 2px;
+}
+.jfx-split-grip-line {
+  -fx-background-color: -color-fg-muted;
+  -fx-background-radius: 1px;
+}
+/* 加宽拖拽热区，但只保留中间 2px 分隔线 */
+.jfx-split-pane-ant.jfx-split-grip-lines:horizontal > .split-pane-divider {
+  -fx-padding: 0 6px;
+  -fx-background-color: -color-border-muted;
+  -fx-background-insets: 0 5px;
+}
+.jfx-split-pane-ant.jfx-split-grip-lines:vertical > .split-pane-divider {
+  -fx-padding: 6px 0;
+  -fx-background-color: -color-border-muted;
+  -fx-background-insets: 5px 0;
+}
+.jfx-split-pane-ant.jfx-split-grip-lines:horizontal > .split-pane-divider:hover {
+  -fx-background-color: -color-border-default;
+}
+.jfx-split-pane-ant.jfx-split-grip-lines:vertical > .split-pane-divider:hover {
+  -fx-background-color: -color-border-default;
+}
+.jfx-split-pane-ant.jfx-split-grip-lines:horizontal > .split-pane-divider:pressed {
+  -fx-background-color: -color-accent-emphasis;
+}
+.jfx-split-pane-ant.jfx-split-grip-lines:vertical > .split-pane-divider:pressed {
+  -fx-background-color: -color-accent-emphasis;
+}
+/* 隐藏原生单杠，避免和五条杠叠在一起 */
+.jfx-split-pane-ant.jfx-split-grip-lines > .split-pane-divider .horizontal-grabber,
+.jfx-split-pane-ant.jfx-split-grip-lines > .split-pane-divider .vertical-grabber {
+  -fx-background-color: transparent;
+}
+/* 抓手线颜色随 hover / pressed 变化 */
+.jfx-split-pane-ant > .split-pane-divider:hover .jfx-split-grip-line {
+  -fx-background-color: -color-fg-default;
+}
+.jfx-split-pane-ant > .split-pane-divider:pressed .jfx-split-grip-line {
+  -fx-background-color: -color-fg-on-emphasis;
+}
 /* ============================================
    Separator (JFXium `.jfx-separator`)
    ============================================ */

@@ -139,23 +139,46 @@ public class LayoutContainerExamplePage extends VBoxAnt {
     }
 
     private Node splitPaneSection() {
-        Node demo = SplitPaneAnt.create()
+        Node horizontal = SplitPaneAnt.create()
                 .direction(SplitPaneAnt.Direction.HORIZONTAL)
+                .gripStyle(SplitPaneAnt.GripStyle.LINES)
                 .items(
-                        Demos.placeholder("左面板", Background.SUBTLE),
+                        Demos.placeholder("左面板（五条杠抓手）", Background.SUBTLE),
                         Demos.placeholder("右面板", Background.SUBTLE)
                 )
                 .dividerPositions(0.4)
+                .prefH(140)
                 .build();
+
+        Node vertical = SplitPaneAnt.create()
+                .direction(SplitPaneAnt.Direction.VERTICAL)
+                .gripStyle(SplitPaneAnt.GripStyle.LINES)
+                .items(
+                        Demos.placeholder("上方面板", Background.SUBTLE),
+                        Demos.placeholder("下方面板", Background.SUBTLE)
+                )
+                .dividerPositions(0.4)
+                .prefH(220)
+                .build();
+
+        Node demo = VBoxAnt.create().spacing(12).children(horizontal, vertical);
         String code = """
                 SplitPaneAnt.create()
                         .direction(HORIZONTAL)
+                        .gripStyle(SplitPaneAnt.GripStyle.LINES)  // 五条杠抓手（中间最长）
                         .items(leftPanel, rightPanel)
-                        .dividerPositions(0.4)     // 分隔条初始在 40%
-                        .build();                    // 可拖拽调整宽度
+                        .dividerPositions(0.4)
+                        .build();
+
+                SplitPaneAnt.create()
+                        .direction(VERTICAL)
+                        .gripStyle(SplitPaneAnt.GripStyle.LINES)
+                        .items(topPanel, bottomPanel)
+                        .dividerPositions(0.4)
+                        .build();
                 """;
         return Demos.sectionWithCode("5. SplitPane 拖拽分栏",
-                "可拖拽分隔条调整左右（或上下）面板宽度，IDE 风格的灵感来源。", code, demo);
+                "可拖拽分隔条调整面板大小；GripStyle.LINES 用五条长短递减的线提示可拖动。", code, demo);
     }
 
     private Node scrollPaneSection() {

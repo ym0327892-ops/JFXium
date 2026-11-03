@@ -3,6 +3,8 @@ package org.openkawu.jfxium.component.layout;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
 import org.openkawu.jfxium.core.style.Background;
 import org.openkawu.jfxium.core.style.JfxStyles;
+
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -651,6 +655,48 @@ class SplitPaneAntTest extends JfxTestBase {
         void subclassIsLayoutCommon() {
             IdePage ide = new IdePage();
             assertTrue(ide instanceof LayoutCommon);
+        }
+    }
+
+    // ============================================================
+    // GripStyle
+    // ============================================================
+
+    @Nested
+    @DisplayName("抓手样式")
+    class GripStyleTests {
+
+        @Test
+        @DisplayName("gripStyle(LINES) 切换 styleClass，DEFAULT 可恢复")
+        void linesStyleClassToggle() {
+            SplitPaneAnt ant = SplitPaneAnt.create()
+                    .gripStyle(SplitPaneAnt.GripStyle.LINES);
+            assertTrue(ant.getStyleClass().contains(JfxStyles.SPLIT_GRIP_LINES));
+            assertEquals(SplitPaneAnt.GripStyle.LINES, ant.gripStyle());
+
+            ant.gripStyle(SplitPaneAnt.GripStyle.DEFAULT);
+            assertFalse(ant.getStyleClass().contains(JfxStyles.SPLIT_GRIP_LINES));
+            assertEquals(SplitPaneAnt.GripStyle.DEFAULT, ant.gripStyle());
+        }
+
+        @Test
+        @DisplayName("LINES 在每个 divider 上安装五条线抓手")
+        void linesInstallFiveLineGrip() {
+            runOnFxThreadAndWait(() -> {
+                SplitPaneAnt ant = SplitPaneAnt.create()
+                        .gripStyle(SplitPaneAnt.GripStyle.LINES)
+                        .items(new Label("A"), new Label("B"));
+                Scene scene = new Scene(ant, 400, 300);
+                ant.applyCss();
+                ant.layout();
+                ant.installGrips();   // skin 创建后直接驱动，避开 runLater 时序
+
+                Set<Node> dividers = ant.lookupAll(".split-pane-divider");
+                assertEquals(1, dividers.size());
+                Node grip = dividers.iterator().next().lookup(".jfx-split-grip");
+                assertNotNull(grip);
+                assertEquals(5, grip.lookupAll(".jfx-split-grip-line").size());
+            });
         }
     }
 
