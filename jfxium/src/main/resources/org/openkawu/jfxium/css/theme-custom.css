@@ -3071,30 +3071,22 @@
   -fx-background-color: -color-fg-muted;
   -fx-background-radius: 1px;
 }
-/* 加宽拖拽热区，但只保留中间 2px 分隔线 */
-.jfx-split-pane-ant.jfx-split-grip-lines:horizontal > .split-pane-divider {
-  -fx-padding: 0 6px;
-  -fx-background-color: -color-border-muted;
-  -fx-background-insets: 0 5px;
+/* 完整分隔线由 Java 自绘 Line 保证：ContentDivider 在 vertical 方向 layoutHeight=0，
+   只靠 -fx-background-color 会把整条横线画没。 */
+.jfx-split-pane-ant.jfx-split-grip-lines > .split-pane-divider {
+  -fx-background-color: transparent;
 }
-.jfx-split-pane-ant.jfx-split-grip-lines:vertical > .split-pane-divider {
-  -fx-padding: 6px 0;
-  -fx-background-color: -color-border-muted;
-  -fx-background-insets: 5px 0;
+.jfx-split-grip-rule {
+  -fx-stroke: -color-border-muted;
+  -fx-stroke-width: 2;
 }
-.jfx-split-pane-ant.jfx-split-grip-lines:horizontal > .split-pane-divider:hover {
-  -fx-background-color: -color-border-default;
+.jfx-split-pane-ant > .split-pane-divider:hover .jfx-split-grip-rule {
+  -fx-stroke: -color-border-default;
 }
-.jfx-split-pane-ant.jfx-split-grip-lines:vertical > .split-pane-divider:hover {
-  -fx-background-color: -color-border-default;
+.jfx-split-pane-ant > .split-pane-divider:pressed .jfx-split-grip-rule {
+  -fx-stroke: -color-accent-emphasis;
 }
-.jfx-split-pane-ant.jfx-split-grip-lines:horizontal > .split-pane-divider:pressed {
-  -fx-background-color: -color-accent-emphasis;
-}
-.jfx-split-pane-ant.jfx-split-grip-lines:vertical > .split-pane-divider:pressed {
-  -fx-background-color: -color-accent-emphasis;
-}
-/* 隐藏原生单杠，避免和五条杠叠在一起 */
+/* 保留完整分隔线，只隐藏原生单杠抓手，避免和五条短线叠在一起 */
 .jfx-split-pane-ant.jfx-split-grip-lines > .split-pane-divider .horizontal-grabber,
 .jfx-split-pane-ant.jfx-split-grip-lines > .split-pane-divider .vertical-grabber {
   -fx-background-color: transparent;

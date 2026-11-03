@@ -182,6 +182,7 @@ public final class JfxStyles {
     public static final String SPLIT_GRIP_LINES = "jfx-split-grip-lines";
     public static final String SPLIT_GRIP = "jfx-split-grip";
     public static final String SPLIT_GRIP_LINE = "jfx-split-grip-line";
+    public static final String SPLIT_GRIP_RULE = "jfx-split-grip-rule";
 
     public static final String RESIZABLE_PANEL = "jfx-resizable-panel";
     public static final String RESIZABLE_PANEL_CONTENT = "jfx-resizable-panel-content";

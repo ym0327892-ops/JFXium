@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.shape.Line;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -693,7 +694,40 @@ class SplitPaneAntTest extends JfxTestBase {
 
                 Set<Node> dividers = ant.lookupAll(".split-pane-divider");
                 assertEquals(1, dividers.size());
-                Node grip = dividers.iterator().next().lookup(".jfx-split-grip");
+                Node divider = dividers.iterator().next();
+                Node grip = divider.lookup(".jfx-split-grip");
+                assertNotNull(grip);
+                assertEquals(5, grip.lookupAll(".jfx-split-grip-line").size());
+
+                Node rule = divider.lookup(".jfx-split-grip-rule");
+                assertNotNull(rule, "LINES 模式必须保留完整分隔线");
+                assertTrue(rule instanceof Line);
+                assertTrue(((Line) rule).getEndY() > 0, "左右分栏的完整竖线应贯穿高度");
+            });
+        }
+
+        @Test
+        @DisplayName("VERTICAL + LINES：完整横线保留，中间五条横线")
+        void verticalLines_keepFullRule() {
+            runOnFxThreadAndWait(() -> {
+                SplitPaneAnt ant = SplitPaneAnt.create()
+                        .direction(SplitPaneAnt.Direction.VERTICAL)
+                        .gripStyle(SplitPaneAnt.GripStyle.LINES)
+                        .items(new Label("A"), new Label("B"));
+                Scene scene = new Scene(ant, 400, 300);
+                ant.applyCss();
+                ant.layout();
+                ant.installGrips();
+
+                Node divider = ant.lookupAll(".split-pane-divider").iterator().next();
+                Node rule = divider.lookup(".jfx-split-grip-rule");
+                assertNotNull(rule, "VERTICAL 模式必须保留完整分隔线");
+                assertTrue(rule instanceof Line);
+                Line line = (Line) rule;
+                assertEquals(divider.getLayoutBounds().getWidth(), line.getEndX(), 0.5,
+                        "完整横线应贯穿分隔条宽度");
+
+                Node grip = divider.lookup(".jfx-split-grip");
                 assertNotNull(grip);
                 assertEquals(5, grip.lookupAll(".jfx-split-grip-line").size());
             });

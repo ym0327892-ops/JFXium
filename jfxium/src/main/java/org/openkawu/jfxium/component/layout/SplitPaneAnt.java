@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 import org.openkawu.jfxium.core.style.JfxStyles;
 
 /**
@@ -57,6 +58,7 @@ public class SplitPaneAnt extends AbstractSplitPaneAnt<SplitPaneAnt> {
     }
 
     private static final String GRIP_PROPERTY = "jfxium.splitpane.grip";
+    private static final String RULE_PROPERTY = "jfxium.splitpane.rule";
     private static final int[] GRIP_LENGTHS = {6, 10, 14, 10, 6};
     private static final int GRIP_LINE_THICKNESS = 2;
 
@@ -89,8 +91,9 @@ public class SplitPaneAnt extends AbstractSplitPaneAnt<SplitPaneAnt> {
     /**
      * 设置分隔条抓手样式。
      *
-     * <p>{@link GripStyle#LINES} 会替换 JavaFX 默认的单条短杠：左右分栏显示五条横线，
-     * 上下分栏显示五条竖线，长度依次为 {@code 6 / 10 / 14 / 10 / 6}（中间最长）。</p>
+     * <p>{@link GripStyle#LINES} 会在完整分隔线中间叠加五条与分隔线平行的短线：
+     * 左右分栏（竖分隔线）显示五条竖线，上下分栏（横分隔线）显示五条横线，
+     * 长度依次为 {@code 6 / 10 / 14 / 10 / 6}（中间最长）。</p>
      *
      * @param style 目标样式；null 按 {@link GripStyle#DEFAULT} 处理
      */
@@ -132,11 +135,15 @@ public class SplitPaneAnt extends AbstractSplitPaneAnt<SplitPaneAnt> {
             return;
         }
 
-        // 先移除旧抓手（skin 重建 / orientation 切换 / 样式切回 DEFAULT）
+        // 先移除旧抓手 / 旧自绘分隔线（skin 重建 / orientation 切换 / 样式切回 DEFAULT）
         for (Node divider : lookupAll(".split-pane-divider")) {
             Object oldGrip = divider.getProperties().remove(GRIP_PROPERTY);
             if (oldGrip instanceof Node grip && grip.getParent() instanceof Pane parent) {
                 parent.getChildren().remove(grip);
+            }
+            Object oldRule = divider.getProperties().remove(RULE_PROPERTY);
+            if (oldRule instanceof Node rule && rule.getParent() instanceof Pane parent) {
+                parent.getChildren().remove(rule);
             }
         }
 
@@ -146,6 +153,10 @@ public class SplitPaneAnt extends AbstractSplitPaneAnt<SplitPaneAnt> {
 
         boolean horizontalSplit = getOrientation() == Orientation.HORIZONTAL;
         for (Node divider : lookupAll(".split-pane-divider")) {
+            // 完整分隔线由自绘 Line 负责：ContentDivider 在 vertical 方向 layoutHeight=0，
+            // 单靠 -fx-background-color 会把整条线画没。
+            addDividerRule(divider);
+
             Node host = divider.lookup(".vertical-grabber");
             if (host == null) {
                 host = divider.lookup(".horizontal-grabber");
@@ -157,14 +168,41 @@ public class SplitPaneAnt extends AbstractSplitPaneAnt<SplitPaneAnt> {
                 continue;
             }
 
-            Region grip = horizontalSplit ? createHorizontalGrip() : createVerticalGrip();
+            // 抓线与分隔线平行：左右分栏（竖分隔线）→ 五条竖线；上下分栏（横分隔线）→ 五条横线
+            Region grip = horizontalSplit ? createVerticalGrip() : createHorizontalGrip();
             hostPane.getChildren().add(grip);
             divider.getProperties().put(GRIP_PROPERTY, grip);
         }
     }
 
+    /** 在 divider 上自绘一条贯穿两端的 2px 分隔线（补 vertical 方向 layoutHeight=0 的坑）。 */
+    private void addDividerRule(Node divider) {
+        if (!(divider instanceof Pane pane)) {
+            return;
+        }
+        Line rule = new Line();
+        rule.getStyleClass().add(JfxStyles.SPLIT_GRIP_RULE);
+        rule.setManaged(false);
+        rule.setMouseTransparent(true);
+        if (getOrientation() == Orientation.HORIZONTAL) {
+            // 竖分隔线：x 居中，y 贯穿
+            rule.startXProperty().bind(pane.widthProperty().divide(2));
+            rule.endXProperty().bind(pane.widthProperty().divide(2));
+            rule.setStartY(0);
+            rule.endYProperty().bind(pane.heightProperty());
+        } else {
+            // 横分隔线：y 居中，x 贯穿
+            rule.setStartX(0);
+            rule.endXProperty().bind(pane.widthProperty());
+            rule.startYProperty().bind(pane.heightProperty().divide(2));
+            rule.endYProperty().bind(pane.heightProperty().divide(2));
+        }
+        pane.getChildren().add(0, rule);
+        divider.getProperties().put(RULE_PROPERTY, rule);
+    }
+
     /**
-     * 左右分栏（vertical divider）：五条横线，叠在默认 grabber 上。
+     * 上下分栏（horizontal divider）：五条横线，叠在默认 grabber 上。
      * 抓手本身设为 0 尺寸，靠 StackPane 拉满宿主后让线条向外溢出，避免撑大分隔条。
      */
     private Region createHorizontalGrip() {
@@ -183,7 +221,7 @@ public class SplitPaneAnt extends AbstractSplitPaneAnt<SplitPaneAnt> {
         return grip;
     }
 
-    /** 上下分栏（horizontal divider）：五条竖线。 */
+    /** 左右分栏（vertical divider）：五条竖线。 */
     private Region createVerticalGrip() {
         HBox grip = new HBox();
         grip.setAlignment(Pos.CENTER);
