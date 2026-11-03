@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openkawu.jfxium.JfxTestBase;
+import org.openkawu.jfxium.core.style.Background;
 import org.openkawu.jfxium.core.style.JfxStyles;
 
 import java.util.ArrayList;
@@ -384,6 +385,39 @@ class TabsAntTest extends JfxTestBase {
                 .build();
         assertTrue(TabsAnt.controllerOf(multi).actionsHost.isVisible(),
                 "多 tab 时仍应显示标签列表菜单");
+    }
+
+    @Test
+    @DisplayName("barBackground / contentBackground：覆盖标签栏与内容区背景类")
+    void backgroundOverrides_applyStyleClasses() {
+        VBox root = (VBox) TabsAnt.create()
+                .type(TabsAnt.Type.CARD)
+                .barBackground(Background.DEFAULT)
+                .contentBackground(Background.INSET)
+                .tab("a", "A", new Region())
+                .build();
+        TabsAnt.Controller ctrl = TabsAnt.controllerOf(root);
+
+        assertTrue(ctrl.tabBarRef.getStyleClass().contains(Background.DEFAULT.styleClass()));
+        assertTrue(ctrl.contentAreaRef.getStyleClass().contains(Background.INSET.styleClass()));
+
+        // 不设置覆盖时保持类型默认（CARD 标签栏无额外 jfx-bg-*，内容区透明）
+        VBox defaultCard = (VBox) TabsAnt.create()
+                .type(TabsAnt.Type.CARD)
+                .tab("a", "A", new Region())
+                .build();
+        TabsAnt.Controller defaultCtrl = TabsAnt.controllerOf(defaultCard);
+        assertFalse(defaultCtrl.tabBarRef.getStyleClass().contains(Background.DEFAULT.styleClass()));
+        assertFalse(defaultCtrl.contentAreaRef.getStyleClass().contains(Background.DEFAULT.styleClass()));
+
+        // CARD 也可强制透明
+        VBox transparent = (VBox) TabsAnt.create()
+                .type(TabsAnt.Type.CARD)
+                .barBackground(Background.TRANSPARENT)
+                .tab("a", "A", new Region())
+                .build();
+        assertTrue(TabsAnt.controllerOf(transparent).tabBarRef.getStyleClass()
+                .contains(Background.TRANSPARENT.styleClass()));
     }
 
     @Test

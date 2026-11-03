@@ -15,6 +15,7 @@ import org.openkawu.jfxium.component.control.IconAnt;
 import org.openkawu.jfxium.component.overlay.DropdownAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.i18n.Messages;
+import org.openkawu.jfxium.core.style.Background;
 import org.openkawu.jfxium.core.style.JfxStyles;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.A11y;
@@ -41,6 +42,7 @@ import java.util.function.Predicate;
  *   <li><b>可关闭</b>：closable 渲染 × 按钮，支持 onBeforeClose 拦截 / onClose 通知</li>
  *   <li><b>动态增删</b>：{@link Controller#addTab} / {@link Controller#removeTab} / {@link Controller#updateTab}</li>
  *   <li><b>右侧操作菜单</b>：标签列表 + 关闭当前 / 关闭其他 / 关闭全部（overflowMenu / showClose* 控制显示）</li>
+ *   <li><b>背景覆盖</b>：barBackground / contentBackground（默认 CARD=SUBTLE、LINE=透明；内容区透明）</li>
  *   <li><b>额外操作区</b>：extraLeft / extraRight 放标签栏两侧附加节点</li>
  *   <li><b>运行时切换</b>:通过 {@link Controller} 编程式切换当前 tab(对齐 StepsAnt.Controller)</li>
  * </ul>
@@ -67,11 +69,13 @@ import java.util.function.Predicate;
  * ctrl.selectByKey("logs");
  * ctrl.next();
  *
- * // 可关闭 + 动态增删
+ * // 可关闭 + 动态增删 + 背景覆盖
  * Node closable = TabsAnt.create()
  *     .closable(true)                       // 所有 tab 默认带 ×
  *     .tab("a", "A", a)
  *     .tab("b", "B", b)
+ *     .barBackground(Background.TRANSPARENT) // 覆盖标签栏背景（默认 CARD=SUBTLE / LINE=透明）
+ *     .contentBackground(Background.DEFAULT)  // 覆盖内容区背景（默认透明）
  *     .onBeforeClose(key -> canClose(key))  // 返回 false 阻止关闭
  *     .onClose(key -> cleanup(key))
  *     .build();
@@ -124,6 +128,9 @@ public class TabsAnt {
         private boolean showCloseCurrent = true;
         private boolean showCloseOthers = true;
         private boolean showCloseAll = true;
+        // 标签栏 / 内容区背景覆盖；null = 走类型默认（CARD=SUBTLE、LINE=透明；内容区透明）
+        private Background barBackground = null;
+        private Background contentBackground = null;
         // 用户点 × 关闭前拦截：返回 false 阻止关闭
         private Predicate<String> onBeforeClose = null;
         // 关闭完成后通知（closeTab / closeAll / closeOthers 触发）
@@ -178,6 +185,15 @@ public class TabsAnt {
 
         /** 右侧菜单是否显示「关闭全部」（默认 true）。 */
         public Builder showCloseAll(boolean show) { this.showCloseAll = show; return this; }
+
+        /**
+         * 标签栏背景覆盖。null = 走类型默认：CARD 为 {@link Background#SUBTLE}，LINE 为透明。
+         * 传 {@link Background#TRANSPARENT} 可让 CARD 标签栏也变透明。
+         */
+        public Builder barBackground(Background bg) { this.barBackground = bg; return this; }
+
+        /** 内容区背景覆盖。null = 透明（继承父级）。 */
+        public Builder contentBackground(Background bg) { this.contentBackground = bg; return this; }
 
         /** 点 × 关闭前拦截；返回 false 阻止本次关闭（null = 不拦截）。 */
         public Builder onBeforeClose(Predicate<String> onBeforeClose) { this.onBeforeClose = onBeforeClose; return this; }
@@ -313,6 +329,9 @@ public class TabsAnt {
             if (type == Type.CARD) {
                 tabBar.getStyleClass().add(JfxStyles.TABS_BAR_CARD);
             }
+            if (barBackground != null) {
+                tabBar.getStyleClass().add(barBackground.styleClass());
+            }
             controller.tabBarRef = tabBar;
 
             // 左侧附加内容
@@ -419,6 +438,9 @@ public class TabsAnt {
             StackPane contentArea = new StackPane();
             // 背景与内边距走 .jfx-tabs-content 修饰类(LESS 中 -color-bg-transparent + 16px padding)
             contentArea.getStyleClass().add(JfxStyles.TABS_CONTENT);
+            if (contentBackground != null) {
+                contentArea.getStyleClass().add(contentBackground.styleClass());
+            }
 
             for (int i = 0; i < controller.items.size(); i++) {
                 Node content = controller.items.get(i).content;

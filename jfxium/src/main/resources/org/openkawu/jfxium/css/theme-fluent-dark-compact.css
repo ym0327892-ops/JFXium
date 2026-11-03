@@ -7673,6 +7673,22 @@
   -fx-background-color: transparent;
   -fx-padding: 12px;
 }
+/* 业务覆盖内容区背景：2 类选择器压过 .jfx-tabs-content 的透明默认值 */
+.jfx-tabs-content.jfx-bg-default {
+  -fx-background-color: -color-bg-default;
+}
+.jfx-tabs-content.jfx-bg-subtle {
+  -fx-background-color: -color-bg-subtle;
+}
+.jfx-tabs-content.jfx-bg-layout {
+  -fx-background-color: -color-bg-layout;
+}
+.jfx-tabs-content.jfx-bg-inset {
+  -fx-background-color: -color-bg-inset;
+}
+.jfx-tabs-content.jfx-bg-transparent {
+  -fx-background-color: transparent;
+}
 .jfx-tabs-bar {
   -fx-background-color: transparent;
 }
@@ -7680,6 +7696,22 @@
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
+}
+/* 业务覆盖标签栏背景：2 类选择器压过 .jfx-tabs-bar-card 的 SUBTLE 默认值 */
+.jfx-tabs-bar.jfx-bg-default {
+  -fx-background-color: -color-bg-default;
+}
+.jfx-tabs-bar.jfx-bg-subtle {
+  -fx-background-color: -color-bg-subtle;
+}
+.jfx-tabs-bar.jfx-bg-layout {
+  -fx-background-color: -color-bg-layout;
+}
+.jfx-tabs-bar.jfx-bg-inset {
+  -fx-background-color: -color-bg-inset;
+}
+.jfx-tabs-bar.jfx-bg-transparent {
+  -fx-background-color: transparent;
 }
 /* -------------------------------------------
    TabsAnt — tab labels (shared)
