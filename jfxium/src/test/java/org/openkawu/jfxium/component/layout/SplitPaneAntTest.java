@@ -7,6 +7,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -697,6 +699,7 @@ class SplitPaneAntTest extends JfxTestBase {
                 Node divider = dividers.iterator().next();
                 Node grip = divider.lookup(".jfx-split-grip");
                 assertNotNull(grip);
+                assertTrue(grip instanceof VBox, "左右分栏：五条竖线应沿分隔线纵向排列");
                 assertEquals(5, grip.lookupAll(".jfx-split-grip-line").size());
 
                 Node rule = divider.lookup(".jfx-split-grip-rule");
@@ -729,6 +732,7 @@ class SplitPaneAntTest extends JfxTestBase {
 
                 Node grip = divider.lookup(".jfx-split-grip");
                 assertNotNull(grip);
+                assertTrue(grip instanceof HBox, "上下分栏：五条横线应沿分隔线横向排列");
                 assertEquals(5, grip.lookupAll(".jfx-split-grip-line").size());
             });
         }

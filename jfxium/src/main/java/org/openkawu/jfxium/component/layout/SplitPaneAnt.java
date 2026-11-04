@@ -92,8 +92,9 @@ public class SplitPaneAnt extends AbstractSplitPaneAnt<SplitPaneAnt> {
      * 设置分隔条抓手样式。
      *
      * <p>{@link GripStyle#LINES} 会在完整分隔线中间叠加五条与分隔线平行的短线：
-     * 左右分栏（竖分隔线）显示五条竖线，上下分栏（横分隔线）显示五条横线，
-     * 长度依次为 {@code 6 / 10 / 14 / 10 / 6}（中间最长）。</p>
+     * 左右分栏（竖分隔线）是五条竖线沿分隔线纵向排列；上下分栏（横分隔线）是五条横线
+     * 沿分隔线横向排列（形如 {@code - — —— — -}）。长度依次为
+     * {@code 6 / 10 / 14 / 10 / 6}（中间最长）。</p>
      *
      * @param style 目标样式；null 按 {@link GripStyle#DEFAULT} 处理
      */
@@ -202,11 +203,11 @@ public class SplitPaneAnt extends AbstractSplitPaneAnt<SplitPaneAnt> {
     }
 
     /**
-     * 上下分栏（horizontal divider）：五条横线，叠在默认 grabber 上。
-     * 抓手本身设为 0 尺寸，靠 StackPane 拉满宿主后让线条向外溢出，避免撑大分隔条。
+     * 上下分栏（horizontal divider）：五条横线沿分隔线横向排成一排，
+     * 形如 {@code - — —— — -}，中间最长。完整横线由 {@link #addDividerRule} 保留。
      */
     private Region createHorizontalGrip() {
-        VBox grip = new VBox();
+        HBox grip = new HBox();
         grip.setAlignment(Pos.CENTER);
         grip.getStyleClass().add(JfxStyles.SPLIT_GRIP);
         for (int length : GRIP_LENGTHS) {
@@ -221,9 +222,9 @@ public class SplitPaneAnt extends AbstractSplitPaneAnt<SplitPaneAnt> {
         return grip;
     }
 
-    /** 左右分栏（vertical divider）：五条竖线。 */
+    /** 左右分栏（vertical divider）：五条竖线沿分隔线纵向排成一列，中间最长。 */
     private Region createVerticalGrip() {
-        HBox grip = new HBox();
+        VBox grip = new VBox();
         grip.setAlignment(Pos.CENTER);
         grip.getStyleClass().add(JfxStyles.SPLIT_GRIP);
         for (int length : GRIP_LENGTHS) {
