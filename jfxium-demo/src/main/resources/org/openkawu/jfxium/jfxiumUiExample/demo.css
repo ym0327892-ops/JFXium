@@ -368,3 +368,14 @@
   -fx-background-radius: 4px;
   -fx-background-color: -color-bg-layout;
 }
+
+/* StackPane 交互演示：可切换的半透明遮罩层 */
+.jfx-demo-stack-overlay {
+  -fx-background-color: -color-bg-masked;
+}
+
+.jfx-demo-stack-overlay .label {
+  -fx-text-fill: -color-fg-on-emphasis;
+  -fx-font-size: 14px;
+  -fx-font-weight: 600;
+}

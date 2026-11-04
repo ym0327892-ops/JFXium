@@ -135,6 +135,7 @@ public class CalendarExamplePage extends VBoxAnt {
             case "plus1y"  -> TODAY.plusYears(1);
             case "plus7"   -> TODAY.plusDays(7);
             case "plus30"  -> TODAY.plusDays(30);
+            case "none"    -> null;
             default        -> TODAY;
         };
     }

@@ -183,7 +183,8 @@ public class ButtonExamplePage extends VBoxAnt {
                     .size(parseSize(sizeBinder.get()))
                     .shape(parseShape(shapeBinder.get()))
                     .disabled("disabled".equals(stateBinder.get()))
-                    .ghost("ghost".equals(stateBinder.get()));
+                    .ghost("ghost".equals(stateBinder.get()))
+                    .onClick(e -> MessageAnt.success("按钮点击"));
             if ("loading".equals(stateBinder.get())) {
                 btn.loading(true);
             }

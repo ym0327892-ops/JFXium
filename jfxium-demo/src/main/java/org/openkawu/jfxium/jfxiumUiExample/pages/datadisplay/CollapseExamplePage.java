@@ -175,7 +175,7 @@ public class CollapseExamplePage extends VBoxAnt {
     // ============================================================
 
     private static boolean parseBool(String v) {
-        return v != null && "true".equalsIgnoreCase(v);
+        return v != null && ("true".equalsIgnoreCase(v) || "accordion".equalsIgnoreCase(v));
     }
 
     private static int parseInt(String v, int def) {

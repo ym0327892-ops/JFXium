@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.layout;
 
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import org.openkawu.jfxium.component.composite.ResizablePanelAnt;
@@ -94,18 +95,51 @@ final class LayoutSections {
     }
 
     static Node stackPaneSection() {
-        Node demo = StackPaneAnt.create()
+        VBoxAnt content = VBoxAnt.create()
+                .padding(24)
+                .spacing(8)
                 .children(
-                        Demos.placeholder("StackPane 内容", Background.SUBTLE),
-                        Demos.placeholder("⌛ 叠在上层的浮层", Background.LAYOUT)
-                )
+                        TypographyAnt.text("底层内容").strong().build(),
+                        TypographyAnt.text("StackPane 按添加顺序叠放，后置节点在上。")
+                                .type(TypographyAnt.TextColor.SECONDARY).build());
+
+        VBoxAnt overlay = VBoxAnt.create()
+                .padding(24)
+                .align(Pos.CENTER)
+                .children(TypographyAnt.text("遮罩层（点按钮关闭）").build());
+        overlay.getStyleClass().add("jfx-demo-stack-overlay");
+        overlay.setVisible(false);
+        overlay.setManaged(false);
+
+        StackPaneAnt stack = StackPaneAnt.create().children(content, overlay);
+        stack.setMinHeight(160);
+
+        ButtonAnt toggle = ButtonAnt.create("显示遮罩")
+                .type(ButtonAnt.Type.PRIMARY)
+                .onClick(e -> {
+                    boolean show = !overlay.isVisible();
+                    overlay.setVisible(show);
+                    overlay.setManaged(show);
+                    ((ButtonAnt) e.getSource()).setText(show ? "隐藏遮罩" : "显示遮罩");
+                })
                 .build();
+
+        Node demo = VBoxAnt.create().spacing(12).children(toggle, stack);
         String code = """
-                StackPaneAnt.create()
-                        .children(content, overlay)   // 后面的节点叠在内容上方
-                        .build();                     // 常用于浮层 / 遮罩 / 角标叠加
+                StackPaneAnt stack = StackPaneAnt.create()
+                        .children(content, overlay);   // 后置节点叠在上层
+
+                // 遮罩默认隐藏，按钮切换 visible/managed
+                overlay.setVisible(false);
+                overlay.setManaged(false);
+                toggle.onClick(e -> {
+                    boolean show = !overlay.isVisible();
+                    overlay.setVisible(show);
+                    overlay.setManaged(show);
+                });
                 """;
-        return Demos.sectionWithCode("StackPane 叠层", "节点按添加顺序叠放，后置者在上（遮罩/浮层）。", code, demo);
+        return Demos.sectionWithCode("StackPane 叠层",
+                "后置节点叠在上层；点按钮切换遮罩，演示可交互的层叠与显隐。", code, demo);
     }
 
     // ============================================================
