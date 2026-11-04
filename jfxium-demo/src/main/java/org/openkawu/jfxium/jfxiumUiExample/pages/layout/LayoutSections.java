@@ -2,10 +2,10 @@ package org.openkawu.jfxium.jfxiumUiExample.pages.layout;
 
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
-import org.openkawu.jfxium.component.control.ButtonAnt;
-import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.composite.ResizablePanelAnt;
 import org.openkawu.jfxium.component.composite.SurfaceAnt;
+import org.openkawu.jfxium.component.control.ButtonAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.AnchorPaneAnt;
 import org.openkawu.jfxium.component.layout.BorderPaneAnt;
 import org.openkawu.jfxium.component.layout.FlowPaneAnt;
@@ -19,50 +19,22 @@ import org.openkawu.jfxium.component.layout.TilePaneAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.style.Background;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
-import org.openkawu.jfxium.template.PageTemplate;
 
 /**
- * 布局容器综合页 —— VBox / HBox / BorderPane / StackPane / SplitPane / ScrollPane
- * / FlowPane / TilePane / TextFlow / AnchorPane 的 spacing / alignment / grow /
- * padding 等「布局内样式」用法。
+ * 布局演示 section 工厂 —— 每个布局组件独立成页时复用同一份演示代码。
+ *
+ * <p>每个方法返回一个 {@link Demos#sectionWithCode(String, String, String, Node...)}
+ * 生成的完整 Section，页面类只需要把对应 Section 放进 PageTemplate。</p>
  */
-public class LayoutContainerExamplePage extends VBoxAnt {
+final class LayoutSections {
 
-    public LayoutContainerExamplePage() {
-        spacing(0).children(PageTemplate.create()
-                .title("布局容器")
-                .description("常用布局容器与「布局内样式」综合演示：间距 / 对齐 / 弹性 / 填充 / 叠层 / 分栏。")
-                .sections(
-                        vboxSection(),
-                        hboxSection(),
-                        borderPaneSection(),
-                        stackPaneSection(),
-                        splitPaneSection(),
-                        scrollPaneSection(),
-                        flowTileSection(),
-                        textFlowSection(),
-                        anchorSection(),
-                        spaceSection(),
-                        surfaceSection(),
-                        resizableSection()
-                )
-                .padding(24)
-                .build());
-    }
+    private LayoutSections() {}
 
-    // 视觉块 helper：给容器填色块节点，方便看间距/对齐效果
-    private Node chip(String text) {
-        return Demos.placeholder(text, Background.SUBTLE);
-    }
+    // ============================================================
+    // 基础容器
+    // ============================================================
 
-    /** 指定宽的色块（FlowPane 换行、TilePane 网格用——固定宽才能看到换行）。 */
-    private Node chipW(double width, String text) {
-        Region n = (Region) Demos.placeholder(text, Background.SUBTLE);
-        n.setPrefWidth(width);
-        return n;
-    }
-
-    private Node vboxSection() {
+    static Node vboxSection() {
         Node demo = VBoxAnt.create()
                 .spacing(12)
                 .children(
@@ -77,12 +49,11 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         .children(chip1, chip2, chip3)
                         .build();
                 """;
-        return Demos.sectionWithCode("1. VBox 纵向布局", "垂直堆叠 + 纵向间距。", code, demo);
+        return Demos.sectionWithCode("VBox 纵向布局", "垂直堆叠 + 纵向间距。", code, demo);
     }
 
-    private Node hboxSection() {
-        // HBox：横向 + 弹性右推（spacer 撑开）
-        Node spacer = new javafx.scene.layout.Region();
+    static Node hboxSection() {
+        Region spacer = new Region();
         Node demo = HBoxAnt.create()
                 .spacing(8)
                 .children(
@@ -101,10 +72,10 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                 // 让 spacer 吃掉剩余宽度，右按钮被推到最右
                 HBox.setHgrow(spacer, Priority.ALWAYS);
                 """;
-        return Demos.sectionWithCode("2. HBox 横向布局", "水平排列 + Hgrow 弹性填充（工具栏经典写法）。", code, demo);
+        return Demos.sectionWithCode("HBox 横向布局", "水平排列 + Hgrow 弹性填充（工具栏经典写法）。", code, demo);
     }
 
-    private Node borderPaneSection() {
+    static Node borderPaneSection() {
         Node demo = BorderPaneAnt.create()
                 .top(chip("Top 顶栏"))
                 .left(chip("Left 侧栏"))
@@ -118,12 +89,11 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         .right(extra).bottom(statusBar)
                         .build();   // 五区布局：应用/后台页面主骨架
                 """;
-        return Demos.sectionWithCode("3. BorderPane 五区骨架",
+        return Demos.sectionWithCode("BorderPane 五区骨架",
                 "上/下/左/右/中五区，构成后台页面主骨架。", code, demo);
     }
 
-    private Node stackPaneSection() {
-        // StackPane 叠层：一张底 + 一个 "加载遮罩"
+    static Node stackPaneSection() {
         Node demo = StackPaneAnt.create()
                 .children(
                         Demos.placeholder("StackPane 内容", Background.SUBTLE),
@@ -135,10 +105,14 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         .children(content, overlay)   // 后面的节点叠在内容上方
                         .build();                     // 常用于浮层 / 遮罩 / 角标叠加
                 """;
-        return Demos.sectionWithCode("4. StackPane 叠层", "节点按添加顺序叠放，后置者在上（遮罩/浮层）。", code, demo);
+        return Demos.sectionWithCode("StackPane 叠层", "节点按添加顺序叠放，后置者在上（遮罩/浮层）。", code, demo);
     }
 
-    private Node splitPaneSection() {
+    // ============================================================
+    // 分栏 / 滚动
+    // ============================================================
+
+    static Node splitPaneSection() {
         Node horizontal = SplitPaneAnt.create()
                 .direction(SplitPaneAnt.Direction.HORIZONTAL)
                 .gripStyle(SplitPaneAnt.GripStyle.LINES)
@@ -177,70 +151,71 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         .dividerPositions(0.4)
                         .build();
                 """;
-        return Demos.sectionWithCode("5. SplitPane 拖拽分栏",
+        return Demos.sectionWithCode("SplitPane 拖拽分栏",
                 "可拖拽分隔条调整面板大小；GripStyle.LINES 用五条长短递减的线提示可拖动。", code, demo);
     }
 
-    private Node scrollPaneSection() {
-            // 纵向滚动：内容总高超限 → 必出纵向滚动条
-            ScrollPaneAnt demo = ScrollPaneAnt.create()
-                    .content(VBoxAnt.create()
-                            .spacing(8)
-                            .children(
-                                    chipW(60, "滚动项 1"), chipW(60, "滚动项 2"), chipW(60, "滚动项 3"),
-                                    chipW(60, "滚动项 4"), chipW(60, "滚动项 5"))
-                            .build())
-                    .build();
-            demo.setMaxHeight(170);     // 钳制可视高度，内容溢出 → 纵向滚动条出现
-            String code = """
-                    ScrollPaneAnt.create()
-                            .content(tallContent)   // 内容总高 > maxHeight 时出现滚动条
-                            .maxHeight(170)          // 关键：钳制可视高度才可滚动
-                            .build();
-                    """;
-            return Demos.sectionWithCode("6. ScrollPane 滚动视图", "钳制高度后内容溢出即出现滚动条，可上下滚动。", code, demo);
-        }
+    static Node scrollPaneSection() {
+        ScrollPaneAnt demo = ScrollPaneAnt.create()
+                .content(VBoxAnt.create()
+                        .spacing(8)
+                        .children(
+                                chipW(60, "滚动项 1"), chipW(60, "滚动项 2"), chipW(60, "滚动项 3"),
+                                chipW(60, "滚动项 4"), chipW(60, "滚动项 5"))
+                        .build())
+                .build();
+        demo.setMaxHeight(170);
+        String code = """
+                ScrollPaneAnt.create()
+                        .content(tallContent)   // 内容总高 > maxHeight 时出现滚动条
+                        .maxHeight(170)          // 关键：钳制可视高度才可滚动
+                        .build();
+                """;
+        return Demos.sectionWithCode("ScrollPane 滚动视图",
+                "钳制高度后内容溢出即出现滚动条，可上下滚动。", code, demo);
+    }
 
-        private Node flowTileSection() {
-            // FlowPane 换行：给子项不等的固定宽 + 钳制宽度，放不下就换行
-            FlowPaneAnt flow = FlowPaneAnt.create()
-                    .children(
-                            chipW(120, "宽 120"), chipW(80, "宽 80"), chipW(100, "宽 100"),
-                            chipW(60, "宽 60"), chipW(140, "宽 140"), chipW(90, "宽 90"),
-                            chipW(110, "宽 110"), chipW(70, "宽 70"))
-                    .build();
-            flow.setMaxWidth(300);     // 钳制总宽度 → 超宽自动换行（Region 原生方法）
-            // TilePane 网格换行：固定每行列数 + 等宽单元
-            TilePaneAnt tile = TilePaneAnt.create()
-                    .prefColumns(4)     // 每行 4 列
-                    .children(
-                            chipW(70, "A"), chipW(70, "B"), chipW(70, "C"), chipW(70, "D"),
-                            chipW(70, "E"), chipW(70, "F"), chipW(70, "G"), chipW(70, "H"))
-                    .build();
-            tile.setMaxWidth(320);
-            Node demo = VBoxAnt.create()
-                    .spacing(16)
-                    .children(
-                            TypographyAnt.text("FlowPane · 放不下自动换行").build(), flow,
-                            TypographyAnt.text("TilePane · 等尺寸网格平铺").build(), tile)
-                    .build();
-            String code = """
-                    FlowPaneAnt.create()
-                            .children(不等宽节点们)
-                            .maxWidth(300)        // 钳制宽度 → 超宽换行（FlowPane）
-                            .build();
+    // ============================================================
+    // 流式 / 平铺 / 文本
+    // ============================================================
 
-                    TilePaneAnt.create()
-                            .prefColumns(4)         // 每行 4 列
-                            .prefTileWidth(70)
-                            .children(等宽单元们)
-                            .build();               // 铺满一行自动换下一行
-                    """;
-            return Demos.sectionWithCode("7. FlowPane / TilePane", "流式换行（不等宽）与网格平铺（等尺寸、定列数）。", code, demo);
-        }
+    static Node flowPaneSection() {
+        FlowPaneAnt flow = FlowPaneAnt.create()
+                .children(
+                        chipW(120, "宽 120"), chipW(80, "宽 80"), chipW(100, "宽 100"),
+                        chipW(60, "宽 60"), chipW(140, "宽 140"), chipW(90, "宽 90"),
+                        chipW(110, "宽 110"), chipW(70, "宽 70"))
+                .build();
+        flow.setMaxWidth(300);
+        String code = """
+                FlowPaneAnt.create()
+                        .children(不等宽节点们)
+                        .maxWidth(300)        // 钳制宽度 → 超宽自动换行
+                        .build();
+                """;
+        return Demos.sectionWithCode("FlowPane 流式换行",
+                "子项按自身宽度水平排列，放不下自动换行。", code, flow);
+    }
 
-    private Node textFlowSection() {
-        // TextFlow 富文本：行内混排（普通文字 + 强调 + 链接样）
+    static Node tilePaneSection() {
+        TilePaneAnt tile = TilePaneAnt.create()
+                .prefColumns(4)
+                .children(
+                        chipW(70, "A"), chipW(70, "B"), chipW(70, "C"), chipW(70, "D"),
+                        chipW(70, "E"), chipW(70, "F"), chipW(70, "G"), chipW(70, "H"))
+                .build();
+        tile.setMaxWidth(320);
+        String code = """
+                TilePaneAnt.create()
+                        .prefColumns(4)         // 每行 4 列
+                        .children(等宽单元们)
+                        .build();               // 铺满一行自动换下一行
+                """;
+        return Demos.sectionWithCode("TilePane 网格平铺",
+                "等尺寸单元按固定列数平铺，适合缩略图 / 卡牌网格。", code, tile);
+    }
+
+    static Node textFlowSection() {
         Node demo = TextFlowAnt.create(
                 TypographyAnt.text("这是一段 ").build(),
                 TypographyAnt.text("富文本").type(TypographyAnt.TextColor.PRIMARY).build(),
@@ -253,15 +228,20 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         TypographyAnt.text(" 混排…").build()
                 ).build();   // 段落级文字排版
                 """;
-        return Demos.sectionWithCode("8. TextFlow 富文本排版", "同一行内多段文字不同样式 / 字体 / 颜色。", code, demo);
+        return Demos.sectionWithCode("TextFlow 富文本排版",
+                "同一行内多段文字不同样式 / 字体 / 颜色。", code, demo);
     }
 
-    private Node anchorSection() {
+    // ============================================================
+    // 锚点 / 间距 / 面板
+    // ============================================================
+
+    static Node anchorSection() {
         Node content = Demos.placeholder("内容（四边锚定，窗口缩放跟随）", Background.SUBTLE);
         Node footer = Demos.placeholder("底部状态条（bottomAnchor）", Background.LAYOUT);
         AnchorPaneAnt demo = AnchorPaneAnt.create()
                 .children(content, footer)
-                .anchor(content, 0.0, 0.0, 40.0, 0.0)   // 内容顶/左右贴边, 底部留 40 给状态条
+                .anchor(content, 0.0, 0.0, 40.0, 0.0)
                 .bottomAnchor(footer, 0.0)
                 .build();
         demo.setMinHeight(110);
@@ -272,11 +252,11 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         .bottomAnchor(footer, 0)
                         .build();   // 边沿/四角锚定，跟随窗口尺寸缩放
                 """;
-        return Demos.sectionWithCode("9. AnchorPane 锚点定位", "固定子节点到四角 / 边、填满或让出空间（复杂布局常用）。", code, demo);
+        return Demos.sectionWithCode("AnchorPane 锚点定位",
+                "固定子节点到四角 / 边、填满或让出空间（复杂布局常用）。", code, demo);
     }
 
-    private Node spaceSection() {
-        // Space：统一间距排布（横向）
+    static Node spaceSection() {
         Node demo = SpaceAnt.create()
                 .size(12)
                 .children(
@@ -291,11 +271,11 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         .children(btnA, btnB, btnC)
                         .build();                        // 无需手动给每个按钮加 margin
                 """;
-        return Demos.sectionWithCode("10. Space 间距排布", "Ant Design Space —— 统一、平均地给一组兄弟节点加间距。", code, demo);
+        return Demos.sectionWithCode("Space 间距排布",
+                "Ant Design Space —— 统一、平均地给一组兄弟节点加间距。", code, demo);
     }
 
-    private Node surfaceSection() {
-        // Surface：材质卡片容器（标题 + 额外操作 + 内容）
+    static Node surfaceSection() {
         Node demo = SurfaceAnt.create()
                 .title("Surface 材质卡片")
                 .extra(ButtonAnt.create("操作").type(ButtonAnt.Type.LINK).build())
@@ -303,7 +283,8 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         .spacing(8)
                         .children(
                                 TypographyAnt.text("带标题、头部额外操作区的内容卡片外壳。").build(),
-                                TypographyAnt.text("常用于侧栏面板 / 分组设置 / 浮动内容块。").type(TypographyAnt.TextColor.SECONDARY).build())
+                                TypographyAnt.text("常用于侧栏面板 / 分组设置 / 浮动内容块。")
+                                        .type(TypographyAnt.TextColor.SECONDARY).build())
                         .build())
                 .build();
         String code = """
@@ -313,11 +294,11 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         .content(body)
                         .build();                  // 卡片式材质容器
                 """;
-        return Demos.sectionWithCode("11. Surface 材质卡片", "带标题 + 头部操作区的内容卡片，常用于面板 / 分组。", code, demo);
+        return Demos.sectionWithCode("Surface 材质卡片",
+                "带标题 + 头部操作区的内容卡片，常用于面板 / 分组。", code, demo);
     }
 
-    private Node resizableSection() {
-        // ResizablePanel：可拖拽调整尺寸的面板
+    static Node resizableSection() {
         Node demo = ResizablePanelAnt.create()
                 .content(Demos.placeholder("拖拽右/下边缘调整大小", Background.SUBTLE))
                 .mode(ResizablePanelAnt.Mode.BOTH)
@@ -332,6 +313,21 @@ public class LayoutContainerExamplePage extends VBoxAnt {
                         .prefWidth(320).minWidth(160)
                         .build();                  // 侧边详情面板 / 底部控制台
                 """;
-        return Demos.sectionWithCode("12. ResizablePanel 可调面板", "拖拽边缘调整宽度/高度，带 min/max 约束。", code, demo);
+        return Demos.sectionWithCode("ResizablePanel 可调面板",
+                "拖拽边缘调整宽度/高度，带 min/max 约束。", code, demo);
+    }
+
+    // ============================================================
+    // helpers
+    // ============================================================
+
+    private static Node chip(String text) {
+        return Demos.placeholder(text, Background.SUBTLE);
+    }
+
+    private static Node chipW(double width, String text) {
+        Region n = (Region) Demos.placeholder(text, Background.SUBTLE);
+        n.setPrefWidth(width);
+        return n;
     }
 }

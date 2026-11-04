@@ -79,19 +79,31 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.general.SplitMenuButtonExampleP
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.TypographyExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.WatermarkExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.general.WindowChromeExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.AnchorPaneExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.BorderPaneExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.FlexExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.FlowPaneExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.GridExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.layout.LayoutContainerExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.HBarExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.HBoxExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectChangelogExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectConsoleExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectFeatureExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectHeroExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectQuickStartExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.layout.HBarExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectOverviewExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectQuickStartExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectReleaseExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ProjectShowcaseExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ResizablePanelExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.ScrollPaneExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.SpaceExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.SplitPaneExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.StackPaneExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.SurfaceExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.TextFlowExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.TilePaneExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.VBarExamplePage;
+import org.openkawu.jfxium.jfxiumUiExample.pages.layout.VBoxExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.layout.WorkspaceTemplateExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.AnchorExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.navigation.BackTopExamplePage;
@@ -157,14 +169,25 @@ final class PageCatalog {
     }
 
     private static void registerLayout(PageRegistry registry) {
+        register(registry, "layout.vbox", "VBox 纵向布局", PageRegistry.Category.LAYOUT, VBoxExamplePage::new);
+        register(registry, "layout.hbox", "HBox 横向布局", PageRegistry.Category.LAYOUT, HBoxExamplePage::new);
+        register(registry, "layout.borderpane", "BorderPane 五区骨架", PageRegistry.Category.LAYOUT, BorderPaneExamplePage::new);
+        register(registry, "layout.stackpane", "StackPane 叠层", PageRegistry.Category.LAYOUT, StackPaneExamplePage::new);
+        register(registry, "layout.flowpane", "FlowPane 流式换行", PageRegistry.Category.LAYOUT, FlowPaneExamplePage::new);
+        register(registry, "layout.tilepane", "TilePane 网格平铺", PageRegistry.Category.LAYOUT, TilePaneExamplePage::new);
+        register(registry, "layout.scrollpane", "ScrollPane 滚动视图", PageRegistry.Category.LAYOUT, ScrollPaneExamplePage::new);
+        register(registry, "layout.splitpane", "SplitPane 拖拽分栏", PageRegistry.Category.LAYOUT, SplitPaneExamplePage::new);
+        register(registry, "layout.anchorpane", "AnchorPane 锚点定位", PageRegistry.Category.LAYOUT, AnchorPaneExamplePage::new);
+        register(registry, "layout.textflow", "TextFlow 富文本排版", PageRegistry.Category.LAYOUT, TextFlowExamplePage::new);
+        register(registry, "layout.space", "Space 间距排布", PageRegistry.Category.LAYOUT, SpaceExamplePage::new);
+        register(registry, "layout.surface", "Surface 材质卡片", PageRegistry.Category.LAYOUT, SurfaceExamplePage::new);
+        register(registry, "layout.resizable", "ResizablePanel 可调面板", PageRegistry.Category.LAYOUT, ResizablePanelExamplePage::new);
         register(registry, "layout.grid", "Grid 栅格", PageRegistry.Category.LAYOUT, GridExamplePage::new);
         register(registry, "layout.flex", "Flex 弹性布局", PageRegistry.Category.LAYOUT, FlexExamplePage::new);
         register(registry, "layout.bar", "HBar 横向条状容器", PageRegistry.Category.LAYOUT, HBarExamplePage::new);
         register(registry, "layout.vbar", "VBar 竖向条状容器", PageRegistry.Category.LAYOUT, VBarExamplePage::new);
         register(registry, "layout.divider", "Divider 分割线", PageRegistry.Category.LAYOUT, DividerExamplePage::new);
         register(registry, "layout.separator", "Separator 分隔符", PageRegistry.Category.LAYOUT, SeparatorExamplePage::new);
-        // 布局容器综合页（VBox/HBox/BorderPane/StackPane/SplitPane/ScrollPane/... 的 spacing/align/grow/padding 用法）
-        register(registry, "layout.container", "布局容器", PageRegistry.Category.LAYOUT, LayoutContainerExamplePage::new);
     }
 
     private static void registerTemplate(PageRegistry registry) {
