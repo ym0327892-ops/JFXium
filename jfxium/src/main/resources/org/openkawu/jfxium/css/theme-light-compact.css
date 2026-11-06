@@ -635,6 +635,9 @@
 .button.xs {
   -fx-padding: 0px 5px;
   -fx-font-size: 12px;
+  -fx-min-height: 20px;
+  -fx-pref-height: 20px;
+  -fx-max-height: 20px;
 }
 .button.large {
   -fx-padding: 7px 11px;
@@ -773,6 +776,12 @@
    ============================================ */
 .jfx-search-input {
   -fx-padding: 0;
+  /* 高度契约：容器是 StackPane，内部 field 已被 _sizes.less 的嵌套豁免块排除，
+     若不在此钳制容器自身，高度就完全由内容反推（small 只有 21px、compact 下 19px）。
+     与 .text-field / .combo-box 同档等高。 */
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: 1px;
@@ -808,6 +817,27 @@
 }
 .jfx-search-input.large > .jfx-search-input-field {
   -fx-padding: 7px 24px 7px 8px;
+}
+/* 尺寸档位高度 —— 与 .text-field 各档一致（DEFAULT 见上方基础规则） */
+.jfx-search-input.xs {
+  -fx-min-height: 20px;
+  -fx-pref-height: 20px;
+  -fx-max-height: 20px;
+}
+.jfx-search-input.small {
+  -fx-min-height: 24px;
+  -fx-pref-height: 24px;
+  -fx-max-height: 24px;
+}
+.jfx-search-input.middle {
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
+}
+.jfx-search-input.large {
+  -fx-min-height: 36px;
+  -fx-pref-height: 36px;
+  -fx-max-height: 36px;
 }
 /* 清除按钮：悬浮层。
    -fx-padding 含左右各 6px 热区 + 12px 图标 = 24px，与 @search-input-affix-width 对齐；
@@ -1377,6 +1407,16 @@
 .check-box:indeterminate .box .mark {
   -fx-background-color: -color-fg-on-emphasis;
 }
+/* 尺寸档位：CheckBox 是「文本行内控件」，高度跟随文字行高（≈18px），
+   刻意不参与 @control-height 单行高度契约（对齐 Ant Design：复选框无高度档位）。
+   size 档位只收敛字号，保证 size() 不是空实现；行内控件与按钮同高反而会破坏文本对齐。 */
+.check-box.xs,
+.check-box.small {
+  -fx-font-size: 12px;
+}
+.check-box.large {
+  -fx-font-size: 16px;
+}
 /* ============================================
    RadioButton Component（M19.6.3 修复 — 对齐 AtlantaFX _radio.scss）
    关键：.radio padding 控制圆框尺寸（与 .box 完全一致），.dot min/max 控制中间小圆点尺寸
@@ -1424,6 +1464,16 @@
 }
 .radio-button:disabled {
   -fx-opacity: 0.6;
+}
+/* 尺寸档位：RadioButton 同为「文本行内控件」，高度跟随文字行高（≈18px），
+   刻意不参与 @control-height 单行高度契约（对齐 Ant Design：单选框无高度档位）。
+   size 档位只收敛字号，保证 size() 不是空实现。 */
+.radio-button.xs,
+.radio-button.small {
+  -fx-font-size: 12px;
+}
+.radio-button.large {
+  -fx-font-size: 16px;
 }
 /* ============================================
    ComboBox Component
@@ -4554,9 +4604,28 @@
 }
 /* SegmentedAnt */
 .jfx-segmented {
+  /* 高度契约：与 .text-field / .button 同档等高（此前由 Java 侧 inset 反推成 38px） */
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
   -fx-background-color: -color-bg-subtle;
   -fx-padding: 2;
   -fx-background-radius: 6px;
+}
+.jfx-segmented.jfx-segmented-xs {
+  -fx-min-height: 20px;
+  -fx-pref-height: 20px;
+  -fx-max-height: 20px;
+}
+.jfx-segmented.jfx-segmented-small {
+  -fx-min-height: 24px;
+  -fx-pref-height: 24px;
+  -fx-max-height: 24px;
+}
+.jfx-segmented.jfx-segmented-large {
+  -fx-min-height: 36px;
+  -fx-pref-height: 36px;
+  -fx-max-height: 36px;
 }
 .jfx-segmented.jfx-segmented-disabled {
   -fx-opacity: 0.6;
@@ -4592,10 +4661,30 @@
 }
 /* InputNumberAnt */
 .jfx-input-number {
+  /* 高度契约：与 .text-field / .combo-box 同档等高（此前由 field 的 8px raw padding
+     反推成 34px，且 size(XS/MIDDLE) 完全无效） */
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-radius: 6px;
   -fx-background-radius: 6px;
+}
+.jfx-input-number.jfx-input-number-xs {
+  -fx-min-height: 20px;
+  -fx-pref-height: 20px;
+  -fx-max-height: 20px;
+}
+.jfx-input-number.jfx-input-number-small {
+  -fx-min-height: 24px;
+  -fx-pref-height: 24px;
+  -fx-max-height: 24px;
+}
+.jfx-input-number.jfx-input-number-large {
+  -fx-min-height: 36px;
+  -fx-pref-height: 36px;
+  -fx-max-height: 36px;
 }
 .jfx-input-number.jfx-input-number-disabled {
   -fx-opacity: 0.6;
@@ -4616,21 +4705,42 @@
   -fx-border-color: transparent;
   -fx-font-size: 13px;
   -fx-text-fill: -color-fg-default;
-  -fx-padding: 8 4 8 4;
+  -fx-padding: 5px 4 5px 4;
 }
+.jfx-input-number.jfx-input-number-xs .jfx-input-number-field,
 .jfx-input-number.jfx-input-number-small .jfx-input-number-field {
   -fx-font-size: 12px;
-  -fx-padding: 1px 7px 1px 7px;
+  -fx-padding: 1px 4 1px 4;
 }
 .jfx-input-number.jfx-input-number-large .jfx-input-number-field {
   -fx-font-size: 16px;
-  -fx-padding: 7px 11px 7px 11px;
+  -fx-padding: 7px 4 7px 4;
 }
+/* +/- 按钮：占满容器高度（不再由 Java 硬编码 28×32），宽度按档位收放 */
 .jfx-input-number-btn {
+  -fx-min-width: 28px;
+  -fx-pref-width: 28px;
+  -fx-max-width: 28px;
+  -fx-min-height: 0;
+  -fx-pref-height: -1;
+  -fx-max-height: -1;
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-cursor: hand;
   -fx-padding: 4;
+}
+.jfx-input-number.jfx-input-number-xs .jfx-input-number-btn,
+.jfx-input-number.jfx-input-number-small .jfx-input-number-btn {
+  -fx-min-width: 24px;
+  -fx-pref-width: 24px;
+  -fx-max-width: 24px;
+  -fx-padding: 3;
+}
+.jfx-input-number.jfx-input-number-large .jfx-input-number-btn {
+  -fx-min-width: 32px;
+  -fx-pref-width: 32px;
+  -fx-max-width: 32px;
+  -fx-padding: 5;
 }
 .jfx-input-number-btn:hover,
 .jfx-input-number-btn:armed,
@@ -5851,14 +5961,71 @@
   -fx-opacity: 0.4;
   -fx-cursor: default;
 }
-/* ToggleButton sizes — 与 .button.small/.large 保持一致 */
+/* ============================================
+   高度契约（Height Contract）—— 与 .button / 输入框同档等高
+   --------------------------------------------
+   ToggleButtonSkin / MenuButtonSkinBase 的 prefHeight 由内容（label padding + 字号）
+   反推，compact 主题下会算出 29 / 19 这类非 token 值，因此与 _sizes.less 一样
+   直接钳制 min/pref/max，不再依赖 padding 凑巧命中。
+   ============================================ */
+.toggle-button,
+.menu-button,
+.split-menu-button {
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
+}
+.toggle-button.xs,
+.menu-button.xs,
+.split-menu-button.xs {
+  -fx-min-height: 20px;
+  -fx-pref-height: 20px;
+  -fx-max-height: 20px;
+}
+.toggle-button.small,
+.menu-button.small,
+.split-menu-button.small {
+  -fx-min-height: 24px;
+  -fx-pref-height: 24px;
+  -fx-max-height: 24px;
+}
+.toggle-button.middle,
+.menu-button.middle,
+.split-menu-button.middle {
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
+}
+.toggle-button.large,
+.menu-button.large,
+.split-menu-button.large {
+  -fx-min-height: 36px;
+  -fx-pref-height: 36px;
+  -fx-max-height: 36px;
+}
+/* ToggleButton sizes — 字号 / 水平 padding 与 .button 各档一致 */
 .toggle-button.small {
   -fx-padding: 1px 7px;
+  -fx-font-size: 12px;
+}
+.toggle-button.xs {
+  -fx-padding: 0px 5px;
   -fx-font-size: 12px;
 }
 .toggle-button.large {
   -fx-padding: 7px 11px;
   -fx-font-size: 16px;
+}
+/* Switch 复用同一个 .toggle-button 类名，但它是 44×22 的固定几何，
+   不能被上面的高度契约拉成 32/28 —— 显式恢复（含误挂 size 类的场景）。 */
+.toggle-button.switch,
+.toggle-button.switch.xs,
+.toggle-button.switch.small,
+.toggle-button.switch.middle,
+.toggle-button.switch.large {
+  -fx-min-height: 22px;
+  -fx-pref-height: 22px;
+  -fx-max-height: 22px;
 }
 /* MenuButton sizes — padding 下放到 .label 和 .arrow-button（M19.6） */
 .menu-button.small > .label {
@@ -7359,8 +7526,9 @@
    高度契约（Height Contract）
    ============================================
    单行控件的高度不再靠 padding 反推，直接钳制 min/pref/max 到 token：
-     DEFAULT（无 size 类）= @control-height(32) / SMALL = @control-height-sm(28) / LARGE = @control-height-lg(40)
-   compact 主题覆盖这三个 token 后自动收紧（28/24/36），无需再改任何组件规则。
+     DEFAULT（无 size 类）= @control-height(32) / XS = @control-height-xs(24)
+     SMALL = @control-height-sm(28) / LARGE = @control-height-lg(40)
+   compact 主题覆盖这三个 token 后自动收紧（28/20/24/36），无需再改任何组件规则。
    注意：只列「单行」控件；.text-area 是多行，不参与钳制。
    必须带 -fx-max-height：这些控件的 skin 计算 prefHeight 时只看内容，
    会无视 -fx-pref-height，内容一旦高于 token 就会顶破（如 compact 下 29 > 28）。
@@ -7375,6 +7543,17 @@
   -fx-min-height: 28px;
   -fx-pref-height: 28px;
   -fx-max-height: 28px;
+}
+.text-field.xs,
+.password-field.xs,
+.combo-box.xs,
+.choice-box.xs,
+.date-picker.xs,
+.color-picker.xs,
+.spinner.xs {
+  -fx-min-height: 20px;
+  -fx-pref-height: 20px;
+  -fx-max-height: 20px;
 }
 .text-field.small,
 .password-field.small,
@@ -7414,6 +7593,7 @@
 .jfx-input-password > .text-field,
 .jfx-input-password > .password-field,
 .jfx-search-input > .jfx-search-input-field,
+.jfx-input-number > .jfx-input-number-field,
 .text-field.jfx-selectable-text {
   -fx-min-height: 0;
   -fx-pref-height: -1;
