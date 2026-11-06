@@ -559,6 +559,7 @@ public final class JfxStyles {
     /** SegmentedAnt 分段控件 */
     public static final String SEGMENTED = "jfx-segmented";
     public static final String SEGMENTED_DISABLED = "jfx-segmented-disabled";
+    public static final String SEGMENTED_XS = "jfx-segmented-xs";
     public static final String SEGMENTED_SMALL = "jfx-segmented-small";
     public static final String SEGMENTED_LARGE = "jfx-segmented-large";
     public static final String SEGMENTED_ITEM = "jfx-segmented-item";
@@ -574,6 +575,7 @@ public final class JfxStyles {
 
     public static final String INPUT_NUMBER = "jfx-input-number";
     public static final String INPUT_NUMBER_DISABLED = "jfx-input-number-disabled";
+    public static final String INPUT_NUMBER_XS = "jfx-input-number-xs";
     public static final String INPUT_NUMBER_SMALL = "jfx-input-number-small";
     public static final String INPUT_NUMBER_LARGE = "jfx-input-number-large";
     public static final String INPUT_NUMBER_PREFIX = "jfx-input-number-prefix";

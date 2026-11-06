@@ -2,8 +2,9 @@
    高度契约（Height Contract）
    ============================================
    单行控件的高度不再靠 padding 反推，直接钳制 min/pref/max 到 token：
-     DEFAULT（无 size 类）= @control-height(32) / SMALL = @control-height-sm(28) / LARGE = @control-height-lg(40)
-   compact 主题覆盖这三个 token 后自动收紧（28/24/36），无需再改任何组件规则。
+     DEFAULT（无 size 类）= @control-height(32) / XS = @control-height-xs(24)
+     SMALL = @control-height-sm(28) / LARGE = @control-height-lg(40)
+   compact 主题覆盖这三个 token 后自动收紧（28/20/24/36），无需再改任何组件规则。
    注意：只列「单行」控件；.text-area 是多行，不参与钳制。
    必须带 -fx-max-height：这些控件的 skin 计算 prefHeight 时只看内容，
    会无视 -fx-pref-height，内容一旦高于 token 就会顶破（如 compact 下 29 > 28）。
@@ -18,6 +19,18 @@
   -fx-min-height: @control-height;
   -fx-pref-height: @control-height;
   -fx-max-height: @control-height;
+}
+
+.text-field.xs,
+.password-field.xs,
+.combo-box.xs,
+.choice-box.xs,
+.date-picker.xs,
+.color-picker.xs,
+.spinner.xs {
+  -fx-min-height: @control-height-xs;
+  -fx-pref-height: @control-height-xs;
+  -fx-max-height: @control-height-xs;
 }
 
 .text-field.small,
@@ -61,6 +74,7 @@
 .jfx-input-password > .text-field,
 .jfx-input-password > .password-field,
 .jfx-search-input > .jfx-search-input-field,
+.jfx-input-number > .jfx-input-number-field,
 .text-field.jfx-selectable-text {
   -fx-min-height: 0;
   -fx-pref-height: -1;

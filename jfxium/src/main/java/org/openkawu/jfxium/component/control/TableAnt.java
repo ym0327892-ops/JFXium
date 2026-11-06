@@ -506,8 +506,9 @@ public class TableAnt<T> extends TableView<T>
         // 样式类
         if (striped) getStyleClass().add(JfxStyles.TABLE_STRIPED);
 
-        // 尺寸
+        // 尺寸（表格最小档即 SMALL；XS 收敛到 SMALL，避免静默失效）
         switch (size) {
+            case XS     -> getStyleClass().add(JfxStyles.TABLE_SIZE_SMALL);
             case SMALL  -> getStyleClass().add(JfxStyles.TABLE_SIZE_SMALL);
             case MIDDLE -> getStyleClass().add(JfxStyles.TABLE_SIZE_MIDDLE);
             case LARGE  -> getStyleClass().add(JfxStyles.TABLE_SIZE_LARGE);

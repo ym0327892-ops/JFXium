@@ -106,12 +106,13 @@ public class SegmentedAnt {
             boolean isDisabled = Boolean.TRUE.equals(disable);
             segmented.getStyleClass().add(JfxStyles.SEGMENTED);
             if (isDisabled) segmented.getStyleClass().add(JfxStyles.SEGMENTED_DISABLED);
+            if (size == Size.XS) segmented.getStyleClass().add(JfxStyles.SEGMENTED_XS);
             if (size == Size.SMALL) segmented.getStyleClass().add(JfxStyles.SEGMENTED_SMALL);
             else if (size == Size.LARGE) segmented.getStyleClass().add(JfxStyles.SEGMENTED_LARGE);
             if (block) segmented.setMaxWidth(Double.MAX_VALUE);
 
-            // padding 仍由 size 决定（结构性 inset）
-            double padding = size == Size.SMALL ? 4 : size == Size.LARGE ? 12 : 8;
+            // padding 仍由 size 决定（结构性 inset；整体高度由 LESS 高度契约钳制到 token）
+            double padding = size == Size.XS ? 2 : size == Size.SMALL ? 4 : size == Size.LARGE ? 12 : 8;
             Controller controller = new Controller();
 
             for (Option option : options) {

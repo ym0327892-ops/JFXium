@@ -100,6 +100,7 @@ public class InputNumberAnt {
             container.setAlignment(Pos.CENTER_LEFT);
             container.getStyleClass().add(JfxStyles.INPUT_NUMBER);
             if (Boolean.TRUE.equals(disable)) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_DISABLED);
+            if (size == Size.XS) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_XS);
             if (size == Size.SMALL) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_SMALL);
             if (size == Size.LARGE) container.getStyleClass().add(JfxStyles.INPUT_NUMBER_LARGE);
 
@@ -176,12 +177,9 @@ public class InputNumberAnt {
             return container;
         }
 
-        /** 创建 +/- 按钮：尺寸结构性、视觉样式与 hover/armed 由 LESS 控制 */
+        /** 创建 +/- 按钮：尺寸与视觉样式全部由 LESS（.jfx-input-number-btn）控制 */
         private Button createButton(String svgPath) {
             Button btn = new Button();
-            btn.setMinSize(28, 32);
-            btn.setPrefSize(28, 32);
-            btn.setMaxSize(28, 32);
             btn.getStyleClass().add(JfxStyles.INPUT_NUMBER_BTN);
 
             SVGPath path = new SVGPath();

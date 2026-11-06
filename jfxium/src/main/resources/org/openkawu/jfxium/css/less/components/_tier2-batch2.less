@@ -160,9 +160,31 @@
 
 /* SegmentedAnt */
 .jfx-segmented {
+  /* 高度契约：与 .text-field / .button 同档等高（此前由 Java 侧 inset 反推成 38px） */
+  -fx-min-height: @control-height;
+  -fx-pref-height: @control-height;
+  -fx-max-height: @control-height;
   -fx-background-color: -color-bg-subtle;
   -fx-padding: 2;
   -fx-background-radius: @border-radius-md;
+}
+
+.jfx-segmented.jfx-segmented-xs {
+  -fx-min-height: @control-height-xs;
+  -fx-pref-height: @control-height-xs;
+  -fx-max-height: @control-height-xs;
+}
+
+.jfx-segmented.jfx-segmented-small {
+  -fx-min-height: @control-height-sm;
+  -fx-pref-height: @control-height-sm;
+  -fx-max-height: @control-height-sm;
+}
+
+.jfx-segmented.jfx-segmented-large {
+  -fx-min-height: @control-height-lg;
+  -fx-pref-height: @control-height-lg;
+  -fx-max-height: @control-height-lg;
 }
 
 .jfx-segmented.jfx-segmented-disabled {
@@ -203,10 +225,33 @@
 
 /* InputNumberAnt */
 .jfx-input-number {
+  /* 高度契约：与 .text-field / .combo-box 同档等高（此前由 field 的 8px raw padding
+     反推成 34px，且 size(XS/MIDDLE) 完全无效） */
+  -fx-min-height: @control-height;
+  -fx-pref-height: @control-height;
+  -fx-max-height: @control-height;
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-radius: @border-radius-md;
   -fx-background-radius: @border-radius-md;
+}
+
+.jfx-input-number.jfx-input-number-xs {
+  -fx-min-height: @control-height-xs;
+  -fx-pref-height: @control-height-xs;
+  -fx-max-height: @control-height-xs;
+}
+
+.jfx-input-number.jfx-input-number-small {
+  -fx-min-height: @control-height-sm;
+  -fx-pref-height: @control-height-sm;
+  -fx-max-height: @control-height-sm;
+}
+
+.jfx-input-number.jfx-input-number-large {
+  -fx-min-height: @control-height-lg;
+  -fx-pref-height: @control-height-lg;
+  -fx-max-height: @control-height-lg;
 }
 
 .jfx-input-number.jfx-input-number-disabled {
@@ -227,24 +272,47 @@
   -fx-border-color: transparent;
   -fx-font-size: @font-size-md;
   -fx-text-fill: -color-fg-default;
-  -fx-padding: 8 4 8 4;
+  -fx-padding: @input-padding-y 4 @input-padding-y 4;
 }
 
+.jfx-input-number.jfx-input-number-xs .jfx-input-number-field,
 .jfx-input-number.jfx-input-number-small .jfx-input-number-field {
   -fx-font-size: @font-size-sm;
-  -fx-padding: @ctrl-padding-y-sm @ctrl-padding-x-sm @ctrl-padding-y-sm @ctrl-padding-x-sm;
+  -fx-padding: @input-padding-y-sm 4 @input-padding-y-sm 4;
 }
 
 .jfx-input-number.jfx-input-number-large .jfx-input-number-field {
   -fx-font-size: @font-size-lg;
-  -fx-padding: @ctrl-padding-y-lg @ctrl-padding-x-lg @ctrl-padding-y-lg @ctrl-padding-x-lg;
+  -fx-padding: @input-padding-y-lg 4 @input-padding-y-lg 4;
 }
 
+/* +/- 按钮：占满容器高度（不再由 Java 硬编码 28×32），宽度按档位收放 */
 .jfx-input-number-btn {
+  -fx-min-width: 28px;
+  -fx-pref-width: 28px;
+  -fx-max-width: 28px;
+  -fx-min-height: 0;
+  -fx-pref-height: -1;
+  -fx-max-height: -1;
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-cursor: hand;
   -fx-padding: 4;
+}
+
+.jfx-input-number.jfx-input-number-xs .jfx-input-number-btn,
+.jfx-input-number.jfx-input-number-small .jfx-input-number-btn {
+  -fx-min-width: 24px;
+  -fx-pref-width: 24px;
+  -fx-max-width: 24px;
+  -fx-padding: 3;
+}
+
+.jfx-input-number.jfx-input-number-large .jfx-input-number-btn {
+  -fx-min-width: 32px;
+  -fx-pref-width: 32px;
+  -fx-max-width: 32px;
+  -fx-padding: 5;
 }
 
 .jfx-input-number-btn:hover,

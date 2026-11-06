@@ -17,6 +17,12 @@
    ============================================ */
 .jfx-search-input {
   -fx-padding: 0;
+  /* 高度契约：容器是 StackPane，内部 field 已被 _sizes.less 的嵌套豁免块排除，
+     若不在此钳制容器自身，高度就完全由内容反推（small 只有 21px、compact 下 19px）。
+     与 .text-field / .combo-box 同档等高。 */
+  -fx-min-height: @control-height;
+  -fx-pref-height: @control-height;
+  -fx-max-height: @control-height;
   -fx-background-color: -color-bg-default;
   -fx-border-color: -color-border-default;
   -fx-border-width: @border-width-default;
@@ -57,6 +63,31 @@
 
 .jfx-search-input.large > .jfx-search-input-field {
   -fx-padding: @input-padding-y-lg @search-input-affix-width @input-padding-y-lg @input-padding-x-lg;
+}
+
+/* 尺寸档位高度 —— 与 .text-field 各档一致（DEFAULT 见上方基础规则） */
+.jfx-search-input.xs {
+  -fx-min-height: @control-height-xs;
+  -fx-pref-height: @control-height-xs;
+  -fx-max-height: @control-height-xs;
+}
+
+.jfx-search-input.small {
+  -fx-min-height: @control-height-sm;
+  -fx-pref-height: @control-height-sm;
+  -fx-max-height: @control-height-sm;
+}
+
+.jfx-search-input.middle {
+  -fx-min-height: @control-height;
+  -fx-pref-height: @control-height;
+  -fx-max-height: @control-height;
+}
+
+.jfx-search-input.large {
+  -fx-min-height: @control-height-lg;
+  -fx-pref-height: @control-height-lg;
+  -fx-max-height: @control-height-lg;
 }
 
 /* 清除按钮：悬浮层。

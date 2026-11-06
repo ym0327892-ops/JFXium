@@ -357,9 +357,10 @@ public class TagAnt {
     private static String sizeStyleClass(Size s) {
         Size effectiveSize = s != null ? s : Size.DEFAULT;
         return switch (effectiveSize) {
-            case SMALL -> JfxStyles.TAG_SMALL;
-            case LARGE -> JfxStyles.TAG_LARGE;
-            default    -> null;
+            /* Tag 只有 small / 默认 / large 三档，XS 收敛到 small，避免静默失效 */
+            case XS, SMALL -> JfxStyles.TAG_SMALL;
+            case LARGE     -> JfxStyles.TAG_LARGE;
+            default        -> null;
         };
     }
 

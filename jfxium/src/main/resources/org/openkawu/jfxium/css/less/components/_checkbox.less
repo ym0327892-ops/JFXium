@@ -61,3 +61,15 @@
   -fx-background-color: -color-fg-on-emphasis;
 }
 
+/* 尺寸档位：CheckBox 是「文本行内控件」，高度跟随文字行高（≈18px），
+   刻意不参与 @control-height 单行高度契约（对齐 Ant Design：复选框无高度档位）。
+   size 档位只收敛字号，保证 size() 不是空实现；行内控件与按钮同高反而会破坏文本对齐。 */
+.check-box.xs,
+.check-box.small {
+  -fx-font-size: @font-size-sm;
+}
+
+.check-box.large {
+  -fx-font-size: @font-size-lg;
+}
+

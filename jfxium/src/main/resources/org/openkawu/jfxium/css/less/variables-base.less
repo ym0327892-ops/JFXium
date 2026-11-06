@@ -154,6 +154,9 @@
 @control-height-sm: 28px;
 @control-height: 32px;
 @control-height-lg: 40px;
+// XS 档：比 SMALL 再小一档。写成派生值，compact 主题覆盖 @control-height-sm 后
+// 自动收紧（28→24 时 XS 同步 24→20），无需再改 5 个 compact 主题文件。
+@control-height-xs: (@control-height-sm - 4px);
 
 // Spinner 右侧步进区宽度（Ant Design InputNumber handler 量级）。
 // 派生自 @control-height：紧凑 / tool 主题覆写高度后自动收紧（32→26px，28→22px）。
