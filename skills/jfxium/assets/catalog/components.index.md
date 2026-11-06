@@ -1,4 +1,4 @@
-# JFXium 组件速查（v1.34.6）
+# JFXium 组件速查（v1.34.7）
 
 > 生成物，禁止手改。完整信息（extends / 定位 / source）见 `components.md` / `components.json`。
 
@@ -18,7 +18,8 @@
 | **CollapseAnt** | component.composite | `VBox` | disabled, controllerOf, panel, panels, accordion, activeKey, activeKeys, expandIcon, showExpandIcon, expandIconPosition, controller, expand, collapse, toggle, expandAll, collapseAll |
 | **DateTimePickerAnt** | component.composite | `StackPane` | controllerOf, value, editable, format, allowClear, size, onChange, bindValue, showPanel, hidePanel |
 | **DescriptionsAnt** | component.composite | `VBox` | title, size, column, bordered, item |
-| **EmptyAnt** | component.composite | `VBox` | description, image, extra, extraButton |
+| **EmptyAnt** | component.composite | `VBox` | description, extra, extraButton |
+| **FilterBarAnt** | component.composite | `HBox` | spacing, padding, search, filter, action, actionPrimary, actionNode |
 | **FloatButtonAnt** | component.composite | `StackPane` | icon, tooltip, type, onClick, size |
 | **FormAnt** | component.composite | `VBox` | required, rule, rules, helpText, validateStatus, labelAlign, labelWidth, hidden, hide, tooltip, end, size, colon, labelCol, wrapperCol, rowGap, columnGap, validateTrigger |
 | **GroupBoxAnt** | component.composite | `VBox` | title, extra, content, bordered, size, type, actions, tab, activeTabKey, defaultActiveTabKey, onTabChange, tabBarExtraContent, headerBackground, headerBorder, hoverable |
@@ -70,7 +71,6 @@
 | **PaginationAnt** | component.control | `PaginationAnt` | controllerOf, next, prev, first, last, pageCount, currentPage, maxPageIndicatorCount, onChange |
 | **RadioButtonAnt** | component.control | `RadioButtonAnt` | text, selected, size, shape, toggleGroup, onChange, bindValue |
 | **SearchInputAnt** | component.control | — | placeholder, text, size, allowClear, onChange, onSearch, bindValue, clear, input, clearButton |
-| **SeparatorAnt** | component.control | `SeparatorAnt` | orientation, halignment, valignment |
 | **SpinnerAnt** | component.control | `SpinnerAnt` | value, min, max, step, precision, editable, placeholder, onChange, bindValue, size, increment, decrement, fromString |
 | **SplitButtonAnt** | component.control | `SplitButtonAnt` | text, size, arrowStyle, rounded, square, icon, contentDisplay, onClick, item, itemDisabled, separator, add, focusTraversable |
 | **StatusBarAnt** | component.control | `StatusBarAnt` | info, status, progress, action, left, center, right, updateInfo, updateProgress, updateStatus |
@@ -109,22 +109,7 @@
 | **PopoverAnt** | component.overlay | `Popover` | title, content, target, placement, trigger, onOpenChange, show, hide, close |
 | **PromptDialogAnt** | component.overlay | `PromptDialogResult` | title, message, defaultValue, placeholder, okText, cancelText, onConfirm, onCancel, width, open, close |
 | **AppShellAnt** | layout | `BorderPane` | header, sider, content, footer, collapsible, collapsed, collapsedWidth, breakpoint, trigger, headerBackground, siderBackground, contentBackground, footerBackground, onCollapseChange, buildResult, toggle, collapsedProperty |
-| **LayoutAnt** | layout | `BorderPane` | header, sider, content, footer |
-| **CrudTemplate** | template | `BorderPane` | title, topLeft, topRight, body, bottomLeft, bottomRight, bordered, background, topbarSpacing, bottombarSpacing, sectionGap |
-| **DashboardTemplate** | template | `VBox` | welcome, stat, statColumns, bottomLeft, bottomRight, leftRatio, sectionGap, padding |
-| **FilterBarAnt** | template | `HBox` | spacing, padding, search, filter, action, actionPrimary, actionNode |
-| **LaunchPadTemplate** | template | `VBox` | title, description, columns, gap, onAction, item |
 | **LoginTemplate** | template | `BorderPane` | brandName, tagline, feature, features, copyright, bannerWidth, formTitle, formSubtitle, usernamePlaceholder, passwordPlaceholder, submitText, showRememberMe, onSubmit, onForgot, onRegister |
-| **PageTemplate** | template | `VBox` | title, description, body, section, sections, headerGap, sectionGap, headerToBodyGap, padding, background |
-| **ProjectChangelogTemplate** | template | `VBox` | changelog, ChangeEntry, title, description, onAction, version |
-| **ProjectConsoleTemplate** | template | `BorderPane` | userMenu, headerActions, statusBar, standardMenuBar, SidebarLink, SidebarSection, SidebarResult, sidebarLink, sidebarSection, sidebarPane, brand, brandSubtitle, brandIcon, headerTop, headerCenter, headerRight, menuBar, headerLeft |
-| **ProjectDashboardTemplate** | template | `VBox` | demo, pageTitle, pageSubtitle, pageDescription, currentUser, version, branch, buildStatus, mode, templateCount, componentCount, updatedAt, completion, icon, mergeFrom, title, description, onAction |
-| **ProjectFeatureTemplate** | template | `VBox` | title, description, columns, gap, onAction, feature |
-| **ProjectHeroTemplate** | template | `VBox` | userMenu, title, subtitle, description, icon, status, meta, action, actions |
-| **ProjectOverviewTemplate** | template | `VBox` | title, description, status, tech, metric, meta, milestone, activity, progress, onAction |
-| **ProjectQuickStartTemplate** | template | `VBox` | title, description, step |
-| **ProjectReleaseTemplate** | template | `VBox` | title, description, status, meta, release, change, readiness, onAction |
-| **ProjectShowcaseTemplate** | template | `VBox` | title, description, hero, section, sections |
-| **ShowcaseSectionTemplate** | template | `VBox` | title, description, body |
+| **PageTemplate** | template | `VBox` | title, description, body, hero, section, sections, headerGap, sectionGap, headerToBodyGap, padding, background |
 | **WorkspaceSettingsTemplate** | template | `VBox` | drawer, themeManager, watermarkVisibleSupplier, onWatermarkVisibleChanged, title, description, fromString |
 | **WorkspaceTemplate** | template | `BorderPane` | userMenu, brand, brandSubtitle, brandIcon, header, headerLeft, headerTop, headerCenter, headerRight, headerGap, sider, siderWidth, content, footer, collapsible, collapsed, collapsedWidth, trigger |

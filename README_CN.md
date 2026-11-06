@@ -19,7 +19,7 @@
 | [组件参考](docs/cn/组件参考.md) | 全量组件/模板参考 + bindValue 声明式绑定专题 + 布局/全局浮层管理 |
 | [主题系统](docs/cn/主题系统.md) | ThemeManager + 主题入口（Ant Design 系 Light/Dark/Tool + custom 模板；Fluent 2 系 Fluent/Fluent Dark × 密度变体）+ 自定义主题 + styleClass 体系 |
 | [快速上手](docs/cn/快速上手.md) | 完整入门教程 + 5 个可运行的业务场景示例 |
-| [业务模板](docs/cn/业务模板.md) | PageTemplate / CrudTemplate / LoginTemplate / DashboardTemplate |
+| [业务模板](docs/cn/业务模板.md) | PageTemplate / LoginTemplate / WorkspaceTemplate |
 | [最佳实践](docs/cn/最佳实践.md) | Builder 规范 / EventBus + record / 页面骨架继承式写法 |
 | [视图开发规范](docs/cn/视图开发规范.md) | View / ViewModel / Model 分层 + 谁 new 谁持 VM + 弹窗新增流程 + 下游 AI Checklist |
 
@@ -33,7 +33,7 @@
 
 > ⚠️ **JFXium 未发布到 Maven Central，也没有任何远程仓库。**
 > 直接写 `org.openkawu:jfxium` 坐标必然失败：
-> `Could not find artifact org.openkawu:jfxium:jar:1.34.6 in central`。
+> `Could not find artifact org.openkawu:jfxium:jar:1.34.7 in central`。
 > **必须自己把 jar 提供给项目**，不能指望 Maven 远程下载。
 
 **方式 A：从 GitHub Releases 下载（最省事）**
@@ -43,7 +43,7 @@
 下载后装进本地仓库：
 
 ```bash
-V=1.34.6   # 换成你下载的版本号
+V=1.34.7   # 换成你下载的版本号
 mvn install:install-file -Dfile=jfxium-parent-$V.pom -DpomFile=jfxium-parent-$V.pom
 mvn install:install-file -Dfile=jfxium-$V.jar -DpomFile=jfxium-$V.pom
 # 可选：源码/文档 jar，装了 IDE 里能直接跳进源码
@@ -64,7 +64,7 @@ cd JFXium
 
 > **为什么必须 `-am`**：`jfxium` 的 pom 里 `<parent>` 指向 `org.openkawu:jfxium-parent`。
 > 只装 `-pl jfxium` 会让 **依赖它的项目解析失败**（报
-> `Could not find artifact org.openkawu:jfxium-parent:pom:1.34.6`）——
+> `Could not find artifact org.openkawu:jfxium-parent:pom:1.34.7`）——
 > 因为本机仓库里没有 parent，远程仓库更没有。`-am`（also make）会一并安装 parent。
 
 装完本机才能引用（**换台机器要重新装**，远程仓库里没有）：
@@ -73,21 +73,21 @@ cd JFXium
 <dependency>
     <groupId>org.openkawu</groupId>
     <artifactId>jfxium</artifactId>
-    <version>1.34.6</version>
+    <version>1.34.7</version>
 </dependency>
 ```
 
 **方式 C：直接把 jar 放进项目（完全不依赖仓库）**
 
-产物在 `jfxium/target/jfxium-1.34.6.jar`，拷进项目 `libs/`：
+产物在 `jfxium/target/jfxium-1.34.7.jar`，拷进项目 `libs/`：
 
 ```xml
 <dependency>
     <groupId>org.openkawu</groupId>
     <artifactId>jfxium</artifactId>
-    <version>1.34.6</version>
+    <version>1.34.7</version>
     <scope>system</scope>
-    <systemPath>${project.basedir}/libs/jfxium-1.34.6.jar</systemPath>
+    <systemPath>${project.basedir}/libs/jfxium-1.34.7.jar</systemPath>
 </dependency>
 ```
 
@@ -109,7 +109,7 @@ cd JFXium
 > 全是 JFXium 自己的 class 与资源，0 个 JavaFX 类。）
 
 | jar | 必需 | 说明 |
-| `jfxium-1.34.6.jar` | ✅ | 主库；CSS 主题与 i18n 资源都已打进包内 |
+| `jfxium-1.34.7.jar` | ✅ | 主库；CSS 主题与 i18n 资源都已打进包内 |
 | JavaFX `base` / `graphics` / `controls` | ✅ **需你显式声明**（框架不传递） | 版本自选；需带平台分类器，如 `javafx-controls-<版本>-mac-aarch64.jar` |
 | JavaFX `fxml` / `media` / `web` / `swing` | ❌ 本框架不涉及 | 按你自己的项目按需添加 |
 
@@ -203,8 +203,8 @@ public class HelloJfxium extends Application {
 | 我要做... | 用什么 |
 |---|---|
 | **登录页** | LoginTemplate（最快）/ FormAnt + VBoxAnt（自由）|
-| **admin 列表页** | CrudTemplate + TableAnt + PaginationAnt |
-| **数据概览页** | DashboardTemplate + StatisticAnt |
+| **admin 列表页** | BorderPaneAnt + HBarAnt + TableAnt + PaginationAnt |
+| **数据概览页** | VBoxAnt + GridAnt + StatisticAnt（自拼） |
 | **简单展示页** | PageTemplate（title + description + body）|
 | **应用骨架**（顶栏 + 侧栏 + 内容）| AppShellAnt |
 | **表单 + 校验** | FormAnt + Rule.required() + Rule.email() |
@@ -277,7 +277,7 @@ Messages.localeProperty().addListener((obs, ov, nv) -> {
 });
 ```
 
-**内置覆盖组件**：CodeBlockAnt / TreeSelectAnt / EmptyAnt / ModalAnt / PopconfirmAnt / UploadAnt / TransferAnt / LoginTemplate / DashboardTemplate。
+**内置覆盖组件**：CodeBlockAnt / TreeSelectAnt / EmptyAnt / ModalAnt / PopconfirmAnt / UploadAnt / TransferAnt / LoginTemplate。
 
 资源文件：`jfxium/src/main/resources/org/openkawu/jfxium/i18n/messages*.properties`。key 命名：`组件名小写.元素名`（如 `codeblock.copy` / `modal.ok`）。
 

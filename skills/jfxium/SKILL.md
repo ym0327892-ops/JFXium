@@ -10,7 +10,7 @@ description: >
 
 # JFXium UI Skill
 
-Targets **JFXium 1.34.6** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
+Targets **JFXium 1.34.7** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 
 本文件可**单独复制**为技能（Qoder: `.qoder/skills/jfxium.md`；Claude Code: `.claude/skills/jfxium/SKILL.md`）。
 若同目录包含 `references/` 与 `assets/catalog/`，按需深读；只复制本文件时，按本文件规则执行即可。
@@ -73,7 +73,7 @@ Targets **JFXium 1.34.6** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 | `ContextMenu` / `Tooltip` | `ContextMenuAnt` / `TooltipAnt` | |
 | `DatePicker` / `ColorPicker` | `DatePickerAnt` / `ColorPickerAnt` | 日期时间 `DateTimePickerAnt` |
 | `TitledPane` / `Accordion` | `TitledPaneAnt` / `CollapseAnt.accordion(true)` | 单面板用前者，多面板互斥用后者 |
-| `Pagination` / `Separator` / `ToolBar` | `PaginationAnt` / `SeparatorAnt` / `ToolBarAnt` | |
+| `Pagination` / `Separator` / `ToolBar` | `PaginationAnt` / `DividerAnt` / `ToolBarAnt` | |
 | `TabPane` / `Tab` | `TabsAnt` | `TabsAnt.controllerOf(node)`；动态增删用 `addTab/removeTab`，关闭用 `closeTab/closeAll` |
 | `ScrollPane` / `SplitPane` | `ScrollPaneAnt` / `SplitPaneAnt` | |
 | `BorderPane` | `BorderPaneAnt` | |
@@ -89,7 +89,7 @@ Targets **JFXium 1.34.6** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 `DropdownAnt` / `PopoverAnt` / `PopconfirmAnt` → `.build().show()`；
 `MessageAnt.success("...")` 直接调用；`NotificationAnt` → `.build().show()`。
 
-组合/模板：`PageTemplate`、`FormAnt`、`CrudTemplate`、`LoginTemplate`、`AppShellAnt`。
+组合/模板：`PageTemplate`、`FormAnt`、`LoginTemplate`、`AppShellAnt`。
 完整对照见 `references/native-map.md`。
 
 ## 关键契约

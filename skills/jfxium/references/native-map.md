@@ -35,7 +35,7 @@
 | `TitledPane` | `TitledPaneAnt` |
 | `Accordion` | `CollapseAnt.create().accordion(true)` | 多面板互斥；单面板用 `TitledPaneAnt` |
 | `Pagination` | `PaginationAnt` |
-| `Separator` | `SeparatorAnt` |
+| `Separator` | `DividerAnt` |
 | `Canvas` | `CanvasAnt` |
 | `ToolBar` | `ToolBarAnt` |
 | `TabPane` / `Tab` | `TabsAnt`（`controllerOf(...)` 切页；`addTab/removeTab/closeTab` 动态增删关闭） |
@@ -77,10 +77,10 @@
 |---|---|
 | 页面骨架（标题 + 描述 + 分区） | `PageTemplate` |
 | 表单 + 校验 | `FormAnt`（`.item(...).required().rule(...).end()` → `.buildResult()`） |
-| 增删改查页面 | `CrudTemplate` |
+| 增删改查页面 | `BorderPaneAnt` + `HBarAnt`（顶栏工具条 / 中区表格 / 底栏分页自由拼） |
 | 登录页 | `LoginTemplate` |
 | 设置面板 | `ResizablePanelAnt` / `WorkspaceSettingsTemplate` |
-| 页面外壳 | `AppShellAnt` / `LayoutAnt` |
+| 页面外壳 | `AppShellAnt` |
 | 状态栏 | `StatusBarAnt` |
 
 ## 允许的例外

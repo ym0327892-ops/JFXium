@@ -58,5 +58,5 @@ Do not invent APIs. If a method is not visible in the Javadoc/source, it does no
 - Number input in forms: `InputNumberAnt` (FormAnt validation/reset wired) before `SpinnerAnt`.
 - Native `Spinner` semantics, `valueProperty`, third-party API requiring `Spinner`: `SpinnerAnt`.
 - Loading: `SpinAnt` (SPINNER / DOTS / BARS), not `ProgressIndicator`.
-- Page skeleton: `PageTemplate`; CRUD: `CrudTemplate`; dialogs: `ModalAnt` / `PromptDialogAnt` / `DrawerAnt`.
+- Page skeleton: `PageTemplate`; toolbar pages (list/form/detail): `BorderPaneAnt` + `HBarAnt`; dialogs: `ModalAnt` / `PromptDialogAnt` / `DrawerAnt`.
 - Theme switching: `ThemeManager` (`applyTheme` / `registerScene` / `setDensity` / `setPrimaryColor`).

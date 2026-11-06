@@ -188,7 +188,7 @@
 
 | 维度 | JavaFX 原生 | JFXium |
 |---|---|---|
-| **控件数量** | ~30 个基础控件 | **102** 个组件（97 *Ant + 4 *Template + 1 FilterBarAnt）|
+| **控件数量** | ~30 个基础控件 | **114** 个组件（107 *Ant + 7 *Template）|
 | **API 风格** | 命令式 / 属性绑定 | Builder 流式链式 API + **bindValue 声明式双向绑定** |
 | **数据绑定** | 需持有控件引用 `field.getText()` | 声明 Property 即可 `nameProperty.get()`，无需控件引用 |
 | **主题系统** | 需手动写 CSS | LESS + CSS 变量 + 11 套内置主题 + 运行时切换 |

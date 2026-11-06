@@ -1,4 +1,4 @@
-# JFXium 组件目录（v1.34.6）
+# JFXium 组件目录（v1.34.7）
 
 > 由 `skills/jfxium/scripts/CatalogGen.java` 生成，**禁止手改**。
 > 改动组件公开 API 后重跑：`java skills/jfxium/scripts/CatalogGen.java`
@@ -24,7 +24,8 @@
 | **CollapseAnt** | — | `create() -> Builder` | `VBox` | disabled, controllerOf, panel, panels, accordion, activeKey, activeKeys, expandIcon, showExpandIcon, expandIconPosition, controller, expand, collapse, toggle, expandAll, collapseAll | 可展开/收缩的内容面板，支持多个 Panel，常用于 FAQ、详情分组、 |
 | **DateTimePickerAnt** | — | `create() -> Builder` | `StackPane` | controllerOf, value, editable, format, allowClear, size, onChange, bindValue, showPanel, hidePanel | 只读输入框 + 弹出面板（左侧日期面板 + 右侧时间面板并排）， |
 | **DescriptionsAnt** | — | `create() -> Builder` | `VBox` | title, size, column, bordered, item | 以列表形式展示多个字段的详情（标签 + 值对），常用于详情页、 |
-| **EmptyAnt** | — | `create() -> Builder`<br>`create(String description) -> Builder` | `VBox` | description, image, extra, extraButton | 空数据占位提示，用于列表 / 表格 / 搜索无结果时展示友好提示。 |
+| **EmptyAnt** | — | `create() -> Builder`<br>`create(String description) -> Builder` | `VBox` | description, extra, extraButton | 空数据占位提示，用于列表 / 表格 / 搜索无结果时展示友好提示。 |
+| **FilterBarAnt** | — | `create() -> Builder` | `HBox` | spacing, padding, search, filter, action, actionPrimary, actionNode | FilterBarAnt - admin 列表页"上栏工具条"标准化组件。 |
 | **FloatButtonAnt** | — | `create() -> Builder` | `StackPane` | icon, tooltip, type, onClick, size | JFXium 悬浮按钮组件 - 对标 Ant Design FloatButton |
 | **FormAnt** | — | `create() -> Builder` | `VBox` | required, rule, rules, helpText, validateStatus, labelAlign, labelWidth, hidden, hide, tooltip, end, size, colon, labelCol, wrapperCol, rowGap, columnGap, validateTrigger | JFXium 表单组件 - 对标 Ant Design Form。 |
 | **GroupBoxAnt** | — | `create() -> Builder` | `VBox` | title, extra, content, bordered, size, type, actions, tab, activeTabKey, defaultActiveTabKey, onTabChange, tabBarExtraContent, headerBackground, headerBorder, hoverable | 带标题边框的内容容器，用于将逻辑相关的控件（输入框、复选框等） |
@@ -81,7 +82,6 @@
 | **PaginationAnt** | `Pagination` | `create() -> PaginationAnt`<br>`create(int pageCount) -> PaginationAnt` | `PaginationAnt` | controllerOf, next, prev, first, last, pageCount, currentPage, maxPageIndicatorCount, onChange | 页码导航控件，用于对大量数据分页展示。对标 Ant Design Pagination。 |
 | **RadioButtonAnt** | `RadioButton` | `create() -> RadioButtonAnt`<br>`create(String text) -> RadioButtonAnt` | `RadioButtonAnt` | text, selected, size, shape, toggleGroup, onChange, bindValue | 单选控件，继承自 RadioButton， |
 | **SearchInputAnt** | `AbstractStackPaneAnt` | `create() -> SearchInputAnt` | — | placeholder, text, size, allowClear, onChange, onSearch, bindValue, clear, input, clearButton | 文本输入的「可清除」变体。InputAnt 继承自 javafx.scene.text.TextField |
-| **SeparatorAnt** | `Separator` | `create() -> SeparatorAnt`<br>`create(Orientation orientation) -> SeparatorAnt` | `SeparatorAnt` | orientation, halignment, valignment | 视觉分隔线控件，继承自 Separator， |
 | **SpinnerAnt** | `Spinner` | `create() -> SpinnerAnt`<br>`create(double min, double max, double initialValue, double stepSize) -> SpinnerAnt` | `SpinnerAnt` | value, min, max, step, precision, editable, placeholder, onChange, bindValue, size, increment, decrement, fromString | SpinnerAnt 就是 Spinner<Double>， |
 | **SplitButtonAnt** | `SplitMenuButton` | `create() -> SplitButtonAnt`<br>`create(String text) -> SplitButtonAnt` | `SplitButtonAnt` | text, size, arrowStyle, rounded, square, icon, contentDisplay, onClick, item, itemDisabled, separator, add, focusTraversable | 组合按钮——左侧主体是普通按钮（触发默认动作），右侧带小箭头点击弹出下拉菜单 |
 | **StatusBarAnt** | `HBox` | `create() -> StatusBarAnt`<br>`create(String info, String status) -> StatusBarAnt` | `StatusBarAnt` | info, status, progress, action, left, center, right, updateInfo, updateProgress, updateStatus | 窗口底部信息与操作栏，左侧信息 + 中间进度 + 右侧状态/操作。 |
@@ -135,27 +135,12 @@
 | 组件 | extends | 工厂 | build() | 关键 API | 定位 |
 |---|---|---|---|---|---|
 | **AppShellAnt** | — | `create() -> Builder` | `BorderPane` | header, sider, content, footer, collapsible, collapsed, collapsedWidth, breakpoint, trigger, headerBackground, siderBackground, contentBackground, footerBackground, onCollapseChange, buildResult, toggle, collapsedProperty | JFXium 应用骨架组件。 |
-| **LayoutAnt** | — | `create() -> Builder` | `BorderPane` | header, sider, content, footer | JFXium 页面布局组件 - 对标 Ant Design Layout |
 
 ## org.openkawu.jfxium.template
 
 | 组件 | extends | 工厂 | build() | 关键 API | 定位 |
 |---|---|---|---|---|---|
-| **CrudTemplate** | — | `create() -> Builder` | `BorderPane` | title, topLeft, topRight, body, bottomLeft, bottomRight, bordered, background, topbarSpacing, bottombarSpacing, sectionGap | admin 后台 90% 业务页的通用模板。 |
-| **DashboardTemplate** | — | `create() -> Builder` | `VBox` | welcome, stat, statColumns, bottomLeft, bottomRight, leftRatio, sectionGap, padding | 标准 dashboard 布局——欢迎语 + N 列统计卡矩阵 + 底部多区域内容。 |
-| **FilterBarAnt** | — | `create() -> Builder` | `HBox` | spacing, padding, search, filter, action, actionPrimary, actionNode | FilterBarAnt - admin 列表页"上栏工具条"标准化组件。 |
-| **LaunchPadTemplate** | — | `create() -> Builder` | `VBox` | title, description, columns, gap, onAction, item | LaunchPadTemplate - 首页/控制台常用快捷入口模板。 |
 | **LoginTemplate** | — | `create() -> Builder` | `BorderPane` | brandName, tagline, feature, features, copyright, bannerWidth, formTitle, formSubtitle, usernamePlaceholder, passwordPlaceholder, submitText, showRememberMe, onSubmit, onForgot, onRegister | admin 后台最常见的登录页骨架——左侧品牌 banner（渐变 + 卖点）， |
-| **PageTemplate** | — | `create() -> Builder` | `VBox` | title, description, body, section, sections, headerGap, sectionGap, headerToBodyGap, padding, background | 「大标题 + 描述 + 内容区」最简模板。覆盖 admin / showcase / 文档 / 设置等 |
-| **ProjectChangelogTemplate** | — | `create() -> Builder` | `VBox` | changelog, ChangeEntry, title, description, onAction, version | ProjectChangelogTemplate - 项目变更日志模板。 |
-| **ProjectConsoleTemplate** | — | `create() -> Builder` | `BorderPane` | userMenu, headerActions, statusBar, standardMenuBar, SidebarLink, SidebarSection, SidebarResult, sidebarLink, sidebarSection, sidebarPane, brand, brandSubtitle, brandIcon, headerTop, headerCenter, headerRight, menuBar, headerLeft | ProjectConsoleTemplate - 工程项目控制台壳模板。 |
-| **ProjectDashboardTemplate** | — | `create() -> Snapshot`<br>`create() -> Builder` | `VBox` | demo, pageTitle, pageSubtitle, pageDescription, currentUser, version, branch, buildStatus, mode, templateCount, componentCount, updatedAt, completion, icon, mergeFrom, title, description, onAction | ProjectDashboardTemplate - 工程项目首页成品模板。 |
-| **ProjectFeatureTemplate** | — | `create() -> Builder` | `VBox` | title, description, columns, gap, onAction, feature | ProjectFeatureTemplate - 项目特性/亮点网格展示模板。 |
-| **ProjectHeroTemplate** | — | `create() -> Builder` | `VBox` | userMenu, title, subtitle, description, icon, status, meta, action, actions | ProjectHeroTemplate - 工程项目展示首屏门面模板。 |
-| **ProjectOverviewTemplate** | — | `create() -> Builder` | `VBox` | title, description, status, tech, metric, meta, milestone, activity, progress, onAction | ProjectOverviewTemplate - 工程项目展示模板。 |
-| **ProjectQuickStartTemplate** | — | `create() -> Builder` | `VBox` | title, description, step | ProjectQuickStartTemplate - 快速上手步骤模板。 |
-| **ProjectReleaseTemplate** | — | `create() -> Builder` | `VBox` | title, description, status, meta, release, change, readiness, onAction | ProjectReleaseTemplate - 工程发布节奏模板。 |
-| **ProjectShowcaseTemplate** | — | `create() -> Builder` | `VBox` | title, description, hero, section, sections | ProjectShowcaseTemplate - 工程项目展示首页模板。 |
-| **ShowcaseSectionTemplate** | — | `create() -> Builder` | `VBox` | title, description, body | ShowcaseSectionTemplate - 示例页/文档页的通用 section 壳。 |
+| **PageTemplate** | — | `create() -> Builder` | `VBox` | title, description, body, hero, section, sections, headerGap, sectionGap, headerToBodyGap, padding, background | 「大标题 + 描述 + 内容区」最简模板。覆盖 admin / showcase / 文档 / 设置等 |
 | **WorkspaceSettingsTemplate** | — | `create() -> Builder` | `VBox` | drawer, themeManager, watermarkVisibleSupplier, onWatermarkVisibleChanged, title, description, fromString | WorkspaceSettingsTemplate - 工作台外观设置抽屉内容模板。 |
 | **WorkspaceTemplate** | — | `create() -> Builder` | `BorderPane` | userMenu, brand, brandSubtitle, brandIcon, header, headerLeft, headerTop, headerCenter, headerRight, headerGap, sider, siderWidth, content, footer, collapsible, collapsed, collapsedWidth, trigger | 在 AppShellAnt 这种低层应用骨架上，再补一层“可直接拿去做生产系统”的 |
