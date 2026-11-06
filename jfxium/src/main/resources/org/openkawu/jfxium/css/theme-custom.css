@@ -182,31 +182,6 @@
    Page / Layout Surfaces
    ============================================ */
 /* 老 PageAnt 已删除（M18），相关 .page / .page-header / .page-title 等样式同步移除 */
-/* CrudTemplate（业务模板，M18 新增）：通用三段式骨架 */
-.jfx-crud-template {
-  -fx-padding: 24px;
-}
-.jfx-crud-template.jfx-crud-template-bordered {
-  -fx-border-color: -color-border-muted;
-  -fx-border-width: 1px;
-  -fx-border-style: solid;
-  -fx-border-radius: 8px;
-  -fx-background-radius: 8px;
-}
-.jfx-crud-template-title {
-  -fx-font-size: 20px;
-  -fx-font-weight: 700;
-  -fx-text-fill: -color-fg-default;
-}
-.jfx-crud-template-topbar {
-  -fx-background-color: transparent;
-}
-.jfx-crud-template-body {
-  -fx-background-color: transparent;
-}
-.jfx-crud-template-bottombar {
-  -fx-background-color: transparent;
-}
 /* PageTemplate（M19.33 新增）：通用展示页骨架「大标题 + 描述 + 内容区」 */
 .jfx-page-template {
   -fx-background-color: transparent;
@@ -328,21 +303,18 @@
   -fx-background-color: transparent;
 }
 /* ============================================
-   AppShell / Layout 应用骨架
+   AppShell 应用骨架
    ============================================ */
-.jfx-app-shell,
-.jfx-layout {
+.jfx-app-shell {
   -fx-background-color: -color-bg-layout;
 }
-.jfx-app-shell-header,
-.jfx-layout-header {
+.jfx-app-shell-header {
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
   -fx-border-style: solid;
 }
-.jfx-app-shell-sider,
-.jfx-layout-sider {
+.jfx-app-shell-sider {
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: transparent -color-border-muted transparent transparent;
   -fx-border-width: 0 1px 0 0;
@@ -374,12 +346,10 @@
   -fx-background-color: -color-accent-subtle;
   -fx-border-color: -color-border-muted transparent transparent transparent;
 }
-.jfx-app-shell-content,
-.jfx-layout-content {
+.jfx-app-shell-content {
   -fx-background-color: -color-bg-default;
 }
-.jfx-app-shell-footer,
-.jfx-layout-footer {
+.jfx-app-shell-footer {
   -fx-background-color: -color-bg-container;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;
@@ -643,14 +613,24 @@
   -fx-border-color: transparent;
   -fx-text-fill: -color-accent-active;
 }
-/* Button Sizes */
+/* Button Sizes
+   高度直接钳制到 @control-height 系 token（不再靠 padding 反推），
+   保证与 Input / ComboBox / Table 表头同档等高。
+   注意：LabeledSkinBase.computePrefHeight 只按内容计算、会忽略 -fx-pref-height，
+   所以必须同时给 -fx-max-height，否则 compact 主题下内容高度（29）会顶破 token（28）。 */
 .button.middle {
   -fx-padding: 6px 15px;
   -fx-font-size: 14px;
+  -fx-min-height: 32px;
+  -fx-pref-height: 32px;
+  -fx-max-height: 32px;
 }
 .button.small {
   -fx-padding: 2px 7px;
   -fx-font-size: 12px;
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
 }
 .button.xs {
   -fx-padding: 1px 6px;
@@ -659,6 +639,9 @@
 .button.large {
   -fx-padding: 9px 15px;
   -fx-font-size: 16px;
+  -fx-min-height: 40px;
+  -fx-pref-height: 40px;
+  -fx-max-height: 40px;
 }
 /* Inline text button — 剥皮按钮，视觉上是内联文字，行为上是真按钮
    适用于：StatusBar action、表格行操作、面包屑链接等嵌入文本流的场景 */
@@ -671,6 +654,9 @@
   -fx-cursor: hand;
   -fx-font-size: 12px;
   -fx-effect: none;
+  /* inline 按钮是内联文字形态，必须按内容高度走，不能被 size 档的高度钳制 */
+  -fx-min-height: 0;
+  -fx-pref-height: -1;
 }
 .button.inline:hover {
   -fx-background-color: -color-accent-hover;
@@ -985,6 +971,14 @@
   -fx-font-weight: 600;
   -fx-alignment: center-left;
   -fx-background-insets: 0;
+  /* 中和 modena 的 -fx-size: 2em。
+     TableColumnHeader.computePrefHeight = max(-fx-size, label.prefHeight)，
+     TableHeaderRow.computeMinHeight 又直接复用该 pref，导致表头最小高被字体 em 锁死
+     （14px 字 → 28px、13px 字 → 26px），与 .column-header-background 的 token 冲突
+     （small 档 pref=28 但 min=28+1px 边框=29，实际被撑高 1px）。
+     取 20px（JavaFX 默认几何下限）后，表头高度完全由 -fx-pref-height token 决定。
+     注意不能写 0：SizeCssMetaData 拒绝 <= 0 的值并回退到 2em。 */
+  -fx-size: 20px;
 }
 /* padding 移到内部 .label 上（AtlantaFX 同款做法），让 column-header 自己 padding=0，
    排序区（label + arrow + sort-order-dots-container）能自由布局，不会出现"重叠"或"大空白"。 */
@@ -1452,6 +1446,14 @@
 }
 .combo-box .arrow-button {
   -fx-background-color: transparent;
+  /* 归零 modena 的 0.5em 上下内边距（约 6px），否则与本控件 .input-base() 的
+     padding 叠加，整体比 Input/Button 高出 10px（BUG：尺寸不一致）。 */
+  -fx-padding: 0 8px 0 4px;
+}
+/* 内部展示单元格同样归零纵向 padding（modena 为 0.333333em ≈ 4px） */
+.combo-box > .list-cell {
+  -fx-padding: 0;
+  -fx-background-color: transparent;
 }
 .combo-box .arrow {
   -fx-shape: "M7 10l5 5 5-5z";
@@ -1644,18 +1646,6 @@
   -fx-progress-color: -color-danger-emphasis;
 }
 /* ============================================
-   jfx-spinner — SpinAnt SPINNER 旋转加载指示器
-   显式覆盖 indeterminate 态样式，确保旋转动画 + 主题色
-   对齐 AtlantaFX _progress.scss indeterminate 段
-   ============================================ */
-.jfx-spinner {
-  -fx-indeterminate-segment-count: 12;
-  -fx-spin-enabled: true;
-}
-.jfx-spinner:indeterminate .segment {
-  -fx-background-color: -color-accent-emphasis;
-}
-/* ============================================
    ProgressAnt 百分比文字
    颜色随 status 切换，避免 Java 端拼字符串
    ============================================ */
@@ -1684,15 +1674,6 @@
   -fx-padding: 0 4px;
   -fx-font-size: 12px;
   -fx-font-weight: 600;
-}
-.jfx-badge-success {
-  -fx-background-color: -color-success-emphasis;
-}
-.jfx-badge-warning {
-  -fx-background-color: -color-warning-emphasis;
-}
-.jfx-badge-error {
-  -fx-background-color: -color-danger-emphasis;
 }
 .jfx-badge-dot {
   -fx-background-color: -color-danger-emphasis;
@@ -1748,6 +1729,8 @@
 .date-picker .arrow-button {
   -fx-background-color: transparent;
   -fx-cursor: hand;
+  /* 纵向归零：modena 的上下内边距会与本控件 .input-base() 叠加，整体偏高 6px */
+  -fx-padding: 0 4px 0 4px;
 }
 .date-picker .arrow-button .arrow {
   /* 显式设 shape + 尺寸——modena 的 DatePicker arrow 默认没 shape，只设颜色会"有色无形"（SKILL §17）。
@@ -2801,6 +2784,38 @@
   -fx-background-insets: 0;
   -fx-effect: none;
 }
+/* 溢出按钮：JFXium 主题整体替换 modena UA 样式表，JavaFX 内部
+   ToolBarOverflowMenu（.tool-bar-overflow-button）及其 .arrow 必须显式补全，
+   否则溢出按钮无尺寸、箭头不可见 */
+.jfx-tool-bar > .tool-bar-overflow-button {
+  -fx-background-color: transparent;
+  -fx-background-radius: 6px;
+  -fx-padding: 0 4px;
+  -fx-cursor: hand;
+}
+.jfx-tool-bar > .tool-bar-overflow-button:hover {
+  -fx-background-color: -color-accent-hover;
+}
+.jfx-tool-bar > .tool-bar-overflow-button:pressed {
+  -fx-background-color: -color-accent-active;
+}
+.jfx-tool-bar > .tool-bar-overflow-button > .arrow {
+  /* 红线#9：显式 shape + min/pref 尺寸（双箭头溢出图标，对齐 modena） */
+  -fx-shape: "M337.273,297.622l-0.016,1.069l2.724,2.639l-2.723,2.628l0.015,1.048h0.881l3.81-3.685l-3.788-3.699H337.273z M343.783,297.622h-0.902l-0.015,1.069l2.724,2.639l-2.724,2.628l0.015,1.048h0.882l3.809-3.685L343.783,297.622z";
+  -fx-min-width: 10px;
+  -fx-min-height: 8px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 8px;
+  -fx-background-color: -color-fg-muted;
+}
+.jfx-tool-bar > .tool-bar-overflow-button:hover > .arrow,
+.jfx-tool-bar > .tool-bar-overflow-button:focused > .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+/* 垂直工具栏：溢出按钮位于底部，内边距下移 */
+.jfx-tool-bar:vertical > .tool-bar-overflow-button {
+  -fx-padding: 4px 0;
+}
 /* ============================================
    StatusBar — 底部状态栏（对标 VS Code / IDEA 底栏）
    ============================================ */
@@ -2865,7 +2880,8 @@
 }
 .choice-box .open-button {
   -fx-background-color: transparent;
-  -fx-padding: 4px 4px;
+  /* 纵向归零：模版 padding 4px×2 会把控件顶高 8px，与 Input/Button 不同高 */
+  -fx-padding: 0 4px 0 4px;
 }
 .choice-box .open-button .arrow {
   /* M19.44 红线#9 修复：显式设 shape + 尺寸（对齐 AtlantaFX arrow-drop-down） */
@@ -2946,6 +2962,8 @@
 .spinner .text-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
+  /* 去掉内层边框宽度：边框由外层 .spinner 统一绘制，内层保留 1px 会把总高顶多 2px */
+  -fx-border-width: 0;
   /* 数值右对齐：步进后 caret 落在编辑器最右侧，而不是文本左侧 */
   -fx-alignment: center-right;
   -fx-padding: 6px 11px;
@@ -3203,54 +3221,66 @@
   -fx-background-color: -color-accent-muted;
 }
 .table-cell {
-  -fx-padding: 8px 12px;
+  -fx-padding: 4px 12px;
   -fx-text-fill: -color-fg-default;
   /* 默认垂直居中（水平由 align-* 复合类控制；不设的话默认 center-left）*/
   -fx-alignment: center-left;
 }
-/* 行高保护：保证最低行高足以容纳 Avatar(32px)/Tag(24px)/按钮(28px) 等内容，
-   同时文字行也有舒适的上下留白。
+/* 行高契约：min-height 给下限，cell-size 抵消行底线占用的 1px。
    对齐 PC UI 规范：行高 = @table-row-height = @control-height（32px）。
-   不用 -fx-cell-size（那个会强制裁切高内容），用 min-height 让行高自适应但有下限。 */
+   TableRowSkinBase.computePrefHeight 的算法是：
+     cellSizeWithInsets = -fx-cell-size + 行上下 insets（本项目行底线 1px）
+     row.pref = max(内容 pref, max(cellSizeWithInsets, 行 -fx-min-height))
+   -fx-cell-size 不给值时取 CellSkinBase.DEFAULT_CELL_SIZE = 24，
+   于是紧凑主题（token 24）下 24 + 1px = 25，比按钮/输入框高 1px。
+   取「token - 1px」让 cellSizeWithInsets 恰好等于 token，6 个主题×尺寸组合全部命中。
+   不能写 0：CellSkinBase 会把 <= 0 回退成 24。 */
 .table-view .table-row-cell {
   -fx-min-height: 32px;
+  -fx-cell-size: 31px;
 }
 /* M11.2 三档尺寸（对齐桌面工具 Table size：SMALL / MIDDLE / LARGE）
    ============================================================ */
-/* SMALL：紧凑模式。表头/行高 = @control-height-sm（28px）/ padding 6×8 / 字号 13 */
+/* SMALL：紧凑模式。表头/行高 = @control-height-sm（28px）/ padding token / 字号 12 */
+/* 表头高由 .column-header-background 的 -fx-pref-height 控制，
+   这里不能再给 .column-header 加纵向 padding（旧值 6px×2 会把表头顶到 29px，
+   比按钮/输入框的 21→28 更难对齐）。 */
 .table-view.jfx-table-small .column-header-background {
   -fx-pref-height: 28px;
 }
 .table-view.jfx-table-small .column-header {
-  -fx-padding: 6px 8px;
+  -fx-padding: 0;
 }
 .table-view.jfx-table-small .table-row-cell {
   -fx-min-height: 28px;
+  -fx-cell-size: 27px;
 }
 .table-view.jfx-table-small .table-cell {
-  -fx-padding: 6px 8px;
-  -fx-font-size: 13px;
+  -fx-padding: 2px 8px;
+  -fx-font-size: 12px;
 }
 /* MIDDLE：默认（无需重写，使用上方的 .column-header / .table-cell 默认值）
    .jfx-table-middle 仅用于 styleClass 标识，便于用户后续 grep 调试 */
-/* LARGE：宽松模式。表头/行高 = @control-height-lg（40px）/ padding 12×16 / 字号 15 */
+/* LARGE：宽松模式。表头/行高 = @control-height-lg（40px）/ padding token / 字号 16 */
 .table-view.jfx-table-large .column-header-background {
   -fx-pref-height: 40px;
 }
 .table-view.jfx-table-large .column-header {
-  -fx-padding: 12px 16px;
+  -fx-padding: 0;
 }
 .table-view.jfx-table-large .table-row-cell {
   -fx-min-height: 40px;
+  -fx-cell-size: 39px;
 }
 .table-view.jfx-table-large .table-cell {
-  -fx-padding: 12px 16px;
-  -fx-font-size: 15px;
+  -fx-padding: 6px 16px;
+  -fx-font-size: 16px;
 }
 /* 老 .jfx-table-compact 兼容（等价 SMALL）。
    保留是为了万一有用户手动挂 styleClass，但 Java API 走 size(SMALL) 会自动加 jfx-table-small。 */
 .table-view.jfx-table-compact .table-row-cell {
-  -fx-min-height: 36px;
+  -fx-min-height: 28px;
+  -fx-cell-size: 27px;
 }
 /* Striped rows —— styleClass 由 TableAnt 挂 jfx-table-striped（不是 striped），M19.40 修对齐 */
 .table-view.jfx-table-striped .table-row-cell:odd {
@@ -5603,31 +5633,6 @@
   -fx-border-width: 0.5;
 }
 /* ============================================
-   Modal / Dialog Backdrop
-   ============================================ */
-.jfx-modal-overlay {
-  -fx-background-color: rgba(0, 0, 0, 0.45);
-}
-.jfx-modal-content {
-  -fx-background-color: -color-bg-overlay;
-  -fx-border-color: -color-border-default;
-  -fx-border-width: 1px;
-  -fx-border-radius: 8px;
-  -fx-background-radius: 8px;
-  -fx-padding: 16px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 16, 0, 0, 4);
-}
-.jfx-modal-header {
-  -fx-padding: 0 0 12px 0;
-  -fx-border-color: transparent transparent -color-border-muted transparent;
-  -fx-border-width: 0 0 1px 0;
-}
-.jfx-modal-footer {
-  -fx-padding: 12px 0 0 0;
-  -fx-border-color: -color-border-muted transparent transparent transparent;
-  -fx-border-width: 1px 0 0 0;
-}
-/* ============================================
    Input Sizes
    ============================================ */
 .text-field.small {
@@ -5997,22 +6002,38 @@
   -fx-border-radius: 8px;
   -fx-background-radius: 8px;
 }
+/* 与 .table-view 表头同一高度契约：padding 下放到 .label，并中和 modena 的 -fx-size: 2em
+   （TableColumnHeader.computePrefHeight = max(-fx-size, label.prefHeight)，
+   否则表头被字体 em 锁死，与 @table-header-height 冲突）。 */
 .tree-table-view .column-header {
   -fx-background-color: -color-bg-subtle;
-  -fx-padding: 16px 16px;
+  -fx-padding: 0;
   -fx-font-weight: 600;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
   -fx-alignment: center-left;
+  -fx-size: 20px;
 }
 .tree-table-view .column-header .label {
   -fx-text-fill: -color-fg-default;
   -fx-font-weight: 600;
+  -fx-padding: 0 16px 0 16px;
+  -fx-alignment: center-left;
 }
+/* 表头高由外层 .column-header-background 控制，与 .table-view 保持一致 */
+.tree-table-view .column-header-background {
+  -fx-pref-height: 32px;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+  -fx-effect: null;
+}
+/* 行高契约：min-height 给下限，cell-size 抵消行底线占用的 1px（同 .table-row-cell） */
 .tree-table-row-cell {
   -fx-background-color: -color-bg-default;
   -fx-border-color: transparent transparent -color-border-subtle transparent;
   -fx-border-width: 0 0 1px 0;
+  -fx-min-height: 32px;
+  -fx-cell-size: 31px;
 }
 /* 行 hover：让行内所有子节点（.tree-table-cell）都跟随变浅蓝，
    防止 cell 自己的 background 遮住行 hover 颜色 */
@@ -6038,7 +6059,7 @@
   -fx-background-color: -color-accent-muted;
 }
 .tree-table-cell {
-  -fx-padding: 8px 12px;
+  -fx-padding: 4px 12px;
   -fx-text-fill: -color-fg-default;
 }
 .tree-table-view .tree-disclosure-node .arrow {
@@ -6953,17 +6974,6 @@
   -fx-spacing: 8px;
   -fx-padding: 12px;
 }
-/* Result */
-.jfx-result-title {
-  -fx-font-size: 24px;
-  -fx-font-weight: 600;
-  -fx-text-fill: -color-fg-default;
-}
-.jfx-result-subtitle {
-  -fx-font-size: 14px;
-  -fx-text-fill: -color-fg-muted;
-  -fx-line-spacing: 0.28em;
-}
 /* FilterBar label */
 .jfx-filter-bar-label {
   -fx-text-fill: -color-fg-muted;
@@ -7346,6 +7356,70 @@
   -fx-border-radius: 5px, 4px !important;
 }
 /* ============================================
+   高度契约（Height Contract）
+   ============================================
+   单行控件的高度不再靠 padding 反推，直接钳制 min/pref/max 到 token：
+     DEFAULT（无 size 类）= @control-height(32) / SMALL = @control-height-sm(28) / LARGE = @control-height-lg(40)
+   compact 主题覆盖这三个 token 后自动收紧（28/24/36），无需再改任何组件规则。
+   注意：只列「单行」控件；.text-area 是多行，不参与钳制。
+   必须带 -fx-max-height：这些控件的 skin 计算 prefHeight 时只看内容，
+   会无视 -fx-pref-height，内容一旦高于 token 就会顶破（如 compact 下 29 > 28）。
+   ============================================ */
+.text-field,
+.password-field,
+.combo-box,
+.choice-box,
+.date-picker,
+.color-picker,
+.spinner {
+  -fx-min-height: 32px;
+  -fx-pref-height: 32px;
+  -fx-max-height: 32px;
+}
+.text-field.small,
+.password-field.small,
+.combo-box.small,
+.choice-box.small,
+.date-picker.small,
+.color-picker.small,
+.spinner.small {
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
+}
+.text-field.large,
+.password-field.large,
+.combo-box.large,
+.choice-box.large,
+.date-picker.large,
+.color-picker.large,
+.spinner.large {
+  -fx-min-height: 40px;
+  -fx-pref-height: 40px;
+  -fx-max-height: 40px;
+}
+/* 例外：DatePicker 弹层内的月份/年份 spinner 是弹层自带的导航条，
+   高度由弹层层高排版决定（modena 依 -fx-size 计算），不能被 32px 契约拉高，
+   否则月视图整体比年视图高 5px（CalendarAnt 视图比例契约测试会失败）。 */
+.date-picker-popup .spinner {
+  -fx-min-height: 0;
+  -fx-pref-height: -1;
+  -fx-max-height: -1;
+}
+/* 例外：嵌套输入框 / 无 chrome 的只读文本，高度由外层控件表达，不参与钳制。
+   -1 = USE_COMPUTED_SIZE（min/pref 恢复内容自适应，max 恢复 MAX_VALUE） */
+.spinner .text-field,
+.date-picker > .text-field,
+.combo-box .text-field,
+.jfx-input-password > .text-field,
+.jfx-input-password > .password-field,
+.jfx-search-input > .jfx-search-input-field,
+.text-field.jfx-selectable-text {
+  -fx-min-height: 0;
+  -fx-pref-height: -1;
+  -fx-max-height: -1;
+}
+/* ============================================
    Size Variants (Small / Large)
    ============================================
    注：Button sizes（.button.middle / .small / .xs / .large）已在 _button.less 中定义，
@@ -7589,40 +7663,6 @@
 .jfx-login-template-no-account {
   -fx-text-fill: -color-fg-muted;
   -fx-font-size: 13px;
-}
-/* ============================================================
-   DashboardTemplate
-   ============================================================ */
-.jfx-dashboard-root {
-  -fx-background-color: -color-bg-layout;
-}
-.jfx-dashboard-stat-icon-box {
-  -fx-background-radius: 8;
-  -fx-background-color: -color-bg-subtle;
-}
-.jfx-dashboard-stat-title {
-  -fx-font-size: 13px;
-  -fx-text-fill: -color-fg-muted;
-}
-.jfx-dashboard-stat-trend-up {
-  -fx-font-size: 12px;
-  -fx-text-fill: -color-success-emphasis;
-}
-.jfx-dashboard-stat-trend-down {
-  -fx-font-size: 12px;
-  -fx-text-fill: -color-danger-emphasis;
-}
-.jfx-dashboard-stat-trend-hint {
-  -fx-font-size: 12px;
-  -fx-text-fill: -color-fg-muted;
-}
-.jfx-dashboard-welcome {
-  -fx-font-size: 22px;
-  -fx-font-weight: 700;
-}
-.jfx-dashboard-stat-value {
-  -fx-font-size: 28px;
-  -fx-font-weight: 700;
 }
 /* ============================================================
    WorkspaceTemplate
@@ -8075,9 +8115,6 @@
 .jfx-avatar.jfx-avatar-square {
   -fx-background-radius: 4px;
 }
-.jfx-avatar.jfx-avatar-circle {
-  -fx-background-radius: 9999;
-}
 .jfx-avatar-group {
   -fx-spacing: -8;
   -fx-alignment: center-left;
@@ -8116,34 +8153,6 @@
 .jfx-result-icon-box {
   -fx-padding: 0 0 16 0;
   -fx-alignment: center;
-}
-.jfx-result-icon {
-  -fx-font-size: 72px;
-}
-.jfx-result.jfx-result-status-success .jfx-result-icon {
-  -fx-text-fill: -color-success-emphasis;
-}
-.jfx-result.jfx-result-status-info .jfx-result-icon {
-  -fx-text-fill: -color-accent-emphasis;
-}
-.jfx-result.jfx-result-status-warning .jfx-result-icon {
-  -fx-text-fill: -color-warning-emphasis;
-}
-.jfx-result.jfx-result-status-error .jfx-result-icon {
-  -fx-text-fill: -color-danger-emphasis;
-}
-.jfx-result.jfx-result-status-404 .jfx-result-icon {
-  -fx-text-fill: -color-fg-muted;
-}
-.jfx-result.jfx-result-status-403 .jfx-result-icon {
-  -fx-text-fill: -color-fg-muted;
-}
-.jfx-result.jfx-result-status-500 .jfx-result-icon {
-  -fx-text-fill: -color-danger-emphasis;
-}
-.jfx-result-body {
-  -fx-alignment: center;
-  -fx-spacing: 8;
 }
 .jfx-result-title {
   -fx-font-size: 24px;
