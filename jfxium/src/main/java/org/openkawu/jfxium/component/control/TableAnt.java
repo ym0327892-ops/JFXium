@@ -282,12 +282,27 @@ public class TableAnt<T> extends TableView<T>
         return this;
     }
 
-    /** 同时设置当前列首选/最小/最大宽度。 */
+    /**
+     * 同时设置当前列首选/最小/最大宽度。
+     *
+     * <p>JavaFX 的 {@code TableColumn} 只在 {@code doSetWidth} 里做单次钳制，
+     * 并不校验三个值之间的先后矛盾：传入 {@code (100, 120, 80)} 会得到
+     * {@code width=120 / min=120 / max=80} 的自相矛盾状态（宽度大于自己声明的上限）。
+     * 因此这里先归一化区间：非有限值/负数回退到当前值，{@code max < min} 时以 min 为准，
+     * pref 再钳进 {@code [min, max]}。</p>
+     */
     public TableAnt<T> columnWidth(double pref, double min, double max) {
         TableColumn<T, ?> col = requireCurrentColumn();
-        col.setPrefWidth(pref);
-        col.setMinWidth(min);
-        col.setMaxWidth(max);
+        double safeMin = Double.isFinite(min) ? Math.max(0, min) : col.getMinWidth();
+        double safeMax = Double.isFinite(max) ? Math.max(0, max) : col.getMaxWidth();
+        if (safeMax < safeMin) {
+            safeMax = safeMin;
+        }
+        double safePref = Double.isFinite(pref) ? Math.min(Math.max(pref, safeMin), safeMax) : safeMin;
+
+        col.setMinWidth(safeMin);
+        col.setMaxWidth(safeMax);
+        col.setPrefWidth(safePref);
         return this;
     }
 
