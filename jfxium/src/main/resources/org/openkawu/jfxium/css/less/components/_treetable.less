@@ -9,25 +9,41 @@
   -fx-background-radius: @border-radius-lg;
 }
 
+/* 与 .table-view 表头同一高度契约：padding 下放到 .label，并中和 modena 的 -fx-size: 2em
+   （TableColumnHeader.computePrefHeight = max(-fx-size, label.prefHeight)，
+   否则表头被字体 em 锁死，与 @table-header-height 冲突）。 */
 .tree-table-view .column-header {
   -fx-background-color: -color-bg-subtle;
-  -fx-padding: @table-header-padding-y @table-header-padding-x;
+  -fx-padding: 0;
   -fx-font-weight: 600;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
   -fx-alignment: center-left;
+  -fx-size: 20px;
 }
 
 .tree-table-view .column-header .label {
   -fx-text-fill: -color-fg-default;
   -fx-font-weight: 600;
+  -fx-padding: 0 @table-header-padding-x 0 @table-header-padding-x;
+  -fx-alignment: center-left;
 }
 
+/* 表头高由外层 .column-header-background 控制，与 .table-view 保持一致 */
+.tree-table-view .column-header-background {
+  -fx-pref-height: @table-header-height;
+  -fx-background-color: -color-bg-subtle;
+  -fx-background-insets: 0;
+  -fx-effect: null;
+}
+
+/* 行高契约：min-height 给下限，cell-size 抵消行底线占用的 1px（同 .table-row-cell） */
 .tree-table-row-cell {
   -fx-background-color: -color-bg-default;
   -fx-border-color: transparent transparent -color-border-subtle transparent;
   -fx-border-width: 0 0 1px 0;
-  
+  -fx-min-height: @table-row-height;
+  -fx-cell-size: (@table-row-height - 1px);
 }
 
 /* 行 hover：让行内所有子节点（.tree-table-cell）都跟随变浅蓝，

@@ -32,6 +32,8 @@
 .date-picker .arrow-button {
   -fx-background-color: transparent;
   -fx-cursor: hand;
+  /* 纵向归零：modena 的上下内边距会与本控件 .input-base() 叠加，整体偏高 6px */
+  -fx-padding: 0 @spacing-xs 0 @spacing-xs;
 }
 
 .date-picker .arrow-button .arrow {

@@ -167,6 +167,9 @@ public class ButtonAnt extends Button
     private void init() {
         setFocusTraversable(true);
         applyTypeStyleClasses(this, Type.DEFAULT);
+        // 默认档必须显式挂 .middle：高度契约（min/pref/max-height）挂在 .button.middle 上，
+        // 否则紧凑主题下内容高度（29）会把按钮撑得比输入框/下拉框（28）高 1px。
+        org.openkawu.jfxium.core.util.ApplySizeUtil.apply(this, Size.DEFAULT, true);
     }
 
     // ============================================================

@@ -118,15 +118,25 @@
   -fx-text-fill: -color-accent-active;
 }
 
-/* Button Sizes */
+/* Button Sizes
+   高度直接钳制到 @control-height 系 token（不再靠 padding 反推），
+   保证与 Input / ComboBox / Table 表头同档等高。
+   注意：LabeledSkinBase.computePrefHeight 只按内容计算、会忽略 -fx-pref-height，
+   所以必须同时给 -fx-max-height，否则 compact 主题下内容高度（29）会顶破 token（28）。 */
 .button.middle {
   -fx-padding: @btn-padding-y @btn-padding-x;
   -fx-font-size: @font-size-md;
+  -fx-min-height: @control-height;
+  -fx-pref-height: @control-height;
+  -fx-max-height: @control-height;
 }
 
 .button.small {
   -fx-padding: @btn-padding-y-sm @btn-padding-x-sm;
   -fx-font-size: @font-size-sm;
+  -fx-min-height: @control-height-sm;
+  -fx-pref-height: @control-height-sm;
+  -fx-max-height: @control-height-sm;
 }
 
 .button.xs {
@@ -137,6 +147,9 @@
 .button.large {
   -fx-padding: @btn-padding-y-lg @btn-padding-x-lg;
   -fx-font-size: @font-size-lg;
+  -fx-min-height: @control-height-lg;
+  -fx-pref-height: @control-height-lg;
+  -fx-max-height: @control-height-lg;
 }
 
 /* Inline text button — 剥皮按钮，视觉上是内联文字，行为上是真按钮
@@ -150,6 +163,9 @@
   -fx-cursor: hand;
   -fx-font-size: @font-size-sm;
   -fx-effect: none;
+  /* inline 按钮是内联文字形态，必须按内容高度走，不能被 size 档的高度钳制 */
+  -fx-min-height: 0;
+  -fx-pref-height: -1;
 }
 
 .button.inline:hover {

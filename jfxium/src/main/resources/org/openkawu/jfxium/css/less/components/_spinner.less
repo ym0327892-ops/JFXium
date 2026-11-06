@@ -20,6 +20,8 @@
 .spinner .text-field {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
+  /* 去掉内层边框宽度：边框由外层 .spinner 统一绘制，内层保留 1px 会把总高顶多 2px */
+  -fx-border-width: 0;
   /* 数值右对齐：步进后 caret 落在编辑器最右侧，而不是文本左侧 */
   -fx-alignment: center-right;
   -fx-padding: @input-padding-y @input-padding-x;

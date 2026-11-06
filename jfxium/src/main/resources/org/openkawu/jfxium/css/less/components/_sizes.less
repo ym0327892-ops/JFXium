@@ -1,4 +1,73 @@
 /* ============================================
+   高度契约（Height Contract）
+   ============================================
+   单行控件的高度不再靠 padding 反推，直接钳制 min/pref/max 到 token：
+     DEFAULT（无 size 类）= @control-height(32) / SMALL = @control-height-sm(28) / LARGE = @control-height-lg(40)
+   compact 主题覆盖这三个 token 后自动收紧（28/24/36），无需再改任何组件规则。
+   注意：只列「单行」控件；.text-area 是多行，不参与钳制。
+   必须带 -fx-max-height：这些控件的 skin 计算 prefHeight 时只看内容，
+   会无视 -fx-pref-height，内容一旦高于 token 就会顶破（如 compact 下 29 > 28）。
+   ============================================ */
+.text-field,
+.password-field,
+.combo-box,
+.choice-box,
+.date-picker,
+.color-picker,
+.spinner {
+  -fx-min-height: @control-height;
+  -fx-pref-height: @control-height;
+  -fx-max-height: @control-height;
+}
+
+.text-field.small,
+.password-field.small,
+.combo-box.small,
+.choice-box.small,
+.date-picker.small,
+.color-picker.small,
+.spinner.small {
+  -fx-min-height: @control-height-sm;
+  -fx-pref-height: @control-height-sm;
+  -fx-max-height: @control-height-sm;
+}
+
+.text-field.large,
+.password-field.large,
+.combo-box.large,
+.choice-box.large,
+.date-picker.large,
+.color-picker.large,
+.spinner.large {
+  -fx-min-height: @control-height-lg;
+  -fx-pref-height: @control-height-lg;
+  -fx-max-height: @control-height-lg;
+}
+
+/* 例外：DatePicker 弹层内的月份/年份 spinner 是弹层自带的导航条，
+   高度由弹层层高排版决定（modena 依 -fx-size 计算），不能被 32px 契约拉高，
+   否则月视图整体比年视图高 5px（CalendarAnt 视图比例契约测试会失败）。 */
+.date-picker-popup .spinner {
+  -fx-min-height: 0;
+  -fx-pref-height: -1;
+  -fx-max-height: -1;
+}
+
+/* 例外：嵌套输入框 / 无 chrome 的只读文本，高度由外层控件表达，不参与钳制。
+   -1 = USE_COMPUTED_SIZE（min/pref 恢复内容自适应，max 恢复 MAX_VALUE） */
+.spinner .text-field,
+.date-picker > .text-field,
+.combo-box .text-field,
+.jfx-input-password > .text-field,
+.jfx-input-password > .password-field,
+.jfx-search-input > .jfx-search-input-field,
+.text-field.jfx-selectable-text {
+  -fx-min-height: 0;
+  -fx-pref-height: -1;
+  -fx-max-height: -1;
+}
+
+/* ============================================
    Size Variants (Small / Large)
    ============================================
    注：Button sizes（.button.middle / .small / .xs / .large）已在 _button.less 中定义，

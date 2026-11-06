@@ -119,9 +119,13 @@ class ButtonAntTest extends JfxTestBase {
                 .type(ButtonAnt.Type.TEXT)
                 .build();
         // 最终应只剩 TEXT — 不含多余的 residual styleClass
-        assertEquals(2, btn.getStyleClass().size(),
-                "TEXT 应只挂 jfx-btn + jfx-btn-text");
+        // （第 3 个类是高度契约所需的 .middle，由 init() 的默认尺寸映射挂载）
+        assertEquals(3, btn.getStyleClass().size(),
+                "TEXT 应只挂 jfx-btn + jfx-btn-text + jfx-btn-middle");
         assertTrue(btn.getStyleClass().contains(JfxStyles.BUTTON_TEXT));
+        assertTrue(btn.getStyleClass().contains(JfxStyles.SIZE_MIDDLE));
+        assertFalse(btn.getStyleClass().contains(JfxStyles.BUTTON_DEFAULT));
+        assertFalse(btn.getStyleClass().contains(JfxStyles.BUTTON_DANGER));
     }
 
     @Test

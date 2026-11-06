@@ -38,7 +38,8 @@
 
 .choice-box .open-button {
   -fx-background-color: transparent;
-  -fx-padding: @spacing-xs @spacing-xs;
+  /* 纵向归零：模版 padding 4px×2 会把控件顶高 8px，与 Input/Button 不同高 */
+  -fx-padding: 0 @spacing-xs 0 @spacing-xs;
 }
 
 .choice-box .open-button .arrow {

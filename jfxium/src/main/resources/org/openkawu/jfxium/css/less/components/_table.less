@@ -16,6 +16,14 @@
   -fx-font-weight: 600;
   -fx-alignment: center-left;
   -fx-background-insets: 0;
+  /* 中和 modena 的 -fx-size: 2em。
+     TableColumnHeader.computePrefHeight = max(-fx-size, label.prefHeight)，
+     TableHeaderRow.computeMinHeight 又直接复用该 pref，导致表头最小高被字体 em 锁死
+     （14px 字 → 28px、13px 字 → 26px），与 .column-header-background 的 token 冲突
+     （small 档 pref=28 但 min=28+1px 边框=29，实际被撑高 1px）。
+     取 20px（JavaFX 默认几何下限）后，表头高度完全由 -fx-pref-height token 决定。
+     注意不能写 0：SizeCssMetaData 拒绝 <= 0 的值并回退到 2em。 */
+  -fx-size: 20px;
 }
 
 /* padding 移到内部 .label 上（AtlantaFX 同款做法），让 column-header 自己 padding=0，

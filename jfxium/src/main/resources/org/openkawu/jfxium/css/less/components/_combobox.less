@@ -17,6 +17,15 @@
 
 .combo-box .arrow-button {
   -fx-background-color: transparent;
+  /* 归零 modena 的 0.5em 上下内边距（约 6px），否则与本控件 .input-base() 的
+     padding 叠加，整体比 Input/Button 高出 10px（BUG：尺寸不一致）。 */
+  -fx-padding: 0 @spacing-sm 0 @spacing-xs;
+}
+
+/* 内部展示单元格同样归零纵向 padding（modena 为 0.333333em ≈ 4px） */
+.combo-box > .list-cell {
+  -fx-padding: 0;
+  -fx-background-color: transparent;
 }
 
 .combo-box .arrow {

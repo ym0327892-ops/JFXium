@@ -289,7 +289,11 @@
 // Table Cell Padding
 // 使用位置：.table-view .column-header、.table-cell、.tree-table-view .column-header、.tree-table-cell
 // 影响组件：TableAnt、TreeTableAnt
-@table-cell-padding-y: @spacing-sm;
+// 纵向 padding 按「行高 = @table-row-height」反推：(32 - 文本 18 - 行底线 1) / 2 ≈ 6。取 4 留出余量，
+// 让 -fx-min-height 生效而不是被内容高度顶大（旧值 @spacing-sm=8 会把行顶到 35px，高于表头 32px）。
+@table-cell-padding-y: 4px;
+@table-cell-padding-y-sm: 2px;
+@table-cell-padding-y-lg: 6px;
 @table-cell-padding-x: @spacing-md;
 @table-header-padding-y: @spacing-lg;
 @table-header-padding-x: @spacing-lg;

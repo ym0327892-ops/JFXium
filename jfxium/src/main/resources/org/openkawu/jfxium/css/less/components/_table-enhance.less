@@ -46,54 +46,66 @@
   -fx-alignment: center-left;
 }
 
-/* 行高保护：保证最低行高足以容纳 Avatar(32px)/Tag(24px)/按钮(28px) 等内容，
-   同时文字行也有舒适的上下留白。
+/* 行高契约：min-height 给下限，cell-size 抵消行底线占用的 1px。
    对齐 PC UI 规范：行高 = @table-row-height = @control-height（32px）。
-   不用 -fx-cell-size（那个会强制裁切高内容），用 min-height 让行高自适应但有下限。 */
+   TableRowSkinBase.computePrefHeight 的算法是：
+     cellSizeWithInsets = -fx-cell-size + 行上下 insets（本项目行底线 1px）
+     row.pref = max(内容 pref, max(cellSizeWithInsets, 行 -fx-min-height))
+   -fx-cell-size 不给值时取 CellSkinBase.DEFAULT_CELL_SIZE = 24，
+   于是紧凑主题（token 24）下 24 + 1px = 25，比按钮/输入框高 1px。
+   取「token - 1px」让 cellSizeWithInsets 恰好等于 token，6 个主题×尺寸组合全部命中。
+   不能写 0：CellSkinBase 会把 <= 0 回退成 24。 */
 .table-view .table-row-cell {
   -fx-min-height: @table-row-height;
+  -fx-cell-size: (@table-row-height - 1px);
 }
 
 /* M11.2 三档尺寸（对齐桌面工具 Table size：SMALL / MIDDLE / LARGE）
    ============================================================ */
 
-/* SMALL：紧凑模式。表头/行高 = @control-height-sm（28px）/ padding 6×8 / 字号 13 */
+/* SMALL：紧凑模式。表头/行高 = @control-height-sm（28px）/ padding token / 字号 12 */
+/* 表头高由 .column-header-background 的 -fx-pref-height 控制，
+   这里不能再给 .column-header 加纵向 padding（旧值 6px×2 会把表头顶到 29px，
+   比按钮/输入框的 21→28 更难对齐）。 */
 .table-view.jfx-table-small .column-header-background {
   -fx-pref-height: @control-height-sm;
 }
 .table-view.jfx-table-small .column-header {
-  -fx-padding: 6px 8px;
+  -fx-padding: 0;
 }
 .table-view.jfx-table-small .table-row-cell {
   -fx-min-height: @control-height-sm;
+  -fx-cell-size: (@control-height-sm - 1px);
 }
 .table-view.jfx-table-small .table-cell {
-  -fx-padding: 6px 8px;
-  -fx-font-size: 13px;
+  -fx-padding: @table-cell-padding-y-sm @spacing-sm;
+  -fx-font-size: @font-size-sm;
 }
 
 /* MIDDLE：默认（无需重写，使用上方的 .column-header / .table-cell 默认值）
    .jfx-table-middle 仅用于 styleClass 标识，便于用户后续 grep 调试 */
 
-/* LARGE：宽松模式。表头/行高 = @control-height-lg（40px）/ padding 12×16 / 字号 15 */
+/* LARGE：宽松模式。表头/行高 = @control-height-lg（40px）/ padding token / 字号 16 */
 .table-view.jfx-table-large .column-header-background {
   -fx-pref-height: @control-height-lg;
 }
 .table-view.jfx-table-large .column-header {
-  -fx-padding: 12px 16px;
+  -fx-padding: 0;
 }
 .table-view.jfx-table-large .table-row-cell {
   -fx-min-height: @control-height-lg;
+  -fx-cell-size: (@control-height-lg - 1px);
 }
 .table-view.jfx-table-large .table-cell {
-  -fx-padding: 12px 16px;
-  -fx-font-size: 15px;
+  -fx-padding: @table-cell-padding-y-lg @spacing-lg;
+  -fx-font-size: @font-size-lg;
 }
 
 /* 老 .jfx-table-compact 兼容（等价 SMALL）。
    保留是为了万一有用户手动挂 styleClass，但 Java API 走 size(SMALL) 会自动加 jfx-table-small。 */
 .table-view.jfx-table-compact .table-row-cell {
-  -fx-min-height: 36px;
+  -fx-min-height: @control-height-sm;
+  -fx-cell-size: (@control-height-sm - 1px);
 }
 
 /* Striped rows —— styleClass 由 TableAnt 挂 jfx-table-striped（不是 striped），M19.40 修对齐 */
