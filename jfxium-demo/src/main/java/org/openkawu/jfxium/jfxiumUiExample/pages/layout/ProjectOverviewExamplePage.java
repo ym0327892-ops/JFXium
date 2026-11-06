@@ -10,9 +10,9 @@ import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.UiExampleConstants;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
-import org.openkawu.jfxium.template.ProjectDashboardTemplate;
+import org.openkawu.jfxium.jfxiumUiExample.template.ProjectDashboardTemplate;
 import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.template.ProjectOverviewTemplate;
+import org.openkawu.jfxium.jfxiumUiExample.template.ProjectOverviewTemplate;
 
 /**
  * ProjectOverviewTemplate 工程概览模板示例页。

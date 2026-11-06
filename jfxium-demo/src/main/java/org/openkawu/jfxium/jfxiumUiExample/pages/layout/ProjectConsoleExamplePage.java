@@ -11,7 +11,7 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.UiExampleConstants;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.template.ProjectConsoleTemplate;
+import org.openkawu.jfxium.jfxiumUiExample.template.ProjectConsoleTemplate;
 import org.openkawu.jfxium.template.WorkspaceSettingsTemplate;
 
 /**

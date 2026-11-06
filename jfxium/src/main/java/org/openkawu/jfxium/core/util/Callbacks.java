@@ -7,8 +7,7 @@ import java.util.function.Consumer;
  * 集中替代散落在各 template/component 私有方法中的 {@code fire / fireIfPresent} 样板。
  *
  * <h2>设计动机</h2>
- * <p>原 {@code ProjectDashboardTemplate.fire}、{@code ProjectOverviewTemplate.fire}、
- * {@code ProjectReleaseTemplate.fire}、{@code LaunchPadTemplate.fire} 都是同一段
+ * <p>原各模板中的 {@code fire} 私有方法都是同一段
  * {@code if (onAction != null) onAction.accept(key);} 的副本。本类收口后：</p>
  * <ul>
  *   <li>调用方意图更明确（{@code Callbacks.fire(consumer, key)} 一目了然）</li>

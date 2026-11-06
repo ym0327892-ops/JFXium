@@ -1,4 +1,4 @@
-package org.openkawu.jfxium.template;
+package org.openkawu.jfxium.jfxiumUiExample.template;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,6 +17,7 @@ import org.openkawu.jfxium.component.overlay.DropdownAnt.DropdownResult;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.style.Background;
 import org.openkawu.jfxium.core.util.TextUtils;
+import org.openkawu.jfxium.template.WorkspaceTemplate;
 
 import java.util.ArrayList;
 import java.util.List;

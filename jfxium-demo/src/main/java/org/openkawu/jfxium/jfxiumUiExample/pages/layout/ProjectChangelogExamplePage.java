@@ -6,9 +6,9 @@ import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.template.ProjectChangelogTemplate;
+import org.openkawu.jfxium.jfxiumUiExample.template.ProjectChangelogTemplate;
 
-import static org.openkawu.jfxium.template.ProjectChangelogTemplate.changelog;
+import static org.openkawu.jfxium.jfxiumUiExample.template.ProjectChangelogTemplate.changelog;
 
 /**
  * ProjectChangelogTemplate 变更日志模板示例页。

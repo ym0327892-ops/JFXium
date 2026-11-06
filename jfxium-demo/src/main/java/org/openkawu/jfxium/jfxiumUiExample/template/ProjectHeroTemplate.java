@@ -1,4 +1,4 @@
-package org.openkawu.jfxium.template;
+package org.openkawu.jfxium.jfxiumUiExample.template;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,6 +17,7 @@ import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.i18n.Messages;
 import org.openkawu.jfxium.core.util.TextUtils;
+import org.openkawu.jfxium.template.WorkspaceTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.function.Consumer;
  * <p>用于项目首页、模板示例页、README 预览页的首屏区，统一承载：
  * 软件图标、标题说明、状态标签、关键摘要和右侧操作区。</p>
  *
- * <p>它的目标不是替代 {@link ProjectOverviewTemplate} 或 {@link LaunchPadTemplate}，
+ * <p>它的目标不是替代 {@link ProjectOverviewTemplate}，
  * 而是把所有工程展示页重复出现的“首屏门面”先收口，避免 demo 里一再手写相同结构。</p>
  */
 public final class ProjectHeroTemplate {

@@ -7,7 +7,7 @@ import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.template.ProjectFeatureTemplate;
+import org.openkawu.jfxium.jfxiumUiExample.template.ProjectFeatureTemplate;
 
 /**
  * ProjectFeatureTemplate 项目特性/亮点展示模板示例页。

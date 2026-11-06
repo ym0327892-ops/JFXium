@@ -19,7 +19,6 @@ import org.openkawu.jfxium.core.util.IconPath;
  * <h2>功能特性</h2>
  * <ul>
  *   <li>自定义描述文本（默认用 i18n {@code empty.description}）</li>
- *   <li>自定义图标 / 图片（image）</li>
  *   <li>额外操作区（extra，如“新建”按钮）</li>
  *   <li>所有视觉样式走 LESS（{@code .jfx-empty} 系列）</li>
  * </ul>
@@ -37,16 +36,10 @@ public class EmptyAnt {
     public static class Builder extends AbstractStyleBuilder<Builder> {
         // null = 用 i18n 默认值（Messages.get("empty.description")）；非 null = 调用方覆盖
         private String description = null;
-        private String image = null;
         private Node extra = null;
 
         public Builder description(String description) {
             this.description = description;
-            return this;
-        }
-
-        public Builder image(String image) {
-            this.image = image;
             return this;
         }
 

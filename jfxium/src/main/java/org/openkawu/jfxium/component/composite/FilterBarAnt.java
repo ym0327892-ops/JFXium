@@ -1,4 +1,4 @@
-package org.openkawu.jfxium.template;
+package org.openkawu.jfxium.component.composite;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;

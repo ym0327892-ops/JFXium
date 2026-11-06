@@ -1,4 +1,4 @@
-package org.openkawu.jfxium.template;
+package org.openkawu.jfxium.jfxiumUiExample.template;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;

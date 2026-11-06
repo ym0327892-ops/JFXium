@@ -21,8 +21,8 @@ package org.openkawu.jfxium.core.style;
  *   <tr><td>按钮变体</td><td>{@code default / accent / outlined / dashed / text / link / ghost}</td><td>—</td><td>✅ 裸名（与 LESS 选择器同步）</td></tr>
  *   <tr><td>尺寸</td><td>{@code middle / small / xs / large}</td><td>{@code jfx-table-small / jfx-table-large / jfx-tag-small / jfx-avatar-small / jfx-steps-small / jfx-statistic-small / jfx-segmented-small / jfx-badge-small / jfx-selectable-text-bordered / jfx-table-compact / jfx-radius-sm/md/lg/none}</td><td>⚠️ 不一致：尺寸 4 套不同前缀（{@code small} / {@code xs} 裸名 / {@code jfx-table-small} / {@code jfx-tag-small} / {@code jfx-radius-sm}）</td></tr>
  *   <tr><td>形状</td><td>{@code rounded / square / shape-rounded / shape-square}</td><td>{@code jfx-tag-rounded / jfx-tag-square / jfx-avatar-square / jfx-image-rounded / jfx-image-circle}</td><td>⚠️ 不一致：{@code SHAPE_*} 用裸名，{@code TAG_*} 用 jfx- 前缀</td></tr>
- *   <tr><td>边框</td><td>{@code bordered / borderless} (大多错位)</td><td>{@code jfx-table-bordered / jfx-list-bordered / jfx-descriptions-bordered / jfx-crud-template-bordered / jfx-qr-code-bordered / jfx-panel-footer-bordered / jfx-selectable-text-bordered / jfx-tag-borderless}</td><td>⚠️ 不一致：{@code GROUP_BOX_BORDERED} / {@code SURFACE_BORDERED} 用裸名，{@code TABLE_BORDERED} / {@code LIST_BORDERED} 等用 jfx- 前缀</td></tr>
- *   <tr><td>状态色</td><td>{@code success / warning / error / info / processing / default} (裸名,部分)</td><td>{@code jfx-alert-success/info/warning/error / jfx-tag-success/processing/error/warning/default / jfx-badge-status-success/warning/error/default / jfx-result-status-success/info/warning/error/404/403/500}</td><td>⚠️ 不一致：{@code PROGRESS_SUCCESS/WARNING/ERROR} 裸名, {@code ALERT_SUCCESS} 已 jfx- 前缀</td></tr>
+ *   <tr><td>边框</td><td>{@code bordered / borderless} (大多错位)</td><td>{@code jfx-list-bordered / jfx-descriptions-bordered / jfx-qr-code-bordered / jfx-panel-footer-bordered / jfx-selectable-text-bordered / jfx-tag-borderless}</td><td>⚠️ 不一致：{@code GROUP_BOX_BORDERED} / {@code SURFACE_BORDERED} 用裸名，{@code LIST_BORDERED} 等用 jfx- 前缀</td></tr>
+ *   <tr><td>状态色</td><td>{@code success / warning / error / info / processing / default} (裸名,部分)</td><td>{@code jfx-alert-success/info/warning/error / jfx-tag-success/processing/error/warning/default / jfx-badge-status-success/warning/error/default}</td><td>⚠️ 不一致：{@code PROGRESS_SUCCESS/WARNING/ERROR} 裸名, {@code ALERT_SUCCESS} 已 jfx- 前缀</td></tr>
  *   <tr><td>选中/激活</td><td>{@code active / selected / disabled / hoverable / checkable / checked} (裸名,部分)</td><td>{@code jfx-menu-item-selected / jfx-segmented-item-selected / jfx-collapse-disabled / jfx-steps-finished/current/wait / jfx-tabs-active/disabled / jfx-tag-checkable/checked}</td><td>⚠️ 不一致：{@code SWITCH_SELECTED=switch-selected}、{@code GROUP_BOX_TAB_ITEM_ACTIVE=active}、{@code GROUP_BOX_HOVERABLE=hoverable} 裸名</td></tr>
  *   <tr><td>方向</td><td>{@code horizontal / vertical / both} (裸名)</td><td>{@code jfx-flex-horizontal/vertical / jfx-flex-wrap / jfx-space-horizontal/vertical/split / jfx-anchor-horizontal/vertical / jfx-divider-horizontal/vertical / jfx-form-horizontal/vertical/inline / jfx-steps-vertical / jfx-collapse-*}</td><td>✅ 一致：{@code RESIZABLE_PANEL_HANDLE_*} 用裸名，{@code FLEX_*} / {@code SPACE_*} 用 jfx- 前缀（不统一但语义清晰）</td></tr>
  *   <tr><td>阴影</td><td>{@code shadow-sm / shadow-md / shadow-lg}（3 档，公开 API）</td><td>{@code shadow-hairline / shadow-xl / shadow-2xl}（elev 2/24/28）</td><td>⚠️ 部分：公开的 3 档为历史命名（对应 elev 4/8/16），新增 3 档已对齐 elevation 数字</td></tr>
@@ -166,13 +166,6 @@ public final class JfxStyles {
     public static final String APP_SHELL_CONTENT = "jfx-app-shell-content";
     public static final String APP_SHELL_FOOTER = "jfx-app-shell-footer";
 
-    /** LayoutAnt 页面布局（同 APP_SHELL 视觉，别名便于业务选择） */
-    public static final String LAYOUT = "jfx-layout";
-    public static final String LAYOUT_HEADER = "jfx-layout-header";
-    public static final String LAYOUT_SIDER = "jfx-layout-sider";
-    public static final String LAYOUT_CONTENT = "jfx-layout-content";
-    public static final String LAYOUT_FOOTER = "jfx-layout-footer";
-
     /** PaginationAnt 分页根容器 */
     public static final String PAGINATION = "jfx-pagination";
     /** TextAreaAnt 只读形态（M19.6.2） */
@@ -252,7 +245,6 @@ public final class JfxStyles {
     /** TableAnt 表格 */
     public static final String TABLE = "jfx-table";
     public static final String TABLE_STRIPED = "jfx-table-striped";
-    public static final String TABLE_BORDERED = "jfx-table-bordered";
     public static final String TABLE_COMPACT = "jfx-table-compact";
     public static final String TABLE_ALIGN_LEFT = "jfx-align-left";
     public static final String TABLE_ALIGN_CENTER = "jfx-align-center";
@@ -673,7 +665,7 @@ public final class JfxStyles {
     public static final String LIST_ITEM_CONTENT = "jfx-list-item-content";
     public static final String LIST_DIVIDER = "jfx-list-divider";
 
-    /** ProjectFeatureTemplate 特性卡片（template/）— 项目首页/产品介绍页的特性网格 */
+    /** 特性卡片（jfxium-demo 的 ProjectFeatureTemplate）— 项目首页/产品介绍页的特性网格 */
     public static final String FEATURE_CARD_CLICKABLE = "jfx-feature-card-clickable";
 
     /** MenuAnt 菜单 */
@@ -767,17 +759,6 @@ public final class JfxStyles {
     public static final String CALENDAR_MONTH_BTN_CURRENT = "jfx-calendar-month-btn-current";
 
     /* ============================================
-       业务模板（template/）— M18 通用 CRUD 三段式骨架
-       ============================================ */
-    public static final String CRUD_TEMPLATE           = "jfx-crud-template";
-    public static final String CRUD_TEMPLATE_TITLE     = "jfx-crud-template-title";
-    public static final String CRUD_TEMPLATE_TOPBAR    = "jfx-crud-template-topbar";
-    public static final String CRUD_TEMPLATE_BODY      = "jfx-crud-template-body";
-    public static final String CRUD_TEMPLATE_BOTTOMBAR = "jfx-crud-template-bottombar";
-    /** 边框修饰类（jfx- 前缀避免与 .bordered 裸名冲突；与 LESS 中 .jfx-crud-template.jfx-crud-template-bordered 联动） */
-    public static final String CRUD_TEMPLATE_BORDERED  = "jfx-crud-template-bordered";
-
-    /* ============================================
        PageTemplate（M19.33）— 通用展示页骨架
        ============================================ */
     public static final String PAGE_TEMPLATE         = "jfx-page-template";
@@ -812,7 +793,6 @@ public final class JfxStyles {
        ============================================ */
     public static final String TOOL_BAR = "jfx-tool-bar";
     public static final String TOOL_BAR_ITEM = "jfx-tool-bar-item";
-    public static final String TOOL_BAR_OVERFLOW = "jfx-tool-bar-overflow";
 
     /* ============================================
        StatusBarAnt（PC 软件刚需）— 底部状态栏
@@ -841,8 +821,6 @@ public final class JfxStyles {
        TreeTableAnt — 树形表格
        ============================================ */
     public static final String TREE_TABLE = "jfx-tree-table";
-    public static final String TREE_TABLE_ROW = "jfx-tree-table-row";
-    public static final String TREE_TABLE_CELL = "jfx-tree-table-cell";
     public static final String TREE_TABLE_HEADER = "jfx-tree-table-header";
 
     /* ============================================
@@ -1039,14 +1017,6 @@ public final class JfxStyles {
        ============================================ */
     public static final String FILTER_BAR_LABEL = "jfx-filter-bar-label";
     public static final String FILTER_BAR_GROUP = "jfx-filter-bar-group";
-    public static final String DASHBOARD_ROOT         = "jfx-dashboard-root";
-    public static final String DASHBOARD_STAT_ICON_BOX = "jfx-dashboard-stat-icon-box";
-    public static final String DASHBOARD_STAT_TITLE   = "jfx-dashboard-stat-title";
-    public static final String DASHBOARD_STAT_TREND_UP   = "jfx-dashboard-stat-trend-up";
-    public static final String DASHBOARD_STAT_TREND_DOWN = "jfx-dashboard-stat-trend-down";
-    public static final String DASHBOARD_STAT_TREND_HINT = "jfx-dashboard-stat-trend-hint";
-    public static final String DASHBOARD_WELCOME    = "jfx-dashboard-welcome";
-    public static final String DASHBOARD_STAT_VALUE = "jfx-dashboard-stat-value";
     public static final String BAR_BORDER_BOTTOM = "jfx-bar-border-bottom";
     public static final String BAR_BORDER_TOP    = "jfx-bar-border-top";
     /** TableAnt 危险动作按钮（红色文字按钮） */
@@ -1106,18 +1076,8 @@ public final class JfxStyles {
        既有 RESULT_TITLE/RESULT_SUBTITLE 已在上面，本块补齐根类 + icon/extra
        ============================================ */
     public static final String RESULT           = "jfx-result";
-    public static final String RESULT_ICON      = "jfx-result-icon";
     public static final String RESULT_ICON_BOX  = "jfx-result-icon-box";
-    public static final String RESULT_BODY      = "jfx-result-body";
     public static final String RESULT_EXTRA     = "jfx-result-extra";
-    /** Result 状态修饰类（颜色用 5 套语义色，与 Alert 保持一致） */
-    public static final String RESULT_STATUS_SUCCESS = "jfx-result-status-success";
-    public static final String RESULT_STATUS_INFO    = "jfx-result-status-info";
-    public static final String RESULT_STATUS_WARNING = "jfx-result-status-warning";
-    public static final String RESULT_STATUS_ERROR   = "jfx-result-status-error";
-    public static final String RESULT_STATUS_404     = "jfx-result-status-404";
-    public static final String RESULT_STATUS_403     = "jfx-result-status-403";
-    public static final String RESULT_STATUS_500     = "jfx-result-status-500";
 
     /* ============================================
        AvatarAnt — 头像尺寸/形状变体
@@ -1201,7 +1161,7 @@ public final class JfxStyles {
     public static final String DATE_TIME_PICKER_SHELL = "jfx-date-time-picker-shell";
 
     /* ============================================
-       SeparatorAnt — Separator 包装
+       DividerAnt — Separator 原生节点样式
        ============================================ */
     public static final String JFX_SEPARATOR = "jfx-separator";
 

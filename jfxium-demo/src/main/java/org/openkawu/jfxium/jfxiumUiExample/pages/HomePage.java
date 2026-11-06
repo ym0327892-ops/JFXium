@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.UiExampleConstants;
-import org.openkawu.jfxium.template.ProjectDashboardTemplate;
+import org.openkawu.jfxium.jfxiumUiExample.template.ProjectDashboardTemplate;
 
 /**
  * 首页 —— 工程概览 + 快捷入口。

@@ -37,3 +37,42 @@
   -fx-effect: none;
 }
 
+/* 溢出按钮：JFXium 主题整体替换 modena UA 样式表，JavaFX 内部
+   ToolBarOverflowMenu（.tool-bar-overflow-button）及其 .arrow 必须显式补全，
+   否则溢出按钮无尺寸、箭头不可见 */
+.jfx-tool-bar > .tool-bar-overflow-button {
+  -fx-background-color: transparent;
+  -fx-background-radius: @border-radius-md;
+  -fx-padding: 0 @spacing-xs;
+  -fx-cursor: hand;
+}
+
+.jfx-tool-bar > .tool-bar-overflow-button:hover {
+  -fx-background-color: -color-accent-hover;
+}
+
+.jfx-tool-bar > .tool-bar-overflow-button:pressed {
+  -fx-background-color: -color-accent-active;
+}
+
+.jfx-tool-bar > .tool-bar-overflow-button > .arrow {
+  /* 红线#9：显式 shape + min/pref 尺寸（双箭头溢出图标，对齐 modena） */
+  -fx-shape: "M337.273,297.622l-0.016,1.069l2.724,2.639l-2.723,2.628l0.015,1.048h0.881l3.81-3.685l-3.788-3.699H337.273z M343.783,297.622h-0.902l-0.015,1.069l2.724,2.639l-2.724,2.628l0.015,1.048h0.882l3.809-3.685L343.783,297.622z";
+  -fx-min-width: 10px;
+  -fx-min-height: 8px;
+  -fx-pref-width: 10px;
+  -fx-pref-height: 8px;
+  -fx-background-color: -color-fg-muted;
+}
+
+.jfx-tool-bar > .tool-bar-overflow-button:hover > .arrow,
+.jfx-tool-bar > .tool-bar-overflow-button:focused > .arrow {
+  -fx-background-color: -color-accent-emphasis;
+}
+
+/* 垂直工具栏：溢出按钮位于底部，内边距下移 */
+.jfx-tool-bar:vertical > .tool-bar-overflow-button {
+  -fx-padding: @spacing-xs 0;
+}
+
+

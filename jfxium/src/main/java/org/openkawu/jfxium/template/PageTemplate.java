@@ -21,11 +21,9 @@ import java.util.List;
  *
  * <h2>跟其他 Template 的边界</h2>
  * <table border="1">
- *   <caption>JFXium 5 个 Template 适用场景对照</caption>
+ *   <caption>JFXium 模板适用场景对照</caption>
  *   <tr><th>模板</th><th>结构</th><th>典型场景</th></tr>
  *   <tr><td>{@link PageTemplate}</td><td>title + desc + body</td><td>展示页 / 文档 / 设置 / 任何简单内容页</td></tr>
- *   <tr><td>{@link CrudTemplate}</td><td>title + topbar + body + bottombar</td><td>列表 / 表单 / 仪表盘（带工具栏）</td></tr>
- *   <tr><td>{@link DashboardTemplate}</td><td>welcome + 统计卡矩阵 + 双栏底部</td><td>数据概览首页</td></tr>
  *   <tr><td>{@link WorkspaceTemplate}</td><td>brand + headerActions + sider + content + footer</td><td>工作台 / 后台壳 / 需要 header + sider 的生产系统</td></tr>
  *   <tr><td>{@link LoginTemplate}</td><td>banner + 表单</td><td>登录 / 注册</td></tr>
  * </table>
@@ -35,6 +33,8 @@ import java.util.List;
  * ┌─────────────────────────────────────────┐
  * │ Title（大标题，28px / 700）               │
  * │ Description（描述文字，-color-fg-muted）   │
+ * ├─────────────────────────────────────────┤
+ * │ Hero（可选，首屏门面卡，如工程展示卡）      │
  * ├─────────────────────────────────────────┤
  * │                                         │
  * │ Body（任意 Node 或多个 Section 竖排）       │
@@ -94,6 +94,8 @@ public class PageTemplate {
         // body 单节点 vs sections 多节点：互斥但都可用，build 时合并处理
         private Node body;
         private final List<Node> sections = new ArrayList<>();
+        // 首屏门面卡（可选），渲染在 header 与 body 之间
+        private Node hero;
 
         // 装饰
         private double headerGap = 8;       // title ↔ description 间距
@@ -128,6 +130,17 @@ public class PageTemplate {
          */
         public Builder body(Node body) {
             this.body = body;
+            return this;
+        }
+
+        /**
+         * 首屏门面卡（可选），渲染在 header 与 body 之间。
+         *
+         * <p>典型用法：工程项目首页放置一张 Hero 卡（图标 + 状态 + 摘要），
+         * 让页面在标题之下先呈现「项目门面」，再接概览 / 发布节奏等区块。</p>
+         */
+        public Builder hero(Node hero) {
+            this.hero = hero;
             return this;
         }
 
@@ -215,6 +228,14 @@ public class PageTemplate {
             if (header != null) {
                 root.getChildren().add(header);
                 VBox.setMargin(header, new Insets(0, 0, TextUtils.safeNonNegative(headerToBodyGap, 0), 0));
+            }
+
+            // ========== Hero（可选首屏门面卡）==========
+            if (hero != null) {
+                root.getChildren().add(hero);
+                if (body != null || !sections.isEmpty()) {
+                    VBox.setMargin(hero, new Insets(0, 0, TextUtils.safeNonNegative(sectionGap, 0), 0));
+                }
             }
 
             // ========== Body（单节点 + 多个 section 都支持）==========

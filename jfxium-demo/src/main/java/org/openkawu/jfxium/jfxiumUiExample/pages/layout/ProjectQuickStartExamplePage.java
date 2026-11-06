@@ -7,7 +7,7 @@ import org.openkawu.jfxium.component.control.TypographyAnt;
 import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
 import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.template.ProjectQuickStartTemplate;
+import org.openkawu.jfxium.jfxiumUiExample.template.ProjectQuickStartTemplate;
 
 /**
  * ProjectQuickStartTemplate 快速上手步骤模板示例页。

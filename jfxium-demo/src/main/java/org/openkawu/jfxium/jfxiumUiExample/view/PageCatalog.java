@@ -41,7 +41,6 @@ import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.ListViewExamplePage
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.PopoverExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.ProgressExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.QRCodeExamplePage;
-import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.SeparatorExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.SkeletonExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.StatisticExamplePage;
 import org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay.TableExamplePage;
@@ -187,7 +186,6 @@ final class PageCatalog {
         register(registry, "layout.bar", "HBar 横向条状容器", PageRegistry.Category.LAYOUT, HBarExamplePage::new);
         register(registry, "layout.vbar", "VBar 竖向条状容器", PageRegistry.Category.LAYOUT, VBarExamplePage::new);
         register(registry, "layout.divider", "Divider 分割线", PageRegistry.Category.LAYOUT, DividerExamplePage::new);
-        register(registry, "layout.separator", "Separator 分隔符", PageRegistry.Category.LAYOUT, SeparatorExamplePage::new);
     }
 
     private static void registerTemplate(PageRegistry registry) {

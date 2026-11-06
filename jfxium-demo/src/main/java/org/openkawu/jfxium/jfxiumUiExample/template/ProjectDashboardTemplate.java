@@ -1,16 +1,24 @@
-package org.openkawu.jfxium.template;
+package org.openkawu.jfxium.jfxiumUiExample.template;
 
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
+import org.openkawu.jfxium.component.composite.AvatarAnt;
 import org.openkawu.jfxium.component.composite.ProgressAnt;
+import org.openkawu.jfxium.component.composite.SurfaceAnt;
 import org.openkawu.jfxium.component.composite.TagAnt;
 import org.openkawu.jfxium.component.composite.TimelineAnt;
 import org.openkawu.jfxium.component.control.ButtonAnt;
 import org.openkawu.jfxium.component.control.IconAnt;
+import org.openkawu.jfxium.component.control.TypographyAnt;
+import org.openkawu.jfxium.component.layout.GridAnt;
+import org.openkawu.jfxium.component.layout.HBoxAnt;
+import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.Theme;
 import org.openkawu.jfxium.core.theme.ThemeManager;
+import org.openkawu.jfxium.core.token.Size;
 import org.openkawu.jfxium.core.util.Callbacks;
 import org.openkawu.jfxium.core.util.NumericUtils;
 import org.openkawu.jfxium.core.i18n.Messages;
@@ -511,20 +519,78 @@ public final class ProjectDashboardTemplate {
         }
 
         private Node buildLaunchPad() {
-            return LaunchPadTemplate.create()
-                    .title("快捷入口")
-                    .description("从首页直接跳到最常看的模板页和示例页。")
-                    .onAction(this::fire)
-                    .item(ACTION_PROJECT_CONSOLE, "工程控制台", "查看顶部菜单、头像设置、左侧导航和状态栏的完整壳层。",
-                            IconAnt.Path.DASHBOARD)
-                    .item(ACTION_WORKSPACE_TEMPLATE, "工作台模板", "查看完整工程壳层", IconAnt.Path.DASHBOARD)
-                    .item(ACTION_PROJECT_OVERVIEW, "工程概览", "查看工程状态总览板", IconAnt.Path.FILE)
-                    .item(ACTION_PROJECT_RELEASE, "发布节奏", "查看版本演进与准备度", IconAnt.Path.CHART)
-                    .item(ACTION_PROJECT_SHOWCASE, "工程展示首页", "查看概览、发布和快捷入口的一页组合", IconAnt.Path.DASHBOARD)
-                    .item(ACTION_PROJECT_MENU, "菜单示例", "看 MenuAnt 的分组、折叠和运行时高亮切换", IconAnt.Path.HOME)
-                    .item(ACTION_PROJECT_MODAL, "模态示例", "查看 Modal / Drawer / Prompt 的反馈链路", IconAnt.Path.BELL)
-                    .item(ACTION_WATERMARK, "水印示例", "确认全局叠层和工作台水印是否一致", IconAnt.Path.SETTINGS)
+            VBox header = VBoxAnt.create()
+                    .spacing(4)
+                    .children(
+                            TypographyAnt.title("快捷入口", 4).build(),
+                            TypographyAnt.text("从首页直接跳到最常看的模板页和示例页。")
+                                    .type(TypographyAnt.TextColor.SECONDARY)
+                                    .build()
+                    )
                     .build();
+
+            GridAnt.Row row = GridAnt.row().align(Pos.TOP_LEFT);
+            row.col(launchPadCol(ACTION_PROJECT_CONSOLE, "工程控制台",
+                    "查看顶部菜单、头像设置、左侧导航和状态栏的完整壳层。", IconAnt.Path.DASHBOARD));
+            row.col(launchPadCol(ACTION_WORKSPACE_TEMPLATE, "工作台模板", "查看完整工程壳层", IconAnt.Path.DASHBOARD));
+            row.col(launchPadCol(ACTION_PROJECT_OVERVIEW, "工程概览", "查看工程状态总览板", IconAnt.Path.FILE));
+            row.col(launchPadCol(ACTION_PROJECT_RELEASE, "发布节奏", "查看版本演进与准备度", IconAnt.Path.CHART));
+            row.col(launchPadCol(ACTION_PROJECT_SHOWCASE, "工程展示首页",
+                    "查看概览、发布和快捷入口的一页组合", IconAnt.Path.DASHBOARD));
+            row.col(launchPadCol(ACTION_PROJECT_MENU, "菜单示例",
+                    "看 MenuAnt 的分组、折叠和运行时高亮切换", IconAnt.Path.HOME));
+            row.col(launchPadCol(ACTION_PROJECT_MODAL, "模态示例",
+                    "查看 Modal / Drawer / Prompt 的反馈链路", IconAnt.Path.BELL));
+            row.col(launchPadCol(ACTION_WATERMARK, "水印示例",
+                    "确认全局叠层和工作台水印是否一致", IconAnt.Path.SETTINGS));
+
+            return VBoxAnt.create()
+                    .spacing(16)
+                    .children(header, GridAnt.create().gutter(16).responsive().row(row).build())
+                    .build();
+        }
+
+        private GridAnt.ColBuilder launchPadCol(String key, String title, String description, IconAnt.Path icon) {
+            ButtonAnt action = ButtonAnt.link("打开", Size.SMALL)
+                    .onClick(e -> fire(key))
+                    .build();
+            VBox body = VBoxAnt.create()
+                    .spacing(8)
+                    .children(
+                            HBoxAnt.create()
+                                    .spacing(12)
+                                    .align(Pos.CENTER_LEFT)
+                                    .children(
+                                            AvatarAnt.create()
+                                                    .icon(IconAnt.path(icon, 18))
+                                                    .shape(AvatarAnt.Shape.SQUARE)
+                                                    .size(40)
+                                                    .build(),
+                                            VBoxAnt.create()
+                                                    .spacing(2)
+                                                    .children(
+                                                            TypographyAnt.text(title).build(),
+                                                            TypographyAnt.text(description)
+                                                                    .type(TypographyAnt.TextColor.SECONDARY)
+                                                                    .build()
+                                                    )
+                                                    .build()
+                                    )
+                                    .build(),
+                            TypographyAnt.text("路由：" + key)
+                                    .type(TypographyAnt.TextColor.SECONDARY)
+                                    .build()
+                    )
+                    .build();
+            Node card = SurfaceAnt.create()
+                    .title(title)
+                    .extra(action)
+                    .shadow(SurfaceAnt.Shadow.SMALL)
+                    .bordered(true)
+                    .content(body)
+                    .gap(8)
+                    .build();
+            return GridAnt.col(card).xs(24).sm(24).md(12).lg(12).xl(12).xxl(12);
         }
     }
 }

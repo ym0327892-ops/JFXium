@@ -51,7 +51,7 @@ public final class TextUtils {
     /**
      * 文本 null 安全（带 fallback）：{@code null} → {@code fallback}。
      *
-     * <p>替代散落在 {@code ProjectDashboardTemplate} / {@code ProjectOverviewTemplate} 等
+     * <p>替代散落在各模板
      * {@code Builder} 中的 {@code value != null ? value : DEFAULT_X} 模式，把"非空即用，否则降级"
      * 语义集中收口。{@code fallback} 也可传 {@code null}（返回 {@code null}），满足"显式清空"场景。</p>
      *
@@ -66,8 +66,8 @@ public final class TextUtils {
     /**
      * 浮点型尺寸 null/异常安全（非负语义）：{@code value} 为非有限数或负数时返回 {@code fallback}。
      *
-     * <p>替代散落在 {@code WorkspaceTemplate} / {@code PageTemplate} / {@code CrudTemplate} /
-     * {@code FilterBarAnt} / {@code DashboardTemplate} / {@code PanelHeader} 中的
+     * <p>替代散落在 {@code WorkspaceTemplate} / {@code PageTemplate} /
+     * {@code FilterBarAnt} / {@code PanelHeader} 中的
      * {@code private safe* / safeWidth} 模式，集中收口为一种行为。</p>
      *
      * <p><b>为什么允许 {@code fallback} 传 {@code 0}</b>：很多场景下"非法输入 → 0"是更安全的默认
@@ -189,7 +189,7 @@ public final class TextUtils {
     /**
      * 把非空节点追加到目标列表：{@code nodes} 为 {@code null} / 空 数组跳过；逐个过滤 {@code null} 元素。
      *
-     * <p>替代散落在 {@code WorkspaceTemplate} / {@code ProjectConsoleTemplate} 中的私有 {@code addNodes} 方法。
+     * <p>替代散落在 {@code WorkspaceTemplate} 等模板中的私有 {@code addNodes} 方法。
      * 原代码采用 {@code for} 循环逐个 null-guard，意图完全相同，本方法把语义提升为「追加非空节点」。</p>
      *
      * <p><b>为什么不在调用方用 {@code safeContent} + {@code addAll}</b>：{@code safeContent} 内部创建新的

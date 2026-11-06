@@ -10,9 +10,9 @@ import org.openkawu.jfxium.component.layout.VBoxAnt;
 import org.openkawu.jfxium.core.theme.ThemeDensity;
 import org.openkawu.jfxium.core.theme.ThemeManager;
 import org.openkawu.jfxium.jfxiumUiExample.util.Demos;
-import org.openkawu.jfxium.template.ProjectDashboardTemplate;
+import org.openkawu.jfxium.jfxiumUiExample.template.ProjectDashboardTemplate;
 import org.openkawu.jfxium.template.PageTemplate;
-import org.openkawu.jfxium.template.ProjectHeroTemplate;
+import org.openkawu.jfxium.jfxiumUiExample.template.ProjectHeroTemplate;
 
 /**
  * ProjectHeroTemplate 工程项目首屏门面示例页。

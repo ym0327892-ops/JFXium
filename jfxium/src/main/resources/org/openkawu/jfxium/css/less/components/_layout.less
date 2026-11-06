@@ -3,37 +3,6 @@
    ============================================ */
 /* 老 PageAnt 已删除（M18），相关 .page / .page-header / .page-title 等样式同步移除 */
 
-/* CrudTemplate（业务模板，M18 新增）：通用三段式骨架 */
-.jfx-crud-template {
-  -fx-padding: @spacing-xl;
-}
-
-.jfx-crud-template.jfx-crud-template-bordered {
-  -fx-border-color: -color-border-muted;
-  -fx-border-width: @border-width-default;
-  -fx-border-style: solid;
-  -fx-border-radius: @border-radius-lg;
-  -fx-background-radius: @border-radius-lg;
-}
-
-.jfx-crud-template-title {
-  -fx-font-size: @font-size-xl;
-  -fx-font-weight: 700;
-  -fx-text-fill: -color-fg-default;
-}
-
-.jfx-crud-template-topbar {
-  -fx-background-color: transparent;
-}
-
-.jfx-crud-template-body {
-  -fx-background-color: transparent;
-}
-
-.jfx-crud-template-bottombar {
-  -fx-background-color: transparent;
-}
-
 /* PageTemplate（M19.33 新增）：通用展示页骨架「大标题 + 描述 + 内容区」 */
 .jfx-page-template {
   -fx-background-color: transparent;
@@ -187,24 +156,21 @@
 }
 
 /* ============================================
-   AppShell / Layout 应用骨架
+   AppShell 应用骨架
    ============================================ */
 
-.jfx-app-shell,
-.jfx-layout {
+.jfx-app-shell {
   -fx-background-color: -color-bg-layout;
 }
 
-.jfx-app-shell-header,
-.jfx-layout-header {
+.jfx-app-shell-header {
   -fx-background-color: -color-bg-container;
   -fx-border-color: transparent transparent -color-border-muted transparent;
   -fx-border-width: 0 0 1px 0;
   -fx-border-style: solid;
 }
 
-.jfx-app-shell-sider,
-.jfx-layout-sider {
+.jfx-app-shell-sider {
   -fx-background-color: -color-bg-subtle;
   -fx-border-color: transparent -color-border-muted transparent transparent;
   -fx-border-width: 0 1px 0 0;
@@ -239,13 +205,11 @@
   -fx-border-color: -color-border-muted transparent transparent transparent;
 }
 
-.jfx-app-shell-content,
-.jfx-layout-content {
+.jfx-app-shell-content {
   -fx-background-color: -color-bg-default;
 }
 
-.jfx-app-shell-footer,
-.jfx-layout-footer {
+.jfx-app-shell-footer {
   -fx-background-color: -color-bg-container;
   -fx-border-color: -color-border-muted transparent transparent transparent;
   -fx-border-width: 1px 0 0 0;

@@ -177,7 +177,6 @@ class ElevationShadowTest extends JfxTestBase {
         @DisplayName("代表性子组件阴影同样随主题翻转（modal / alert / overlay / tooltip 等）")
         void componentSitesAreThemeAware() {
             List<Site> sites = List.of(
-                    new Site(List.of("jfx-modal-content"), "Modal 主体"),
                     new Site(List.of("dialog-pane", "jfx-alert-dialog"), "AlertDialog"),
                     new Site(List.of("jfx-overlay-panel"), "Drawer/Modal 通用浮层面板"),
                     new Site(List.of("tooltip"), "Tooltip"),
