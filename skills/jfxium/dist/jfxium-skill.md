@@ -6,7 +6,7 @@
 
 # JFXium UI Skill
 
-Targets **JFXium 1.34.8** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
+Targets **JFXium 1.34.10** · Java 21 · JavaFX 21 · zero FXML · LESS theming.
 
 本文件可**单独复制**为技能（Qoder: `.qoder/skills/jfxium.md`；Claude Code: `.claude/skills/jfxium/SKILL.md`）。
 若同目录包含 `references/` 与 `assets/catalog/`，按需深读；只复制本文件时，按本文件规则执行即可。
@@ -386,7 +386,7 @@ java skills/jfxium/scripts/JfxLint.java src/main/java
 
 ---
 
-# JFXium 组件速查（v1.34.8）
+# JFXium 组件速查（v1.34.10）
 
 > 生成物，禁止手改。完整信息（extends / 定位 / source）见 `components.md` / `components.json`。
 
@@ -413,7 +413,7 @@ java skills/jfxium/scripts/JfxLint.java src/main/java
 | **GroupBoxAnt** | component.composite | `VBox` | title, extra, content, bordered, size, type, actions, tab, activeTabKey, defaultActiveTabKey, onTabChange, tabBarExtraContent, headerBackground, headerBorder, hoverable |
 | **HBarAnt** | component.composite | `HBarAnt` | left, center, right, gap, alignment, borderTop, borderBottom, borderLeft, borderRight, background, padding, borderRadius, styleClass, style, visible, managed, opacity, id |
 | **ImageAnt** | component.composite | `StackPane` | src, width, height, alt, preview, fallback, placeholder, objectFit, borderRadius, controllerOf |
-| **InputNumberAnt** | component.composite | `HBox` | value, min, max, step, readOnly, size, onChange, precision, prefix, suffix, bindValue |
+| **InputNumberAnt** | component.composite | `HBox` | value, min, max, step, readOnly, size, onChange, precision, prefix, suffix, controls, fieldWidth, bindValue |
 | **ListAnt** | component.composite | `VBox` | item, items, bordered, split, header, footer, loading |
 | **MenuAnt** | component.composite | `Pane` | controllerOf, childLevel, addItem, subMenu, mode, theme, collapsed, selectedKey, onSelect, expandMode, expandedKeys, onExpandChange, endSubMenu, controller, toggleCollapsed, expandKey, collapseKey, defaultExpanded |
 | **ProgressAnt** | component.composite | `HBox` | bar, circle, progress, size, status, showInfo, controllerOf |

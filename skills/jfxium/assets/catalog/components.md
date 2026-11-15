@@ -1,4 +1,4 @@
-# JFXium 组件目录（v1.34.8）
+# JFXium 组件目录（v1.34.10）
 
 > 由 `skills/jfxium/scripts/CatalogGen.java` 生成，**禁止手改**。
 > 改动组件公开 API 后重跑：`java skills/jfxium/scripts/CatalogGen.java`
@@ -31,7 +31,7 @@
 | **GroupBoxAnt** | — | `create() -> Builder` | `VBox` | title, extra, content, bordered, size, type, actions, tab, activeTabKey, defaultActiveTabKey, onTabChange, tabBarExtraContent, headerBackground, headerBorder, hoverable | 带标题边框的内容容器，用于将逻辑相关的控件（输入框、复选框等） |
 | **HBarAnt** | `AbstractHBoxAnt` | `create() -> HBarAnt` | `HBarAnt` | left, center, right, gap, alignment, borderTop, borderBottom, borderLeft, borderRight, background, padding, borderRadius, styleClass, style, visible, managed, opacity, id | 项目最底层的「横向条状容器」。header / toolbar / footer / appbar |
 | **ImageAnt** | — | `create() -> Builder` | `StackPane` | src, width, height, alt, preview, fallback, placeholder, objectFit, borderRadius, controllerOf | 增强型 ImageView，支持加载失败 fallback、加载中 placeholder、 |
-| **InputNumberAnt** | — | `create() -> Builder` | `HBox` | value, min, max, step, readOnly, size, onChange, precision, prefix, suffix, bindValue | 带 +/- 按钮的数字输入控件，支持范围限制、步长、精度控制， |
+| **InputNumberAnt** | — | `create() -> Builder` | `HBox` | value, min, max, step, readOnly, size, onChange, precision, prefix, suffix, controls, fieldWidth, bindValue | 带 +/- 按钮的数字输入控件，支持范围限制、步长、精度控制， |
 | **ListAnt** | — | `create() -> Builder` | `VBox` | item, items, bordered, split, header, footer, loading | 通用列表容器，支持头像 + 标题 + 描述 + 操作按钮的列表项， |
 | **MenuAnt** | — | `create() -> Builder` | `Pane` | controllerOf, childLevel, addItem, subMenu, mode, theme, collapsed, selectedKey, onSelect, expandMode, expandedKeys, onExpandChange, endSubMenu, controller, toggleCollapsed, expandKey, collapseKey, defaultExpanded | JFXium 高级菜单组件 - 对标 Ant Design Menu。 |
 | **ProgressAnt** | — | — | `HBox` | bar, circle, progress, size, status, showInfo, controllerOf | JFXium Progress 进度组件 - 对标 Ant Design Progress。 |

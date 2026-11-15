@@ -1,4 +1,4 @@
-# JFXium 组件速查（v1.34.8）
+# JFXium 组件速查（v1.34.10）
 
 > 生成物，禁止手改。完整信息（extends / 定位 / source）见 `components.md` / `components.json`。
 
@@ -25,7 +25,7 @@
 | **GroupBoxAnt** | component.composite | `VBox` | title, extra, content, bordered, size, type, actions, tab, activeTabKey, defaultActiveTabKey, onTabChange, tabBarExtraContent, headerBackground, headerBorder, hoverable |
 | **HBarAnt** | component.composite | `HBarAnt` | left, center, right, gap, alignment, borderTop, borderBottom, borderLeft, borderRight, background, padding, borderRadius, styleClass, style, visible, managed, opacity, id |
 | **ImageAnt** | component.composite | `StackPane` | src, width, height, alt, preview, fallback, placeholder, objectFit, borderRadius, controllerOf |
-| **InputNumberAnt** | component.composite | `HBox` | value, min, max, step, readOnly, size, onChange, precision, prefix, suffix, bindValue |
+| **InputNumberAnt** | component.composite | `HBox` | value, min, max, step, readOnly, size, onChange, precision, prefix, suffix, controls, fieldWidth, bindValue |
 | **ListAnt** | component.composite | `VBox` | item, items, bordered, split, header, footer, loading |
 | **MenuAnt** | component.composite | `Pane` | controllerOf, childLevel, addItem, subMenu, mode, theme, collapsed, selectedKey, onSelect, expandMode, expandedKeys, onExpandChange, endSubMenu, controller, toggleCollapsed, expandKey, collapseKey, defaultExpanded |
 | **ProgressAnt** | component.composite | `HBox` | bar, circle, progress, size, status, showInfo, controllerOf |
