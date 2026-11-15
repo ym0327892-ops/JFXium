@@ -195,6 +195,33 @@
   -fx-background-color: transparent;
   -fx-background-radius: @border-radius-sm;
   -fx-cursor: hand;
+  /* 选项背景撑满容器内容区（容器高 - 2×@2 容器内边距），保证 hover/选中态严格落在边框内。
+     纵向不再由 Java 侧 setPadding 撑高，避免「容器钉死高度 + 内容内边距」导致的 1px 溢出。 */
+  -fx-padding: 0 12 0 12;
+  -fx-min-height: (@control-height - 4px);
+  -fx-pref-height: (@control-height - 4px);
+  -fx-max-height: (@control-height - 4px);
+}
+
+.jfx-segmented.jfx-segmented-xs .jfx-segmented-item {
+  -fx-padding: 0 6 0 6;
+  -fx-min-height: (@control-height-xs - 4px);
+  -fx-pref-height: (@control-height-xs - 4px);
+  -fx-max-height: (@control-height-xs - 4px);
+}
+
+.jfx-segmented.jfx-segmented-small .jfx-segmented-item {
+  -fx-padding: 0 8 0 8;
+  -fx-min-height: (@control-height-sm - 4px);
+  -fx-pref-height: (@control-height-sm - 4px);
+  -fx-max-height: (@control-height-sm - 4px);
+}
+
+.jfx-segmented.jfx-segmented-large .jfx-segmented-item {
+  -fx-padding: 0 16 0 16;
+  -fx-min-height: (@control-height-lg - 4px);
+  -fx-pref-height: (@control-height-lg - 4px);
+  -fx-max-height: (@control-height-lg - 4px);
 }
 
 .jfx-segmented-item:hover {
@@ -260,12 +287,14 @@
 
 .jfx-input-number-prefix,
 .jfx-input-number-suffix {
+  /* 单位文本与数值同色（对标 Ant Design 的 group-addon），不再用 muted 灰 */
   -fx-font-size: @font-size-md;
-  -fx-text-fill: -color-fg-muted;
+  -fx-text-fill: -color-fg-default;
 }
 
 .jfx-input-number-prefix { -fx-padding: 0 4 0 8; }
-.jfx-input-number-suffix { -fx-padding: 0 8 0 4; }
+/* 后缀左侧留 8px：与 + 按钮拉开距离，不贴边框 */
+.jfx-input-number-suffix { -fx-padding: 0 8 0 8; }
 
 .jfx-input-number-field {
   -fx-background-color: transparent;
@@ -315,10 +344,17 @@
   -fx-padding: 5;
 }
 
+/* hover 高亮不能越界：
+   1) modena .button 的 -fx-background-insets 是 "0 0 -1 0"（底边 -1px），
+      会让高亮多画出 1px，压住容器边框；
+   2) 高亮方块紧贴容器右边框，直角区域会顶出容器 6px 圆角。
+   统一内缩 1px + 小圆角，视觉完全落在容器圆角内。 */
 .jfx-input-number-btn:hover,
 .jfx-input-number-btn:armed,
 .jfx-input-number-btn:pressed {
   -fx-background-color: -color-accent-subtle;
+  -fx-background-insets: 1;
+  -fx-background-radius: @border-radius-sm;
 }
 
 .jfx-input-number-arrow {

@@ -2,6 +2,7 @@ package org.openkawu.jfxium.component.composite;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import org.junit.jupiter.api.DisplayName;
@@ -166,6 +167,59 @@ class InputNumberAntTest extends JfxTestBase {
         assertNotNull(box);
         assertTrue(box.getStyleClass().contains("price-input"));
         assertEquals(150, box.getPrefWidth());
+    }
+
+    // ---------- controls 开关 ----------
+
+    @Test
+    @DisplayName("默认渲染 +/- 两个步进按钮")
+    void controls_default() {
+        HBox box = InputNumberAnt.create().build();
+        assertEquals(2, buttonCount(box));
+    }
+
+    @Test
+    @DisplayName("controls(false) 不渲染 +/- 按钮，仍保留输入框与后缀")
+    void controls_false() {
+        HBox box = InputNumberAnt.create()
+                .controls(false).value(10).suffix("秒").build();
+        assertEquals(0, buttonCount(box));
+        assertNotNull(fieldOf(box));
+        assertTrue(box.getChildren().stream()
+                .anyMatch(n -> n.getStyleClass().contains(JfxStyles.INPUT_NUMBER_SUFFIX)));
+    }
+
+    @Test
+    @DisplayName("controls(false) + disabled 不抛异常")
+    void controls_false_disabled() {
+        HBox box = InputNumberAnt.create()
+                .controls(false).disabled().build();
+        assertEquals(0, buttonCount(box));
+        assertTrue(fieldOf(box).isDisable());
+    }
+
+    // ---------- fieldWidth ----------
+
+    @Test
+    @DisplayName("fieldWidth 同时设置中间输入框的首选宽度与最小宽度")
+    void fieldWidth_applied() {
+        TextField f = fieldOf(InputNumberAnt.create().fieldWidth(120).build());
+        assertEquals(120, f.getPrefWidth());
+        assertEquals(120, f.getMinWidth());
+    }
+
+    @Test
+    @DisplayName("fieldWidth 非法值回退默认 80 / 48")
+    void fieldWidth_invalid_fallback() {
+        for (double bad : new double[]{0, -10, Double.NaN, Double.POSITIVE_INFINITY}) {
+            TextField f = fieldOf(InputNumberAnt.create().fieldWidth(bad).build());
+            assertEquals(80, f.getPrefWidth());
+            assertEquals(48, f.getMinWidth());
+        }
+    }
+
+    private static long buttonCount(HBox box) {
+        return box.getChildren().stream().filter(Button.class::isInstance).count();
     }
 
     private static TextField fieldOf(HBox box) {

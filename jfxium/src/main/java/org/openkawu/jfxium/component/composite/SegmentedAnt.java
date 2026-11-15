@@ -1,7 +1,6 @@
 package org.openkawu.jfxium.component.composite;
 
 import javafx.beans.property.StringProperty;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -111,8 +110,6 @@ public class SegmentedAnt {
             else if (size == Size.LARGE) segmented.getStyleClass().add(JfxStyles.SEGMENTED_LARGE);
             if (block) segmented.setMaxWidth(Double.MAX_VALUE);
 
-            // padding 仍由 size 决定（结构性 inset；整体高度由 LESS 高度契约钳制到 token）
-            double padding = size == Size.XS ? 2 : size == Size.SMALL ? 4 : size == Size.LARGE ? 12 : 8;
             Controller controller = new Controller();
 
             for (Option option : options) {
@@ -128,7 +125,6 @@ public class SegmentedAnt {
 
                 HBox content = new HBox();
                 content.setAlignment(Pos.CENTER);
-                content.setPadding(new Insets(padding, padding + 4, padding, padding + 4));
                 if (option.getIcon() != null) {
                     content.getChildren().add(option.getIcon());
                 }

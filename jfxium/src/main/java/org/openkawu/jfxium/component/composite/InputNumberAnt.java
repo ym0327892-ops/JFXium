@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
@@ -30,8 +31,10 @@ import java.util.function.Consumer;
  *   <li><b>范围限制</b>：min / max</li>
  *   <li><b>步长</b>：step（默认 1）</li>
  *   <li><b>精度</b>：precision（小数位数）</li>
- *   <li><b>尺寸</b>：SMALL / DEFAULT / LARGE</li>
+ *   <li><b>尺寸</b>：XS / SMALL / DEFAULT / MIDDLE / LARGE</li>
  *   <li><b>前缀/后缀</b>：prefix / suffix（如￥、%）</li>
+ *   <li><b>按钮开关</b>：controls(boolean)，关闭后为纯数字输入框</li>
+ *   <li><b>输入框宽度</b>：fieldWidth(double)，默认 80px，同时作为最小宽度防止多位数字被截断</li>
  *   <li><b>禁用/只读</b>：disabled / readOnly</li>
  *   <li>视觉样式走 LESS（{@code .jfx-input-number} 系列）</li>
  * </ul>
@@ -43,7 +46,7 @@ import java.util.function.Consumer;
  *     .min(0).max(100)
  *     .step(5)
  *     .suffix("%")
- *     .size(InputNumberAnt.Size.SMALL)
+ *     .size(Size.SMALL)   // Size 来自 org.openkawu.jfxium.core.token.Size
  *     .onChange(val -> System.out.println("数值：" + val))
  *     .build();
  * }</pre>
@@ -65,6 +68,8 @@ public class InputNumberAnt {
         private int precision = -1;
         private String prefix = null;
         private String suffix = null;
+        private boolean controls = true;
+        private double fieldWidth = -1;
         private DoubleProperty bindProperty = null;
 
         public Builder value(double value) { this.value = value; return this; }
@@ -78,6 +83,18 @@ public class InputNumberAnt {
         public Builder precision(int precision) { this.precision = precision; return this; }
         public Builder prefix(String prefix) { this.prefix = prefix; return this; }
         public Builder suffix(String suffix) { this.suffix = suffix; return this; }
+
+        /** 是否显示 +/- 步进按钮（默认 true）。关闭后即为纯数字输入框，范围/精度校验仍生效。 */
+        public Builder controls(boolean controls) { this.controls = controls; return this; }
+
+        /**
+         * 中间数字输入框的宽度（px，默认 80）。同时作为最小宽度，
+         * 避免容器被压缩时把「3600」这类多位数字截断。非有限值/非正数忽略，回退默认宽度。
+         */
+        public Builder fieldWidth(double fieldWidth) {
+            this.fieldWidth = Double.isFinite(fieldWidth) && fieldWidth > 0 ? fieldWidth : -1;
+            return this;
+        }
 
         /** 双向绑定：控件值 ↔ Property 值实时同步。 */
         public Builder bindValue(DoubleProperty property) {
@@ -107,6 +124,8 @@ public class InputNumberAnt {
             if (prefix != null && !prefix.isEmpty()) {
                 Label prefixLabel = new Label(prefix);
                 prefixLabel.getStyleClass().add(JfxStyles.INPUT_NUMBER_PREFIX);
+                // 单位文本不可被压缩：空间不足时应先压缩输入框，而不是把「秒」截成「...」
+                prefixLabel.setMinWidth(Region.USE_PREF_SIZE);
                 container.getChildren().add(prefixLabel);
             }
 
@@ -114,7 +133,10 @@ public class InputNumberAnt {
             field.setAlignment(Pos.CENTER);
             field.setPromptText(TextUtils.safeText(placeholder));
             field.setEditable(!readOnly);
-            field.setPrefWidth(80);
+            // 默认最小宽度 48：容得下 4 位数字（LARGE 档 16px 字号实测需 46.8px），
+            // 否则父级压缩时 HBox 会把输入框压到 40px，「3600」被截断。
+            field.setPrefWidth(fieldWidth > 0 ? fieldWidth : 80);
+            field.setMinWidth(fieldWidth > 0 ? fieldWidth : 48);
             field.getStyleClass().add(JfxStyles.INPUT_NUMBER_FIELD);
             HBox.setHgrow(field, Priority.ALWAYS);
 
@@ -155,22 +177,30 @@ public class InputNumberAnt {
                 }
             });
 
-            Button decBtn = createButton("M2 8H14");
-            decBtn.setOnAction(e -> adjustValue(-step, field));
-            Button incBtn = createButton("M8 2V14 M2 8H14");
-            incBtn.setOnAction(e -> adjustValue(step, field));
+            Button decBtn = null;
+            Button incBtn = null;
+            if (controls) {
+                decBtn = createButton("M2 8H14");
+                decBtn.setOnAction(e -> adjustValue(-step, field));
+                incBtn = createButton("M8 2V14 M2 8H14");
+                incBtn.setOnAction(e -> adjustValue(step, field));
+                container.getChildren().add(decBtn);
+            }
 
-            container.getChildren().addAll(decBtn, field, incBtn);
+            container.getChildren().add(field);
+            if (incBtn != null) container.getChildren().add(incBtn);
 
             if (suffix != null && !suffix.isEmpty()) {
                 Label suffixLabel = new Label(suffix);
                 suffixLabel.getStyleClass().add(JfxStyles.INPUT_NUMBER_SUFFIX);
+                // 同上：后缀是固定单位文本，不允许被 HBox 压缩成省略号
+                suffixLabel.setMinWidth(Region.USE_PREF_SIZE);
                 container.getChildren().add(suffixLabel);
             }
 
             if (Boolean.TRUE.equals(disable)) {
-                decBtn.setDisable(true);
-                incBtn.setDisable(true);
+                if (decBtn != null) decBtn.setDisable(true);
+                if (incBtn != null) incBtn.setDisable(true);
                 field.setDisable(true);
             }
             applyStyles(container);
@@ -188,6 +218,12 @@ public class InputNumberAnt {
 
             StackPane graphic = new StackPane(path);
             graphic.setAlignment(Pos.CENTER);
+            // 图标槽固定为正方形：减号路径包围盒是 14×2.5、加号是 14.5×14.5，
+            // 若交给内容决定尺寸，两个按钮会分别变成 13px / 25px 高，
+            // hover 高亮框一个扁长一个正方（BUG：+/- 按钮高亮框形状不一致）。
+            graphic.setMinSize(14, 14);
+            graphic.setPrefSize(14, 14);
+            graphic.setMaxSize(14, 14);
             btn.setGraphic(graphic);
             return btn;
         }
