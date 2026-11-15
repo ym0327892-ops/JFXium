@@ -58,6 +58,9 @@
 }
 
 .check-box:indeterminate .box .mark {
+  /* 半选态改画横杠：必须替换 shape，否则沿用 ✓ 形状，视觉上跟选中态一样 */
+  -fx-shape: "M0,0H8V2H0Z";
+  -fx-scale-shape: false;   /* 不缩放，8×2 横杠在 8×8 mark 区域内居中 */
   -fx-background-color: -color-fg-on-emphasis;
 }
 

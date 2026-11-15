@@ -1,6 +1,15 @@
 /* ============================================
    Input Component
    ============================================ */
+/* 选区高亮：JFXium 主题会替换掉 modena（UA 样式表），modena 里
+   「.text-input { -fx-highlight-fill: -fx-accent }」这条规则不再存在，
+   选区会回落到 JavaFX 内置默认 DODGERBLUE（与主题色无关）。
+   这里按主题色显式绑定，TextField / TextArea / PasswordField 统一生效。 */
+.text-input {
+  -fx-highlight-fill: -color-accent-muted;
+  -fx-highlight-text-fill: -color-fg-default;
+}
+
 .text-field {
   .input-base();
   
