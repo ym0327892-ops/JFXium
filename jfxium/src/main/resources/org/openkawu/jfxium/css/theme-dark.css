@@ -675,6 +675,14 @@
 /* ============================================
    Input Component
    ============================================ */
+/* 选区高亮：JFXium 主题会替换掉 modena（UA 样式表），modena 里
+   「.text-input { -fx-highlight-fill: -fx-accent }」这条规则不再存在，
+   选区会回落到 JavaFX 内置默认 DODGERBLUE（与主题色无关）。
+   这里按主题色显式绑定，TextField / TextArea / PasswordField 统一生效。 */
+.text-input {
+  -fx-highlight-fill: -color-accent-muted;
+  -fx-highlight-text-fill: -color-fg-default;
+}
 .text-field {
   -fx-background-color: #0d1117;
   -fx-border-color: #30363d;
@@ -1405,6 +1413,10 @@
   -fx-border-color: -color-accent-emphasis;
 }
 .check-box:indeterminate .box .mark {
+  /* 半选态改画横杠：必须替换 shape，否则沿用 ✓ 形状，视觉上跟选中态一样 */
+  -fx-shape: "M0,0H8V2H0Z";
+  -fx-scale-shape: false;
+  /* 不缩放，8×2 横杠在 8×8 mark 区域内居中 */
   -fx-background-color: -color-fg-on-emphasis;
 }
 /* 尺寸档位：CheckBox 是「文本行内控件」，高度跟随文字行高（≈18px），
@@ -4634,6 +4646,30 @@
   -fx-background-color: transparent;
   -fx-background-radius: 4px;
   -fx-cursor: hand;
+  /* 选项背景撑满容器内容区（容器高 - 2×@2 容器内边距），保证 hover/选中态严格落在边框内。
+     纵向不再由 Java 侧 setPadding 撑高，避免「容器钉死高度 + 内容内边距」导致的 1px 溢出。 */
+  -fx-padding: 0 12 0 12;
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
+}
+.jfx-segmented.jfx-segmented-xs .jfx-segmented-item {
+  -fx-padding: 0 6 0 6;
+  -fx-min-height: 20px;
+  -fx-pref-height: 20px;
+  -fx-max-height: 20px;
+}
+.jfx-segmented.jfx-segmented-small .jfx-segmented-item {
+  -fx-padding: 0 8 0 8;
+  -fx-min-height: 24px;
+  -fx-pref-height: 24px;
+  -fx-max-height: 24px;
+}
+.jfx-segmented.jfx-segmented-large .jfx-segmented-item {
+  -fx-padding: 0 16 0 16;
+  -fx-min-height: 36px;
+  -fx-pref-height: 36px;
+  -fx-max-height: 36px;
 }
 .jfx-segmented-item:hover {
   -fx-background-color: -color-accent-subtle;
@@ -4691,14 +4727,16 @@
 }
 .jfx-input-number-prefix,
 .jfx-input-number-suffix {
+  /* 单位文本与数值同色（对标 Ant Design 的 group-addon），不再用 muted 灰 */
   -fx-font-size: 14px;
-  -fx-text-fill: -color-fg-muted;
+  -fx-text-fill: -color-fg-default;
 }
 .jfx-input-number-prefix {
   -fx-padding: 0 4 0 8;
 }
+/* 后缀左侧留 8px：与 + 按钮拉开距离，不贴边框 */
 .jfx-input-number-suffix {
-  -fx-padding: 0 8 0 4;
+  -fx-padding: 0 8 0 8;
 }
 .jfx-input-number-field {
   -fx-background-color: transparent;
@@ -4742,10 +4780,17 @@
   -fx-max-width: 32px;
   -fx-padding: 5;
 }
+/* hover 高亮不能越界：
+   1) modena .button 的 -fx-background-insets 是 "0 0 -1 0"（底边 -1px），
+      会让高亮多画出 1px，压住容器边框；
+   2) 高亮方块紧贴容器右边框，直角区域会顶出容器 6px 圆角。
+   统一内缩 1px + 小圆角，视觉完全落在容器圆角内。 */
 .jfx-input-number-btn:hover,
 .jfx-input-number-btn:armed,
 .jfx-input-number-btn:pressed {
   -fx-background-color: -color-accent-subtle;
+  -fx-background-insets: 1;
+  -fx-background-radius: 4px;
 }
 .jfx-input-number-arrow {
   -fx-stroke: -color-fg-muted;
