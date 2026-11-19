@@ -1,13 +1,19 @@
 package org.openkawu.jfxium.component.control;
 
 import javafx.scene.Node;
+import javafx.scene.control.Skin;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.skin.TreeCellSkin;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Line;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
 import org.openkawu.jfxium.core.builder.DisabledSupport;
 import org.openkawu.jfxium.core.style.JfxStyles;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -22,6 +28,8 @@ import java.util.function.Function;
  *   <li>声明式节点构建（{@code leaf()} / {@code node()} 静态工厂）</li>
  *   <li>节点图标支持（{@code leaf(value, graphic)} / {@code node(value, graphic, children)}）</li>
  *   <li>控制根节点可见性（{@link #showRoot(boolean)}）</li>
+ *   <li>展开/折叠指示器风格（{@link #indicatorStyle(IndicatorStyle)}）：三角箭头 / V 形箭头 / 加减号</li>
+ *   <li>缩进参考线开关（{@link #showLine(boolean)}，默认关闭）</li>
  *   <li>节点选择回调（{@link #onSelect(Consumer)}）</li>
  *   <li>实现 {@link LayoutCommon} 接口，支持 {@code .styleClass()} / {@code .style()} / 尺寸 / 圆角 / 边框等</li>
  * </ul>
@@ -98,6 +106,25 @@ public class TreeAnt<T> extends TreeView<T>
     private boolean cellFactoryInstalled = false;
 
     // ============================================================
+    // 枚举
+    // ============================================================
+
+    /**
+     * 展开/折叠指示器风格（单元格左侧的展开开关符号）。
+     *
+     * <p>纯视觉风格，不改变树的展开/折叠行为；通过 {@link #indicatorStyle(IndicatorStyle)} 切换，
+     * 可重复调用（幂等）。默认 {@link #ARROW}。</p>
+     */
+    public enum IndicatorStyle {
+        /** 三角箭头（默认，Ant Design 风格）。 */
+        ARROW,
+        /** V 形箭头（现代桌面工具风格，如 JetBrains / VS Code）。 */
+        CHEVRON,
+        /** 加号 / 减号（资源管理器风格）。 */
+        PLUS_MINUS
+    }
+
+    // ============================================================
     // 节点工厂（静态方法）
     // ============================================================
 
@@ -165,18 +192,7 @@ public class TreeAnt<T> extends TreeView<T>
         if (cellFactoryInstalled) return;
         cellFactoryInstalled = true;
         setCellFactory(tv -> {
-            TreeCell<T> cell = new TreeCell<>() {
-                @Override
-                protected void updateItem(T item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                        setGraphic(null);
-                    } else {
-                        setText(renderItemText(item, valueExtractor));
-                    }
-                }
-            };
+            GuideTreeCell cell = new GuideTreeCell();
             cell.getStyleClass().add(JfxStyles.TREE_CELL);
             return cell;
         });
@@ -239,6 +255,65 @@ public class TreeAnt<T> extends TreeView<T>
     }
 
     /**
+     * 设置展开/折叠指示器风格。幂等——先清旧风格 styleClass，再按需挂新。
+     * <p>传 {@code null} 等价于 {@link IndicatorStyle#ARROW}（默认三角箭头，只清不挂）。</p>
+     *
+     * <pre>{@code
+     * TreeAnt.<String>create()
+     *     .root("根", TreeAnt.node("子节点"))
+     *     .indicatorStyle(TreeAnt.IndicatorStyle.PLUS_MINUS)
+     *     .build();
+     * }</pre>
+     */
+    public TreeAnt<T> indicatorStyle(IndicatorStyle style) {
+        getStyleClass().removeAll(
+                JfxStyles.TREE_INDICATOR_CHEVRON,
+                JfxStyles.TREE_INDICATOR_PLUS_MINUS);
+        if (style != null) {
+            switch (style) {
+                case CHEVRON    -> getStyleClass().add(JfxStyles.TREE_INDICATOR_CHEVRON);
+                case PLUS_MINUS -> getStyleClass().add(JfxStyles.TREE_INDICATOR_PLUS_MINUS);
+                default         -> { /* ARROW：不挂额外类，使用默认三角箭头 */ }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 是否显示缩进参考线（每一层一条竖向细线，VS Code 缩进参考线风格）。
+     * <p>默认关闭；可运行时开关，调用后会立即刷新所有已渲染的 cell。</p>
+     *
+     * <pre>{@code
+     * TreeAnt.<String>create()
+     *     .root("根", TreeAnt.node("子节点"))
+     *     .showLine(true)
+     *     .build();
+     * }</pre>
+     *
+     * <p><b>实现说明</b>：JavaFX 的缩进由 {@link TreeCellSkin#layoutChildren} 在 Java 侧按
+     * {@code indent * level} 计算，CSS 没有层级选择器，无法用纯样式画线。因此由
+     * {@link GuideTreeCellSkin} 在每行底层铺一个线图层，按层级画整行高的竖线；
+     * 线宽/线色仍走 styleClass + LESS（{@link JfxStyles#TREE_GUIDE}）。</p>
+     */
+    public TreeAnt<T> showLine(boolean show) {
+        if (show) {
+            if (!getStyleClass().contains(JfxStyles.TREE_SHOW_LINE)) {
+                getStyleClass().add(JfxStyles.TREE_SHOW_LINE);
+            }
+        } else {
+            getStyleClass().remove(JfxStyles.TREE_SHOW_LINE);
+        }
+        // 已渲染的 cell 需要重建才会重新计算参考线；未挂 skin 时 refresh() 也是安全的（只打标记）
+        refresh();
+        return this;
+    }
+
+    /** 是否显示缩进参考线（默认 {@code false}）。 */
+    public boolean isShowLine() {
+        return getStyleClass().contains(JfxStyles.TREE_SHOW_LINE);
+    }
+
+    /**
      * 设置选择回调。
      */
     public TreeAnt<T> onSelect(Consumer<T> handler) {
@@ -267,5 +342,125 @@ public class TreeAnt<T> extends TreeView<T>
     public TreeAnt<T> build() {
         installCellFactory();
         return this;
+    }
+
+    // ============================================================
+    // 缩进参考线（cell + skin）
+    // ============================================================
+
+    /**
+     * TreeAnt 专用 TreeCell —— 文本走 {@link TreeAnt#valueExtractor}，
+     * 皮肤换成 {@link GuideTreeCellSkin} 以提供缩进参考线图层。
+     */
+    private final class GuideTreeCell extends TreeCell<T> {
+
+        @Override
+        protected void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                setText(renderItemText(item, valueExtractor));
+            }
+        }
+
+        @Override
+        protected Skin<?> createDefaultSkin() {
+            return new GuideTreeCellSkin<>(this);
+        }
+    }
+
+    /**
+     * 带「缩进参考线」图层的 TreeCell 皮肤。
+     *
+     * <p>参考线 = 每行底层一个 {@link Pane}，按当前行的可视层级画 N 条整行高的竖线
+     * （N = {@code indent * level} 里的 level）。整行高绘制让相邻行的线首尾相接，
+     * 不需要额外判断兄弟节点。</p>
+     *
+     * <p>不改写缩进本身（仍由 {@link TreeCellSkin#layoutChildren} 负责），只叠加图层，
+     * 所以展开/折叠、滚动回收、showRoot 切换都与原生行为一致。</p>
+     */
+    private static final class GuideTreeCellSkin<T> extends TreeCellSkin<T> {
+
+        /** 线图层：始终位于 cell 子节点第 0 位（最底层），不参与布局。 */
+        private final Pane guideLayer = new Pane();
+
+        /** 竖线节点池 —— cell 滚动回收时复用，避免每次 layout 反复创建节点。 */
+        private final List<Line> guides = new ArrayList<>();
+
+        GuideTreeCellSkin(TreeCell<T> cell) {
+            super(cell);
+            guideLayer.getStyleClass().add(JfxStyles.TREE_GUIDE_LAYER);
+            guideLayer.setManaged(false);
+            guideLayer.setMouseTransparent(true);
+            getChildren().add(0, guideLayer);
+        }
+
+        @Override
+        protected void layoutChildren(double x, double y, double w, double h) {
+            super.layoutChildren(x, y, w, h);
+
+            final TreeCell<T> cell = getSkinnable();
+            final TreeView<T> tree = cell.getTreeView();
+            final int level = resolveLevel(tree, cell);
+
+            if (level <= 0) {
+                hideGuidesFrom(0);
+                return;
+            }
+
+            // skin 会把 disclosureNode 挪到最底层，这里重新把线图层压回去（仅在需要时改子节点顺序）
+            if (getChildren().indexOf(guideLayer) != 0) {
+                getChildren().remove(guideLayer);
+                getChildren().add(0, guideLayer);
+            }
+            // 铺满整个 cell（含 padding），保证相邻行竖线连续
+            guideLayer.resizeRelocate(0, 0, cell.getWidth(), cell.getHeight());
+
+            final double indent = getIndent();
+            ensureGuides(level);
+            final double height = cell.getHeight();
+            for (int i = 0; i < level; i++) {
+                Line line = guides.get(i);
+                // 第 i 个缩进列的列中心；+0.5 让 1px 描边落在像素中心，避免发虚
+                double lx = Math.round(i * indent + indent / 2) + 0.5;
+                line.setStartX(lx);
+                line.setEndX(lx);
+                line.setStartY(0);
+                line.setEndY(height);
+                line.setVisible(true);
+            }
+            hideGuidesFrom(level);
+        }
+
+        /** 当前行需要几条参考线：= 可视层级；未开启 / 空行 / 根行返回 -1 或 0。 */
+        private int resolveLevel(TreeView<T> tree, TreeCell<T> cell) {
+            if (tree == null || cell.isEmpty()) return -1;
+            if (!tree.getStyleClass().contains(JfxStyles.TREE_SHOW_LINE)) return -1;
+            TreeItem<T> item = cell.getTreeItem();
+            if (item == null) return -1;
+            int level = tree.getTreeItemLevel(item);
+            if (level < 0) return -1;
+            if (!tree.isShowRoot()) level--;   // 与 TreeCellSkin 的缩进算法保持一致
+            return level;
+        }
+
+        private void ensureGuides(int count) {
+            while (guides.size() < count) {
+                Line line = new Line();
+                line.getStyleClass().add(JfxStyles.TREE_GUIDE);
+                line.setManaged(false);
+                line.setMouseTransparent(true);
+                guides.add(line);
+                guideLayer.getChildren().add(line);
+            }
+        }
+
+        private void hideGuidesFrom(int from) {
+            for (int i = from; i < guides.size(); i++) {
+                guides.get(i).setVisible(false);
+            }
+        }
     }
 }

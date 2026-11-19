@@ -90,6 +90,13 @@
   
 }
 
+/* 展开态旋转 90° 转为下指。
+   ⚠️ 不能依赖 modena —— 主题 CSS 通过 Application.setUserAgentStylesheet() 整体替换了
+   modena，其 `:expanded > ... > .arrow { -fx-rotate: 90 }` 不会生效，必须显式声明。 */
+.tree-table-view .tree-table-row-cell:expanded > .tree-disclosure-node .arrow {
+  -fx-rotate: 90;
+}
+
 .tree-table-view .tree-table-row-cell > .tree-disclosure-node {
   /* TreeTable 的展开箭头需要和第一列内容拉开间距，避免箭头和文本贴死 */
   -fx-padding: 0.35em @tree-cell-padding-x 0 @tree-cell-padding-x;

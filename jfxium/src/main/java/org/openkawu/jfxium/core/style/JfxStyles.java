@@ -546,6 +546,16 @@ public final class JfxStyles {
 
     /** TreeAnt 树形组件 */
     public static final String TREE_CELL = "jfx-tree-cell";
+    /** 展开指示器：V 形箭头（默认不挂 = 三角箭头） */
+    public static final String TREE_INDICATOR_CHEVRON = "jfx-tree-indicator-chevron";
+    /** 展开指示器：加减号 */
+    public static final String TREE_INDICATOR_PLUS_MINUS = "jfx-tree-indicator-plus-minus";
+    /** 缩进参考线开关（挂在 TreeView 根节点上） */
+    public static final String TREE_SHOW_LINE = "jfx-tree-show-line";
+    /** 缩进参考线图层（cell 最底层 Pane） */
+    public static final String TREE_GUIDE_LAYER = "jfx-tree-guide-layer";
+    /** 单条缩进参考线 */
+    public static final String TREE_GUIDE = "jfx-tree-guide";
 
     /** TreeSelectAnt 树选择 */
     public static final String TREE_SELECT = "jfx-tree-select";

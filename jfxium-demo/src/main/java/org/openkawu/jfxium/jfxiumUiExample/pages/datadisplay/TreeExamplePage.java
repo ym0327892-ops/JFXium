@@ -1,6 +1,7 @@
 package org.openkawu.jfxium.jfxiumUiExample.pages.datadisplay;
 
 import javafx.scene.Node;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
 import org.openkawu.jfxium.component.layout.VBoxAnt;
@@ -21,7 +22,9 @@ public class TreeExamplePage extends VBoxAnt {
                 .sections(
                         basicSection(),
                         expandedSection(),
-                        selectableSection()
+                        selectableSection(),
+                        indicatorSection(),
+                        guideLineSection()
                 )
                 .padding(24)
                 .build());
@@ -110,5 +113,94 @@ public class TreeExamplePage extends VBoxAnt {
                         .build();
                 """;
         return Demos.sectionWithCode("3. 可选择", "通过 onSelect 回调响应选中事件。", code, tree);
+    }
+
+    private Node indicatorSection() {
+        TreeView<String> chevron = TreeAnt.<String>create()
+                .root("文件夹", folderNodes())
+                .indicatorStyle(TreeAnt.IndicatorStyle.CHEVRON)
+                .build();
+        chevron.setPrefSize(220, 160);
+
+        TreeView<String> plusMinus = TreeAnt.<String>create()
+                .root("文件夹", folderNodes())
+                .indicatorStyle(TreeAnt.IndicatorStyle.PLUS_MINUS)
+                .build();
+        plusMinus.setPrefSize(220, 160);
+
+        String code = """
+                // 节点工厂默认展开；折叠一个父节点才能同时看到 + 与 −
+                TreeItem<String> docs = TreeAnt.node("docs", TreeAnt.leaf("guide.md"));
+                docs.setExpanded(false);
+
+                // V 形箭头
+                TreeAnt.<String>create()
+                        .root("文件夹", TreeAnt.node("src", TreeAnt.leaf("Main.java")), docs)
+                        .indicatorStyle(TreeAnt.IndicatorStyle.CHEVRON)
+                        .build();
+
+                // 加减号（Windows 资源管理器风格）
+                TreeAnt.<String>create()
+                        .root("文件夹", TreeAnt.node("src", TreeAnt.leaf("Main.java")), docs)
+                        .indicatorStyle(TreeAnt.IndicatorStyle.PLUS_MINUS)
+                        .build();
+
+                // 不调用 indicatorStyle 时为默认三角箭头
+                """;
+        return Demos.sectionWithCode("4. 指示器风格",
+                "indicatorStyle 切换展开/折叠符号：ARROW（默认三角）/ CHEVRON（V 形）/ PLUS_MINUS（加减号）。",
+                code, Demos.row(chevron, plusMinus));
+    }
+
+    /** 每个指示器示例共用的节点结构：一个展开父节点 + 一个折叠父节点。 */
+    private TreeItem<String>[] folderNodes() {
+        TreeItem<String> src = TreeAnt.node("src",
+                TreeAnt.leaf("Main.java"),
+                TreeAnt.leaf("App.java"));
+        TreeItem<String> docs = TreeAnt.node("docs",
+                TreeAnt.leaf("guide.md"),
+                TreeAnt.leaf("api.md"));
+        docs.setExpanded(false);
+        return new TreeItem[]{src, docs};
+    }
+
+    private Node guideLineSection() {
+        TreeAnt<String> tree = TreeAnt.<String>create()
+                .root("项目",
+                        TreeAnt.node("src",
+                                TreeAnt.node("main",
+                                        TreeAnt.leaf("App.java"),
+                                        TreeAnt.leaf("Util.java")
+                                ),
+                                TreeAnt.node("test",
+                                        TreeAnt.leaf("AppTest.java")
+                                )
+                        ),
+                        TreeAnt.leaf("pom.xml")
+                )
+                .showLine(true)
+                .build();
+        tree.setPrefSize(280, 200);
+
+        String code = """
+                // showLine(true)：每层缩进画一条竖向参考线（默认关闭，可随时开关）
+                TreeAnt<String> tree = TreeAnt.<String>create()
+                        .root("项目",
+                                TreeAnt.node("src",
+                                        TreeAnt.node("main",
+                                                TreeAnt.leaf("App.java")
+                                        )
+                                ),
+                                TreeAnt.leaf("pom.xml")
+                        )
+                        .showLine(true)
+                        .build();
+
+                // 运行时关闭
+                tree.showLine(false);
+                """;
+        return Demos.sectionWithCode("5. 缩进参考线",
+                "showLine(true) 在每一层缩进处画竖向参考线，帮助定位层级；默认关闭，可随时开关。",
+                code, tree);
     }
 }

@@ -43,8 +43,7 @@
 
 .tree-cell > .tree-disclosure-node > .arrow {
   /* M19.55 红线#9 修复：显式设 shape + 尺寸（右指三角）。
-     modena 默认 -fx-rotate: 90 在 :expanded 时切到下指，所以折叠态 shape 用右指。
-     对齐 modena shape 风格。 */
+     折叠态用右指，展开态由下方 `:expanded` 规则旋转 90° 转为下指。 */
   -fx-shape: "M 0 -3.5 L 4 0 L 0 3.5 z";
   -fx-min-width: 5px;
   -fx-min-height: 10px;
@@ -58,8 +57,65 @@
   -fx-background-color: -color-accent-emphasis;
 }
 
-/* 展开态：modena 默认 -fx-rotate: 90 把右指 shape 旋转成下指 */
+/* 展开态：右指 shape 旋转 90° 转为下指。
+   ⚠️ 不能依赖 modena —— ThemeManager.applyTheme() 用 Application.setUserAgentStylesheet()
+   整体替换了 modena，modena 的 `.tree-cell:expanded > ... > .arrow { -fx-rotate: 90 }`
+   不会生效，必须在本主题内显式声明（否则展开/折叠箭头方向完全一样）。 */
 .tree-cell:expanded > .tree-disclosure-node > .arrow {
   -fx-background-color: -color-accent-emphasis;
-  /* 保留 -fx-rotate: 90 让 shape "M 0 -3.5 L 4 0 L 0 3.5 z" 旋转为下指 */
+  -fx-rotate: 90;
+}
+
+/* ============================================
+   展开指示器风格（TreeAnt.indicatorStyle）
+
+   默认三角箭头由上面的规则提供（ARROW）。下面两套规则挂在 TreeView 根节点
+   的 `jfx-tree-indicator-*` 上，只影响显式指定风格的树，不影响全局 .tree-cell。
+
+   ⚠️ 两个必须遵守的约束：
+   1. `-fx-shape` 默认按 Region 尺寸“非等比”缩放（Region#scaleShape 默认 true），
+      所以每个 shape 的几何 bounds 必须与 Region 的宽高保持同比，否则符号会被拉扁。
+      → 加减号的“−”用两条零面积竖线把 bounds 撑成正方形，保证始终等比。
+   2. 展开态由上面的 `.tree-cell:expanded` 规则统一旋转 90°：
+      “+” 四重对称，旋转不影响；但 “−” 旋转 90° 会变成竖线，必须显式归零。
+   ============================================ */
+
+/* --- CHEVRON：V 形箭头（折叠时右指，展开态由上面的统一 rotate 90° 转为下指） --- */
+.tree-view.jfx-tree-indicator-chevron .tree-cell > .tree-disclosure-node > .arrow {
+  /* bounds 4×8 → 与下面 5×10 的 Region 等比缩放 1.25 */
+  -fx-shape: "M 0 -4 L 1.6 -4 L 4 0 L 1.6 4 L 0 4 L 2.4 0 Z";
+  -fx-min-width: 5px;
+  -fx-min-height: 10px;
+  -fx-pref-width: 5px;
+  -fx-pref-height: 10px;
+  -fx-padding: 0;
+}
+
+/* --- PLUS_MINUS：加号 / 减号 --- */
+.tree-view.jfx-tree-indicator-plus-minus .tree-cell > .tree-disclosure-node > .arrow {
+  /* 折叠：+（bounds 8×8，与 Region 同比，紧凑主题下按 @spacing-sm 等比缩小） */
+  -fx-shape: "M -1 -4 L 1 -4 L 1 -1 L 4 -1 L 4 1 L 1 1 L 1 4 L -1 4 L -1 1 L -4 1 L -4 -1 L -1 -1 Z";
+  -fx-min-width: @spacing-sm;
+  -fx-min-height: @spacing-sm;
+  -fx-pref-width: @spacing-sm;
+  -fx-pref-height: @spacing-sm;
+  -fx-padding: 0;
+}
+
+.tree-view.jfx-tree-indicator-plus-minus .tree-cell:expanded > .tree-disclosure-node > .arrow {
+  /* 展开：−（前两条零面积竖线只用于把 bounds 撑成 8×8，本身不产生任何填充） */
+  -fx-shape: "M -4 -4 L -4 4 M 4 -4 L 4 4 M -4 -1 L 4 -1 L 4 1 L -4 1 Z";
+  -fx-rotate: 0;
+}
+
+/* ============================================
+   缩进参考线（TreeAnt.showLine(true)）
+
+   JavaFX 的缩进是 TreeCellSkin 在 Java 侧按 indent*level 摆的，CSS 没有层级选择器，
+   所以线本身由 GuideTreeCellSkin 在 Java 侧按层级画（每层一条整行高竖线），
+   这里只负责线宽/线色 —— 几何值不落在 CSS。
+   ============================================ */
+.tree-view.jfx-tree-show-line .jfx-tree-guide {
+  -fx-stroke: -color-border-subtle;
+  -fx-stroke-width: 1px;
 }

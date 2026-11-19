@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
  *   <li>create(value, children)：一键构造完整树</li>
  *   <li>root：value+children / 直接 TreeItem 两种模式</li>
  *   <li>showRoot：true / false</li>
+ *   <li>indicatorStyle：ARROW（默认）/ CHEVRON / PLUS_MINUS，幂等切换</li>
+ *   <li>showLine：缩进参考线开关，默认关闭，可运行时切换</li>
  *   <li>onSelect：选中节点时回调拿到 value</li>
  *   <li>disabled</li>
  *   <li>链式串联 + 继承式核心契约</li>
@@ -292,6 +294,128 @@ class TreeAntTest extends JfxTestBase {
                     .build();
             assertNotNull(tree);
             assertNotNull(tree.getCellFactory());
+        }
+    }
+
+    // ============================================================
+    // indicatorStyle（展开/折叠指示器风格）
+    // ============================================================
+
+    @Nested
+    @DisplayName("indicatorStyle（展开/折叠指示器风格）")
+    class IndicatorStyleTest {
+
+        @Test
+        @DisplayName("默认不挂任何 indicator styleClass（三角箭头）")
+        void default_arrow() {
+            TreeAnt<String> tree = TreeAnt.<String>create("根", TreeAnt.leaf("子")).build();
+            assertFalse(tree.getStyleClass().contains(JfxStyles.TREE_INDICATOR_CHEVRON));
+            assertFalse(tree.getStyleClass().contains(JfxStyles.TREE_INDICATOR_PLUS_MINUS));
+        }
+
+        @Test
+        @DisplayName("CHEVRON 挂 jfx-tree-indicator-chevron")
+        void chevron_addsClass() {
+            TreeAnt<String> tree = TreeAnt.<String>create("根", TreeAnt.leaf("子"))
+                    .indicatorStyle(TreeAnt.IndicatorStyle.CHEVRON)
+                    .build();
+            assertTrue(tree.getStyleClass().contains(JfxStyles.TREE_INDICATOR_CHEVRON));
+            assertFalse(tree.getStyleClass().contains(JfxStyles.TREE_INDICATOR_PLUS_MINUS));
+        }
+
+        @Test
+        @DisplayName("PLUS_MINUS 挂 jfx-tree-indicator-plus-minus")
+        void plusMinus_addsClass() {
+            TreeAnt<String> tree = TreeAnt.<String>create("根", TreeAnt.leaf("子"))
+                    .indicatorStyle(TreeAnt.IndicatorStyle.PLUS_MINUS)
+                    .build();
+            assertTrue(tree.getStyleClass().contains(JfxStyles.TREE_INDICATOR_PLUS_MINUS));
+            assertFalse(tree.getStyleClass().contains(JfxStyles.TREE_INDICATOR_CHEVRON));
+        }
+
+        @Test
+        @DisplayName("幂等：重复调用同一风格不重复挂 class，切换风格会清掉旧 class")
+        void switch_isIdempotent() {
+            TreeAnt<String> tree = TreeAnt.<String>create()
+                    .indicatorStyle(TreeAnt.IndicatorStyle.CHEVRON)
+                    .indicatorStyle(TreeAnt.IndicatorStyle.CHEVRON);
+
+            assertEquals(1, tree.getStyleClass().stream()
+                    .filter(JfxStyles.TREE_INDICATOR_CHEVRON::equals).count(),
+                    "重复设置 CHEVRON 不应重复挂 class");
+
+            tree.indicatorStyle(TreeAnt.IndicatorStyle.PLUS_MINUS);
+            assertFalse(tree.getStyleClass().contains(JfxStyles.TREE_INDICATOR_CHEVRON),
+                    "切换到 PLUS_MINUS 后应清掉 CHEVRON");
+            assertTrue(tree.getStyleClass().contains(JfxStyles.TREE_INDICATOR_PLUS_MINUS));
+        }
+
+        @Test
+        @DisplayName("indicatorStyle(null) 归零回默认三角箭头")
+        void null_resetsToArrow() {
+            TreeAnt<String> tree = TreeAnt.<String>create()
+                    .indicatorStyle(TreeAnt.IndicatorStyle.PLUS_MINUS)
+                    .indicatorStyle(null);
+
+            assertFalse(tree.getStyleClass().contains(JfxStyles.TREE_INDICATOR_PLUS_MINUS),
+                    "null 应等价于 ARROW（清空所有 indicator styleClass）");
+            assertFalse(tree.getStyleClass().contains(JfxStyles.TREE_INDICATOR_CHEVRON));
+        }
+    }
+
+    // ============================================================
+    // showLine（缩进参考线）
+    // ============================================================
+
+    @Nested
+    @DisplayName("showLine（缩进参考线开关）")
+    class ShowLineTest {
+
+        @Test
+        @DisplayName("默认关闭")
+        void default_off() {
+            TreeAnt<String> tree = TreeAnt.<String>create("根", TreeAnt.leaf("子")).build();
+            assertFalse(tree.isShowLine());
+            assertFalse(tree.getStyleClass().contains(JfxStyles.TREE_SHOW_LINE));
+        }
+
+        @Test
+        @DisplayName("showLine(true) 挂 jfx-tree-show-line")
+        void enable_addsClass() {
+            TreeAnt<String> tree = TreeAnt.<String>create("根", TreeAnt.leaf("子"))
+                    .showLine(true)
+                    .build();
+            assertTrue(tree.isShowLine());
+            assertTrue(tree.getStyleClass().contains(JfxStyles.TREE_SHOW_LINE));
+        }
+
+        @Test
+        @DisplayName("showLine(false) 关闭并移除 styleClass")
+        void disable_removesClass() {
+            TreeAnt<String> tree = TreeAnt.<String>create("根", TreeAnt.leaf("子"))
+                    .showLine(true)
+                    .showLine(false);
+            assertFalse(tree.isShowLine());
+            assertFalse(tree.getStyleClass().contains(JfxStyles.TREE_SHOW_LINE));
+        }
+
+        @Test
+        @DisplayName("幂等：重复 showLine(true) 不重复挂 class")
+        void enable_isIdempotent() {
+            TreeAnt<String> tree = TreeAnt.<String>create()
+                    .showLine(true)
+                    .showLine(true)
+                    .showLine(true);
+            assertEquals(1, tree.getStyleClass().stream()
+                    .filter(JfxStyles.TREE_SHOW_LINE::equals).count());
+        }
+
+        @Test
+        @DisplayName("未挂 skin 时开关不抛异常（refresh 只打重建标记）")
+        void toggle_withoutSkin_noException() {
+            TreeAnt<String> tree = TreeAnt.<String>create("根", TreeAnt.leaf("子")).build();
+            assertDoesNotThrow(() -> tree.showLine(true));
+            assertDoesNotThrow(() -> tree.showLine(false));
         }
     }
 
