@@ -66,6 +66,15 @@
   -fx-rotate: 90;
 }
 
+/* 选中 / 按下行：箭头用前景反色。
+   否则箭头是 accent-emphasis、选中底色也是 accent-emphasis → 完全看不见箭头。
+   （:selected:hover 单独列出：hover 规则的优先级更高，不写会被 accent 覆盖） */
+.tree-cell:selected > .tree-disclosure-node > .arrow,
+.tree-cell:selected > .tree-disclosure-node:hover > .arrow,
+.tree-cell:armed > .tree-disclosure-node > .arrow {
+  -fx-background-color: -color-fg-on-emphasis;
+}
+
 /* ============================================
    展开指示器风格（TreeAnt.indicatorStyle）
 

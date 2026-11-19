@@ -6,6 +6,8 @@ import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.skin.TreeCellSkin;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import org.openkawu.jfxium.component.layout.LayoutCommon;
@@ -353,6 +355,31 @@ public class TreeAnt<T> extends TreeView<T>
      * 皮肤换成 {@link GuideTreeCellSkin} 以提供缩进参考线图层。
      */
     private final class GuideTreeCell extends TreeCell<T> {
+
+        /**
+         * 展开热区：披露节点左右各放宽一点，纵向放宽到整行高度。
+         * <p>JavaFX 默认只有披露节点自身 bounds（约 29×15）可点，行高 32 时上下都差一截，
+         * 用户瞄着箭头点很容易点到文字区变成"选中"而不是"展开"。这里用事件过滤器接管：
+         * 命中热区 → 直接切换展开并 consume（与原生语义一致：点箭头不选中该行）。</p>
+         */
+        private static final double HOT_ZONE_PX = 6;
+
+        GuideTreeCell() {
+            addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+                if (e.getButton() != MouseButton.PRIMARY) return;
+                if (isEmpty() || getTreeItem() == null || getTreeItem().isLeaf()) return;
+                Node disclosure = getDisclosureNode();
+                if (disclosure == null) return;
+
+                double x = e.getX();
+                double left = disclosure.getLayoutX() - HOT_ZONE_PX;
+                double right = disclosure.getLayoutX() + disclosure.getLayoutBounds().getWidth() + HOT_ZONE_PX;
+                if (x >= left && x <= right) {
+                    getTreeItem().setExpanded(!getTreeItem().isExpanded());
+                    e.consume();
+                }
+            });
+        }
 
         @Override
         protected void updateItem(T item, boolean empty) {

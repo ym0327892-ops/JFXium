@@ -1,5 +1,6 @@
 package org.openkawu.jfxium.component.control;
 
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *   <li>showRoot：true / false</li>
  *   <li>indicatorStyle：ARROW（默认）/ CHEVRON / PLUS_MINUS，幂等切换</li>
  *   <li>showLine：缩进参考线开关，默认关闭，可运行时切换</li>
+ *   <li>展开热区：整行高度内点击箭头附近即切换展开，文本区不误触</li>
  *   <li>onSelect：选中节点时回调拿到 value</li>
  *   <li>disabled</li>
  *   <li>链式串联 + 继承式核心契约</li>
@@ -416,6 +418,81 @@ class TreeAntTest extends JfxTestBase {
             TreeAnt<String> tree = TreeAnt.<String>create("根", TreeAnt.leaf("子")).build();
             assertDoesNotThrow(() -> tree.showLine(true));
             assertDoesNotThrow(() -> tree.showLine(false));
+        }
+    }
+
+    // ============================================================
+    // 展开热区（点箭头附近即可展开，不必精确命中 5px 的箭头）
+    // ============================================================
+
+    @Nested
+    @DisplayName("展开热区")
+    class HitZoneTest {
+
+        @Test
+        @DisplayName("整行高度内点击箭头热区 → 切换展开")
+        void hotZone_togglesAtRowBottom() {
+            runOnFxThreadAndWait(() -> {
+                TreeItem<String> parent = TreeAnt.node("父节点", TreeAnt.leaf("子"));
+                TreeAnt<String> tree = TreeAnt.<String>create("根", parent).build();
+                tree.setPrefSize(300, 200);
+
+                javafx.scene.Scene scene = new javafx.scene.Scene(
+                        new javafx.scene.layout.VBox(tree), 320, 220);
+                scene.getRoot().applyCss();
+                scene.getRoot().layout();
+                scene.snapshot(null);          // 强制一次 pulse，让 VirtualFlow 建出 cell
+                scene.getRoot().applyCss();
+                scene.getRoot().layout();
+
+                TreeCell<?> cell = cellOf(tree, parent);
+                javafx.scene.Node disclosure = cell.getDisclosureNode();
+                assertNotNull(disclosure, "TreeViewSkin 必须给 cell 挂披露节点");
+
+                boolean before = parent.isExpanded();
+                double x = disclosure.getLayoutX() + disclosure.getLayoutBounds().getWidth() / 2;
+                press(cell, x, cell.getHeight() - 3);   // 行底部：原生命中范围之外
+                assertNotEquals(before, parent.isExpanded(),
+                        "整行高度内点中箭头热区都应切换展开");
+            });
+        }
+
+        @Test
+        @DisplayName("点击文本区 → 不切换展开（保持选中语义）")
+        void textArea_doesNotToggle() {
+            runOnFxThreadAndWait(() -> {
+                TreeItem<String> parent = TreeAnt.node("父节点", TreeAnt.leaf("子"));
+                TreeAnt<String> tree = TreeAnt.<String>create("根", parent).build();
+                tree.setPrefSize(300, 200);
+
+                javafx.scene.Scene scene = new javafx.scene.Scene(
+                        new javafx.scene.layout.VBox(tree), 320, 220);
+                scene.getRoot().applyCss();
+                scene.getRoot().layout();
+                scene.snapshot(null);
+                scene.getRoot().applyCss();
+                scene.getRoot().layout();
+
+                TreeCell<?> cell = cellOf(tree, parent);
+                boolean before = parent.isExpanded();
+                press(cell, cell.getWidth() - 5, cell.getHeight() / 2);
+                assertEquals(before, parent.isExpanded(), "点在文本区不应切换展开");
+            });
+        }
+
+        private TreeCell<?> cellOf(TreeAnt<String> tree, TreeItem<String> item) {
+            for (javafx.scene.Node n : tree.lookupAll(".tree-cell")) {
+                if (n instanceof TreeCell<?> c && c.getTreeItem() == item) return c;
+            }
+            throw new AssertionError("未找到对应 Cell");
+        }
+
+        private void press(TreeCell<?> cell, double x, double y) {
+            javafx.event.Event.fireEvent(cell, new javafx.scene.input.MouseEvent(
+                    javafx.scene.input.MouseEvent.MOUSE_PRESSED, x, y, 0, 0,
+                    javafx.scene.input.MouseButton.PRIMARY, 1,
+                    false, false, false, false,
+                    true, false, false, false, false, false, null));
         }
     }
 
