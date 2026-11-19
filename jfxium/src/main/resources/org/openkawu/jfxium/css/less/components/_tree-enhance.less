@@ -116,6 +116,8 @@
    这里只负责线宽/线色 —— 几何值不落在 CSS。
    ============================================ */
 .tree-view.jfx-tree-show-line .jfx-tree-guide {
-  -fx-stroke: -color-border-subtle;
+  /* Ant Design 树连接线同款：-color-border-default（亮色 #d9d9d9 / 暗色 #30363d）。
+     早前用的 border-subtle(6% 黑) 在白色 cell 上几乎不可见。 */
+  -fx-stroke: -color-border-default;
   -fx-stroke-width: 1px;
 }
