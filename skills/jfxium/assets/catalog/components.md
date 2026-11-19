@@ -1,4 +1,4 @@
-# JFXium 组件目录（v1.34.10）
+# JFXium 组件目录（v1.34.11）
 
 > 由 `skills/jfxium/scripts/CatalogGen.java` 生成，**禁止手改**。
 > 改动组件公开 API 后重跑：`java skills/jfxium/scripts/CatalogGen.java`
@@ -91,7 +91,7 @@
 | **ToggleButtonAnt** | `ToggleButton` | `create() -> ToggleButtonAnt`<br>`create(String text) -> ToggleButtonAnt` | `ToggleButtonAnt` | mandatoryGroup, text, icon, contentDisplay, size, shape, rounded, square, selected, toggleGroup, onAction, onChange, bindValue | 具有「按下 / 弹起」两态切换的按钮（独立或加入 ToggleGroup 形成互斥组）。 |
 | **ToolBarAnt** | `ToolBar` | `create() -> ToolBarAnt`<br>`create(Orientation orientation) -> ToolBarAnt` | `ToolBarAnt` | orientation, button, item, divider, spacer, addButton, addItem, addDivider, addSpacer, clear | 窗口顶部可定制工具栏，支持图标按钮组、溢出菜单、可拖拽自定义。 |
 | **TooltipAnt** | `Tooltip` | `create(String text) -> TooltipAnt` | `TooltipAnt` | text, styleClass, style, delay, duration, hideDelay, install | 悬浮提示气泡，继承自 Tooltip， |
-| **TreeAnt** | `TreeView` | `create() -> <T> TreeAnt<T>`<br>`create(T rootValue, TreeItem<T>... children) -> <T> TreeAnt<T>` | `TreeAnt<T>` | leaf, node, root, showRoot, valueExtractor, onSelect | 层级数据展示控件，提供节点工厂方法（#leaf / #node）实现声明式树结构构建。 |
+| **TreeAnt** | `TreeView` | `create() -> <T> TreeAnt<T>`<br>`create(T rootValue, TreeItem<T>... children) -> <T> TreeAnt<T>` | `TreeAnt<T>` | leaf, node, root, showRoot, valueExtractor, indicatorStyle, showLine, onSelect | 层级数据展示控件，提供节点工厂方法（#leaf / #node）实现声明式树结构构建。 |
 | **TreeTableAnt** | `TreeTableView` | `create() -> <T> TreeTableAnt<T>` | `TreeTableAnt<T>` | column, root, onSelect, multiSelect, expandAll, collapseAll, expandToLevel, child, endChild, endRoot | 表格 + 树形结构的结合体，支持层级展开/折叠， |
 | **TypographyAnt** | — | — | `Label` | ellipsis, rows, type, copyable, strong, italic, underline, delete, code, mark, title, paragraph, text | 富文本排版工厂,提供三种 Builder 入口(TitleBuilder / ParagraphBuilder / TextBuilder), |
 
