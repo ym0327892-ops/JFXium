@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Popup;
 import org.openkawu.jfxium.core.builder.AbstractStyleBuilder;
 import org.openkawu.jfxium.core.style.JfxStyles;
@@ -31,6 +32,7 @@ import java.util.function.Consumer;
  *   <li><b>可禁用</b>：节点级别 disabled</li>
  *   <li><b>回传完整对象</b>：onSelect 回调回传 TreeNode，可取 value/label</li>
  *   <li><b>搜索过滤</b>：支持输入过滤节点</li>
+ *   <li><b>展开热区</b>：点箭头附近即可展开/折叠（纵向整行），且不会误选中父节点</li>
  *   <li><b>视觉</b>：弹层走 TREE_SELECT 系列 LESS 样式</li>
  * </ul>
  *
@@ -77,6 +79,9 @@ public class TreeSelectAnt {
     }
 
     public static class Builder extends AbstractStyleBuilder<Builder> {
+
+        /** 展开热区左右各放宽的像素（纵向 = 整行高度）。 */
+        private static final double HIT_PAD = 6;
         // placeholder 复用父类 AbstractStyleBuilder.placeholder 字段（P2-S8 抽取）
         private TreeNode root;
         // disabled 复用父类 AbstractStyleBuilder.disable 字段（P2-S7.4 抽取），
@@ -184,9 +189,17 @@ public class TreeSelectAnt {
                 arrow.getStyleClass().add(JfxStyles.TREE_SELECT_ARROW);
                 row.getChildren().add(arrow);
 
-                arrow.setOnMouseClicked(e -> {
-                    node.expanded = !node.isExpanded();
-                    refreshTree(panel, popup, field);
+                // 展开热区：箭头左右各放宽 6px、纵向整行（label 本身只有 ~8px 宽）。
+                // 必须用 filter + consume：否则点击会冒泡到行的 onMouseClicked，
+                // 单选模式下会顺带选中父节点并关闭弹层（等于点箭头 = 选中）。
+                row.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+                    Bounds b = arrow.getBoundsInParent();
+                    double x = e.getX();
+                    if (x >= b.getMinX() - HIT_PAD && x <= b.getMaxX() + HIT_PAD) {
+                        node.expanded = !node.isExpanded();
+                        refreshTree(panel, popup, field);
+                        e.consume();
+                    }
                 });
             } else {
                 // 无 children 时占位 12px，与有 children 行的 arrow 宽度对齐

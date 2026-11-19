@@ -1,9 +1,13 @@
 package org.openkawu.jfxium.component.control;
 
+import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableRow;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import org.openkawu.jfxium.core.style.JfxStyles;
 
 import java.util.ArrayList;
@@ -22,6 +26,7 @@ import java.util.function.Consumer;
  *   <li><b>列定义</b>：column(title, property) 定义表格列</li>
  *   <li><b>树形节点</b>：TreeNode 支持 children 嵌套（无限层级）</li>
  *   <li><b>展开/折叠</b>：expandAll() / collapseAll() / expandToLevel(n)</li>
+ *   <li><b>箭头点击热区</b>：整行高度 + 箭头左右各 6px（JavaFX 默认点箭头无反应，只能双击）</li>
  *   <li><b>选择回调</b>：onSelect(node) 选中时触发</li>
  *   <li><b>多选</b>：multiSelect(true) 启用多选</li>
  *   <li><b>视觉</b>：走 {@link JfxStyles#TREE_TABLE} 系列 LESS 样式</li>
@@ -50,6 +55,9 @@ import java.util.function.Consumer;
  */
 public class TreeTableAnt<T> extends TreeTableView<T> {
 
+    /** 展开热区左右各放宽的像素（纵向 = 整行高度）。 */
+    private static final double HOT_ZONE_PX = 6;
+
     private final List<TreeTableColumn<T, ?>> columns = new ArrayList<>();
     private TreeItem<T> rootItem;
     private Consumer<T> onSelect;
@@ -71,12 +79,39 @@ public class TreeTableAnt<T> extends TreeTableView<T> {
         getStyleClass().add(JfxStyles.TREE_TABLE);
         setShowRoot(true);
 
+        // 展开热区：JavaFX 的 TreeTableRowBehavior 没有实现 handleDisclosureNode，
+        // 点 disclosure 箭头完全没有反应（只能双击行）。这里和 TreeAnt 保持一致：
+        // 箭头左右各放宽 6px、纵向整行都可点，命中即切换展开并 consume（不选中该行）。
+        setRowFactory(tv -> createRow());
+
         // 选择监听
         getSelectionModel().selectedItemProperty().addListener((obs, old, val) -> {
             if (val != null && val.getValue() != null && onSelect != null) {
                 onSelect.accept(val.getValue());
             }
         });
+    }
+
+    /** 行工厂：挂展开热区事件过滤器。 */
+    private TreeTableRow<T> createRow() {
+        TreeTableRow<T> row = new TreeTableRow<>();
+        row.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+            if (e.getButton() != MouseButton.PRIMARY) return;
+            TreeItem<T> item = row.getTreeItem();
+            if (item == null || item.isLeaf()) return;
+
+            Node disclosure = row.getDisclosureNode();
+            if (disclosure == null) return;
+
+            double left = disclosure.getLayoutX() - HOT_ZONE_PX;
+            double right = disclosure.getLayoutX()
+                    + disclosure.getLayoutBounds().getWidth() + HOT_ZONE_PX;
+            if (e.getX() >= left && e.getX() <= right) {
+                item.setExpanded(!item.isExpanded());
+                e.consume();
+            }
+        });
+        return row;
     }
 
     // ============================================================
